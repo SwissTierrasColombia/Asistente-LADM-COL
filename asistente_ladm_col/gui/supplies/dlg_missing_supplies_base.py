@@ -42,10 +42,10 @@ from asistente_ladm_col.utils.qt_utils import (FileValidator,
 from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.lib.processing.custom_processing_feedback import CustomFeedback
 
-DIALOG_LOG_EXCEL_UI = get_ui_class('supplies/dlg_etl_cobol.ui')
+DIALOG_LOG_EXCEL_UI = get_ui_class('supplies/dlg_missing_supplies.ui')
 
 
-class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
+class MissingSuppliesBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
     on_result = pyqtSignal(bool)  # whether the tool was run successfully or not
 
     def __init__(self, db, conn_manager, parent=None):
@@ -57,73 +57,68 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
 
         self.logger = Logger()
         self.app = AppInterface()
-
-        self._dialog_mode = None
-        self._running_tool = False
-        self._etl_result = False
-        self.tool_name = ""
-        self.names = self._db.names
-        self._db_was_changed = False  # To postpone calling refresh gui until we close this dialog instead of settings
         self.validators = Validators()
+
+        self.names = self._db.names
+        self._dialog_mode = None
+        self._running_tool = False        
+        self._db_was_changed = False  # To postpone calling refresh gui until we close this dialog instead of settings
+        self.tool_name = ""
+        self.gdb_layer_paths = dict()
+        self.alphanumeric_file_paths = dict()
+
+        # Initialize
         self.initialize_feedback()
 
-        self.buttonBox.accepted.disconnect()
-        self.buttonBox.accepted.connect(self.accepted)
-        self.buttonBox.button(QDialogButtonBox.Ok).setText(QCoreApplication.translate("CobolBaseDialog", "Import"))
-        self.finished.connect(self.finished_slot)
-
-        self._layers = dict()
-        self.initialize_layers()
-
-        self.btn_browse_file_blo.clicked.connect(
-            make_file_selector(self.txt_file_path_blo, QCoreApplication.translate("CobolBaseDialog",
-                        "Select the BLO .lis file with Cobol data "),
-                        QCoreApplication.translate("CobolBaseDialog", 'lis File (*.lis)')))
-
-        self.btn_browse_file_uni.clicked.connect(
-            make_file_selector(self.txt_file_path_uni, QCoreApplication.translate("CobolBaseDialog",
-                        "Select the UNI .lis file with Cobol data "),
-                        QCoreApplication.translate("CobolBaseDialog", 'lis File (*.lis)')))
-
-        self.btn_browse_file_ter.clicked.connect(
-            make_file_selector(self.txt_file_path_ter, QCoreApplication.translate("CobolBaseDialog",
-                        "Select the TER .lis file with Cobol data "),
-                        QCoreApplication.translate("CobolBaseDialog", 'lis File (*.lis)')))
-
-        self.btn_browse_file_pro.clicked.connect(
-            make_file_selector(self.txt_file_path_pro, QCoreApplication.translate("CobolBaseDialog",
-                        "Select the PRO .lis file with Cobol data "),
-                        QCoreApplication.translate("CobolBaseDialog", 'lis File (*.lis)')))
-
-        self.btn_browse_file_gdb.clicked.connect(
-                make_folder_selector(self.txt_file_path_gdb, title=QCoreApplication.translate(
-                'CobolBaseDialog', 'Open GDB folder'), parent=None))
-
-        file_validator_blo = FileValidator(pattern='*.lis', allow_empty=True)
-        file_validator_lis = FileValidator(pattern='*.lis', allow_non_existing=False)
-        dir_validator_gdb = DirValidator(pattern='*.gdb', allow_non_existing=False)
-       
+        # Set MessageBar for QDialog
         self.bar = QgsMessageBar()
         self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
         self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
 
-        self.txt_file_path_blo.setValidator(file_validator_blo)
+        # Set connections
+        self.buttonBox.accepted.disconnect()
+        self.buttonBox.accepted.connect(self.accepted)
+        self.buttonBox.button(QDialogButtonBox.Ok).setText(QCoreApplication.translate("MissingSuppliesBaseDialog", "Import"))
+        self.finished.connect(self.finished_slot)
+
+        self.btn_browse_file_predio.clicked.connect(
+            make_file_selector(self.txt_file_path_predio, QCoreApplication.translate("MissingSuppliesBaseDialog",
+                        "Select the Predio .csv file with SNC data "),
+                        QCoreApplication.translate("MissingSuppliesBaseDialog", 'CSV File (*.csv)')))
+
+        self.btn_browse_file_uni.clicked.connect(
+            make_file_selector(self.txt_file_path_uni, QCoreApplication.translate("MissingSuppliesBaseDialog",
+                        "Select the UNI .lis file with Cobol data "),
+                        QCoreApplication.translate("MissingSuppliesBaseDialog", 'lis File (*.lis)')))
+
+        self.btn_browse_file_gdb.clicked.connect(
+                make_folder_selector(self.txt_file_path_gdb, title=QCoreApplication.translate(
+                'MissingSuppliesBaseDialog', 'Open GDB folder'), parent=None))
+
+        self.btn_browse_file_folder_supplies.clicked.connect(
+                make_folder_selector(self.txt_file_path_folder_supplies, title=QCoreApplication.translate(
+                "MissingCobolSuppliesDialog", "Select folder to save data"), parent=None))
+
+        # Set validations
+        file_validator_predio = FileValidator(pattern='*.csv', allow_non_existing=False)
+        file_validator_lis = FileValidator(pattern='*.lis', allow_non_existing=False)
+        dir_validator_gdb = DirValidator(pattern='*.gdb', allow_non_existing=False)
+        dir_validator_folder = DirValidator(pattern=None, allow_empty_dir=True)
+
+        self.txt_file_path_predio.setValidator(file_validator_predio)
         self.txt_file_path_uni.setValidator(file_validator_lis)
-        self.txt_file_path_ter.setValidator(file_validator_lis)
-        self.txt_file_path_pro.setValidator(file_validator_lis)
         self.txt_file_path_gdb.setValidator(dir_validator_gdb)
+        self.txt_file_path_folder_supplies.setValidator(dir_validator_folder)
 
-        self.txt_file_path_blo.textChanged.connect(self.validators.validate_line_edits)
+        self.txt_file_path_predio.textChanged.connect(self.validators.validate_line_edits)
         self.txt_file_path_uni.textChanged.connect(self.validators.validate_line_edits)
-        self.txt_file_path_ter.textChanged.connect(self.validators.validate_line_edits)
-        self.txt_file_path_pro.textChanged.connect(self.validators.validate_line_edits)
         self.txt_file_path_gdb.textChanged.connect(self.validators.validate_line_edits)
+        self.txt_file_path_folder_supplies.textChanged.connect(self.validators.validate_line_edits)
 
-        self.txt_file_path_blo.textChanged.connect(self.input_data_changed)
+        self.txt_file_path_predio.textChanged.connect(self.input_data_changed)
         self.txt_file_path_uni.textChanged.connect(self.input_data_changed)
-        self.txt_file_path_ter.textChanged.connect(self.input_data_changed)
-        self.txt_file_path_pro.textChanged.connect(self.input_data_changed)
         self.txt_file_path_gdb.textChanged.connect(self.input_data_changed)
+        self.txt_file_path_folder_supplies.textChanged.connect(self.input_data_changed)
 
     def progress_configuration(self, base, num_process):
         """
@@ -138,37 +133,18 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         QCoreApplication.processEvents()  # Listen to cancel from the user
         self.progress.setValue(self.progress_base + self.custom_feedback.progress())
 
-    def initialize_layers(self):
-        self._layers = {
-            self.names.GC_PARCEL_T: None,
-            self.names.GC_OWNER_T: None,
-            self.names.GC_ADDRESS_T: None,
-            self.names.GC_BUILDING_UNIT_T: None,
-            self.names.GC_BUILDING_T: None,
-            self.names.GC_PLOT_T: None,
-            self.names.GC_RURAL_DIVISION_T: None,
-            self.names.GC_URBAN_SECTOR_T: None,
-            self.names.GC_RURAL_SECTOR_T: None,
-            self.names.GC_PERIMETER_T: None,
-            self.names.GC_BLOCK_T: None,
-            self.names.GC_NEIGHBOURHOOD_T: None,
-            self.names.GC_COMMISSION_BUILDING_T: None,
-            self.names.GC_COMMISSION_PLOT_T: None,
-            self.names.GC_COMMISSION_BUILDING_UNIT_T: None
-        }
-
     def reject(self):
         if self._running_tool:
             reply = QMessageBox.question(self,
-                                         QCoreApplication.translate("CobolBaseDialog", "Warning"),
-                                         QCoreApplication.translate("CobolBaseDialog",
+                                         QCoreApplication.translate("MissingSuppliesBaseDialog", "Warning"),
+                                         QCoreApplication.translate("MissingSuppliesBaseDialog",
                                                                     "The '{}' tool is still running. Do you want to cancel it? If you cancel, the data might be incomplete in the target database.").format(self.tool_name),
                                          QMessageBox.Yes, QMessageBox.No)
 
             if reply == QMessageBox.Yes:
                 self.custom_feedback.cancel()
                 self._running_tool = False
-                msg = QCoreApplication.translate("CobolBaseDialog", "The '{}' tool was cancelled.").format(self.tool_name)
+                msg = QCoreApplication.translate("MissingSuppliesBaseDialog", "The '{}' tool was cancelled.").format(self.tool_name)
                 self.logger.info(__name__, msg)
                 self.show_message(msg, Qgis.Info)
         else:
@@ -190,11 +166,7 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         raise NotImplementedError
 
     def validate_common_inputs(self):
-        """
-        :return: Boolean
-        """
-        return self.txt_file_path_uni.validator().validate(self.txt_file_path_uni.text().strip(), 0)[0] == QValidator.Acceptable and \
-               self.txt_file_path_gdb.validator().validate(self.txt_file_path_gdb.text().strip(), 0)[0] == QValidator.Acceptable
+        return self.txt_file_path_gdb.validator().validate(self.txt_file_path_gdb.text().strip(), 0)[0] == QValidator.Acceptable
 
     def initialize_feedback(self):
         self.progress.setValue(0)
@@ -205,7 +177,6 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
 
     def set_gui_controls_enabled(self, enable):
         self.gbx_data_source.setEnabled(enable)
-        self.target_data.setEnabled(enable)
         if self.buttonBox.button(QDialogButtonBox.Ok) is not None:  # It's None if the tool finished successfully
             self.set_import_button_enabled(enable)
 
@@ -214,80 +185,73 @@ class CobolBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         # until we close the supplies dialog (e.g., we might run an import schema before under the hood)
         self._db_was_changed = True
 
-    def save_settings(self):
+    def save_settings(self, system):
         settings = QSettings()
-        settings.setValue('Asistente-LADM-COL/etl_cobol/blo_path', self.txt_file_path_blo.text())
-        settings.setValue('Asistente-LADM-COL/etl_cobol/uni_path', self.txt_file_path_uni.text())
-        settings.setValue('Asistente-LADM-COL/etl_cobol/ter_path', self.txt_file_path_ter.text())
-        settings.setValue('Asistente-LADM-COL/etl_cobol/pro_path', self.txt_file_path_pro.text())
-        settings.setValue('Asistente-LADM-COL/etl_cobol/gdb_path', self.txt_file_path_gdb.text())
+        settings.setValue('Asistente-LADM-COL/missing_supplies_{}/predio_path'.format(system), self.txt_file_path_predio.text())
+        settings.setValue('Asistente-LADM-COL/missing_supplies_{}/uni_path'.format(system), self.txt_file_path_uni.text())
+        settings.setValue('Asistente-LADM-COL/missing_supplies_{}/gdb_path'.format(system), self.txt_file_path_gdb.text())
+        settings.setValue('Asistente-LADM-COL/missing_supplies_{}/folder_path'.format(system), self.txt_file_path_folder_supplies.text())
 
-    def restore_settings(self):
+    def restore_settings(self, system):
         settings = QSettings()
-        self.txt_file_path_blo.setText(settings.value('Asistente-LADM-COL/etl_cobol/blo_path', ''))
-        self.txt_file_path_uni.setText(settings.value('Asistente-LADM-COL/etl_cobol/uni_path', ''))
-        self.txt_file_path_ter.setText(settings.value('Asistente-LADM-COL/etl_cobol/ter_path', ''))
-        self.txt_file_path_pro.setText(settings.value('Asistente-LADM-COL/etl_cobol/pro_path', ''))
-        self.txt_file_path_gdb.setText(settings.value('Asistente-LADM-COL/etl_cobol/gdb_path', ''))
+        self.txt_file_path_predio.setText(settings.value('Asistente-LADM-COL/missing_supplies_{}/predio_path'.format(system), ''))
+        self.txt_file_path_uni.setText(settings.value('Asistente-LADM-COL/missing_supplies_{}/uni_path'.format(system), ''))
+        self.txt_file_path_gdb.setText(settings.value('Asistente-LADM-COL/missing_supplies_{}/gdb_path'.format(system), ''))
+        self.txt_file_path_folder_supplies.setText(settings.value('Asistente-LADM-COL/missing_supplies_{}/folder_path'.format(system), ''))
 
-    def load_lis_files(self, lis_paths):
-        self.lis_paths = lis_paths
-
+    def load_lis_files(self, alphanumeric_file_paths):
         root = QgsProject.instance().layerTreeRoot()
-        lis_group = root.addGroup(QCoreApplication.translate("CobolBaseDialog", "LIS Supplies"))
+        alphanumeric_group = root.addGroup(QCoreApplication.translate("MissingSuppliesBaseDialog", "LIS Supplies"))
 
-        for name in self.lis_paths:
-            uri = 'file:///{}?type=csv&delimiter=;&detectTypes=yes&geomType=none&subsetIndex=no&watchFile=no'.format(normalize_local_url(self.lis_paths[name]))
+        for name in alphanumeric_file_paths:
+            uri = 'file:///{}?type=csv&delimiter=;&detectTypes=yes&geomType=none&subsetIndex=no&watchFile=no'.format(normalize_local_url(alphanumeric_file_paths[name]))
             layer = QgsVectorLayer(uri, name, 'delimitedtext')
             if layer.isValid():
-                self.lis_paths[name] = layer
+                self.alphanumeric_file_paths[name] = layer
                 QgsProject.instance().addMapLayer(layer, False)
-                lis_group.addLayer(layer)
+                alphanumeric_group.addLayer(layer)
             else:
-                if name == 'blo':
-                    # BLO is kind of optional, if it is not given, we pass a default one
-                    uri = 'file:///{}?type=csv&delimiter=;&detectTypes=yes&geomType=none&subsetIndex=no&watchFile=no'.format(normalize_local_url(BLO_LIS_FILE_PATH))
-                    layer = QgsVectorLayer(uri, name, 'delimitedtext')
-                    self.lis_paths[name] = layer
-                    QgsProject.instance().addMapLayer(layer, False)
-                    lis_group.addLayer(layer)
-                else:
-                    return False, QCoreApplication.translate("CobolBaseDialog", "There were troubles loading the LIS file called '{}'.".format(name))
+                return False, QCoreApplication.translate("MissingSuppliesBaseDialog", "There were troubles loading the LIS file called '{}'.".format(name))
+
+        return True, ''
+
+    def load_csv_files(self, alphanumeric_file_paths):
+        root = QgsProject.instance().layerTreeRoot()
+        alphanumeric_group = root.addGroup(QCoreApplication.translate("MissingSuppliesBaseDialog", "SNC Alphanumeric Supplies"))
+
+        for name in alphanumeric_file_paths:
+            layer = QgsVectorLayer(alphanumeric_file_paths[name], name, 'ogr')
+            if layer.isValid():
+                self.alphanumeric_file_paths[name] = layer
+                QgsProject.instance().addMapLayer(layer, False)
+                alphanumeric_group.addLayer(layer)
+            else:
+                return False, QCoreApplication.translate("MissingSuppliesBaseDialog", "There were troubles loading the CSV file called '{}'.".format(name))
 
         return True, ''
 
     def load_gdb_files(self, required_layers):
-        self.gdb_paths = {}
-
         gdb_path = self.txt_file_path_gdb.text()
         layer = QgsVectorLayer(gdb_path, 'layer name', 'ogr')
 
         if not layer.isValid():
-            return False, QCoreApplication.translate("CobolBaseDialog", "There were troubles loading the GDB.")
+            return False, QCoreApplication.translate("MissingSuppliesBaseDialog", "There were troubles loading the GDB.")
 
         sublayers = layer.dataProvider().subLayers()
 
         root = QgsProject.instance().layerTreeRoot()
-        gdb_group = root.addGroup(QCoreApplication.translate("CobolBaseDialog", "GDB Supplies"))
+        gdb_group = root.addGroup(QCoreApplication.translate("MissingSuppliesBaseDialog", "GDB Supplies"))
 
         for data in sublayers:
             sublayer = data.split('!!::!!')[1]
             if sublayer in required_layers:
                 layer = QgsVectorLayer(gdb_path + '|layername=' + sublayer, sublayer, 'ogr')
-                self.gdb_paths[sublayer] = layer
+                self.gdb_layer_paths[sublayer] = layer
                 QgsProject.instance().addMapLayer(layer, False)
                 gdb_group.addLayer(layer)
 
-        if len(self.gdb_paths) != len(required_layers):
-            return False, QCoreApplication.translate("CobolBaseDialog", "The GDB does not have the required layers!")
-
-        return True, ''
-
-    def load_model_layers(self):
-        self.app.core.get_layers(self._db, self._layers, load=True)
-        if not self._layers:
-            return False, QCoreApplication.translate("CobolBaseDialog",
-                                                     "There was a problem loading layers from the 'Supplies' model!")
+        if len(self.gdb_layer_paths) != len(required_layers):
+            return False, QCoreApplication.translate("MissingSuppliesBaseDialog", "The GDB does not have the required layers!")
 
         return True, ''
 

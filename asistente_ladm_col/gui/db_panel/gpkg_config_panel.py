@@ -58,16 +58,14 @@ class GPKGConfigPanel(DBConfigPanel, WIDGET_UI):
         except TypeError:
             pass
 
+        # Only schema import requires a new GPKG file (save mode)
         if action == EnumDbActionType.SCHEMA_IMPORT:
-            # TODO DialogImportSchema?
             file_selector = make_save_file_selector(
                                 self.txt_file,
                                 title=QCoreApplication.translate("DialogImportSchema", "Create GeoPackage database file"),
                                 file_filter=QCoreApplication.translate("DialogImportSchema", "GeoPackage Database (*.gpkg)"),
                                 extension='.gpkg')
-
-        else:
-            # TODO DialogExportData?
+        else:  # Otherwise, we're fine with an existing file (select mode)
             file_selector = make_file_selector(self.txt_file,
                                 title=QCoreApplication.translate("DialogExportData", "Open GeoPackage database file"),
                                 file_filter=QCoreApplication.translate("DialogExportData","GeoPackage Database (*.gpkg)"))

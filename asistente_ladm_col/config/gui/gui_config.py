@@ -165,7 +165,8 @@ class GUI_Config(QObject):
                     ACTIONS: [
                         ACTION_RUN_ETL_SUPPLIES,
                         ACTION_INTEGRATE_SUPPLIES,
-                        ACTION_FIND_MISSING_COBOL_SUPPLIES
+                        ACTION_FIND_MISSING_COBOL_SUPPLIES,
+                        ACTION_FIND_MISSING_SNC_SUPPLIES
                     ]
                 },
                 SEPARATOR,

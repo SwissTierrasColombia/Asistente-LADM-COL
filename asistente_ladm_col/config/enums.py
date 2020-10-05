@@ -6,6 +6,7 @@ class EnumDbActionType(Enum):
     SCHEMA_IMPORT = 1
     IMPORT = 2
     EXPORT = 3
+    IMPORT_FROM_ETL = 99
     CONFIG = 100
 
 

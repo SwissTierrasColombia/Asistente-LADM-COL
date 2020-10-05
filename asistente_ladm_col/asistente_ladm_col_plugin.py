@@ -121,7 +121,8 @@ from asistente_ladm_col.gui.dialogs.dlg_about import AboutDialog
 from asistente_ladm_col.gui.dialogs.dlg_import_from_excel import ImportFromExcelDialog
 from asistente_ladm_col.gui.dialogs.dlg_load_layers import LoadLayersDialog
 from asistente_ladm_col.gui.dialogs.dlg_log_excel import LogExcelDialog
-from asistente_ladm_col.gui.supplies.dlg_missing_cobol_supplies import MissingCobolSupplies
+from asistente_ladm_col.gui.supplies.dlg_missing_cobol_supplies import MissingCobolSuppliesDialog
+from asistente_ladm_col.gui.supplies.dlg_missing_snc_supplies import MissingSncSuppliesDialog
 from asistente_ladm_col.gui.dialogs.dlg_log_quality import LogQualityDialog
 from asistente_ladm_col.gui.change_detection.dlg_change_detection_settings import ChangeDetectionSettingsDialog
 from asistente_ladm_col.gui.dialogs.dlg_quality import QualityDialog
@@ -423,15 +424,22 @@ class AsistenteLADMCOLPlugin(QObject):
 
         self._missing_cobol_supplies_action = QAction(
             QIcon(":/Asistente-LADM-COL/resources/images/missing_supplies.svg"),
-            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Find missing Cobol supplies"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Omissions and Commissions Report - COBOL"),
             self.main_window)
+
+        self._missing_snc_supplies_action = QAction(
+            QIcon(":/Asistente-LADM-COL/resources/images/missing_supplies.svg"),
+            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Omissions and Commissions Report - SNC"),
+            self.main_window) 
 
         # Connections
         self._etl_supplies_action.triggered.connect(partial(self.show_wiz_supplies_etl, self._context_supplies))
         self._missing_cobol_supplies_action.triggered.connect(partial(self.show_missing_cobol_supplies_dialog, self._context_supplies))
+        self._missing_snc_supplies_action.triggered.connect(partial(self.show_missing_snc_supplies_dialog, self._context_supplies))
 
         self.gui_builder.register_actions({ACTION_RUN_ETL_SUPPLIES: self._etl_supplies_action,
-                                           ACTION_FIND_MISSING_COBOL_SUPPLIES: self._missing_cobol_supplies_action})
+                                    ACTION_FIND_MISSING_COBOL_SUPPLIES: self._missing_cobol_supplies_action,
+                                    ACTION_FIND_MISSING_SNC_SUPPLIES: self._missing_snc_supplies_action})
 
     def create_field_data_capture_actions(self):
         self._allocate_parcels_field_data_capture_action = QAction(
@@ -941,7 +949,20 @@ class AsistenteLADMCOLPlugin(QObject):
 
         context = args[0]
 
-        dlg = MissingCobolSupplies(self.get_db_connection(SUPPLIES_DB_SOURCE), self.conn_manager, self.iface.mainWindow())
+        dlg = MissingCobolSuppliesDialog(self.get_db_connection(SUPPLIES_DB_SOURCE), self.conn_manager, self.iface.mainWindow())
+        if isinstance(context, TaskContext):
+            dlg.on_result.connect(context.get_slot_on_result())
+        dlg.exec_()
+
+    @_db_connection_required
+    @_supplies_model_required
+    def show_missing_snc_supplies_dialog(self, *args):
+        if not args or not isinstance(args[0], Context):
+            return
+
+        context = args[0]
+
+        dlg = MissingSncSuppliesDialog(self.get_db_connection(SUPPLIES_DB_SOURCE), self.conn_manager, self.iface.mainWindow())
         if isinstance(context, TaskContext):
             dlg.on_result.connect(context.get_slot_on_result())
         dlg.exec_()
