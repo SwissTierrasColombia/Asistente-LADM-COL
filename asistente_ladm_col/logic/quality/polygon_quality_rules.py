@@ -238,7 +238,7 @@ class PolygonQualityRules:
 
     def check_gaps_in_plots(self, db, dict_layer):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.GAPS_IN_PLOTS)
-        use_roads = bool(QSettings().value('Asistente-LADM_COL/quality/use_roads', DEFAULT_USE_ROADS_VALUE, bool))
+        use_roads = bool(QSettings().value('Asistente-LADM-COL/quality/use_roads', DEFAULT_USE_ROADS_VALUE, bool))
 
         plot_layer = list(dict_layer[QUALITY_RULE_LAYERS].values())[0] if dict_layer[QUALITY_RULE_LAYERS] else None
 
