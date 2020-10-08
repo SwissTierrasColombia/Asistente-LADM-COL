@@ -22,6 +22,7 @@ import os
 import stat
 import sys
 from functools import partial
+import urllib
 
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QObject,
@@ -151,8 +152,15 @@ def remove_readonly(func, path, _):
 
 
 def normalize_local_url(url):
-    return url[1:] if url.startswith("/") else url
+    """
+    Encodes the incoming url to be ready to use when opening files or when loading QGIS delimitedtext layers
 
+    :param url: Local file path
+    :return: On Linux it returns the path without the former /, on windows returns the full path. The path returned is
+             encoded, so that special characters are passed in '%C3%B3' (-->ó) form.
+    """
+    url = urllib.parse.quote(url, safe=':/')  # Don't encode : nor / characters
+    return url[1:] if url.startswith("/") else url  # Remove the former / if we have a Linux path
 
 
 class NetworkError(RuntimeError):
