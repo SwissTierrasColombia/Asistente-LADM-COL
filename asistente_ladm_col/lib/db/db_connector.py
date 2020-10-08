@@ -419,7 +419,7 @@ class DBConnector(QObject):
         """
         raise NotImplementedError
 
-    def test_connection(self, test_level=EnumTestLevel.LADM, user_level=EnumUserLevel.CREATE, required_models=[]):
+    def test_connection(self, test_level=EnumTestLevel.LADM, user_level=EnumUserLevel.CONNECT, required_models=[]):
         """
         'Template method' subclasses should overwrite it, proposing their own way to test a connection.
         """
@@ -464,7 +464,7 @@ class FileDB(DBConnector):
         """
         raise NotImplementedError
 
-    def test_connection(self, test_level=EnumTestLevel.LADM, user_level=EnumUserLevel.CREATE, required_models=[]):
+    def test_connection(self, test_level=EnumTestLevel.LADM, user_level=EnumUserLevel.CONNECT, required_models=[]):
         """We check several levels in order:
             1. FILE SERVER (DB file)
             2. DB
@@ -507,7 +507,7 @@ class ClientServerDB(DBConnector):
     def _test_connection_to_schema(self, user_level):
         raise NotImplementedError
 
-    def test_connection(self, test_level=EnumTestLevel.LADM, user_level=EnumUserLevel.CREATE, required_models=[]):
+    def test_connection(self, test_level=EnumTestLevel.LADM, user_level=EnumUserLevel.CONNECT, required_models=[]):
         """We check several levels in order:
             1. SERVER
             2. DB
