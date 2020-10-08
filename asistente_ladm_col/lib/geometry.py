@@ -21,7 +21,8 @@
 import gc
 from math import sqrt
 
-from qgis.PyQt.QtCore import (QObject,
+from qgis.PyQt.QtCore import (QCoreApplication,
+                              QObject,
                               QVariant)
 from qgis._core import QgsProcessingFeedback
 from qgis.core import (QgsField,
@@ -387,33 +388,44 @@ class GeometryUtils(QObject):
             featureCollection.append(feature.geometry())
 
         union_geom = QgsGeometry.unaryUnion(featureCollection)
-        aux_convex_hull = union_geom.convexHull()
-        buffer_extent = QgsGeometry.fromRect(union_geom.boundingBox()).buffer(2, 3)
-        buffer_diff = buffer_extent.difference(QgsGeometry.fromRect(union_geom.boundingBox()))
-        diff_geoms = buffer_extent.difference(union_geom).difference(buffer_diff)
+        buffer_extent = QgsGeometry.fromRect(union_geom.boundingBox()).buffer(2, 3)  # Enlarged envelope
+        buffer_diff = buffer_extent.difference(QgsGeometry.fromRect(union_geom.boundingBox()))  # Like a donut
+        diff_geoms = buffer_extent.difference(union_geom).difference(buffer_diff)  # The negative of original polys cut by extent
 
         if not diff_geoms:
             self.logger.debug(__name__, "Gaps in polygon layer: no difference result, no errors...")
             return list()
 
         feature_error = list()
-        if not diff_geoms.isMultipart():
-            if include_roads and diff_geoms.touches(union_geom) and diff_geoms.intersects(buffer_diff):
-                self.logger.debug(__name__, "Gaps in polygon layer: Single part and no errors...")
-                return list()
 
-        for geometry in diff_geoms.asMultiPolygon():
-            conflict_geom = QgsGeometry.fromPolygonXY(geometry)
-            if not include_roads and conflict_geom.touches(union_geom) and conflict_geom.intersects(buffer_diff):
-                continue
+        if diff_geoms.wkbType() == QgsWkbTypes.Polygon:
+            diff_geoms.convertToMultiType()
 
-            if not union_geom.isMultipart() and conflict_geom.touches(union_geom) and conflict_geom.intersects(buffer_diff):
-                continue
+        try:
+            for geometry in diff_geoms.asMultiPolygon():
+                conflict_geom = QgsGeometry.fromPolygonXY(geometry)
+                touches_union = conflict_geom.touches(union_geom)
+                intersects_buffer = conflict_geom.intersects(buffer_diff)
 
-            feature_error.append(conflict_geom)
+                if touches_union and intersects_buffer:  # It's not an internal gap
+                    # Cases to discard this geometry
+                    #  1) We don't want to include roads,
+                    #  2) We're dealing with a single polygon or block (cuadra), so we don't want the exterior gaps
+                    if not include_roads or not union_geom.isMultipart():
+                        continue
+
+                feature_error.append(conflict_geom)
+        except TypeError as e:
+            self.logger.warning_msg(__name__,
+                                    QCoreApplication.translate("Geometry",
+                                                               "Checking polygon gaps we found a '{}' geometry, which is not supported! Please report the issue.").format(
+                                        QgsWkbTypes.displayString(diff_geoms.wkbType())))
 
         unified_error = QgsGeometry.collectGeometry(feature_error)
         feature_error.clear()
+
+        # We don't want to cut by extent, it's better to cut by a convex hull (TODO: or even better by a concave hull)
+        aux_convex_hull = union_geom.convexHull()
         clean_errors = unified_error.intersection(aux_convex_hull)
 
         return self.extract_geoms_by_type(clean_errors, [QgsWkbTypes.PolygonGeometry])

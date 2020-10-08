@@ -155,6 +155,7 @@ SOURCES = ../__init__.py \
           ../lib/dependency/java_dependency.py \
           ../lib/dependency/plugin_dependency.py \
           ../lib/dependency/report_dependency.py \
+          ../lib/geometry.py \
           ../lib/processing/algs/InsertFeaturesToLayer.py \
           ../lib/processing/algs/PolygonsToLines.py \
           ../lib/quality_rule/quality_rule.py \

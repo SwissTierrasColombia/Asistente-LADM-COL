@@ -18,13 +18,17 @@
  *                                                                         *
  ***************************************************************************/
 """
-from PyQt5.QtCore import QSettings, QCoreApplication, pyqtSignal
-from PyQt5.QtGui import QValidator
+from qgis.PyQt.QtCore import QSettings, QCoreApplication, pyqtSignal
+from qgis.PyQt.QtGui import QValidator
 from qgis.PyQt.QtWidgets import QWidget
 
+from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.utils.qt_utils import make_file_selector, make_folder_selector, FileValidator, DirValidator, \
-    Validators
+from asistente_ladm_col.utils.qt_utils import (make_file_selector,
+                                               make_folder_selector,
+                                               FileValidator,
+                                               DirValidator,
+                                               Validators)
 from asistente_ladm_col.utils.ui import get_ui_class
 
 WIDGET_UI = get_ui_class('supplies/snc_data_source_widget.ui')
@@ -38,6 +42,7 @@ class SNCDataSourceWidget(QWidget, WIDGET_UI):
         QWidget.__init__(self)
         self.setupUi(self)
         self.logger = Logger()
+        self.app = AppInterface()
 
         self.validators = Validators()
 
@@ -46,56 +51,66 @@ class SNCDataSourceWidget(QWidget, WIDGET_UI):
         self.btn_browse_file_predio_bloqueo.clicked.connect(
             make_file_selector(self.txt_file_path_predio_bloqueo, QCoreApplication.translate("SNCDataSourceWidget",
                                                                                              "Select the predio sanción .csv file with SNC data "),
-                               QCoreApplication.translate("SNCDataSourceWidget", 'CSV File (*.csv)')))
+                               QCoreApplication.translate("SNCDataSourceWidget", 'CSV File (*.csv)'),
+                               folder_setting_key=self.app.settings.SNC_FILES_DIR_KEY))
 
         self.btn_browse_file_predio.clicked.connect(
             make_file_selector(self.txt_file_path_predio, QCoreApplication.translate("SNCDataSourceWidget",
                                                                                      "Select the predio .csv file with SNC data "),
-                               QCoreApplication.translate("SNCDataSourceWidget", 'CSV File (*.csv)')))
+                               QCoreApplication.translate("SNCDataSourceWidget", 'CSV File (*.csv)'),
+                               folder_setting_key=self.app.settings.SNC_FILES_DIR_KEY))
 
         self.btn_browse_file_direccion.clicked.connect(
             make_file_selector(self.txt_file_path_direccion, QCoreApplication.translate("SNCDataSourceWidget",
                                                                                         "Select the dirección .csv file with SNC data "),
-                               QCoreApplication.translate("SNCDataSourceWidget", 'CSV File (*.csv)')))
+                               QCoreApplication.translate("SNCDataSourceWidget", 'CSV File (*.csv)'),
+                               folder_setting_key=self.app.settings.SNC_FILES_DIR_KEY))
 
         self.btn_browse_file_uni.clicked.connect(
             make_file_selector(self.txt_file_path_uni, QCoreApplication.translate("SNCDataSourceWidget",
                                                                                   "Select the unidad construcción .csv file with SNC data "),
-                               QCoreApplication.translate("SNCDataSourceWidget", 'CSV File (*.csv)')))
+                               QCoreApplication.translate("SNCDataSourceWidget", 'CSV File (*.csv)'),
+                               folder_setting_key=self.app.settings.SNC_FILES_DIR_KEY))
 
         self.btn_browse_file_uni_comp.clicked.connect(
             make_file_selector(self.txt_file_path_uni_comp, QCoreApplication.translate("SNCDataSourceWidget",
                                                                                   "Select the unidad construcción comp .csv file with SNC data "),
-                               QCoreApplication.translate("SNCDataSourceWidget", 'CSV File (*.csv)')))
+                               QCoreApplication.translate("SNCDataSourceWidget", 'CSV File (*.csv)'),
+                               folder_setting_key=self.app.settings.SNC_FILES_DIR_KEY))
 
         self.btn_browse_file_persona.clicked.connect(
             make_file_selector(self.txt_file_path_persona, QCoreApplication.translate("SNCDataSourceWidget",
                                                                                       "Select the persona .csv file with SNC data "),
-                               QCoreApplication.translate("SNCDataSourceWidget", 'CSV File (*.csv)')))
+                               QCoreApplication.translate("SNCDataSourceWidget", 'CSV File (*.csv)'),
+                               folder_setting_key=self.app.settings.SNC_FILES_DIR_KEY))
 
         self.btn_browse_file_persona_predio.clicked.connect(
             make_file_selector(self.txt_file_path_persona_predio, QCoreApplication.translate("SNCDataSourceWidget",
                                                                                       "Select the persona predio .csv file with SNC data "),
-                               QCoreApplication.translate("SNCDataSourceWidget", 'CSV File (*.csv)')))
+                               QCoreApplication.translate("SNCDataSourceWidget", 'CSV File (*.csv)'),
+                               folder_setting_key=self.app.settings.SNC_FILES_DIR_KEY))
 
         self.btn_browse_file_ficha_m.clicked.connect(
             make_file_selector(self.txt_file_path_ficha_m, QCoreApplication.translate("SNCDataSourceWidget",
                                                                                       "Select the ficha matriz .csv file with SNC data "),
-                               QCoreApplication.translate("SNCDataSourceWidget", 'CSV File (*.csv)')))
+                               QCoreApplication.translate("SNCDataSourceWidget", 'CSV File (*.csv)'),
+                               folder_setting_key=self.app.settings.SNC_FILES_DIR_KEY))
 
         self.btn_browse_file_ficha_m_predio.clicked.connect(
             make_file_selector(self.txt_file_path_ficha_m_predio, QCoreApplication.translate("SNCDataSourceWidget",
                                                                                              "Select the ficha matriz predio .csv file with SNC data "),
-                               QCoreApplication.translate("SNCDataSourceWidget", 'CSV File (*.csv)')))
+                               QCoreApplication.translate("SNCDataSourceWidget", 'CSV File (*.csv)'),
+                               folder_setting_key=self.app.settings.SNC_FILES_DIR_KEY))
 
         self.btn_browse_file_ficha_m_torre.clicked.connect(
             make_file_selector(self.txt_file_path_ficha_m_torre, QCoreApplication.translate("SNCDataSourceWidget",
                                                                                              "Select the ficha matriz torre .csv file with SNC data "),
-                               QCoreApplication.translate("SNCDataSourceWidget", 'CSV File (*.csv)')))
+                               QCoreApplication.translate("SNCDataSourceWidget", 'CSV File (*.csv)'),
+                               folder_setting_key=self.app.settings.SNC_FILES_DIR_KEY))
 
         self.btn_browse_file_gdb.clicked.connect(
-            make_folder_selector(self.txt_file_path_gdb, title=QCoreApplication.translate(
-                "SNCDataSourceWidget", "Open GDB folder"), parent=None))
+            make_folder_selector(self.txt_file_path_gdb, QCoreApplication.translate(
+                "SNCDataSourceWidget", "Open GDB folder"), None, folder_setting_key=self.app.settings.SNC_FILES_DIR_KEY))
 
         file_validator_optional = FileValidator(pattern='*.csv', allow_empty=True)
         file_validator_csv = FileValidator(pattern='*.csv', allow_non_existing=False)

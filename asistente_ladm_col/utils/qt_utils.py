@@ -22,6 +22,7 @@ import os
 import stat
 import sys
 from functools import partial
+import urllib
 
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QObject,
@@ -33,19 +34,38 @@ from qgis.PyQt.QtWidgets import (QFileDialog,
                                  QApplication,
                                  QWizard,
                                  QTextEdit)
-from qgis.core import Qgis
 
 from asistente_ladm_col.lib.logger import Logger
 
 
-def selectFileName(line_edit_widget, title, file_filter, parent):
-    filename, matched_filter = QFileDialog.getOpenFileName(parent, title, line_edit_widget.text(), file_filter)
+def selectFileName(line_edit_widget, title, file_filter, parent, folder_setting_key):
+    folder = None
+    if folder_setting_key:  # Get from settings
+        from asistente_ladm_col.app_interface import AppInterface  # Here to avoid circular dependency
+        app = AppInterface()
+        folder = app.settings.get_setting(folder_setting_key)  # None if key not found
+    if not folder:
+        folder = line_edit_widget.text()
+
+    filename, matched_filter = QFileDialog.getOpenFileName(parent, title, folder, file_filter)
     line_edit_widget.setText(filename)
 
+    if folder_setting_key and filename:  # Save to settings
+        app.settings.set_setting(folder_setting_key, os.path.dirname(filename))
 
-def make_file_selector(widget, title=QCoreApplication.translate("Asistente-LADM-COL", "Open File"),
-                       file_filter=QCoreApplication.translate("Asistente-LADM-COL", "Any file(*)"), parent=None):
-    return partial(selectFileName, line_edit_widget=widget, title=title, file_filter=file_filter, parent=parent)
+
+def make_file_selector(widget,
+                       title=QCoreApplication.translate("Asistente-LADM-COL", "Open File"),
+                       file_filter=QCoreApplication.translate("Asistente-LADM-COL", "Any file(*)"),
+                       parent=None,
+                       folder_setting_key=None):
+    return partial(selectFileName,
+                   line_edit_widget=widget,
+                   title=title,
+                   file_filter=file_filter,
+                   parent=parent,
+                   folder_setting_key=folder_setting_key)
+
 
 def selectFileNameToSave(line_edit_widget, title, file_filter, parent, extension, extensions):
     filename, matched_filter = QFileDialog.getSaveFileName(parent, title, line_edit_widget.text(), file_filter)
@@ -62,19 +82,35 @@ def selectFileNameToSave(line_edit_widget, title, file_filter, parent, extension
 
     line_edit_widget.setText(filename)
 
+
 def make_save_file_selector(widget, title=QCoreApplication.translate("QgisModelBaker", "Open File"),
                             file_filter=QCoreApplication.translate("QgisModelBaker", "Any file(*)"), parent=None,
                             extension='', extensions=None):
     return partial(selectFileNameToSave, line_edit_widget=widget, title=title, file_filter=file_filter, parent=parent,
                    extension=extension, extensions=extensions)
 
-def selectFolder(line_edit_widget, title, parent):
-    foldername = QFileDialog.getExistingDirectory(parent, title, line_edit_widget.text())
+
+def selectFolder(line_edit_widget, title, parent, folder_setting_key):
+    folder = None
+    if folder_setting_key:  # Get from settings
+        from asistente_ladm_col.app_interface import AppInterface  # Here to avoid circular dependency
+        app = AppInterface()
+        folder = app.settings.get_setting(folder_setting_key)  # None if key not found
+    if not folder:
+        folder = line_edit_widget.text()
+
+    foldername = QFileDialog.getExistingDirectory(parent, title, folder)
     line_edit_widget.setText(foldername)
 
+    if folder_setting_key and foldername:  # Save to settings
+        app.settings.set_setting(folder_setting_key, os.path.dirname(foldername))
 
-def make_folder_selector(widget, title=QCoreApplication.translate("Asistente-LADM-COL", "Open Folder"), parent=None):
-    return partial(selectFolder, line_edit_widget=widget, title=title, parent=parent)
+
+def make_folder_selector(widget,
+                         title=QCoreApplication.translate("Asistente-LADM-COL", "Open Folder"),
+                         parent=None,
+                         folder_setting_key=None):
+    return partial(selectFolder, line_edit_widget=widget, title=title, parent=parent, folder_setting_key=folder_setting_key)
 
 
 def disable_next_wizard(wizard, with_back=True):
@@ -116,8 +152,15 @@ def remove_readonly(func, path, _):
 
 
 def normalize_local_url(url):
-    return url[1:] if url.startswith("/") else url
+    """
+    Encodes the incoming url to be ready to use when opening files or when loading QGIS delimitedtext layers
 
+    :param url: Local file path
+    :return: On Linux it returns the path without the former /, on windows returns the full path. The path returned is
+             encoded, so that special characters are passed in '%C3%B3' (-->ó) form.
+    """
+    url = urllib.parse.quote(url, safe=':/')  # Don't encode : nor / characters
+    return url[1:] if url.startswith("/") else url  # Remove the former / if we have a Linux path
 
 
 class NetworkError(RuntimeError):
