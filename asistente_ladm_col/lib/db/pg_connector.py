@@ -29,8 +29,7 @@ from asistente_ladm_col.config.enums import (EnumTestLevel,
                                              EnumTestConnectionMsg)
 from asistente_ladm_col.lib.db.db_connector import (ClientServerDB,
                                                     DBConnector)
-from asistente_ladm_col.logic.ladm_col.config.reports.ant_report.pg import (ant_map_neighbouring_change_query,
-                                                                            ant_map_plot_query)
+from asistente_ladm_col.logic.ladm_col.config.reports.ant_report.pg import ant_map_plot_query
 from asistente_ladm_col.logic.ladm_col.config.reports.annex_17_report.pg import (annex17_building_data_query,
                                                                                  annex17_point_data_query,
                                                                                  annex17_plot_data_query)
@@ -233,37 +232,52 @@ class PGConnector(ClientServerDB):
 
         return True, ''
 
-    def get_annex17_plot_data(self, plot_id, mode='only_id'):
+    def get_annex17_plot_data(self, plot_id, mode, overview):
+        """
+
+        :param plot_id: t_id id of plot
+        :param mode: True if you want the selected plot and False if you want the others plots
+        :return:
+        """
         res, msg = self.check_and_fix_connection()
         if not res:
             return (res, msg)
 
-        where_id = ""
-        if mode != 'all':
-            where_id = "WHERE l.{} {} {}".format(self.names.T_ID_F,
-                                                   '=' if mode == 'only_id' else '!=',
-                                                   plot_id)
+        if mode:
+            where_id = "WHERE l.{T_ID_F} = {plot_id}".format(T_ID_F=self.names.T_ID_F, plot_id=plot_id)
+        else:
+            scale_zoom = 200 if overview else 100
+            where_id = """
+                        WHERE l.{LC_PLOT_T_GEOMETRY_F} &&
+                        (SELECT ST_Expand(ST_Envelope({LC_PLOT_T}.{LC_PLOT_T_GEOMETRY_F}), {scale_zoom})
+                        FROM {schema}.{LC_PLOT_T} WHERE t_id = {plot_id}) AND l.{T_ID_F} != {plot_id}
+                       """.format(LC_PLOT_T_GEOMETRY_F=self.names.LC_PLOT_T_GEOMETRY_F,
+                                  LC_PLOT_T=self.names.LC_PLOT_T,
+                                  T_ID_F=self.names.T_ID_F,
+                                  plot_id=plot_id,
+                                  scale_zoom=scale_zoom,
+                                  schema=self.schema)
 
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
         query = annex17_plot_data_query.get_annex17_plot_data_query(self.names, self.schema, where_id)
         cur.execute(query)
 
-        if mode == 'only_id':
-            return cur.fetchone()[0]
+        if mode:
+            return True, cur.fetchone()[0]
         else:
-            return cur.fetchall()[0][0]
+            return True, cur.fetchall()[0][0]
 
-    def get_annex17_building_data(self):
+    def get_annex17_building_data(self, plot_id):
         res, msg = self.check_and_fix_connection()
         if not res:
             return (res, msg)
 
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        query = annex17_building_data_query.get_annex17_building_data_query(self.names, self.schema)
+        query = annex17_building_data_query.get_annex17_building_data_query(self.names, self.schema, plot_id)
         cur.execute(query)
 
-        return cur.fetchall()[0][0]
+        return True, cur.fetchall()[0][0]
 
     def get_annex17_point_data(self, plot_id):
         res, msg = self.check_and_fix_connection()
@@ -274,39 +288,80 @@ class PGConnector(ClientServerDB):
         query = annex17_point_data_query.get_annex17_point_data_query(self.names, self.schema, plot_id)
         cur.execute(query)
 
-        return cur.fetchone()[0]
+        return True, cur.fetchone()[0]
 
-    def get_ant_map_plot_data(self, plot_id, mode='only_id'):
+    def get_ant_map_plot_data(self, plot_id, mode, overview):
         res, msg = self.check_and_fix_connection()
         if not res:
             return (res, msg)
 
-        where_id = "WHERE {LC_PLOT_T}.{T_ID_F} {operation} {plot_id}".format(LC_PLOT_T=self.names.LC_PLOT_T,
-                                                                             T_ID_F=self.names.T_ID_F,
-                                                                             operation='=' if mode == 'only_id' else '!=',
-                                                                             plot_id=plot_id)
+        if mode:
+            where_id = "WHERE {LC_PLOT_T}.{T_ID_F} = {plot_id}".format(LC_PLOT_T=self.names.LC_PLOT_T,
+                                                                       T_ID_F=self.names.T_ID_F,
+                                                                       plot_id=plot_id)
+        else:
+            scale_zoom = 200 if overview else 100
+            where_id = """
+                        WHERE {LC_PLOT_T}.{LC_PLOT_T_GEOMETRY_F} &&
+                        (SELECT ST_Expand(ST_Envelope({LC_PLOT_T}.{LC_PLOT_T_GEOMETRY_F}), {scale_zoom})
+                        FROM {schema}.{LC_PLOT_T} WHERE t_id = {plot_id}) AND {LC_PLOT_T}.{T_ID_F} != {plot_id} 
+                       """.format(LC_PLOT_T_GEOMETRY_F=self.names.LC_PLOT_T_GEOMETRY_F,
+                                  LC_PLOT_T=self.names.LC_PLOT_T,
+                                  T_ID_F=self.names.T_ID_F,
+                                  plot_id=plot_id,
+                                  scale_zoom=scale_zoom,
+                                  schema=self.schema)
 
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-
         query = ant_map_plot_query.get_ant_map_query(self.names, self.schema, where_id)
         cur.execute(query)
 
-        if mode == 'only_id':
-            return cur.fetchone()[0]
+        if mode:
+            return True, cur.fetchone()[0]
         else:
-            return cur.fetchall()[0][0]
+            return True, cur.fetchall()[0][0]
 
-    def get_ant_map_neighbouring_change_data(self, plot_id):
+    def get_ant_map_road_nomenclature(self, plot_id, overview):
         res, msg = self.check_and_fix_connection()
         if not res:
-            return (res, msg)
+            return res, msg
+
+        if not self.cadastral_cartography_model_exists():
+            return False, 'Cadastral cartography model it is not implemented'
 
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-
-        query = ant_map_neighbouring_change_query.get_ant_map_neighbouring_change_query(self.names, self.schema, plot_id)
+        query = ant_map_plot_query.get_road_nomenclature(self.names, self.schema, plot_id, overview)
         cur.execute(query)
 
-        return cur.fetchone()[0]
+        return True, cur.fetchone()[0]
+
+    def get_ant_map_urban_limit(self, plot_id, overview):
+        res, msg = self.check_and_fix_connection()
+        if not res:
+            return res, msg
+
+        if not self.cadastral_cartography_model_exists():
+            return False, 'Cadastral cartography model it is not implemented'
+
+        cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        query = ant_map_plot_query.get_urban_limit(self.names, self.schema, plot_id, overview)
+        cur.execute(query)
+
+        return True, cur.fetchone()[0]
+
+    def get_ant_map_municipality_boundary(self, plot_id, overview):
+        res, msg = self.check_and_fix_connection()
+        if not res:
+            return res, msg
+
+        if not self.cadastral_cartography_model_exists():
+            return False, 'Cadastral cartography model it is not implemented'
+
+        cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        query = ant_map_plot_query.get_municipality_boundary(self.names, self.schema, plot_id, overview)
+        cur.execute(query)
+
+        return True, cur.fetchone()[0]
 
     def execute_sql_query(self, query):
         """
