@@ -100,48 +100,51 @@ class MissingCobolSuppliesDialog(MissingSuppliesBaseDialog):
                     res_gdb, msg_gdb = self.load_gdb_files(required_layers)
                     if res_gdb:
                         self._running_tool = True
-                        self.run_model_missing_cobol_supplies()
+                        res_etl, msg_etl = self.run_model_missing_cobol_supplies()
                         self.progress_base = 100  # We start counting a second step from 100
 
-                        # Since we have two steps, we need to check at this point if the user already canceled
-                        if not self.custom_feedback.isCanceled():
-                            self.logger.clear_status()
-                            res_gpkg, msg_gpkg = self.package_results(self.output_etl_missing_cobol)
-                            if res_gpkg:
-                                self.generate_excel_report()
-                                if not self.custom_feedback.isCanceled():
-                                    self.progress.setValue(self.progress_maximum)
-                                    self.buttonBox.clear()
-                                    self.buttonBox.setEnabled(True)
-                                    self.buttonBox.addButton(QDialogButtonBox.Close)
+                        if res_etl:
+                            # Since we have two steps, we need to check at this point if the user already canceled
+                            if not self.custom_feedback.isCanceled():
+                                self.logger.clear_status()
+                                res_gpkg, msg_gpkg = self.package_results(self.output_etl_missing_cobol)
+                                if res_gpkg:
+                                    self.generate_excel_report()
+                                    if not self.custom_feedback.isCanceled():
+                                        self.progress.setValue(self.progress_maximum)
+                                        self.buttonBox.clear()
+                                        self.buttonBox.setEnabled(True)
+                                        self.buttonBox.addButton(QDialogButtonBox.Close)
 
-                                    msg = QCoreApplication.translate("Asistente-LADM-COL",
-                                        "Missing supplies report successfully generated in folder <a href='file:///{normalized_path1}'>{path1}</a>! The output Geopackage database can be found in <a href='file:///{normalized_path2}'>{path2}</a>").format(
-                                        normalized_path1=normalize_local_url(self.xlsx_path),
-                                        path1=self.xlsx_path,
-                                        normalized_path2=normalize_local_url(self.gpkg_path),
-                                        path2=self.gpkg_path)
-                                    self.logger.clear_status()
-                                    self.logger.success_msg(__name__, msg)
-                                else:
-                                    self.initialize_feedback()  # Get ready for an eventual new execution
-                                    self.progress_base = 0
-                                    self.logger.clear_status()
+                                        msg = QCoreApplication.translate("Asistente-LADM-COL",
+                                            "Missing supplies report successfully generated in folder <a href='file:///{normalized_path1}'>{path1}</a>! The output Geopackage database can be found in <a href='file:///{normalized_path2}'>{path2}</a>").format(
+                                            normalized_path1=normalize_local_url(self.xlsx_path),
+                                            path1=self.xlsx_path,
+                                            normalized_path2=normalize_local_url(self.gpkg_path),
+                                            path2=self.gpkg_path)
+                                        self.logger.clear_status()
+                                        self.logger.success_msg(__name__, msg)
+                                    else:
+                                        self.initialize_feedback()  # Get ready for an eventual new execution
+                                        self.progress_base = 0
+                                        self.logger.clear_status()
 
-                                self._running_tool = False
-                            else:
-                                # User could have canceled while running the second algorithm
-                                if self.custom_feedback.isCanceled():
-                                    self.initialize_feedback()  # Get ready for an eventual new execution
-                                    self.progress_base = 0
                                     self._running_tool = False
                                 else:
-                                    self.show_message(msg_gpkg, Qgis.Warning)
-                        else:  # User canceled in the first algorithm
-                            self.initialize_feedback()
-                            self.progress_base = 0
-                            self._running_tool = False
-                            self.logger.clear_status()
+                                    # User could have canceled while running the second algorithm
+                                    if self.custom_feedback.isCanceled():
+                                        self.initialize_feedback()  # Get ready for an eventual new execution
+                                        self.progress_base = 0
+                                        self._running_tool = False
+                                    else:
+                                        self.show_message(msg_gpkg, Qgis.Warning)
+                            else:  # User canceled in the first algorithm
+                                self.initialize_feedback()
+                                self.progress_base = 0
+                                self._running_tool = False
+                                self.logger.clear_status()
+                        else:
+                            self.show_message(msg_etl, Qgis.Warning)
                     else:
                         self.show_message(msg_gdb, Qgis.Warning)
                 else:
@@ -222,19 +225,21 @@ class MissingCobolSuppliesDialog(MissingSuppliesBaseDialog):
                 msg = "QgsProcessingException (Missing cobol supplies): {}".format(str(e))
                 self.logger.critical(__name__, msg)
                 self.show_message(msg, Qgis.Critical)
+                return False, QCoreApplication.translate("MissingCobolSuppliesDialog", "Errors in the 'ETL Omissions-Commissions' model. See QGIS log for details.")
 
         self.logger.info(__name__, "Missing Cobol Supplies model finished.")
+        return True, ''
 
-    def package_results(self, output):  
+    def package_results(self, output):
         for name in output.keys():
             if isinstance(output[name], QgsVectorLayer):
                 output[name].setName(name.split(':')[2])
 
         try:
             output_geopackage = processing.run("native:package", {'LAYERS': list(output.values()),
-                    'OUTPUT': self.gpkg_path,
-                    'OVERWRITE': True,
-                    'SAVE_STYLES': True},
+                                                                  'OUTPUT': self.gpkg_path,
+                                                                  'OVERWRITE': True,
+                                                                  'SAVE_STYLES': True},
                                                feedback=self.custom_feedback)
         except QgsProcessingException as e:
             if self.custom_feedback.isCanceled():
@@ -243,7 +248,7 @@ class MissingCobolSuppliesDialog(MissingSuppliesBaseDialog):
             else:
                 msg = "QgsProcessingException (Package layers): {}".format(str(e))
                 self.logger.critical(__name__, msg)
-                self.show_message(msg, Qgis.Critical)
+                return False, QCoreApplication.translate("MissingCobolSuppliesDialog", "Errors in the 'Package layers' algorithm. See QGIS log for details.")
 
         root = QgsProject.instance().layerTreeRoot()
         results_group = root.addGroup(QCoreApplication.translate("MissingCobolSuppliesDialog", "Results missing supplies"))
