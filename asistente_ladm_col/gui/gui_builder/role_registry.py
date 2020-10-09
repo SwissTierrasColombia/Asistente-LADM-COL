@@ -170,3 +170,10 @@ class RoleRegistry(QObject, metaclass=SingletonQObject):
             role_key = self._default_role
 
         return self._registered_roles[role_key][ROLE_QUALITY_RULES]
+
+    def get_role_db_source(self, role_key):
+        if role_key not in self._registered_roles:
+            self.logger.error(__name__, "Role '{}' was not found, returning default role's db source.".format(role_key))
+            role_key = self._default_role
+
+        return self._registered_roles[role_key][ROLE_DB_SOURCE] if ROLE_DB_SOURCE in self._registered_roles[role_key] else None
