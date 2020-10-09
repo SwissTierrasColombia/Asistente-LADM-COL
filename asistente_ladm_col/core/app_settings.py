@@ -30,7 +30,7 @@ class AppSettings:
     """
     ACTIVE_ROLE_KEY = "Asistente-LADM-COL/roles/active_role_key_{}".format(PLUGIN_VERSION)
     COBOL_FILES_DIR_KEY = "Asistente-LADM-COL/etl_cobol/files_path"
-    ETL_SPLITTER_COLLAPSED_KEY = "Asistente-LADM-COL/etl_supplies/splitter_collapsed"
+    ETL_SPLITTER_COLLAPSED_KEY = "Asistente-LADM-COL/supplies/etl_splitter_collapsed"
     EXPORT_DIR_FIELD_DATA_KEY = "Asistente-LADM-COL/field_data_capture/export_dir"
     SNC_FILES_DIR_KEY = "Asistente-LADM-COL/etl_snc/files_path"
     TOLERANCE_KEY = "Asistente-LADM-COL/quality/tolerance"

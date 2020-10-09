@@ -286,6 +286,8 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
             if self._db_was_changed:
                 self.conn_manager.db_connection_changed.emit(self._db, self._db.test_connection()[0], self.db_source)
             self.logger.info(__name__, "Dialog closed.")
+            self.app.settings.set_setting(self.app.settings.COBOL_FILES_DIR_KEY, '')
+            self.app.settings.set_setting(self.app.settings.SNC_FILES_DIR_KEY, '')
             self.done(1)
 
     def finished_slot(self, result):
