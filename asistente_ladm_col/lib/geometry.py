@@ -319,14 +319,15 @@ class GeometryUtils(QObject):
         listGeoms = list()
         intersection = feature_polygon.geometry().intersection(feature_overlap.geometry())
 
-        if intersection.type() == QgsWkbTypes.PolygonGeometry:
-            listGeoms.append(intersection)
-        elif intersection.wkbType() in [QgsWkbTypes.GeometryCollection,
-            QgsWkbTypes.GeometryCollectionM, QgsWkbTypes.GeometryCollectionZ,
-            QgsWkbTypes.GeometryCollectionZM]:
-            for part in intersection.asGeometryCollection():
-                if part.type() == QgsWkbTypes.PolygonGeometry:
-                    listGeoms.append(part)
+        if not intersection.isEmpty():
+            if intersection.type() == QgsWkbTypes.PolygonGeometry:
+                listGeoms.append(intersection)
+            elif intersection.wkbType() in [QgsWkbTypes.GeometryCollection,
+                QgsWkbTypes.GeometryCollectionM, QgsWkbTypes.GeometryCollectionZ,
+                QgsWkbTypes.GeometryCollectionZM]:
+                for part in intersection.asGeometryCollection():
+                    if part.type() == QgsWkbTypes.PolygonGeometry:
+                        listGeoms.append(part)
 
         return QgsGeometry.collectGeometry(listGeoms) if len(listGeoms) > 0 else None
 
@@ -352,16 +353,17 @@ class GeometryUtils(QObject):
                 if feature.geometry().intersects(candidate_feature_geo) and not feature.geometry().touches(candidate_feature_geo):
                     intersection = feature.geometry().intersection(candidate_feature_geo)
 
-                    if intersection.type() == QgsWkbTypes.PolygonGeometry:
-                        ids.append([feature.id(), candidate_feature.id()])
-                        list_overlapping.append(intersection)
-                    elif intersection.wkbType() in [QgsWkbTypes.GeometryCollection,
-                                                    QgsWkbTypes.GeometryCollectionM, QgsWkbTypes.GeometryCollectionZ,
-                                                    QgsWkbTypes.GeometryCollectionZM]:
-                        for part in intersection.asGeometryCollection():
-                            if part.type() == QgsWkbTypes.PolygonGeometry:
-                                ids.append([feature.id(), candidate_feature.id()])
-                                list_overlapping.append(part)
+                    if not intersection.isEmpty():
+                        if intersection.type() == QgsWkbTypes.PolygonGeometry:
+                            ids.append([feature.id(), candidate_feature.id()])
+                            list_overlapping.append(intersection)
+                        elif intersection.wkbType() in [QgsWkbTypes.GeometryCollection,
+                                                        QgsWkbTypes.GeometryCollectionM, QgsWkbTypes.GeometryCollectionZ,
+                                                        QgsWkbTypes.GeometryCollectionZM]:
+                            for part in intersection.asGeometryCollection():
+                                if part.type() == QgsWkbTypes.PolygonGeometry:
+                                    ids.append([feature.id(), candidate_feature.id()])
+                                    list_overlapping.append(part)
         # free up memory
         del candidate_features
         del dict_features
