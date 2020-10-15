@@ -554,25 +554,26 @@ class LineQualityRules:
                 plot_geom = dict_plot_as_lines[plot_id].geometry()
                 intersection = boundary_geom.intersection(plot_geom)
 
-                if intersection.type() != QgsWkbTypes.LineGeometry:
-                    if intersection.type() == QgsWkbTypes.UnknownGeometry:
-                        has_line = False
-                        for part in intersection.asGeometryCollection():
-                            if part.isMultipart():
-                                for i in range(part.numGeometries()):
-                                    if QgsWkbTypes.geometryType(
-                                            part.geometryN(i).wkbType()) == QgsWkbTypes.LineGeometry:
+                if not intersection.isEmpty():
+                    if intersection.type() != QgsWkbTypes.LineGeometry:
+                        if intersection.type() == QgsWkbTypes.UnknownGeometry:
+                            has_line = False
+                            for part in intersection.asGeometryCollection():
+                                if part.isMultipart():
+                                    for i in range(part.numGeometries()):
+                                        if QgsWkbTypes.geometryType(
+                                                part.geometryN(i).wkbType()) == QgsWkbTypes.LineGeometry:
+                                            has_line = True
+                                            break
+                                else:
+                                    if part.type() == QgsWkbTypes.LineGeometry:
                                         has_line = True
                                         break
-                            else:
-                                if part.type() == QgsWkbTypes.LineGeometry:
-                                    has_line = True
-                                    break
-                        if not has_line:
-                            # Remove point intersections plot-boundary
+                            if not has_line:
+                                # Remove point intersections plot-boundary
+                                list_spatial_join_boundary_plot.remove(item_sj)
+                        else:
                             list_spatial_join_boundary_plot.remove(item_sj)
-                    else:
-                        list_spatial_join_boundary_plot.remove(item_sj)
 
         # Check relation between plot and boundary not registered in more_bfs
         errors_not_in_more_bfs = list()
@@ -590,13 +591,14 @@ class LineQualityRules:
                 plot_geom = dict_plot_as_lines[item_sj_bp['plot_id']].geometry()
                 intersection = boundary_geom.intersection(plot_geom)
 
-                if intersection.isGeosEqual(boundary_geom):
-                    errors_not_in_more_bfs.append((item_sj_bp['plot_id'], item_sj_bp['boundary_id']))
-                else:
-                    errors_boundary_plot_diffs.append({
-                        'id': item_sj_bp['boundary_id'],
-                        'id_plot': item_sj_bp['plot_id'],
-                        'geometry': boundary_geom})
+                if not intersection.isEmpty():
+                    if intersection.isGeosEqual(boundary_geom):
+                        errors_not_in_more_bfs.append((item_sj_bp['plot_id'], item_sj_bp['boundary_id']))
+                    else:
+                        errors_boundary_plot_diffs.append({
+                            'id': item_sj_bp['boundary_id'],
+                            'id_plot': item_sj_bp['plot_id'],
+                            'geometry': boundary_geom})
 
         # finalize validation in more_bfs table
 
@@ -616,20 +618,22 @@ class LineQualityRules:
             # check intersections difference to line, we check that collections do not have lines parts
             intersection = boundary_geom.intersection(inner_ring_geom)
             has_line = False
-            if intersection.type() != QgsWkbTypes.LineGeometry:
-                if intersection.type() == QgsWkbTypes.UnknownGeometry:
-                    for part in intersection.asGeometryCollection():
-                        if part.isMultipart():
-                            for i in range(part.numGeometries()):
-                                if QgsWkbTypes.geometryType(part.geometryN(i).wkbType()) == QgsWkbTypes.LineGeometry:
+
+            if not intersection.isEmpty():
+                if intersection.type() != QgsWkbTypes.LineGeometry:
+                    if intersection.type() == QgsWkbTypes.UnknownGeometry:
+                        for part in intersection.asGeometryCollection():
+                            if part.isMultipart():
+                                for i in range(part.numGeometries()):
+                                    if QgsWkbTypes.geometryType(part.geometryN(i).wkbType()) == QgsWkbTypes.LineGeometry:
+                                        has_line = True
+                                        break
+                            else:
+                                if part.type() == QgsWkbTypes.LineGeometry:
                                     has_line = True
                                     break
-                        else:
-                            if part.type() == QgsWkbTypes.LineGeometry:
-                                has_line = True
-                                break
-            else:
-                has_line = True
+                else:
+                    has_line = True
 
             if has_line:
                 tmp_dict_plot_boundary = {'plot_id': int(plot_ring_id.split('-')[0]), 'boundary_id': boundary_id}
