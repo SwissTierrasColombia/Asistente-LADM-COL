@@ -59,7 +59,7 @@ class GeometryUtils(QObject):
         intersect_less_pairs = list()
 
         if boundary_layer.featureCount() == 0:
-            return (intersect_more_pairs, intersect_less_pairs)
+            return intersect_more_pairs, intersect_less_pairs
 
         id_field_idx = boundary_layer.fields().indexFromName(id_field)
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
@@ -116,25 +116,29 @@ class GeometryUtils(QObject):
                             for j in range(single_polygon.numInteriorRings()):
                                 multi_inner_rings.addGeometry(single_polygon.interiorRing(j).clone())
 
-                        intersection_type = QgsGeometry(multi_outer_rings).intersection(candidate_geometry).type()
-                        if intersection_type == QgsWkbTypes.LineGeometry:
-                            intersect_more_pairs.append((polygon[id_field], candidate_feature[id_field]))
-                        else:
-                            self.logger.warning(__name__,
-                                "(MoreBFS) Intersection between plot (t_id={}) and boundary (t_id={}) is a geometry of type: {}".format(
-                                    polygon[id_field],
-                                    candidate_feature[id_field],
-                                    intersection_type))
+                        outer_intersection = QgsGeometry(multi_outer_rings).intersection(candidate_geometry)
+                        if not outer_intersection.isEmpty():
+                            intersection_type = outer_intersection.type()
+                            if intersection_type == QgsWkbTypes.LineGeometry:
+                                intersect_more_pairs.append((polygon[id_field], candidate_feature[id_field]))
+                            else:
+                                self.logger.warning(__name__,
+                                    "(MoreBFS) Intersection between plot (t_id={}) and boundary (t_id={}) is a geometry of type: {}".format(
+                                        polygon[id_field],
+                                        candidate_feature[id_field],
+                                        intersection_type))
 
-                        intersection_type = QgsGeometry(multi_inner_rings).intersection(candidate_geometry).type()
-                        if intersection_type == QgsWkbTypes.LineGeometry:
-                            intersect_less_pairs.append((polygon[id_field], candidate_feature[id_field]))
-                        else:
-                            self.logger.warning(__name__,
-                                "(Less) Intersection between plot (t_id={}) and boundary (t_id={}) is a geometry of type: {}".format(
-                                    polygon[id_field],
-                                    candidate_feature[id_field],
-                                    intersection_type))
+                        inner_intersection = QgsGeometry(multi_inner_rings).intersection(candidate_geometry)
+                        if not inner_intersection.isEmpty():
+                            intersection_type = inner_intersection.type()
+                            if intersection_type == QgsWkbTypes.LineGeometry:
+                                intersect_less_pairs.append((polygon[id_field], candidate_feature[id_field]))
+                            else:
+                                self.logger.warning(__name__,
+                                    "(Less) Intersection between plot (t_id={}) and boundary (t_id={}) is a geometry of type: {}".format(
+                                        polygon[id_field],
+                                        candidate_feature[id_field],
+                                        intersection_type))
 
                     else:
                         boundary = None
@@ -143,20 +147,22 @@ class GeometryUtils(QObject):
                         elif not is_multipart and single_polygon:
                             boundary = single_polygon.boundary()
 
-                        intersection_type = QgsGeometry(boundary).intersection(candidate_geometry).type()
-                        if boundary and intersection_type == QgsWkbTypes.LineGeometry:
-                            intersect_more_pairs.append((polygon[id_field], candidate_feature[id_field]))
-                        else:
-                            self.logger.warning(__name__,
-                                "(MoreBFS) Intersection between plot (t_id={}) and boundary (t_id={}) is a geometry of type: {}".format(
-                                    polygon[id_field],
-                                    candidate_feature[id_field],
-                                    intersection_type))
+                        simple_intersection = QgsGeometry(boundary).intersection(candidate_geometry)
+                        if not simple_intersection.isEmpty():
+                            intersection_type = simple_intersection.type()
+                            if boundary and intersection_type == QgsWkbTypes.LineGeometry:
+                                intersect_more_pairs.append((polygon[id_field], candidate_feature[id_field]))
+                            else:
+                                self.logger.warning(__name__,
+                                    "(MoreBFS) Intersection between plot (t_id={}) and boundary (t_id={}) is a geometry of type: {}".format(
+                                        polygon[id_field],
+                                        candidate_feature[id_field],
+                                        intersection_type))
         # free up memory
         del candidate_features
         del dict_features
         gc.collect()
-        return (intersect_more_pairs, intersect_less_pairs)
+        return intersect_more_pairs, intersect_less_pairs
 
     def get_pair_boundary_boundary_point(self, boundary_layer, boundary_point_layer, id_field, use_selection=True, tolerance=0):
         id_field_idx = boundary_layer.fields().indexFromName(id_field)
@@ -313,14 +319,15 @@ class GeometryUtils(QObject):
         listGeoms = list()
         intersection = feature_polygon.geometry().intersection(feature_overlap.geometry())
 
-        if intersection.type() == QgsWkbTypes.PolygonGeometry:
-            listGeoms.append(intersection)
-        elif intersection.wkbType() in [QgsWkbTypes.GeometryCollection,
-            QgsWkbTypes.GeometryCollectionM, QgsWkbTypes.GeometryCollectionZ,
-            QgsWkbTypes.GeometryCollectionZM]:
-            for part in intersection.asGeometryCollection():
-                if part.type() == QgsWkbTypes.PolygonGeometry:
-                    listGeoms.append(part)
+        if not intersection.isEmpty():
+            if intersection.type() == QgsWkbTypes.PolygonGeometry:
+                listGeoms.append(intersection)
+            elif intersection.wkbType() in [QgsWkbTypes.GeometryCollection,
+                QgsWkbTypes.GeometryCollectionM, QgsWkbTypes.GeometryCollectionZ,
+                QgsWkbTypes.GeometryCollectionZM]:
+                for part in intersection.asGeometryCollection():
+                    if part.type() == QgsWkbTypes.PolygonGeometry:
+                        listGeoms.append(part)
 
         return QgsGeometry.collectGeometry(listGeoms) if len(listGeoms) > 0 else None
 
@@ -346,16 +353,17 @@ class GeometryUtils(QObject):
                 if feature.geometry().intersects(candidate_feature_geo) and not feature.geometry().touches(candidate_feature_geo):
                     intersection = feature.geometry().intersection(candidate_feature_geo)
 
-                    if intersection.type() == QgsWkbTypes.PolygonGeometry:
-                        ids.append([feature.id(), candidate_feature.id()])
-                        list_overlapping.append(intersection)
-                    elif intersection.wkbType() in [QgsWkbTypes.GeometryCollection,
-                                                    QgsWkbTypes.GeometryCollectionM, QgsWkbTypes.GeometryCollectionZ,
-                                                    QgsWkbTypes.GeometryCollectionZM]:
-                        for part in intersection.asGeometryCollection():
-                            if part.type() == QgsWkbTypes.PolygonGeometry:
-                                ids.append([feature.id(), candidate_feature.id()])
-                                list_overlapping.append(part)
+                    if not intersection.isEmpty():
+                        if intersection.type() == QgsWkbTypes.PolygonGeometry:
+                            ids.append([feature.id(), candidate_feature.id()])
+                            list_overlapping.append(intersection)
+                        elif intersection.wkbType() in [QgsWkbTypes.GeometryCollection,
+                                                        QgsWkbTypes.GeometryCollectionM, QgsWkbTypes.GeometryCollectionZ,
+                                                        QgsWkbTypes.GeometryCollectionZM]:
+                            for part in intersection.asGeometryCollection():
+                                if part.type() == QgsWkbTypes.PolygonGeometry:
+                                    ids.append([feature.id(), candidate_feature.id()])
+                                    list_overlapping.append(part)
         # free up memory
         del candidate_features
         del dict_features

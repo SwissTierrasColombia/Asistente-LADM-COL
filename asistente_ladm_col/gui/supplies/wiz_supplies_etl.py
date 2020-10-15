@@ -286,6 +286,8 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
             if self._db_was_changed:
                 self.conn_manager.db_connection_changed.emit(self._db, self._db.test_connection()[0], self.db_source)
             self.logger.info(__name__, "Dialog closed.")
+            self.app.settings.set_setting(self.app.settings.COBOL_FILES_DIR_KEY, '')
+            self.app.settings.set_setting(self.app.settings.SNC_FILES_DIR_KEY, '')
             self.done(1)
 
     def finished_slot(self, result):
@@ -320,6 +322,9 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
         settings.setValue('Asistente-LADM-COL/supplies/etl_source', etl_source)
         self._data_source_widget.save_settings()
 
+        # In the main page (source-target configuration), save if splitter is closed
+        self.app.settings.etl_splitter_collapsed = self.splitter_2.sizes()[1] == 0
+
     def restore_settings(self):
         settings = QSettings()
         etl_source = settings.value('Asistente-LADM-COL/supplies/etl_source') or 'snc'
@@ -327,6 +332,11 @@ class SuppliesETLWizard(QWizard, WIZARD_UI):
             self.rad_snc_data.setChecked(True)
         elif etl_source == 'cobol':
             self.rad_cobol_data.setChecked(True)
+
+        # If splitter in the main page was closed before, set it as closed again
+        if self.app.settings.etl_splitter_collapsed:
+            sizes = self.splitter_2.sizes()
+            self.splitter_2.setSizes([sizes[0], 0])
 
     def show_help(self):
         show_plugin_help('supplies')

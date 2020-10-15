@@ -1,4 +1,5 @@
 import time
+from copy import deepcopy
 from functools import (wraps,
                        partial)
 
@@ -11,7 +12,8 @@ from qgis.utils import (isPluginLoaded,
                         loadPlugin,
                         startPlugin)
 
-from asistente_ladm_col.lib.context import SettingsContext
+from asistente_ladm_col.lib.context import (SettingsContext,
+                                            TaskContext)
 from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qt_utils import OverrideCursor
@@ -479,6 +481,38 @@ def _validate_if_layers_in_editing_mode_with_changes(func_to_decorate):
                               Qgis.Info)
         else:
             func_to_decorate(*args, **kwargs)
+
+    return decorated_function
+
+
+def _update_context_to_current_role(func_to_decorate):
+    """
+    Requires list of sources. Example: [COLLECTED_DB_SOURCE, SUPPLIES_DB_SOURCE].
+
+    We suggest you to call this decorator at an early stage (the farther you can from the function signature), so that
+    other decorators can use the updated context for their own validations.
+    """
+
+    @wraps(func_to_decorate)
+    def decorated_function(*args, **kwargs):
+        inst = args[0]
+        context = args[1]
+
+        # TaskContext has prevalence, it is the more specific functionality
+        # we have in this plugin, so we don't update its context
+        if not isinstance(context, TaskContext):
+            role_key = inst.role_registry.get_active_role()
+            role_db_source = inst.role_registry.get_role_db_source(role_key)
+            if role_db_source:
+                inst.logger.debug(__name__, "Updating context for role '{}' to '{}'.".format(role_key, role_db_source))
+                # Now, create a copy of context, update the copy and assign it as new parameter (hint: args is a tuple)
+                new_context = deepcopy(context)
+                new_context.set_db_sources([role_db_source])
+                largs = list(args)
+                largs[1] = new_context
+                args = tuple(largs)
+
+        func_to_decorate(*args, **kwargs)
 
     return decorated_function
 

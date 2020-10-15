@@ -182,6 +182,7 @@ PLUGIN_DOWNLOAD_URL_IN_QGIS_REPO = "https://plugins.qgis.org/plugins/asistente_l
 RELEASE_URL = "https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/"
 
 # Endpoint for testing the Source Service (avoid last slash)
+DEFAULT_USE_SOURCE_SERVICE_SETTING = False
 DEFAULT_ENDPOINT_SOURCE_SERVICE = 'http://portal.proadmintierra.info:18888/filemanager'
 SOURCE_SERVICE_UPLOAD_SUFFIX = 'v1/file'
 SOURCE_SERVICE_EXPECTED_ID = 'IDEATFileManager'

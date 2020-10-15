@@ -1,9 +1,9 @@
 from qgis.PyQt.QtCore import *
 
-from asistente_ladm_col.config.general_config import FDC_DATASET_NAME
+from asistente_ladm_col.config.general_config import (FDC_DATASET_NAME,
+                                                      SUPPLIES_DB_SOURCE)
 from asistente_ladm_col.config.gui.common_keys import *
 from asistente_ladm_col.config.gui.gui_config import GUI_Config
-from asistente_ladm_col.config.ili2db_names import ILI2DBNames
 from asistente_ladm_col.config.keys.ili2db_keys import *
 from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
 
@@ -307,6 +307,7 @@ def get_role_config():
             ROLE_DESCRIPTION: QCoreApplication.translate("AsistenteLADMCOLPlugin",
                                                          "The <b>Supplies Provider</b> role generates a XTF file with supplies data for the operators."),
             ROLE_ENABLED: True,
+            ROLE_DB_SOURCE: SUPPLIES_DB_SOURCE,
             ROLE_MODELS: {
                 ROLE_SUPPORTED_MODELS: [LADMNames.LADM_COL_MODEL_KEY,
                                         LADMNames.SUPPLIES_MODEL_KEY,

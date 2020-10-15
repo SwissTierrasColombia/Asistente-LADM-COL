@@ -30,6 +30,7 @@ class AppSettings:
     """
     ACTIVE_ROLE_KEY = "Asistente-LADM-COL/roles/active_role_key_{}".format(PLUGIN_VERSION)
     COBOL_FILES_DIR_KEY = "Asistente-LADM-COL/etl_cobol/files_path"
+    ETL_SPLITTER_COLLAPSED_KEY = "Asistente-LADM-COL/supplies/etl_splitter_collapsed"
     EXPORT_DIR_FIELD_DATA_KEY = "Asistente-LADM-COL/field_data_capture/export_dir"
     SNC_FILES_DIR_KEY = "Asistente-LADM-COL/etl_snc/files_path"
     TOLERANCE_KEY = "Asistente-LADM-COL/quality/tolerance"
@@ -55,15 +56,23 @@ class AppSettings:
 
     @property
     def cobol_files_path(self):
-        return self.settings.value(self.COBOL_FILES_DIR_KEY, os.path.expanduser('~'))
+        return self.settings.value(self.COBOL_FILES_DIR_KEY, '')
 
     @cobol_files_path.setter
     def cobol_files_path(self, value):
         self.settings.setValue(self.COBOL_FILES_DIR_KEY, value)
 
     @property
+    def etl_splitter_collapsed(self):
+        return self.settings.value(self.ETL_SPLITTER_COLLAPSED_KEY, False, bool)
+
+    @etl_splitter_collapsed.setter
+    def etl_splitter_collapsed(self, value):
+        self.settings.setValue(self.ETL_SPLITTER_COLLAPSED_KEY, value)
+
+    @property
     def export_dir_field_data(self):
-        self.settings.value(self.EXPORT_DIR_FIELD_DATA_KEY, os.path.expanduser('~'))
+        return self.settings.value(self.EXPORT_DIR_FIELD_DATA_KEY, os.path.expanduser('~'))
 
     @export_dir_field_data.setter
     def export_dir_field_data(self, value):
@@ -71,7 +80,7 @@ class AppSettings:
 
     @property
     def snc_files_path(self):
-        return self.settings.value(self.SNC_FILES_DIR_KEY, os.path.expanduser('~'))
+        return self.settings.value(self.SNC_FILES_DIR_KEY, '')
 
     @snc_files_path.setter
     def snc_files_path(self, value):

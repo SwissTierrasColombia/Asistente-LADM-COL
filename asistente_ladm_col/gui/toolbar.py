@@ -236,7 +236,7 @@ class ToolBar(QObject):
         tolerance = self.app.settings.tolerance
         if tolerance:
             # We need to adjust input layers to take tolerance into account
-            # Use the same configuration we use in quality rule 3004 (Plots should be covereed by boundaries).
+            # Use the same configuration we use in quality rule 3004 (Plots should be covered by boundaries).
             layers[db.names.LC_PLOT_T] = self.app.core.adjust_layer(layers[db.names.LC_PLOT_T],
                                                                     layers[db.names.LC_PLOT_T],
                                                                     tolerance,

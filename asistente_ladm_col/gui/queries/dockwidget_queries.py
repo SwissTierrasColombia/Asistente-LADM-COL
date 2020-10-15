@@ -300,8 +300,8 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         """
         Configure result tree views
 
-        :param tree_view:
-        :return:
+        :param tree_view: Tree view to be updated
+        :param records: List of dicts. A dict per plot: {id: 21, attributes: {...}}
         """
         tree_view.setModel(TreeModel(self.names, data=records))
         self._collapse_tree_view_items(tree_view)

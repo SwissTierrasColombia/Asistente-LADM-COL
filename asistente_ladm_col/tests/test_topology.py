@@ -18,9 +18,7 @@ import_qgis_model_baker()
 class TestTopology(unittest.TestCase):
 
     def test_pair_boundary_plot(self):
-        print('\nValidating boundaries plots')
-        # extracted with: iface.activeLayer().dataProvider().dataSourceUri() in qgis console
-        # and type is: layer.providerType()
+        print('\nValidating pairs boundary-plot')
         gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
         self.db_gpkg = get_gpkg_conn('tests_data_gpkg')
         self.names = self.db_gpkg.names

@@ -41,7 +41,8 @@ from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qt_utils import OverrideCursor
 from asistente_ladm_col.config.general_config import (DEFAULT_ENDPOINT_SOURCE_SERVICE,
-                                                      SOURCE_SERVICE_UPLOAD_SUFFIX)
+                                                      SOURCE_SERVICE_UPLOAD_SUFFIX,
+                                                      DEFAULT_USE_SOURCE_SERVICE_SETTING)
 from asistente_ladm_col.gui.dialogs.dlg_upload_progress import UploadProgressDialog
 
 
@@ -62,7 +63,7 @@ class SourceHandler(QObject):
         formatted as changeAttributeValues expects to update 'datos' attribute
         to a remote location.
         """
-        if not QSettings().value('Asistente-LADM-COL/sources/document_repository', False, bool):
+        if not QSettings().value('Asistente-LADM-COL/sources/use_service', DEFAULT_USE_SOURCE_SERVICE_SETTING, bool):
             self.logger.info_msg(__name__, QCoreApplication.translate("SourceHandler",
                    "The source files were not uploaded to the document repository because you have that option unchecked. You can still upload the source files later using the 'Upload Pending Source Files' menu."), 10)
             return dict()

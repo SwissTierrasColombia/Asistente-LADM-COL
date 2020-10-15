@@ -149,7 +149,8 @@ from asistente_ladm_col.utils.decorators import (_db_connection_required,
                                                  _valuation_model_required,
                                                  _survey_model_required,
                                                  _field_data_capture_model_required,
-                                                 _qfield_sync_required)
+                                                 _qfield_sync_required,
+                                                 _update_context_to_current_role)
 from asistente_ladm_col.utils.utils import show_plugin_help
 from asistente_ladm_col.utils.qt_utils import (ProcessWithStatus, 
                                                normalize_local_url)
@@ -217,6 +218,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._context_collected_supplies.set_db_sources([COLLECTED_DB_SOURCE, SUPPLIES_DB_SOURCE])
         self._context_settings = SettingsContext()
         self._context_settings.blocking_mode = False  # Settings dialog should not block if called from the action
+        # Note: Do not change the contexts that we just set, if you need a different context, just create your own
 
         self.ladm_col_provider = LADMCOLAlgorithmProvider()
         self.__processing_resources_installed = list()
@@ -1140,6 +1142,7 @@ class AsistenteLADMCOLPlugin(QObject):
     def get_db_connection(self, db_source=COLLECTED_DB_SOURCE):
         return self.conn_manager.get_db_connector_from_source(db_source)
 
+    @_update_context_to_current_role
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     def show_dlg_import_schema(self, *args, **kwargs):
@@ -1183,6 +1186,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.logger.info(__name__, "Import Schema dialog ({}) opened.".format(context.get_db_sources()[0]))
         dlg.exec_()
 
+    @_update_context_to_current_role
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     def show_dlg_import_data(self, *args):
@@ -1202,6 +1206,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.logger.info(__name__, "Import data dialog ({}) opened.".format(context.get_db_sources()[0]))
         dlg.exec_()
 
+    @_update_context_to_current_role
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     def show_dlg_export_data(self, *args):

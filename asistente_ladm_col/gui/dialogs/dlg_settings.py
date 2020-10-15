@@ -31,6 +31,7 @@ from qgis.gui import QgsMessageBar
 from asistente_ladm_col.config.config_db_supported import ConfigDBsSupported
 from asistente_ladm_col.config.enums import EnumDbActionType
 from asistente_ladm_col.config.general_config import (DEFAULT_ENDPOINT_SOURCE_SERVICE,
+                                                      DEFAULT_USE_SOURCE_SERVICE_SETTING,
                                                       DEFAULT_USE_CUSTOM_MODELS,
                                                       DEFAULT_MODELS_DIR,
                                                       DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE,
@@ -70,6 +71,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.app = AppInterface()
 
         self.sbx_tolerance.setMaximum(TOLERANCE_MAX_VALUE)
+        self._valid_document_repository = False  # Needs to be True if users want to enable doc repo (using test button)
 
         context = context if context else SettingsContext()
 
@@ -102,6 +104,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         self.btn_test_service.clicked.connect(self.test_service)
         self.btn_test_service_transitional_system.clicked.connect(self.test_service_transitional_system)
+        self.txt_service_endpoint.textEdited.connect(self.source_service_endpoint_changed)  # For manual changes only
 
         self.btn_default_value_sources.clicked.connect(self.set_default_value_source_service)
         self.btn_default_value_transitional_system.clicked.connect(self.set_default_value_transitional_system_service)
@@ -227,10 +230,18 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
     def accepted(self):
         """
-        First check if connection to DB/schema is valid, if not, block the dialog.
+        We start checking the document repository configuration and only allow to continue if we have a valid repo or
+        if the repo won't be used.
+
+        Then, check if connection to DB/schema is valid, if not, block the dialog.
         If valid, check it complies with LADM. If not, block the dialog. If it complies, we have two options: To emit
         db_connection changed or not. Finally, we store options in QSettings.
         """
+        res_doc_repo, msg_doc_repo = self.check_document_repository_before_saving_settings()
+        if not res_doc_repo:
+            self.show_message(msg_doc_repo, Qgis.Warning, 0)
+            return  # Do not close the dialog
+
         ladm_col_schema = False
 
         db = self._get_db_connector_from_gui()
@@ -292,6 +303,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
                 self._open_dlg_import_schema = True  # We will open it when we've closed this Settings dialog
 
         # If active role is changed (a check and confirmation may be needed), refresh the GUI
+        # Note: Better to leave this check as the last one in the accepted() method.
         selected_role = self.get_selected_role()
         if self.roles.get_active_role() != selected_role:
             b_change_role = True
@@ -321,6 +333,30 @@ class SettingsDialog(QDialog, DIALOG_UI):
             # After Settings dialog has been closed, we could call Import Schema depending on user's answer above
             self.open_dlg_import_schema.emit(Context())
             self.logger.debug(__name__, "Settings dialog emitted a show Import Schema dialog.")
+
+    def check_document_repository_before_saving_settings(self):
+        # Check if source service is checked (active). If so, check if either status or endpoint changed. If so,
+        # check if self._valid_document_repository is False. If so, we need to test the service and only allow to save
+        # if such test is successful.
+        res, msg = True, ''
+        if self.connection_box.isChecked():  # The user wants to have the source service enabled
+            initial_config = QSettings().value('Asistente-LADM-COL/sources/use_service', DEFAULT_USE_SOURCE_SERVICE_SETTING, bool)
+            initial_endpoint = QSettings().value('Asistente-LADM-COL/sources/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE)
+
+            # Config changed or Endpoint changed?
+            if initial_config != self.connection_box.isChecked() or initial_endpoint.strip() != self.txt_service_endpoint.text().strip():
+                if not self._valid_document_repository:  # A test service has not been run, so we need to do it now
+                    self.logger.debug(__name__, "The user wants to enable the source service but the 'test service' has not been run on the current URL. Testing it...")
+                    res_test, msg_test = self.test_service()
+                    if not res_test:
+                        res = False
+                        msg = QCoreApplication.translate("SettingsDialog", "The source service is not valid, so it cannot be activated! Adjust such configuration before saving settings.")
+
+        return res, msg
+
+    def source_service_endpoint_changed(self, new_text):
+        # Source service endpoint was changed, so a test_service is required to make the valid variable True
+        self._valid_document_repository = False
 
     def get_selected_role(self):
         selected_role = None
@@ -359,13 +395,12 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.app.settings.tolerance = self.sbx_tolerance.value()
         settings.setValue('Asistente-LADM-COL/quality/use_roads', self.chk_use_roads.isChecked())
 
-        settings.setValue('Asistente-LADM-COL/sources/document_repository', self.connection_box.isChecked())
-
         settings.setValue('Asistente-LADM-COL/models/validate_data_importing_exporting', self.chk_validate_data_importing_exporting.isChecked())
 
         endpoint_transitional_system = self.txt_service_transitional_system.text().strip()
         settings.setValue('Asistente-LADM-COL/sources/service_transitional_system', (endpoint_transitional_system[:-1] if endpoint_transitional_system.endswith('/') else endpoint_transitional_system) or TransitionalSystemConfig().ST_DEFAULT_DOMAIN)
 
+        settings.setValue('Asistente-LADM-COL/sources/use_service', self.connection_box.isChecked())
         endpoint = self.txt_service_endpoint.text().strip()
         settings.setValue('Asistente-LADM-COL/sources/service_endpoint', (endpoint[:-1] if endpoint.endswith('/') else endpoint) or DEFAULT_ENDPOINT_SOURCE_SERVICE)
 
@@ -433,7 +468,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.update_images_state(use_roads)
 
         self.chk_automatic_values_in_batch_mode.setChecked(settings.value('Asistente-LADM-COL/automatic_values/automatic_values_in_batch_mode', DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE, bool))
-        self.connection_box.setChecked(settings.value('Asistente-LADM-COL/sources/document_repository', True, bool))
+        self.connection_box.setChecked(settings.value('Asistente-LADM-COL/sources/use_service', DEFAULT_USE_SOURCE_SERVICE_SETTING, bool))
         self.namespace_collapsible_group_box.setChecked(settings.value('Asistente-LADM-COL/automatic_values/namespace_enabled', True, bool))
         self.chk_local_id.setChecked(settings.value('Asistente-LADM-COL/automatic_values/local_id_enabled', True, bool))
         self.chk_t_ili_tid.setChecked(settings.value('Asistente-LADM-COL/automatic_values/t_ili_tid_enabled', True, bool))
@@ -488,8 +523,10 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.setEnabled(False)
         QCoreApplication.processEvents()
         res, msg = self.app.core.is_source_service_valid(self.txt_service_endpoint.text().strip())
+        self._valid_document_repository = res  # Required to be True if the user wants to enable the source service
         self.setEnabled(True)
-        self.show_message(msg['text'], msg['level'])
+        self.show_message(msg['text'], msg['level'], 0)
+        return res, msg
 
     def test_service_transitional_system(self):
         self.setEnabled(False)
