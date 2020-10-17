@@ -912,11 +912,7 @@ class LADMData(QObject):
         return {feature.id(): feature[attr_name] for feature in fdc_parcel_layer.getFeatures(request)}
 
     @staticmethod
-    def discard_parcel_allocation_for_surveyors_field_data_capture(db, parcel_ids, fdc_parcel_layer):
-        return LADMData.change_attribute_value(fdc_parcel_layer, db.names.FDC_PARCEL_T_SURVEYOR_F, NULL, parcel_ids)
-
-    @staticmethod
-    def discard_parcel_allocation_for_coordinators_field_data_capture(db, parcel_ids, fdc_parcel_layer):
+    def discard_parcel_allocation_field_data_capture(db, parcel_ids, fdc_parcel_layer):
         value, msg = LADMData.get_or_create_default_ili2db_basket(db)
         if not value:
             return False
@@ -1055,7 +1051,7 @@ class LADMData(QObject):
             return False, QCoreApplication.translate("LADMData",
                                                      "Could not write default basket id ({}) to Plot layer.").format(default_basket_id)
 
-        Logger().info(__name__, "Exporting basket to XTF for {} receivers...".format(len(receiver_ids)))
+        Logger().info(__name__, "Setting basket ids to db objects related to {} receivers...".format(len(receiver_ids)))
         for receiver_id in receiver_ids:
             # Get parcels per receiver id --> {parcel_id: parcel_t_id}
             parcel_data = LADMData.get_parcels_for_receiver_field_data_capture(names.T_ID_F,  # We want parcel t_ids
@@ -1070,15 +1066,16 @@ class LADMData(QObject):
                                                                                 fdc_plot_layer,
                                                                                 get_feature=False,  # get_fids
                                                                                 t_ids=parcel_t_ids)
-            res = LADMData.change_attribute_value(fdc_plot_layer,
-                                                  referenced_field,
-                                                  receiver_id,
-                                                  plot_ids)
-            if not res:
-                return False, QCoreApplication.translate("LADMData",
-                                                         "Could not write basket id {} to Plot layer for receiver {}.".format(
-                                                             receiver_id,
-                                                             receiver_dict[receiver_id][0]))
+            if plot_ids:
+                res = LADMData.change_attribute_value(fdc_plot_layer,
+                                                      referenced_field,
+                                                      receiver_id,
+                                                      plot_ids)
+                if not res:
+                    return False, QCoreApplication.translate("LADMData",
+                                                             "Could not write basket id {} to Plot layer for receiver {}.".format(
+                                                                 receiver_id,
+                                                                 receiver_dict[receiver_id][0]))
 
             Logger().info(__name__, "--> Basket exported for receiver {}: {} parcels, {} plots".format(receiver_id,
                                                                                                        len(parcel_t_ids),
@@ -1090,6 +1087,17 @@ class LADMData(QObject):
 
     @staticmethod
     def change_attribute_value(layer, field_name, value, fids=list(), filter=''):
+        """
+        Change attribute values for a vector layer.
+        WARNING: If you don't pass fids nor filter, this method writes the value to ALL layer features!!!
+
+        :param layer: QgsVectorLayer to modify
+        :param field_name: Name of the field to be modified
+        :param value: Value to be written in the corresponding field
+        :param fids: List of QGIS ids for features that will be modified
+        :param filter: String expression to filter features that will be modified
+        :return: Whether the update was successful or not
+        """
         idx = layer.fields().indexOf(field_name)
         attr_map = dict()
         if fids:
@@ -1106,13 +1114,25 @@ class LADMData(QObject):
             attr_map = {feature.id(): {idx: value} for feature in features}
 
         Logger().debug(__name__, "Changing '{}'.'{}' to '{}' ({} features)".format(layer.name(),
-                                                                              field_name,
-                                                                              value,
-                                                                              len(attr_map)))
+                                                                                   field_name,
+                                                                                   value,
+                                                                                   len(attr_map)))
         return layer.dataProvider().changeAttributeValues(attr_map)
 
     @staticmethod
     def get_fdc_receivers_data(names, fdc_user_layer, id_field_name, receiver_type, full_name=True, extra_attr_name=''):
+        """
+        Get receiver's filtered data
+
+        :param names: DB names object
+        :param fdc_user_layer: User QgsVectorLayer
+        :param id_field_name: Name of the field to be used as dictionary keys
+        :param receiver_type: T_id of the role type we want to filter
+        :param full_name: Whether to get the full name or just an alias for the user
+        :param extra_attr_name: Name of an extra field to append to the result
+
+        :return: Receiver's dictionary: {id: (name, extra_attribute)}
+        """
         receivers_data = dict()
         if not extra_attr_name:
             extra_attr_name = names.FDC_USER_T_DOCUMENT_ID_F
@@ -1141,24 +1161,21 @@ class LADMData(QObject):
 
     @staticmethod
     def delete_surveyor(names, receiver_id, fdc_user_layer):
-        res = LADMData.__delete_receiver(names.T_ID_F, receiver_id, fdc_user_layer)
+        res = LADMData.__delete_receiver(names.T_BASKET_F, receiver_id, fdc_user_layer)
         msg = ''
         if not res:
-            msg = QCoreApplication.translate("LADMData", "There was an error deleting the surveyor. (Hint: He/she could have associated parcels)")
+            msg = QCoreApplication.translate("LADMData", "There was an error deleting the surveyor.")
         return res, msg
 
-    def delete_coordinator(self, db, receiver_id, fdc_user_layer):
+    def delete_coordinator(self, db, receiver_id, surveyor_type, fdc_user_layer):
         # To delete a coordinator, he/she cannot have associated surveyors.
         # Once the coordinator is deleted, we attempt to delete his associated basket. If we cannot do it, we leave it
         # there, his allocated objects will be reset next time the data is exported to XTF.
         res = False
         msg = ''
 
-        surveyor_type_code = self.get_domain_code_from_value(db,
-                                                             db.names.FDC_PARTY_DOCUMENT_TYPE_D,
-                                                             LADMNames.FDC_PARTY_DOCUMENT_TYPE_D_ILICODE_F_DOC_ID_V)
         # Get dict of all users that are surveyors: {t_id_1: (name_1, t_basket_1), ...}
-        surveyors = LADMData.get_fdc_receivers_data(db.names, fdc_user_layer, db.names.T_ID_F, surveyor_type_code, extra_attr_name=db.names.T_BASKET_F)
+        surveyors = LADMData.get_fdc_receivers_data(db.names, fdc_user_layer, db.names.T_ID_F, surveyor_type, extra_attr_name=db.names.T_BASKET_F)
         coordinator_surveyors = [str(k) for k,v in surveyors.items() if v[1] == receiver_id]
 
         if not coordinator_surveyors:
@@ -1200,17 +1217,7 @@ class LADMData(QObject):
         return sorted(surveyor_parcel_count.items(), key=lambda x:locale.strxfrm(x[0]))
 
     @staticmethod
-    def get_count_of_not_allocated_parcels_to_surveyors_field_data_capture(names, fdc_parcel_layer):
-        """
-        :param names: Table and field names
-        :param fdc_parcel_layer: QgsVectorLayer
-        :return: Count of not allocated parcels
-        """
-        return int(fdc_parcel_layer.aggregate(QgsAggregateCalculator.CountMissing,
-                                              names.FDC_PARCEL_T_SURVEYOR_F)[0])  # val (float), res (bool)
-
-    @staticmethod
-    def get_count_of_not_allocated_parcels_to_coordinators_field_data_capture(names, receiver_type, fdc_parcel_layer, fdc_user_layer):
+    def get_count_of_not_allocated_parcels_to_receivers_field_data_capture(names, receiver_type, fdc_parcel_layer, fdc_user_layer):
         """
         :param names: Table and field names
         :param receiver_type: Type of receiver
@@ -1244,6 +1251,9 @@ class LADMData(QObject):
         Get or create an ili2db basket by dataset name.
         If you need to find several baskets, or if you need a specific basket from a dataset, this is not the function
         for you; either use create_ili2db_basket() or get the baskets table and do it by yourself :)
+
+        In the get mode, this function gets only the first basket found in the dataset, so it's better suited for
+        datasets that will have a single basket (like the default field data capture dataset).
 
         :param db: DB connector object
         :param dataset_name: name of the dataset to be searched or to be used as new dataset name

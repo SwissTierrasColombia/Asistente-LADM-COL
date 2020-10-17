@@ -192,7 +192,8 @@ SUFFIX_GET_THUMBNAIL = "&thumbnail=true&size=large"
 HELP_DOWNLOAD = 'https://github.com/SwissTierrasColombia/Asistente-LADM-COL-docs/releases/download'
 
 DEFAULT_DATASET_NAME = "Default dataset"
-FDC_DATASET_NAME = "Captura en campo"
+FDC_ADMIN_DATASET_NAME = "Captura en campo (Coordinador General)"
+FDC_COORDINATOR_DATASET_NAME = "Captura en campo (Coordinador de Campo)"
 
 TOLERANCE_MAX_VALUE = 5000  # In milimeters
 

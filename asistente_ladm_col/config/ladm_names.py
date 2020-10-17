@@ -26,6 +26,7 @@ class LADMNames(metaclass=Singleton):
     CI_CODE_PRESENTATION_FORM_D_DOCUMENT_V = "Documento"
     FDC_PARTY_DOCUMENT_TYPE_D_ILICODE_F_CC_V = "Cedula_ciudadania"
     FDC_PARTY_DOCUMENT_TYPE_D_ILICODE_F_DOC_ID_V = "Tarjeta_identidad"
+    FDC_ROLE_TYPE_D_ADMIN_V = "Coordinador_general"
     FDC_ROLE_TYPE_D_COORDINATOR_V = "Coordinador_grupo"
     FDC_ROLE_TYPE_D_SURVEYOR_V = "Reconocedor"
 

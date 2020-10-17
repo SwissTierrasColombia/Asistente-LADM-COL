@@ -1,6 +1,6 @@
 from qgis.PyQt.QtCore import *
 
-from asistente_ladm_col.config.general_config import (FDC_DATASET_NAME,
+from asistente_ladm_col.config.general_config import (FDC_ADMIN_DATASET_NAME,
                                                       SUPPLIES_DB_SOURCE)
 from asistente_ladm_col.config.gui.common_keys import *
 from asistente_ladm_col.config.gui.gui_config import GUI_Config
@@ -244,9 +244,9 @@ def get_field_admin_role_models():
     fdc_model = LADMColModelRegistry().model(LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY)
     params = fdc_model.get_ili2db_params()
     if ILI2DB_UPDATE in params:
-        params[ILI2DB_UPDATE].append((ILI2DB_DATASET_KEY, FDC_DATASET_NAME))
+        params[ILI2DB_UPDATE].append((ILI2DB_DATASET_KEY, FDC_ADMIN_DATASET_NAME))
     else:
-        params[ILI2DB_UPDATE] = [(ILI2DB_DATASET_KEY, FDC_DATASET_NAME)]
+        params[ILI2DB_UPDATE] = [(ILI2DB_DATASET_KEY, FDC_ADMIN_DATASET_NAME)]
     field_admin_role_models[ROLE_MODEL_ILI2DB_PARAMETERS] = {LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY: params}
     return field_admin_role_models
 

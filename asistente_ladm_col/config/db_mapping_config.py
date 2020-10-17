@@ -432,6 +432,7 @@ DB_MAPPING_CONFIG = {
         "Submodelo_Insumos_SNR.SNR_PersonaTitularTipo": {QueryNames.VARIABLE_NAME: "SNR_TITLE_HOLDER_TYPE_D", QueryNames.FIELDS_DICT: {}}
     },
     LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY: {
+        "Captura_Geo.Captura_Geo.Area_Intervencion": {QueryNames.VARIABLE_NAME: "FDC_OPERATION_AREA_T", QueryNames.FIELDS_DICT: {}},
         "Captura_Geo.Captura_Geo.CalificacionConvencional": {QueryNames.VARIABLE_NAME: "FDC_CONVENTIONAL_QUALIFICATION_T", QueryNames.FIELDS_DICT: {}},
         "Captura_Geo.Captura_Geo.CalificacionNoConvencional": {QueryNames.VARIABLE_NAME: "FDC_NON_CONVENTIONAL_QUALIFICATION_T", QueryNames.FIELDS_DICT: {}},
         "Captura_Geo.Captura_Geo.Construccion": {QueryNames.VARIABLE_NAME: "FDC_BUILDING_T", QueryNames.FIELDS_DICT: {}},
@@ -455,11 +456,12 @@ DB_MAPPING_CONFIG = {
         "Captura_Geo.Captura_Geo.NovedadFMI": {QueryNames.VARIABLE_NAME: "FDC_FMI_CHANGE_T", QueryNames.FIELDS_DICT: {}},
         "Captura_Geo.Captura_Geo.Novedad_Numeros_Prediales": {QueryNames.VARIABLE_NAME: "FDC_PARCEL_NUMBERS_CHANGE_T", QueryNames.FIELDS_DICT: {}},
         "Captura_Geo.Captura_Geo.ObjetoConstruccion": {QueryNames.VARIABLE_NAME: "FDC_BUILDING_OBJECT_T", QueryNames.FIELDS_DICT: {}},
+        "Captura_Geo.Captura_Geo.OfertasMercadoInmobiliario": {QueryNames.VARIABLE_NAME: "FDC_HOUSING_MARKET_OFFERS_T", QueryNames.FIELDS_DICT: {}},
         "Captura_Geo.Captura_Geo.Predio": {QueryNames.VARIABLE_NAME: "FDC_PARCEL_T", QueryNames.FIELDS_DICT: {
             "Captura_Geo.Captura_Geo.Predio.Numero_Predial": "FDC_PARCEL_T_PARCEL_NUMBER_F",
             "Captura_Geo.Captura_Geo.predio_reconocedores.reconocedor..Captura_Geo.Captura_Geo.Usuarios": "FDC_PARCEL_T_SURVEYOR_F"
         }},
-        "Captura_Geo.Captura_Geo.predio_terreno": {QueryNames.VARIABLE_NAME: "FDC_PARCEL_PLOT_T", QueryNames.FIELDS_DICT: {}},
+        # "Captura_Geo.Captura_Geo.predio_terreno": {QueryNames.VARIABLE_NAME: "FDC_PARCEL_PLOT_T", QueryNames.FIELDS_DICT: {}},
         "Captura_Geo.Captura_Geo.Punto_control": {QueryNames.VARIABLE_NAME: "FDC_CONTROL_POINT_T",QueryNames.FIELDS_DICT: {}},
         "Captura_Geo.Captura_Geo.Punto_levantamiento": {QueryNames.VARIABLE_NAME: "FDC_SURVEY_POINT_T",QueryNames.FIELDS_DICT: {}},
         "Captura_Geo.Captura_Geo.Punto_lindero": {QueryNames.VARIABLE_NAME: "FDC_BOUNDARY_POINT_T",QueryNames.FIELDS_DICT: {}},
@@ -481,8 +483,9 @@ DB_MAPPING_CONFIG = {
         "Captura_Geo.D_AcuerdoTipo": {QueryNames.VARIABLE_NAME: "FDC_AGREEMENT_TYPE_D", QueryNames.FIELDS_DICT: {}},
         "Captura_Geo.D_AnexoTipo": {QueryNames.VARIABLE_NAME: "FDC_ANNEX_TYPE_D", QueryNames.FIELDS_DICT: {}},
         "Captura_Geo.D_CalificarTipo": {QueryNames.VARIABLE_NAME: "FDC_QUALIFY_TYPE_D", QueryNames.FIELDS_DICT: {}},
+        "Captura_Geo.D_CategoriaSueloTipo": {QueryNames.VARIABLE_NAME: "FDC_CATEGORY_LAND_CLASS_TYPE_D", QueryNames.FIELDS_DICT: {}},
         "Captura_Geo.D_ClaseCalificacionTipo": {QueryNames.VARIABLE_NAME: "FDC_QUALIFICATION_CLASS_TYPE_D", QueryNames.FIELDS_DICT: {}},
-        "Captura_Geo.D_ClaseSueloTipo": {QueryNames.VARIABLE_NAME: "FDC_LANDCLASS_TYPE_D", QueryNames.FIELDS_DICT: {}},
+        "Captura_Geo.D_ClaseSueloTipo": {QueryNames.VARIABLE_NAME: "FDC_LAND_CLASS_TYPE_D", QueryNames.FIELDS_DICT: {}},
         "Captura_Geo.D_CondicionPredioTipo": {QueryNames.VARIABLE_NAME: "FDC_CONDITION_PARCEL_TYPE_D", QueryNames.FIELDS_DICT: {}},
         "Captura_Geo.D_ConstruccionPlantaTipo": {QueryNames.VARIABLE_NAME: "FDC_BUILDING_FLOOR_TYPE_D", QueryNames.FIELDS_DICT: {}},
         "Captura_Geo.D_ConstruccionTipo": {QueryNames.VARIABLE_NAME: "FDC_BUILDING_TYPE_D", QueryNames.FIELDS_DICT: {}},
