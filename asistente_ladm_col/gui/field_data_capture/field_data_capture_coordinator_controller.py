@@ -30,8 +30,6 @@ class FieldDataCaptureCoordinatorController(BaseFieldDataCaptureController):
         self.receiver_type = self.surveyor_type  # Coordinator allocates parcels to surveyors
 
         self._with_offline_project = True
-        self._template_project_path = '/tmp/project.qgs'  # To be set from GUI
-        self._raster_layer = None  # Optional, to be set from GUI
 
     def _get_parcel_field_referencing_receiver(self):
         return self._db.names.T_BASKET_F

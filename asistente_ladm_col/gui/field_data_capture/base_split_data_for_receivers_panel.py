@@ -59,6 +59,9 @@ class BaseSplitDataForReceiversPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         self.fill_data()
 
+        self.grb_template_project.setVisible(False)
+        self.grb_raster_layer.setVisible(False)
+
     def panel_accepted(self):
         self.refresh_parcel_data_clear_selection_requested.emit()
 

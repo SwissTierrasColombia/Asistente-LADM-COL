@@ -149,7 +149,7 @@ class FieldDataCaptureDataExporter(QObject):
                     res[basket] = (False, msg)
 
                 count += 1
-                current_progress = count / self._total_steps * 100
+                current_progress = int(count / self._total_steps * 100)
                 self.total_progress_updated.emit(current_progress)
 
         return res
@@ -167,7 +167,7 @@ class FieldDataCaptureDataExporter(QObject):
         step_range = 100 / self._total_steps
         weights = [2, 3, 5, 7, 9] if self._raster_layer else [3, 4, 6, 9]
         def update_progress(step):
-            self.total_progress_updated.emit(current_progress + weights[step-1] / 10 * step_range)
+            self.total_progress_updated.emit(int(current_progress + weights[step-1] / 10 * step_range))
 
         base_dir, file_name = os.path.split(xtf_path)
         user_alias, _ = os.path.splitext(file_name)

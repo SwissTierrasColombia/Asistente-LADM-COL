@@ -59,8 +59,8 @@ class BaseFieldDataCaptureController(QObject):
 
         # Variables to configure (extend) the data export process (useful for Coord-Surveyor scenario)
         self._with_offline_project = False
-        self._template_project_path = ''
-        self._raster_layer = None
+        self.template_project_path = ''
+        self.raster_layer = None
 
     def initialize_layers(self):
         self._layers = {
@@ -216,8 +216,8 @@ class BaseFieldDataCaptureController(QObject):
                                                        basket_dict,
                                                        export_dir,
                                                        self._with_offline_project,
-                                                       self._template_project_path,
-                                                       self._raster_layer)
+                                                       self.template_project_path,
+                                                       self.raster_layer)
         basket_exporter.total_progress_updated.connect(self.export_field_data_progress)  # Signal chaining
         all_res = basket_exporter.export_baskets()
 
