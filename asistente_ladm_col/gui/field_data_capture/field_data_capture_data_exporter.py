@@ -60,6 +60,8 @@ class FieldDataCaptureDataExporter(QObject):
         self._basket_dict = basket_dict  # {t_ili_tids: receiver_name}
         self._export_dir = export_dir
 
+        self._total_steps = len(self._basket_dict)
+
         # Parameters for the "with offline project" mode
         self._with_offline_project = with_offline_project
         self._template_project_path = template_project_path
@@ -76,6 +78,8 @@ class FieldDataCaptureDataExporter(QObject):
     def export_baskets(self):
         if self._with_offline_project and not self._template_project_path:
             return {None: (False, QCoreApplication.translate("FieldDataCaptureDataExporter", "No template project was passed, but it is required for generating offline projects!"))}
+
+        self.total_progress_updated.emit(1)  # Let users know we started already
 
         java_home_set = self.java_dependency.set_java_home()
         if not java_home_set:
@@ -119,7 +123,7 @@ class FieldDataCaptureDataExporter(QObject):
 
         res = dict()
         count = 0
-        total = len(self._basket_dict)
+        current_progress = 0  # Range 0-100
 
         with OverrideCursor(Qt.WaitCursor):
             for basket,name in self._basket_dict.items():
@@ -137,7 +141,7 @@ class FieldDataCaptureDataExporter(QObject):
                     else:
                         if self._with_offline_project:
                             self.logger.info(__name__, "Generating offline project for field data capture... ({})".format(name))
-                            res[basket] = self.generate_qgis_offline_project(configuration.xtffile)
+                            res[basket] = self.generate_qgis_offline_project(configuration.xtffile, current_progress)
                         else:
                             res[basket] = (True, QCoreApplication.translate("FieldDataCaptureDataExporter", "XTF export for '{}' successful!").format(name))
                 except JavaNotFoundError:
@@ -145,22 +149,32 @@ class FieldDataCaptureDataExporter(QObject):
                     res[basket] = (False, msg)
 
                 count += 1
-                self.total_progress_updated.emit(count/total*100)
+                current_progress = count / self._total_steps * 100
+                self.total_progress_updated.emit(current_progress)
 
         return res
 
-    def generate_qgis_offline_project(self, xtf_path):
+    def generate_qgis_offline_project(self, xtf_path, current_progress):
         """
         Generates offline projects based on the exported XTF. The QGS project is given by the user and points to a GPKG
         database (built from the exported XTF). Optionally, we might clip a given raster file with the Plot layer
         extent.
 
         :param xtf_path: Path of the XTF containing data for the offline project
+        :param current_progress: Current global progress, used to update the emit a signal with the progress status
         :return: Tuple (whether the project generation was successful, message to describe errors if any)
         """
+        step_range = 100 / self._total_steps
+        weights = [2, 3, 5, 7, 9] if self._raster_layer else [3, 4, 6, 9]
+        def update_progress(step):
+            self.total_progress_updated.emit(current_progress + weights[step-1] / 10 * step_range)
+
         base_dir, file_name = os.path.split(xtf_path)
         user_alias, _ = os.path.splitext(file_name)
         offline_dir = os.path.join(base_dir, user_alias)
+
+        # As soon as we start, we've already done the XTF export, so update the progress
+        update_progress(1)
 
         # Create folder
         if os.path.exists(offline_dir):
@@ -172,17 +186,20 @@ class FieldDataCaptureDataExporter(QObject):
             os.makedirs(offline_dir)
         except FileExistsError as e:
             pass
+        update_progress(2)
 
         # Run schema import
         gpkg_path = os.path.join(offline_dir, 'data.gpkg')
         res_schema_import = self._run_gpkg_schema_import(gpkg_path, user_alias)
         if not res_schema_import:
             return res_schema_import
+        update_progress(3)
 
         # Run import data
         res_import_data = self._run_gpkg_import_data(gpkg_path, xtf_path, user_alias)
         if not res_import_data:
             return res_import_data
+        update_progress(4)
 
         # Clip raster if any
         if self._raster_layer:
@@ -204,6 +221,7 @@ class FieldDataCaptureDataExporter(QObject):
                                                                'DATA_TYPE': 0, 'EXTRA': '', 'OUTPUT': clipped_raster})
                 except:
                     pass
+            update_progress(5)
 
         # Copy template project
         project_path = os.path.join(offline_dir, '_qfield.qgs')
