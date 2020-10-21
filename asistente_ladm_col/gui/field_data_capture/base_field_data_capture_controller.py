@@ -22,9 +22,8 @@ from qgis.PyQt.QtCore import (QCoreApplication,
 
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.ladm_names import LADMNames
-from asistente_ladm_col.gui.field_data_capture.basket_exporter import BasketExporter
+from asistente_ladm_col.gui.field_data_capture.field_data_capture_data_exporter import FieldDataCaptureDataExporter
 from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
-from asistente_ladm_col.utils.qt_utils import normalize_local_url
 
 
 class BaseFieldDataCaptureController(QObject):
@@ -57,6 +56,11 @@ class BaseFieldDataCaptureController(QObject):
         self.surveyor_type = self._ladm_data.get_domain_code_from_value(self._db,
                                                                         self._db.names.FDC_ROLE_TYPE_D,
                                                                         LADMNames.FDC_ROLE_TYPE_D_SURVEYOR_V)
+
+        # Variables to configure (extend) the data export process (useful for Coord-Surveyor scenario)
+        self._with_offline_project = False
+        self._template_project_path = ''
+        self._raster_layer = None
 
     def initialize_layers(self):
         self._layers = {
@@ -208,7 +212,12 @@ class BaseFieldDataCaptureController(QObject):
             self.user_layer())
 
         # Finally, export each basket to XTF
-        basket_exporter = BasketExporter(self._db, basket_dict, export_dir)
+        basket_exporter = FieldDataCaptureDataExporter(self._db,
+                                                       basket_dict,
+                                                       export_dir,
+                                                       self._with_offline_project,
+                                                       self._template_project_path,
+                                                       self._raster_layer)
         basket_exporter.total_progress_updated.connect(self.export_field_data_progress)  # Signal chaining
         all_res = basket_exporter.export_baskets()
 
@@ -216,12 +225,10 @@ class BaseFieldDataCaptureController(QObject):
             if not res[0]:  # res: (bool, msg)
                 return res
 
-        return True, QCoreApplication.translate("BaseFieldDataCaptureController",
-                                                "{count} XTFs were succcessfully generated in <a href='file:///{normalized_path}'>{path}</a>!").format(
-            count=len(basket_dict),
-            normalized_path=normalize_local_url(export_dir),
-            path=export_dir
-        )
+        return True, self._successful_export_message(len(basket_dict), export_dir)
+
+    def _successful_export_message(self, count, export_dir):
+        raise NotImplementedError
 
     def get_receivers_data(self, full_name=True):
         """

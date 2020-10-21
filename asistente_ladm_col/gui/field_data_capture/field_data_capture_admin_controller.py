@@ -20,6 +20,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 
 from asistente_ladm_col.config.general_config import FDC_ADMIN_DATASET_NAME
 from asistente_ladm_col.gui.field_data_capture.base_field_data_capture_controller import BaseFieldDataCaptureController
+from asistente_ladm_col.utils.qt_utils import normalize_local_url
 
 
 class FieldDataCaptureAdminController(BaseFieldDataCaptureController):
@@ -47,3 +48,11 @@ class FieldDataCaptureAdminController(BaseFieldDataCaptureController):
 
     def delete_receiver(self, receiver_id):
         return self._ladm_data.delete_coordinator(self.db(), receiver_id, self.surveyor_type, self.user_layer())
+
+    def _successful_export_message(self, count, export_dir):
+        return QCoreApplication.translate("BaseFieldDataCaptureController",
+                                          "{count} XTF files were succcessfully generated in <a href='file:///{normalized_path}'>{path}</a>!").format(
+            count=count,
+            normalized_path=normalize_local_url(export_dir),
+            path=export_dir
+        )

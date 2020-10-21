@@ -20,6 +20,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 
 from asistente_ladm_col.config.general_config import FDC_COORDINATOR_DATASET_NAME
 from asistente_ladm_col.gui.field_data_capture.base_field_data_capture_controller import BaseFieldDataCaptureController
+from asistente_ladm_col.utils.qt_utils import normalize_local_url
 
 
 class FieldDataCaptureCoordinatorController(BaseFieldDataCaptureController):
@@ -27,6 +28,10 @@ class FieldDataCaptureCoordinatorController(BaseFieldDataCaptureController):
         BaseFieldDataCaptureController.__init__(self, iface, db, ladm_data)
 
         self.receiver_type = self.surveyor_type  # Coordinator allocates parcels to surveyors
+
+        self._with_offline_project = True
+        self._template_project_path = '/tmp/project.qgs'  # To be set from GUI
+        self._raster_layer = None  # Optional, to be set from GUI
 
     def _get_parcel_field_referencing_receiver(self):
         return self._db.names.T_BASKET_F
@@ -66,3 +71,11 @@ class FieldDataCaptureCoordinatorController(BaseFieldDataCaptureController):
 
     def delete_receiver(self, receiver_id):
         return self._ladm_data.delete_surveyor(self.db().names, receiver_id, self.user_layer())
+
+    def _successful_export_message(self, count, export_dir):
+        return QCoreApplication.translate("BaseFieldDataCaptureController",
+                                          "{count} offline projects were succcessfully generated in <a href='file:///{normalized_path}'>{path}</a>!").format(
+            count=count,
+            normalized_path=normalize_local_url(export_dir),
+            path=export_dir
+        )
