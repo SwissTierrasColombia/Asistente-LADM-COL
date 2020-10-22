@@ -1246,7 +1246,7 @@ class LADMData(QObject):
         return QgsVectorLayer(db.get_qgis_layer_uri(db.names.T_ILI2DB_DATASET_T), 'datasets', db.provider)
 
     @staticmethod
-    def get_or_create_ili2db_basket(db, dataset_name, topic_name, get_feature=False):
+    def get_or_create_ili2db_basket(db, dataset_name, topic_name, get_feature=False, basket_t_id=None):
         """
         Get or create an ili2db basket by dataset name.
         If you need to find several baskets, or if you need a specific basket from a dataset, this is not the function
@@ -1259,6 +1259,7 @@ class LADMData(QObject):
         :param dataset_name: name of the dataset to be searched or to be used as new dataset name
         :param topic_name: name of the topic the basket applies to...
         :param get_feature: Whether to get the whole feature or just its t_id
+        :param basket_t_id: Pass it if you want your basket t_id to have an specific t_id
         :return: Tuple: t_id (or None), message (useful in case of failure)
         """
         basket_table = LADMData.get_basket_table(db)
@@ -1274,18 +1275,23 @@ class LADMData(QObject):
             return baskets[0] if get_feature else baskets[0][db.names.T_ID_F], "Success!"
 
         # Create basket since we didn't find it
-        basket_feature, msg = LADMData.create_ili2db_basket(db, dataset_t_id, topic_name, basket_table)
+        basket_feature, msg = LADMData.create_ili2db_basket(db, dataset_t_id, topic_name, basket_table, basket_t_id)
 
         return basket_feature if get_feature else basket_feature[db.names.T_ID_F], "Success!"
 
     @staticmethod
-    def create_ili2db_basket(db, dataset_t_id, topic_name, basket_table=None):
+    def create_ili2db_basket(db, dataset_t_id, topic_name, basket_table=None, basket_t_id=None):
         if not basket_table:
             basket_table = LADMData.get_basket_table(db)
 
         t_id_idx = basket_table.fields().indexOf(db.names.T_ID_F)
-        max_value = basket_table.maximumValue(t_id_idx) or 0
-        new_basket_t_id = max_value + 1  # Basket t_id is not a serial, we need to create it manually...
+
+        if basket_t_id:
+            new_basket_t_id = basket_t_id
+        else:
+            max_value = basket_table.maximumValue(t_id_idx) or 0
+            new_basket_t_id = max_value + 1  # Basket t_id is not a serial, we need to create it manually...
+
         attrs = {
             t_id_idx: new_basket_t_id,
             basket_table.fields().indexOf(db.names.BASKET_T_DATASET_F): dataset_t_id,
@@ -1335,11 +1341,12 @@ class LADMData(QObject):
             return new_dataset_t_id, "Success!"
 
     @staticmethod
-    def get_or_create_default_ili2db_basket(db):
+    def get_or_create_default_ili2db_basket(db, basket_t_id=None):
         fdc_model = LADMColModelRegistry().model(LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY).full_name()
         default_basket_id, msg = LADMData.get_or_create_ili2db_basket(db,
                                                                       DEFAULT_DATASET_NAME,
-                                                                      "{}.{}".format(fdc_model, LADMNames.FDC_TOPIC_NAME))
+                                                                      "{}.{}".format(fdc_model, LADMNames.FDC_TOPIC_NAME),
+                                                                      basket_t_id=basket_t_id)
         Logger().info(__name__, "Default basket_id: {}".format(default_basket_id))
         return default_basket_id, msg
 

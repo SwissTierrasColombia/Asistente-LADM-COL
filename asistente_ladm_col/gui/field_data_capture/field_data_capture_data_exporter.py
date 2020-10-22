@@ -42,11 +42,14 @@ from asistente_ladm_col.config.config_db_supported import ConfigDBsSupported
 from asistente_ladm_col.config.general_config import (JAVA_REQUIRED_VERSION,
                                                       DEFAULT_USE_CUSTOM_MODELS,
                                                       DEFAULT_MODELS_DIR,
-                                                      CTM12_GPKG_SCRIPT_PATH)
+                                                      CTM12_GPKG_SCRIPT_PATH,
+                                                      FDC_WILD_CARD_BASKET_ID)
 from asistente_ladm_col.config.ili2db_names import ILI2DBNames
+from asistente_ladm_col.lib.db.gpkg_connector import GPKGConnector
 from asistente_ladm_col.lib.dependency.java_dependency import JavaDependency
 from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
 from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 from asistente_ladm_col.utils.qt_utils import (OverrideCursor,
                                                ProcessWithStatus)
 
@@ -200,6 +203,11 @@ class FieldDataCaptureDataExporter(QObject):
         if not res_import_data:
             return res_import_data
         update_progress(4)
+
+        # Create basket for new features created in the field
+        db = GPKGConnector(gpkg_path)
+        db.test_connection()  # To generate db.names
+        LADMData.get_or_create_default_ili2db_basket(db, FDC_WILD_CARD_BASKET_ID)
 
         # Clip raster if any
         if self._raster_layer:

@@ -188,6 +188,7 @@ HELP_DOWNLOAD = 'https://github.com/SwissTierrasColombia/Asistente-LADM-COL-docs
 DEFAULT_DATASET_NAME = "Default dataset"
 FDC_ADMIN_DATASET_NAME = "Captura en campo (Coordinador General)"
 FDC_COORDINATOR_DATASET_NAME = "Captura en campo (Coordinador de Campo)"
+FDC_WILD_CARD_BASKET_ID = 9999  # A basket t_id to be used for all new features created in the field
 
 TOLERANCE_MAX_VALUE = 5000  # In milimeters
 
