@@ -1357,3 +1357,16 @@ class LADMData(QObject):
             data[feature[names.T_ID_F]] = feature[names.DISPLAY_NAME_F]
 
         return data
+
+    @staticmethod
+    def update_t_basket_in_layers(db, layer_list, value):
+        for layer in layer_list:
+            res = LADMData.change_attribute_value(layer, db.names.T_BASKET_F, value)
+            if not res:
+                Logger().warning_msg(__name__,
+                                     "Errors preparing the layer {}. See QGIS log for details.".format(layer.name()))
+                Logger().critical(__name__,
+                                  "Errors writing basket id to layer {}.".format(layer.name()))
+                return False
+
+        return True
