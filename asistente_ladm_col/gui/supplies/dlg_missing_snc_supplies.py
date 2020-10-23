@@ -208,16 +208,17 @@ class MissingSncSuppliesDialog(MissingSuppliesBaseDialog):
                 'uterreno':self.gdb_layer_paths['U_TERRENO'],
                 'uunidad': self.gdb_layer_paths['U_UNIDAD'],
                 'vereda': self.gdb_layer_paths['R_VEREDA'],
-                'qgis:refactorfields_1:COMISIONES_TERRENO':'TEMPORARY_OUTPUT',
-                'qgis:refactorfields_2:OMISIONES_TERRENO':'TEMPORARY_OUTPUT',
-                'qgis:refactorfields_3:COMISIONES_MEJORAS':'TEMPORARY_OUTPUT',
-                'qgis:refactorfields_4:OMISIONES_MEJORAS':'TEMPORARY_OUTPUT',
-                'qgis:refactorfields_5:COMISIONES_UNID_PH':'TEMPORARY_OUTPUT',
-                'qgis:refactorfields_6:OMISIONES_UNID_PH':'TEMPORARY_OUTPUT',
-                'qgis:refactorfields_7:COMISIONES_MZ':'TEMPORARY_OUTPUT',
-                'qgis:refactorfields_8:OMISIONES_MZ':'TEMPORARY_OUTPUT',
-                'qgis:refactorfields_9:COMISIONES_VR':'TEMPORARY_OUTPUT',
-                'qgis:refactorfields_10:OMISIONES_VR':'TEMPORARY_OUTPUT'},
+                'native:removeduplicatesbyattribute_1:COMISIONES_TERRENO':'TEMPORARY_OUTPUT',
+                'native:removeduplicatesbyattribute_2:OMISIONES_TERRENO':'TEMPORARY_OUTPUT',
+                'native:removeduplicatesbyattribute_3:COMISIONES_MEJORAS':'TEMPORARY_OUTPUT',
+                'native:removeduplicatesbyattribute_4:OMISIONES_MEJORAS':'TEMPORARY_OUTPUT',
+                'native:removeduplicatesbyattribute_5:COMISIONES_UNID_PH':'TEMPORARY_OUTPUT',
+                'native:removeduplicatesbyattribute_6:OMISIONES_UNID_PH':'TEMPORARY_OUTPUT',
+                'native:removeduplicatesbyattribute_7:COMISIONES_MZ':'TEMPORARY_OUTPUT',
+                'native:removeduplicatesbyattribute_8:OMISIONES_MZ':'TEMPORARY_OUTPUT',
+                'native:removeduplicatesbyattribute_9:COMISIONES_VR':'TEMPORARY_OUTPUT',
+                'native:removeduplicatesbyattribute_10:OMISIONES_VR':'TEMPORARY_OUTPUT',
+                'qgis:aggregate_13:TABLA_RESUMEN':'TEMPORARY_OUTPUT'},
                                                            feedback=self.custom_feedback)
         except QgsProcessingException as e:
             if self.custom_feedback.isCanceled():
@@ -276,7 +277,7 @@ class MissingSncSuppliesDialog(MissingSuppliesBaseDialog):
     def generate_excel_report(self):
         gdal.VectorTranslate(self.xlsx_path,
                              self.gpkg_path,
-                             options='-f XLSX {}'.format(self.names_gpkg.strip()))
+                             options='-f XLSX {}'.format(self.spreadsheet_structure))
 
     def disable_widgets(self):
         """

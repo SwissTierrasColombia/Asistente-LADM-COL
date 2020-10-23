@@ -278,7 +278,7 @@ class MissingCobolSuppliesDialog(MissingSuppliesBaseDialog):
     def generate_excel_report(self):
         gdal.VectorTranslate(self.xlsx_path,
                              self.gpkg_path,
-                             options='-f XLSX {}'.format(self.names_gpkg.strip()))
+                             options='-f XLSX {}'.format(self.spreadsheet_structure))
 
     def disable_widgets(self):
         """
