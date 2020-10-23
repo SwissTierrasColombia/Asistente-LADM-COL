@@ -22,11 +22,11 @@ from qgis.PyQt.QtCore import (QCoreApplication,
 
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.ladm_names import LADMNames
-from asistente_ladm_col.gui.field_data_capture.field_data_capture_data_exporter import FieldDataCaptureDataExporter
+from asistente_ladm_col.gui.field_data_capture.allocation.fdc_data_exporter import FieldDataCaptureDataExporter
 from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
 
 
-class BaseFieldDataCaptureController(QObject):
+class BaseFDCAllocationController(QObject):
     field_data_capture_layer_removed = pyqtSignal()
     export_field_data_progress = pyqtSignal(int)  # total progress (percentage)
 
@@ -198,7 +198,7 @@ class BaseFieldDataCaptureController(QObject):
                        f[self._db.names.T_ID_F] in basket_t_ids}
 
         if not basket_dict:
-            return False, QCoreApplication.translate("BaseFieldDataCaptureController",
+            return False, QCoreApplication.translate("BaseFDCAllocationController",
                                                      "First allocate at least one parcel.")
 
         # Now set basket id for allocated parcels' related features
@@ -267,7 +267,7 @@ class BaseFieldDataCaptureController(QObject):
         # 1. Make sure we've got the FDC dataset (varies depending on role: admin or coordinator)
         dataset_t_id, msg = self._get_fdc_dataset(dataset_name)
         if dataset_t_id is None:
-            return None, QCoreApplication.translate("BaseFieldDataCaptureController", "Details: The Field Data Capture dataset does not exist and couldn't be created!")
+            return None, QCoreApplication.translate("BaseFDCAllocationController", "Details: The Field Data Capture dataset does not exist and couldn't be created!")
 
         # 2. Get a new basket for such dataset
         fdc_model = LADMColModelRegistry().model(LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY).full_name()
@@ -275,7 +275,7 @@ class BaseFieldDataCaptureController(QObject):
         basket_feature, msg = self._ladm_data.create_ili2db_basket(self._db, dataset_t_id, topic_name)
 
         if basket_feature is None:
-            return None, QCoreApplication.translate("BaseFieldDataCaptureController", "Details: Basket could not be created!")
+            return None, QCoreApplication.translate("BaseFDCAllocationController", "Details: Basket could not be created!")
 
         basket_t_id = basket_feature[self._db.names.T_ID_F]
 

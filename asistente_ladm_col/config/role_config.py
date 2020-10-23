@@ -336,7 +336,7 @@ def get_role_config():
             ROLE_MODELS: get_field_admin_role_models(),
             ROLE_ACTIONS: [
                 ACTION_ALLOCATE_PARCELS_FIELD_DATA_CAPTURE,
-                #  ACTION_SYNCHRONIZE_FIELD_DATA,
+                ACTION_SYNCHRONIZE_FIELD_DATA,
                 ACTION_INTEGRATE_SUPPLIES,
                 ACTION_PARCEL_QUERY,
                 ACTION_CHECK_QUALITY_RULES],
@@ -350,8 +350,8 @@ def get_role_config():
             ROLE_ENABLED: True,
             ROLE_MODELS: field_coordinator_role_models,
             ROLE_ACTIONS: [
-                ACTION_ALLOCATE_PARCELS_FIELD_DATA_CAPTURE
-                #  ACTION_SYNCHRONIZE_FIELD_DATA],
+                ACTION_ALLOCATE_PARCELS_FIELD_DATA_CAPTURE,
+                ACTION_SYNCHRONIZE_FIELD_DATA
             ],
             ROLE_QUALITY_RULES: list(),
             ROLE_GUI_CONFIG: field_coordinator_role_gui

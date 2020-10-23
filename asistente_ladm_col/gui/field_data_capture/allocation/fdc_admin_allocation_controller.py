@@ -19,13 +19,13 @@
 from qgis.PyQt.QtCore import QCoreApplication
 
 from asistente_ladm_col.config.general_config import FDC_ADMIN_DATASET_NAME
-from asistente_ladm_col.gui.field_data_capture.base_field_data_capture_controller import BaseFieldDataCaptureController
+from asistente_ladm_col.gui.field_data_capture.base_fdc_allocation_controller import BaseFDCAllocationController
 from asistente_ladm_col.utils.qt_utils import normalize_local_url
 
 
-class FieldDataCaptureAdminController(BaseFieldDataCaptureController):
+class FDCAdminAllocationController(BaseFDCAllocationController):
     def __init__(self, iface, db, ladm_data):
-        BaseFieldDataCaptureController.__init__(self, iface, db, ladm_data)
+        BaseFDCAllocationController.__init__(self, iface, db, ladm_data)
 
         self.receiver_type = self.coordinator_type  # Admin allocates parcels to coordinators
 
@@ -38,7 +38,7 @@ class FieldDataCaptureAdminController(BaseFieldDataCaptureController):
     def get_basket_id_for_new_receiver(self):
         res, msg = self._get_basket_id_for_new_receiver(FDC_ADMIN_DATASET_NAME)
         if not res:
-            msg_prefix = QCoreApplication.translate("FieldDataCaptureAdminController", "No coordinator can be created.")
+            msg_prefix = QCoreApplication.translate("FDCAdminAllocationController", "No coordinator can be created.")
             msg = msg_prefix + " " + msg
 
         return res, msg
@@ -50,7 +50,7 @@ class FieldDataCaptureAdminController(BaseFieldDataCaptureController):
         return self._ladm_data.delete_coordinator(self.db(), receiver_id, self.surveyor_type, self.user_layer())
 
     def _successful_export_message(self, count, export_dir):
-        return QCoreApplication.translate("BaseFieldDataCaptureController",
+        return QCoreApplication.translate("FDCAdminAllocationController",
                                           "{count} XTF files were succcessfully generated in <a href='file:///{normalized_path}'>{path}</a>!").format(
             count=count,
             normalized_path=normalize_local_url(export_dir),

@@ -41,8 +41,8 @@ from processing.script import ScriptUtils
 
 from asistente_ladm_col.config.ladm_names import MODEL_CONFIG
 from asistente_ladm_col.config.role_config import get_role_config
-from asistente_ladm_col.gui.field_data_capture.dockwidget_field_data_capture_admin_coordinator import DockWidgetFieldDataCaptureAdminCoordinator
-from asistente_ladm_col.gui.field_data_capture.dockwidget_field_data_capture_coordinator_surveyor import DockWidgetFieldDataCaptureCoordinatorSurveyor
+from asistente_ladm_col.gui.field_data_capture.dockwidget_fdc_admin_coordinator import DockWidgetFDCAdminCoordinator
+from asistente_ladm_col.gui.field_data_capture.dockwidget_fdc_coordinator_surveyor import DockWidgetFDCCoordinatorSurveyor
 from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
 from asistente_ladm_col.lib.ladm_col_models import (LADMColModelRegistry,
                                                     LADMColModel)
@@ -971,22 +971,22 @@ class AsistenteLADMCOLPlugin(QObject):
     @_qgis_model_baker_required
     @_db_connection_required
     @_field_data_capture_model_required
-    def show_synchronize_field_data(self):
+    def show_synchronize_field_data(self, *args):
         self.show_field_data_capture_dockwidget(False)
 
     def show_field_data_capture_dockwidget(self, allocate=True):
         self.gui_builder.close_dock_widgets([DOCK_WIDGET_FIELD_DATA_CAPTURE])
 
         if self.role_registry.get_active_role() == FIELD_COORDINATOR_ROLE:
-            dock_widget_field_data_capture = DockWidgetFieldDataCaptureCoordinatorSurveyor(self.iface,
-                                                                                           self.get_db_connection(),
-                                                                                           self.ladm_data,
-                                                                                           allocate_mode=allocate)
+            dock_widget_field_data_capture = DockWidgetFDCCoordinatorSurveyor(self.iface,
+                                                                              self.get_db_connection(),
+                                                                              self.ladm_data,
+                                                                              allocate_mode=allocate)
         else:  # FIELD_ADMIN_ROLE OR ADVANCED_ROLE!
-            dock_widget_field_data_capture = DockWidgetFieldDataCaptureAdminCoordinator(self.iface,
-                                                                                           self.get_db_connection(),
-                                                                                           self.ladm_data,
-                                                                                           allocate_mode=allocate)
+            dock_widget_field_data_capture = DockWidgetFDCAdminCoordinator(self.iface,
+                                                                           self.get_db_connection(),
+                                                                           self.ladm_data,
+                                                                           allocate_mode=allocate)
 
         self.gui_builder.register_dock_widget(DOCK_WIDGET_FIELD_DATA_CAPTURE, dock_widget_field_data_capture)
         self.conn_manager.db_connection_changed.connect(dock_widget_field_data_capture.update_db_connection)
