@@ -1120,7 +1120,7 @@ class LADMData(QObject):
         return layer.dataProvider().changeAttributeValues(attr_map)
 
     @staticmethod
-    def get_fdc_receivers_data(names, fdc_user_layer, id_field_name, receiver_type, full_name=True, extra_attr_name=''):
+    def get_fdc_receivers_data(names, fdc_user_layer, id_field_name, receiver_type=None, full_name=True, extra_attr_name=''):
         """
         Get receiver's filtered data
 
@@ -1137,12 +1137,28 @@ class LADMData(QObject):
         if not extra_attr_name:
             extra_attr_name = names.FDC_USER_T_DOCUMENT_ID_F
 
-        # Filter by role (note that receiver_type should be the t_id of the 'user type' domain value)
-        for feature in fdc_user_layer.getFeatures("{} = {}".format(names.FDC_USER_T_ROLE_F, receiver_type)):
+        if receiver_type:
+            # Filter by role (note that receiver_type should be the t_id of the 'user type' domain value)
+            features = fdc_user_layer.getFeatures("{} = {}".format(names.FDC_USER_T_ROLE_F, receiver_type))
+        else:
+            features = fdc_user_layer.getFeatures()
+
+        for feature in features:
             receivers_data[feature[id_field_name]] = (LADMData.get_fdc_user_name(names, feature, full_name),
                                                       feature[extra_attr_name])
 
         return receivers_data
+
+    def get_fdc_receivers_data_any_db(self, db):
+        res = dict()
+        fdc_user_layer = self.app.core.get_layer(db, db.names.FDC_USER_T, load=False)
+        if fdc_user_layer:
+            res = self.get_fdc_receivers_data(db.names,
+                                              fdc_user_layer,
+                                              db.names.T_BASKET_F,
+                                              None, True, db.names.FDC_USER_T_ROLE_F)
+
+        return res
 
     @staticmethod
     def save_receiver(receiver_data, fdc_user_layer):
@@ -1360,11 +1376,13 @@ class LADMData(QObject):
 
     @staticmethod
     def update_t_basket_in_layers(db, layer_list, value):
+        if not layer_list:
+            Logger().critical(__name__, "Errors writing basket id to layers: no layers given!")
+            return False
+
         for layer in layer_list:
             res = LADMData.change_attribute_value(layer, db.names.T_BASKET_F, value)
             if not res:
-                Logger().warning_msg(__name__,
-                                     "Errors preparing the layer {}. See QGIS log for details.".format(layer.name()))
                 Logger().critical(__name__,
                                   "Errors writing basket id to layer {}.".format(layer.name()))
                 return False

@@ -33,7 +33,7 @@ class SynchronizeDataAdminInitialPanelWidget(BaseSynchronizeDataInitialPanelWidg
 
         self.qfw_input_file.lineEdit().setPlaceholderText(QCoreApplication.translate(
             "SynchronizeDataAdminInitialPanelWidget", "Choose the input XTF file..."))
-        self.qfw_input_file.setDefaultRoot(self.app.settings.fdc_project_template_path)
+        self.qfw_input_file.setDefaultRoot(self.app.settings.fdc_coordinator_xtf_path)
         self.qfw_input_file.setDialogTitle(QCoreApplication.translate("SynchronizeDataAdminInitialPanelWidget",
                                                                       "Select the XTF file from coordinator"))
         self.qfw_input_file.setFilter('INTERLIS 2 transfer format (*.xtf)')

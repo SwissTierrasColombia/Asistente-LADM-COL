@@ -163,6 +163,9 @@ class BaseDockWidgetFDC(QgsDockWidget, DOCKWIDGET_UI):
     def add_allocation_layers(self):
         self._allocation_controller.add_layers()
 
+    def add_synchronization_layers(self):
+        self._synchronization_controller.add_layers()
+
     def layer_removed(self):
         self.logger.info_msg(__name__, QCoreApplication.translate("DockWidgetFDC",
                                                                   "'Field data capture' has been closed because you just removed a required layer."))

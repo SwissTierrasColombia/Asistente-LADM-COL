@@ -49,6 +49,7 @@ class DockWidgetFDCAdminCoordinator(BaseDockWidgetFDC):
         self.setWindowTitle(QCoreApplication.translate("DockWidgetFDCAdminCoordinator", "Allocate parcels Admin-Coordinator"))
 
     def _initialize_synchronize_initial_panel(self):
+        self.add_synchronization_layers()
         self.synchronize_panel = SynchronizeDataAdminInitialPanelWidget(self,
                                                                         self._synchronization_controller,
                                                                         self._db)

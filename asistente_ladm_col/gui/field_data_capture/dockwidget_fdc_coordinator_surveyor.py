@@ -49,6 +49,7 @@ class DockWidgetFDCCoordinatorSurveyor(BaseDockWidgetFDC):
         self.setWindowTitle(QCoreApplication.translate("DockWidgetFDCCoordinatorSurveyor", "Allocate parcels Coordinator-Surveyor"))
 
     def _initialize_synchronize_initial_panel(self):
+        self.add_synchronization_layers()
         self.synchronize_panel = SynchronizeDataCoordinatorInitialPanelWidget(self,
                                                                               self._synchronization_controller,
                                                                               self._db)

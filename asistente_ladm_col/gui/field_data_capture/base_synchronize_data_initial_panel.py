@@ -19,15 +19,10 @@
 from qgis.PyQt.QtCore import (QCoreApplication,
                               Qt,
                               pyqtSignal)
-from qgis.PyQt.QtGui import QBrush
-from qgis.PyQt.QtWidgets import (QTableWidgetItem,
-                                 QMessageBox,
-                                 QFileDialog)
 from qgis.gui import QgsPanelWidget
 
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.enums import EnumLogHandler
-from asistente_ladm_col.config.general_config import NOT_ALLOCATED_PARCEL_COLOR
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils import get_ui_class
 
@@ -68,4 +63,5 @@ class BaseSynchronizeDataInitialPanelWidget(QgsPanelWidget, WIDGET_UI):
         pass
 
     def synchronize_data(self):
-        pass
+        res, msg = self._controller.synchronize_data(self._db, self.qfw_input_file.filePath().strip())
+        self.logger.success_warning(__name__, res, msg, EnumLogHandler.MESSAGE_BAR)

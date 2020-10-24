@@ -32,7 +32,9 @@ class AppSettings:
     COBOL_FILES_DIR_KEY = "Asistente-LADM-COL/etl_cobol/files_path"
     ETL_SPLITTER_COLLAPSED_KEY = "Asistente-LADM-COL/supplies/etl_splitter_collapsed"
     EXPORT_DIR_FIELD_DATA_KEY = "Asistente-LADM-COL/field_data_capture/export_dir"
+    FDC_COORDINATOR_XTF_PATH_KEY = "Asistente-LADM-COL/field_data_capture/coordinator_xtf_path"
     FDC_PROJECT_TEMPLATE_PATH_KEY = "Asistente-LADM-COL/field_data_capture/project_template_path"
+    FDC_SURVEYOR_GPKG_PATH_KEY = "Asistente-LADM-COL/field_data_capture/surveyor_gpkg_path"
     SNC_FILES_DIR_KEY = "Asistente-LADM-COL/etl_snc/files_path"
     TOLERANCE_KEY = "Asistente-LADM-COL/quality/tolerance"
 
@@ -80,12 +82,28 @@ class AppSettings:
         self.settings.setValue(self.EXPORT_DIR_FIELD_DATA_KEY, value)
 
     @property
+    def fdc_coordinator_xtf_path(self):
+        return self.settings.value(self.FDC_COORDINATOR_XTF_PATH_KEY, os.path.expanduser('~'))
+
+    @fdc_coordinator_xtf_path.setter
+    def fdc_coordinator_xtf_path(self, value):
+        self.settings.setValue(self.FDC_COORDINATOR_XTF_PATH_KEY, value)
+
+    @property
     def fdc_project_template_path(self):
         return self.settings.value(self.FDC_PROJECT_TEMPLATE_PATH_KEY, os.path.expanduser('~'))
 
     @fdc_project_template_path.setter
     def fdc_project_template_path(self, value):
         self.settings.setValue(self.FDC_PROJECT_TEMPLATE_PATH_KEY, value)
+
+    @property
+    def fdc_surveyor_gpkg_path(self):
+        return self.settings.value(self.FDC_SURVEYOR_GPKG_PATH_KEY, os.path.expanduser('~'))
+
+    @fdc_surveyor_gpkg_path.setter
+    def fdc_surveyor_gpkg_path(self, value):
+        self.settings.setValue(self.FDC_SURVEYOR_GPKG_PATH_KEY, value)
 
     @property
     def snc_files_path(self):

@@ -33,7 +33,7 @@ class SynchronizeDataCoordinatorInitialPanelWidget(BaseSynchronizeDataInitialPan
 
         self.qfw_input_file.lineEdit().setPlaceholderText(QCoreApplication.translate(
             "SynchronizeDataCoordinatorInitialPanelWidget", "Choose the input GeoPackage file..."))
-        self.qfw_input_file.setDefaultRoot(self.app.settings.fdc_project_template_path)
+        self.qfw_input_file.setDefaultRoot(self.app.settings.fdc_surveyor_gpkg_path)
         self.qfw_input_file.setDialogTitle(QCoreApplication.translate("SynchronizeDataCoordinatorInitialPanelWidget",
                                                                       "Select the GeoPackage file from surveyor"))
         self.qfw_input_file.setFilter('GeoPackage Database (*.gpkg)')
