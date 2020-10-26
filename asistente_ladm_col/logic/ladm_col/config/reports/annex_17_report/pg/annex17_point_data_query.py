@@ -2,7 +2,7 @@ def get_annex17_point_data_query(names, schema, plot_id):
     query = """WITH
         parametros AS (
           SELECT
-            {id} 	AS terreno_t_id,
+            {plot_id} 	AS terreno_t_id,
              2 		AS criterio_punto_inicial, --tipo de criterio para seleccionar el punto inicial del terreno, valores posibles: 1,2 parametrizar
              4		AS criterio_observador --1: Centroide, 2: Centro del extent, 3: punto en la superficie, 4: Punto mas cercano al centroide dentro del poligono
         ),
@@ -117,6 +117,6 @@ def get_annex17_point_data_query(names, schema, plot_id):
             ) AS f
         ) AS ff;""".format(**vars(names),  # Custom keys are searched in Table And Field Names object
                            schema=schema,
-                           id=plot_id)
+                           plot_id=plot_id)
 
     return query

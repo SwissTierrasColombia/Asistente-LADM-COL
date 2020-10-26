@@ -40,7 +40,8 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       DEPENDENCY_REPORTS_DIR_NAME)
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.utils.qt_utils import normalize_local_url
+from asistente_ladm_col.utils.qt_utils import (normalize_local_url,
+                                               OverrideCursor)
 from asistente_ladm_col.lib.dependency.report_dependency import ReportDependency
 from asistente_ladm_col.lib.dependency.java_dependency import JavaDependency
 
@@ -228,58 +229,62 @@ class ReportGenerator(QObject):
         polygons_with_holes = []
         multi_polygons = []
 
-        for selected_plot in selected_plots:
-            plot_id = selected_plot[db.names.T_ID_F]
+        with OverrideCursor(Qt.WaitCursor):
+            for selected_plot in selected_plots:
+                plot_id = selected_plot[db.names.T_ID_F]
 
-            geometry = selected_plot.geometry()
-            abstract_geometry = geometry.get()
-            if abstract_geometry.ringCount() > 1:
-                polygons_with_holes.append(str(plot_id))
-                self.logger.warning(__name__, QCoreApplication.translate("ReportGenerator",
-                    "Skipping Annex 17 for plot with {}={} because it has holes. The reporter module does not support such polygons.").format(db.names.T_ID_F, plot_id))
-                continue
-            if abstract_geometry.numGeometries() > 1:
-                multi_polygons.append(str(plot_id))
-                self.logger.warning(__name__, QCoreApplication.translate("ReportGenerator",
-                    "Skipping Annex 17 for plot with {}={} because it is a multi-polygon. The reporter module does not support such polygons.").format(db.names.T_ID_F, plot_id))
-                continue
+                geometry = selected_plot.geometry()
+                abstract_geometry = geometry.get()
+                if abstract_geometry.ringCount() > 1:
+                    polygons_with_holes.append(str(plot_id))
+                    self.logger.warning(__name__, QCoreApplication.translate("ReportGenerator",
+                        "Skipping Annex 17 for plot with {}={} because it has holes. The reporter module does not support such polygons.").format(db.names.T_ID_F, plot_id))
+                    continue
+                if abstract_geometry.numGeometries() > 1:
+                    multi_polygons.append(str(plot_id))
+                    self.logger.warning(__name__, QCoreApplication.translate("ReportGenerator",
+                        "Skipping Annex 17 for plot with {}={} because it is a multi-polygon. The reporter module does not support such polygons.").format(db.names.T_ID_F, plot_id))
+                    continue
 
-            # Generate data file
-            json_file = self.update_json_data(db, json_spec_file, plot_id, tmp_dir, report_type)
-            self.logger.debug(__name__, "JSON file for reports: {}".format(json_file))
+                # Generate data file
+                json_file = self.update_json_data(db, json_spec_file, plot_id, tmp_dir, report_type)
+                self.logger.debug(__name__, "JSON file for reports: {}".format(json_file))
 
-            # Run sh/bat passing config and data files
-            proc = QProcess()
-            proc.readyReadStandardError.connect(
-                functools.partial(self.stderr_ready, proc=proc))
-            proc.readyReadStandardOutput.connect(
-                functools.partial(self.stdout_ready, proc=proc))
+                # Run sh/bat passing config and data files
+                proc = QProcess()
+                proc.readyReadStandardError.connect(
+                    functools.partial(self.stderr_ready, proc=proc))
+                proc.readyReadStandardOutput.connect(
+                    functools.partial(self.stdout_ready, proc=proc))
 
-            parcel_number = self.ladm_data.get_parcels_related_to_plots(db, [plot_id], db.names.LC_PARCEL_T_PARCEL_NUMBER_F) or ['']
-            file_name = '{}_{}_{}.pdf'.format(report_type, plot_id, parcel_number[0])
+                parcel_number = self.ladm_data.get_parcels_related_to_plots(db, [plot_id], db.names.LC_PARCEL_T_PARCEL_NUMBER_F) or ['']
+                file_name = '{}_{}_{}.pdf'.format(report_type, plot_id, parcel_number[0])
 
-            current_report_path = os.path.join(save_into_folder, file_name)
-            proc.start(script_path, ['-config', yaml_config_path, '-spec', json_file, '-output', current_report_path])
-
-            if not proc.waitForStarted():
-                # Grant execution permissions
-                os.chmod(script_path, stat.S_IXOTH | stat.S_IXGRP | stat.S_IXUSR | stat.S_IRUSR | stat.S_IRGRP)
+                current_report_path = os.path.join(save_into_folder, file_name)
                 proc.start(script_path, ['-config', yaml_config_path, '-spec', json_file, '-output', current_report_path])
 
-            if not proc.waitForStarted():
-                proc = None
-                self.logger.warning(__name__, "Couldn't execute script to generate report...")
-            else:
-                loop = QEventLoop()
-                proc.finished.connect(loop.exit)
-                loop.exec()
+                if not proc.waitForStarted():
+                    # Grant execution permissions
+                    os.chmod(script_path, stat.S_IXOTH | stat.S_IXGRP | stat.S_IXUSR | stat.S_IRUSR | stat.S_IRGRP)
+                    proc.start(script_path, ['-config', yaml_config_path, '-spec', json_file, '-output', current_report_path])
 
-                self.logger.debug(__name__, "{}:{}".format(plot_id, proc.exitCode()))
-                if proc.exitCode() == 0:
-                    count += 1
+                if not proc.waitForStarted():
+                    proc = None
+                    self.logger.warning(__name__, "Couldn't execute script to generate report...")
+                else:
+                    loop = QEventLoop()
+                    proc.finished.connect(loop.exit)
+                    loop.exec()
 
-                step += 1
-                progress.setValue(step * 100 / total)
+                    self.logger.debug(__name__, "{}:{}".format(plot_id, proc.exitCode()))
+                    if proc.exitCode() == 0:
+                        count += 1
+
+                    step += 1
+                    try:
+                        progress.setValue(step * 100 / total)
+                    except RuntimeError:
+                        pass  # progressBar was deleted
 
         os.remove(yaml_config_path)
 
