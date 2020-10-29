@@ -1388,3 +1388,16 @@ class LADMData(QObject):
                 return False
 
         return True
+
+    @staticmethod
+    def get_basket_uuid(db, t_basket):
+        """
+        Only call this function if you know the basket table has such t_id!
+
+        :param db: DBConnector object
+        :param t_basket: Basket's t_id
+        :return: Basket's t_ili_tid
+        """
+        table = LADMData.get_basket_table(db)
+        feature = next(table.getFeatures('"{}" = {}'.format(db.names.T_ID_F, t_basket)))
+        return feature[db.names.T_ILI_TID_F]
