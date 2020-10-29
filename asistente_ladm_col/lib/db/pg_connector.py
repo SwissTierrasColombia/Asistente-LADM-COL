@@ -246,7 +246,7 @@ class PGConnector(ClientServerDB):
         if mode:
             where_id = "WHERE l.{T_ID_F} = {plot_id}".format(T_ID_F=self.names.T_ID_F, plot_id=plot_id)
         else:
-            scale_zoom = 200 if overview else 100
+            scale_zoom = 1000 if overview else 100
             where_id = """
                         WHERE l.{LC_PLOT_T_GEOMETRY_F} &&
                         (SELECT ST_Expand(ST_Envelope({LC_PLOT_T}.{LC_PLOT_T_GEOMETRY_F}), {scale_zoom})
@@ -300,7 +300,7 @@ class PGConnector(ClientServerDB):
                                                                        T_ID_F=self.names.T_ID_F,
                                                                        plot_id=plot_id)
         else:
-            scale_zoom = 200 if overview else 100
+            scale_zoom = 1000 if overview else 100
             where_id = """
                         WHERE {LC_PLOT_T}.{LC_PLOT_T_GEOMETRY_F} &&
                         (SELECT ST_Expand(ST_Envelope({LC_PLOT_T}.{LC_PLOT_T_GEOMETRY_F}), {scale_zoom})

@@ -84,11 +84,11 @@ def get_municipality_boundary(names, schema, plot_id, overview):
     :param schema: db schema name
     :param plot_id: t_id field from select plot
     :param overview: True if you want the info for the overview map or false for the general map.
-                    Zoom level: 30 overview map
-                                15 map
+                    Zoom level: 1000 overview map
+                                100 map
     :return:
     """
-    scale_zoom = 200 if overview else 100
+    scale_zoom = 1000 if overview else 100
     query = """
             WITH
             limite_municipio AS (SELECT geometria AS geom , nombre_municipio FROM {schema}.cc_limitemunicipio
@@ -118,11 +118,11 @@ def get_urban_limit(names, schema, plot_id, overview):
     :param schema: db schema name
     :param plot_id: t_id field from select plot
     :param overview: True if you want the info for the overview map or false for the general map.
-                    Scale Zoom level: 30 overview map
-                                15 map
+                    Scale Zoom level: 1000 overview map
+                                      100 map
     :return:
     """
-    scale_zoom = 200 if overview else 100
+    scale_zoom = 1000 if overview else 100
     query = """
             WITH
             perimetro_urbano AS (
@@ -153,11 +153,11 @@ def get_road_nomenclature(names, schema, plot_id, overview):
     :param schema: db schema name
     :param plot_id: t_id field from select plot
     :param overview: True if you want the info for the overview map or false for the general map.
-                    Zoom level: 30 overview map
-                                15 map
+                    Zoom level: 1000 overview map
+                                100 map
     :return: sql query
     """
-    scale_zoom = 200 if overview else 100
+    scale_zoom = 1000 if overview else 100
     query = """
             WITH
             nomenclatura_vial AS (
