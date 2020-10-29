@@ -380,6 +380,51 @@ def _valuation_model_required(func_to_decorate):
 
     return decorated_function
 
+# TODO: Unify all model required decorators into one with model_key as argument
+def _survey_model_and_cadastral_cartography_model_required(func_to_decorate):
+    """Requires list of sources. Example: [COLLECTED_DB_SOURCE, SUPPLIES_DB_SOURCE]"""
+
+    @wraps(func_to_decorate)
+    def decorated_function(*args, **kwargs):
+        inst = args[0]
+        context = args[1]
+
+        for db_source in context.get_db_sources():
+            db = inst.conn_manager.get_db_connector_from_source(db_source=db_source)
+            db.test_connection()
+
+            if not db.survey_model_exists() or not db.cadastral_cartography_model_exists():
+                widget = inst.iface.messageBar().createMessage("Asistente LADM-COL",
+                                                               QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                                                          "Check your {} database connection. The '{}' or '{}' model is required for this functionality, but could not be found in your current database. Click the button to go to Settings.").format(
+                                                                   Tr.tr_db_source(db_source),
+                                                                   LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).alias(),
+                                                                   LADMColModelRegistry().model(LADMNames.CADASTRAL_CARTOGRAPHY_MODEL_KEY).alias()))
+                button = QPushButton(widget)
+                button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"))
+
+                settings_context = SettingsContext(db_source)
+                settings_context.required_models = [LADMNames.SURVEY_MODEL_KEY,
+                                                    LADMNames.CADASTRAL_CARTOGRAPHY_MODEL_KEY]
+                settings_context.tab_pages_list = [SETTINGS_CONNECTION_TAB_INDEX]
+                settings_context.title = QCoreApplication.translate("SettingsDialog", "{} Connection Settings").format(
+                    Tr.tr_db_source(db_source))
+                settings_context.tip = QCoreApplication.translate("SettingsDialog",
+                                                                  "Set a DB connection with the '{}' or '{}' model.").format(
+                    LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).alias(),
+                    LADMColModelRegistry().model(LADMNames.CADASTRAL_CARTOGRAPHY_MODEL_KEY).alias())
+                button.pressed.connect(partial(inst.show_settings_clear_message_bar, settings_context))
+
+                widget.layout().addWidget(button)
+                inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
+                inst.logger.warning(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                                         "A dialog/tool couldn't be opened/executed, connection to DB was not valid."))
+                return
+
+        func_to_decorate(*args, **kwargs)
+
+    return decorated_function
+
 def _map_swipe_tool_required(func_to_decorate):
     @wraps(func_to_decorate)
     def decorated_function(*args, **kwargs):
