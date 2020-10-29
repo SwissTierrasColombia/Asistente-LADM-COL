@@ -279,7 +279,8 @@ class WizardConfig:
                     names.LC_BUILDING_T: None,
                     names.LC_BUILDING_UNIT_T: None,
                     names.COL_UE_BAUNIT_T: None,
-                    names.LC_CONDITION_PARCEL_TYPE_D: None
+                    names.LC_CONDITION_PARCEL_TYPE_D: None,
+                    names.EXT_ADDRESS_S: None
                 },
                 WIZARD_EDITING_LAYER_NAME: names.LC_PARCEL_T,
                 WIZARD_READ_ONLY_FIELDS: [names.LC_PARCEL_T_PARCEL_TYPE_F],
