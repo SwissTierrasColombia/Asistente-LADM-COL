@@ -21,6 +21,8 @@ from qgis.PyQt.QtCore import (QObject,
                               QCoreApplication)
 from qgis.core import QgsProject
 
+from asistente_ladm_col.app_interface import AppInterface
+from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.config.translation_strings import (TranslatableConfigStrings,
                                                            ERROR_LAYER_GROUP)
@@ -41,8 +43,9 @@ class QgisModelBakerUtils(QObject):
             tool = self._dbs_supported.get_db_factory(db.engine).get_model_baker_db_ili_mode()
 
             QgisModelBaker = qgis.utils.plugins["QgisModelBaker"]
-            generator = QgisModelBaker.get_generator()(tool,
-                db.uri, "smart2", db.schema, pg_estimated_metadata=False)
+            generator = QgisModelBaker.get_generator()(tool, db.uri, "smart2", db.schema, pg_estimated_metadata=False)
+            tables_to_ignore = LayerConfig.get_tables_to_ignore(db.names, AppInterface().core.get_active_models_per_db(db))
+            generator.set_additional_ignored_layers(tables_to_ignore)
             return generator
         else:
             self.logger.critical(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
@@ -70,10 +73,7 @@ class QgisModelBakerUtils(QObject):
 
         if 'QgisModelBaker' in qgis.utils.plugins:
             QgisModelBaker = qgis.utils.plugins["QgisModelBaker"]
-
-            tool = self._dbs_supported.get_db_factory(db.engine).get_model_baker_db_ili_mode()
-
-            generator = QgisModelBaker.get_generator()(tool, db.uri, "smart2", db.schema, pg_estimated_metadata=False)
+            generator = self.get_generator(db)
             layers = generator.layers(layer_list)
             relations, bags_of_enum = generator.relations(layers, layer_list)
             legend = generator.legend(layers, ignore_node_names=[translated_strings[ERROR_LAYER_GROUP]])
@@ -92,10 +92,8 @@ class QgisModelBakerUtils(QObject):
         """
         layers = list()
         if 'QgisModelBaker' in qgis.utils.plugins:
-            QgisModelBaker = qgis.utils.plugins["QgisModelBaker"]
-
             tool = self._dbs_supported.get_db_factory(db.engine).get_model_baker_db_ili_mode()
-            generator = QgisModelBaker.get_generator()(tool, db.uri, "smart2", db.schema, pg_estimated_metadata=False)
+            generator = self.get_generator(db)
             model_baker_layers = generator.layers(layer_list)
 
             for model_baker_layer in model_baker_layers:

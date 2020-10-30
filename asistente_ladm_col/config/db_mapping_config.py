@@ -123,6 +123,13 @@ DB_MAPPING_CONFIG = {
         "Modelo_Aplicacion_LADMCOL_Lev_Cat.LC_UnidadConstruccionTipo": {QueryNames.VARIABLE_NAME: "LC_BUILDING_UNIT_TYPE_D", QueryNames.FIELDS_DICT: {}},
         "Modelo_Aplicacion_LADMCOL_Lev_Cat.LC_CondicionPredioTipo": {QueryNames.VARIABLE_NAME: "LC_CONDITION_PARCEL_TYPE_D", QueryNames.FIELDS_DICT: {}},
         "Modelo_Aplicacion_LADMCOL_Lev_Cat.LC_DerechoTipo": {QueryNames.VARIABLE_NAME: "LC_RIGHT_TYPE_D", QueryNames.FIELDS_DICT: {}},
+        "Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_NU_AgrupacionUnidadesEspaciales": {QueryNames.VARIABLE_NAME: "LC_NU_GROUP_SPATIAL_UNIT_T", QueryNames.FIELDS_DICT: {}},
+        "Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_NU_CarasLindero": {QueryNames.VARIABLE_NAME: "LC_NU_BOUNDARY_FACE_T", QueryNames.FIELDS_DICT: {}},
+        "Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_NU_EspacioJuridicoRedServicios": {QueryNames.VARIABLE_NAME: "LC_NU_LEGAL_SPACE_SERVICE_NETWORK_T", QueryNames.FIELDS_DICT: {}},
+        "Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_NU_EspacioJuridicoUnidadEdificacion": {QueryNames.VARIABLE_NAME: "LC_NU_LEGAL_SPACE_BUILDING_UNIT_T", QueryNames.FIELDS_DICT: {}},
+        "Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_NU_Nivel": {QueryNames.VARIABLE_NAME: "LC_NU_LEVEL_T", QueryNames.FIELDS_DICT: {}},
+        "Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_NU_RelacionNecesariaBAUnits": {QueryNames.VARIABLE_NAME: "LC_NU_REQUIRED_RELATION_BAUNITS_T", QueryNames.FIELDS_DICT: {}},
+        "Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_NU_RelacionNecesariaUnidadesEspaciales": {QueryNames.VARIABLE_NAME: "LC_NU_REQUIRED_RELATION_SPATIAL_UNITS_T", QueryNames.FIELDS_DICT: {}},
         "Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_AgrupacionInteresados": {QueryNames.VARIABLE_NAME: "LC_GROUP_PARTY_T", QueryNames.FIELDS_DICT: {
             "LADM_COL.LADM_Nucleo.COL_AgrupacionInteresados.Tipo": "COL_GROUP_PARTY_T_TYPE_F",
             "LADM_COL.LADM_Nucleo.COL_Interesado.Nombre": "COL_PARTY_T_NAME_F",
