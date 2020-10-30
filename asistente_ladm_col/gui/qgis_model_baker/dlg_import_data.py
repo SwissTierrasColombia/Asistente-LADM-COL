@@ -25,7 +25,7 @@ from QgisModelBaker.libili2db.ili2dbconfig import (ImportDataConfiguration,
                                                    BaseConfiguration)
 from QgisModelBaker.libili2db.ili2dbutils import color_log_text
 from QgisModelBaker.libili2db.ilicache import IliCache
-from QgisModelBaker.libili2db.iliimporter import JavaNotFoundError
+from QgisModelBaker.libili2db.ili2dbutils import JavaNotFoundError
 from asistente_ladm_col.config.ili2db_names import ILI2DBNames
 from qgis.PyQt.QtCore import (Qt,
                               pyqtSignal,
