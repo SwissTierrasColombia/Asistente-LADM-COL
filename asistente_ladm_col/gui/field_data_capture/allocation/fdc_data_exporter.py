@@ -19,7 +19,6 @@
 import os.path
 import shutil
 
-from QgisModelBaker.libili2db.globals import DbIliMode
 from qgis.PyQt.QtCore import (QCoreApplication,
                               pyqtSignal,
                               QObject,
@@ -31,27 +30,17 @@ from qgis.core import (QgsMessageLog,
 import processing
 
 from QgisModelBaker.libili2db.ili2dbutils import JavaNotFoundError
-from QgisModelBaker.libili2db import iliexporter, iliimporter
-from QgisModelBaker.libili2db.ili2dbconfig import (BaseConfiguration,
-                                                   ExportConfiguration,
-                                                   SchemaImportConfiguration,
-                                                   ImportDataConfiguration)
-from QgisModelBaker.libili2db.ilicache import IliCache
+from QgisModelBaker.libili2db import iliexporter
 
-from asistente_ladm_col.config.config_db_supported import ConfigDBsSupported
 from asistente_ladm_col.config.general_config import (JAVA_REQUIRED_VERSION,
-                                                      DEFAULT_USE_CUSTOM_MODELS,
-                                                      DEFAULT_MODELS_DIR,
-                                                      CTM12_GPKG_SCRIPT_PATH,
                                                       FDC_WILD_CARD_BASKET_ID)
-from asistente_ladm_col.config.ili2db_names import ILI2DBNames
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.lib.db.gpkg_connector import GPKGConnector
-from asistente_ladm_col.lib.dependency.java_dependency import JavaDependency
 from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
 from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.lib.qgis_model_baker.ili2db import Ili2DB
 from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
-from asistente_ladm_col.utils.qt_utils import (OverrideCursor,
-                                               ProcessWithStatus)
+from asistente_ladm_col.utils.qt_utils import OverrideCursor
 
 
 class FieldDataCaptureDataExporter(QObject):
@@ -71,12 +60,9 @@ class FieldDataCaptureDataExporter(QObject):
         self._raster_layer = raster_layer
 
         self.logger = Logger()
-
         self.log = ''
-        self.java_dependency = JavaDependency()
-        self.java_dependency.download_dependency_completed.connect(self.download_java_complete)
 
-        self._dbs_supported = ConfigDBsSupported()
+        self._ili2db = Ili2DB()
 
     def export_baskets(self):
         if self._with_offline_project and not self._template_project_path:
@@ -84,52 +70,27 @@ class FieldDataCaptureDataExporter(QObject):
 
         self.total_progress_updated.emit(1)  # Let users know we started already
 
-        java_home_set = self.java_dependency.set_java_home()
-        if not java_home_set:
-            message_java = QCoreApplication.translate("FieldDataCaptureDataExporter", """Configuring Java {}...""").format(
-                JAVA_REQUIRED_VERSION)
-            self.logger.status(message_java)
-            self.java_dependency.get_java_on_demand()
-            return
+        # Check prerequisite
+        if not self._ili2db.get_full_java_exe_path():
+            res_java, msg_java = self._ili2db.configure_java()
+            if not res_java:
+                return {None: (res_java, msg_java)}
 
-        self.base_configuration = BaseConfiguration()
-        self.ilicache = IliCache(self.base_configuration)
-        self.ilicache.refresh()
-
-        db_factory = self._dbs_supported.get_db_factory(self._db.engine)
-        configuration = ExportConfiguration()
-        db_factory.set_ili2db_configuration_params(self._db.dict_conn_params, configuration)
-        configuration.with_exporttid = True
-        full_java_exe_path = JavaDependency.get_full_java_exe_path()
-        if full_java_exe_path:
-            self.base_configuration.java_path = full_java_exe_path
-
-        # Check custom model directories
-        if QSettings().value('Asistente-LADM-COL/models/custom_model_directories_is_checked', DEFAULT_USE_CUSTOM_MODELS, type=bool):
-            custom_model_directories = QSettings().value('Asistente-LADM-COL/models/custom_models', DEFAULT_MODELS_DIR)
-            if not custom_model_directories:
-                self.base_configuration.custom_model_directories_enabled = False
-            else:
-                self.base_configuration.custom_model_directories = custom_model_directories
-                self.base_configuration.custom_model_directories_enabled = True
-
-        configuration.base_configuration = self.base_configuration
-        ili_models = self.get_ili_models()
-        if ili_models:
-            configuration.ilimodels = ';'.join(ili_models)
+        # Configure command parameters
+        db_factory = self._ili2db.dbs_supported.get_db_factory(self._db.engine)
+        configuration = self._ili2db.get_export_configuration(db_factory, self._db, '')
 
         self.exporter = iliexporter.Exporter()
         self.exporter.tool = db_factory.get_model_baker_db_ili_mode()
         self.exporter.process_started.connect(self.on_process_started)
         self.exporter.stderr.connect(self.on_stderr)
-        #self.exporter.process_finished.connect(self.on_process_finished)
 
         res = dict()
         count = 0
         current_progress = 0  # Range 0-100
 
         with OverrideCursor(Qt.WaitCursor):
-            for basket,name in self._basket_dict.items():
+            for basket, name in self._basket_dict.items():
                 self.log = ''
                 configuration.xtffile = os.path.join(self._export_dir, "{}.xtf".format(name))
                 configuration.baskets = basket
@@ -144,7 +105,8 @@ class FieldDataCaptureDataExporter(QObject):
                     else:
                         if self._with_offline_project:
                             self.logger.info(__name__, "Generating offline project for field data capture... ({})".format(name))
-                            res[basket] = self.generate_qgis_offline_project(configuration.xtffile, current_progress)
+                            res_off, msg_off = self.generate_qgis_offline_project(configuration.xtffile, current_progress)
+                            res[basket] = res_off, msg_off
                         else:
                             res[basket] = (True, QCoreApplication.translate("FieldDataCaptureDataExporter", "XTF export for '{}' successful!").format(name))
                 except JavaNotFoundError:
@@ -193,19 +155,22 @@ class FieldDataCaptureDataExporter(QObject):
 
         # Run schema import
         gpkg_path = os.path.join(offline_dir, 'data.gpkg')
-        res_schema_import = self._run_gpkg_schema_import(gpkg_path, user_alias)
+        db = GPKGConnector(gpkg_path)
+        model = LADMColModelRegistry().model(LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY)
+        res_schema_import, msg_schema_import = self._ili2db.import_schema(db,
+                                                                          [model.full_name()],
+                                                                          create_basket_col=True)
         if not res_schema_import:
-            return res_schema_import
+            return res_schema_import, msg_schema_import
         update_progress(3)
 
         # Run import data
-        res_import_data = self._run_gpkg_import_data(gpkg_path, xtf_path, user_alias)
+        res_import_data, msg_import_data = self._ili2db.import_data(db, xtf_path)
         if not res_import_data:
-            return res_import_data
+            return res_import_data, msg_import_data
         update_progress(4)
 
         # Create basket for new features created in the field
-        db = GPKGConnector(gpkg_path)
         db.test_connection()  # To generate db.names
         LADMData.get_or_create_default_ili2db_basket(db, FDC_WILD_CARD_BASKET_ID)
 
@@ -236,106 +201,6 @@ class FieldDataCaptureDataExporter(QObject):
         shutil.copyfile(self._template_project_path, project_path)
 
         return True, QCoreApplication.translate("FieldDataCaptureDataExporter", "Offline project for '{}' was created successfully!").format(user_alias)
-
-    def _run_gpkg_schema_import(self, gpkg_path, user_alias):
-        # We don't check any Java stuff because to get here we should have run already the export
-        self.log = ''
-        db_factory = self._dbs_supported.get_db_factory('gpkg')
-        configuration = SchemaImportConfiguration()
-        configuration.base_configuration = self.base_configuration
-
-        db_factory.set_ili2db_configuration_params({'dbfile': gpkg_path}, configuration)
-        configuration.inheritance = ILI2DBNames.DEFAULT_INHERITANCE
-        configuration.create_basket_col = True
-        configuration.create_import_tid = ILI2DBNames.CREATE_IMPORT_TID
-        configuration.stroke_arcs = ILI2DBNames.STROKE_ARCS
-
-        # EPSG:9377 support for GPKG (Ugly, I know) We need to send known parameters, we'll fix this in the post_script
-        configuration.srs_auth = 'EPSG'
-        configuration.srs_code = 3116
-        configuration.post_script = CTM12_GPKG_SCRIPT_PATH
-
-        ili_models = self.get_ili_models()
-        if ili_models:
-            configuration.ilimodels = ';'.join(ili_models)
-
-        importer = iliimporter.Importer()
-        importer.tool = DbIliMode.ili2gpkg
-        importer.configuration = configuration
-        importer.stderr.connect(self.on_stderr)
-        importer.process_started.connect(self.on_process_started)
-
-        msg_status = QCoreApplication.translate("FieldDataCaptureDataExporter",
-                                                "Creating LADM-COL structure in GPKG ({})...").format(user_alias)
-        with ProcessWithStatus(msg_status):
-            if importer.run() != iliimporter.Importer.SUCCESS:
-                msg = QCoreApplication.translate("FieldDataCaptureDataExporter",
-                                                 "An error occurred when creating the LADM-COL structure for the offline project for '{}' (check the QGIS log panel).").format(user_alias)
-                res = (False, msg)
-                QgsMessageLog.logMessage(self.log, QCoreApplication.translate("FieldDataCaptureDataExporter",
-                                                                              "Allocate to surveyors"),
-                                         Qgis.Critical)
-            else:
-                res = (True, QCoreApplication.translate("FieldDataCaptureDataExporter",
-                                                        "Schema import for '{}' successful!").format(user_alias))
-
-        return res
-
-    def _run_gpkg_import_data(self, gpkg_path, xtf_path, user_alias):
-        # We don't check any Java stuff because to get here we should have run already the export
-        self.log = ''
-        db_factory = self._dbs_supported.get_db_factory('gpkg')
-        configuration = ImportDataConfiguration()
-        configuration.base_configuration = self.base_configuration
-
-        db_factory.set_ili2db_configuration_params({'dbfile': gpkg_path}, configuration)
-        configuration.xtffile = xtf_path
-        configuration.with_importtid = True
-        # configuration.disable_validation = False
-
-        ili_models = self.get_ili_models()
-        if ili_models:
-            configuration.ilimodels = ';'.join(ili_models)
-
-        importer = iliimporter.Importer(dataImport=True)
-        importer.tool = DbIliMode.ili2gpkg
-        importer.configuration = configuration
-        importer.stderr.connect(self.on_stderr)
-        importer.process_started.connect(self.on_process_started)
-
-        msg_status = QCoreApplication.translate("FieldDataCaptureDataExporter",
-                                                "Importing data from XTF to GPKG ({})...").format(user_alias)
-        with ProcessWithStatus(msg_status):
-            if importer.run() != iliimporter.Importer.SUCCESS:
-                msg = QCoreApplication.translate("FieldDataCaptureDataExporter",
-                                                 "An error occurred when importing the XTF for the offline project for '{}' (check the QGIS log panel).").format(user_alias)
-                res = (False, msg)
-                QgsMessageLog.logMessage(self.log, QCoreApplication.translate("FieldDataCaptureDataExporter",
-                                                                              "Allocate to surveyors"),
-                                         Qgis.Critical)
-            else:
-                res = (True, QCoreApplication.translate("FieldDataCaptureDataExporter",
-                                                        "Import data for '{}' successful!").format(user_alias))
-
-        return res
-
-    def get_ili_models(self):
-        ili_models = list()
-        model_names = self._db.get_models()
-        if model_names:
-            for model in LADMColModelRegistry().supported_models():
-                if not model.hidden() and model.full_name() in model_names:
-                    ili_models.append(model.full_name())
-
-        return ili_models
-
-    def download_java_complete(self):
-        self.export_baskets()
-
-    #def on_process_finished(self):
-    #    self.run_export()
-    #if self._basket_dict:
-    #    basket, = self._basket_dict.popitem()
 
     def on_process_started(self, command):
         self.log += command + '\n'

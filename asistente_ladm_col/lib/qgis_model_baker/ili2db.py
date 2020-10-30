@@ -16,8 +16,6 @@
  *                                                                         *
  ***************************************************************************/
 """
-from functools import partial
-
 from qgis.PyQt.QtCore import (QObject,
                               QCoreApplication,
                               QSettings)
@@ -40,6 +38,7 @@ from asistente_ladm_col.config.ili2db_names import ILI2DBNames
 from asistente_ladm_col.lib.dependency.java_dependency import JavaDependency
 from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
 from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.utils.decorators import _with_override_cursor
 
 
 class Ili2DB(QObject):
@@ -54,41 +53,36 @@ class Ili2DB(QObject):
         self._java_path = ''
         self._java_dependency = JavaDependency()
 
-        self._dbs_supported = ConfigDBsSupported()
+        self.dbs_supported = ConfigDBsSupported()
 
         self._base_configuration = None
         self._ilicache = None
         self._log = ''
 
-    def _get_full_java_exe_path(self):
+    def get_full_java_exe_path(self):
         if not self._java_path:
             self._java_path = JavaDependency.get_full_java_exe_path()
 
         return self._java_path
 
-    def _configure_java(self, function_to_call, function_params):
+    def configure_java(self):
         if not self._java_dependency.set_java_home():
             message_java = QCoreApplication.translate("Ili2DB",
                                                       """Configuring Java {}...""").format(JAVA_REQUIRED_VERSION)
             self.logger.status(message_java)
-            self._java_dependency.download_dependency_completed.connect(partial(self.download_java_complete,
-                                                                                function_to_call,
-                                                                                function_params))
-            self._java_dependency.get_java_on_demand()
-            return
+            self._java_dependency.get_java_on_demand(asynchronous=False)
 
-        java_path = self._get_full_java_exe_path()
-        if java_path:
-            # Now that we've configured Java properly, let's call again the function that was originally called
-            function_to_call(**function_params)
-        else:
-            self.logger.critical_msg(__name__, QCoreApplication.translate("Ili2DB",
+        res = True
+        msg = 'Success!'
+
+        java_path = self.get_full_java_exe_path()
+        if not java_path:
+            res = False
+            msg = QCoreApplication.translate("Ili2DB",
                                              "Java {} could not be confiured for you. You can configure the JAVA_HOME environment variable manually, restart QGIS and try again.").format(
-                JAVA_REQUIRED_VERSION))
+                JAVA_REQUIRED_VERSION)
 
-    def download_java_complete(self, function_to_call, function_params):
-        # Now that we got Java, set the java home
-        self._configure_java(function_to_call, function_params)
+        return res, msg
 
     def _get_base_configuration(self):
         """
@@ -100,7 +94,7 @@ class Ili2DB(QObject):
             self._ilicache = IliCache(self._base_configuration)
             self._ilicache.refresh()
 
-            self._base_configuration.java_path = self._get_full_java_exe_path()  # It is well configured at this point!
+            self._base_configuration.java_path = self.get_full_java_exe_path()  # It is well configured at this point!
 
             # Check custom model directories
             if QSettings().value('Asistente-LADM-COL/models/custom_model_directories_is_checked', DEFAULT_USE_CUSTOM_MODELS,
@@ -124,7 +118,7 @@ class Ili2DB(QObject):
 
         return ili_models
 
-    def get_import_schema_configuration(self, db_factory, db, create_basket_col=False):
+    def get_import_schema_configuration(self, db_factory, db, ili_models=list(), create_basket_col=False):
         configuration = SchemaImportConfiguration()
         db_factory.set_ili2db_configuration_params(db.dict_conn_params, configuration)
         configuration.inheritance = ILI2DBNames.DEFAULT_INHERITANCE
@@ -133,9 +127,7 @@ class Ili2DB(QObject):
         configuration.stroke_arcs = ILI2DBNames.STROKE_ARCS
 
         configuration.base_configuration = self._get_base_configuration()
-        ili_models = self._get_ili_models(db)
-        if ili_models:
-            configuration.ilimodels = ';'.join(ili_models)
+        configuration.ilimodels = ';'.join(ili_models)
 
         if db.engine == 'gpkg':
             # EPSG:9377 support for GPKG (Ugly, I know) We need to send known parameters, we'll fix this in the post_script
@@ -181,15 +173,17 @@ class Ili2DB(QObject):
 
         return configuration
 
-    def import_schema(self, db, create_basket_col=False):
+    @_with_override_cursor
+    def import_schema(self, db, ili_models=list(), create_basket_col=False):
         # Check prerequisite
-        if not self._get_full_java_exe_path():
-            self._configure_java(self.import_schema, {'db': db, 'create_basket_col': create_basket_col})
-            return  # Current function will be called again when JAVA has been downloaded
+        if not self.get_full_java_exe_path():
+            res_java, msg_java = self.configure_java()
+            if not res_java:
+                return res_java, msg_java
 
         # Configure command parameters
-        db_factory = self._dbs_supported.get_db_factory(db.engine)
-        configuration = self.get_import_schema_configuration(db_factory, db, create_basket_col)
+        db_factory = self.dbs_supported.get_db_factory(db.engine)
+        configuration = self.get_import_schema_configuration(db_factory, db, ili_models, create_basket_col)
 
         # Configure run
         importer = iliimporter.Importer()
@@ -202,6 +196,7 @@ class Ili2DB(QObject):
         res = True
         msg = QCoreApplication.translate("Ili2DB", "Schema import ran successfully!")
         self._log = ''
+        self.logger.status(QCoreApplication.translate("Ili2Db", "Creating LADM-COL structure into {}...").format(db.engine.upper()))
         try:
             if importer.run() != iliimporter.Importer.SUCCESS:
                 msg = QCoreApplication.translate("Ili2DB",
@@ -215,20 +210,19 @@ class Ili2DB(QObject):
                 JAVA_REQUIRED_VERSION)
             res = False
 
+        self.logger.clear_status()
         return res, msg
 
+    @_with_override_cursor
     def import_data(self, db, xtf_path, dataset='', baskets=list(), disable_validation=False):
         # Check prerequisite
-        if not self._get_full_java_exe_path():
-            self._configure_java(self.import_schema, {'db': db,
-                                                      'xtf_path': xtf_path,
-                                                      'dataset': dataset,
-                                                      'baskets': baskets,
-                                                      'disable_validation': disable_validation})
-            return  # Current function will be called again when JAVA has been downloaded
+        if not self.get_full_java_exe_path():
+            res_java, msg_java = self.configure_java()
+            if not res_java:
+                return res_java, msg_java
 
         # Configure command parameters
-        db_factory = self._dbs_supported.get_db_factory(db.engine)
+        db_factory = self.dbs_supported.get_db_factory(db.engine)
         configuration = self.get_import_data_configuration(db_factory, db, xtf_path, dataset, baskets, disable_validation)
 
         # Configure run
@@ -242,6 +236,7 @@ class Ili2DB(QObject):
         res = True
         msg = QCoreApplication.translate("Ili2DB", "XTF '{}' imported successfully!").format(xtf_path)
         self._log = ''
+        self.logger.status(QCoreApplication.translate("Ili2Db", "Importing XTF into {}...").format(db.engine.upper()))
         try:
             if importer.run() != iliimporter.Importer.SUCCESS:
                 msg = QCoreApplication.translate("Ili2DB",
@@ -256,20 +251,19 @@ class Ili2DB(QObject):
                 JAVA_REQUIRED_VERSION)
             res = False
 
+        self.logger.clear_status()
         return res, msg
 
+    @_with_override_cursor
     def export(self, db, xtf_path, dataset='', baskets=list(), disable_validation=False):
         # Check prerequisite
-        if not self._get_full_java_exe_path():
-            self._configure_java(self.export, {'db': db,
-                                               'xtf_path': xtf_path,
-                                               'dataset': dataset,
-                                               'baskets': baskets,
-                                               'disable_validation': disable_validation})
-            return  # Current function will be called again when JAVA has been downloaded
+        if not self.get_full_java_exe_path():
+            res_java, msg_java = self.configure_java()
+            if not res_java:
+                return res_java, msg_java
 
         # Configure command parameters
-        db_factory = self._dbs_supported.get_db_factory(db.engine)
+        db_factory = self.dbs_supported.get_db_factory(db.engine)
         configuration = self.get_export_configuration(db_factory, db, xtf_path, dataset, baskets, disable_validation)
 
         # Configure run
@@ -283,6 +277,7 @@ class Ili2DB(QObject):
         res = True
         msg = QCoreApplication.translate("Ili2DB", "XTF '{}' exported successfully!").format(xtf_path)
         self._log = ''
+        self.logger.status(QCoreApplication.translate("Ili2Db", "Exporting from {} to XTF...").format(db.engine.upper()))
         try:
             if exporter.run() != iliexporter.Exporter.SUCCESS:
                 msg = QCoreApplication.translate("Ili2DB",
@@ -298,6 +293,7 @@ class Ili2DB(QObject):
                 JAVA_REQUIRED_VERSION)
             res = False
 
+        self.logger.clear_status()
         return res, msg
 
     def update(self, db, xtf_path, dataset_name):

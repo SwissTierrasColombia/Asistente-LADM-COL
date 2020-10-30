@@ -482,6 +482,6 @@ def _with_override_cursor(func_to_decorate):
     def decorated_function(*args, **kwargs):
 
         with OverrideCursor(Qt.WaitCursor):
-            func_to_decorate(*args, **kwargs)
+            return func_to_decorate(*args, **kwargs)
 
     return decorated_function
