@@ -23,7 +23,6 @@ import shutil
 import subprocess
 import sys
 import tarfile
-import tempfile
 from pathlib import Path
 from shutil import which
 
@@ -54,43 +53,32 @@ class JavaDependency(Dependency):
         Dependency.__init__(self)
         self.dependency_name = QCoreApplication.translate("JavaDependency", "JAVA")
 
-    def _save_dependency_file(self, fetcher_task):
-        if fetcher_task.reply() is not None:
-            # Write response to tmp file
-            tmp_file = tempfile.mktemp()
-            out_file = QFile(tmp_file)
-            out_file.open(QIODevice.WriteOnly)
-            out_file.write(fetcher_task.reply().readAll())
-            out_file.close()
+    def _save_dependency_file(self):
+        if not os.path.exists(DEPENDENCIES_BASE_PATH):
+            os.makedirs(DEPENDENCIES_BASE_PATH)
 
-            if not os.path.exists(DEPENDENCIES_BASE_PATH):
-                os.makedirs(DEPENDENCIES_BASE_PATH)
+        if md5sum(self._get_tmp_file()) == DICT_JAVA_MD5SUM[KEY_JAVA_OS_VERSION]:
 
-            if md5sum(tmp_file) == DICT_JAVA_MD5SUM[KEY_JAVA_OS_VERSION]:
-
-                try:
-                    tar = tarfile.open(tmp_file)
-                    tar.extractall(DEPENDENCIES_BASE_PATH)
-                    tar.close()
-                except tarfile.ReadError as e:
-                    self.logger.warning_msg(__name__, QCoreApplication.translate("JavaDependency",
-                                                                                 "There was an error with the download. The downloaded file is invalid."))
-                except PermissionError as e:
-                    self.logger.warning_msg(__name__, QCoreApplication.translate("JavaDependency",
-                                                                                 "Java couldn't be installed. Check if it is possible to write into this folder: <a href='file:///{path}'>{path}</a>").format(path=normalize_local_url(os.path.join(DEPENDENCIES_BASE_PATH), DICT_JAVA_DIR_NAME[KEY_JAVA_OS_VERSION])))
-
-            else:
+            try:
+                tar = tarfile.open(self._get_tmp_file())
+                tar.extractall(DEPENDENCIES_BASE_PATH)
+                tar.close()
+            except tarfile.ReadError as e:
                 self.logger.warning_msg(__name__, QCoreApplication.translate("JavaDependency",
                                                                              "There was an error with the download. The downloaded file is invalid."))
-            try:
-                os.remove(tmp_file)
-            except:
-                pass
+            except PermissionError as e:
+                self.logger.warning_msg(__name__, QCoreApplication.translate("JavaDependency",
+                                                                             "Java couldn't be installed. Check if it is possible to write into this folder: <a href='file:///{path}'>{path}</a>").format(path=normalize_local_url(os.path.join(DEPENDENCIES_BASE_PATH), DICT_JAVA_DIR_NAME[KEY_JAVA_OS_VERSION])))
 
-        self._downloading = False
+        else:
+            self.logger.warning_msg(__name__, QCoreApplication.translate("JavaDependency",
+                                                                         "There was an error with the download. The downloaded file is invalid."))
+        try:
+            os.remove(self._get_tmp_file())
+        except:
+            pass
 
-    def get_java_on_demand(self):
-
+    def get_java_on_demand(self, asynchronous=True):
         if self.check_if_dependency_is_valid():
             return
 
@@ -103,7 +91,11 @@ class JavaDependency(Dependency):
             shutil.rmtree(custom_java_dir_path, ignore_errors=True)
 
         url_java = DICT_JAVA_DOWNLOAD_URL[KEY_JAVA_OS_VERSION]
-        self.download_dependency(url_java)
+
+        if asynchronous:
+            self.download_dependency(url_java)
+        else:
+            self.download_dependency_synchronously(url_java)
 
     def set_java_home(self):
         """

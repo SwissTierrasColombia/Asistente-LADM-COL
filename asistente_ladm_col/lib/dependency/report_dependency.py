@@ -45,40 +45,31 @@ class ReportDependency(Dependency):
         Dependency.__init__(self)
         self.dependency_name = QCoreApplication.translate("ReportDependency", "reports")
 
-    def _save_dependency_file(self, fetcher_task):
-        self._downloading = False
-        if fetcher_task.reply() is not None:
-            # Write response to tmp file
-            tmp_file = tempfile.mktemp()
-            out_file = QFile(tmp_file)
-            out_file.open(QIODevice.WriteOnly)
-            out_file.write(fetcher_task.reply().readAll())
-            out_file.close()
+    def _save_dependency_file(self):
+        if not os.path.exists(DEPENDENCIES_BASE_PATH):
+            os.makedirs(DEPENDENCIES_BASE_PATH)
 
-            if not os.path.exists(DEPENDENCIES_BASE_PATH):
-                os.makedirs(DEPENDENCIES_BASE_PATH)
-
-            if md5sum(tmp_file) == REPORTS_LIBRARIES_MD5SUM:
-                try:
-                    with zipfile.ZipFile(tmp_file, "r") as zip_ref:
-                        zip_ref.extractall(DEPENDENCIES_BASE_PATH)
-                except zipfile.BadZipFile as e:
-                    self.logger.warning_msg(__name__, QCoreApplication.translate("ReportGenerator",
-                        "There was an error with the download. The downloaded file is invalid."))
-                except PermissionError as e:
-                    self.logger.warning_msg(__name__, QCoreApplication.translate("ReportGenerator",
-                        "Dependencies to generate reports couldn't be installed. Check if it is possible to write into this folder: <a href='file:///{path}'>{path}</a>").format(path=normalize_local_url(DEPENDENCY_REPORTS_DIR_NAME)))
-                else:
-                    self.logger.clear_message_bar()
-                    self.logger.info_msg(__name__, QCoreApplication.translate("ReportGenerator", "The dependency to generate reports is properly installed! Select plots and click again the button in the toolbar to generate reports."))
-            else:
-                self.logger.warning_msg(__name__, QCoreApplication.translate("ReportGenerator",
-                                                                             "There was an error with the download. The downloaded file is invalid."))
-
+        if md5sum(self._get_tmp_file()) == REPORTS_LIBRARIES_MD5SUM:
             try:
-                os.remove(tmp_file)
-            except:
-                pass
+                with zipfile.ZipFile(self._get_tmp_file(), "r") as zip_ref:
+                    zip_ref.extractall(DEPENDENCIES_BASE_PATH)
+            except zipfile.BadZipFile as e:
+                self.logger.warning_msg(__name__, QCoreApplication.translate("ReportGenerator",
+                    "There was an error with the download. The downloaded file is invalid."))
+            except PermissionError as e:
+                self.logger.warning_msg(__name__, QCoreApplication.translate("ReportGenerator",
+                    "Dependencies to generate reports couldn't be installed. Check if it is possible to write into this folder: <a href='file:///{path}'>{path}</a>").format(path=normalize_local_url(DEPENDENCY_REPORTS_DIR_NAME)))
+            else:
+                self.logger.clear_message_bar()
+                self.logger.info_msg(__name__, QCoreApplication.translate("ReportGenerator", "The dependency to generate reports is properly installed! Select plots and click again the button in the toolbar to generate reports."))
+        else:
+            self.logger.warning_msg(__name__, QCoreApplication.translate("ReportGenerator",
+                                                                         "There was an error with the download. The downloaded file is invalid."))
+
+        try:
+            os.remove(self._get_tmp_file())
+        except:
+            pass
 
     def check_if_dependency_is_valid(self):
         if os.path.exists(DEPENDENCY_REPORTS_DIR_NAME):

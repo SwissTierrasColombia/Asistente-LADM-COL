@@ -41,27 +41,19 @@ class PluginDependency(Dependency):
         self.plugin_exact_required_version = plugin_exact_required_version
         self.plugin_required_version_url = plugin_required_version_url
 
-        _, self.tmp_file = tempfile.mkstemp(".zip")
+        _, self._tmp_file = tempfile.mkstemp(".zip")
 
         self.download_dependency_completed.connect(self.__install_plugin_from_zip)
 
-    def _save_dependency_file(self, fetcher_task):
-        self._downloading = False
-        if fetcher_task.reply() is not None:
-            # Write response to tmp file
-            out_file = QFile(self.tmp_file)
-            out_file.open(QIODevice.WriteOnly)
-            out_file.write(fetcher_task.reply().readAll())
-            out_file.close()
-
-            self.logger.status(QCoreApplication.translate("Dependency", "The plugin ZIP file was downloaded!"))
+    def _save_dependency_file(self):
+        self.logger.status(QCoreApplication.translate("Dependency", "The plugin ZIP file was downloaded!"))
 
     def install(self):
         self.download_dependency(self.plugin_required_version_url)
 
     def __install_plugin_from_zip(self):
-        if os.path.isfile(self.tmp_file):
-            pyplugin_installer.instance().installFromZipFile(self.tmp_file)
+        if os.path.isfile(self._get_tmp_file()):
+            pyplugin_installer.instance().installFromZipFile(self._get_tmp_file())
             self.logger.success_msg(__name__, QCoreApplication.translate("Dependency",
                 "The plugin '{}' was successfully installed!").format(self.plugin_name))
         else:
@@ -71,7 +63,7 @@ class PluginDependency(Dependency):
         self.logger.clear_status()
 
         try:
-            os.remove(self.tmp_file)
+            os.remove(self._get_tmp_file())
         except:
             pass
 

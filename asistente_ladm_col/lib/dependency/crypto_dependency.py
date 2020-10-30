@@ -39,25 +39,14 @@ class CryptoDependency(Dependency):
         Dependency.__init__(self)
         self.dependency_name = QCoreApplication.translate("Dependency", "cryptography")
 
-    def _save_dependency_file(self, fetcher_task):
-        self._downloading = False
-        if fetcher_task.reply() is not None:
-            try:
-                if not os.path.exists(DEPENDENCY_CRYPTO_DIR):
-                    os.makedirs(DEPENDENCY_CRYPTO_DIR)
+        self._tmp_file = CRYPTO_LIBRARY_PATH
 
-                # Write response to tmp file
-                out_file = QFile(CRYPTO_LIBRARY_PATH)
-                out_file.open(QIODevice.WriteOnly)
-                out_file.write(fetcher_task.reply().readAll())
-                out_file.close()
+        if not os.path.exists(DEPENDENCY_CRYPTO_DIR):
+            os.makedirs(DEPENDENCY_CRYPTO_DIR)
 
-            except PermissionError as e:
-                self.logger.warning_msg(__name__, QCoreApplication.translate("EncrypterDecrypter",
-                    "The dependency used to encrypt/decrypt couldn't be installed. Check if it is possible to write into this folder: <a href='file:///{path}'>{path}</a>").format(path=normalize_local_url(DEPENDENCY_CRYPTO_DIR)))
-            else:
-                self.logger.clear_message_bar()
-                self.logger.info_msg(__name__, QCoreApplication.translate("EncrypterDecrypter", "The dependency used to encrypt/decrypt is properly installed!"))
+    def _save_dependency_file(self):
+        self.logger.clear_message_bar()
+        self.logger.info_msg(__name__, QCoreApplication.translate("EncrypterDecrypter", "The dependency used to encrypt/decrypt is properly installed!"))
 
     def check_if_dependency_is_valid(self):
         if os.path.exists(CRYPTO_LIBRARY_PATH):

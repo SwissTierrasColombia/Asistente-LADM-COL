@@ -27,13 +27,19 @@ import urllib
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QObject,
                               QSettings,
-                              Qt)
+                              Qt,
+                              QUrl,
+                              QFile,
+                              QIODevice,
+                              QEventLoop)
 from qgis.PyQt.QtPrintSupport import QPrinter
 from qgis.PyQt.QtGui import QValidator
+from qgis.PyQt.QtNetwork import QNetworkRequest
 from qgis.PyQt.QtWidgets import (QFileDialog,
                                  QApplication,
                                  QWizard,
                                  QTextEdit)
+from qgis.core import QgsNetworkAccessManager
 
 from asistente_ladm_col.lib.logger import Logger
 
@@ -162,6 +168,68 @@ def normalize_local_url(url):
     url = urllib.parse.quote(url, safe=':/')  # Don't encode : nor / characters
     return url[1:] if url.startswith("/") else url  # Remove the former / if we have a Linux path
 
+
+replies = list()
+
+
+def download_file(self, url, filename, on_progress=None, on_finished=None, on_error=None, on_success=None):
+    """
+    Will download the file from url to a local filename.
+    The method will only return once it's finished.
+
+    While downloading it will repeatedly report progress by calling on_progress
+    with two parameters bytes_received and bytes_total.
+
+    If an error occurs, it raises a NetworkError exception.
+
+    It will return the filename if everything was ok.
+
+    (Borrowed from Model Baker source code.)
+    """
+    network_access_manager = QgsNetworkAccessManager.instance()
+
+    req = QNetworkRequest(QUrl(url))
+    req.setAttribute(QNetworkRequest.CacheSaveControlAttribute, False)
+    req.setAttribute(QNetworkRequest.CacheLoadControlAttribute, QNetworkRequest.AlwaysNetwork)
+    req.setAttribute(QNetworkRequest.FollowRedirectsAttribute, True)
+    reply = network_access_manager.get(req)
+
+    def on_download_progress(bytes_received, bytes_total):
+        on_progress(bytes_received, bytes_total)
+
+    def finished(filename, reply, on_error, on_success, on_finished):
+        file = QFile(filename)
+        file.open(QIODevice.WriteOnly)
+        file.write(reply.readAll())
+        file.close()
+        if reply.error() and on_error:
+            on_error(reply.error(), reply.errorString())
+        elif not reply.error() and on_success:
+            on_success()
+
+        if on_finished:
+            on_finished()
+        reply.deleteLater()
+        replies.remove(reply)
+
+    if on_progress:
+        reply.downloadProgress.connect(on_download_progress)
+
+    on_reply_finished = partial(finished, filename, reply, on_error, on_success, on_finished)
+
+    reply.finished.connect(on_reply_finished)
+
+    replies.append(reply)
+
+    if not on_finished and not on_success:
+        loop = QEventLoop()
+        reply.finished.connect(loop.quit)
+        loop.exec_()
+
+        if reply.error():
+            raise NetworkError(reply.error(), reply.errorString())
+        else:
+            return filename
 
 class NetworkError(RuntimeError):
     def __init__(self, error_code, msg):
