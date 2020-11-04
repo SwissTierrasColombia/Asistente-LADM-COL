@@ -151,7 +151,7 @@ class Ili2DB(QObject):
         configuration.xtffile = xtf_path
         configuration.disable_validation = disable_validation
         configuration.dataset = dataset
-        configuration.baskets = baskets[0] if baskets else ''  # list with basket UUIDs
+        configuration.baskets = baskets  # list with basket UUIDs
 
         configuration.base_configuration = self._get_base_configuration()
         ili_models = self._get_ili_models(db)
@@ -168,7 +168,7 @@ class Ili2DB(QObject):
         configuration.xtffile = xtf_path
         configuration.disable_validation = disable_validation
         configuration.dataset = dataset
-        configuration.baskets = baskets[0] if baskets else ''  # List with basket UUIDs
+        configuration.baskets = baskets  # List with basket UUIDs
 
         configuration.base_configuration = self._get_base_configuration()
         ili_models = self._get_ili_models(db)
