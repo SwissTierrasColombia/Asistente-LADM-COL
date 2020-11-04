@@ -39,7 +39,9 @@ class DockWidgetFDCCoordinatorSurveyor(BaseDockWidgetFDC):
         return FDCCoordinatorSynchronizationController(iface, self._db, ladm_data)
 
     def _initialize_allocate_initial_panel(self):
-        self.add_allocation_layers()
+        if not self.add_allocation_layers():
+            return False
+
         self.allocate_panel = AllocateParcelsCoordinatorInitialPanelWidget(self, self._allocation_controller)
         self.allocate_panel.allocate_parcels_to_receiver_panel_requested.connect(self.show_allocate_parcels_to_receiver_panel)
         self.allocate_panel.configure_receivers_panel_requested.connect(self.show_configure_receivers_panel)
@@ -48,13 +50,19 @@ class DockWidgetFDCCoordinatorSurveyor(BaseDockWidgetFDC):
         self.allocate_panel.fill_data()
         self.setWindowTitle(QCoreApplication.translate("DockWidgetFDCCoordinatorSurveyor", "Allocate parcels Coordinator-Surveyor"))
 
+        return True
+
     def _initialize_synchronize_initial_panel(self):
-        self.add_synchronization_layers()
+        if not self.add_synchronization_layers():
+            return False
+
         self.synchronize_panel = SynchronizeDataCoordinatorInitialPanelWidget(self,
                                                                               self._synchronization_controller,
                                                                               self._db)
         self.widget.setMainPanel(self.synchronize_panel)
         self.setWindowTitle(QCoreApplication.translate("DockWidgetFDCCoordinatorSurveyor", "Synchronize data from surveyor"))
+
+        return True
 
     def _get_receivers_panel(self):
         return ConfigureSurveyorsPanelWidget(self, self._allocation_controller)

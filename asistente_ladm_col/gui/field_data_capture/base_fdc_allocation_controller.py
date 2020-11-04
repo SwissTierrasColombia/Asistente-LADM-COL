@@ -75,9 +75,9 @@ class BaseFDCAllocationController(QObject):
         if self._layers[self._db.names.FDC_PLOT_T] is None or force:
             self.app.gui.freeze_map(True)
 
-            self.app.core.get_layers(self._db, self._layers, load=True, emit_map_freeze=False)
-            if not self._layers:
-                return None
+            res = self.app.core.get_layers(self._db, self._layers, load=True, emit_map_freeze=False)
+            if not res:
+                return False
 
             self.iface.setActiveLayer(self._layers[self._db.names.FDC_PLOT_T])
             self.iface.zoomToActiveLayer()
@@ -91,6 +91,8 @@ class BaseFDCAllocationController(QObject):
                     except:
                         pass
                     self._layers[layer_name].willBeDeleted.connect(self.field_data_capture_layer_removed)
+
+        return True
 
     def get_parcel_receiver_data(self):
         """

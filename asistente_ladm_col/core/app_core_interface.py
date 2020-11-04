@@ -174,7 +174,7 @@ class AppCoreInterface(QObject):
                                 like prefix_layer_name, suffix_layer_name and symbology_group
         """
         if not layers:
-            return
+            return False
 
         if emit_map_freeze:
             self.map_freeze_requested.emit(True)
@@ -239,9 +239,13 @@ class AppCoreInterface(QObject):
                     "{layer_name} layer couldn't be found... {description}").format(
                         layer_name=layer_name,
                         description=db.get_display_conn_string()))
+                break
 
         if layer_not_loaded:  # If it is not possible to obtain the requested layers we make the variable layers None
             layers = None
+            return False
+
+        return True
 
     def fix_ladm_col_relations(self, db):
         """

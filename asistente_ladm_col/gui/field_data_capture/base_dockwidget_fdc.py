@@ -20,11 +20,6 @@ from qgis.PyQt.QtCore import (Qt,
                               QCoreApplication)
 from qgis.gui import QgsDockWidget
 
-from asistente_ladm_col.gui.field_data_capture.base_allocate_parcels_initial_panel import BaseAllocateParcelsInitialPanelWidget
-from asistente_ladm_col.gui.field_data_capture.base_allocate_parcels_to_receiver_panel import BaseAllocateParcelsToReceiverPanelWidget
-from asistente_ladm_col.gui.field_data_capture.base_configure_receivers_panel import BaseConfigureReceiversPanelWidget
-from asistente_ladm_col.gui.field_data_capture.base_split_data_for_receivers_panel import BaseSplitDataForReceiversPanelWidget
-from asistente_ladm_col.gui.field_data_capture.base_fdc_allocation_controller import BaseFDCAllocationController
 from asistente_ladm_col.utils import get_ui_class
 
 from asistente_ladm_col.lib.logger import Logger
@@ -60,11 +55,14 @@ class BaseDockWidgetFDC(QgsDockWidget, DOCKWIDGET_UI):
         if allocate_mode:
             self._allocation_controller = self._get_allocation_controller(iface, ladm_data)
             self._allocation_controller.field_data_capture_layer_removed.connect(self.layer_removed)
-            self._initialize_allocate_initial_panel()
+            res = self._initialize_allocate_initial_panel()
         else:  # Synchronize mode
             self._synchronization_controller = self._get_synchronization_controller(iface, ladm_data)
             self._synchronization_controller.field_data_capture_layer_removed.connect(self.layer_removed)
-            self._initialize_synchronize_initial_panel()
+            res = self._initialize_synchronize_initial_panel()
+
+        if not res:
+            self.logger.warning(__name__, "The FDC dockwidget couldn't be initialized properly because a layer could not be found!")
 
     def _get_allocation_controller(self, iface, ladm_data):
         raise NotImplementedError
@@ -161,10 +159,10 @@ class BaseDockWidgetFDC(QgsDockWidget, DOCKWIDGET_UI):
         self.close_dock_widget()
 
     def add_allocation_layers(self):
-        self._allocation_controller.add_layers()
+        return self._allocation_controller.add_layers()
 
     def add_synchronization_layers(self):
-        self._synchronization_controller.add_layers()
+        return self._synchronization_controller.add_layers()
 
     def layer_removed(self):
         self.logger.info_msg(__name__, QCoreApplication.translate("DockWidgetFDC",
