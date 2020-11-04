@@ -22,18 +22,13 @@ from qgis.PyQt.QtCore import (QObject,
 from qgis.core import (QgsMessageLog,
                        Qgis)
 
-from QgisModelBaker.libili2db import iliexporter, iliimporter
-from QgisModelBaker.libili2db.ili2dbconfig import (BaseConfiguration,
-                                                   ExportConfiguration,
-                                                   SchemaImportConfiguration,
-                                                   ImportDataConfiguration)
-from QgisModelBaker.libili2db.ilicache import IliCache
-from QgisModelBaker.libili2db.ili2dbutils import JavaNotFoundError
-
 from asistente_ladm_col.config.config_db_supported import ConfigDBsSupported
 from asistente_ladm_col.config.general_config import (JAVA_REQUIRED_VERSION,
                                                       DEFAULT_USE_CUSTOM_MODELS,
-                                                      DEFAULT_MODELS_DIR, CTM12_GPKG_SCRIPT_PATH, CTM12_PG_SCRIPT_PATH)
+                                                      DEFAULT_MODELS_DIR,
+                                                      CTM12_GPKG_SCRIPT_PATH,
+                                                      CTM12_PG_SCRIPT_PATH,
+                                                      TOML_FILE_DIR)
 from asistente_ladm_col.config.ili2db_names import ILI2DBNames
 from asistente_ladm_col.lib.dependency.java_dependency import JavaDependency
 from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
@@ -58,6 +53,8 @@ class Ili2DB(QObject):
         self._base_configuration = None
         self._ilicache = None
         self._log = ''
+
+        from QgisModelBaker.libili2db.ili2dbutils import JavaNotFoundError
 
     def get_full_java_exe_path(self):
         if not self._java_path:
@@ -90,6 +87,9 @@ class Ili2DB(QObject):
                  be shared among chained operations (e.g., export DB1-->schema import DB2-->import DB2).
         """
         if not self._base_configuration:
+            from QgisModelBaker.libili2db.ili2dbconfig import BaseConfiguration
+            from QgisModelBaker.libili2db.ilicache import IliCache
+
             self._base_configuration = BaseConfiguration()
             self._ilicache = IliCache(self._base_configuration)
             self._ilicache.refresh()
@@ -119,12 +119,14 @@ class Ili2DB(QObject):
         return ili_models
 
     def get_import_schema_configuration(self, db_factory, db, ili_models=list(), create_basket_col=False):
+        from QgisModelBaker.libili2db.ili2dbconfig import SchemaImportConfiguration
         configuration = SchemaImportConfiguration()
         db_factory.set_ili2db_configuration_params(db.dict_conn_params, configuration)
         configuration.inheritance = ILI2DBNames.DEFAULT_INHERITANCE
         configuration.create_basket_col = create_basket_col
         configuration.create_import_tid = ILI2DBNames.CREATE_IMPORT_TID
         configuration.stroke_arcs = ILI2DBNames.STROKE_ARCS
+        configuration.tomlfile = TOML_FILE_DIR
 
         configuration.base_configuration = self._get_base_configuration()
         configuration.ilimodels = ';'.join(ili_models)
@@ -142,6 +144,7 @@ class Ili2DB(QObject):
         return configuration
 
     def get_import_data_configuration(self, db_factory, db, xtf_path, dataset='', baskets=list(), disable_validation=False):
+        from QgisModelBaker.libili2db.ili2dbconfig import ImportDataConfiguration
         configuration = ImportDataConfiguration()
         db_factory.set_ili2db_configuration_params(db.dict_conn_params, configuration)
         configuration.with_importtid = True
@@ -158,6 +161,7 @@ class Ili2DB(QObject):
         return configuration
 
     def get_export_configuration(self, db_factory, db, xtf_path, dataset='', baskets=list(), disable_validation=False):
+        from QgisModelBaker.libili2db.ili2dbconfig import ExportConfiguration
         configuration = ExportConfiguration()
         db_factory.set_ili2db_configuration_params(db.dict_conn_params, configuration)
         configuration.with_exporttid = True
@@ -170,6 +174,23 @@ class Ili2DB(QObject):
         ili_models = self._get_ili_models(db)
         if ili_models:
             configuration.ilimodels = ';'.join(ili_models)
+
+        return configuration
+
+    def get_update_configuration(self, db_factory, db, xtf_path, dataset_name):
+        from QgisModelBaker.libili2db.ili2dbconfig import UpdateDataConfiguration
+        configuration = UpdateDataConfiguration()
+        db_factory.set_ili2db_configuration_params(db.dict_conn_params, configuration)
+
+        configuration.base_configuration = self._get_base_configuration()
+        ili_models = self._get_ili_models(db)
+        if ili_models:
+            configuration.ilimodels = ';'.join(ili_models)
+
+        configuration.dataset = dataset_name
+        configuration.with_importbid = True
+        configuration.with_importtid = True
+        configuration.xtffile = xtf_path
 
         return configuration
 
@@ -186,6 +207,7 @@ class Ili2DB(QObject):
         configuration = self.get_import_schema_configuration(db_factory, db, ili_models, create_basket_col)
 
         # Configure run
+        from QgisModelBaker.libili2db import iliimporter
         importer = iliimporter.Importer()
         importer.tool = db_factory.get_model_baker_db_ili_mode()
         importer.process_started.connect(self.on_process_started)
@@ -226,6 +248,7 @@ class Ili2DB(QObject):
         configuration = self.get_import_data_configuration(db_factory, db, xtf_path, dataset, baskets, disable_validation)
 
         # Configure run
+        from QgisModelBaker.libili2db import iliimporter
         importer = iliimporter.Importer(dataImport=True)
         importer.tool = db_factory.get_model_baker_db_ili_mode()
         importer.process_started.connect(self.on_process_started)
@@ -267,6 +290,7 @@ class Ili2DB(QObject):
         configuration = self.get_export_configuration(db_factory, db, xtf_path, dataset, baskets, disable_validation)
 
         # Configure run
+        from QgisModelBaker.libili2db import iliexporter
         exporter = iliexporter.Exporter()
         exporter.tool = db_factory.get_model_baker_db_ili_mode()
         exporter.process_started.connect(self.on_process_started)
@@ -298,10 +322,45 @@ class Ili2DB(QObject):
 
     def update(self, db, xtf_path, dataset_name):
         # Check prerequisite
+        if not self.get_full_java_exe_path():
+            res_java, msg_java = self.configure_java()
+            if not res_java:
+                return res_java, msg_java
+
         # Configure command parameters
+        db_factory = self.dbs_supported.get_db_factory(db.engine)
+        configuration = self.get_update_configuration(db_factory, db, xtf_path, dataset_name)
+
         # Configure run
+        from QgisModelBaker.libili2db import iliupdater
+        updater = iliupdater.Updater()
+        updater.tool = db_factory.get_model_baker_db_ili_mode()
+        updater.process_started.connect(self.on_process_started)
+        updater.stderr.connect(self.on_stderr)
+        updater.configuration = configuration
+
         # Run!
-        pass
+        res = True
+        msg = QCoreApplication.translate("Ili2DB", "DB updated successfully from XTF file '{}'!").format(xtf_path)
+        self._log = ''
+        self.logger.status(QCoreApplication.translate("Ili2Db", "Updating {} DB from XTF '{}'...").format(db.engine.upper(), xtf_path))
+        try:
+            if updater.run() != iliupdater.Updater.SUCCESS:
+                msg = QCoreApplication.translate("Ili2DB",
+                                                 "An error occurred when updating the DB from an XTF (check the QGIS log panel).")
+                res = False
+                QgsMessageLog.logMessage(self._log, QCoreApplication.translate("Ili2DB", "Update DB from XTF"), Qgis.Critical)
+            else:
+                self.logger.info(__name__, msg)
+
+        except JavaNotFoundError:
+            msg = QCoreApplication.translate("Ili2DB",
+                                             "Java {} could not be found. You can configure the JAVA_HOME environment variable manually, restart QGIS and try again.").format(
+                JAVA_REQUIRED_VERSION)
+            res = False
+
+        self.logger.clear_status()
+        return res, msg
 
     def on_process_started(self, command):
         self._log += command + '\n'
