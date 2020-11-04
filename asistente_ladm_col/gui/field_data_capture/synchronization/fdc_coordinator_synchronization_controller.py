@@ -20,6 +20,7 @@ import tempfile
 
 from qgis.PyQt.QtCore import QCoreApplication
 
+from asistente_ladm_col.config.general_config import FDC_COORDINATOR_DATASET_NAME
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.gui.field_data_capture.base_fdc_synchronization_controller import BaseFDCSynchronizationController
 from asistente_ladm_col.lib.db.gpkg_connector import GPKGConnector
@@ -86,14 +87,13 @@ class FDCCoordinatorSynchronizationController(BaseFDCSynchronizationController):
         res, msg = ili2db.export(db, xtf_path, baskets=[basket_uuid])
         if not res:
             return False, QCoreApplication.translate("SynchronizeDataCoordinatorInitialPanelWidget",
-                                                     "Error sinchronizing surveyor's database. Details: {}").format(msg)
+                                                     "Error synchronizing surveyor's database. Details: {}").format(msg)
 
-        # # Run update
-        # res, msg = Ili2DbLib.update(self._db, xtf_path, dataset_name, context_title)
-        # if not res:
-        #     self.logger.warning_msg(__name__, QCoreApplication.translate("SynchronizeDataCoordinatorInitialPanelWidget",
-        #                                                                  "There was an error synchronizing the surveyor's database."))
-        #     return
+        # Run update
+        res, msg = ili2db.update(db, xtf_path, FDC_COORDINATOR_DATASET_NAME)
+        if not res:
+            return False, QCoreApplication.translate("SynchronizeDataCoordinatorInitialPanelWidget",
+                                                     "Error synchronizing surveyor's database. Details: {}").format(msg)
 
         return True, QCoreApplication.translate("SynchronizeDataCoordinatorInitialPanelWidget",
                                                 "Surveyor's data have been synchronized successfully!")
