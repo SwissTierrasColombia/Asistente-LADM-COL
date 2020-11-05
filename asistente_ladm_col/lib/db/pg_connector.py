@@ -363,6 +363,17 @@ class PGConnector(ClientServerDB):
 
         return True, cur.fetchone()[0]
 
+    def get_ant_map_boundaries(self, plot_id):
+        res, msg = self.check_and_fix_connection()
+        if not res:
+            return res, msg
+
+        cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        query = ant_map_plot_query.get_map_boundaries(self.names, self.schema, plot_id)
+        cur.execute(query)
+
+        return True, cur.fetchone()[0]
+
     def execute_sql_query(self, query):
         """
         Generic function for executing SQL statements
