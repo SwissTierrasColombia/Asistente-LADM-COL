@@ -93,7 +93,7 @@ class FieldDataCaptureDataExporter(QObject):
             for basket, name in self._basket_dict.items():
                 self.log = ''
                 configuration.xtffile = os.path.join(self._export_dir, "{}.xtf".format(name))
-                configuration.baskets = basket
+                configuration.baskets = [basket]
                 self.exporter.configuration = configuration
 
                 try:

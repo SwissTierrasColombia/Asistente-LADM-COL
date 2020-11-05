@@ -47,10 +47,13 @@ class FDCCoordinatorSynchronizationController(BaseFDCSynchronizationController):
         t_basket = list(receivers.keys())[0]
 
         # Check that role is surveyor
+        surveyor_role = self._ladm_data.get_domain_code_from_value(db,
+                                                                   db.names.FDC_ROLE_TYPE_D,
+                                                                   LADMNames.FDC_ROLE_TYPE_D_SURVEYOR_V)
         role = receivers[t_basket][1]
-        if role != self.receiver_type:
+        if role != surveyor_role:
             return False, None, None, QCoreApplication.translate("FDCCoordinatorSynchronizationController",
-                                                     "Invalid database! The only user in the database must be a surveyor, but it is not.")
+                                                     "Invalid database! The only user in the database must be a surveyor, but it is not (it is {}).").format(role)
 
         basket_uuid = self._ladm_data.get_basket_uuid(db, t_basket)
 

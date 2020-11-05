@@ -43,8 +43,11 @@ class FDCAdminSynchronizationController(BaseFDCSynchronizationController):
         # Go for the coordinator role
         coordinator_count = 0
         coordinator_t_basket = None
+        coordinator_role = self._ladm_data.get_domain_code_from_value(db,
+                                                                      db.names.FDC_ROLE_TYPE_D,
+                                                                      LADMNames.FDC_ROLE_TYPE_D_COORDINATOR_V)
         for t_basket, data in receivers.items():
-            if data[1] == self.receiver_type:  # data[1] is the user role
+            if data[1] == coordinator_role:  # data[1] is the user role
                 coordinator_count += 1
                 coordinator_t_basket = t_basket
 
