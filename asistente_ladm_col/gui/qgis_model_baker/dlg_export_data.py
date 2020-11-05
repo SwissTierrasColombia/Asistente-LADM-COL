@@ -91,6 +91,7 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.base_configuration = BaseConfiguration()
         self.ilicache = IliCache(self.base_configuration)
         self.ilicache.refresh()
+        self._baskets = list()
 
         self._dbs_supported = ConfigDBsSupported()
         self._running_tool = False
@@ -394,7 +395,17 @@ class DialogExportData(QDialog, DIALOG_UI):
 
         configuration.disable_validation = not QSettings().value('Asistente-LADM-COL/models/validate_data_importing_exporting', True, bool)
 
+        baskets = self.get_baskets()
+        if baskets:
+            configuration.baskets = baskets
+
         return configuration
+
+    def get_baskets(self):
+        return self._baskets
+
+    def set_baskets(self, baskets):
+        self._baskets = baskets
 
     def print_info(self, text, text_color='#000000', clear=False):
         self.txtStdout.setTextColor(QColor(text_color))

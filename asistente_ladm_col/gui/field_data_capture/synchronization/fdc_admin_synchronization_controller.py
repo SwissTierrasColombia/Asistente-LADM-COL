@@ -34,6 +34,46 @@ class FDCAdminSynchronizationController(BaseFDCSynchronizationController):
                                                                            self._db.names.FDC_ROLE_TYPE_D,
                                                                            LADMNames.FDC_ROLE_TYPE_D_COORDINATOR_V)
 
+    def _validate_single_coordinator(self, db):
+        receivers = self._ladm_data.get_fdc_receivers_data_any_db(db)  # {t_basket: (name, role), ...}
+        if len(receivers) == 0:
+            return False, None, None, QCoreApplication.translate("FDCAdminSynchronizationController",
+                                                           "Invalid database! There are no users in the coordinator's database.")
+
+        # Go for the coordinator role
+        coordinator_count = 0
+        coordinator_t_basket = None
+        for t_basket, data in receivers.items():
+            if data[1] == self.receiver_type:  # data[1] is the user role
+                coordinator_count += 1
+                coordinator_t_basket = t_basket
+
+        # Validate we have a single coordinator role
+        if coordinator_count > 1:
+            return False, None, None, QCoreApplication.translate("FDCAdminSynchronizationController",
+                                                           "Invalid database! There are more coordinators than we expect in the coordinator's database.")
+        elif coordinator_count == 0:
+            return False, None, None, QCoreApplication.translate("FDCAdminSynchronizationController",
+                                                           "Invalid database! There are no coordinators in the coordinator's database!")
+
+        basket_uuid = self._ladm_data.get_basket_uuid(db, coordinator_t_basket)
+
+        return True, coordinator_t_basket, basket_uuid, "Success!"
+
+    def get_coordinator_basket(self, db):
+        res, t_basket, basket_uuid, msg = self._validate_single_coordinator(db)
+        if not res:
+            return False, None, msg
+
+        # Set coordinator's t_basket and write it in all DB classes
+        res_set_basket = self._set_receiver_t_basket_to_layers(db, t_basket)
+        if not res_set_basket:
+            msg = QCoreApplication.translate("FDCAdminSynchronizationController",
+                                             "There was an error preparing the coordinator's database. See QGIS log for details")
+            return False, None, msg
+
+        return res, basket_uuid, msg
+
     def synchronize_data(self, db, file_path):
         if file_path and os.path.isfile(file_path):
             self.app.settings.fdc_coordinator_xtf_path = file_path

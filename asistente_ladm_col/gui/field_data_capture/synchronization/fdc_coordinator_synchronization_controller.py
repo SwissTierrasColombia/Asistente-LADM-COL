@@ -40,7 +40,7 @@ class FDCCoordinatorSynchronizationController(BaseFDCSynchronizationController):
         if len(receivers) > 1:
             return False, None, None, QCoreApplication.translate("FDCCoordinatorSynchronizationController",
                                                            "Invalid database! There are more users than we expect in the surveyor's database.")
-        elif len(receivers) == 0:
+        if len(receivers) == 0:
             return False, None, None, QCoreApplication.translate("FDCCoordinatorSynchronizationController",
                                                            "Invalid database! There are no users in the surveyor's database.")
 
@@ -55,9 +55,6 @@ class FDCCoordinatorSynchronizationController(BaseFDCSynchronizationController):
         basket_uuid = self._ladm_data.get_basket_uuid(db, t_basket)
 
         return True, t_basket, basket_uuid, "Success!"
-
-    def _set_surveyors_t_basket_to_layers(self, db, t_basket):
-        return self._ladm_data.update_t_basket_in_layers(db, self.get_receiver_layer_list(db), t_basket)
 
     def synchronize_data(self, db, file_path):
         # Validate db structure
@@ -76,7 +73,7 @@ class FDCCoordinatorSynchronizationController(BaseFDCSynchronizationController):
             return False, QCoreApplication.translate("SynchronizeDataCoordinatorInitialPanelWidget", msg)
 
         # Set surveyor's t_basket and write it in all DB classes
-        res = self._set_surveyors_t_basket_to_layers(db_tmp, t_basket)
+        res = self._set_receiver_t_basket_to_layers(db_tmp, t_basket)
         if not res:
             return False, QCoreApplication.translate("SynchronizeDataCoordinatorInitialPanelWidget",
                                                      "There was an error preparing the GeoPackage database. See QGIS log for details")

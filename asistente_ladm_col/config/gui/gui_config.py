@@ -71,7 +71,8 @@ class GUI_Config(QObject):
                     ACTIONS: [
                         ACTION_SCHEMA_IMPORT,
                         ACTION_IMPORT_DATA,
-                        ACTION_EXPORT_DATA
+                        ACTION_EXPORT_DATA,
+                        ACTION_EXPORT_DATA_FDC_COORDINATOR
                     ]
                 }, {
                     WIDGET_TYPE: MENU,

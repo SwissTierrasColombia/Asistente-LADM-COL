@@ -43,6 +43,8 @@ from asistente_ladm_col.config.ladm_names import MODEL_CONFIG
 from asistente_ladm_col.config.role_config import get_role_config
 from asistente_ladm_col.gui.field_data_capture.dockwidget_fdc_admin_coordinator import DockWidgetFDCAdminCoordinator
 from asistente_ladm_col.gui.field_data_capture.dockwidget_fdc_coordinator_surveyor import DockWidgetFDCCoordinatorSurveyor
+from asistente_ladm_col.gui.field_data_capture.synchronization.fdc_admin_synchronization_controller import \
+    FDCAdminSynchronizationController
 from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
 from asistente_ladm_col.lib.ladm_col_models import (LADMColModelRegistry,
                                                     LADMColModel)
@@ -646,6 +648,9 @@ class AsistenteLADMCOLPlugin(QObject):
         self._export_data_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/export_to_xtf.svg"),
                                            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Export data"),
                                            self.main_window)
+        self._export_data_fdc_coord_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/export_to_xtf.svg"),
+                                           QCoreApplication.translate("AsistenteLADMCOLPlugin", "Export data for field data administrator"),
+                                           self.main_window)
         self._settings_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/settings.svg"),
                                         QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"),
                                         self.main_window)
@@ -658,6 +663,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._import_schema_action.triggered.connect(partial(self.show_dlg_import_schema, self._context_collected, **{'selected_models':list()}))
         self._import_data_action.triggered.connect(partial(self.show_dlg_import_data, self._context_collected))
         self._export_data_action.triggered.connect(partial(self.show_dlg_export_data, self._context_collected))
+        self._export_data_fdc_coord_action.triggered.connect(partial(self.show_dlg_export_data_fdc_coordinator, self._context_collected))
         self._queries_action.triggered.connect(partial(self.show_queries, self._context_collected))
         self._load_layers_action.triggered.connect(partial(self.load_layers_from_qgis_model_baker, self._context_collected))
         self._settings_action.triggered.connect(partial(self.show_settings, self._context_settings))
@@ -673,6 +679,7 @@ class AsistenteLADMCOLPlugin(QObject):
             ACTION_SCHEMA_IMPORT: self._import_schema_action,
             ACTION_IMPORT_DATA: self._import_data_action,
             ACTION_EXPORT_DATA: self._export_data_action,
+            ACTION_EXPORT_DATA_FDC_COORDINATOR: self._export_data_fdc_coord_action,
             ACTION_SETTINGS: self._settings_action,
             ACTION_HELP: self._help_action,
             ACTION_ABOUT: self._about_action
@@ -1210,6 +1217,35 @@ class AsistenteLADMCOLPlugin(QObject):
         if isinstance(context, TaskContext):
             dlg.on_result.connect(context.get_slot_on_result())
 
+        self.logger.info(__name__, "Export data dialog ({}) opened.".format(context.get_db_sources()[0]))
+        dlg.exec_()
+
+    @_update_context_to_current_role
+    @_validate_if_wizard_is_open
+    @_qgis_model_baker_required
+    @_field_data_capture_model_required
+    def show_dlg_export_data_fdc_coordinator(self, *args):
+        from .gui.qgis_model_baker.dlg_export_data import DialogExportData
+
+        if not args or not isinstance(args[0], Context):
+            return
+
+        context = args[0]
+
+        # Get coordinator's basket (this call also updates all DB objects to use coordinator's t_basket)
+        db = self.get_db_connection()
+        controller = FDCAdminSynchronizationController(self.app.gui.iface, db, self.ladm_data)
+        res, basket_uuid, msg = controller.get_coordinator_basket(db)
+        if not res:
+            self.logger.warning_msg(__name__, msg)
+            return
+
+        dlg = DialogExportData(self.iface, self.conn_manager, context, parent=self.main_window)
+        if isinstance(context, TaskContext):
+            dlg.on_result.connect(context.get_slot_on_result())
+
+        dlg.set_baskets([basket_uuid])
+        self.logger.debug(__name__, "Basket ({}) set for exporting XTF data.".format(basket_uuid))
         self.logger.info(__name__, "Export data dialog ({}) opened.".format(context.get_db_sources()[0]))
         dlg.exec_()
 

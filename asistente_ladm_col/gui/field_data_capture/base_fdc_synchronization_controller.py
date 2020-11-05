@@ -101,5 +101,8 @@ class BaseFDCSynchronizationController(QObject):
     def user_layer(self):
         return self._layers[self._db.names.FDC_USER_T]
 
+    def _set_receiver_t_basket_to_layers(self, db, t_basket):
+        return self._ladm_data.update_t_basket_in_layers(db, self.get_receiver_layer_list(db), t_basket)
+
     def synchronize_data(self, db, file_path):
         raise NotImplementedError

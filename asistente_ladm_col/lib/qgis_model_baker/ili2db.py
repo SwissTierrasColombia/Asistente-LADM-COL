@@ -320,6 +320,7 @@ class Ili2DB(QObject):
         self.logger.clear_status()
         return res, msg
 
+    @_with_override_cursor
     def update(self, db, xtf_path, dataset_name):
         # Check prerequisite
         if not self.get_full_java_exe_path():
