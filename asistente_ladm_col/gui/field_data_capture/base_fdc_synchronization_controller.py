@@ -34,6 +34,7 @@ class BaseFDCSynchronizationController(QObject):
 
         self.app = AppInterface()
 
+        self.receiver_ilicode = ''
         self.receiver_type = None
 
         self._layers = dict()
@@ -100,6 +101,33 @@ class BaseFDCSynchronizationController(QObject):
 
     def user_layer(self):
         return self._layers[self._db.names.FDC_USER_T]
+
+    def _validate_single_receiver_in_source_db(self, db):
+        raise NotImplementedError
+
+    def _validate_source_receiver_in_target_db(self, source_db, fdc_source_user_layer, t_basket):
+        field_idx = self.user_layer().fields().indexOf(self._db.names.T_ILI_TID_F)
+        target_t_ili_tids = self.user_layer().uniqueValues(field_idx)
+
+        receiver_role = self._ladm_data.get_domain_code_from_value(source_db,
+                                                                   source_db.names.FDC_ROLE_TYPE_D,
+                                                                   self.receiver_ilicode)
+
+        # Get {t_basket: (name, t_ili_tid), ...} for the receiver role (we expect a single user here!)
+        receivers_source_db = self._ladm_data.get_fdc_receivers_data(source_db.names,
+                                                                     fdc_source_user_layer,
+                                                                     source_db.names.T_BASKET_F,
+                                                                     receiver_role, True, source_db.names.T_ILI_TID_F)
+        receiver_name = receivers_source_db[t_basket][0]
+        source_t_ili_tid = receivers_source_db[t_basket][1]
+
+        if source_t_ili_tid not in target_t_ili_tids:
+            return False, QCoreApplication.translate("BaseFDCSynchronizationController",
+                                                     "Invalid database! We couldn't find the receiver '{}' ({}) in the original database. Make sure you're synchronizing the correct XTF.").format(
+                receiver_name,
+                source_t_ili_tid)
+
+        return True, 'Success!'
 
     def _set_receiver_t_basket_to_layers(self, db, t_basket):
         return self._ladm_data.update_t_basket_in_layers(db, self.get_receiver_layer_list(db), t_basket)
