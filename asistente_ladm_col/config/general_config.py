@@ -70,9 +70,9 @@ CYPTO_MD5SUM = 'a42e671dcc78f519020a16f4c47da588'
 # Version to be installed when creating reports (annex 17 - ANT Map)
 # (Other versions, if found, will be dropped in favor of this one)
 DEPENDENCY_REPORTS_DIR_NAME = os.path.join(DEPENDENCIES_BASE_PATH, 'impresion')
-REPORTS_REQUIRED_VERSION = '0.8dev'
+REPORTS_REQUIRED_VERSION = '1.0'
 URL_REPORTS_LIBRARIES = 'https://github.com/SwissTierrasColombia/LADM-COL_Reports/releases/download/{}/impresion.zip'.format(REPORTS_REQUIRED_VERSION)
-REPORTS_LIBRARIES_MD5SUM = '0a3dea4481d55d5cbf379f94794fc4f4'
+REPORTS_LIBRARIES_MD5SUM = '1298ecaa7a56d639ab0e83897f8d7dbd'
 
 MODULE_HELP_MAPPING = {
     '' : 'index.html', # default module is '', just go to index.html
