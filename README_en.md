@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/SwissTierrasColombia/Asistente-LADM-COL.svg?branch=master)](https://travis-ci.org/SwissTierrasColombia/Asistente-LADM-COL)
 
 # LADM-COL Assistant
-[QGIS](http://qgis.org) plugin to capture and maintain data compliant with [LADM-COL](https://github.com/SwissTierrasColombia/LADM-COL) as well as to generate [INTERLIS](http://www.interlis.ch/index_e.htm) interchange files (.XTF).
+[QGIS](http://qgis.org) plugin to capture and maintain data compliant with [LADM-COL](https://github.com/SwissTierrasColombia/LADM-COL) as well as to generate [INTERLIS](http://www.interlis.ch/index_e.htm) interchange files (.XTF) to be used by several actors in land administration.
 
 License: [GNU General Public License v3.0](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/blob/master/LICENSE)
 
@@ -12,7 +12,7 @@ Links of interest: [Documentation](https://swisstierrascolombia.github.io/Asiste
 A project of: [SwissTierras Colombia](https://swisstierrascolombia.com/) ([BSF-Swissphoto AG](http://bsf-swissphoto.com/) - [INCIGE SAS](http://www.incige.com/))
 
 
-:arrow_right: We suggest you to use QGIS v3.10.x, available at https://qgis.org/downloads/
+:arrow_right: We suggest you to use QGIS v3.14.x, available at https://qgis.org/downloads/
 
 ## Support per DB engine
 
@@ -43,7 +43,7 @@ To use the LADM-COL Assistant you need:
    - PostGIS 2.4 or higher.
    - (Optional) SQL Server 2012 or higher.
  - QGIS plugins (installing LADM-COL Assistant using QGIS Plugin Manager will also install these automatically):
-   - QGIS Model Baker v6.1.1.4
+   - QGIS Model Baker v6.1.1.5
    - MapSwipe Tool v1.2
 
 ## Gallery
@@ -70,7 +70,7 @@ To use the LADM-COL Assistant you need:
 
 ## Functionalities
 
-The current version ([3.1.0](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/3.1.0)) of the LADM-COL Assistant depends on [QGIS Model Baker v6.1.1.4](https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.4/QgisModelBaker_6114.zip) and allows users to:
+The current version ([3.1.1](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/3.1.1)) of the LADM-COL Assistant depends on [QGIS Model Baker v6.1.1.5](https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.4/QgisModelBaker_6115.zip) and allows users to:
 
  - Integration with the Transitional System:
    - Authentication

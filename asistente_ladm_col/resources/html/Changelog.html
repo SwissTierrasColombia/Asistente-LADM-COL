@@ -4,12 +4,17 @@
     <meta charset="UTF-8">
 </head>
 <body>
-<p>Cambios en la version <b>3.1.0</b></p>
+<p>Cambios en la version <b>3.1.1</b></p>
 <ul>
-<li>Soporte para el código EPSG oficial de la proyección "Origen Nacional" (CTM12); esto es: <b>EPSG:9377</b>.</li>
-<li>Soporte de importación masiva de datos <b>(Modelo ETL) para QGIS v3.14</b> (Fix <a href="https://github.com/SwissTierrasColombia/Asistente-LADM-COL/issues/350">#350</a>).</li>
-<li>Soporte de <b>reproyección (automática) a EPSG:9377</b> cuando se importan datos masivamente desde otros sistemas de referencia (Fix <a href="https://github.com/SwissTierrasColombia/Asistente-LADM-COL/issues/337">#337</a>).</li>
-<li><b>Valores predeterminados para dominios</b>. Por ejemplo, al crear un interesado, en el campo "Tipo" se mostrará el valor "Interesado Natural" por defecto.</li>
+    <li> Actualizaciones en módulo de reportes. Soporte de proyección Origen Nacional. Soporte de multipolígonos.</li>
+    <li> Actualizaciones en el módulo ETLs de insumos. Mejoras de usabilidad.</li>
+    <li> Otros ajustes:
+        <ul>
+            <li> Soporte para conexión por parte de digitalizadores que no poseen permisos de creación de objetos en un esquema de base de datos. Caso de uso: ambientes distribuidos donde un DBA crea la estructura y asigna usuarios de base de datos a los digitalizadores.</li>
+            <li> Evitar actualizar automáticamente algunos campos cuando se edita un registro (ej. t_ili_tid).</li>
+            <li> Soporte de nombres de capas y campos en algoritmo 'Refactor Fields' (para QGIS 3.14 en adelante).</li>
+        </ul>
+    </li>
 </ul>
 </body>
 </html>
