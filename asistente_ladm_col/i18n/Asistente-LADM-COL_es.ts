@@ -261,33 +261,33 @@
 <context>
     <name>Asistente-LADM-COL</name>
     <message>
-        <location filename="../utils/qt_utils.py" line="46"/>
+        <location filename="../utils/qt_utils.py" line="58"/>
         <source>Open File</source>
         <translation>Abrir archivo</translation>
     </message>
     <message>
-        <location filename="../utils/qt_utils.py" line="47"/>
+        <location filename="../utils/qt_utils.py" line="59"/>
         <source>Any file(*)</source>
         <translation>Cualquier archivo (*)</translation>
     </message>
     <message>
-        <location filename="../utils/qt_utils.py" line="76"/>
+        <location filename="../utils/qt_utils.py" line="110"/>
         <source>Open Folder</source>
         <translation>Abrir carpeta</translation>
     </message>
     <message>
-        <location filename="../utils/qt_utils.py" line="131"/>
+        <location filename="../utils/qt_utils.py" line="174"/>
         <source>Export to PDF</source>
         <translation>Exportar a PDF</translation>
     </message>
     <message>
-        <location filename="../utils/qt_utils.py" line="148"/>
+        <location filename="../utils/qt_utils.py" line="191"/>
         <source>Report successfully generated in folder &lt;a href=&apos;file:///{normalized_path}&apos;&gt;{path}&lt;/a&gt;!</source>
         <translation>¡Se generó el reporte en la carpeta &lt;a href=&apos;file:///{normalized_path}&apos;&gt;{path}&lt;/a&gt;!</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="118"/>
-        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="118"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="119"/>
+        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="119"/>
         <source>Missing supplies report successfully generated in folder &lt;a href=&apos;file:///{normalized_path1}&apos;&gt;{path1}&lt;/a&gt;! The output Geopackage database can be found in &lt;a href=&apos;file:///{normalized_path2}&apos;&gt;{path2}&lt;/a&gt;</source>
         <translation>¡El reporte de Omisiones y Comisiones se generó exitósamente en la carpeta &lt;a href=&apos;file:///{normalized_path1}&apos;&gt;{path1}&lt;/a&gt;! La base de datos Geopackage con los resultados se encuentra en &lt;a href=&apos;file:///{normalized_path2}&apos;&gt;{path2}&lt;/a&gt;</translation>
     </message>
@@ -321,12 +321,12 @@
         <translation>Interesado</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="499"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="493"/>
         <source>Create Party</source>
         <translation>Crear Interesado</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="503"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="497"/>
         <source>Create Group Party</source>
         <translation>Crear Agrupación de Interesados</translation>
     </message>
@@ -398,7 +398,7 @@
         <translation type="vanished">Crear objetos de Operación</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="473"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="467"/>
         <source>Create Plot</source>
         <translation>Crear Terreno</translation>
     </message>
@@ -407,7 +407,7 @@
         <translation type="vanished">Pre-procesamiento</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="637"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="631"/>
         <source>Queries</source>
         <translation>Consultar datos</translation>
     </message>
@@ -425,59 +425,59 @@
         <translation>Topografía y Representación</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="323"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="317"/>
         <source>&apos;Origen Nacional&apos; projection could not be configured. Therefore you cannot use this version of the LADM-COL Assistant.</source>
         <translation>No se pudo configurar la proyeccion &apos;Origen Nacional&apos;. Por lo tanto no puedes utilizar esta versión del Asistente LADM-COL.</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="422"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="416"/>
         <source>Run supplies ETL</source>
         <translation>Ejecutar ETL de insumos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="427"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="421"/>
         <source>Omissions and Commissions Report - COBOL</source>
         <translation>Reporte Omisiones y Comisiones - COBOL</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="432"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="426"/>
         <source>Omissions and Commissions Report - SNC</source>
         <translation>Reporte Omisiones y Comisiones - SNC</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="447"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="441"/>
         <source>Allocate parcels</source>
         <translation>Asignar predios</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="452"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="446"/>
         <source>Synchronize field data</source>
         <translation>Sincronizar datos de campo</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="465"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="459"/>
         <source>Create Point</source>
         <translation>Crear Punto</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="469"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="463"/>
         <source>Create Boundary</source>
         <translation>Crear Lindero</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="477"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="471"/>
         <source>Create Building</source>
         <translation>Crear Construcción</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="481"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="592"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="475"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="586"/>
         <source>Create Building Unit</source>
         <translation>Crear Unidad de Construcción</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="494"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="588"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="488"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="582"/>
         <source>Create Parcel</source>
         <translation>Crear Predio</translation>
     </message>
@@ -490,17 +490,17 @@
         <translation type="vanished">Crear Interesado Jurídico</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="515"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="509"/>
         <source>Upload Pending Source Files</source>
         <translation>Subir Archivos Fuente Pendientes</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="521"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="515"/>
         <source>Create Right</source>
         <translation>Crear Derecho</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="525"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="519"/>
         <source>Create Restriction</source>
         <translation>Crear Restricción</translation>
     </message>
@@ -513,17 +513,17 @@
         <translation type="vanished">Revisar Reglas de Calidad</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="508"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="502"/>
         <source>Create Administrative Source</source>
         <translation>Crear Fuente Administrativa</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="512"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="506"/>
         <source>Create Spatial Source</source>
         <translation>Crear Fuente Espacial</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="530"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="524"/>
         <source>Quality</source>
         <translation>Calidad</translation>
     </message>
@@ -560,27 +560,28 @@
         <translation type="vanished">Revisar todo</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="635"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="629"/>
         <source>Load layers</source>
         <translation>Cargar capas</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="657"/>
-        <location filename="../utils/decorators.py" line="88"/>
-        <location filename="../utils/decorators.py" line="248"/>
-        <location filename="../utils/decorators.py" line="283"/>
-        <location filename="../utils/decorators.py" line="322"/>
-        <location filename="../utils/decorators.py" line="361"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="651"/>
+        <location filename="../utils/decorators.py" line="87"/>
+        <location filename="../utils/decorators.py" line="247"/>
+        <location filename="../utils/decorators.py" line="282"/>
+        <location filename="../utils/decorators.py" line="321"/>
+        <location filename="../utils/decorators.py" line="360"/>
+        <location filename="../utils/decorators.py" line="401"/>
         <source>Settings</source>
         <translation>Configuración</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="660"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="654"/>
         <source>Help</source>
         <translation>Ayuda</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="662"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="656"/>
         <source>About</source>
         <translation>Acerca de</translation>
     </message>
@@ -633,17 +634,17 @@
         <translation type="vanished">Administración de datos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="648"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="642"/>
         <source>Create LADM-COL structure</source>
         <translation>Crear estructura LADM-COL</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="651"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="645"/>
         <source>Import data</source>
         <translation>Importar datos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="654"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="648"/>
         <source>Export data</source>
         <translation>Exportar datos</translation>
     </message>
@@ -655,22 +656,22 @@
         <translation>Reportes</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="640"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="634"/>
         <source>Annex 17</source>
         <translation>Anexo 17</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="644"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="638"/>
         <source>ANT Map</source>
         <translation>Plano ANT</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="485"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="479"/>
         <source>Create Right of Way</source>
         <translation>Crear Servidumbre de Paso</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="309"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="303"/>
         <source>LADM-COL Assistant - Warning</source>
         <translation>Asistente LADM-COL - Advertencia</translation>
     </message>
@@ -679,17 +680,17 @@
         <translation type="vanished">No se pudo configurar la proyección CTM12. Por tanto, no se puede usar esta versión del Asistente LADM-COL.</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="351"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="345"/>
         <source>Refreshing GUI for the LADM-COL Assistant...</source>
         <translation>Refrescando la interfaz del Asistente LADM-COL...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="404"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="398"/>
         <source>Login...</source>
         <translation>Autenticarse...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="408"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="402"/>
         <source>Logout</source>
         <translation>Salir</translation>
     </message>
@@ -702,22 +703,22 @@
         <translation type="vanished">Omisiones y Comisiones</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="489"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="483"/>
         <source>Associate Address</source>
         <translation>Relacionar Dirección</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="535"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="529"/>
         <source>Fix LADM-COL relations</source>
         <translation>Arreglar relaciones LADM-COL</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="621"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="615"/>
         <source>Change detection settings</source>
         <translation>Configurar identificación de novedades</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1572"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1568"/>
         <source>Connecting to remote db...</source>
         <translation>Conectándose a base de datos remota...</translation>
     </message>
@@ -738,22 +739,22 @@
         <translation type="vanished">Exportar datos (Insumos)</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1390"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1386"/>
         <source>Opening Query Changes per Parcel panel...</source>
         <translation>Abriendo panel de novedades por predio...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1401"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1397"/>
         <source>Opening Query Changes for All Parcels panel...</source>
         <translation>Abriendo panel de novedades masivas...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1509"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1505"/>
         <source>Continue?</source>
         <translation>¿Continuar?</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1510"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1506"/>
         <source>Are you sure you want to log out from the Transitional System?</source>
         <translation>¿Estás segura/o que quieres salir del Sistema de Transición?</translation>
     </message>
@@ -762,7 +763,7 @@
         <translation type="vanished">Ficha predial</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="579"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="573"/>
         <source>Create Property Record Card</source>
         <translation>Crear Ficha Predial</translation>
     </message>
@@ -787,17 +788,17 @@
         <translation type="vanished">Crear Equipamiento Comunal</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="596"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="590"/>
         <source>Create Building Unit Qualification</source>
         <translation>Crear Calificación de Unidad de Construcción</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="600"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="594"/>
         <source>Create Geoeconomic Zone</source>
         <translation>Crear Zona Homogénea Geoeconómica</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="604"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="598"/>
         <source>Create Physical Zone</source>
         <translation>Crear Zona Homogénea Física</translation>
     </message>
@@ -807,14 +808,14 @@
         <translation>Identificación de novedades</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="617"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="816"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="611"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="810"/>
         <source>Query per parcel</source>
         <translation>Consulta por predio</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="619"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="821"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="613"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="815"/>
         <source>Query all parcels</source>
         <translation>Consulta masiva</translation>
     </message>
@@ -823,7 +824,7 @@
         <translation type="vanished">Configuración de datos oficiales</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="805"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="799"/>
         <source>Open About Dialog</source>
         <translation>Abrir diálogo Acerca de</translation>
     </message>
@@ -852,53 +853,53 @@
         <translation type="vanished">La conexión de base de datos &apos;{}&apos; no es válida. Detalles: {}</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="85"/>
+        <location filename="../utils/decorators.py" line="84"/>
         <source>The {} DB connection is not valid. Details: {}</source>
         <translation>La conexión de base de datos &apos;{}&apos; no es válida. Detalles: {}</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="91"/>
+        <location filename="../utils/decorators.py" line="90"/>
         <source>{} Connection Settings</source>
         <translation>Configuración para la fuente {}</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="92"/>
+        <location filename="../utils/decorators.py" line="91"/>
         <source>Configure a valid DB connection for {} source.</source>
         <translation>Configura una conexión de base de datos válida para la fuente {}.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="98"/>
-        <location filename="../utils/decorators.py" line="259"/>
-        <location filename="../utils/decorators.py" line="295"/>
-        <location filename="../utils/decorators.py" line="336"/>
-        <location filename="../utils/decorators.py" line="373"/>
+        <location filename="../utils/decorators.py" line="97"/>
+        <location filename="../utils/decorators.py" line="258"/>
+        <location filename="../utils/decorators.py" line="294"/>
+        <location filename="../utils/decorators.py" line="335"/>
+        <location filename="../utils/decorators.py" line="372"/>
+        <location filename="../utils/decorators.py" line="415"/>
         <source>A dialog/tool couldn&apos;t be opened/executed, connection to DB was not valid.</source>
         <translation>No se pudo ejecutar una funcionalidad, la conexión a la base de datos no fue válida.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="107"/>
+        <location filename="../utils/decorators.py" line="106"/>
         <source>Your current {} DB does not match with the one registered in QSettings. Which connection would you like to use?</source>
         <translation>Tu conexión a base de datos &apos;{}&apos; no corresponde con la registrada en QSettings. ¿Cuál conexión te gustaría usar?</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="112"/>
+        <location filename="../utils/decorators.py" line="111"/>
         <source>Use the current connection</source>
         <translation>Usar la conexión actual</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="116"/>
+        <location filename="../utils/decorators.py" line="115"/>
         <source>Use DB from QSettings</source>
         <translation>Usar base de datos de QSettings</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="141"/>
+        <location filename="../utils/decorators.py" line="140"/>
         <source>The plugin &apos;QGIS Model Baker&apos; version {} is required, but couldn&apos;t be found. Click the button to install it.</source>
         <translation>Se requiere el plugin &apos;QGIS Model Baker&apos; versión {}, pero no pudo ser encontrado. Clic en el botón para instalarlo.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="147"/>
-        <location filename="../utils/decorators.py" line="398"/>
-        <location filename="../utils/decorators.py" line="435"/>
+        <location filename="../utils/decorators.py" line="146"/>
+        <location filename="../utils/decorators.py" line="441"/>
         <source>Install plugin</source>
         <translation>Instalar plugin</translation>
     </message>
@@ -907,50 +908,48 @@
         <translation type="vanished">Se requiere el plugin &apos;QGIS Model Baker&apos; versión {}, pero no está instalado. Descárgalo &lt;a href=&quot;{}&quot;&gt;desde este enlace&lt;/a&gt; y usa &quot;Instalar a partir de ZIP&quot; desde el Administrador de Complementos.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="152"/>
+        <location filename="../utils/decorators.py" line="151"/>
         <source>The plugin &apos;QGIS Model Baker&apos; version {} {}is required, but couldn&apos;t be found. Click the button to show the Plugin Manager.</source>
         <translation>Se requiere el plugin &apos;QGIS Model Baker&apos; versión {} {}, pero no está instalado. Clic en el botón para mostrar el Administrador de Complementos.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="165"/>
+        <location filename="../utils/decorators.py" line="164"/>
         <source>A dialog/tool couldn&apos;t be opened/executed, QGIS Model Baker not found.</source>
         <translation>No se pudo ejecutar una funcionalidad, no se encontró QGIS Model Baker.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="177"/>
+        <location filename="../utils/decorators.py" line="176"/>
         <source>The processing plugin has been activated!</source>
         <translation>¡El plugin &apos;Processing&apos; ha sido activado!</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="243"/>
-        <location filename="../utils/decorators.py" line="278"/>
-        <location filename="../utils/decorators.py" line="317"/>
-        <location filename="../utils/decorators.py" line="356"/>
+        <location filename="../utils/decorators.py" line="242"/>
+        <location filename="../utils/decorators.py" line="277"/>
+        <location filename="../utils/decorators.py" line="316"/>
+        <location filename="../utils/decorators.py" line="355"/>
+        <location filename="../utils/decorators.py" line="395"/>
         <source>Check your {} database connection. The &apos;{}&apos; model is required for this functionality, but could not be found in your current database. Click the button to go to Settings.</source>
         <translation>Compruebe su conexión a la base de datos &apos;{}&apos;. El modelo &apos;{}&apos; es necesario para esta funcionalidad, pero no se ha podido encontrar en su base de datos actual. Haga clic en el botón para ir a Configuración.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="392"/>
+        <location filename="../utils/decorators.py" line="435"/>
         <source>The plugin &apos;MapSwipe Tool&apos; version {} is required, but couldn&apos;t be found. Click the button to install it.</source>
         <translation>Se requiere el plugin &apos;MapSwipe Tool&apos; versión {}, pero no pudo ser encontrado. Clic en el botón para instalarlo.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="429"/>
         <source>The plugin &apos;QField Sync&apos; version {} is required, but couldn&apos;t be found. Click the button to install it.</source>
-        <translation>Se requiere la versión {} del complemento &apos;QField Sync&apos;, pero no se pudo encontrar. Clic en el bóton para instalarlo.</translation>
+        <translation type="vanished">Se requiere la versión {} del complemento &apos;QField Sync&apos;, pero no se pudo encontrar. Clic en el bóton para instalarlo.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="440"/>
         <source>The plugin &apos;QField Sync&apos; version {} {}is required, but couldn&apos;t be found. Click the button to show the Plugin Manager.</source>
-        <translation>Se requiere la versión {} {} del complemento &apos;QField Sync&apos;, pero no se pudo encontrar. Clic en el bóton para mostrar el Plugin Manager.</translation>
+        <translation type="vanished">Se requiere la versión {} {} del complemento &apos;QField Sync&apos;, pero no se pudo encontrar. Clic en el bóton para mostrar el Plugin Manager.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="449"/>
         <source>A dialog/tool couldn&apos;t be opened/executed, QField Sync not found.</source>
-        <translation>No se pudo ejecutar una funcionalidad, no se encontró QField Sync.</translation>
+        <translation type="vanished">No se pudo ejecutar una funcionalidad, no se encontró QField Sync.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="477"/>
+        <location filename="../utils/decorators.py" line="483"/>
         <source>The action could not be executed because {} layer(s) is/are in editing session. Please finish editing session before trying to execute the action again.</source>
         <translation>No se pudo ejecutar la herramienta porque la(s) capa(s) {} está(n) en sesión de edición. Finaliza la sesión de edición antes de intentar ejecutar la herramienta.</translation>
     </message>
@@ -1007,22 +1006,22 @@
         <translation type="vanished">Se requiere el plugin &apos;MapSwipe Tool&apos; versión {}, pero no está instalado. Descárgalo &lt;a href=&quot;{}&quot;&gt;desde este enlace&lt;/a&gt; y usa &quot;Instalar a partir de ZIP&quot; desde el Administrador de Complementos.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="403"/>
+        <location filename="../utils/decorators.py" line="446"/>
         <source>The plugin &apos;MapSwipe Tool&apos; version {} {}is required, but couldn&apos;t be found. Click the button to show the Plugin Manager.</source>
         <translation>Se requiere el plugin &apos;MapSwipe Tool&apos; versión {} {}, pero no está instalado. Clic en el botón para mostrar el Administrador de Complementos.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="412"/>
+        <location filename="../utils/decorators.py" line="455"/>
         <source>A dialog/tool couldn&apos;t be opened/executed, MapSwipe Tool not found.</source>
         <translation>No se pudo abrir/ejecutar un diálogo/herramienta, no se encontró el plugin MapSwipe Tool.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="459"/>
+        <location filename="../utils/decorators.py" line="465"/>
         <source>There is a wizard open, you need to close it before continuing with another tool.</source>
         <translation>Hay un wizard abierto, debes cerrarlo antes de continuar con otra herramienta.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="461"/>
+        <location filename="../utils/decorators.py" line="467"/>
         <source>Close the open wizard</source>
         <translation>Cerrar el wizard abierto</translation>
     </message>
@@ -1031,9 +1030,8 @@
         <translation type="vanished">Se requiere el plugin &apos;QGIS Model Baker&apos; versión {} (o superior), pero no está instalado. Clic en el botón para mostrar el Administrador de Plugins.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="159"/>
-        <location filename="../utils/decorators.py" line="407"/>
-        <location filename="../utils/decorators.py" line="444"/>
+        <location filename="../utils/decorators.py" line="158"/>
+        <location filename="../utils/decorators.py" line="450"/>
         <source>Plugin Manager</source>
         <translation>Administrador de Plugins</translation>
     </message>
@@ -1083,7 +1081,7 @@
         <translation type="vanished">El rol &lt;b&gt;Proveedor de Insumos&lt;/b&gt; genera archivos de intercambio (XTF) de Insumos para los gestores.</translation>
     </message>
     <message>
-        <location filename="../config/role_config.py" line="359"/>
+        <location filename="../config/role_config.py" line="360"/>
         <source>Operator</source>
         <translation>Operador</translation>
     </message>
@@ -1111,42 +1109,42 @@
         <translation>El rol &lt;b&gt;Proveedor de Insumos&lt;/b&gt; genera archivos de intercambio (XTF) de insumos para los operadores.</translation>
     </message>
     <message>
-        <location filename="../config/role_config.py" line="331"/>
+        <location filename="../config/role_config.py" line="332"/>
         <source>Field administrator</source>
         <translation>Coordinador General (campo)</translation>
     </message>
     <message>
-        <location filename="../config/role_config.py" line="332"/>
+        <location filename="../config/role_config.py" line="333"/>
         <source>The &lt;b&gt;field administrator&lt;/b&gt; assigns parcel sets to field coordinators and synchronizes back the data they have structured from field surveys.</source>
         <translation>El &lt;b&gt;Coordinador General&lt;/b&gt; asigna conjuntos de predios a los coordinadores de campo y sincroniza los datos que ellos han estructurado a partir del barrido predial.</translation>
     </message>
     <message>
-        <location filename="../config/role_config.py" line="346"/>
+        <location filename="../config/role_config.py" line="347"/>
         <source>Field coordinator</source>
         <translation>Coordinador de Campo</translation>
     </message>
     <message>
-        <location filename="../config/role_config.py" line="347"/>
+        <location filename="../config/role_config.py" line="348"/>
         <source>The &lt;b&gt;field coordinator&lt;/b&gt; assigns parcel sets to surveyors and synchronizes back the data they collected in the field.</source>
         <translation>El &lt;b&gt;Coordinador de campo&lt;/b&gt; les asigna predios a los reconocedores y sincroniza los datos que levantaron en campo.</translation>
     </message>
     <message>
-        <location filename="../config/role_config.py" line="360"/>
+        <location filename="../config/role_config.py" line="361"/>
         <source>The &lt;b&gt;Operator&lt;/b&gt; is in charge of capturing current cadastral data.</source>
         <translation>El rol &lt;b&gt;Operador&lt;/b&gt; está a cargo de capturar en campo datos catastrales actualizados.</translation>
     </message>
     <message>
-        <location filename="../config/role_config.py" line="399"/>
+        <location filename="../config/role_config.py" line="400"/>
         <source>Manager</source>
         <translation>Gestor</translation>
     </message>
     <message>
-        <location filename="../config/role_config.py" line="400"/>
+        <location filename="../config/role_config.py" line="401"/>
         <source>The &lt;b&gt;Manager&lt;/b&gt; is in charge of preparing supplies for operators as well as validating and managing the data provided by operators.</source>
         <translation>El rol &lt;b&gt;Gestor&lt;/b&gt; está a cargo de preparar Insumos para operadores, así como de validar y administrar los datos provenientes de los operadores.</translation>
     </message>
     <message>
-        <location filename="../config/role_config.py" line="420"/>
+        <location filename="../config/role_config.py" line="421"/>
         <source>The &lt;b&gt;Advanced&lt;/b&gt; role has access to all the functionality.</source>
         <translation>El rol &lt;b&gt;Avanzado&lt;/b&gt; tiene acceso a todas las funcionalidades del Asistente LADM-COL.</translation>
     </message>
@@ -1159,7 +1157,7 @@
         <translation type="vanished">El rol &lt;b&gt;Gestor&lt;/b&gt; está a cargo de preparar Insumos para operadores, así como de validar y administrar los datos provenientes de los operadores.</translation>
     </message>
     <message>
-        <location filename="../config/role_config.py" line="419"/>
+        <location filename="../config/role_config.py" line="420"/>
         <source>Advanced</source>
         <translation>Avanzado</translation>
     </message>
@@ -1771,12 +1769,12 @@
         <translation type="vanished">Cargar datos a Calificación No Convencional de Unidades de Construcción...</translation>
     </message>
     <message>
-        <location filename="../config/wizard_config.py" line="435"/>
+        <location filename="../config/wizard_config.py" line="436"/>
         <source>building unit qualification valuation</source>
         <translation>calificación de unidad de construcción</translation>
     </message>
     <message>
-        <location filename="../config/wizard_config.py" line="437"/>
+        <location filename="../config/wizard_config.py" line="438"/>
         <source>Create building unit qualification valuation</source>
         <translation>Crear calificación de unidad de construcción</translation>
     </message>
@@ -1829,12 +1827,12 @@
         <translation type="vanished">¡La nueva Unidad de Construcción (modelo de Avalúos) (t_id={}) se creó exitosamente y fue asociada con su Unidad de Construcción (modelo Catastro-Registro) correspondiente (t_id={})!</translation>
     </message>
     <message>
-        <location filename="../config/wizard_config.py" line="409"/>
+        <location filename="../config/wizard_config.py" line="410"/>
         <source>building unit valuation</source>
         <translation>unidad de construcción avalúos</translation>
     </message>
     <message>
-        <location filename="../config/wizard_config.py" line="411"/>
+        <location filename="../config/wizard_config.py" line="412"/>
         <source>Create building unit valuation</source>
         <translation>Crear unidad de construcción avalúos</translation>
     </message>
@@ -1931,12 +1929,12 @@
 <context>
     <name>CreateExtAddressSurveyWizard</name>
     <message>
-        <location filename="../config/wizard_config.py" line="315"/>
+        <location filename="../config/wizard_config.py" line="316"/>
         <source>ext address</source>
         <translation>dirección</translation>
     </message>
     <message>
-        <location filename="../config/wizard_config.py" line="316"/>
+        <location filename="../config/wizard_config.py" line="317"/>
         <source>Create ext address</source>
         <translation>Crear dirección</translation>
     </message>
@@ -1960,12 +1958,12 @@
         <translation type="vanished">Ahora puedes empezar a capturar Zonas Homogéneas Geoeconómicas sobre el mapa...</translation>
     </message>
     <message>
-        <location filename="../config/wizard_config.py" line="367"/>
+        <location filename="../config/wizard_config.py" line="368"/>
         <source>geoeconomic zone</source>
         <translation>zona geoeconómica</translation>
     </message>
     <message>
-        <location filename="../config/wizard_config.py" line="369"/>
+        <location filename="../config/wizard_config.py" line="370"/>
         <source>Create geoeconomic zone</source>
         <translation>Crear zona geoeconómica</translation>
     </message>
@@ -2048,12 +2046,12 @@
 <context>
     <name>CreateGroupPartySurvey</name>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1296"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1292"/>
         <source>First enable automatic values for namespace, local_id and t_ili_tid fields before creating group parties. Click the button to open the settings dialog.</source>
         <translation>Primero habilita los valores automáticos para los campos &apos;espacio de nombres&apos;, &apos;local_id&apos; y &apos;t_ili_tid&apos; antes de crear agrupaciones de interesados. Haz clic en el botón para abrir el diálogo de configuración.</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1298"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1294"/>
         <source>Open Settings</source>
         <translation>Abrir Configuración</translation>
     </message>
@@ -2401,12 +2399,12 @@
         <translation type="vanished">Ahora puedes empezar a capturar Zonas Homogéneas Físicas sobre el mapa...</translation>
     </message>
     <message>
-        <location filename="../config/wizard_config.py" line="389"/>
+        <location filename="../config/wizard_config.py" line="390"/>
         <source>physical zone</source>
         <translation>zona homogénea física</translation>
     </message>
     <message>
-        <location filename="../config/wizard_config.py" line="390"/>
+        <location filename="../config/wizard_config.py" line="391"/>
         <source>Create physical zone</source>
         <translation>Crear zona homogénea física</translation>
     </message>
@@ -2437,12 +2435,12 @@
 <context>
     <name>CreatePlotSurveyWizard</name>
     <message>
-        <location filename="../config/wizard_config.py" line="292"/>
+        <location filename="../config/wizard_config.py" line="293"/>
         <source>plot</source>
         <translation>terreno</translation>
     </message>
     <message>
-        <location filename="../config/wizard_config.py" line="293"/>
+        <location filename="../config/wizard_config.py" line="294"/>
         <source>Create plot</source>
         <translation>Crear terreno</translation>
     </message>
@@ -2690,12 +2688,12 @@
 <context>
     <name>CreateRightOfWaySurveyWizard</name>
     <message>
-        <location filename="../config/wizard_config.py" line="341"/>
+        <location filename="../config/wizard_config.py" line="342"/>
         <source>right of way</source>
         <translation>servidumbre de paso</translation>
     </message>
     <message>
-        <location filename="../config/wizard_config.py" line="342"/>
+        <location filename="../config/wizard_config.py" line="343"/>
         <source>Create right of way</source>
         <translation>Crear servidumbre de paso</translation>
     </message>
@@ -3529,12 +3527,12 @@ serán considerados como superpuestos</translation>
         <translation type="vanished">[Nombre de la base de datos GeoPackage que va a ser creada]</translation>
     </message>
     <message>
-        <location filename="../gui/db_panel/gpkg_config_panel.py" line="72"/>
+        <location filename="../gui/db_panel/gpkg_config_panel.py" line="70"/>
         <source>Open GeoPackage database file</source>
         <translation>Abrir archivo de base de datos GeoPackage</translation>
     </message>
     <message>
-        <location filename="../gui/db_panel/gpkg_config_panel.py" line="73"/>
+        <location filename="../gui/db_panel/gpkg_config_panel.py" line="71"/>
         <source>GeoPackage Database (*.gpkg)</source>
         <translation>Base de datos GeoPackage (*.gpkg)</translation>
     </message>
@@ -5444,7 +5442,7 @@ Rol:</translation>
     <message>
         <location filename="../lib/db/gpkg_connector.py" line="312"/>
         <source>Basket column not found, but it is required by model &apos;{}&apos;!.</source>
-        <translation type="unfinished"></translation>
+        <translation>¡No se encontró la columna para baskets, pero es requerida por el modelo &apos;{}&apos;!˛</translation>
     </message>
     <message>
         <location filename="../lib/db/gpkg_connector.py" line="324"/>
@@ -5459,6 +5457,14 @@ Rol:</translation>
         <location filename="../lib/db/gpkg_connector.py" line="226"/>
         <source>Connection is open!</source>
         <translation>¡La conexión está abierta!</translation>
+    </message>
+</context>
+<context>
+    <name>Geometry</name>
+    <message>
+        <location filename="../lib/geometry.py" line="428"/>
+        <source>Checking polygon gaps we found a &apos;{}&apos; geometry, which is not supported! Please report the issue.</source>
+        <translation>Revisando huecos entre polígonos encontramos una geometría &apos;{}&apos;, la cual no está soportada. Por favor reporta este inconveniente.</translation>
     </message>
 </context>
 <context>
@@ -6110,12 +6116,12 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
 <context>
     <name>ImportFromExcelDialog</name>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="916"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="910"/>
         <source>Some errors were found while importing from the intermediate Excel file into LADM-COL!</source>
         <translation>¡Se encontraron errores importando desde la estructura intermedia de Excel a LADM-COL!</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="920"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="914"/>
         <source>Show errors found</source>
         <translation>Mostrar errores encontrados</translation>
     </message>
@@ -6916,17 +6922,17 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
 <context>
     <name>LogQualityDialog</name>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="883"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="877"/>
         <source>Show Results</source>
         <translation>Mostrar Resultados</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="891"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="885"/>
         <source>Checking {} out of {}: &apos;{}&apos;</source>
         <translation>Revisando {} de {}: &apos;{}&apos;</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="903"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="897"/>
         <source>All the {} quality rules were checked! Click the button at the right-hand side to see a report.</source>
         <translation>¡Se terminaron de revisar las {} reglas de calidad! Haz clic en el botón de la derecha para ver un reporte.</translation>
     </message>
@@ -7231,7 +7237,7 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
     <message>
         <location filename="../lib/db/mssql_connector.py" line="484"/>
         <source>Basket column not found, but it is required by model &apos;{}&apos;!.</source>
-        <translation type="unfinished"></translation>
+        <translation>¡No se encontró la columna para baskets, pero es requerida por el modelo &apos;{}&apos;!˛</translation>
     </message>
     <message>
         <location filename="../lib/db/mssql_connector.py" line="494"/>
@@ -7363,34 +7369,44 @@ p, li { white-space: pre-wrap; }
         <translation>Encontrar insumos faltantes Cobol</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="158"/>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="169"/>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="180"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="161"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="172"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="183"/>
         <source>Warning</source>
         <translation>Advertencia</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="159"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="162"/>
         <source>The &lt;b&gt;xlsx&lt;/b&gt; and the &lt;b&gt;gpkg&lt;/b&gt; already exist in the folder.&lt;br/&gt;&lt;br/&gt;If you run the function, the data will be overwritten.&lt;br/&gt;&lt;br/&gt;Do you still want to continue?</source>
         <translation>Los archivos &lt;b&gt;xlsx&lt;/b&gt; y &lt;b&gt;gpkg&lt;/b&gt; ya existen en la carpeta elegida.&lt;br/&gt;&lt;br/&gt;¿Quieres sobreescribirlos?</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="170"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="173"/>
         <source>The &lt;b&gt;gpkg&lt;/b&gt; already exist in the folder.&lt;br/&gt;&lt;br/&gt;If you run the function, the data will be overwritten.&lt;br/&gt;&lt;br/&gt;Do you still want to continue?</source>
         <translation>El archivo &lt;b&gt;gpkg&lt;/b&gt; ya existe en la carpeta elegida.&lt;br/&gt;&lt;br/&gt;¿Quieres sobreescribirlo?</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="181"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="184"/>
         <source>The &lt;b&gt;xlsx&lt;/b&gt; already exist in the folder.&lt;br/&gt;&lt;br/&gt;If you run the function, the data will be overwritten.&lt;br/&gt;&lt;br/&gt;Do you still want to continue?</source>
         <translation>El archivo &lt;b&gt;xlsx&lt;/b&gt; ya existe en la carpeta elegida.&lt;br/&gt;&lt;br/&gt;¿Quieres sobreescribirlo?</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="249"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="228"/>
+        <source>Errors in the &apos;ETL Omissions-Commissions&apos; model. See QGIS log for details.</source>
+        <translation>Hubo errores en el modelo &apos;ETL Omisiones y Comisiones&apos;. Revisa el log de QGIS para más detalles.</translation>
+    </message>
+    <message>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="251"/>
+        <source>Errors in the &apos;Package layers&apos; algorithm. See QGIS log for details.</source>
+        <translation>Hubo errores en el algoritmo de &apos;empaquetar capas&apos;. Revisa el log de QGIS para más detalles.</translation>
+    </message>
+    <message>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="254"/>
         <source>Results missing supplies</source>
         <translation>Omisiones y Comisiones</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="255"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="260"/>
         <source>There were troubles loading {} layer.</source>
         <translation>Hubo problemas cargando la capa {}.</translation>
     </message>
@@ -7398,6 +7414,14 @@ p, li { white-space: pre-wrap; }
         <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="99"/>
         <source>Select folder to save data</source>
         <translation>Selecciona una carpeta para guardar los resultados</translation>
+    </message>
+</context>
+<context>
+    <name>MissingSNCSuppliesDialog</name>
+    <message>
+        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="227"/>
+        <source>Errors in the &apos;ETL Omissions-Commissions&apos; model. See QGIS log for details.</source>
+        <translation>Hubo errores en el modelo &apos;ETL Omisiones y Comisiones&apos;. Revisa el log de QGIS para más detalles.</translation>
     </message>
 </context>
 <context>
@@ -7413,34 +7437,39 @@ p, li { white-space: pre-wrap; }
         <translation>Encontrar insumos faltantes SNC</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="158"/>
-        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="169"/>
-        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="180"/>
+        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="161"/>
+        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="172"/>
+        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="183"/>
         <source>Warning</source>
         <translation>Advertencia</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="159"/>
+        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="162"/>
         <source>The &lt;b&gt;xlsx&lt;/b&gt; and the &lt;b&gt;gpkg&lt;/b&gt; already exist in the folder.&lt;br/&gt;&lt;br/&gt;If you run the function, the data will be overwritten.&lt;br/&gt;&lt;br/&gt;Do you still want to continue?</source>
         <translation>Los archivos &lt;b&gt;xlsx&lt;/b&gt; y &lt;b&gt;gpkg&lt;/b&gt; ya existen en la carpeta elegida.&lt;br/&gt;&lt;br/&gt;¿Quieres sobreescribirlos?</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="170"/>
+        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="173"/>
         <source>The &lt;b&gt;gpkg&lt;/b&gt; already exist in the folder.&lt;br/&gt;&lt;br/&gt;If you run the function, the data will be overwritten.&lt;br/&gt;&lt;br/&gt;Do you still want to continue?</source>
         <translation>El archivo &lt;b&gt;gpkg&lt;/b&gt; ya existe en la carpeta elegida.&lt;br/&gt;&lt;br/&gt;¿Quieres sobreescribirlo?</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="181"/>
+        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="184"/>
         <source>The &lt;b&gt;xlsx&lt;/b&gt; already exist in the folder.&lt;br/&gt;&lt;br/&gt;If you run the function, the data will be overwritten.&lt;br/&gt;&lt;br/&gt;Do you still want to continue?</source>
         <translation>El archivo &lt;b&gt;xlsx&lt;/b&gt; ya existe en la carpeta elegida.&lt;br/&gt;&lt;br/&gt;¿Quieres sobreescribirlo?</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="249"/>
+        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="250"/>
+        <source>Errors in the &apos;Package layers&apos; algorithm. See QGIS log for details.</source>
+        <translation>Hubo errores en el algoritmo de &apos;empaquetar capas&apos;. Revisa el log de QGIS para más detalles.</translation>
+    </message>
+    <message>
+        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="253"/>
         <source>Results missing supplies</source>
         <translation>Omisiones y Comisiones</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="255"/>
+        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="259"/>
         <source>There were troubles loading {} layer.</source>
         <translation>Hubo problemas cargando la capa {}.</translation>
     </message>
@@ -7561,7 +7590,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">¡La base de datos actual no tiene PostGIS instalado! Instálalo antes de continuar.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="602"/>
+        <location filename="../lib/db/pg_connector.py" line="666"/>
         <source>The schema &apos;{}&apos; does not exist in the database!</source>
         <translation>¡El esquema {} no existe en la base de datos!</translation>
     </message>
@@ -7578,7 +7607,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">El usuario &apos;{}&apos; no tiene suficientes permisos sobre el esquema &apos;{}&apos;. Detalles: {}</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="608"/>
+        <location filename="../lib/db/pg_connector.py" line="672"/>
         <source>User &apos;{}&apos; has not enough permissions over the schema &apos;{}&apos;.</source>
         <translation>El usuario &apos;{}&apos; no tiene suficientes permisos sobre el esquema &apos;{}&apos;.</translation>
     </message>
@@ -7587,57 +7616,57 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">¡Conexión exitosa a base de datos de PostGIS!</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="562"/>
+        <location filename="../lib/db/pg_connector.py" line="626"/>
         <source>Connection to server was successful.</source>
         <translation>La conexión al servidor fue exitosa.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="570"/>
+        <location filename="../lib/db/pg_connector.py" line="634"/>
         <source>You should first select a database.</source>
         <translation>Primero debes seleccionar una base de datos.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="593"/>
+        <location filename="../lib/db/pg_connector.py" line="657"/>
         <source>Connection to the database was successful.</source>
         <translation>La conexión a la base de datos fue exitosa.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="598"/>
+        <location filename="../lib/db/pg_connector.py" line="662"/>
         <source>You should first select a schema.</source>
         <translation>Primero debes seleccionar un esquema.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="613"/>
+        <location filename="../lib/db/pg_connector.py" line="677"/>
         <source>Connection to the database schema was successful.</source>
         <translation>La conexión al esquema de base de datos fue exitosa.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="618"/>
+        <location filename="../lib/db/pg_connector.py" line="682"/>
         <source>The schema &apos;{}&apos; is not a valid LADM-COL schema. That is, the schema doesn&apos;t have the structure of the LADM-COL model.</source>
         <translation>El esquema &apos;{}&apos; no tiene una estructura válida de LADM_COL. Esto es, el esquema no es conforme con el modelo LADM_COL.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="623"/>
+        <location filename="../lib/db/pg_connector.py" line="687"/>
         <source>The DB schema &apos;{}&apos; was created with an old version of ili2db (v3), which is no longer supported. You need to migrate it to ili2db4.</source>
         <translation>El esquema de base de datos &apos;{}&apos; fue creado con una versión antigua de ili2db (v3), la cual ya no está soportada. Necesitas migrarla a ili2db4.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="637"/>
+        <location filename="../lib/db/pg_connector.py" line="701"/>
         <source>Basket column not found, but it is required by model &apos;{}&apos;!.</source>
-        <translation type="unfinished"></translation>
+        <translation>¡No se encontró la columna para baskets, pero es requerida por el modelo &apos;{}&apos;!˛</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="491"/>
+        <location filename="../lib/db/pg_connector.py" line="555"/>
         <source>The user has both Create and Usage privileges over the schema.</source>
         <translation>El usuario tiene permisos de usar y crear objetos en el esquema.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="494"/>
+        <location filename="../lib/db/pg_connector.py" line="558"/>
         <source>The user has Usage privileges over the schema.</source>
         <translation>El usuario tiene permisos de usar el esquema.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="497"/>
+        <location filename="../lib/db/pg_connector.py" line="561"/>
         <source>The user has not enough privileges over the schema.</source>
         <translation>El usuario no tiene suficientes permisos sobre el esquema.</translation>
     </message>
@@ -7647,12 +7676,12 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../lib/db/gpkg_connector.py" line="320"/>
-        <location filename="../lib/db/pg_connector.py" line="645"/>
+        <location filename="../lib/db/pg_connector.py" line="709"/>
         <source>Table/field names from the DB are not correct. Details: {}.</source>
         <translation>Los nombres de tablas/campos de la base de datos no son correctos. Detalles: {}.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="649"/>
+        <location filename="../lib/db/pg_connector.py" line="713"/>
         <source>The schema &apos;{}&apos; has a valid LADM-COL structure!</source>
         <translation>¡El esquema &apos;{}&apos; tiene una estructura conforme con el modelo LADM_COL!</translation>
     </message>
@@ -7673,7 +7702,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Por lo menos un modelo LADM-COL debe existir! Los modelos soportados son &apos;{}&apos; pero usted tiene &apos;{}&apos;.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="154"/>
+        <location filename="../lib/db/pg_connector.py" line="153"/>
         <source>Connection is open!</source>
         <translation>¡La conexión está abierta!</translation>
     </message>
@@ -7682,22 +7711,22 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">No se encontró la capa &apos;{}&apos; en la base de datos (esquema: {}).</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="440"/>
+        <location filename="../lib/db/pg_connector.py" line="504"/>
         <source>There was an error when obtaining the list of existing databases. : {}</source>
         <translation>Hubo un error obteniendo el listado de bases de datos existentes.: {}</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="461"/>
+        <location filename="../lib/db/pg_connector.py" line="525"/>
         <source>There was an error when obtaining the list of existing schemas: {}</source>
         <translation>Hubo un error obteniendo el listado de esquemas existentes.: {}</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="482"/>
+        <location filename="../lib/db/pg_connector.py" line="546"/>
         <source>No information for schema &apos;{}&apos;.</source>
         <translation>No hay información para el esquema &apos;{}&apos;.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="486"/>
+        <location filename="../lib/db/pg_connector.py" line="550"/>
         <source>There was an error when obtaining privileges for schema &apos;{}&apos;. Details: {}</source>
         <translation>Hubo un error obteniendo los permisos para el esquema &apos;{}&apos;. Detalles: {}</translation>
     </message>
@@ -8601,12 +8630,12 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
 <context>
     <name>QgisModelBaker</name>
     <message>
-        <location filename="../utils/qt_utils.py" line="65"/>
+        <location filename="../utils/qt_utils.py" line="86"/>
         <source>Open File</source>
         <translation>Abrir archivo</translation>
     </message>
     <message>
-        <location filename="../utils/qt_utils.py" line="66"/>
+        <location filename="../utils/qt_utils.py" line="87"/>
         <source>Any file(*)</source>
         <translation>Cualquier archivo (*)</translation>
     </message>
@@ -9249,39 +9278,38 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">¡No se encontró la capa &apos;Terreno&apos; en la base de datos! {}</translation>
     </message>
     <message>
-        <location filename="../gui/reports/reports.py" line="166"/>
+        <location filename="../gui/reports/reports.py" line="177"/>
         <source>Java is a prerequisite. Since it was not found, it is being configured...</source>
         <translation>Java está siendo configurando...</translation>
     </message>
     <message>
-        <location filename="../gui/reports/reports.py" line="176"/>
+        <location filename="../gui/reports/reports.py" line="187"/>
         <source>To generate reports, first select at least a plot!</source>
         <translation>¡Primero selecciona por lo menos un predio para generar reportes!</translation>
     </message>
     <message>
-        <location filename="../gui/reports/reports.py" line="184"/>
+        <location filename="../gui/reports/reports.py" line="195"/>
         <source>Select a folder to save the reports to be generated</source>
         <translation>Selecciona una carpeta para almacenar los reportes que serán generados</translation>
     </message>
     <message>
-        <location filename="../gui/reports/reports.py" line="187"/>
+        <location filename="../gui/reports/reports.py" line="198"/>
         <source>You need to select a folder where to save the reports before continuing.</source>
         <translation>Necesitas seleccionar una carpeta para almacenar los reportes antes de continuar.</translation>
     </message>
     <message>
-        <location filename="../gui/reports/reports.py" line="225"/>
+        <location filename="../gui/reports/reports.py" line="236"/>
         <source>Generating {} report{}...</source>
         <translation>Generando {} reporte{}...</translation>
     </message>
     <message>
-        <location filename="../gui/reports/reports.py" line="238"/>
+        <location filename="../gui/reports/reports.py" line="249"/>
         <source>Skipping Annex 17 for plot with {}={} because it has holes. The reporter module does not support such polygons.</source>
         <translation>Omitiendo Anexo 17 para el terreno con {}={} porque tiene agujeros. El módulo de reportes no soporta dichos polígonos.</translation>
     </message>
     <message>
-        <location filename="../gui/reports/reports.py" line="243"/>
         <source>Skipping Annex 17 for plot with {}={} because it is a multi-polygon. The reporter module does not support such polygons.</source>
-        <translation>Omitiendo Anexo 17 para el terreno con {}={} porque es un multipolígono. El módulo de reportes no soporta dichos polígonos.</translation>
+        <translation type="vanished">Omitiendo Anexo 17 para el terreno con {}={} porque es un multipolígono. El módulo de reportes no soporta dichos polígonos.</translation>
     </message>
     <message>
         <source>The report &lt;a href=&apos;file:///{}&apos;&gt;anexo_17_{}.pdf&lt;/a&gt; was successfully generated!</source>
@@ -9434,57 +9462,57 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
 <context>
     <name>SNCDataSourceWidget</name>
     <message>
-        <location filename="../gui/supplies/snc_data_sources_widget.py" line="47"/>
+        <location filename="../gui/supplies/snc_data_sources_widget.py" line="52"/>
         <source>Select the predio sanción .csv file with SNC data </source>
         <translation>Selecciona el archivo .csv del SNC con datos de &apos;predio sanción&apos; </translation>
     </message>
     <message>
-        <location filename="../gui/supplies/snc_data_sources_widget.py" line="52"/>
+        <location filename="../gui/supplies/snc_data_sources_widget.py" line="58"/>
         <source>Select the predio .csv file with SNC data </source>
         <translation>Selecciona el archivo .csv del SNC con datos de &apos;predio&apos; </translation>
     </message>
     <message>
-        <location filename="../gui/supplies/snc_data_sources_widget.py" line="57"/>
+        <location filename="../gui/supplies/snc_data_sources_widget.py" line="64"/>
         <source>Select the dirección .csv file with SNC data </source>
         <translation>Selecciona el archivo .csv del SNC con datos de &apos;dirección&apos; </translation>
     </message>
     <message>
-        <location filename="../gui/supplies/snc_data_sources_widget.py" line="62"/>
+        <location filename="../gui/supplies/snc_data_sources_widget.py" line="70"/>
         <source>Select the unidad construcción .csv file with SNC data </source>
         <translation>Selecciona el archivo .csv del SNC con datos de &apos;unidad construcción&apos; </translation>
     </message>
     <message>
-        <location filename="../gui/supplies/snc_data_sources_widget.py" line="67"/>
+        <location filename="../gui/supplies/snc_data_sources_widget.py" line="76"/>
         <source>Select the unidad construcción comp .csv file with SNC data </source>
         <translation>Selecciona el archivo .csv del SNC con datos de &apos;unidad construcción comp&apos; </translation>
     </message>
     <message>
-        <location filename="../gui/supplies/snc_data_sources_widget.py" line="72"/>
+        <location filename="../gui/supplies/snc_data_sources_widget.py" line="82"/>
         <source>Select the persona .csv file with SNC data </source>
         <translation>Selecciona el archivo .csv del SNC con datos de &apos;persona&apos; </translation>
     </message>
     <message>
-        <location filename="../gui/supplies/snc_data_sources_widget.py" line="77"/>
+        <location filename="../gui/supplies/snc_data_sources_widget.py" line="88"/>
         <source>Select the persona predio .csv file with SNC data </source>
         <translation>Selecciona el archivo .csv del SNC con datos de &apos;persona predio&apos; </translation>
     </message>
     <message>
-        <location filename="../gui/supplies/snc_data_sources_widget.py" line="82"/>
+        <location filename="../gui/supplies/snc_data_sources_widget.py" line="94"/>
         <source>Select the ficha matriz .csv file with SNC data </source>
         <translation>Selecciona el archivo .csv del SNC con datos de &apos;ficha matriz&apos; </translation>
     </message>
     <message>
-        <location filename="../gui/supplies/snc_data_sources_widget.py" line="87"/>
+        <location filename="../gui/supplies/snc_data_sources_widget.py" line="100"/>
         <source>Select the ficha matriz predio .csv file with SNC data </source>
         <translation>Selecciona el archivo .csv del SNC con datos de &apos;ficha matriz predio&apos; </translation>
     </message>
     <message>
-        <location filename="../gui/supplies/snc_data_sources_widget.py" line="92"/>
+        <location filename="../gui/supplies/snc_data_sources_widget.py" line="106"/>
         <source>Select the ficha matriz torre .csv file with SNC data </source>
         <translation>Selecciona el archivo .csv del SNC con datos de &apos;ficha matriz torre&apos; </translation>
     </message>
     <message>
-        <location filename="../gui/supplies/snc_data_sources_widget.py" line="97"/>
+        <location filename="../gui/supplies/snc_data_sources_widget.py" line="112"/>
         <source>Open GDB folder</source>
         <translation>Abrir carpeta GDB</translation>
     </message>
@@ -9701,7 +9729,7 @@ You&apos;ll continue with a limited functionality until you configure an LADM-CO
 ¡Continuarás con funcionalidades limitadas hasta que configures una base de datos LADM-COL válida!</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_settings.py" line="282"/>
+        <location filename="../gui/dialogs/dlg_settings.py" line="293"/>
         <source>No LADM-COL DB has been configured! You&apos;ll continue with limited functionality until you configure a LADM-COL DB.
 
 Do you want to go to &apos;Create LADM-COL structure&apos; dialog?</source>
@@ -9710,27 +9738,27 @@ Do you want to go to &apos;Create LADM-COL structure&apos; dialog?</source>
 ¿Quieres ir al diálogo &quot;Crear estructura LADM-COL&quot;?</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_settings.py" line="284"/>
+        <location filename="../gui/dialogs/dlg_settings.py" line="295"/>
         <source>Important</source>
         <translation>Importante</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_settings.py" line="287"/>
+        <location filename="../gui/dialogs/dlg_settings.py" line="298"/>
         <source>Yes, go to create structure</source>
         <translation>Si, ir a crear estructura</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_settings.py" line="288"/>
+        <location filename="../gui/dialogs/dlg_settings.py" line="299"/>
         <source>No, I&apos;ll do it later</source>
         <translation>No, lo haré luego</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_settings.py" line="300"/>
+        <location filename="../gui/dialogs/dlg_settings.py" line="312"/>
         <source>Warning</source>
         <translation>Advertencia</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_settings.py" line="301"/>
+        <location filename="../gui/dialogs/dlg_settings.py" line="313"/>
         <source>You have a ST connection opened and you want to change your role.
 If you confirm that you want to change your role, you&apos;ll be logged out from the ST.
 
@@ -9741,7 +9769,12 @@ Si confirmas que quieres cambiar el rol, se cerrará tu sesión del Sistema de T
 ¿Realmente quieres cambiar el rol?</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_settings.py" line="516"/>
+        <location filename="../gui/dialogs/dlg_settings.py" line="353"/>
+        <source>The source service is not valid, so it cannot be activated! Adjust such configuration before saving settings.</source>
+        <translation>¡El servicio de fuentes documentales no es válido, por eso no puede activarse! Ajusta su configuración antes de guardar.</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_settings.py" line="553"/>
         <source>Missing roads will be marked as errors.</source>
         <translation>Las vías faltantes serán marcadas como errores.</translation>
     </message>
@@ -9761,23 +9794,25 @@ Si confirmas que quieres cambiar el rol, se cerrará tu sesión del Sistema de T
         <translation>El modelo &apos;{}&apos; es requerido pero no se pudo encontrar en la base de datos.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="253"/>
-        <location filename="../utils/decorators.py" line="288"/>
-        <location filename="../utils/decorators.py" line="327"/>
-        <location filename="../utils/decorators.py" line="366"/>
+        <location filename="../utils/decorators.py" line="252"/>
+        <location filename="../utils/decorators.py" line="287"/>
+        <location filename="../utils/decorators.py" line="326"/>
+        <location filename="../utils/decorators.py" line="365"/>
+        <location filename="../utils/decorators.py" line="406"/>
         <source>{} Connection Settings</source>
         <translation>Configuración para la fuente {}</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="254"/>
-        <location filename="../utils/decorators.py" line="289"/>
-        <location filename="../utils/decorators.py" line="329"/>
-        <location filename="../utils/decorators.py" line="367"/>
+        <location filename="../utils/decorators.py" line="253"/>
+        <location filename="../utils/decorators.py" line="288"/>
+        <location filename="../utils/decorators.py" line="328"/>
+        <location filename="../utils/decorators.py" line="366"/>
+        <location filename="../utils/decorators.py" line="408"/>
         <source>Set a DB connection with the &apos;{}&apos; model.</source>
         <translation>Configura una base de datos con el modelo &apos;{}&apos;.</translation>
     </message>
     <message>
-        <location filename="../lib/context.py" line="36"/>
+        <location filename="../lib/context.py" line="47"/>
         <source>Settings</source>
         <translation>Configuración</translation>
     </message>
@@ -9797,51 +9832,51 @@ Si confirmas que quieres cambiar el rol, se cerrará tu sesión del Sistema de T
         <translation type="vanished">¡{} de {} registros {} ignorado(s) porque {} ruta(s) no se encontró(encontraron) en el disco local!</translation>
     </message>
     <message>
-        <location filename="../lib/source_handler.py" line="66"/>
+        <location filename="../lib/source_handler.py" line="67"/>
         <source>The source files were not uploaded to the document repository because you have that option unchecked. You can still upload the source files later using the &apos;Upload Pending Source Files&apos; menu.</source>
         <translation>Los archivos fuente no se cargaron en el repositorio de documentos porque tiene esa opción desactivada. Aún puede cargar los archivos fuente más tarde usando el menú &apos;Subir Archivos Fuente Pendientes&apos;.</translation>
     </message>
     <message>
-        <location filename="../lib/source_handler.py" line="74"/>
+        <location filename="../lib/source_handler.py" line="75"/>
         <source>No file could be uploaded to the document repository. You can do it later from the &apos;Upload Pending Source Files&apos; menu. Reason: {}</source>
         <translation>No se pudo cargar ningún archivo al repositorio de documentos. Puede hacerlo más tarde desde el menú &apos;Subir Archivos Fuente Pendientes&apos;. Razón: {}</translation>
     </message>
     <message>
-        <location filename="../lib/source_handler.py" line="165"/>
+        <location filename="../lib/source_handler.py" line="166"/>
         <source>{} out of {} records {} not uploaded to the document repository because {} file path is NULL or it couldn&apos;t be found in the local disk!</source>
         <translation>{} de {} registros {} no se ha cargado en el repositorio de documentos porque la ruta del archivo {} es NULL o no se pudo encontrar en el disco local!</translation>
     </message>
     <message>
-        <location filename="../lib/source_handler.py" line="169"/>
-        <location filename="../lib/source_handler.py" line="177"/>
+        <location filename="../lib/source_handler.py" line="170"/>
+        <location filename="../lib/source_handler.py" line="178"/>
         <source>was</source>
         <translation>fue</translation>
     </message>
     <message>
-        <location filename="../lib/source_handler.py" line="169"/>
-        <location filename="../lib/source_handler.py" line="177"/>
+        <location filename="../lib/source_handler.py" line="170"/>
+        <location filename="../lib/source_handler.py" line="178"/>
         <source>were</source>
         <translation>fueron</translation>
     </message>
     <message>
-        <location filename="../lib/source_handler.py" line="170"/>
-        <location filename="../lib/source_handler.py" line="178"/>
+        <location filename="../lib/source_handler.py" line="171"/>
+        <location filename="../lib/source_handler.py" line="179"/>
         <source>its</source>
         <translation>su</translation>
     </message>
     <message>
-        <location filename="../lib/source_handler.py" line="170"/>
-        <location filename="../lib/source_handler.py" line="178"/>
+        <location filename="../lib/source_handler.py" line="171"/>
+        <location filename="../lib/source_handler.py" line="179"/>
         <source>their</source>
         <translation>sus</translation>
     </message>
     <message>
-        <location filename="../lib/source_handler.py" line="173"/>
+        <location filename="../lib/source_handler.py" line="174"/>
         <source>{} out of {} files {} uploaded to the document repository and {} remote location stored in the database!</source>
         <translation>¡{} de {} archivos {} subidos al repositorio de documentos y {} ubicación remota almacenada en la base de datos!</translation>
     </message>
     <message>
-        <location filename="../lib/source_handler.py" line="181"/>
+        <location filename="../lib/source_handler.py" line="182"/>
         <source>{} out of {} files could not be uploaded to the document repository because of upload errors! See log for details.</source>
         <translation>¡{} de {} archivos no se pudieron cargar en el repositorio de documentos debido a errores de carga! Vea el registro para más detalles.</translation>
     </message>
@@ -9857,105 +9892,105 @@ Si confirmas que quieres cambiar el rol, se cerrará tu sesión del Sistema de T
 <context>
     <name>SuppliesETLWizard</name>
     <message>
-        <location filename="../gui/supplies/wiz_supplies_etl.py" line="74"/>
+        <location filename="../gui/supplies/wiz_supplies_etl.py" line="76"/>
         <source>Run ETL</source>
         <translation>Ejecutar ETL</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/wiz_supplies_etl.py" line="75"/>
-        <location filename="../gui/supplies/wiz_supplies_etl.py" line="76"/>
-        <location filename="../gui/supplies/wiz_supplies_etl.py" line="240"/>
+        <location filename="../gui/supplies/wiz_supplies_etl.py" line="77"/>
+        <location filename="../gui/supplies/wiz_supplies_etl.py" line="78"/>
+        <location filename="../gui/supplies/wiz_supplies_etl.py" line="242"/>
         <source>Close</source>
         <translation>Cerrar</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/wiz_supplies_etl.py" line="119"/>
+        <location filename="../gui/supplies/wiz_supplies_etl.py" line="121"/>
         <source>Run supplies ETL</source>
         <translation>Ejecutar ETL de insumos</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/wiz_supplies_etl.py" line="128"/>
+        <location filename="../gui/supplies/wiz_supplies_etl.py" line="130"/>
         <source>ETL: SNC to Supplies model</source>
         <translation>ETL: Datos del SNC al modelo de Insumos</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/wiz_supplies_etl.py" line="130"/>
+        <location filename="../gui/supplies/wiz_supplies_etl.py" line="132"/>
         <source>ETL: Cobol to Supplies model</source>
         <translation>ETL: Datos de Cobol al modelo de Insumos</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/wiz_supplies_etl.py" line="147"/>
+        <location filename="../gui/supplies/wiz_supplies_etl.py" line="149"/>
         <source>ETL-SNC</source>
         <translation>ETL-SNC</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/wiz_supplies_etl.py" line="150"/>
+        <location filename="../gui/supplies/wiz_supplies_etl.py" line="152"/>
         <source>ETL-Cobol</source>
         <translation>ETL-Cobol</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/wiz_supplies_etl.py" line="211"/>
-        <location filename="../gui/supplies/wiz_supplies_etl.py" line="272"/>
+        <location filename="../gui/supplies/wiz_supplies_etl.py" line="213"/>
+        <location filename="../gui/supplies/wiz_supplies_etl.py" line="274"/>
         <source>Warning</source>
         <translation>Advertencia</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/wiz_supplies_etl.py" line="212"/>
+        <location filename="../gui/supplies/wiz_supplies_etl.py" line="214"/>
         <source>The database &lt;i&gt;{}&lt;/i&gt; already has a valid LADM-COL structure.&lt;br/&gt;&lt;br/&gt;If such database has any data, loading data into it might cause invalid data.&lt;br/&gt;&lt;br/&gt;Do you still want to continue?</source>
         <translation>La base de datos &lt;i&gt;{}&lt;/i&gt; ya tiene una estructura LADM-COL válida.&lt;br/&gt;&lt;br/&gt;Si dicha base de datos tiene datos, cargarle datos adicionales puede generar datos inválidos.&lt;br/&gt;&lt;br/&gt;¿Aún así quieres continuar?</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/wiz_supplies_etl.py" line="219"/>
+        <location filename="../gui/supplies/wiz_supplies_etl.py" line="221"/>
         <source>Cancel</source>
         <translation>Cancelar</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/wiz_supplies_etl.py" line="241"/>
+        <location filename="../gui/supplies/wiz_supplies_etl.py" line="243"/>
         <source>The {} has finished successfully!</source>
         <translation>¡El {} ha finalizado exitósamente!</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/wiz_supplies_etl.py" line="263"/>
+        <location filename="../gui/supplies/wiz_supplies_etl.py" line="265"/>
         <source>To run the ETL, the database (schema) should have the Supplies LADM-COL structure. Choose a proper database (schema) and try again.</source>
         <translation>Para ejecutar el ETL, la base de datos (esquema) debería tener la estructura LADM-COL de Insumos. Elige una base de datos (esquema) apropiada e intenta de nuevo.</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/wiz_supplies_etl.py" line="273"/>
+        <location filename="../gui/supplies/wiz_supplies_etl.py" line="275"/>
         <source>The &apos;{}&apos; tool is still running. Do you want to cancel it? If you cancel, the data might be incomplete in the target database.</source>
         <translation>La herramienta &apos;{}&apos; todavía se está ejecutando. ¿Quieres cancelarla? Si cancelas, los datos en la base de datos de salida pueden estar incompletos.</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/wiz_supplies_etl.py" line="280"/>
+        <location filename="../gui/supplies/wiz_supplies_etl.py" line="282"/>
         <source>The &apos;{}&apos; tool was cancelled.</source>
         <translation>La herramienta &apos;{}&apos; fue cancelada.</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/wiz_supplies_etl.py" line="299"/>
+        <location filename="../gui/supplies/wiz_supplies_etl.py" line="303"/>
         <source>&lt;h4&gt;{} report&lt;/h4&gt;</source>
         <translation>&lt;h4&gt;Reporte {}&lt;/h4&gt;</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/wiz_supplies_etl.py" line="300"/>
+        <location filename="../gui/supplies/wiz_supplies_etl.py" line="304"/>
         <source>Number of features loaded to the LADM-COL cadastral supplies model:&lt;br/&gt;</source>
         <translation>Número de registros cargados al modelo &apos;Datos Gestor Catastral&apos; (insumos) de LADM-COL:&lt;br/&gt;</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/wiz_supplies_etl.py" line="334"/>
+        <location filename="../gui/supplies/wiz_supplies_etl.py" line="346"/>
         <source>Target DB Connection Settings</source>
         <translation>Configuración de la BD de destino</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/wiz_supplies_etl.py" line="335"/>
+        <location filename="../gui/supplies/wiz_supplies_etl.py" line="347"/>
         <source>Configure where do you want the data to be imported.</source>
         <translation>Configura a cuál base de datos le quieres importar datos.</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/wiz_supplies_etl.py" line="360"/>
+        <location filename="../gui/supplies/wiz_supplies_etl.py" line="369"/>
         <source>The database is not defined!</source>
         <translation>¡La base de datos no está definida!</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/wiz_supplies_etl.py" line="371"/>
+        <location filename="../gui/supplies/wiz_supplies_etl.py" line="380"/>
         <source>There was a problem loading layers from the &apos;Supplies&apos; model!</source>
         <translation>¡Hubo un problema cargando capas del modelo Insumos!</translation>
     </message>
@@ -13705,22 +13740,22 @@ Asociar la nueva fuente con los objetos seleccionados de:</translation>
         <translation>Ejecutar ETL de insumos</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/wiz_supplies_etl.ui" line="69"/>
+        <location filename="../ui/supplies/wiz_supplies_etl.ui" line="72"/>
         <source>Which ETL would you like to run?</source>
         <translation>¿Cuál ETL te gustaría ejecutar?</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/wiz_supplies_etl.ui" line="93"/>
+        <location filename="../ui/supplies/wiz_supplies_etl.ui" line="96"/>
         <source>ETL for SNC data</source>
         <translation>ETL para datos SNC</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/wiz_supplies_etl.ui" line="121"/>
+        <location filename="../ui/supplies/wiz_supplies_etl.ui" line="124"/>
         <source>ETL for Cobol data</source>
         <translation>ETL para datos Cobol</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/wiz_supplies_etl.ui" line="157"/>
+        <location filename="../ui/supplies/wiz_supplies_etl.ui" line="166"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -13737,11 +13772,24 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;El ETL permitirá convertir los datos catastrales oficiales al modelo de &lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-weight:600; color:#545454;&quot;&gt;Datos Gestor Catastral&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;, uno de los modelos extendidos del perfil colombiano LADM-COL&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-weight:600; color:#545454;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
+        <location filename="../ui/supplies/wiz_supplies_etl.ui" line="364"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
         <source>Target data base                                                                               </source>
         <translation type="vanished">Base de datos destino</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/wiz_supplies_etl.ui" line="299"/>
+        <location filename="../ui/supplies/wiz_supplies_etl.ui" line="320"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -13754,20 +13802,19 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;Este diálogo permite convertir datos procedentes de COBOL al modelo de &lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-weight:600; color:#545454;&quot;&gt;Datos Gestor Catastral&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;, uno de los modelos extendidos de perfil colombiano LADM-COL&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-weight:600; color:#545454;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/wiz_supplies_etl.ui" line="344"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-style:italic; color:#9c9c9c;&quot;&gt;(Planeado para futuras versiones...)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation type="vanished">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-style:italic; color:#9c9c9c;&quot;&gt;(Planeado para futuras versiones...)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/wiz_supplies_etl.ui" line="368"/>
+        <location filename="../ui/supplies/wiz_supplies_etl.ui" line="388"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -13796,22 +13843,22 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; color:#545454;&quot;&gt;El ETL permitirá convertir los datos catastrales oficiales al modelo de &lt;/span&gt;&lt;span style=&quot; font-weight:600; color:#545454;&quot;&gt;Datos Gestor Catastral&lt;/span&gt;&lt;span style=&quot; color:#545454;&quot;&gt;, uno de los modelos extendidos del perfil colombiano LADM-COL&lt;/span&gt;&lt;span style=&quot; font-weight:600; color:#545454;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/wiz_supplies_etl.ui" line="213"/>
+        <location filename="../ui/supplies/wiz_supplies_etl.ui" line="236"/>
         <source>Target data base</source>
         <translation>Base de datos destino</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/wiz_supplies_etl.ui" line="225"/>
+        <location filename="../ui/supplies/wiz_supplies_etl.ui" line="248"/>
         <source>Database:</source>
         <translation>Base de datos:</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/wiz_supplies_etl.ui" line="265"/>
+        <location filename="../ui/supplies/wiz_supplies_etl.ui" line="288"/>
         <source>Connection settings</source>
         <translation>Configurar conexión</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/wiz_supplies_etl.ui" line="195"/>
+        <location filename="../ui/supplies/wiz_supplies_etl.ui" line="218"/>
         <source>Configure data source</source>
         <translation>Configurar datos fuente</translation>
     </message>
