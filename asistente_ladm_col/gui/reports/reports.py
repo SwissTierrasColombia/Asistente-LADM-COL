@@ -262,7 +262,7 @@ class ReportGenerator(QObject):
                     functools.partial(self.stdout_ready, proc=proc))
 
                 parcel_number = self.ladm_data.get_parcels_related_to_plots(db, [plot_id], db.names.LC_PARCEL_T_PARCEL_NUMBER_F) or ['']
-                self.app.core.get_layer(db, db.names.LC_PLOT_T, load=True)  # previous function changed the selected layer, plots layer are selected again
+                self.app.gui.activate_layer(plot_layer)  # Previous function changed the selected layer, so, select again plot layer
                 file_name = '{}_{}_{}.pdf'.format(report_type, plot_id, parcel_number[0])
 
                 current_report_path = os.path.join(save_into_folder, file_name)

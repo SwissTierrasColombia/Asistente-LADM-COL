@@ -327,7 +327,7 @@ class PGConnector(ClientServerDB):
             return res, msg
 
         if not self.cadastral_cartography_model_exists():
-            return False, 'Cadastral cartography model it is not implemented'
+            return False, 'Cadastral cartography model was not found in the database.'
 
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         query = ant_map_plot_query.get_road_nomenclature(self.names, self.schema, plot_id, overview)

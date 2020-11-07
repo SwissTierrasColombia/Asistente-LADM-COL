@@ -148,7 +148,7 @@ from asistente_ladm_col.utils.decorators import (_db_connection_required,
                                                  _supplies_model_required,
                                                  _valuation_model_required,
                                                  _survey_model_required,
-                                                 _survey_model_and_cadastral_cartography_model_required,
+                                                 _cadastral_cartography_model_required,
                                                  _field_data_capture_model_required,
                                                  _qfield_sync_required,
                                                  _update_context_to_current_role)
@@ -1043,7 +1043,8 @@ class AsistenteLADMCOLPlugin(QObject):
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
-    @_survey_model_and_cadastral_cartography_model_required
+    @_cadastral_cartography_model_required
+    @_survey_model_required
     def call_ant_map_report_generation(self, *args):
         self.report_generator.generate_report(self.get_db_connection(), ANT_MAP_REPORT)
 
