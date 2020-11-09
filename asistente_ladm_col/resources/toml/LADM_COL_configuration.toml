@@ -57,37 +57,37 @@ form_order=5
 # LC_Predio
 
 ["LADM_COL_V3_0.LADM_Nucleo.COL_UnidadAdministrativaBasica.Nombre"]
-form_order=13
-
-["LADM_COL_V3_0.LADM_Nucleo.ObjetoVersionado.Comienzo_Vida_Util_Version"]
 form_order=14
 
-["LADM_COL_V3_0.LADM_Nucleo.ObjetoVersionado.Fin_Vida_Util_Version"]
+["LADM_COL_V3_0.LADM_Nucleo.ObjetoVersionado.Comienzo_Vida_Util_Version"]
 form_order=15
 
-["LADM_COL_V3_0.LADM_Nucleo.Oid.Espacio_De_Nombres"]
+["LADM_COL_V3_0.LADM_Nucleo.ObjetoVersionado.Fin_Vida_Util_Version"]
 form_order=16
 
-["LADM_COL_V3_0.LADM_Nucleo.Oid.Local_Id"]
+["LADM_COL_V3_0.LADM_Nucleo.Oid.Espacio_De_Nombres"]
 form_order=17
 
+["LADM_COL_V3_0.LADM_Nucleo.Oid.Local_Id"]
+form_order=18
+
 ["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Predio.Avaluo_Catastral"]
-form_order=12
+form_order=13
 
 ["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Predio.Codigo_ORIP"]
 form_order=4
 
 ["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Predio.Condicion_Predio"]
-form_order=11
+form_order=12
 
 ["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Predio.Departamento"]
 form_order=1
 
 ["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Predio.Direccion"]
-form_order=9
+form_order=10
 
 ["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Predio.Id_Operacion"]
-form_order
+form_order=9
 
 ["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Predio.Matricula_Inmobiliaria"]
 form_order=5
@@ -96,7 +96,7 @@ form_order=5
 form_order=2
 
 ["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Predio.NUPRE"]
-form_order=8
+form_order=8 
 
 ["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Predio.Numero_Predial"]
 form_order=6
@@ -108,7 +108,7 @@ form_order=7
 form_order=3
 
 ["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Predio.Tipo"]
-form_order=10
+form_order=11
 
 # LC_DatosAdicionalesLevantamientoCatastral
 
