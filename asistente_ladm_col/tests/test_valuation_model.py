@@ -94,12 +94,12 @@ class BaseTestValuationModel(BaseTestForModels, ABC):
                 'LC_RESTRICTION_T',
                 'LC_RIGHT_OF_WAY_T',
                 'LC_PLOT_T',
-                'LC_ADMINISTRATIVE_SOURCE_TYPE_D',
+                'COL_ADMINISTRATIVE_SOURCE_TYPE_D',
                 'LC_PARTY_TYPE_D',
-                'LC_PARCEL_TYPE_D',
+                'COL_BAUNIT_TYPE_D',
                 'LC_CONTROL_POINT_TYPE_D',
                 'LC_SURVEY_POINT_TYPE_D',
-                'LC_POINT_TYPE_D']
+                'COL_POINT_TYPE_D']
 
     def get_expected_dict(self):
         return {T_ID_KEY: 'T_Id',

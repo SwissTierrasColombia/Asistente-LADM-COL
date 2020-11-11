@@ -128,7 +128,7 @@ def get_igac_legal_query(names, schema, plot_t_ids, parcel_fmi, parcel_number, p
                 SELECT {LC_RIGHT_T}.{T_ID_F},
                  JSON_AGG(
                     JSON_BUILD_OBJECT('id', {LC_ADMINISTRATIVE_SOURCE_T}.{T_ID_F},
-                                      'attributes', JSON_BUILD_OBJECT('Tipo de fuente administrativa', (SELECT {DISPLAY_NAME_F} FROM {schema}.{LC_ADMINISTRATIVE_SOURCE_TYPE_D} WHERE {T_ID_F} = {LC_ADMINISTRATIVE_SOURCE_T}.{LC_ADMINISTRATIVE_SOURCE_T_TYPE_F}),
+                                      'attributes', JSON_BUILD_OBJECT('Tipo de fuente administrativa', (SELECT {DISPLAY_NAME_F} FROM {schema}.{COL_ADMINISTRATIVE_SOURCE_TYPE_D} WHERE {T_ID_F} = {LC_ADMINISTRATIVE_SOURCE_T}.{LC_ADMINISTRATIVE_SOURCE_T_TYPE_F}),
                                                                       'Ente emisor', {LC_ADMINISTRATIVE_SOURCE_T}.{LC_ADMINISTRATIVE_SOURCE_T_EMITTING_ENTITY_F},
                                                                       'Estado disponibilidad', (SELECT {DISPLAY_NAME_F} FROM {schema}.{COL_AVAILABILITY_TYPE_D} WHERE {T_ID_F} = {LC_ADMINISTRATIVE_SOURCE_T}.{COL_SOURCE_T_AVAILABILITY_STATUS_F}),
                                                                       'Archivo fuente', {EXT_ARCHIVE_S}.{EXT_ARCHIVE_S_DATA_F}))
@@ -234,7 +234,7 @@ def get_igac_legal_query(names, schema, plot_t_ids, parcel_fmi, parcel_number, p
                 SELECT {LC_RESTRICTION_T}.{T_ID_F},
                  JSON_AGG(
                     JSON_BUILD_OBJECT('id', {LC_ADMINISTRATIVE_SOURCE_T}.{T_ID_F},
-                                      'attributes', JSON_BUILD_OBJECT('Tipo de fuente administrativa', (SELECT {DISPLAY_NAME_F} FROM {schema}.{LC_ADMINISTRATIVE_SOURCE_TYPE_D} WHERE {T_ID_F} = {LC_ADMINISTRATIVE_SOURCE_T}.{LC_ADMINISTRATIVE_SOURCE_T_TYPE_F}),
+                                      'attributes', JSON_BUILD_OBJECT('Tipo de fuente administrativa', (SELECT {DISPLAY_NAME_F} FROM {schema}.{COL_ADMINISTRATIVE_SOURCE_TYPE_D} WHERE {T_ID_F} = {LC_ADMINISTRATIVE_SOURCE_T}.{LC_ADMINISTRATIVE_SOURCE_T_TYPE_F}),
                                                                       'Ente emisor', {LC_ADMINISTRATIVE_SOURCE_T}.{LC_ADMINISTRATIVE_SOURCE_T_EMITTING_ENTITY_F},
                                                                       'Estado disponibilidad', (SELECT {DISPLAY_NAME_F} FROM {schema}.{COL_AVAILABILITY_TYPE_D} WHERE {T_ID_F} = {LC_ADMINISTRATIVE_SOURCE_T}.{COL_SOURCE_T_AVAILABILITY_STATUS_F}),
                                                                       'Archivo fuente', {EXT_ARCHIVE_S}.{EXT_ARCHIVE_S_DATA_F}))

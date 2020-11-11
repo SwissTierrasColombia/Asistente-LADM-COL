@@ -29,7 +29,7 @@ def get_igac_economic_query(names, ladm_units):
                     OwnField(names.LC_PARCEL_T_PARCEL_NUMBER_F, "Número predial"),
                     OwnField(names.LC_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F, "Número predial anterior"),
                     OwnField(names.LC_PARCEL_T_VALUATION_F, get_full_alias("Avalúo predio", ladm_units, names.LC_PARCEL_T, names.LC_PARCEL_T_VALUATION_F)),
-                    DomainOwnField(names.LC_PARCEL_T_TYPE_F, "Tipo", names.LC_PARCEL_TYPE_D)
+                    DomainOwnField(names.LC_PARCEL_T_TYPE_F, "Tipo", names.COL_BAUNIT_TYPE_D)
                 ],
                 QueryNames.LEVEL_TABLE: {
                     QueryNames.LEVEL_TABLE_NAME: names.LC_BUILDING_T,

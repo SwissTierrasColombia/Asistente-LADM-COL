@@ -360,15 +360,12 @@ DB_MAPPING_CONFIG = {
             'Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_InteresadoContacto.Telefono2': 'LC_PARTY_CONTACT_T_TELEPHONE_NUMBER_2_F',
             'Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.lc_interesado_interesadocontacto.lc_interesado..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Interesado': 'LC_PARTY_CONTACT_T_LC_PARTY_F'
         }},
-        "Modelo_Aplicacion_LADMCOL_Lev_Cat.LC_FuenteAdministrativaTipo": {QueryNames.VARIABLE_NAME: "LC_ADMINISTRATIVE_SOURCE_TYPE_D", QueryNames.FIELDS_DICT: {}},
         "Modelo_Aplicacion_LADMCOL_Lev_Cat.LC_FotoidentificacionTipo": {QueryNames.VARIABLE_NAME: "LC_PHOTO_IDENTIFICATION_TYPE_D", QueryNames.FIELDS_DICT: {}},
         "Modelo_Aplicacion_LADMCOL_Lev_Cat.LC_GrupoEtnicoTipo": {QueryNames.VARIABLE_NAME: "LC_ETHNIC_GROUP_TYPE_D", QueryNames.FIELDS_DICT: {}},
         "Modelo_Aplicacion_LADMCOL_Lev_Cat.LC_InteresadoDocumentoTipo": {QueryNames.VARIABLE_NAME: "LC_PARTY_DOCUMENT_TYPE_D", QueryNames.FIELDS_DICT: {}},
         "Modelo_Aplicacion_LADMCOL_Lev_Cat.LC_InteresadoTipo": {QueryNames.VARIABLE_NAME: "LC_PARTY_TYPE_D", QueryNames.FIELDS_DICT: {}},
-        "Modelo_Aplicacion_LADMCOL_Lev_Cat.LC_PredioTipo": {QueryNames.VARIABLE_NAME: "LC_PARCEL_TYPE_D", QueryNames.FIELDS_DICT: {}},
         "Modelo_Aplicacion_LADMCOL_Lev_Cat.LC_PuntoControlTipo": {QueryNames.VARIABLE_NAME: "LC_CONTROL_POINT_TYPE_D", QueryNames.FIELDS_DICT: {}},
         "Modelo_Aplicacion_LADMCOL_Lev_Cat.LC_PuntoLevTipo": {QueryNames.VARIABLE_NAME: "LC_SURVEY_POINT_TYPE_D", QueryNames.FIELDS_DICT: {}},
-        "Modelo_Aplicacion_LADMCOL_Lev_Cat.LC_PuntoTipo": {QueryNames.VARIABLE_NAME: "LC_POINT_TYPE_D", QueryNames.FIELDS_DICT: {}},
         "Modelo_Aplicacion_LADMCOL_Lev_Cat.LC_RestriccionTipo": {QueryNames.VARIABLE_NAME: "LC_RESTRICTION_TYPE_D", QueryNames.FIELDS_DICT: {}},
         "Modelo_Aplicacion_LADMCOL_Lev_Cat.LC_SexoTipo": {QueryNames.VARIABLE_NAME: "LC_GENRE_D", QueryNames.FIELDS_DICT: {}}
     },

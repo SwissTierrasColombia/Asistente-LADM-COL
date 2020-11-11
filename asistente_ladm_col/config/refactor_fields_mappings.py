@@ -345,7 +345,7 @@ class RefactorFieldsMappings:
             mapping = [
                 {'expression': '{}'.format(names.T_ILI_TID_F), 'length': -1, 'name': '{}'.format(names.T_ILI_TID_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(names.LC_BOUNDARY_POINT_T_ID_F), 'length': 255, 'name': '{}'.format(names.LC_BOUNDARY_POINT_T_ID_F), 'precision': -1, 'type': 10},
-                {'expression': "get_domain_code_from_value('{}', {}, True, False)".format(names.LC_POINT_TYPE_D, names.LC_BOUNDARY_POINT_T_POINT_TYPE_F), 'length': -1, 'name': '{}'.format(names.LC_BOUNDARY_POINT_T_POINT_TYPE_F), 'precision': 0, 'type': 4},
+                {'expression': "get_domain_code_from_value('{}', {}, True, False)".format(names.COL_POINT_TYPE_D, names.LC_BOUNDARY_POINT_T_POINT_TYPE_F), 'length': -1, 'name': '{}'.format(names.LC_BOUNDARY_POINT_T_POINT_TYPE_F), 'precision': 0, 'type': 4},
                 {'expression': "get_domain_code_from_value('{}', {}, True, False)".format(names.LC_AGREEMENT_TYPE_D, names.LC_BOUNDARY_POINT_T_AGREEMENT_F), 'length': -1, 'name': '{}'.format(names.LC_BOUNDARY_POINT_T_AGREEMENT_F), 'precision': 0, 'type': 4},
                 {'expression': "get_domain_code_from_value('{}', {}, True, False)".format(names.LC_PHOTO_IDENTIFICATION_TYPE_D, names.LC_BOUNDARY_POINT_T_PHOTO_IDENTIFICATION_F), 'length': -1, 'name': '{}'.format(names.LC_BOUNDARY_POINT_T_PHOTO_IDENTIFICATION_F), 'precision': 0, 'type': 4},
                 {'expression': '"{}"'.format(names.LC_BOUNDARY_POINT_T_HORIZONTAL_ACCURACY_F), 'length': 5, 'name': '{}'.format(names.LC_BOUNDARY_POINT_T_HORIZONTAL_ACCURACY_F), 'precision': 3, 'type': 6},
@@ -361,7 +361,7 @@ class RefactorFieldsMappings:
             mapping = [
                 {'expression': '{}'.format(names.T_ILI_TID_F), 'length': -1, 'name': '{}'.format(names.T_ILI_TID_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(names.LC_SURVEY_POINT_T_ID_F), 'length': 255, 'name': '{}'.format(names.LC_SURVEY_POINT_T_ID_F), 'precision': -1, 'type': 10},
-                {'expression': "get_domain_code_from_value('{}', {}, True, False)".format(names.LC_POINT_TYPE_D, names.LC_SURVEY_POINT_T_POINT_TYPE_F), 'length': -1, 'name': '{}'.format(names.LC_SURVEY_POINT_T_POINT_TYPE_F), 'precision': 0, 'type': 4},
+                {'expression': "get_domain_code_from_value('{}', {}, True, False)".format(names.COL_POINT_TYPE_D, names.LC_SURVEY_POINT_T_POINT_TYPE_F), 'length': -1, 'name': '{}'.format(names.LC_SURVEY_POINT_T_POINT_TYPE_F), 'precision': 0, 'type': 4},
                 {'expression': "get_domain_code_from_value('{}', {}, True, False)".format(names.LC_SURVEY_POINT_TYPE_D, names.LC_SURVEY_POINT_T_SURVEY_POINT_TYPE_F), 'length': -1, 'name': '{}'.format(names.LC_SURVEY_POINT_T_SURVEY_POINT_TYPE_F), 'precision': 0, 'type': 4},
                 {'expression': "get_domain_code_from_value('{}', {}, True, False)".format(names.LC_PHOTO_IDENTIFICATION_TYPE_D, names.LC_SURVEY_POINT_T_PHOTO_IDENTIFICATION_F), 'length': -1, 'name': '{}'.format(names.LC_SURVEY_POINT_T_PHOTO_IDENTIFICATION_F), 'precision': 0, 'type': 4},
                 {'expression': '"{}"'.format(names.LC_SURVEY_POINT_T_HORIZONTAL_ACCURACY_F), 'length': 5, 'name': '{}'.format(names.LC_SURVEY_POINT_T_HORIZONTAL_ACCURACY_F), 'precision': 3, 'type': 6},
@@ -377,7 +377,7 @@ class RefactorFieldsMappings:
             mapping = [
                 {'expression': '{}'.format(names.T_ILI_TID_F), 'length': -1, 'name': '{}'.format(names.T_ILI_TID_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(names.LC_CONTROL_POINT_T_ID_F), 'length': 255, 'name': '{}'.format(names.LC_CONTROL_POINT_T_ID_F), 'precision': -1, 'type': 10},
-                {'expression': "get_domain_code_from_value('{}', {}, True, False)".format(names.LC_POINT_TYPE_D, names.LC_CONTROL_POINT_T_POINT_TYPE_F), 'length': -1, 'name': '{}'.format(names.LC_CONTROL_POINT_T_POINT_TYPE_F), 'precision': 0, 'type': 4},
+                {'expression': "get_domain_code_from_value('{}', {}, True, False)".format(names.COL_POINT_TYPE_D, names.LC_CONTROL_POINT_T_POINT_TYPE_F), 'length': -1, 'name': '{}'.format(names.LC_CONTROL_POINT_T_POINT_TYPE_F), 'precision': 0, 'type': 4},
                 {'expression': "get_domain_code_from_value('{}', {}, True, False)".format(names.LC_CONTROL_POINT_TYPE_D, names.LC_CONTROL_POINT_T_CONTROL_POINT_TYPE_F), 'length': -1, 'name': '{}'.format(names.LC_CONTROL_POINT_T_CONTROL_POINT_TYPE_F), 'precision': 0, 'type': 4},
                 {'expression': '"{}"'.format(names.LC_CONTROL_POINT_T_HORIZONTAL_ACCURACY_F), 'length': 5, 'name': '{}'.format(names.LC_CONTROL_POINT_T_HORIZONTAL_ACCURACY_F), 'precision': 3, 'type': 6},
                 {'expression': '"{}"'.format(names.LC_CONTROL_POINT_T_VERTICAL_ACCURACY_F), 'length': 5, 'name': '{}'.format(names.LC_CONTROL_POINT_T_VERTICAL_ACCURACY_F), 'precision': 3, 'type': 6},

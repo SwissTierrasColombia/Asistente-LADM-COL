@@ -88,7 +88,7 @@ def get_igac_economic_query(names, schema, plot_t_ids, parcel_fmi, parcel_number
                                                                       'Número predial', {LC_PARCEL_T}.{LC_PARCEL_T_PARCEL_NUMBER_F},
                                                                       'Número predial anterior', {LC_PARCEL_T}.{LC_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F},
                                                                       CONCAT('Avalúo predio' , (SELECT * FROM _unidad_avaluo_predio)), {LC_PARCEL_T}.{LC_PARCEL_T_VALUATION_F},
-                                                                      'Tipo', (SELECT {DISPLAY_NAME_F} FROM {schema}.{LC_PARCEL_TYPE_D} WHERE {T_ID_F} = {LC_PARCEL_T}.{LC_PARCEL_T_TYPE_F}),
+                                                                      'Tipo', (SELECT {DISPLAY_NAME_F} FROM {schema}.{COL_BAUNIT_TYPE_D} WHERE {T_ID_F} = {LC_PARCEL_T}.{LC_PARCEL_T_TYPE_F}),
                                                                       '{LC_BUILDING_T}', COALESCE(_info_construccion._construccion_, '[]')
                                                                      )) ORDER BY {LC_PARCEL_T}.{T_ID_F}) FILTER(WHERE {LC_PARCEL_T}.{T_ID_F} IS NOT NULL) AS _predio_
              FROM {schema}.{LC_PARCEL_T} LEFT JOIN {schema}.{COL_UE_BAUNIT_T} ON {COL_UE_BAUNIT_T}.{COL_UE_BAUNIT_T_PARCEL_F} = {LC_PARCEL_T}.{T_ID_F}

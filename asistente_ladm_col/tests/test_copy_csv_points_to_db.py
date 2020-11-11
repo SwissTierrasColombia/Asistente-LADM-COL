@@ -87,7 +87,7 @@ class TestCopy(unittest.TestCase):
         with edit(csv_layer):
             for feature in csv_layer.getFeatures():
                 feature.setAttribute(idx_agreement_field, self.ladm_data.get_domain_code_from_value(self.db_pg, self.names.LC_AGREEMENT_TYPE_D, feature['_acuerdo']))
-                feature.setAttribute(idx_point_type_field, self.ladm_data.get_domain_code_from_value(self.db_pg, self.names.LC_POINT_TYPE_D, feature['_puntotipo']))
+                feature.setAttribute(idx_point_type_field, self.ladm_data.get_domain_code_from_value(self.db_pg, self.names.COL_POINT_TYPE_D, feature['_puntotipo']))
                 feature.setAttribute(idx_production_method_field, self.ladm_data.get_domain_code_from_value(self.db_pg, self.names.COL_PRODUCTION_METHOD_TYPE_D, feature['_metodoproduccion']))
                 csv_layer.updateFeature(feature)
 

@@ -77,7 +77,7 @@ class TestGetLayers(unittest.TestCase):
                                                          db.names.LC_PHOTO_IDENTIFICATION_TYPE_D,
                                                          db.names.COL_PRODUCTION_METHOD_TYPE_D,
                                                          db.names.COL_INTERPOLATION_TYPE_D,
-                                                         db.names.LC_POINT_TYPE_D,
+                                                         db.names.COL_POINT_TYPE_D,
                                                          db.names.LC_BOUNDARY_POINT_T],
                           db.names.LC_PLOT_T: [db.names.COL_SURFACE_RELATION_TYPE_D,
                                                db.names.COL_DIMENSION_TYPE_D,
