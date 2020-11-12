@@ -69,7 +69,13 @@ class BaseFDCAllocationController(QObject):
             self._db.names.FDC_PLOT_T: None,
             self._db.names.FDC_PARCEL_T: None,
             self._db.names.FDC_USER_T: None,
-            self._db.names.FDC_PARTY_DOCUMENT_TYPE_D: None
+            self._db.names.FDC_PARTY_DOCUMENT_TYPE_D: None,
+            self._db.names.FDC_BUILDING_T: None,
+            self._db.names.FDC_BUILDING_UNIT_T: None,
+            self._db.names.FDC_RIGHT_T: None,
+            self._db.names.FDC_PARTY_T: None,
+            self._db.names.FDC_ADMINISTRATIVE_SOURCE_RIGHT_T: None,
+            self._db.names.FDC_ADMINISTRATIVE_SOURCE_T: None
         }
 
     def add_layers(self, force=False):

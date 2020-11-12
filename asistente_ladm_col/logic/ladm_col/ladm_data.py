@@ -1036,6 +1036,10 @@ class LADMData(QObject):
         fdc_plot_layer = layers[names.FDC_PLOT_T]
         fdc_building_layer = layers[names.FDC_BUILDING_T]
         fdc_building_unit_layer = layers[names.FDC_BUILDING_UNIT_T]
+        fdc_right_layer = layers[names.FDC_RIGHT_T]
+        fdc_party_layer = layers[names.FDC_PARTY_T]
+        fdc_admin_source_right_layer = layers[names.FDC_ADMINISTRATIVE_SOURCE_RIGHT_T]
+        fdc_admin_source_layer = layers[names.FDC_ADMINISTRATIVE_SOURCE_T]
 
         # Get receiver_ids that actually have at least one parcel assigned (basically, an INNER JOIN)
         # For that: Go to parcel layer and get uniques, then filter that list comparing it with receiver ids from users
@@ -1094,12 +1098,24 @@ class LADMData(QObject):
                 return False, msg_buildings + QCoreApplication.translate(" Receiver {}.").format(receiver_dict[t_basket][0])
 
             # RIGHTS AND PARTIES
+            res_rights, len_rights, msg_rights = LADMData.set_basket_to_rights_related_to_parcels(names,
+                                                                                                  t_basket,
+                                                                                                  fdc_parcel_layer,
+                                                                                                  fdc_right_layer,
+                                                                                                  fdc_party_layer,
+                                                                                                  fdc_admin_source_right_layer,
+                                                                                                  fdc_admin_source_layer,
+                                                                                                  parcel_t_ids)
+            if not res_rights:
+                return False, msg_rights + QCoreApplication.translate(" Receiver {}.").format(receiver_dict[t_basket][0])
 
             Logger().info(__name__,
-                          "--> Basket exported for receiver {}: {} parcels, {} plots, {} buildings.".format(t_basket,
-                                                                                                            len(parcel_t_ids),
-                                                                                                            len_plots,
-                                                                                                            len_buildings))
+                          "--> Basket exported for receiver {}: {} parcels, {} plots, {} buildings, {} rights.".format(
+                              t_basket,
+                              len(parcel_t_ids),
+                              len_plots,
+                              len_buildings,
+                              len_rights))
 
         return True, "Success!"
 
@@ -1161,7 +1177,83 @@ class LADMData(QObject):
                                                                    "Could not write basket id {} to Building Unit layer.".format(
                                                                        t_basket))
 
+            # TODO: Do the same with Calificacion Convencional
+
         return True, len(building_ids), 'Success!'
+
+    @staticmethod
+    def set_basket_to_rights_related_to_parcels(names, t_basket, fdc_parcel_layer, fdc_right_layer, fdc_party_layer, fdc_admin_source_right_layer, fdc_admin_source_layer, parcel_t_ids):
+        # Get rights from parcels and write the basket
+        right_features = LADMData.get_referenced_features(names,
+                                                     fdc_parcel_layer,
+                                                     fdc_right_layer,
+                                                     names.FDC_RIGHT_T_PARCEL_F,
+                                                     get_feature=True,
+                                                     t_ids=parcel_t_ids)
+        right_party_dict = {right.id(): right[names.FDC_RIGHT_T_PARTY_F] for right in right_features}
+        right_ids = list(right_party_dict.keys())
+        party_t_ids = list(right_party_dict.values())
+        right_t_ids = [right[names.T_ID_F] for right in right_features]
+
+        if right_ids:
+            res = LADMData.change_attribute_value(fdc_right_layer,
+                                                  names.T_BASKET_F,
+                                                  t_basket,
+                                                  right_ids)
+            if not res:
+                return False, None, QCoreApplication.translate("LADMData",
+                                                               "Could not write basket id {} to Right layer.".format(
+                                                                   t_basket))
+
+            # PARTIES
+            # Get party ids from party t_ids and write the basket
+            party_ids = LADMData.get_fids_from_key_values(fdc_party_layer, names.T_ID_F, party_t_ids)
+            if party_ids:
+                res = LADMData.change_attribute_value(fdc_party_layer,
+                                                      names.T_BASKET_F,
+                                                      t_basket,
+                                                      party_ids)
+                if not res:
+                    return False, None, QCoreApplication.translate("LADMData",
+                                                                   "Could not write basket id {} to Party layer.".format(
+                                                                       t_basket))
+
+            # ADMINISTRATIVE SOURCES and fuente_administrativa_derecho
+            # Get fuente_administrativa_derecho from rights and write the basket
+            as_r_features = LADMData.get_referenced_features(names,
+                                                             fdc_right_layer,
+                                                             fdc_admin_source_right_layer,
+                                                             names.FDC_ADMINISTRATIVE_SOURCE_RIGHT_T_RIGHT_F,
+                                                             get_feature=True,
+                                                             t_ids=right_t_ids)
+            as_r_dict = {as_r.id(): as_r[names.FDC_ADMINISTRATIVE_SOURCE_RIGHT_T_ADMINISTRATIVE_SOURCE_F] for as_r in as_r_features}
+            as_r_ids = list(as_r_dict.keys())
+            admin_source_t_ids = list(as_r_dict.values())
+
+            if as_r_ids:
+                res = LADMData.change_attribute_value(fdc_admin_source_right_layer,
+                                                      names.T_BASKET_F,
+                                                      t_basket,
+                                                      as_r_ids)
+                if not res:
+                    return False, None, QCoreApplication.translate("LADMData",
+                                                                   "Could not write basket id {} to Administrative Source-Right layer.".format(
+                                                                       t_basket))
+
+                # ADMINISTRATIVE SOURCES
+                # Get administrative source ids from as t_ids and write the basket
+                admin_source_ids = LADMData.get_fids_from_key_values(fdc_admin_source_layer, names.T_ID_F, admin_source_t_ids)
+                if admin_source_ids:
+                    res = LADMData.change_attribute_value(fdc_admin_source_layer,
+                                                          names.T_BASKET_F,
+                                                          t_basket,
+                                                          admin_source_ids)
+                    if not res:
+                        return False, None, QCoreApplication.translate("LADMData",
+                                                                       "Could not write basket id {} to Administrative Source layer.".format(
+                                                                           t_basket))
+
+        return True, len(right_ids), 'Success!'
 
     @staticmethod
     def change_attribute_value(layer, field_name, value, fids=list(), filter=''):

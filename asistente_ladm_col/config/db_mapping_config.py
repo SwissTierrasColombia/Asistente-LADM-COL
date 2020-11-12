@@ -449,9 +449,15 @@ DB_MAPPING_CONFIG = {
         "Captura_Geo.Captura_Geo.ContactoVisita": {QueryNames.VARIABLE_NAME: "FDC_VISIT_CONTACT_T", QueryNames.FIELDS_DICT: {}},
         # Not there "Captura_Geo.Captura_Geo.DatosAdicionalesLevantamientoCatastral": {QueryNames.VARIABLE_NAME: "FDC_ADDITIONAL_DATA_SURVEY_T", QueryNames.FIELDS_DICT: {}},
         # Not there "Captura_Geo.Captura_Geo.DatosPHCondominio": {QueryNames.VARIABLE_NAME: "FDC_HP_CONDOMINIUM_T", QueryNames.FIELDS_DICT: {}},
-        "Captura_Geo.Captura_Geo.Derecho": {QueryNames.VARIABLE_NAME: "FDC_RIGHT_T", QueryNames.FIELDS_DICT: {}},
+        "Captura_Geo.Captura_Geo.Derecho": {QueryNames.VARIABLE_NAME: "FDC_RIGHT_T", QueryNames.FIELDS_DICT: {
+            "Captura_Geo.Captura_Geo.predio_derecho..Captura_Geo.Captura_Geo.Predio": "FDC_RIGHT_T_PARCEL_F",
+            "Captura_Geo.Captura_Geo.derecho_propietario..Captura_Geo.Captura_Geo.Interesado": "FDC_RIGHT_T_PARTY_F"
+        }},
         "Captura_Geo.Captura_Geo.Fuente_Administrativa": {QueryNames.VARIABLE_NAME: "FDC_ADMINISTRATIVE_SOURCE_T", QueryNames.FIELDS_DICT: {}},
-        "Captura_Geo.Captura_Geo.fuente_administrativa_derecho": {QueryNames.VARIABLE_NAME: "FDC_ADMINISTRATIVE_SOURCE_RIGHT_T", QueryNames.FIELDS_DICT: {}},
+        "Captura_Geo.Captura_Geo.fuente_administrativa_derecho": {QueryNames.VARIABLE_NAME: "FDC_ADMINISTRATIVE_SOURCE_RIGHT_T", QueryNames.FIELDS_DICT: {
+            "Captura_Geo.Captura_Geo.fuente_administrativa_derecho..Captura_Geo.Captura_Geo.Derecho": "FDC_ADMINISTRATIVE_SOURCE_RIGHT_T_RIGHT_F",
+            "Captura_Geo.Captura_Geo.fuente_administrativa_derecho..Captura_Geo.Captura_Geo.Fuente_Administrativa": "FDC_ADMINISTRATIVE_SOURCE_RIGHT_T_ADMINISTRATIVE_SOURCE_F"
+        }},
         # Not there "Captura_Geo.Captura_Geo.GrupoCalificacion": {QueryNames.VARIABLE_NAME: "FDC_QUALIFICATION_GROUP_T", QueryNames.FIELDS_DICT: {}},
         #"Captura_Geo.Captura_Geo.construccion_unidad_construccion": {QueryNames.VARIABLE_NAME: "", QueryNames.FIELDS_DICT: {}},
         #"Captura_Geo.Captura_Geo.derecho_propietario": {QueryNames.VARIABLE_NAME: "", QueryNames.FIELDS_DICT: {}},
