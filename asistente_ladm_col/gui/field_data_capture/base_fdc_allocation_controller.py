@@ -63,6 +63,8 @@ class BaseFDCAllocationController(QObject):
         self.raster_layer = None
 
     def initialize_layers(self):
+        # A dict of layers that we'll use for the allocation process.
+        # Note: all of them will be loaded into QGIS and we'll filter their features to set specific t_baskets.
         self._layers = {
             self._db.names.FDC_PLOT_T: None,
             self._db.names.FDC_PARCEL_T: None,
@@ -209,9 +211,7 @@ class BaseFDCAllocationController(QObject):
             self.receiver_type,
             self._get_parcel_field_referencing_receiver(),
             self._get_receiver_referenced_field(),
-            self.parcel_layer(),
-            self.plot_layer(),
-            self.user_layer())
+            self._layers)
 
         # Finally, export each basket to XTF
         basket_exporter = FieldDataCaptureDataExporter(self._db,

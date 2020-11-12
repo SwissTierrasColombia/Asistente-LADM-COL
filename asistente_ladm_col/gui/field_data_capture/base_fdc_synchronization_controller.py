@@ -43,6 +43,7 @@ class BaseFDCSynchronizationController(QObject):
         self.initialize_layers()
 
     def initialize_layers(self):
+        # A dict of layers that we'll use for the synchronization process (just as context)
         self._layers = {
             self._db.names.FDC_PLOT_T: None,
             self._db.names.FDC_PARCEL_T: None,
@@ -50,9 +51,28 @@ class BaseFDCSynchronizationController(QObject):
             self._db.names.FDC_PARTY_DOCUMENT_TYPE_D: None
         }
 
+        # A dict of layers to which we should set receiver's t_basket before synchronizing.
+        # Note: These layers will get a t_basket for all their features, with no filter.
         self._receiver_layers = {
+            self._db.names.FDC_ADMINISTRATIVE_SOURCE_T: None,
+            self._db.names.FDC_BUILDING_T: None,
+            self._db.names.FDC_BUILDING_UNIT_T: None,
+            self._db.names.FDC_CONVENTIONAL_QUALIFICATION_T: None,
+            self._db.names.FDC_FMI_CHANGE_T: None,
+            self._db.names.FDC_HOUSING_MARKET_OFFERS_T: None,
+            self._db.names.FDC_PARCEL_T: None,
+            self._db.names.FDC_PARCEL_COOWNERSHIP_T: None,
+            self._db.names.FDC_PARCEL_NUMBERS_CHANGE_T: None,
+            self._db.names.FDC_PARTY_T: None,
             self._db.names.FDC_PLOT_T: None,
-            self._db.names.FDC_PARCEL_T: None
+            self._db.names.FDC_BOUNDARY_POINT_T: None,
+            self._db.names.FDC_CONTROL_POINT_T: None,
+            self._db.names.FDC_SURVEY_POINT_T: None,
+            self._db.names.FDC_RIGHT_T: None,
+            self._db.names.FDC_VISIT_CONTACT_T: None,
+            self._db.names.FDC_LEGACY_PLOT_T: None,
+            self._db.names.FDC_LEGACY_BUILDING_T: None,
+            self._db.names.FDC_LEGACY_BUILDING_UNIT_T: None
         }
 
     def add_layers(self, force=False):

@@ -1,6 +1,6 @@
 INTERLIS 2.3;
 
-MODEL Captura_Geo_V0_2 (es)
+MODEL Captura_Geo_V0_4 (es)
 AT "mailto:shade@localhost"
 VERSION "2020-07-21"  =
   IMPORTS ISO19107_PLANAS_V3_0,LADM_COL_V3_0;
@@ -382,6 +382,21 @@ VERSION "2020-07-21"  =
       )
     );
 
+    /** Se refiere al conjunto compuesto por los cimientos, columnas, vigas, entrepisos y demás componentes del esqueleto o armadura que soportan las cargas y sostienen la edificación.  El adobe, bahareque, tapia, califíquelos con el puntaje correspondiente a madera.  En el caso de tener muros de carga en ladrillo, califíquelos como armazón de ladrillo.  En aquellas viviendas de hasta tres pisos y en donde se observe, vigas, columnas y planchas se colocan en la opción “concreto hasta tres pisos”.  La máxima calificación será para edificaciones de concreto de 4 o más pisos.
+     */
+    D_ArmazonTipo = (
+      !!@ ili2db.dispName = "Madera"
+      Madera,
+      !!@ ili2db.dispName = "Prefabricado"
+      Prefabricado,
+      !!@ ili2db.dispName = "Ladrillo, bloque"
+      Ladrillo_Bloque,
+      !!@ ili2db.dispName = "Concreto hasta tres pisos"
+      Concreto_Hasta_Tres_Pisos,
+      !!@ ili2db.dispName = "Concreto cuatro o más pisos"
+      Concreto_Cuatro_O_Mas_Pisos
+    );
+
     D_CalificarTipo = (
       Residencial,
       Industrial,
@@ -402,6 +417,21 @@ VERSION "2020-07-21"  =
        */
       !!@ ili2db.dispName = "Protección"
       Proteccion
+    );
+
+    /** Cerchas complemento industria
+     */
+    D_CerchasTipo = (
+      !!@ ili2db.dispName = "Madera"
+      Madera,
+      !!@ ili2db.dispName = "Metálica liviana"
+      Metalica_Liviana,
+      !!@ ili2db.dispName = "Metálica mediana"
+      Metalica_Mediana,
+      !!@ ili2db.dispName = "Metálica pesada"
+      Metalica_Pesada,
+      !!@ ili2db.dispName = "Altura"
+      Altura
     );
 
     D_ClaseCalificacionTipo = (
@@ -520,6 +550,46 @@ VERSION "2020-07-21"  =
        */
       !!@ ili2db.dispName = "Apoyo"
       Apoyo
+    );
+
+    /** Techo exterior o tejado de la edificación
+     */
+    D_CubiertaTipo = (
+      !!@ ili2db.dispName = "Materiales de desecho, telas"
+      Materiales_Desecho_Telas_Asfalticas,
+      !!@ ili2db.dispName = "Zinc, teja de barro, eternit rústico"
+      Zinc_Teja_De_Barro_Eternit_Rustico,
+      !!@ ili2db.dispName = "Entrepiso (cubierta provisional) prefabricado"
+      Entrepiso_Cubierta_Provisional_Prefabricado,
+      !!@ ili2db.dispName = "Eternit o teja de barro (cubierta sencilla"
+      Eternit_O_Teja_De_Barro_Cubierta_Sencilla,
+      !!@ ili2db.dispName = "Azotea, aluminio, placa sencilla con eternit o teja de barro"
+      Azotea_Aluminio_Placa_Sencilla_Con_Eternit,
+      !!@ ili2db.dispName = "Placa imperbeabilizada cubierta lujosa u ornamental"
+      Placa_Impermeabilizada_Cubierta_Lujosa_U_Ornamental
+    );
+
+    /** Se califica de acuerdo al material y según las opciones que se presentan en el formulario, se tendrá en cuenta que si aparece por lo menos el 80% en pañete, se marcará este material y si aparece por lo menos un 20% de otro material de los más costosos (granito, madera, mármol), se marcará este en el formulario.  Si se encuentra por lo menos el 50% sin cubrimiento, se calificará como tal.  En caso de encontrarse un cubrimiento no completado en el formulario se asimilará, según el factor, más cercano de los referidos.  El pañete se refiere al cubrimiento en el cual se emplea solamente arena y cemento; el estuco es el cubrimiento fino sobre pañete.
+     * 
+     * Es necesario aclarar que en el caso del papel de colgadura, se debe tener en cuenta que éste se encuentra en dos categorías:
+     * 
+     * Papel común:  Características de las construcciones de estratos medio bajo y medio medio, se presenta en la mayoría de los casos textura gruesa y superficie corrugada.
+     * 
+     * Papel fino: Contrario al anterior, se encuentra normalmente en construcciones lujosas y se caracteriza por su textura fina, visible en los orillos y superficie lisa.  Sus acabados siempre son finos.
+     * 
+     * Además de los muros, el papel se encuentra en enchapes de baños y cocinas.
+     */
+    D_CubrimientoMurosTipo = (
+      !!@ ili2db.dispName = "Sin cubrimiento"
+      Sin_Cubrimiento,
+      !!@ ili2db.dispName = "Pañete, papel común, ladrillo prensado"
+      Paniete_Papel_Comun_Ladrillo_Prensado,
+      !!@ ili2db.dispName = "Estuco, cerámica, papel fino"
+      Estuco_Ceramica_Papel_Fino,
+      !!@ ili2db.dispName = "Madera, piedra ornamental"
+      Madera_Piedra_Ornamental,
+      !!@ ili2db.dispName = "Mármol, lujosos otros"
+      Marmol_Lujosos_Otros
     );
 
     D_DerechoTipo = (
@@ -659,6 +729,21 @@ VERSION "2020-07-21"  =
       Privado
     );
 
+    D_EnchapeTipo = (
+      !!@ ili2db.dispName = "Sin cubrimiento"
+      Sin_Cubrimiento,
+      !!@ ili2db.dispName = "Pañete, baldosa común de cemento"
+      Paniete_Baldosa_Comun_De_Cemento,
+      !!@ ili2db.dispName = "Baldosín unicolor, papel común"
+      Baldosin_Unicolor_Papel_Comun,
+      !!@ ili2db.dispName = "Baldosín decorado, papel fino"
+      Baldosin_Decorado_Papel_Fino,
+      !!@ ili2db.dispName = "Ceramica_Cristanac_Granito"
+      Ceramica_Cristanac_Granito,
+      !!@ ili2db.dispName = "Mármol, enchape lujoso"
+      EnumElement107
+    );
+
     D_EstadoConservacionTipo = (
       /** Se agrupan en este concepto, aquellas estructuras con el mayor grado de deterioro que se puedan encontrar, en condiciones precarias lo cual las hace prácticamente inhabitables.  Generalmente se presenta en construcciones antiguas o con material de muy mala calidad.
        */
@@ -683,6 +768,53 @@ VERSION "2020-07-21"  =
       Activo,
       !!@ ili2db.dispName = "No Activo"
       No_Activo
+    );
+
+    /** Nombrase como tal al conjunto de elementos que constituyen el frente o parte exterior de una construcción, que da cara a la vía o camino, que incluye la puerta de acceso.  Tomada dentro de la variable, acabados principales constituyen un concepto bastante representativo de la calidad de la vivienda.
+     */
+    D_FachadaTipo = (
+      /** -Puerta:  Fabricada con materiales como: Maderas burdas, lámina de zinc, lata o latones carecen por completo de lujos.
+       * 
+       * -Ventanas:  En la gran mayoría de casos son pequeñas, en madera burda o ángulo de hierro sencillo.
+       * 
+       * -Cubrimiento del muro:  Generalmente los muros no tienen cubrimiento, se presentan con ladrillo corrientes o bloque a la vista y en algunos casos pintura de cal o carburo directamente sobre el ladrillo, y en ocasiones pañete sin pintar o con pinturas muy económicas.
+       */
+      !!@ ili2db.dispName = "Pobre"
+      Pobre,
+      /** -Puerta:  En maderas sin trabajar o láminas metálicas sin ornamentación
+       * 
+       * -Ventanas:  Pequeñas o de regular tamaño, en madera sin trabajo ornamental o metal con pintura de aceite.
+       * 
+       * -Cubrimiento de muros:  En la mayoría de los casos se encuentran pañetes con pinturas económicas, o ladrillo prensado a la vista, generalmente un solo plano en el frente.
+       */
+      !!@ ili2db.dispName = "Sencilla"
+      Sencilla,
+      /** -Puerta de distintos tamaños, construidas en madera elaborada, o metal en lámina doblada, con rejas en ornamentación metálica en la mayoría de los casos.
+       * 
+       * -Cubrimiento:  Se encuentran frecuentemente pañetados y enlucidos con pintura de regular calidad; en urbanizaciones se utiliza bastante el pañete rústico pintado con cal o carburo.  Otras opciones son: En ladrillo prensado a la vista, el granito y la chapa de piedra de presentación sencilla.  Hasta dos planos enfrente y con una longitud entre 7 y 8 mts, con antejardín, donde la puerta de garaje forma parte integral de esta fachada.
+       */
+      !!@ ili2db.dispName = "Regular"
+      Regular,
+      /** -Puertas en maderas con cierto trabajo manual; en algunos casos en lámina prensada (pintada en aceite o en muy pocos casos al duco) con metal ornamentado y vidrio martillado.
+       * 
+       * -Ventanas:  Amplias, en lámina prensada o madera trabajada, pintura de aceite.  Las ventanas ocupan buena parte del frente y la fachada.
+       * 
+       * -Cubrimiento:  Pañete en cemento, pintura en vinilo, ladrillo prensado a la vista pintado en aceite, granito rústico fino pintado en vinilo, piedra pulida.
+       * 
+       * -La fachada presenta varios planos y tiene una longitud entre 10 y 14 mts, en el cual la puerta del garaje, en ocasiones doble, participa en forma importante.
+       */
+      !!@ ili2db.dispName = "Buena"
+      Buena,
+      /** -Puertas en maderas con cierto trabajo manual; en algunos casos en lámina prensada (pintada en aceite o en muy pocos casos al duco) con metal ornamentado y vidrio martillado.
+       * 
+       * -Ventanas:  Amplias, en lámina prensada o madera trabajada, pintura de aceite.  Las ventanas ocupan buena parte del frente y la fachada.
+       * 
+       * -Cubrimiento:  Pañete en cemento, pintura en vinilo, ladrillo prensado a la vista pintado en aceite, granito rústico fino pintado en vinilo, piedra pulida.
+       * 
+       * -La fachada presenta varios planos y tiene una longitud entre 10 y 14 mts, en el cual la puerta del garaje, en ocasiones doble, participa en forma importante.
+       */
+      !!@ ili2db.dispName = "Lujosa"
+      Lujosa
     );
 
     D_FotoTipo = (
@@ -765,7 +897,7 @@ VERSION "2020-07-21"  =
       Cedula_ciudadania,
       /** Es el documento que cumple los fines de identificación de los extranjeros en el territorio nacional y su utilización deberá estar acorde con la visa otorgada al extranjero.
        */
-      !!@ ili2db.dispName = "Cédula de estranjería"
+      !!@ ili2db.dispName = "Cédula de extranjería"
       Cedula_extranjeria,
       /** El Número de Identificación Tributaria (NIT) es un código privado, secreto e intransferible que solamente debe conocer el contribuyente.
        */
@@ -794,6 +926,34 @@ VERSION "2020-07-21"  =
        */
       !!@ ili2db.dispName = "Persona jurídica"
       Persona_juridica
+    );
+
+    D_MobiliarioTipo = (
+      !!@ ili2db.dispName = "Pobre"
+      Pobre,
+      !!@ ili2db.dispName = "Sencillo"
+      Sencillo,
+      !!@ ili2db.dispName = "Regular"
+      Regular,
+      !!@ ili2db.dispName = "Bueno"
+      Bueno,
+      !!@ ili2db.dispName = "Lujoso"
+      Lujoso
+    );
+
+    /** Se refiere a los muros divisorios no considerados como parte del armazón.
+     */
+    D_MurosTipo = (
+      !!@ ili2db.dispName = "Materiales de desecho, esterilla"
+      Materiales_Desecho_Esterilla,
+      !!@ ili2db.dispName = "Bahareque, adobe, tapia"
+      Bahareque_Adobe_Tapia,
+      !!@ ili2db.dispName = "Madera"
+      Madera,
+      !!@ ili2db.dispName = "Concreto prefabricado"
+      Concreto_Prefabricado,
+      !!@ ili2db.dispName = "Bloque, ladrillo"
+      Bloque_Ladrillo
     );
 
     D_ObjetoConstruccionTipo = (
@@ -1052,6 +1212,25 @@ VERSION "2020-07-21"  =
       Arriendo
     );
 
+    /** En esta componente, se inscribirá lo referente al material predominante en el piso de la construcción según las opciones indicadas en el formulario y el más costoso si se encuentra en partes iguales.  Se marcará también con una X según la unidad de avalúo reconocida.
+     */
+    D_PisoTipo = (
+      !!@ ili2db.dispName = "Tierra pisada"
+      Tierra_Pisada,
+      !!@ ili2db.dispName = "Cemento, madera burda"
+      Cemento_Madera_Burda,
+      !!@ ili2db.dispName = "Baldosa común de cemento, tablón de ladrillo"
+      Baldosa_Comun_De_Cemento_Tablon_Ladrillo,
+      !!@ ili2db.dispName = "Listón machihembrado"
+      Liston_Machihembrado,
+      !!@ ili2db.dispName = "Tableta, caucho, acrílico, granito, baldosa fina"
+      Tableta_Caucho_Acrilico_Granito_Baldosa_Fina,
+      !!@ ili2db.dispName = "Parquet, alfombra, retal de marmol (grano pequeño)"
+      Parquet_Alfombra_Retal_De_Marmol,
+      !!@ ili2db.dispName = "Retal de mármol, mármol, otros lujosos"
+      Retal_De_Marmol_Marmol_Otros_Lujosos
+    );
+
     D_PredioTipo = (
       /** Es el predio que pertenece al estado y/o cuyo propietario es una entidad de derecho público
        */
@@ -1227,6 +1406,34 @@ VERSION "2020-07-21"  =
     D_SexoTipo = (
       Masculino,
       Femenino
+    );
+
+    D_TamanioBanioTipo = (
+      /** Sin baño
+       */
+      !!@ ili2db.dispName = "Sin baño"
+      Sin_Banio,
+      /** Si mide menos de 4 mts cuadrados.
+       */
+      !!@ ili2db.dispName = "Pequeño"
+      Pequenio,
+      /** Si su área aproximada se encuentra entre 4 y 6 mts.
+       */
+      !!@ ili2db.dispName = "Mediano"
+      Mediano,
+      !!@ ili2db.dispName = "Grande"
+      Grande
+    );
+
+    D_TamanioCocinaTipo = (
+      !!@ ili2db.dispName = "Sin Cocina"
+      Sin_Cocina,
+      !!@ ili2db.dispName = "Pequeña"
+      Pequenia,
+      !!@ ili2db.dispName = "Mediana"
+      Mediana,
+      !!@ ili2db.dispName = "Grande"
+      Grande
     );
 
     D_TipologiaTipo = (
@@ -1667,20 +1874,82 @@ VERSION "2020-07-21"  =
     !!@ ili2db.dispName = "Calificación convencional"
     CLASS CalificacionConvencional =
       !!@ ili2db.dispName = "Tipo a calificar"
-      Tipo_Calificar : MANDATORY Captura_Geo_V0_2.D_CalificarTipo;
+      Tipo_Calificar : MANDATORY Captura_Geo_V0_4.D_CalificarTipo;
       /** Puntaje total de la calificación de la unidad de construcción.
        */
       !!@ ili2db.dispName = "Total calificación"
       Total_Calificacion : MANDATORY LADM_COL_V3_0.LADM_Nucleo.Integer;
+      /** Indica los elementos generales de la calificación de la construcción de acuerdo al método vigente.
+       */
+      !!@ ili2db.dispName = "Clase de calificación"
+      Clase_Calificacion : Captura_Geo_V0_4.D_ClaseCalificacionTipo;
+      /** Se refiere al conjunto compuesto por los cimientos, columnas, vigas, entrepisos y demás componentes del esqueleto o armadura que soportan las cargas y sostienen la edificación.  El adobe, bahareque, tapia, califíquelos con el puntaje correspondiente a madera.  En el caso de tener muros de carga en ladrillo, califíquelos como armazón de ladrillo.  En aquellas viviendas de hasta tres pisos y en donde se observe, vigas, columnas y planchas se colocan en la opción “concreto hasta tres pisos”.  La máxima calificación será para edificaciones de concreto de 4 o más pisos.
+       */
+      !!@ ili2db.dispName = "Armazón"
+      Armazon : MANDATORY Captura_Geo_V0_4.D_ArmazonTipo;
+      /** Se refiere a los muros divisorios no considerados como parte del armazón.
+       */
+      !!@ ili2db.dispName = "Muros"
+      Muros : MANDATORY Captura_Geo_V0_4.D_MurosTipo;
+      /** ch.ehi.interlis.domainsandconstants.basetypes.EnumElement@3d074741
+       */
+      !!@ ili2db.dispName = "Cubierta"
+      Cubierta : MANDATORY Captura_Geo_V0_4.D_CubiertaTipo;
+      !!@ ili2db.dispName = "Conservación Estructura"
+      Conservacion_Estructura : MANDATORY Captura_Geo_V0_4.D_EstadoConservacionTipo;
+      !!@ ili2db.dispName = "Subtotal_Estructura"
+      Subtotal_Estructura : MANDATORY 0 .. 9999999;
+      /** Nombrase como tal al conjunto de elementos que constituyen el frente o parte exterior de una construcción, que da cara a la vía o camino, que incluye la puerta de acceso.  Tomada dentro de la variable, acabados principales constituyen un concepto bastante representativo de la calidad de la vivienda.
+       */
+      !!@ ili2db.dispName = "Fachada"
+      Fachada : MANDATORY Captura_Geo_V0_4.D_FachadaTipo;
+      /** Se califica de acuerdo al material y según las opciones que se presentan en el formulario, se tendrá en cuenta que si aparece por lo menos el 80% en pañete, se marcará este material y si aparece por lo menos un 20% de otro material de los más costosos (granito, madera, mármol), se marcará este en el formulario.  Si se encuentra por lo menos el 50% sin cubrimiento, se calificará como tal.  En caso de encontrarse un cubrimiento no completado en el formulario se asimilará, según el factor, más cercano de los referidos.  El pañete se refiere al cubrimiento en el cual se emplea solamente arena y cemento; el estuco es el cubrimiento fino sobre pañete.
+       * 
+       * Es necesario aclarar que en el caso del papel de colgadura, se debe tener en cuenta que éste se encuentra en dos categorías:
+       * 
+       * Papel común:  Características de las construcciones de estratos medio bajo y medio medio, se presenta en la mayoría de los casos textura gruesa y superficie corrugada.
+       * 
+       * Papel fino: Contrario al anterior, se encuentra normalmente en construcciones lujosas y se caracteriza por su textura fina, visible en los orillos y superficie lisa.  Sus acabados siempre son finos.
+       * 
+       * Además de los muros, el papel se encuentra en enchapes de baños y cocinas.
+       */
+      !!@ ili2db.dispName = "Cubrimiento de muros"
+      Cubrimiento_Muros : MANDATORY Captura_Geo_V0_4.D_CubrimientoMurosTipo;
+      /** En esta componente, se inscribirá lo referente al material predominante en el piso de la construcción según las opciones indicadas en el formulario y el más costoso si se encuentra en partes iguales.  Se marcará también con una X según la unidad de avalúo reconocida.
+       */
+      !!@ ili2db.dispName = "Piso"
+      Piso : MANDATORY Captura_Geo_V0_4.D_PisoTipo;
+      !!@ ili2db.dispName = "Conservación Acabados Principales"
+      Conservacion_Acabados : MANDATORY Captura_Geo_V0_4.D_EstadoConservacionTipo;
+      !!@ ili2db.dispName = "Subtotal Acabados Principales"
+      Subtotal_Acabados : MANDATORY 0 .. 9999999;
+      !!@ ili2db.dispName = "Tamaño de baño"
+      Tamanio_Banio : MANDATORY Captura_Geo_V0_4.D_TamanioBanioTipo;
+      /** Se refiere al cubrimiento de los muros del baño principal, se calificará según las opciones establecidas en el formulario de reconocimiento, teniendo en cuenta que los materiales y condiciones no contemplados se deben asimilar al más parecido de ellos de acuerdo con el costo.  Marque el material que corresponda al mayor porcentaje o al más costoso si se encuentran por partes iguales.
+       */
+      !!@ ili2db.dispName = "Enchape de baño"
+      Enchape_Banio : MANDATORY Captura_Geo_V0_4.D_EnchapeTipo;
+      !!@ ili2db.dispName = "Mobiliario de baño"
+      Mobiliario_Banio : MANDATORY Captura_Geo_V0_4.D_MobiliarioTipo;
+      !!@ ili2db.dispName = "Conservación Baño"
+      Conservacion_Banio : MANDATORY Captura_Geo_V0_4.D_EstadoConservacionTipo;
+      !!@ ili2db.dispName = "Subtotal Baño"
+      Subtotal_Banio : MANDATORY 0 .. 9999999;
+      !!@ ili2db.dispName = "Tamaño de cocina"
+      Tamanio_Cocina : MANDATORY Captura_Geo_V0_4.D_TamanioCocinaTipo;
+      !!@ ili2db.dispName = "Enchape de cocina"
+      Enchape_Cocina : MANDATORY Captura_Geo_V0_4.D_EnchapeTipo;
+      !!@ ili2db.dispName = "Mobiliario de cocina"
+      Mobiliario_Cocina : MANDATORY Captura_Geo_V0_4.D_MobiliarioTipo;
+      !!@ ili2db.dispName = "Conservación Cocina"
+      Conservacion_Cocina : MANDATORY Captura_Geo_V0_4.D_EstadoConservacionTipo;
+      !!@ ili2db.dispName = "Subtotal Cocina"
+      Subtotal_Cocina : MANDATORY 0 .. 9999999;
+      !!@ ili2db.dispName = "Cerchas complemento industria"
+      Cerchas : Captura_Geo_V0_4.D_CerchasTipo;
+      !!@ ili2db.dispName = "Subtotal Cerchas"
+      Subtotal_Cerchas : 0 .. 9999999;
     END CalificacionConvencional;
-
-    /** Relaciona el tipo de construcción consideradas como anexo para el catastro.
-     */
-    !!@ ili2db.dispName = "Calificación no convencional"
-    CLASS CalificacionNoConvencional =
-      !!@ ili2db.dispName = "Tipo de anexo"
-      Tipo_Anexo : MANDATORY Captura_Geo_V0_2.D_AnexoTipo;
-    END CalificacionNoConvencional;
 
     /** Es la unión de materiales adheridos al terreno, con carácter de permanente, cualesquiera sean los elementos que la constituyan.
      */
@@ -1689,9 +1958,9 @@ VERSION "2020-07-21"  =
       !!@ ili2db.dispName = "Identificador"
       Identificador : MANDATORY TEXT*2;
       !!@ ili2db.dispName = "Tipo de construcción"
-      Tipo_Construccion : Captura_Geo_V0_2.D_ConstruccionTipo;
+      Tipo_Construccion : Captura_Geo_V0_4.D_ConstruccionTipo;
       !!@ ili2db.dispName = "Tipo de dominio"
-      Tipo_Dominio : Captura_Geo_V0_2.D_DominioConstruccionTipo;
+      Tipo_Dominio : Captura_Geo_V0_4.D_DominioConstruccionTipo;
       /** Número total de pisos de la construcción.
        */
       !!@ ili2db.dispName = "Número de pisos"
@@ -1718,13 +1987,68 @@ VERSION "2020-07-21"  =
        */
       !!@ ili2db.dispName = "Observaciones"
       Observaciones : TEXT*20;
-      geometria : ISO19107_PLANAS_V3_0.GM_MultiSurface3D;
     END Construccion;
+
+    /** Datos de las construcciones inscritas en las bases de datos catastrales en una entidad territorial.
+     */
+    !!@ ili2db.dispName = "Construcción histórico"
+    CLASS Construccion_historico =
+      /** Identificado de la unidad de construcción, su codificación puede ser por letras del abecedario.
+       */
+      !!@ ili2db.dispName = "Identificador"
+      Identificador : TEXT*30;
+      /** Etiqueta de la construcción.
+       */
+      !!@ ili2db.dispName = "Etiqueta"
+      Etiqueta : TEXT*50;
+      /** Indica si la construcción es de tipo convencional o no convencional.
+       */
+      !!@ ili2db.dispName = "Tipo de construcción"
+      Tipo_Construccion : Captura_Geo_V0_4.D_ConstruccionTipo;
+      /** Indica el tipo de dominio de la unidad de construcción: común y privado.
+       */
+      !!@ ili2db.dispName = "Tipo de dominio"
+      Tipo_Dominio : TEXT*20;
+      /** Número total de pisos de la construcción.
+       */
+      !!@ ili2db.dispName = "Número de pisos"
+      Numero_Pisos : 0 .. 200;
+      /** Número total de sótanos de la construcción.
+       */
+      !!@ ili2db.dispName = "Número de sótanos"
+      Numero_Sotanos : 0 .. 99;
+      /** Número total de mezanines de la construcción.
+       */
+      !!@ ili2db.dispName = "Número de mezanines"
+      Numero_Mezanines : 0 .. 99;
+      /** Número total de semisótanos de la construcción.
+       */
+      !!@ ili2db.dispName = "Número de semisótanos"
+      Numero_Semisotanos : 0 .. 99;
+      /** Código catastral de la construcción.
+       */
+      !!@ ili2db.dispName = "Código de edificación"
+      Codigo_Edificacion : 0 .. 10000000000000000000;
+      /** Código de terreno donde se encuentra ubicada la construcción.
+       */
+      !!@ ili2db.dispName = "Código de terreno"
+      Codigo_Terreno : TEXT*30;
+      /** Área total construida.
+       */
+      !!@ ili2db.dispName = "Área construida"
+      Area_Construida : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];
+      !!@ ili2db.dispName = "¿La construcción es una mejora?"
+      Estado_mejora : BOOLEAN;
+      /** Polígono de la construcción existente en la base de datos catastral.
+       */
+      !!@ ili2db.dispName = "Geometría"
+      Geometria : ISO19107_PLANAS_V3_0.GM_MultiSurface3D;
+    END Construccion_historico;
 
     !!@ ili2db.dispName = "Contacto visita"
     CLASS ContactoVisita =
       !!@ ili2db.dispName = "Tipo de documento de quien atendió la visita predial"
-      Tipo_Documento_Quien_Atendio : MANDATORY Captura_Geo_V0_2.D_InteresadoDocumentoTipo;
+      Tipo_Documento_Quien_Atendio : MANDATORY Captura_Geo_V0_4.D_InteresadoDocumentoTipo;
       /** Indica el número de documento de la persona que atendió la visita predial.
        */
       !!@ ili2db.dispName = "Numero de documento de quien atendió la visita predial"
@@ -1746,7 +2070,7 @@ VERSION "2020-07-21"  =
       /** Relación con el predio de la persona encargada de atender la visita, por ejemplo propietario, encargado, administrador, poseedor, etc.
        */
       !!@ ili2db.dispName = "Relación con el predio"
-      Relacion_Con_Predio : MANDATORY Captura_Geo_V0_2.D_RelacionPredioTipo;
+      Relacion_Con_Predio : MANDATORY Captura_Geo_V0_4.D_RelacionPredioTipo;
       /** Dirección de domicilio para notificaciones.
        */
       !!@ ili2db.dispName = "Domicilio notificaciones"
@@ -1765,58 +2089,6 @@ VERSION "2020-07-21"  =
       Autoriza_Notificaciones : BOOLEAN;
     END ContactoVisita;
 
-    /** Datos de adicionales del predio para catastro multipropósito
-     */
-    !!@ ili2db.dispName = "Datos adicionales levantamiento catastral"
-    CLASS DatosAdicionalesLevantamientoCatastral =
-      /** Indica si el predio según la información registral cuenta con el valor de área en la cabida y linderos.
-       */
-      !!@ ili2db.dispName = "¿El predio tiene área registral?"
-      Tiene_Area_Registral : MANDATORY BOOLEAN;
-      !!@ ili2db.dispName = "Área registral en metros cuadrados"
-      Area_Registral_M2 : 0.00 .. 10000000000000000000000.00 [LADM_COL_V3_0.m2];
-      /** Se considerará como procedimientos catastrales con efectos registrales los siguientes: actualización de linderos, rectificación de área por imprecisa determinación, actualización masiva y puntual de linderos y áreas, rectificación de linderos por acuerdo entre las partes, e inclusión de área y/o linderos.
-       */
-      !!@ ili2db.dispName = "Procedimientos catastrales con efectos registrales"
-      Procedimiento_Catastral_Registral : MANDATORY Captura_Geo_V0_2.D_ProcedimientoCatastralRegistralTipo;
-      /** Es la clasificación para fines estadísticos que se da a cada inmueble en su conjunto–terreno, construcciones o edificaciones-, en el momento de la identificación predial de conformidad con la actividad predominante que en él se desarrolle.
-       */
-      !!@ ili2db.dispName = "Destinación económica"
-      Destinacion_Economica : MANDATORY Captura_Geo_V0_2.D_DestinacionEconomicaTipo;
-      !!@ ili2db.dispName = "Observaciones"
-      Observaciones : TEXT*500;
-      !!@ ili2db.dispName = "Fecha de visita predial"
-      Fecha_Visita_predial : INTERLIS.XMLDate;
-      !!@ ili2db.dispName = "Resultado de la visita predial"
-      Resultado_Visita : MANDATORY Captura_Geo_V0_2.D_ResultadoVisitaTipo;
-      /** Indica si dentro del proceso de formación o actualización catastral se suscribe acta de colindancia para el predio objeto de levantamiento catastral.
-       */
-      !!@ ili2db.dispName = "¿Se suscribe acta de colindancia?"
-      Suscribe_Acta_Colindancia : BOOLEAN;
-    END DatosAdicionalesLevantamientoCatastral;
-
-    /** Clase que contiene los datos principales del predio matriz sometido al regimen de propiedad horizontal.
-     */
-    !!@ ili2db.dispName = "Datos PH Condominio"
-    CLASS DatosPHCondominio =
-      !!@ ili2db.dispName = "Área total de terreno"
-      Area_Total_Terreno : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];
-      !!@ ili2db.dispName = "Área total de terreno privada"
-      Area_Total_Terreno_Privada : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];
-      !!@ ili2db.dispName = "Área total de terreno común"
-      Area_Total_Terreno_Comun : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];
-      !!@ ili2db.dispName = "Área total construida"
-      Area_Total_Construida : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];
-      !!@ ili2db.dispName = "Área total construida privada"
-      Area_Total_Construida_Privada : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];
-      !!@ ili2db.dispName = "Área total construida común"
-      Area_Total_Construida_Comun : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];
-      !!@ ili2db.dispName = "Número de torres"
-      Numero_Torres : 0 .. 1000;
-      !!@ ili2db.dispName = "Total de unidades privadas"
-      Total_Unidades_Privadas : 0 .. 99999999;
-    END DatosPHCondominio;
-
     /** Clase que registra las instancias de los derechos que un interesado ejerce sobre un predio. Es una especialización de la clase COL_DRR del propio modelo.
      */
     !!@ ili2db.dispName = "Derecho"
@@ -1824,13 +2096,13 @@ VERSION "2020-07-21"  =
       /** Derecho que se ejerce.
        */
       !!@ ili2db.dispName = "Tipo derecho"
-      Tipo : MANDATORY Captura_Geo_V0_2.D_DerechoTipo;
+      Tipo : MANDATORY Captura_Geo_V0_4.D_DerechoTipo;
       /** Indica la fracción del derecho en relación a la forma de tenencia y el área que esta ocupa dentro de la extensión del predio. Ejemplo: un predio informal que se encuentra sobre un predio baldío y un predio privado tendrá un porcentaje de derecho de ocupación y posesión expresado en tanto por uno (0.0000000000 a 1.0000000000).
        */
       !!@ ili2db.dispName = "Fracción de derecho"
-      Fraccion_Derecho : 0.0000000000 .. 1.0000000000;
+      Fraccion_Derecho : 0.0000000000 .. 100.0000000000;
       !!@ ili2db.dispName = "Calidad derecho"
-      Calidad_Derecho_Registro : Captura_Geo_V0_2.SNR_CalidadDerechoTipo;
+      Calidad_Derecho_Registro : Captura_Geo_V0_4.SNR_CalidadDerechoTipo;
       !!@ ili2db.dispName = "Código naturaleza jurídica"
       Codigo_naturaleza_Juridica : TEXT*20;
       !!@ ili2db.dispName = "Fecha de inicio de tenencia"
@@ -1842,7 +2114,7 @@ VERSION "2020-07-21"  =
     !!@ ili2db.dispName = "Fuente Administrativa"
     CLASS Fuente_Administrativa =
       !!@ ili2db.dispName = "Tipo"
-      Tipo : MANDATORY Captura_Geo_V0_2.D_FuenteAdministrativaTipo;
+      Tipo : MANDATORY Captura_Geo_V0_4.D_FuenteAdministrativaTipo;
       !!@ ili2db.dispName = "Ente emisor"
       Ente_Emisor : TEXT*255;
       !!@ ili2db.dispName = "Observación"
@@ -1854,28 +2126,10 @@ VERSION "2020-07-21"  =
       !!@ ili2db.dispName = "Estado disponibilidad"
       Estado_Disponibilidad : MANDATORY LADM_COL_V3_0.LADM_Nucleo.COL_EstadoDisponibilidadTipo;
       !!@ ili2db.dispName = "Archivo"
-      Ext_Archivo : LADM_COL_V3_0.LADM_Nucleo.ExtArchivo;
+      Ext_Archivo : TEXT*1000;
       !!@ ili2db.dispName = "Fecha documento fuente"
       Fecha_Documento_Fuente : INTERLIS.XMLDate;
     END Fuente_Administrativa;
-
-    /** Calificación de la construccion según los item determinados para calificar.
-     */
-    !!@ ili2db.dispName = "Grupo Calificación"
-    CLASS GrupoCalificacion =
-      /** Indica los elementos generales de la calificación de la construcción de acuerdo al método vigente.
-       */
-      !!@ ili2db.dispName = "Clase de calificación"
-      Clase_Calificacion : Captura_Geo_V0_2.D_ClaseCalificacionTipo;
-      /** Estado de conservación del grupo calificado.
-       */
-      !!@ ili2db.dispName = "Conservación"
-      Conservacion : Captura_Geo_V0_2.D_EstadoConservacionTipo;
-      /** Subtotal del grupo calificado.
-       */
-      !!@ ili2db.dispName = "Subtotal"
-      Subtotal : 0 .. 9999999;
-    END GrupoCalificacion;
 
     /** Es la parte que tiene una relación con el predio por algún tipo de derecho, restricción, publicidad o responsabilidad
      */
@@ -1884,11 +2138,11 @@ VERSION "2020-07-21"  =
       /** Tipo de persona del que se trata
        */
       !!@ ili2db.dispName = "Tipo persona"
-      Tipo : MANDATORY Captura_Geo_V0_2.D_InteresadoTipo;
+      Tipo : MANDATORY Captura_Geo_V0_4.D_InteresadoTipo;
       /** Tipo de documento del que se trata.
        */
       !!@ ili2db.dispName = "Tipo de documento"
-      Tipo_Documento : MANDATORY Captura_Geo_V0_2.D_InteresadoDocumentoTipo;
+      Tipo_Documento : MANDATORY Captura_Geo_V0_4.D_InteresadoDocumentoTipo;
       /** Documento de identidad del interesado.
        */
       !!@ ili2db.dispName = "Documento de identidad"
@@ -1912,19 +2166,19 @@ VERSION "2020-07-21"  =
       /** Condición orgánica que distingue a los machos de las hembras.
        */
       !!@ ili2db.dispName = "Sexo"
-      Sexo : Captura_Geo_V0_2.D_SexoTipo;
+      Sexo : Captura_Geo_V0_4.D_SexoTipo;
       !!@ ili2db.dispName = "Grupo étnico"
-      Grupo_Etnico : Captura_Geo_V0_2.D_GrupoEtnico;
+      Grupo_Etnico : Captura_Geo_V0_4.D_GrupoEtnico;
       /** Nombre con el que está inscrito.
        */
       !!@ ili2db.dispName = "Razón social"
       Razon_Social : TEXT*255;
-    END Interesado;
-
-    /** Datos de contacto de la parte interesada.
-     */
-    !!@ ili2db.dispName = "Interesado Contacto"
-    CLASS InteresadoContacto =
+      !!@ ili2db.dispName = "Adjunto"
+      Adjunto : TEXT*1000;
+      !!@ ili2db.dispName = "¿Tiene datos de contacto?"
+      Datos_Contacto : BOOLEAN;
+      /** Numero de telefono de contacto del interesado.
+       */
       !!@ ili2db.dispName = "Teléfono 1"
       Telefono1 : TEXT*20;
       /** Numero de telefono de contacto del interesado.
@@ -1946,15 +2200,15 @@ VERSION "2020-07-21"  =
       /** Indica si el interesado autoriza notificación vía correo electrónico
        */
       !!@ ili2db.dispName = "Autoriza notificación correo"
-      Autoriza_Notificacion_Correo : BOOLEAN;
+      Autoriza_Notificacion_Correo : TEXT*20;
       /** Departamento de residencia del interesado.
        */
       !!@ ili2db.dispName = "Departamento"
-      Departamento : MANDATORY TEXT*100;
+      Departamento : TEXT*20;
       /** Municipio de residencia del interesado.
        */
       !!@ ili2db.dispName = "Municipio"
-      Municipio : MANDATORY TEXT*100;
+      Municipio : TEXT*100;
       /** Vereda de residencia del interesado.
        */
       !!@ ili2db.dispName = "Vereda"
@@ -1963,18 +2217,7 @@ VERSION "2020-07-21"  =
        */
       !!@ ili2db.dispName = "Corregimiento"
       Corregimiento : TEXT*100;
-    END InteresadoContacto;
-
-    /** Linea de división que separa un bien inmueble de otro, que puede o no estar materializada físicamente.
-     */
-    !!@ ili2db.dispName = "Lindero"
-    CLASS lindero =
-      !!@ ili2db.dispName = "Logitud"
-      longitud : MANDATORY 0.0 .. 10000.0 [INTERLIS.m];
-      !!@ ili2db.dispName = "Localización textual"
-      localizacion_textual : LADM_COL_V3_0.LADM_Nucleo.CharacterString;
-      geometria : MANDATORY ISO19107_PLANAS_V3_0.GM_MultiCurve3D;
-    END lindero;
+    END Interesado;
 
     !!@ ili2db.dispName = "Novedad números prediales"
     CLASS Novedad_Numeros_Prediales =
@@ -2005,24 +2248,10 @@ VERSION "2020-07-21"  =
       Numero_FMI : TEXT*80;
     END NovedadFMI;
 
-    /** Puntaje de cada item de la calificación de construcción.
-     */
-    !!@ ili2db.dispName = "Objeto Construcción"
-    CLASS ObjetoConstruccion =
-      /** Item de la calificación de construcción según la método de calificación vigente.
-       */
-      !!@ ili2db.dispName = "Tipo de objeto de construcción"
-      Tipo_Objeto_Construccion : MANDATORY Captura_Geo_V0_2.D_ObjetoConstruccionTipo;
-      /** Puntaje del ítem calificado.
-       */
-      !!@ ili2db.dispName = "Puntos"
-      Puntos : MANDATORY 0 .. 16;
-    END ObjetoConstruccion;
-
     !!@ ili2db.dispName = "Ofertas mercado inmobiliario"
     CLASS OfertasMercadoInmobiliario =
       !!@ ili2db.dispName = "Tipo de oferta"
-      Tipo_Oferta : MANDATORY Captura_Geo_V0_2.D_OfertaTipo;
+      Tipo_Oferta : MANDATORY Captura_Geo_V0_4.D_OfertaTipo;
       !!@ ili2db.dispName = "Valor pedido"
       Valor_Pedido : MANDATORY LADM_COL_V3_0.LADM_Nucleo.Peso;
       !!@ ili2db.dispName = "Valor negociado"
@@ -2080,16 +2309,12 @@ VERSION "2020-07-21"  =
        */
       !!@ ili2db.dispName = "Número único predial"
       NUPRE : TEXT*11;
-      /** Valor catastral del predio, obtenido mediante investigación y análisis estadístico del mercado inmobiliario y la metodología de aplicación correspondiente.
-       */
-      !!@ ili2db.dispName = "Avalúo catastral"
-      Avaluo_Catastral : LADM_COL_V3_0.LADM_Nucleo.Peso;
       !!@ ili2db.dispName = "Tipo de predio"
-      Predio_Tipo : MANDATORY Captura_Geo_V0_2.D_PredioTipo;
+      Predio_Tipo : MANDATORY Captura_Geo_V0_4.D_PredioTipo;
       /** Caracterización temática del predio.
        */
       !!@ ili2db.dispName = "Condición del predio"
-      Condicion_Predio : MANDATORY Captura_Geo_V0_2.D_CondicionPredioTipo;
+      Condicion_Predio : MANDATORY Captura_Geo_V0_4.D_CondicionPredioTipo;
       /** Dirección del predio.
        */
       !!@ ili2db.dispName = "Dirección"
@@ -2097,72 +2322,110 @@ VERSION "2020-07-21"  =
       /** Corresponde al dato de tipo de predio incorporado en las bases de datos registrales
        */
       !!@ ili2db.dispName = "Clase del suelo según registro"
-      Clase_Suelo_Registro : Captura_Geo_V0_2.D_ClaseSueloTipo;
-      !!@ ili2db.dispName = "Destinación económica"
-      Destinacion_Economica : TEXT*150;
+      Clase_Suelo_Registro : Captura_Geo_V0_4.D_ClaseSueloTipo;
       !!@ ili2db.dispName = "Coeficiente (Porcentaje 1 a 100)"
       Coeficiente : 0.00000 .. 100.00000;
+      !!@ ili2db.dispName = "Área total de terreno"
+      Area_Total_Terreno : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];
+      !!@ ili2db.dispName = "Área total de terreno privada"
+      Area_Total_Terreno_Privada : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];
+      !!@ ili2db.dispName = "Área total de terreno común"
+      Area_Total_Terreno_Comun : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];
+      !!@ ili2db.dispName = "Área total construida"
+      Area_Total_Construida : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];
+      !!@ ili2db.dispName = "Área total construida privada"
+      Area_Total_Construida_Privada : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];
+      !!@ ili2db.dispName = "Área total construida común"
+      Area_Total_Construida_Comun : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];
+      !!@ ili2db.dispName = "Número de torres"
+      Numero_Torres : 0 .. 1000;
+      !!@ ili2db.dispName = "Total de unidades privadas"
+      Total_Unidades_Privadas : 0 .. 99999999;
+      !!@ ili2db.dispName = "¿Tiene ofertas de mercado inmobiliario?"
+      Ofertas_Mercado_inmobiliario : BOOLEAN;
+      /** Indica si el predio según la información registral cuenta con el valor de área en la cabida y linderos.
+       */
+      !!@ ili2db.dispName = "¿El predio tiene área registral?"
+      Tiene_Area_Registral : BOOLEAN;
+      !!@ ili2db.dispName = "¿Tiene datos adicionales?"
+      Datos_adicionales : BOOLEAN;
+      !!@ ili2db.dispName = "Área registral en metros cuadrados"
+      Area_Registral_M2 : 0.00 .. 10000000000000000000000.00 [LADM_COL_V3_0.m2];
+      !!@ ili2db.dispName = "Procedimientos catastrales con efectos registrales"
+      Procedimiento_Catastral_Registral : Captura_Geo_V0_4.D_ProcedimientoCatastralRegistralTipo;
+      /** Es la clasificación para fines estadísticos que se da a cada inmueble en su conjunto–terreno, construcciones o edificaciones-, en el momento de la identificación predial de conformidad con la actividad predominante que en él se desarrolle.
+       */
+      !!@ ili2db.dispName = "Destinación económica"
+      Destinacion_Economica : Captura_Geo_V0_4.D_DestinacionEconomicaTipo;
+      !!@ ili2db.dispName = "Fecha de visita predial"
+      Fecha_Visita_predial : INTERLIS.XMLDate;
+      !!@ ili2db.dispName = "Resultado de la visita predial"
+      Resultado_Visita : Captura_Geo_V0_4.D_ResultadoVisitaTipo;
+      /** Indica si dentro del proceso de formación o actualización catastral se suscribe acta de colindancia para el predio objeto de levantamiento catastral.
+       */
+      !!@ ili2db.dispName = "¿Se suscribe acta de colindancia?"
+      Suscribe_Acta_Colindancia : BOOLEAN;
+      !!@ ili2db.dispName = "Observaciones"
+      Observaciones : TEXT*500;
     END Predio;
 
     !!@ ili2db.dispName = "Punto"
     CLASS punto (ABSTRACT) =
       !!@ ili2db.dispName = "Posición interpolación"
       posicion_interpolacion : LADM_COL_V3_0.LADM_Nucleo.COL_InterpolacionTipo;
-      !!@ ili2db.dispName = "Punto tipo"
+      !!@ ili2db.dispName = "Categoría"
       punto_tipo : LADM_COL_V3_0.LADM_Nucleo.COL_PuntoTipo;
       !!@ ili2db.dispName = "Método producción tipo"
       metodo_produccion_tipo : LADM_COL_V3_0.LADM_Nucleo.COL_MetodoProduccionTipo;
       geometria : ISO19107_PLANAS_V3_0.GM_Point3D;
     END punto;
 
-    /** Restricción legalmente constituida y registrada que afecta el derecho de un persona en relación con el predio.
-     */
-    !!@ ili2db.dispName = "Restriccón"
-    CLASS Restriccion =
-      !!@ ili2db.dispName = "Tipo"
-      Tipo : Captura_Geo_V0_2.D_RestriccionTipo;
-    END Restriccion;
-
-    /** Tipo de unidad espacial que permite la representación de una servidumbre de paso asociada a una COL_BAUnit.
-     */
-    !!@ ili2db.dispName = "Servidumbre de Tránsito"
-    CLASS ServidumbreTransito =
-      !!@ ili2db.dispName = "Área de la servidumbre"
-      Area_Servidumbre : 0.0 .. 99999999999999.9 [LADM_COL_V3_0.m2];
-      !!@ ili2db.dispName = "Geometria"
-      geometria : MANDATORY ISO19107_PLANAS_V3_0.GM_MultiSurface3D;
-    END ServidumbreTransito;
-
     /** Porción de tierra con una extensión geográfica definida.
      */
     !!@ ili2db.dispName = "Terreno"
-    CLASS terreno =
+    CLASS Terreno =
+      !!@ ili2db.dispName = "¿Es servidumbre de tránsito?"
+      Servidumbre_Transito : BOOLEAN;
       !!@ ili2db.dispName = "Área terreno"
-      area_terreno : MANDATORY 0.0 .. 99999999999999.9 [LADM_COL_V3_0.m2];
+      Area_terreno : MANDATORY 0.0 .. 99999999999999.9 [LADM_COL_V3_0.m2];
       !!@ ili2db.dispName = "Etiqueta"
-      etiqueta : LADM_COL_V3_0.LADM_Nucleo.CharacterString;
+      Etiqueta : LADM_COL_V3_0.LADM_Nucleo.CharacterString;
       /** Numero predial hasta la posición 21
        */
       !!@ ili2db.dispName = "Manzana, Vereda código"
       Manzana_Vereda_Codigo : TEXT*21;
-      !!@ ili2db.dispName = "Avalúo terreno"
-      avaluo_terreno : LADM_COL_V3_0.LADM_Nucleo.Peso;
-      !!@ ili2db.dispName = "Número subterraneos"
-      num_subterraneos : TEXT*20;
+      !!@ ili2db.dispName = "Número subterráneos"
+      Num_subterraneos : TEXT*20;
       !!@ ili2db.dispName = "Proyección"
       proyeccion : TEXT*20;
       geometria : ISO19107_PLANAS_V3_0.GM_MultiSurface3D;
-    END terreno;
+    END Terreno;
 
-    /** Son las características de diseño y constructivas especiales de las construcciones y/o edificaciones.
+    /** Datos de los terrenos inscritos en las bases de datos catastrales en una entidad territorial.
      */
-    !!@ ili2db.dispName = "Tipología construcción"
-    CLASS TipologiaConstruccion =
-      /** Son las características de diseño y constructivas especiales de las construcciones y/o edificaciones.
+    !!@ ili2db.dispName = "Terrenos históricos"
+    CLASS Terreno_historico =
+      /** Área de terreno alfanumérica registrada en la base de datos catastral.
        */
-      !!@ ili2db.dispName = "Tipo tipología"
-      Tipo_Tipologia : Captura_Geo_V0_2.D_TipologiaTipo;
-    END TipologiaConstruccion;
+      !!@ ili2db.dispName = "Área terreno alfanumérica"
+      Area_Terreno_Alfanumerica : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];
+      /** Área de terreno digital registrada en la base de datos catastral.
+       */
+      !!@ ili2db.dispName = "Área terreno digital"
+      Area_Terreno_Digital : 0.00 .. 99999999999999.98;
+      /** Código de la manzana o vereda donde se localiza el terreno.
+       */
+      !!@ ili2db.dispName = "Código de manzana vereda"
+      Manzana_Vereda_Codigo : TEXT*17;
+      /** Número de subterráneos en el terreno.
+       */
+      !!@ ili2db.dispName = "Número de subterráneos"
+      Numero_Subterraneos : 0 .. 999999999999999;
+      /** Polígono de la unidad de construcción existente en la base de datos catastral.
+       */
+      !!@ ili2db.dispName = "Geometría"
+      Geometria : ISO19107_PLANAS_V3_0.GM_MultiSurface2D;
+    END Terreno_historico;
 
     /** Es cada conjunto de materiales consolidados dentro de un predio que tiene unas características específicas en cuanto a elementos constitutivos físicos y usos de la misma.
      */
@@ -2175,15 +2438,15 @@ VERSION "2020-07-21"  =
       /** Indica el tipo de dominio de la unidad de construcción: común y privado.
        */
       !!@ ili2db.dispName = "Tipo de dominio"
-      Tipo_Dominio : Captura_Geo_V0_2.D_DominioConstruccionTipo;
+      Tipo_Dominio : Captura_Geo_V0_4.D_DominioConstruccionTipo;
       !!@ ili2db.dispName = "Tipo de construcción"
-      Tipo_Construccion : Captura_Geo_V0_2.D_ConstruccionTipo;
+      Tipo_Construccion : Captura_Geo_V0_4.D_ConstruccionTipo;
       !!@ ili2db.dispName = "Tipo de unidad de construcción"
-      Tipo_Unidad_Construccion : MANDATORY Captura_Geo_V0_2.D_UnidadConstruccionTipo;
+      Tipo_Unidad_Construccion : MANDATORY Captura_Geo_V0_4.D_UnidadConstruccionTipo;
       /** Indica el tipo de planta donde se ubica la unidad de construcción.
        */
       !!@ ili2db.dispName = "Tipo de planta"
-      Tipo_Planta : MANDATORY Captura_Geo_V0_2.D_ConstruccionPlantaTipo;
+      Tipo_Planta : MANDATORY Captura_Geo_V0_4.D_ConstruccionPlantaTipo;
       !!@ ili2db.dispName = "Planta ubicación"
       Planta_Ubicacion : MANDATORY 0 .. 500;
       /** Número total de  habitaciones en la unidad de construcción.
@@ -2201,11 +2464,9 @@ VERSION "2020-07-21"  =
       /** Actividad que se desarrolla en una unidad de construcción.
        */
       !!@ ili2db.dispName = "Uso"
-      Uso : Captura_Geo_V0_2.D_UsoUConsTipo;
+      Uso : Captura_Geo_V0_4.D_UsoUConsTipo;
       !!@ ili2db.dispName = "Año de construcción"
       Anio_Construccion : 1512 .. 2500;
-      !!@ ili2db.dispName = "Avalúo de la unidad de construcción"
-      Avaluo_Unidad_Construccion : LADM_COL_V3_0.LADM_Nucleo.Peso;
       /** Área total construida en la unidad de construcción.
        */
       !!@ ili2db.dispName = "Área construida"
@@ -2222,61 +2483,133 @@ VERSION "2020-07-21"  =
        */
       !!@ ili2db.dispName = "Observaciones"
       Observaciones : TEXT;
+      !!@ ili2db.dispName = "Tipo de anexo"
+      Tipo_Anexo : Captura_Geo_V0_4.D_AnexoTipo;
+      /** Son las características de diseño y constructivas especiales de las construcciones y/o edificaciones.
+       */
+      !!@ ili2db.dispName = "Tipo tipología"
+      Tipo_Tipologia : Captura_Geo_V0_4.D_TipologiaTipo;
       geometria : ISO19107_PLANAS_V3_0.GM_MultiSurface3D;
     END UnidadConstruccion;
+
+    !!@ ili2db.dispName = "Unidad de Construcción historico"
+    CLASS UnidadConstruccion_historico =
+      /** Identificado de la unidad de construcción, su codificación puede ser por letras del abecedario.
+       */
+      !!@ ili2db.dispName = "Identificador"
+      Identificador : TEXT*2;
+      /** Etiqueta de la unidad de construcción.
+       */
+      !!@ ili2db.dispName = "Etiqueta"
+      Etiqueta : TEXT*50;
+      /** Indica el tipo de dominio de la unidad de construcción: común y privado.
+       */
+      !!@ ili2db.dispName = "Tipo de dominio"
+      Tipo_Dominio : TEXT*20;
+      /** Indica si la construcción es de tipo convencional o no convencional.
+       */
+      !!@ ili2db.dispName = "Tipo de construcción"
+      Tipo_Construccion : Captura_Geo_V0_4.D_UnidadConstruccionTipo;
+      /** Indica numéricamente la ubicación del predio de acuerdo al tipo de planta.
+       */
+      !!@ ili2db.dispName = "Planta"
+      Planta : TEXT*10;
+      !!@ ili2db.dispName = "Total de habitaciones"
+      Total_Habitaciones : 0 .. 999999;
+      /** Número total de baños en la unidad de construcción.
+       */
+      !!@ ili2db.dispName = "Total de baños"
+      Total_Banios : 0 .. 999999;
+      /** Número total de locales en la unidad de construcción.
+       */
+      !!@ ili2db.dispName = "Total de locales"
+      Total_Locales : 0 .. 999999;
+      /** Número total de pisos en la unidad de construcción.
+       */
+      !!@ ili2db.dispName = "Total de pisos"
+      Total_Pisos : 0 .. 150;
+      /** Actividad que se desarrolla en una unidad de construcción.
+       */
+      !!@ ili2db.dispName = "Uso"
+      Uso : TEXT*255;
+      /** Año de construcción de la unidad de construcción.
+       */
+      !!@ ili2db.dispName = "Año de construcción"
+      Anio_Construccion : 1512 .. 2500;
+      /** Puntaje total de la calificación de construcción.
+       */
+      !!@ ili2db.dispName = "Puntaje"
+      Puntaje : 0 .. 200;
+      /** Área total construida en la unidad de construcción.
+       */
+      !!@ ili2db.dispName = "Área construida"
+      Area_Construida : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];
+      /** Área total privada de la unidad de construcción para los predios en régimen de propiedad horizontal.
+       */
+      !!@ ili2db.dispName = "Área privada"
+      Area_Privada : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];
+      /** Código catastral del terreno donde se encuentra localizada la unidad de construcción.
+       */
+      !!@ ili2db.dispName = "Código terreno"
+      Codigo_Terreno : TEXT*30;
+      /** Polígono de la unidad de construcción existente en la base de datos catastral.
+       */
+      !!@ ili2db.dispName = "Geometría"
+      Geometria : ISO19107_PLANAS_V3_0.GM_MultiSurface3D;
+    END UnidadConstruccion_historico;
 
     !!@ ili2db.dispName = "Usuarios"
     CLASS Usuarios =
       ID : TEXT*20;
       !!@ ili2db.dispName = "Tipo documento"
-      Tipo_Documento : Captura_Geo_V0_2.D_InteresadoDocumentoTipo;
+      Tipo_Documento : Captura_Geo_V0_4.D_InteresadoDocumentoTipo;
       !!@ ili2db.dispName = "Número documento"
       Numero_Documento : TEXT*20;
       !!@ ili2db.dispName = "Coordinador"
       Coordinador : TEXT;
       !!@ ili2db.dispName = "Estado"
-      Estado : Captura_Geo_V0_2.D_EstadoTipo;
+      Estado : Captura_Geo_V0_4.D_EstadoTipo;
       !!@ ili2db.dispName = "Municipio código"
       Municipio_Codigo : TEXT*20;
       !!@ ili2db.dispName = "Nombre"
-      Nombre : MANDATORY TEXT*20;
+      Nombre : TEXT*20;
       !!@ ili2db.dispName = "Constraseña"
       Contrasena : TEXT*20;
       !!@ ili2db.dispName = "Rol"
-      Rol : MANDATORY Captura_Geo_V0_2.D_RolTipo;
+      Rol : Captura_Geo_V0_4.D_RolTipo;
     END Usuarios;
 
+    !!@ ili2db.dispName = "Punto control"
     CLASS Punto_control
     EXTENDS punto =
       !!@ ili2db.dispName = "ID del punto de control"
       ID_Punto_Control : MANDATORY TEXT*255;
       !!@ ili2db.dispName = "Tipo de punto"
-      PuntoTipo : MANDATORY Captura_Geo_V0_2.D_PuntoTipo;
-      !!@ ili2db.dispName = "Tipo de punto de control"
-      tipo_punto_control : Captura_Geo_V0_2.D_ControlTipo;
+      PuntoTipo : MANDATORY Captura_Geo_V0_4.D_PuntoTipo;
+      !!@ ili2db.dispName = "Tipo de control"
+      tipo_punto_control : Captura_Geo_V0_4.D_ControlTipo;
       !!@ ili2db.dispName = "Exactitud horizontal"
       exactitud_horizontal : MANDATORY TEXT*20;
       !!@ ili2db.dispName = "Exactitud vertical"
       exactitud_vertical : MANDATORY TEXT*20;
     END Punto_control;
 
+    !!@ ili2db.dispName = "Punto levantamiento"
     CLASS Punto_levantamiento
     EXTENDS punto =
       !!@ ili2db.dispName = "Posición interpolación"
       posicion_interpolacion_lev : LADM_COL_V3_0.LADM_Nucleo.COL_InterpolacionTipo;
       !!@ ili2db.dispName = "Tipo de punto"
       PuntoTipo : MANDATORY LADM_COL_V3_0.LADM_Nucleo.COL_PuntoTipo;
-      !!@ ili2db.dispName = "Metodo produccion tipo"
-      metodo_produccion_tipo_lev : MANDATORY LADM_COL_V3_0.LADM_Nucleo.COL_MetodoProduccionTipo;
       !!@ ili2db.dispName = "ID del punto de levantamiento"
       id_punto_levantamiento : MANDATORY TEXT*20;
       !!@ ili2db.dispName = "Punto tipo levantamiento"
-      punto_tipo_lev : MANDATORY Captura_Geo_V0_2.D_PuntoTipo;
+      punto_tipo_lev : MANDATORY Captura_Geo_V0_4.D_PuntoTipo;
       !!@ ili2db.dispName = "Tipo punto levantamiento"
-      tipo_punto_levantamiento : MANDATORY Captura_Geo_V0_2.D_puntoLevTipo;
-      !!@ ili2db.dispName = "fotoidentificación"
-      fotoidentificacion : Captura_Geo_V0_2.D_FotoTipo;
-      !!@ ili2db.dispName = "Exactitud horizonta"
+      tipo_punto_levantamiento : MANDATORY Captura_Geo_V0_4.D_puntoLevTipo;
+      !!@ ili2db.dispName = "Foto identificación"
+      fotoidentificacion : Captura_Geo_V0_4.D_FotoTipo;
+      !!@ ili2db.dispName = "Exactitud horizontal"
       exactitud_horizontal : MANDATORY 0.000 .. 10.000 [INTERLIS.m];
       !!@ ili2db.dispName = "Exactitud vertical"
       exactitud_vertical : 0.000 .. 10.000 [INTERLIS.m];
@@ -2290,21 +2623,16 @@ VERSION "2020-07-21"  =
       !!@ ili2db.dispName = "ID del punto de lindero"
       id_punto_lindero : MANDATORY TEXT*20;
       !!@ ili2db.dispName = "Tipo de punto"
-      PuntoTipo : Captura_Geo_V0_2.D_PuntoTipo;
+      PuntoTipo : Captura_Geo_V0_4.D_PuntoTipo;
       !!@ ili2db.dispName = "Acuerdo"
-      acuerto : MANDATORY Captura_Geo_V0_2.D_AcuerdoTipo;
+      acuerto : MANDATORY Captura_Geo_V0_4.D_AcuerdoTipo;
       !!@ ili2db.dispName = "Fotoidentificación"
-      fotoidentificacion : Captura_Geo_V0_2.D_FotoTipo;
+      fotoidentificacion : Captura_Geo_V0_4.D_FotoTipo;
       !!@ ili2db.dispName = "Exactitud horizontal"
       exactitud_horizontal : TEXT*20;
       !!@ ili2db.dispName = "Exactitud vertical"
       exactitud_vertical : TEXT*20;
     END Punto_lindero;
-
-    ASSOCIATION CalificacionConvencional_GrupoCalificacion =
-      CalificacionConvencional -- {1} CalificacionConvencional;
-      GrupoCalificacion -- {1..*} GrupoCalificacion;
-    END CalificacionConvencional_GrupoCalificacion;
 
     ASSOCIATION construccion_unidad_construccion =
       construccion -- {1} Construccion;
@@ -2312,33 +2640,28 @@ VERSION "2020-07-21"  =
     END construccion_unidad_construccion;
 
     ASSOCIATION datosadicionales_contacto =
-      datos_adicionales -- {1} DatosAdicionalesLevantamientoCatastral;
+      datos_adicionales -- {1} Predio;
       contacto_visita -- {0..*} ContactoVisita;
     END datosadicionales_contacto;
 
     ASSOCIATION derecho_propietario =
-      propietario -- {0..1} Interesado;
+      interesado -- {0..1} Interesado;
       derecho -- {0..*} Derecho;
     END derecho_propietario;
 
     ASSOCIATION fuente_administrativa_derecho =
       derecho -- {0..*} Derecho;
-      fuente_administrativa -- {0..*} Fuente_Administrativa;
+      fuente_administrativa -- {1..*} Fuente_Administrativa;
     END fuente_administrativa_derecho;
-
-    ASSOCIATION lc_objetoconstruccion_grupocalificacion =
-      grupo_calificacion -- {1} GrupoCalificacion;
-      objeto_construccion -- {0..*} ObjetoConstruccion;
-    END lc_objetoconstruccion_grupocalificacion;
 
     ASSOCIATION Novedadfmi_datosadicionales =
       NovedadFMI -- {0..*} NovedadFMI;
-      datosadicionales -- {1} DatosAdicionalesLevantamientoCatastral;
+      datosadicionales -- {1} Predio;
     END Novedadfmi_datosadicionales;
 
     ASSOCIATION Novedadnumeropredial_datosadicionales =
       Novedad_Numero_predial -- {0..*} Novedad_Numeros_Prediales;
-      datosadicionales -- {1} DatosAdicionalesLevantamientoCatastral;
+      datosadicionales -- {1} Predio;
     END Novedadnumeropredial_datosadicionales;
 
     ASSOCIATION predio_construccion =
@@ -2346,15 +2669,12 @@ VERSION "2020-07-21"  =
       construccion -- {0..*} Construccion;
     END predio_construccion;
 
-    ASSOCIATION predio_datos_ph_condominio =
-      datos_ph_condominio -- {0..1} DatosPHCondominio;
-      predio -- {1} Predio;
-    END predio_datos_ph_condominio;
-
-    ASSOCIATION predio_datosadicionales =
-      Datos_adicionales -- {0..1} DatosAdicionalesLevantamientoCatastral;
-      Predio -- {1} Predio;
-    END predio_datosadicionales;
+    ASSOCIATION Predio_copropiedad =
+      Predio -- {0..*} Predio;
+      copropiedad -<> {0..1} Predio;
+      !!@ ili2db.dispName = "Coeficiente"
+      Coeficiente : 0.00000 .. 100.00000;
+    END Predio_copropiedad;
 
     ASSOCIATION predio_derecho =
       derecho -- {0..*} Derecho;
@@ -2371,40 +2691,20 @@ VERSION "2020-07-21"  =
       reconocedor -- {0..1} Usuarios;
     END predio_reconocedores;
 
-    ASSOCIATION predio_servidumbre =
-      servidumbre -- {0..*} ServidumbreTransito;
-      predio -- {1} Predio;
-    END predio_servidumbre;
-
     ASSOCIATION predio_terreno =
       predio -- {1} Predio;
-      terreno -- {0..*} terreno;
+      terreno -- {0..*} Terreno;
     END predio_terreno;
 
-    ASSOCIATION propietario_propietario_contacto =
-      propietario_contacto -- {0..*} InteresadoContacto;
-      propietario -- {1} Interesado;
-    END propietario_propietario_contacto;
-
-    ASSOCIATION restriccion_predio =
-      restriccion -- {0..*} Restriccion;
+    ASSOCIATION predio_terreno_historico =
       predio -- {1} Predio;
-    END restriccion_predio;
+      terreno_historico -- {0..*} Terreno_historico;
+    END predio_terreno_historico;
 
     ASSOCIATION unidadconstruccion_calificacionconvencional =
       CalificacionConstruccion -- {0..1} CalificacionConvencional;
       unidad -- {1} UnidadConstruccion;
     END unidadconstruccion_calificacionconvencional;
-
-    ASSOCIATION unidadconstruccion_calificacionnoconvencional =
-      calificacionnoconvencional -- {0..1} CalificacionNoConvencional;
-      unidad_construccion -- {1} UnidadConstruccion;
-    END unidadconstruccion_calificacionnoconvencional;
-
-    ASSOCIATION unidadconstruccion_tipologia =
-      Tipologiaconstruccion -- {0..1} TipologiaConstruccion;
-      unidad_construccion -- {1} UnidadConstruccion;
-    END unidadconstruccion_tipologia;
 
     ASSOCIATION usuarios_area_intervencion =
       area_intervencion -- {0..1} Area_Intervencion;
@@ -2413,4 +2713,4 @@ VERSION "2020-07-21"  =
 
   END Captura_Geo;
 
-END Captura_Geo_V0_2.
+END Captura_Geo_V0_4.

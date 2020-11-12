@@ -944,6 +944,8 @@ class LADMData(QObject):
     @staticmethod
     def get_layer_expressions_per_receiver_field_data_capture(names, receiver_type, referencing_field, referenced_field, fdc_parcel_layer, fdc_plot_layer, fdc_user_layer):
         """
+        LEGACY, could be removed!
+
         Based on parcels that are allocated to receivers, get expressions to get related objects in the DB.
         For surveyors we need the expressions to select features and export to offline projects, whereas
         for Coordinators we need the expressions to know what objects belong to a given basket.
@@ -1001,6 +1003,9 @@ class LADMData(QObject):
 
     @staticmethod
     def build_layer_expression(values, field='$id'):
+        """
+        LEGACY, could be removed!
+        """
         expression = ""
         if values:
             if len(values) == 1:
@@ -1011,25 +1016,26 @@ class LADMData(QObject):
         return expression
 
     @staticmethod
-    def set_basket_for_features_related_to_allocated_parcels_field_data_capture(db, receiver_type, referencing_field, referenced_field, fdc_parcel_layer, fdc_plot_layer, fdc_user_layer):
+    def set_basket_for_features_related_to_allocated_parcels_field_data_capture(db, receiver_type, referencing_field, referenced_field, layers):
         """
         Based on parcels that are allocated to receivers, get related objects in the DB and set the receiver's basket id
         to them. Note that both user and parcel layers already have the basket id correctly set.
 
         :param db: DB connector object
         :param receiver_type: Type of receiver
-        :param referencing_field: Parcel layer field referencing receivers
-        :param referenced_field: Receivers layer field referenced by parcels
-        :param fdc_parcel_layer: Parcel QgsVectorLayer
-        :param fdc_plot_layer: Plot QgsVectorLayer
-        :param fdc_user_layer: User QgsVectorLayer
+        :param referencing_field: Parcel layer field referencing receivers (in current implementation: t_basket)
+        :param referenced_field: Receivers layer field referenced by parcels (in current implementation: t_basket)
+        :param layers: Dict of layers to modify: {layer_name: QgsVectorLayer}
         :return: {receiver_id: {parcel_layer_name: "expr_parcels", plot_layer_name: "expr_plots", ...}
         """
         names = db.names
-        receiver_dict = LADMData.get_fdc_receivers_data(names, fdc_user_layer, referenced_field, receiver_type, False)
+        fdc_user_layer = layers[names.FDC_USER_T]
+        fdc_parcel_layer = layers[names.FDC_PARCEL_T]
+        fdc_plot_layer = layers[names.FDC_PLOT_T]
 
         # Get receiver_ids that actually have at least one parcel assigned (basically, an INNER JOIN)
         # For that: Go to parcel layer and get uniques, then filter that list comparing it with receiver ids from users
+        receiver_dict = LADMData.get_fdc_receivers_data(names, fdc_user_layer, referenced_field, receiver_type, False)
         receiver_idx = fdc_parcel_layer.fields().indexOf(referencing_field)
         receiver_ids = fdc_parcel_layer.uniqueValues(receiver_idx)
 
@@ -1040,50 +1046,71 @@ class LADMData(QObject):
         #   When the receiver id is a t_id, chances are parcels are not allocated, and then NULL may come in that list
         receiver_ids = [receiver_id for receiver_id in receiver_ids if receiver_id in receiver_dict and receiver_id is not NULL]
 
-        # Before setting receiver basket ids to objects related to allocated parcels,
-        # let's reset basket ids in tables, setting them to the default basket.
+        # IMPORTANT: Before setting receiver basket ids to objects related to allocated parcels,
+        #            let's reset t_basket in all tables, setting them to the default basket.
         default_basket_id, msg = LADMData.get_or_create_default_ili2db_basket(db)
         if default_basket_id is None:
             return False, msg
-
-        res = LADMData.change_attribute_value(fdc_plot_layer, referenced_field, default_basket_id)
-        if not res:
+        res_reset = LADMData.update_t_basket_in_layers(db, list(layers.values()), default_basket_id)
+        if not res_reset:
             return False, QCoreApplication.translate("LADMData",
-                                                     "Could not write default basket id ({}) to Plot layer.").format(default_basket_id)
+                                                     "Could not write default basket id ({}) in field data layers.").format(default_basket_id)
 
+        # Now that we've reset t_baskets in all tables, proceed writing each
+        # receiver's t_basket only to his associated DB objects.
         Logger().info(__name__, "Setting basket ids to db objects related to {} receivers...".format(len(receiver_ids)))
-        for receiver_id in receiver_ids:
+        for t_basket in receiver_ids:
             # Get parcels per receiver id --> {parcel_id: parcel_t_id}
             parcel_data = LADMData.get_parcels_for_receiver_field_data_capture(names.T_ID_F,  # We want parcel t_ids
-                                                                               receiver_id,
+                                                                               t_basket,
                                                                                referencing_field,
                                                                                fdc_parcel_layer)
             parcel_t_ids = list(parcel_data.values())
 
-            # Get plots from parcels and write the basket
-            plot_ids = LADMData.get_plots_related_to_parcels_field_data_capture(names,
-                                                                                fdc_parcel_layer,
-                                                                                fdc_plot_layer,
-                                                                                get_feature=False,  # get_fids
-                                                                                t_ids=parcel_t_ids)
-            if plot_ids:
-                res = LADMData.change_attribute_value(fdc_plot_layer,
-                                                      referenced_field,
-                                                      receiver_id,
-                                                      plot_ids)
-                if not res:
-                    return False, QCoreApplication.translate("LADMData",
-                                                             "Could not write basket id {} to Plot layer for receiver {}.".format(
-                                                                 receiver_id,
-                                                                 receiver_dict[receiver_id][0]))
+            # PLOTS
+            res_plots, len_plots, msg_plots = LADMData.set_basket_to_plots_related_to_parcels(names,
+                                                                                              t_basket,
+                                                                                              fdc_parcel_layer,
+                                                                                              fdc_plot_layer,
+                                                                                              parcel_t_ids)
+            if not res_plots:
+                return False, msg_plots + QCoreApplication.translate(" Receiver {}.").format(receiver_dict[t_basket][0])
 
-            Logger().info(__name__, "--> Basket exported for receiver {}: {} parcels, {} plots".format(receiver_id,
+            # BUILDINGS
+
+            # BUILDING_UNITS
+
+            # RIGHTS
+
+            # PARTIES
+
+            Logger().info(__name__, "--> Basket exported for receiver {}: {} parcels, {} plots".format(t_basket,
                                                                                                        len(parcel_t_ids),
-                                                                                                       len(plot_ids)))
+                                                                                                       len_plots))
 
             # TODO: Do the same with other tables (rights, parties, buildings, etc.)
 
         return True, "Success!"
+
+    @staticmethod
+    def set_basket_to_plots_related_to_parcels(names, t_basket, fdc_parcel_layer, fdc_plot_layer, parcel_t_ids):
+        # Get plots from parcels and write the basket
+        plot_ids = LADMData.get_plots_related_to_parcels_field_data_capture(names,
+                                                                            fdc_parcel_layer,
+                                                                            fdc_plot_layer,
+                                                                            get_feature=False,  # get_fids
+                                                                            t_ids=parcel_t_ids)
+        if plot_ids:
+            res = LADMData.change_attribute_value(fdc_plot_layer,
+                                                  names.T_BASKET_F,
+                                                  t_basket,
+                                                  plot_ids)
+            if not res:
+                return False, None, QCoreApplication.translate("LADMData",
+                                                               "Could not write basket id {} to Plot layer.".format(
+                                                                   t_basket))
+
+        return True, len(plot_ids), 'Success!'
 
     @staticmethod
     def change_attribute_value(layer, field_name, value, fids=list(), filter=''):
@@ -1323,7 +1350,6 @@ class LADMData(QObject):
             return None, msg
 
         return basket_feature, "Success!"
-
 
     @staticmethod
     def get_or_create_ili2db_dataset_t_id(db, dataset_name):
