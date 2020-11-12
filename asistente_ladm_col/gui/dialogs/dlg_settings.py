@@ -87,6 +87,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.dbs_supported = ConfigDBsSupported()
         self._open_dlg_import_schema = False  # After accepting, if non-valid DB is configured, we can go to import schema
 
+        self.online_models_radio_button.setEnabled(False)  # This option is disabled until we have online models back!
         self.online_models_radio_button.setChecked(True)
         self.online_models_radio_button.toggled.connect(self.model_provider_toggle)
         self.custom_model_directories_line_edit.setText("")
