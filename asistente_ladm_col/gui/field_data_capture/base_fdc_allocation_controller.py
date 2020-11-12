@@ -147,10 +147,11 @@ class BaseFDCAllocationController(QObject):
         return self._layers[self._db.names.FDC_PARTY_DOCUMENT_TYPE_D]
 
     def update_plot_selection(self, parcel_ids):
-        plot_ids = self._ladm_data.get_plots_related_to_parcels_field_data_capture(self._db.names,
-                                                                                   self.parcel_layer(),
-                                                                                   self.plot_layer(),
-                                                                                   fids=parcel_ids)
+        plot_ids = self._ladm_data.get_referenced_features(self._db.names,
+                                                           self.parcel_layer(),
+                                                           self.plot_layer(),
+                                                           self._db.names.FDC_PLOT_T_PARCEL_F,
+                                                           fids=parcel_ids)
         self.plot_layer().selectByIds(plot_ids)
 
     def get_parcel_numbers_from_selected_plots(self):

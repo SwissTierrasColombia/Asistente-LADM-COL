@@ -661,6 +661,30 @@ class LADMData(QObject):
         return [feature[t_id_name] for feature in layer.getFeatures(request)]
 
     @staticmethod
+    def get_referenced_features(names, referenced_layer, referencing_layer, referencing_field, get_feature=False, fids=list(), t_ids=list()):
+        """
+        :param names: Table and field names from the DB
+        :param referenced_layer: referenced QgsVectorLayer
+        :param referencing_layer: referencing QgsVectorLayer
+        :param referencing_field: referencing field name
+        :param get_feature: Whether to get whole features or just fids
+        :param fids: list of parcel fids.
+        :param t_ids: list of parcel t_ids. If present, they'll be used, no matter that fids is also passed.
+        :return: list of plot fids related to the given parcel fids
+        """
+        if not t_ids:
+            t_ids = LADMData.get_t_ids_from_fids(referenced_layer, names.T_ID_F, fids)
+
+        request = QgsFeatureRequest(QgsExpression("{} in ({})".format(referencing_field, ",".join([str(t_id) for t_id in t_ids]))))
+        request.setFlags(QgsFeatureRequest.NoGeometry)
+        request.setNoAttributes()
+
+        if get_feature:
+            return [feature for feature in referencing_layer.getFeatures(request)]
+
+        return [feature.id() for feature in referencing_layer.getFeatures(request)]  # Just fids
+
+    @staticmethod
     def get_fids_from_key_values(layer, attribute_name, attribute_values):
         request = QgsFeatureRequest(QgsExpression("{} in ({})".format(attribute_name, ",".join(str(value) for value in attribute_values))))
         request.setFlags(QgsFeatureRequest.NoGeometry)
@@ -855,29 +879,6 @@ class LADMData(QObject):
         return {feature.id(): (feature[names.FDC_PARCEL_T_PARCEL_NUMBER_F], feature[get_field_name]) for feature in fdc_parcel_layer.getFeatures(request)}
 
     @staticmethod
-    def get_plots_related_to_parcels_field_data_capture(names, fdc_parcel_layer, fdc_plot_layer, get_feature=False, fids=list(), t_ids=list()):
-        """
-        :param names: Table and field names from the DB
-        :param fdc_parcel_layer: parcel layer from the Field Data Capture model
-        :param fdc_plot_layer: plot layer from the Field Data Capture model
-        :param get_feature: Whether to get whole features or just fids
-        :param fids: list of parcel fids.
-        :param t_ids: list of parcel t_ids. If present, they'll be used, no matter that fids is also passed.
-        :return: list of plot fids related to the given parcel fids
-        """
-        if not t_ids:
-            t_ids = LADMData.get_t_ids_from_fids(fdc_parcel_layer, names.T_ID_F, fids)
-
-        request = QgsFeatureRequest(QgsExpression("{} in ({})".format(names.FDC_PLOT_T_PARCEL_F, ",".join([str(t_id) for t_id in t_ids]))))
-        request.setFlags(QgsFeatureRequest.NoGeometry)
-        request.setNoAttributes()
-
-        if get_feature:
-            return [feature for feature in fdc_plot_layer.getFeatures(request)]
-
-        return [feature.id() for feature in fdc_plot_layer.getFeatures(request)]  # Just fids
-
-    @staticmethod
     def get_parcels_related_to_plots_field_data_capture(names, fids, fdc_plot_layer, fdc_parcel_layer):
         """
         :param names: Table and field names from the DB
@@ -985,10 +986,11 @@ class LADMData(QObject):
             parcel_t_ids = list(parcel_data.values())
 
             # Get plots from parcels
-            plot_ids = LADMData.get_plots_related_to_parcels_field_data_capture(names,
-                                                                                fdc_parcel_layer,
-                                                                                fdc_plot_layer,
-                                                                                t_ids=parcel_t_ids)
+            plot_ids = LADMData.get_referenced_features(names,
+                                                        fdc_parcel_layer,
+                                                        fdc_plot_layer,
+                                                        names.FDC_PLOT_T_PARCEL_F,
+                                                        t_ids=parcel_t_ids)
 
             # Warning: Use QGIS ids if you're sure it'll get always the same records.
             # For some reason that does not happen with parcels, that's why we prefer t_ids.
@@ -1032,6 +1034,8 @@ class LADMData(QObject):
         fdc_user_layer = layers[names.FDC_USER_T]
         fdc_parcel_layer = layers[names.FDC_PARCEL_T]
         fdc_plot_layer = layers[names.FDC_PLOT_T]
+        fdc_building_layer = layers[names.FDC_BUILDING_T]
+        fdc_building_unit_layer = layers[names.FDC_BUILDING_UNIT_T]
 
         # Get receiver_ids that actually have at least one parcel assigned (basically, an INNER JOIN)
         # For that: Go to parcel layer and get uniques, then filter that list comparing it with receiver ids from users
@@ -1079,30 +1083,35 @@ class LADMData(QObject):
             if not res_plots:
                 return False, msg_plots + QCoreApplication.translate(" Receiver {}.").format(receiver_dict[t_basket][0])
 
-            # BUILDINGS
+            # BUILDINGS AND BUILDING_UNITS
+            res_buildings, len_buildings, msg_buildings = LADMData.set_basket_to_buildings_related_to_parcels(names,
+                                                                                                              t_basket,
+                                                                                                              fdc_parcel_layer,
+                                                                                                              fdc_building_layer,
+                                                                                                              fdc_building_unit_layer,
+                                                                                                              parcel_t_ids)
+            if not res_buildings:
+                return False, msg_buildings + QCoreApplication.translate(" Receiver {}.").format(receiver_dict[t_basket][0])
 
-            # BUILDING_UNITS
+            # RIGHTS AND PARTIES
 
-            # RIGHTS
-
-            # PARTIES
-
-            Logger().info(__name__, "--> Basket exported for receiver {}: {} parcels, {} plots".format(t_basket,
-                                                                                                       len(parcel_t_ids),
-                                                                                                       len_plots))
-
-            # TODO: Do the same with other tables (rights, parties, buildings, etc.)
+            Logger().info(__name__,
+                          "--> Basket exported for receiver {}: {} parcels, {} plots, {} buildings.".format(t_basket,
+                                                                                                            len(parcel_t_ids),
+                                                                                                            len_plots,
+                                                                                                            len_buildings))
 
         return True, "Success!"
 
     @staticmethod
     def set_basket_to_plots_related_to_parcels(names, t_basket, fdc_parcel_layer, fdc_plot_layer, parcel_t_ids):
         # Get plots from parcels and write the basket
-        plot_ids = LADMData.get_plots_related_to_parcels_field_data_capture(names,
-                                                                            fdc_parcel_layer,
-                                                                            fdc_plot_layer,
-                                                                            get_feature=False,  # get_fids
-                                                                            t_ids=parcel_t_ids)
+        plot_ids = LADMData.get_referenced_features(names,
+                                                    fdc_parcel_layer,
+                                                    fdc_plot_layer,
+                                                    names.FDC_PLOT_T_PARCEL_F,
+                                                    get_feature=False,  # get_fids
+                                                    t_ids=parcel_t_ids)
         if plot_ids:
             res = LADMData.change_attribute_value(fdc_plot_layer,
                                                   names.T_BASKET_F,
@@ -1114,6 +1123,45 @@ class LADMData(QObject):
                                                                    t_basket))
 
         return True, len(plot_ids), 'Success!'
+
+    @staticmethod
+    def set_basket_to_buildings_related_to_parcels(names, t_basket, fdc_parcel_layer, fdc_building_layer, fdc_building_unit_layer, parcel_t_ids):
+        # Get buildings from parcels and write the basket
+        building_ids = LADMData.get_referenced_features(names,
+                                                        fdc_parcel_layer,
+                                                        fdc_building_layer,
+                                                        names.FDC_BUILDING_T_PARCEL_F,
+                                                        get_feature=False,  # get_fids
+                                                        t_ids=parcel_t_ids)
+        if building_ids:
+            res = LADMData.change_attribute_value(fdc_building_layer,
+                                                  names.T_BASKET_F,
+                                                  t_basket,
+                                                  building_ids)
+            if not res:
+                return False, None, QCoreApplication.translate("LADMData",
+                                                               "Could not write basket id {} to Building layer.".format(
+                                                                   t_basket))
+
+            # BUILDING UNITS
+            # Get building units from buildings and write the basket
+            building_unit_ids = LADMData.get_referenced_features(names,
+                                                                 fdc_building_layer,
+                                                                 fdc_building_unit_layer,
+                                                                 names.FDC_BUILDING_UNIT_T_BUILDING_F,
+                                                                 get_feature=False,  # get_fids
+                                                                 fids=building_ids)
+            if building_unit_ids:
+                res = LADMData.change_attribute_value(fdc_building_unit_layer,
+                                                      names.T_BASKET_F,
+                                                      t_basket,
+                                                      building_unit_ids)
+                if not res:
+                    return False, None, QCoreApplication.translate("LADMData",
+                                                                   "Could not write basket id {} to Building Unit layer.".format(
+                                                                       t_basket))
+
+        return True, len(building_ids), 'Success!'
 
     @staticmethod
     def change_attribute_value(layer, field_name, value, fids=list(), filter=''):

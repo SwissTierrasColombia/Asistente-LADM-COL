@@ -442,7 +442,9 @@ DB_MAPPING_CONFIG = {
         "Captura_Geo.Captura_Geo.Area_Intervencion": {QueryNames.VARIABLE_NAME: "FDC_OPERATION_AREA_T", QueryNames.FIELDS_DICT: {}},
         "Captura_Geo.Captura_Geo.CalificacionConvencional": {QueryNames.VARIABLE_NAME: "FDC_CONVENTIONAL_QUALIFICATION_T", QueryNames.FIELDS_DICT: {}},
         # Not there "Captura_Geo.Captura_Geo.CalificacionNoConvencional": {QueryNames.VARIABLE_NAME: "FDC_NON_CONVENTIONAL_QUALIFICATION_T", QueryNames.FIELDS_DICT: {}},
-        "Captura_Geo.Captura_Geo.Construccion": {QueryNames.VARIABLE_NAME: "FDC_BUILDING_T", QueryNames.FIELDS_DICT: {}},
+        "Captura_Geo.Captura_Geo.Construccion": {QueryNames.VARIABLE_NAME: "FDC_BUILDING_T", QueryNames.FIELDS_DICT: {
+            "Captura_Geo.Captura_Geo.predio_construccion.predio..Captura_Geo.Captura_Geo.Predio": "FDC_BUILDING_T_PARCEL_F"
+        }},
         "Captura_Geo.Captura_Geo.Construccion_historico": {QueryNames.VARIABLE_NAME: "FDC_LEGACY_BUILDING_T", QueryNames.FIELDS_DICT: {}},
         "Captura_Geo.Captura_Geo.ContactoVisita": {QueryNames.VARIABLE_NAME: "FDC_VISIT_CONTACT_T", QueryNames.FIELDS_DICT: {}},
         # Not there "Captura_Geo.Captura_Geo.DatosAdicionalesLevantamientoCatastral": {QueryNames.VARIABLE_NAME: "FDC_ADDITIONAL_DATA_SURVEY_T", QueryNames.FIELDS_DICT: {}},
@@ -492,7 +494,9 @@ DB_MAPPING_CONFIG = {
         "Captura_Geo.Captura_Geo.Terreno_historico": {QueryNames.VARIABLE_NAME: "FDC_LEGACY_PLOT_T", QueryNames.FIELDS_DICT: {
             "Captura_Geo.Captura_Geo.predio_terreno_historico.predio..Captura_Geo.Captura_Geo.Predio": "FDC_LEGACY_PLOT_T_PARCEL_F"
         }},
-        "Captura_Geo.Captura_Geo.UnidadConstruccion": {QueryNames.VARIABLE_NAME: "FDC_BUILDING_UNIT_T", QueryNames.FIELDS_DICT: {}},
+        "Captura_Geo.Captura_Geo.UnidadConstruccion": {QueryNames.VARIABLE_NAME: "FDC_BUILDING_UNIT_T", QueryNames.FIELDS_DICT: {
+            "Captura_Geo.Captura_Geo.construccion_unidad_construccion" : "FDC_BUILDING_UNIT_T_BUILDING_F"
+        }},
         "Captura_Geo.Captura_Geo.UnidadConstruccion_historico": {QueryNames.VARIABLE_NAME: "FDC_LEGACY_BUILDING_UNIT_T", QueryNames.FIELDS_DICT: {}},
         "Captura_Geo.D_AcuerdoTipo": {QueryNames.VARIABLE_NAME: "FDC_AGREEMENT_TYPE_D", QueryNames.FIELDS_DICT: {}},
         "Captura_Geo.D_AnexoTipo": {QueryNames.VARIABLE_NAME: "FDC_ANNEX_TYPE_D", QueryNames.FIELDS_DICT: {}},
