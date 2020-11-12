@@ -90,7 +90,7 @@ def make_save_file_selector(widget, title=QCoreApplication.translate("QgisModelB
                    extension=extension, extensions=extensions)
 
 
-def selectFolder(line_edit_widget, title, parent, folder_setting_key):
+def selectFolder(line_edit_widget, title, parent, folder_setting_key=None):
     folder = None
     if folder_setting_key:  # Get from settings
         from asistente_ladm_col.app_interface import AppInterface  # Here to avoid circular dependency
