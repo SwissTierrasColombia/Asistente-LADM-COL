@@ -1051,7 +1051,10 @@ class LADMData(QObject):
         default_basket_id, msg = LADMData.get_or_create_default_ili2db_basket(db)
         if default_basket_id is None:
             return False, msg
-        res_reset = LADMData.update_t_basket_in_layers(db, list(layers.values()), default_basket_id)
+
+        # Keep parcel and user tables untouched, because there we have the allocation info!
+        layers_to_reset = [v for k, v in layers.items() if k not in [names.FDC_PARCEL_T, names.FDC_USER_T]]
+        res_reset = LADMData.update_t_basket_in_layers(db, layers_to_reset, default_basket_id)
         if not res_reset:
             return False, QCoreApplication.translate("LADMData",
                                                      "Could not write default basket id ({}) in field data layers.").format(default_basket_id)
@@ -1117,6 +1120,9 @@ class LADMData(QObject):
         """
         Change attribute values for a vector layer.
         WARNING: If you don't pass fids nor filter, this method writes the value to ALL layer features!!!
+
+        ANOTHER WARNING: If the field idx is -1, this function runs silently. That is, it does not change the attr
+                         because it is not there, but it still returns True (that's how changeAttributeValues runs).
 
         :param layer: QgsVectorLayer to modify
         :param field_name: Name of the field to be modified
