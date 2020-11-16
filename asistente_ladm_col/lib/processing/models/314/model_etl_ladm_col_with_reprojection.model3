@@ -90,7 +90,7 @@
                 <srsid>9377</srsid>
                 <srid>9377</srid>
                 <authid>EPSG:9377</authid>
-                <description>MAGNA-SIRGAS / CTM12</description>
+                <description>MAGNA-SIRGAS / Origen-Nacional</description>
                 <projectionacronym>tmerc</projectionacronym>
                 <ellipsoidacronym>EPSG:7019</ellipsoidacronym>
                 <geographicflag>false</geographicflag>
@@ -156,6 +156,7 @@
       <Option name="default" type="invalid"/>
       <Option name="description" type="QString" value="INPUT"/>
       <Option name="flags" type="int" value="0"/>
+      <Option name="help" type="QString" value=""/>
       <Option name="metadata"/>
       <Option name="name" type="QString" value="INPUT"/>
       <Option name="parameter_type" type="QString" value="vector"/>
@@ -164,6 +165,7 @@
       <Option name="default" type="bool" value="false"/>
       <Option name="description" type="QString" value="Verbose logging"/>
       <Option name="flags" type="int" value="12"/>
+      <Option name="help" type="QString" value=""/>
       <Option name="metadata"/>
       <Option name="name" type="QString" value="VERBOSE_LOG"/>
       <Option name="parameter_type" type="QString" value="boolean"/>
@@ -172,10 +174,11 @@
       <Option name="default" type="invalid"/>
       <Option name="description" type="QString" value="mapping"/>
       <Option name="flags" type="int" value="0"/>
+      <Option name="help" type="QString" value=""/>
       <Option name="metadata"/>
       <Option name="name" type="QString" value="fieldsmapper"/>
       <Option name="parameter_type" type="QString" value="fields_mapping"/>
-      <Option name="parent_layer" type="QString" value=""/>
+      <Option name="parent_layer" type="QString" value="INPUT"/>
     </Option>
     <Option name="output" type="Map">
       <Option name="data_types" type="List">
@@ -184,6 +187,7 @@
       <Option name="default" type="invalid"/>
       <Option name="description" type="QString" value="output"/>
       <Option name="flags" type="int" value="0"/>
+      <Option name="help" type="QString" value=""/>
       <Option name="metadata"/>
       <Option name="name" type="QString" value="output"/>
       <Option name="parameter_type" type="QString" value="vector"/>
