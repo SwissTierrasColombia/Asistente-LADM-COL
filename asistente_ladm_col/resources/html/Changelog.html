@@ -4,15 +4,13 @@
     <meta charset="UTF-8">
 </head>
 <body>
-<p>Cambios en la version <b>3.1.1</b></p>
+<p>Cambios en la version <b>3.1.2</b></p>
 <ul>
-    <li> Actualizaciones en módulo de reportes. Soporte de proyección Origen Nacional. Soporte de multipolígonos.</li>
-    <li> Actualizaciones en el módulo ETLs de insumos. Mejoras de usabilidad.</li>
-    <li> Otros ajustes:
+    <li> Ajustes:
         <ul>
-            <li> Soporte para conexión por parte de digitalizadores que no poseen permisos de creación de objetos en un esquema de base de datos. Caso de uso: ambientes distribuidos donde un DBA crea la estructura y asigna usuarios de base de datos a los digitalizadores.</li>
-            <li> Evitar actualizar automáticamente algunos campos cuando se edita un registro (ej. t_ili_tid).</li>
-            <li> Soporte de nombres de capas y campos en algoritmo 'Refactor Fields' (para QGIS 3.14 en adelante).</li>
+            <li> Soporte de nombres de capas y campos en algoritmo 'Refactor Fields' con proyección (para QGIS 3.14 en adelante).</li>
+            <li> Cuando se crea un predio, se agrega la capa Derecho para asegurarnos que tendremos sus relaciones bien configuradas de ahí en adelante.</li>
+            <li> Se deshabilita la opción de usar modelos de internet, hasta que los modelos estén publicados en repositorio público de INTERLIS.</li>
         </ul>
     </li>
 </ul>
