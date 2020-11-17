@@ -52,7 +52,7 @@ class LADMNames(metaclass=Singleton):
     PARTY_PACKAGE = "Interesados"
     SOURCE_PACKAGE = "Fuentes"
 
-    RESTRICTION_TYPE_D_RIGHT_OF_WAY_ILICODE_VALUE = "Servidumbre"
+    RESTRICTION_TYPE_D_RIGHT_OF_WAY_ILICODE_VALUE = "Servidumbre.Transito"
 
     """
     LADM VARIABLES
