@@ -22,11 +22,15 @@ from qgis.PyQt.QtCore import (QObject,
 from qgis.core import QgsProject
 
 from asistente_ladm_col.app_interface import AppInterface
+from asistente_ladm_col.config.general_config import (QGIS_MODEL_BAKER_PLUGIN_NAME,
+                                                      QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
+                                                      QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION)
 from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.config.translation_strings import (TranslatableConfigStrings,
                                                            ERROR_LAYER_GROUP)
 from asistente_ladm_col.config.query_names import QueryNames
+from asistente_ladm_col.utils.utils import is_plugin_version_valid
 
 
 class QgisModelBakerUtils(QObject):
@@ -38,18 +42,29 @@ class QgisModelBakerUtils(QObject):
         self._dbs_supported = ConfigDBsSupported()
         self.translatable_config_strings = TranslatableConfigStrings()
 
+    @staticmethod
+    def mb_version_valid():
+        return is_plugin_version_valid(QGIS_MODEL_BAKER_PLUGIN_NAME,
+                                       QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
+                                       QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION)
+
+    def log_invalid_version(self):
+        self.logger.critical(__name__,
+                             QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                        "The QGIS Model Baker plugin v{} is a prerequisite, install it before using LADM-COL Assistant.").format(
+                                 QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION))
+
     def get_generator(self, db):
-        if 'QgisModelBaker' in qgis.utils.plugins:
+        if QgisModelBakerUtils.mb_version_valid():
             tool = self._dbs_supported.get_db_factory(db.engine).get_model_baker_db_ili_mode()
 
-            QgisModelBaker = qgis.utils.plugins["QgisModelBaker"]
-            generator = QgisModelBaker.get_generator()(tool, db.uri, "smart2", db.schema, pg_estimated_metadata=False)
+            qgis_model_baker = qgis.utils.plugins["QgisModelBaker"]
+            generator = qgis_model_baker.get_generator()(tool, db.uri, "smart2", db.schema, pg_estimated_metadata=False)
             tables_to_ignore = LayerConfig.get_tables_to_ignore(db.names, AppInterface().core.get_active_models_per_db(db))
             generator.set_additional_ignored_layers(tables_to_ignore)
             return generator
         else:
-            self.logger.critical(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                "The QGIS Model Baker plugin is a prerequisite, install it before using LADM-COL Assistant."))
+            self.log_invalid_version()
             return None
 
     def get_model_baker_db_connection(self, db):
@@ -71,16 +86,15 @@ class QgisModelBakerUtils(QObject):
         """
         translated_strings = self.translatable_config_strings.get_translatable_config_strings()
 
-        if 'QgisModelBaker' in qgis.utils.plugins:
-            QgisModelBaker = qgis.utils.plugins["QgisModelBaker"]
+        if QgisModelBakerUtils.mb_version_valid():
+            qgis_model_baker = qgis.utils.plugins["QgisModelBaker"]
             generator = self.get_generator(db)
             layers = generator.layers(layer_list)
             relations, bags_of_enum = generator.relations(layers, layer_list)
             legend = generator.legend(layers, ignore_node_names=[translated_strings[ERROR_LAYER_GROUP]])
-            QgisModelBaker.create_project(layers, relations, bags_of_enum, legend, auto_transaction=False)
+            qgis_model_baker.create_project(layers, relations, bags_of_enum, legend, auto_transaction=False)
         else:
-            self.logger.critical(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                "The QGIS Model Baker plugin is a prerequisite, install it before using LADM-COL Assistant."))
+            self.log_invalid_version()
 
     def get_required_layers_without_load(self, layer_list, db):
         """
@@ -91,7 +105,7 @@ class QgisModelBakerUtils(QObject):
         :return: list of QgsVectorLayers registered in the project
         """
         layers = list()
-        if 'QgisModelBaker' in qgis.utils.plugins:
+        if QgisModelBakerUtils.mb_version_valid():
             tool = self._dbs_supported.get_db_factory(db.engine).get_model_baker_db_ili_mode()
             generator = self.get_generator(db)
             model_baker_layers = generator.layers(layer_list)
@@ -101,8 +115,7 @@ class QgisModelBakerUtils(QObject):
                 QgsProject.instance().addMapLayer(layer, False)  # Do not load it to canvas
                 layers.append(layer)
         else:
-            self.logger.critical(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                "The QGIS Model Baker plugin is a prerequisite, install it before using LADM-COL Assistant."))
+            self.log_invalid_version()
 
         return layers
 
@@ -112,21 +125,21 @@ class QgisModelBakerUtils(QObject):
         of all relations and bags of enums in the DB and cache it
         in the Asistente LADM-COL.
         """
-        if 'QgisModelBaker' in qgis.utils.plugins:
+        if QgisModelBakerUtils.mb_version_valid():
             generator = self.get_generator(db)
 
             layers = generator.get_tables_info_without_ignored_tables()
             relations = [relation for relation in generator.get_relations_info()]
             self.logger.debug(__name__, "Relationships before filter: {}".format(len(relations)))
-            self.filter_relations(relations)
+            QgisModelBakerUtils.filter_relations(relations)
             self.logger.debug(__name__, "Relationships after filter: {}".format(len(relations)))
             return (layers, relations, {})
         else:
-            self.logger.critical(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                "The QGIS Model Baker plugin is a prerequisite, install it before using LADM-COL Assistant."))
+            self.log_invalid_version()
             return (list(), list(), dict())
 
-    def filter_relations(self, relations):
+    @staticmethod
+    def filter_relations(relations):
         """
         Modifies the input list of relations, removing elements that meet a condition.
 
@@ -142,22 +155,21 @@ class QgisModelBakerUtils(QObject):
             relations.remove(idx)
 
     def get_tables_info_without_ignored_tables(self, db):
-        if 'QgisModelBaker' in qgis.utils.plugins:
+        if QgisModelBakerUtils.mb_version_valid():
             generator = self.get_generator(db)
             return generator.get_tables_info_without_ignored_tables()
         else:
-            self.logger.critical(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                "The QGIS Model Baker plugin is a prerequisite, install it before using LADM-COL Assistant."))
+            self.log_invalid_version()
 
     def get_first_index_for_layer_type(self, layer_type, group=QgsProject.instance().layerTreeRoot()):
-        if 'QgisModelBaker' in qgis.utils.plugins:
+        if QgisModelBakerUtils.mb_version_valid():
             import QgisModelBaker
             return QgisModelBaker.utils.qgis_utils.get_first_index_for_layer_type(layer_type, group)
         return None
 
     @staticmethod
     def get_suggested_index_for_layer(layer, group):
-        if 'QgisModelBaker' in qgis.utils.plugins:
+        if QgisModelBakerUtils.mb_version_valid():
             import QgisModelBaker
             return QgisModelBaker.utils.qgis_utils.get_suggested_index_for_layer(layer, group)
         return None
