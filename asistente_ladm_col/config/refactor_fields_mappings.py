@@ -1,4 +1,5 @@
 from qgis.PyQt.QtCore import QSettings
+from qgis.core import QgsFieldConstraints
 
 from asistente_ladm_col.config.general_config import DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE
 from asistente_ladm_col.config.ladm_names import LADMNames
@@ -19,101 +20,101 @@ class RefactorFieldsMappings:
         if layer_name == names.LC_BOUNDARY_POINT_T:
             mapping = [
                 {'expression': '{}'.format(names.T_ILI_TID_F), 'length': -1, 'name': '{}'.format(names.T_ILI_TID_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.LC_BOUNDARY_POINT_T_ID_F), 'length': 255, 'name': '{}'.format(names.LC_BOUNDARY_POINT_T_ID_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.LC_BOUNDARY_POINT_T_POINT_TYPE_F), 'length': -1, 'name': '{}'.format(names.LC_BOUNDARY_POINT_T_POINT_TYPE_F), 'precision': 0, 'type': 4},
-                {'expression': '"{}"'.format(names.LC_BOUNDARY_POINT_T_AGREEMENT_F), 'length': -1, 'name': '{}'.format(names.LC_BOUNDARY_POINT_T_AGREEMENT_F), 'precision': 0, 'type': 4},
+                {'expression': '"{}"'.format(names.LC_BOUNDARY_POINT_T_ID_F), 'length': 255, 'name': '{}'.format(names.LC_BOUNDARY_POINT_T_ID_F), 'precision': -1, 'type': 10, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.LC_BOUNDARY_POINT_T_POINT_TYPE_F), 'length': -1, 'name': '{}'.format(names.LC_BOUNDARY_POINT_T_POINT_TYPE_F), 'precision': 0, 'type': 4, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.LC_BOUNDARY_POINT_T_AGREEMENT_F), 'length': -1, 'name': '{}'.format(names.LC_BOUNDARY_POINT_T_AGREEMENT_F), 'precision': 0, 'type': 4, 'constraints': QgsFieldConstraints.ConstraintNotNull},
                 {'expression': '"{}"'.format(names.LC_BOUNDARY_POINT_T_PHOTO_IDENTIFICATION_F), 'length': -1, 'name': '{}'.format(names.LC_BOUNDARY_POINT_T_PHOTO_IDENTIFICATION_F), 'precision': 0, 'type': 4},
-                {'expression': '"{}"'.format(names.LC_BOUNDARY_POINT_T_HORIZONTAL_ACCURACY_F), 'length': 5, 'name': '{}'.format(names.LC_BOUNDARY_POINT_T_HORIZONTAL_ACCURACY_F), 'precision': 3, 'type': 6},
+                {'expression': '"{}"'.format(names.LC_BOUNDARY_POINT_T_HORIZONTAL_ACCURACY_F), 'length': 5, 'name': '{}'.format(names.LC_BOUNDARY_POINT_T_HORIZONTAL_ACCURACY_F), 'precision': 3, 'type': 6, 'constraints': QgsFieldConstraints.ConstraintNotNull},
                 {'expression': '"{}"'.format(names.LC_BOUNDARY_POINT_T_VERTICAL_ACCURACY_F), 'length': 5, 'name': '{}'.format(names.LC_BOUNDARY_POINT_T_VERTICAL_ACCURACY_F), 'precision': 3, 'type': 6},
                 {'expression': '"{}"'.format(names.COL_POINT_T_INTERPOLATION_POSITION_F), 'length': -1, 'name': '{}'.format(names.COL_POINT_T_INTERPOLATION_POSITION_F), 'precision': 0, 'type': 4},
-                {'expression': '"{}"'.format(names.COL_POINT_T_PRODUCTION_METHOD_F), 'length': -1, 'name': '{}'.format(names.COL_POINT_T_PRODUCTION_METHOD_F), 'precision': 0, 'type': 4},
-                {'expression': '"{}"'.format(names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
+                {'expression': '"{}"'.format(names.COL_POINT_T_PRODUCTION_METHOD_F), 'length': -1, 'name': '{}'.format(names.COL_POINT_T_PRODUCTION_METHOD_F), 'precision': 0, 'type': 4, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16, 'constraints': QgsFieldConstraints.ConstraintNotNull},
                 {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16}
             ]
         elif layer_name == names.LC_SURVEY_POINT_T:
             mapping = [
                 {'expression': '{}'.format(names.T_ILI_TID_F), 'length': -1, 'name': '{}'.format(names.T_ILI_TID_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.LC_SURVEY_POINT_T_ID_F), 'length': 255, 'name': '{}'.format(names.LC_SURVEY_POINT_T_ID_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.LC_SURVEY_POINT_T_POINT_TYPE_F), 'length': -1, 'name': '{}'.format(names.LC_SURVEY_POINT_T_POINT_TYPE_F), 'precision': 0, 'type': 4},
-                {'expression': '"{}"'.format(names.LC_SURVEY_POINT_T_SURVEY_POINT_TYPE_F), 'length': -1, 'name': '{}'.format(names.LC_SURVEY_POINT_T_SURVEY_POINT_TYPE_F), 'precision': 0, 'type': 4},
+                {'expression': '"{}"'.format(names.LC_SURVEY_POINT_T_ID_F), 'length': 255, 'name': '{}'.format(names.LC_SURVEY_POINT_T_ID_F), 'precision': -1, 'type': 10, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.LC_SURVEY_POINT_T_POINT_TYPE_F), 'length': -1, 'name': '{}'.format(names.LC_SURVEY_POINT_T_POINT_TYPE_F), 'precision': 0, 'type': 4, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.LC_SURVEY_POINT_T_SURVEY_POINT_TYPE_F), 'length': -1, 'name': '{}'.format(names.LC_SURVEY_POINT_T_SURVEY_POINT_TYPE_F), 'precision': 0, 'type': 4, 'constraints': QgsFieldConstraints.ConstraintNotNull},
                 {'expression': '"{}"'.format(names.LC_SURVEY_POINT_T_PHOTO_IDENTIFICATION_F), 'length': -1, 'name': '{}'.format(names.LC_SURVEY_POINT_T_PHOTO_IDENTIFICATION_F), 'precision': 0, 'type': 4},
-                {'expression': '"{}"'.format(names.LC_SURVEY_POINT_T_HORIZONTAL_ACCURACY_F), 'length': 5, 'name': '{}'.format(names.LC_SURVEY_POINT_T_HORIZONTAL_ACCURACY_F), 'precision': 3, 'type': 6},
+                {'expression': '"{}"'.format(names.LC_SURVEY_POINT_T_HORIZONTAL_ACCURACY_F), 'length': 5, 'name': '{}'.format(names.LC_SURVEY_POINT_T_HORIZONTAL_ACCURACY_F), 'precision': 3, 'type': 6, 'constraints': QgsFieldConstraints.ConstraintNotNull},
                 {'expression': '"{}"'.format(names.LC_SURVEY_POINT_T_VERTICAL_ACCURACY_F), 'length': 5, 'name': '{}'.format(names.LC_SURVEY_POINT_T_VERTICAL_ACCURACY_F), 'precision': 3, 'type': 6},
                 {'expression': '"{}"'.format(names.COL_POINT_T_INTERPOLATION_POSITION_F), 'length': -1, 'name': '{}'.format(names.COL_POINT_T_INTERPOLATION_POSITION_F), 'precision': 0, 'type': 4},
-                {'expression': '"{}"'.format(names.COL_POINT_T_PRODUCTION_METHOD_F), 'length': -1, 'name': '{}'.format(names.COL_POINT_T_PRODUCTION_METHOD_F), 'precision': 0, 'type': 4},
-                {'expression': '"{}"'.format(names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
+                {'expression': '"{}"'.format(names.COL_POINT_T_PRODUCTION_METHOD_F), 'length': -1, 'name': '{}'.format(names.COL_POINT_T_PRODUCTION_METHOD_F), 'precision': 0, 'type': 4, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16, 'constraints': QgsFieldConstraints.ConstraintNotNull},
                 {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16}
             ]
         elif layer_name == names.LC_CONTROL_POINT_T:
             mapping = [
                 {'expression': '{}'.format(names.T_ILI_TID_F), 'length': -1, 'name': '{}'.format(names.T_ILI_TID_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.LC_CONTROL_POINT_T_ID_F), 'length': 255, 'name': '{}'.format(names.LC_CONTROL_POINT_T_ID_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.LC_CONTROL_POINT_T_POINT_TYPE_F), 'length': -1, 'name': '{}'.format(names.LC_CONTROL_POINT_T_POINT_TYPE_F), 'precision': 0, 'type': 4},
+                {'expression': '"{}"'.format(names.LC_CONTROL_POINT_T_ID_F), 'length': 255, 'name': '{}'.format(names.LC_CONTROL_POINT_T_ID_F), 'precision': -1, 'type': 10, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.LC_CONTROL_POINT_T_POINT_TYPE_F), 'length': -1, 'name': '{}'.format(names.LC_CONTROL_POINT_T_POINT_TYPE_F), 'precision': 0, 'type': 4, 'constraints': QgsFieldConstraints.ConstraintNotNull},
                 {'expression': '"{}"'.format(names.LC_CONTROL_POINT_T_CONTROL_POINT_TYPE_F), 'length': -1, 'name': '{}'.format(names.LC_CONTROL_POINT_T_CONTROL_POINT_TYPE_F), 'precision': 0, 'type': 4},
-                {'expression': '"{}"'.format(names.LC_CONTROL_POINT_T_HORIZONTAL_ACCURACY_F), 'length': 5, 'name': '{}'.format(names.LC_CONTROL_POINT_T_HORIZONTAL_ACCURACY_F), 'precision': 3, 'type': 6},
-                {'expression': '"{}"'.format(names.LC_CONTROL_POINT_T_VERTICAL_ACCURACY_F), 'length': 5, 'name': '{}'.format(names.LC_CONTROL_POINT_T_VERTICAL_ACCURACY_F), 'precision': 3, 'type': 6},
+                {'expression': '"{}"'.format(names.LC_CONTROL_POINT_T_HORIZONTAL_ACCURACY_F), 'length': 5, 'name': '{}'.format(names.LC_CONTROL_POINT_T_HORIZONTAL_ACCURACY_F), 'precision': 3, 'type': 6, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.LC_CONTROL_POINT_T_VERTICAL_ACCURACY_F), 'length': 5, 'name': '{}'.format(names.LC_CONTROL_POINT_T_VERTICAL_ACCURACY_F), 'precision': 3, 'type': 6, 'constraints': QgsFieldConstraints.ConstraintNotNull},
                 {'expression': '"{}"'.format(names.COL_POINT_T_INTERPOLATION_POSITION_F), 'length': -1, 'name': '{}'.format(names.COL_POINT_T_INTERPOLATION_POSITION_F), 'precision': 0, 'type': 4},
-                {'expression': '"{}"'.format(names.COL_POINT_T_PRODUCTION_METHOD_F), 'length': -1, 'name': '{}'.format(names.COL_POINT_T_PRODUCTION_METHOD_F), 'precision': 0, 'type': 4},
-                {'expression': '"{}"'.format(names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
+                {'expression': '"{}"'.format(names.COL_POINT_T_PRODUCTION_METHOD_F), 'length': -1, 'name': '{}'.format(names.COL_POINT_T_PRODUCTION_METHOD_F), 'precision': 0, 'type': 4, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16, 'constraints': QgsFieldConstraints.ConstraintNotNull},
                 {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16}
             ]
         elif layer_name == names.LC_BOUNDARY_T:
             mapping = [
                 {'expression': '{}'.format(names.T_ILI_TID_F), 'length': -1, 'name': '{}'.format(names.T_ILI_TID_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.LC_BOUNDARY_T_LENGTH_F), 'length': 6, 'name': '{}'.format(names.LC_BOUNDARY_T_LENGTH_F), 'precision': 1, 'type': 6},
+                {'expression': '"{}"'.format(names.LC_BOUNDARY_T_LENGTH_F), 'length': 6, 'name': '{}'.format(names.LC_BOUNDARY_T_LENGTH_F), 'precision': 1, 'type': 6, 'constraints': QgsFieldConstraints.ConstraintNotNull},
                 {'expression': '"{}"'.format(names.COL_BFS_T_TEXTUAL_LOCATION_F), 'length': 255, 'name': '{}'.format(names.COL_BFS_T_TEXTUAL_LOCATION_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
+                {'expression': '"{}"'.format(names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16, 'constraints': QgsFieldConstraints.ConstraintNotNull},
                 {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16}
             ]
         elif layer_name == names.LC_PLOT_T:
             mapping = [
                 {'expression': '{}'.format(names.T_ILI_TID_F), 'length': -1, 'name': '{}'.format(names.T_ILI_TID_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.LC_PLOT_T_PLOT_AREA_F), 'length': 15, 'name': '{}'.format(names.LC_PLOT_T_PLOT_AREA_F), 'precision': 1, 'type': 6},
+                {'expression': '"{}"'.format(names.LC_PLOT_T_PLOT_AREA_F), 'length': 15, 'name': '{}'.format(names.LC_PLOT_T_PLOT_AREA_F), 'precision': 1, 'type': 6, 'constraints': QgsFieldConstraints.ConstraintNotNull},
                 {'expression': '"{}"'.format(names.LC_PLOT_T_PLOT_VALUATION_F), 'length': 16, 'name': '{}'.format(names.LC_PLOT_T_PLOT_VALUATION_F), 'precision': 1, 'type': 6},
                 {'expression': '"{}"'.format(names.LC_PLOT_T_BLOCK_RURAL_DIVISION_CODE_F), 'length': 21, 'name': '{}'.format(names.LC_PLOT_T_BLOCK_RURAL_DIVISION_CODE_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(names.COL_SPATIAL_UNIT_T_DIMENSION_F), 'length': -1, 'name': '{}'.format(names.COL_SPATIAL_UNIT_T_DIMENSION_F), 'precision': 0, 'type': 4},
                 {'expression': '"{}"'.format(names.COL_SPATIAL_UNIT_T_LABEL_F), 'length': 255, 'name': '{}'.format(names.COL_SPATIAL_UNIT_T_LABEL_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(names.COL_SPATIAL_UNIT_T_SURFACE_RELATION_F), 'length': -1, 'name': '{}'.format(names.COL_SPATIAL_UNIT_T_SURFACE_RELATION_F), 'precision': 0, 'type': 4},
-                {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
-                {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
-                {'expression': '"{}"'.format(names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10}
+                {'expression': '"{}"'.format(names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16}
             ]
         elif layer_name == names.LC_PARCEL_T:
             mapping = [
                 {'expression': '{}'.format(names.T_ILI_TID_F), 'length': -1, 'name': '{}'.format(names.T_ILI_TID_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.LC_PARCEL_T_DEPARTMENT_F), 'length': 2, 'name': '{}'.format(names.LC_PARCEL_T_DEPARTMENT_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.LC_PARCEL_T_MUNICIPALITY_F), 'length': 3, 'name': '{}'.format(names.LC_PARCEL_T_MUNICIPALITY_F), 'precision': -1, 'type': 10},
+                {'expression': '"{}"'.format(names.LC_PARCEL_T_DEPARTMENT_F), 'length': 2, 'name': '{}'.format(names.LC_PARCEL_T_DEPARTMENT_F), 'precision': -1, 'type': 10, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.LC_PARCEL_T_MUNICIPALITY_F), 'length': 3, 'name': '{}'.format(names.LC_PARCEL_T_MUNICIPALITY_F), 'precision': -1, 'type': 10, 'constraints': QgsFieldConstraints.ConstraintNotNull},
                 {'expression': '"{}"'.format(names.LC_PARCEL_T_NUPRE_F), 'length': 11, 'name': '{}'.format(names.LC_PARCEL_T_NUPRE_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.LC_PARCEL_T_ID_OPERATION_F), 'length': 30, 'name': '{}'.format(names.LC_PARCEL_T_ID_OPERATION_F), 'precision': -1, 'type': 10},
+                {'expression': '"{}"'.format(names.LC_PARCEL_T_ID_OPERATION_F), 'length': 30, 'name': '{}'.format(names.LC_PARCEL_T_ID_OPERATION_F), 'precision': -1, 'type': 10, 'constraints': QgsFieldConstraints.ConstraintNotNull},
                 {'expression': '"{}"'.format(names.LC_PARCEL_T_ORIP_CODE_F), 'length': 3, 'name': '{}'.format(names.LC_PARCEL_T_ORIP_CODE_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(names.LC_PARCEL_T_FMI_F), 'length': 80, 'name': '{}'.format(names.LC_PARCEL_T_FMI_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.LC_PARCEL_T_HAS_FMI_F), 'length': -1, 'name': '{}'.format(names.LC_PARCEL_T_HAS_FMI_F), 'precision': -1, 'type': 1},
+                {'expression': '"{}"'.format(names.LC_PARCEL_T_HAS_FMI_F), 'length': -1, 'name': '{}'.format(names.LC_PARCEL_T_HAS_FMI_F), 'precision': -1, 'type': 1, 'constraints': QgsFieldConstraints.ConstraintNotNull},
                 {'expression': '"{}"'.format(names.LC_PARCEL_T_PARCEL_NUMBER_F), 'length': 30, 'name': '{}'.format(names.LC_PARCEL_T_PARCEL_NUMBER_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(names.LC_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F), 'length': 20, 'name': '{}'.format(names.LC_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(names.LC_PARCEL_T_VALUATION_F), 'length': 16, 'name': '{}'.format(names.LC_PARCEL_T_VALUATION_F), 'precision': 1, 'type': 6},
-                {'expression': '"{}"'.format(names.LC_PARCEL_T_PARCEL_TYPE_F), 'length': -1, 'name': '{}'.format(names.LC_PARCEL_T_PARCEL_TYPE_F), 'precision': 0, 'type': 4},
-                {'expression': '"{}"'.format(names.LC_PARCEL_T_TYPE_F), 'length': -1, 'name': '{}'.format(names.LC_PARCEL_T_TYPE_F), 'precision': 0, 'type': 4},
+                {'expression': '"{}"'.format(names.LC_PARCEL_T_PARCEL_TYPE_F), 'length': -1, 'name': '{}'.format(names.LC_PARCEL_T_PARCEL_TYPE_F), 'precision': 0, 'type': 4, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.LC_PARCEL_T_TYPE_F), 'length': -1, 'name': '{}'.format(names.LC_PARCEL_T_TYPE_F), 'precision': 0, 'type': 4, 'constraints': QgsFieldConstraints.ConstraintNotNull},
                 {'expression': '"{}"'.format(names.COL_BAUNIT_T_NAME_F), 'length': 255, 'name': '{}'.format(names.COL_BAUNIT_T_NAME_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
+                {'expression': '"{}"'.format(names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16, 'constraints': QgsFieldConstraints.ConstraintNotNull},
                 {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16}
             ]
         elif layer_name == names.LC_PARTY_T:
             mapping = [
                 {'expression': '{}'.format(names.T_ILI_TID_F), 'length': -1, 'name': '{}'.format(names.T_ILI_TID_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.LC_PARTY_T_TYPE_F), 'length': -1, 'name': '{}'.format(names.LC_PARTY_T_TYPE_F), 'precision': 0, 'type': 4},
-                {'expression': '"{}"'.format(names.LC_PARTY_T_DOCUMENT_TYPE_F), 'length': -1, 'name': '{}'.format(names.LC_PARTY_T_DOCUMENT_TYPE_F), 'precision': 0, 'type': 4},
-                {'expression': '"{}"'.format(names.LC_PARTY_T_DOCUMENT_ID_F), 'length': 50, 'name': '{}'.format(names.LC_PARTY_T_DOCUMENT_ID_F), 'precision': -1, 'type': 10},
+                {'expression': '"{}"'.format(names.LC_PARTY_T_TYPE_F), 'length': -1, 'name': '{}'.format(names.LC_PARTY_T_TYPE_F), 'precision': 0, 'type': 4, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.LC_PARTY_T_DOCUMENT_TYPE_F), 'length': -1, 'name': '{}'.format(names.LC_PARTY_T_DOCUMENT_TYPE_F), 'precision': 0, 'type': 4, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.LC_PARTY_T_DOCUMENT_ID_F), 'length': 50, 'name': '{}'.format(names.LC_PARTY_T_DOCUMENT_ID_F), 'precision': -1, 'type': 10, 'constraints': QgsFieldConstraints.ConstraintNotNull},
                 {'expression': '"{}"'.format(names.LC_PARTY_T_FIRST_NAME_1_F), 'length': 100, 'name': '{}'.format(names.LC_PARTY_T_FIRST_NAME_1_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(names.LC_PARTY_T_FIRST_NAME_2_F), 'length': 100, 'name': '{}'.format(names.LC_PARTY_T_FIRST_NAME_2_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(names.LC_PARTY_T_SURNAME_1_F), 'length': 100, 'name': '{}'.format(names.LC_PARTY_T_SURNAME_1_F), 'precision': -1, 'type': 10},
@@ -122,42 +123,42 @@ class RefactorFieldsMappings:
                 {'expression': '"{}"'.format(names.LC_PARTY_T_ETHNIC_GROUP_F), 'length': -1, 'name': '{}'.format(names.LC_PARTY_T_ETHNIC_GROUP_F), 'precision': 0, 'type': 4},
                 {'expression': '"{}"'.format(names.LC_PARTY_T_BUSINESS_NAME_F), 'length': 255, 'name': '{}'.format(names.LC_PARTY_T_BUSINESS_NAME_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(names.COL_PARTY_T_NAME_F), 'length': 255, 'name': '{}'.format(names.COL_PARTY_T_NAME_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
+                {'expression': '"{}"'.format(names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16, 'constraints': QgsFieldConstraints.ConstraintNotNull},
                 {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16}
             ]
         elif layer_name == names.LC_ADMINISTRATIVE_SOURCE_T:
             mapping = [
                 {'expression': '{}'.format(names.T_ILI_TID_F), 'length': -1, 'name': '{}'.format(names.T_ILI_TID_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.LC_ADMINISTRATIVE_SOURCE_T_TYPE_F), 'length': -1, 'name': '{}'.format(names.LC_ADMINISTRATIVE_SOURCE_T_TYPE_F), 'precision': 0, 'type': 4},
+                {'expression': '"{}"'.format(names.LC_ADMINISTRATIVE_SOURCE_T_TYPE_F), 'length': -1, 'name': '{}'.format(names.LC_ADMINISTRATIVE_SOURCE_T_TYPE_F), 'precision': 0, 'type': 4, 'constraints': QgsFieldConstraints.ConstraintNotNull},
                 {'expression': '"{}"'.format(names.LC_ADMINISTRATIVE_SOURCE_T_EMITTING_ENTITY_F), 'length': 255, 'name': '{}'.format(names.LC_ADMINISTRATIVE_SOURCE_T_EMITTING_ENTITY_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(names.COL_ADMINISTRATIVE_SOURCE_T_OBSERVATION_F), 'length': 255, 'name': '{}'.format(names.COL_ADMINISTRATIVE_SOURCE_T_OBSERVATION_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(names.COL_ADMINISTRATIVE_SOURCE_T_SOURCE_NUMBER_F), 'length': 150, 'name': '{}'.format(names.COL_ADMINISTRATIVE_SOURCE_T_SOURCE_NUMBER_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.COL_SOURCE_T_AVAILABILITY_STATUS_F), 'length': -1, 'name': '{}'.format(names.COL_SOURCE_T_AVAILABILITY_STATUS_F), 'precision': 0, 'type': 4},
+                {'expression': '"{}"'.format(names.COL_SOURCE_T_AVAILABILITY_STATUS_F), 'length': -1, 'name': '{}'.format(names.COL_SOURCE_T_AVAILABILITY_STATUS_F), 'precision': 0, 'type': 4, 'constraints': QgsFieldConstraints.ConstraintNotNull},
                 {'expression': '"{}"'.format(names.COL_SOURCE_T_MAIN_TYPE_F), 'length': -1, 'name': '{}'.format(names.COL_SOURCE_T_MAIN_TYPE_F), 'precision': 0, 'type': 4},
-                {'expression': '"{}"'.format(names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.COL_SOURCE_T_DATE_DOCUMENT_F), 'length': -1, 'name': '{}'.format(names.COL_SOURCE_T_DATE_DOCUMENT_F), 'precision': -1, 'type': 14}
+                {'expression': '"{}"'.format(names.COL_SOURCE_T_DATE_DOCUMENT_F), 'length': -1, 'name': '{}'.format(names.COL_SOURCE_T_DATE_DOCUMENT_F), 'precision': -1, 'type': 14},
+                {'expression': '"{}"'.format(names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10, 'constraints': QgsFieldConstraints.ConstraintNotNull}
             ]
         elif layer_name == names.LC_SPATIAL_SOURCE_T:
             mapping = [
                 {'expression': '{}'.format(names.T_ILI_TID_F), 'length': -1, 'name': '{}'.format(names.T_ILI_TID_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.COL_SOURCE_T_NAME_F), 'length': 255, 'name': '{}'.format(names.COL_SOURCE_T_NAME_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.COL_SPATIAL_SOURCE_T_TYPE_F), 'length': -1, 'name': '{}'.format(names.COL_SPATIAL_SOURCE_T_TYPE_F), 'precision': 0, 'type': 4},
-                {'expression': '"{}"'.format(names.COL_SOURCE_T_DESCRIPTION_F), 'length': -1, 'name': '{}'.format(names.COL_SOURCE_T_DESCRIPTION_F), 'precision': -1, 'type': 10},
+                {'expression': '"{}"'.format(names.COL_SOURCE_T_NAME_F), 'length': 255, 'name': '{}'.format(names.COL_SOURCE_T_NAME_F), 'precision': -1, 'type': 10, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.COL_SPATIAL_SOURCE_T_TYPE_F), 'length': -1, 'name': '{}'.format(names.COL_SPATIAL_SOURCE_T_TYPE_F), 'precision': 0, 'type': 4, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.COL_SOURCE_T_DESCRIPTION_F), 'length': -1, 'name': '{}'.format(names.COL_SOURCE_T_DESCRIPTION_F), 'precision': -1, 'type': 10, 'constraints': QgsFieldConstraints.ConstraintNotNull},
                 {'expression': '"{}"'.format(names.COL_SOURCE_T_METADATA_F), 'length': -1, 'name': '{}'.format(names.COL_SOURCE_T_METADATA_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.COL_SOURCE_T_AVAILABILITY_STATUS_F), 'length': -1, 'name': '{}'.format(names.COL_SOURCE_T_AVAILABILITY_STATUS_F), 'precision': 0, 'type': 4},
+                {'expression': '"{}"'.format(names.COL_SOURCE_T_AVAILABILITY_STATUS_F), 'length': -1, 'name': '{}'.format(names.COL_SOURCE_T_AVAILABILITY_STATUS_F), 'precision': 0, 'type': 4, 'constraints': QgsFieldConstraints.ConstraintNotNull},
                 {'expression': '"{}"'.format(names.COL_SOURCE_T_MAIN_TYPE_F), 'length': -1, 'name': '{}'.format(names.COL_SOURCE_T_MAIN_TYPE_F), 'precision': 0, 'type': 4},
-                {'expression': '"{}"'.format(names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.COL_SOURCE_T_DATE_DOCUMENT_F), 'length': -1, 'name': '{}'.format(names.COL_SOURCE_T_DATE_DOCUMENT_F), 'precision': -1, 'type': 14}
+                {'expression': '"{}"'.format(names.COL_SOURCE_T_DATE_DOCUMENT_F), 'length': -1, 'name': '{}'.format(names.COL_SOURCE_T_DATE_DOCUMENT_F), 'precision': -1, 'type': 14},
+                {'expression': '"{}"'.format(names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10, 'constraints': QgsFieldConstraints.ConstraintNotNull}
             ]
         elif layer_name == names.LC_BUILDING_T:
             mapping = [
                 {'expression': '{}'.format(names.T_ILI_TID_F), 'length': -1, 'name': '{}'.format(names.T_ILI_TID_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.LC_BUILDING_T_IDENTIFIER_F), 'length': 2, 'name': '{}'.format(names.LC_BUILDING_T_IDENTIFIER_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.LC_BUILDING_T_NUMBER_OF_FLOORS_F), 'length': -1, 'name': '{}'.format(names.LC_BUILDING_T_NUMBER_OF_FLOORS_F), 'precision': 0, 'type': 2},
+                {'expression': '"{}"'.format(names.LC_BUILDING_T_IDENTIFIER_F), 'length': 2, 'name': '{}'.format(names.LC_BUILDING_T_IDENTIFIER_F), 'precision': -1, 'type': 10, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.LC_BUILDING_T_NUMBER_OF_FLOORS_F), 'length': -1, 'name': '{}'.format(names.LC_BUILDING_T_NUMBER_OF_FLOORS_F), 'precision': 0, 'type': 2, 'constraints': QgsFieldConstraints.ConstraintNotNull},
                 {'expression': '"{}"'.format(names.LC_BUILDING_T_BUILDING_TYPE_F), 'length': -1, 'name': '{}'.format(names.LC_BUILDING_T_BUILDING_TYPE_F), 'precision': 0, 'type': 4},
                 {'expression': '"{}"'.format(names.LC_BUILDING_T_DOMAIN_TYPE_F), 'length': -1, 'name': '{}'.format(names.LC_BUILDING_T_DOMAIN_TYPE_F), 'precision': 0, 'type': 4},
                 {'expression': '"{}"'.format(names.LC_BUILDING_T_NUMBER_OF_MEZZANINE_F), 'length': -1, 'name': '{}'.format(names.LC_BUILDING_T_NUMBER_OF_MEZZANINE_F), 'precision': 0, 'type': 2},
@@ -165,26 +166,26 @@ class RefactorFieldsMappings:
                 {'expression': '"{}"'.format(names.LC_BUILDING_T_NUMBER_OF_LOOKOUT_BASEMENT_F), 'length': -1, 'name': '{}'.format(names.LC_BUILDING_T_NUMBER_OF_LOOKOUT_BASEMENT_F), 'precision': 0, 'type': 2},
                 {'expression': '"{}"'.format(names.LC_BUILDING_T_YEAR_OF_BUILD_F), 'length': -1, 'name': '{}'.format(names.LC_BUILDING_T_YEAR_OF_BUILD_F), 'precision': 0, 'type': 2},
                 {'expression': '"{}"'.format(names.LC_BUILDING_T_BUILDING_VALUATION_F), 'length': 16, 'name': '{}'.format(names.LC_BUILDING_T_BUILDING_VALUATION_F), 'precision': 1, 'type': 6},
-                {'expression': '"{}"'.format(names.LC_BUILDING_T_BUILDING_AREA_F), 'length': 15, 'name': '{}'.format(names.LC_BUILDING_T_BUILDING_AREA_F), 'precision': 1, 'type': 6},
+                {'expression': '"{}"'.format(names.LC_BUILDING_T_BUILDING_AREA_F), 'length': 15, 'name': '{}'.format(names.LC_BUILDING_T_BUILDING_AREA_F), 'precision': 1, 'type': 6, 'constraints': QgsFieldConstraints.ConstraintNotNull},
                 {'expression': '"{}"'.format(names.LC_BUILDING_T_HEIGHT_F), 'length': -1, 'name': '{}'.format(names.LC_BUILDING_T_HEIGHT_F), 'precision': 0, 'type': 2},
                 {'expression': '"{}"'.format(names.LC_BUILDING_T_OBSERVATIONS_F), 'length': -1, 'name': '{}'.format(names.LC_BUILDING_T_OBSERVATIONS_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(names.COL_SPATIAL_UNIT_T_DIMENSION_F), 'length': -1, 'name': '{}'.format(names.COL_SPATIAL_UNIT_T_DIMENSION_F), 'precision': 0, 'type': 4},
                 {'expression': '"{}"'.format(names.COL_SPATIAL_UNIT_T_LABEL_F), 'length': 255, 'name': '{}'.format(names.COL_SPATIAL_UNIT_T_LABEL_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(names.COL_SPATIAL_UNIT_T_SURFACE_RELATION_F), 'length': -1, 'name': '{}'.format(names.COL_SPATIAL_UNIT_T_SURFACE_RELATION_F), 'precision': 0, 'type': 4},
-                {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
-                {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
-                {'expression': '"{}"'.format(names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10}
+                {'expression': '"{}"'.format(names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16}
             ]
         elif layer_name == names.LC_BUILDING_UNIT_T:
             mapping = [
                 {'expression': '{}'.format(names.T_ILI_TID_F), 'length': -1, 'name': '{}'.format(names.T_ILI_TID_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.LC_BUILDING_UNIT_T_IDENTIFICATION_F), 'length': 3, 'name': '{}'.format(names.LC_BUILDING_UNIT_T_IDENTIFICATION_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.LC_BUILDING_UNIT_T_BUILDING_UNIT_TYPE_F), 'length': -1, 'name': '{}'.format(names.LC_BUILDING_UNIT_T_BUILDING_UNIT_TYPE_F), 'precision': 0, 'type': 4},
+                {'expression': '"{}"'.format(names.LC_BUILDING_UNIT_T_IDENTIFICATION_F), 'length': 3, 'name': '{}'.format(names.LC_BUILDING_UNIT_T_IDENTIFICATION_F), 'precision': -1, 'type': 10, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.LC_BUILDING_UNIT_T_BUILDING_UNIT_TYPE_F), 'length': -1, 'name': '{}'.format(names.LC_BUILDING_UNIT_T_BUILDING_UNIT_TYPE_F), 'precision': 0, 'type': 4, 'constraints': QgsFieldConstraints.ConstraintNotNull},
                 {'expression': '"{}"'.format(names.LC_BUILDING_UNIT_T_DOMAIN_TYPE_F), 'length': -1, 'name': '{}'.format(names.LC_BUILDING_UNIT_T_DOMAIN_TYPE_F), 'precision': 0, 'type': 4},
                 {'expression': '"{}"'.format(names.LC_BUILDING_UNIT_T_BUILDING_TYPE_F), 'length': -1, 'name': '{}'.format(names.LC_BUILDING_UNIT_T_BUILDING_TYPE_F), 'precision': 0, 'type': 4},
-                {'expression': '"{}"'.format(names.LC_BUILDING_UNIT_T_FLOOR_TYPE_F), 'length': -1, 'name': '{}'.format(names.LC_BUILDING_UNIT_T_FLOOR_TYPE_F), 'precision': 0, 'type': 4},
-                {'expression': '"{}"'.format(names.LC_BUILDING_UNIT_T_FLOOR_F), 'length': -1, 'name': '{}'.format(names.LC_BUILDING_UNIT_T_FLOOR_F), 'precision': 0, 'type': 2},
+                {'expression': '"{}"'.format(names.LC_BUILDING_UNIT_T_FLOOR_TYPE_F), 'length': -1, 'name': '{}'.format(names.LC_BUILDING_UNIT_T_FLOOR_TYPE_F), 'precision': 0, 'type': 4, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.LC_BUILDING_UNIT_T_FLOOR_F), 'length': -1, 'name': '{}'.format(names.LC_BUILDING_UNIT_T_FLOOR_F), 'precision': 0, 'type': 2, 'constraints': QgsFieldConstraints.ConstraintNotNull},
                 {'expression': '"{}"'.format(names.LC_BUILDING_UNIT_T_TOTAL_ROOMS_F), 'length': -1, 'name': '{}'.format(names.LC_BUILDING_UNIT_T_TOTAL_ROOMS_F), 'precision': 0, 'type': 2},
                 {'expression': '"{}"'.format(names.LC_BUILDING_UNIT_T_TOTAL_BATHROOMS_F), 'length': -1, 'name': '{}'.format(names.LC_BUILDING_UNIT_T_TOTAL_BATHROOMS_F), 'precision': 0, 'type': 2},
                 {'expression': '"{}"'.format(names.LC_BUILDING_UNIT_T_TOTAL_LOCALS_F), 'length': -1, 'name': '{}'.format(names.LC_BUILDING_UNIT_T_TOTAL_LOCALS_F), 'precision': 0, 'type': 2},
@@ -192,61 +193,62 @@ class RefactorFieldsMappings:
                 {'expression': '"{}"'.format(names.LC_BUILDING_UNIT_T_USE_F), 'length': -1, 'name': '{}'.format(names.LC_BUILDING_UNIT_T_USE_F), 'precision': 0, 'type': 4},
                 {'expression': '"{}"'.format(names.LC_BUILDING_UNIT_T_YEAR_OF_BUILDING_F), 'length': -1, 'name': '{}'.format(names.LC_BUILDING_UNIT_T_YEAR_OF_BUILDING_F), 'precision': 0, 'type': 2},
                 {'expression': '"{}"'.format(names.LC_BUILDING_UNIT_T_BUILDING_UNIT_VALUATION_F), 'length': 16, 'name': '{}'.format(names.LC_BUILDING_UNIT_T_BUILDING_UNIT_VALUATION_F), 'precision': 1, 'type': 6},
-                {'expression': '"{}"'.format(names.LC_BUILDING_UNIT_T_BUILT_AREA_F), 'length': 15, 'name': '{}'.format(names.LC_BUILDING_UNIT_T_BUILT_AREA_F), 'precision': 1, 'type': 6},
+                {'expression': '"{}"'.format(names.LC_BUILDING_UNIT_T_BUILT_AREA_F), 'length': 15, 'name': '{}'.format(names.LC_BUILDING_UNIT_T_BUILT_AREA_F), 'precision': 1, 'type': 6, 'constraints': QgsFieldConstraints.ConstraintNotNull},
                 {'expression': '"{}"'.format(names.LC_BUILDING_UNIT_T_BUILT_PRIVATE_AREA_F), 'length': 15, 'name': '{}'.format(names.LC_BUILDING_UNIT_T_BUILT_PRIVATE_AREA_F), 'precision': 1, 'type': 6},
                 {'expression': '"{}"'.format(names.LC_BUILDING_UNIT_T_HEIGHT_F), 'length': -1, 'name': '{}'.format(names.LC_BUILDING_UNIT_T_HEIGHT_F), 'precision': 0, 'type': 2},
                 {'expression': '"{}"'.format(names.LC_BUILDING_UNIT_T_OBSERVATIONS_F), 'length': -1, 'name': '{}'.format(names.LC_BUILDING_UNIT_T_OBSERVATIONS_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.LC_BUILDING_UNIT_T_BUILDING_F), 'length': -1, 'name': '{}'.format(names.LC_BUILDING_UNIT_T_BUILDING_F), 'precision': 0, 'type': 4},
+                {'expression': '"{}"'.format(names.LC_BUILDING_UNIT_T_BUILDING_F), 'length': -1, 'name': '{}'.format(names.LC_BUILDING_UNIT_T_BUILDING_F), 'precision': 0, 'type': 4, 'constraints': QgsFieldConstraints.ConstraintNotNull},
                 {'expression': '"{}"'.format(names.COL_SPATIAL_UNIT_T_DIMENSION_F), 'length': -1, 'name': '{}'.format(names.COL_SPATIAL_UNIT_T_DIMENSION_F), 'precision': 0, 'type': 4},
                 {'expression': '"{}"'.format(names.COL_SPATIAL_UNIT_T_LABEL_F), 'length': 255, 'name': '{}'.format(names.COL_SPATIAL_UNIT_T_LABEL_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(names.COL_SPATIAL_UNIT_T_SURFACE_RELATION_F), 'length': -1, 'name': '{}'.format(names.COL_SPATIAL_UNIT_T_SURFACE_RELATION_F), 'precision': 0, 'type': 4},
-                {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
-                {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
-                {'expression': '"{}"'.format(names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10}]
+                {'expression': '"{}"'.format(names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16}
+            ]
         elif layer_name == names.LC_RIGHT_T:
             mapping = [
                 {'expression': '{}'.format(names.T_ILI_TID_F), 'length': -1, 'name': '{}'.format(names.T_ILI_TID_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.LC_RIGHT_T_TYPE_F), 'length': -1, 'name': '{}'.format(names.LC_RIGHT_T_TYPE_F), 'precision': 0, 'type': 4},
+                {'expression': '"{}"'.format(names.LC_RIGHT_T_TYPE_F), 'length': -1, 'name': '{}'.format(names.LC_RIGHT_T_TYPE_F), 'precision': 0, 'type': 4, 'constraints': QgsFieldConstraints.ConstraintNotNull},
                 {'expression': '"{}"'.format(names.COL_RRR_T_DESCRIPTION_F), 'length': 255, 'name': '{}'.format(names.COL_RRR_T_DESCRIPTION_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.LC_RIGHT_T_RIGHT_FRACTION_F), 'length': 11, 'name': '{}'.format(names.LC_RIGHT_T_RIGHT_FRACTION_F), 'precision': 10, 'type': 6},
+                {'expression': '"{}"'.format(names.LC_RIGHT_T_RIGHT_FRACTION_F), 'length': 11, 'name': '{}'.format(names.LC_RIGHT_T_RIGHT_FRACTION_F), 'precision': 10, 'type': 6, 'constraints': QgsFieldConstraints.ConstraintNotNull},
                 {'expression': '"{}"'.format(names.LC_RIGHT_T_DATE_START_TENANCY_F), 'length': -1, 'name': '{}'.format(names.LC_RIGHT_T_DATE_START_TENANCY_F), 'precision': -1, 'type': 14},
-                {'expression': '"{}"'.format(names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(names.COL_RRR_PARTY_T_LC_PARTY_F), 'length': -1, 'name': '{}'.format(names.COL_RRR_PARTY_T_LC_PARTY_F), 'precision': 0, 'type': 4},
                 {'expression': '"{}"'.format(names.COL_RRR_PARTY_T_LC_GROUP_PARTY_F), 'length': -1, 'name': '{}'.format(names.COL_RRR_PARTY_T_LC_GROUP_PARTY_F), 'precision': 0, 'type': 4},
                 {'expression': '"{}"'.format(names.COL_BAUNIT_RRR_T_UNIT_F), 'length': -1, 'name': '{}'.format(names.COL_BAUNIT_RRR_T_UNIT_F), 'precision': 0, 'type': 4},
-                {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
+                {'expression': '"{}"'.format(names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16, 'constraints': QgsFieldConstraints.ConstraintNotNull},
                 {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16}
             ]
         elif layer_name == names.LC_RESTRICTION_T:
             mapping = [
                 {'expression': '{}'.format(names.T_ILI_TID_F), 'length': -1, 'name': '{}'.format(names.T_ILI_TID_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.LC_RESTRICTION_T_TYPE_F), 'length': -1, 'name': '{}'.format(names.LC_RESTRICTION_T_TYPE_F), 'precision': 0, 'type': 4},
+                {'expression': '"{}"'.format(names.LC_RESTRICTION_T_TYPE_F), 'length': -1, 'name': '{}'.format(names.LC_RESTRICTION_T_TYPE_F), 'precision': 0, 'type': 4, 'constraints': QgsFieldConstraints.ConstraintNotNull},
                 {'expression': '"{}"'.format(names.COL_RRR_T_DESCRIPTION_F), 'length': 255, 'name': '{}'.format(names.COL_RRR_T_DESCRIPTION_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(names.COL_RRR_PARTY_T_LC_PARTY_F), 'length': -1, 'name': '{}'.format(names.COL_RRR_PARTY_T_LC_PARTY_F), 'precision': 0, 'type': 4},
                 {'expression': '"{}"'.format(names.COL_RRR_PARTY_T_LC_GROUP_PARTY_F), 'length': -1, 'name': '{}'.format(names.COL_RRR_PARTY_T_LC_GROUP_PARTY_F), 'precision': 0, 'type': 4},
                 {'expression': '"{}"'.format(names.COL_BAUNIT_RRR_T_UNIT_F), 'length': -1, 'name': '{}'.format(names.COL_BAUNIT_RRR_T_UNIT_F), 'precision': 0, 'type': 4},
-                {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
+                {'expression': '"{}"'.format(names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16, 'constraints': QgsFieldConstraints.ConstraintNotNull},
                 {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16}
             ]
         elif layer_name == names.LC_RIGHT_OF_WAY_T:
             mapping = [
                 {'expression': '{}'.format(names.T_ILI_TID_F), 'length': -1, 'name': '{}'.format(names.T_ILI_TID_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.LC_RIGHT_OF_WAY_T_RIGHT_OF_WAY_AREA_F), 'length': 15, 'name': '{}'.format(names.LC_RIGHT_OF_WAY_T_RIGHT_OF_WAY_AREA_F), 'precision': 1, 'type': 6},
+                {'expression': '"{}"'.format(names.LC_RIGHT_OF_WAY_T_RIGHT_OF_WAY_AREA_F), 'length': 15, 'name': '{}'.format(names.LC_RIGHT_OF_WAY_T_RIGHT_OF_WAY_AREA_F), 'precision': 1, 'type': 6, 'constraints': QgsFieldConstraints.ConstraintNotNull},
                 {'expression': '"{}"'.format(names.COL_SPATIAL_UNIT_T_DIMENSION_F), 'length': -1, 'name': '{}'.format(names.COL_SPATIAL_UNIT_T_DIMENSION_F), 'precision': 0, 'type': 4},
                 {'expression': '"{}"'.format(names.COL_SPATIAL_UNIT_T_LABEL_F), 'length': 255, 'name': '{}'.format(names.COL_SPATIAL_UNIT_T_LABEL_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(names.COL_SPATIAL_UNIT_T_SURFACE_RELATION_F), 'length': -1, 'name': '{}'.format(names.COL_SPATIAL_UNIT_T_SURFACE_RELATION_F), 'precision': 0, 'type': 4},
-                {'expression': '"{}"'.format(names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10},
-                {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
+                {'expression': '"{}"'.format(names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16, 'constraints': QgsFieldConstraints.ConstraintNotNull},
                 {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16}
             ]
         elif layer_name == names.EXT_ADDRESS_S:
             mapping = [
-                {'expression': '"{}"'.format(names.EXT_ADDRESS_S_ADDRESS_TYPE_F), 'length': -1, 'name': '{}'.format(names.EXT_ADDRESS_S_ADDRESS_TYPE_F), 'precision': 0, 'type': 4},
+                {'expression': '"{}"'.format(names.EXT_ADDRESS_S_ADDRESS_TYPE_F), 'length': -1, 'name': '{}'.format(names.EXT_ADDRESS_S_ADDRESS_TYPE_F), 'precision': 0, 'type': 4, 'constraints': QgsFieldConstraints.ConstraintNotNull},
                 {'expression': '"{}"'.format(names.EXT_ADDRESS_S_IS_MAIN_ADDRESS_F), 'length': -1, 'name': '{}'.format(names.EXT_ADDRESS_S_IS_MAIN_ADDRESS_F), 'precision': -1, 'type': 1},
                 {'expression': '"{}"'.format(names.EXT_ADDRESS_S_POSTAL_CODE_F), 'length': 255, 'name': '{}'.format(names.EXT_ADDRESS_S_POSTAL_CODE_F), 'precision': -1, 'type': 10},
                 {'expression': '"{}"'.format(names.EXT_ADDRESS_S_MAIN_ROAD_CLASS_F), 'length': -1, 'name': '{}'.format(names.EXT_ADDRESS_S_MAIN_ROAD_CLASS_F), 'precision': 0, 'type': 4},
