@@ -383,7 +383,6 @@ class AppCoreInterface(QObject):
 
         self.configure_missing_relations(db, layer, layer_name)
         self.configure_missing_bags_of_enum(db, layer, layer_name)
-        self.set_display_expressions(db, layer, layer_name, models)
         self.set_layer_variables(db, layer, layer_name, models)
         self.set_custom_widgets(db, layer, layer_name, models)
         self.set_custom_read_only_fiels(db, layer, layer_name)
@@ -531,11 +530,6 @@ class AppCoreInterface(QObject):
         """
         node = QgsProject.instance().layerTreeRoot().findLayer(layer.id())
         self.set_node_visibility_requested.emit(node, visible)
-
-    def set_display_expressions(self, db, layer, layer_name, models):
-        dict_display_expressions = LayerConfig.get_dict_display_expressions(db.names, models)
-        if layer_name in dict_display_expressions:
-            layer.setDisplayExpression(dict_display_expressions[layer_name])
 
     def set_layer_variables(self, db, layer, layer_name, models):
         layer_variables = LayerConfig.get_layer_variables(db.names, models)

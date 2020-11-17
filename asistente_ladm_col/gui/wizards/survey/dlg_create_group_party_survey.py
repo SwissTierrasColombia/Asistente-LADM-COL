@@ -114,7 +114,7 @@ class CreateGroupPartySurvey(QDialog, DIALOG_UI):
         return layers_are_available
 
     def load_parties_data(self):
-        expression = QgsExpression(LayerConfig.get_dict_display_expressions(self.names, [LADMNames.SURVEY_MODEL_KEY])[self.names.LC_PARTY_T])
+        expression = QgsExpression(self._layers[self.names.LC_PARTY_T].displayExpression())
         context = QgsExpressionContext()
         data = dict()
         for feature in self._layers[self.names.LC_PARTY_T].getFeatures():

@@ -9,3 +9,62 @@ hidden="True"
 
 ["LADM_COL_V3_0.LADM_Nucleo.ExtInteresado.Ext_Direccion_ID"]
 hidden="True"
+
+#  D I S P L A Y  E X P R E S S I O N S
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Predio"]
+dispExpression="concat(t_id, ' - ', numero_predial, ' - ', matricula_inmobiliaria)"
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Interesado"]
+dispExpression="concat(documento_identidad, ' - ',  nombre)"
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_AgrupacionInteresados"]
+dispExpression="concat(t_id, ' - ',  nombre)"
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_PuntoLindero"]
+dispExpression="t_id"
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_PuntoLevantamiento"]
+dispExpression="t_id"
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_PuntoControl"]
+dispExpression="t_id"
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Lindero"]
+dispExpression="t_id"
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Terreno"]
+dispExpression="t_id"
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Construccion"]
+dispExpression="t_id"
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_UnidadConstruccion"]
+dispExpression="t_id"
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_ServidumbreTransito"]
+dispExpression="t_id"
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Derecho"]
+dispExpression="t_id"
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_Restriccion"]
+dispExpression="t_id"
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_FuenteAdministrativa"]
+dispExpression="t_id"
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0.Levantamiento_Catastral.LC_FuenteEspacial"]
+dispExpression="t_id"
+
+["Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral.GC_PredioCatastro"]
+dispExpression="concat('(', t_id, ') ', numero_predial)"
+
+["Submodelo_Insumos_SNR_V1_0.Datos_SNR.SNR_PredioRegistro"]
+dispExpression="concat('(', t_id, ') ', numero_predial_nuevo_en_fmi)"
+
+["Captura_Geo.Captura_Geo_V0_2.Predio"]
+dispExpression="concat('(', t_id, ') ', numero_predial)"
+
+["Captura_Geo.Captura_Geo_V0_2.Usuarios"]
+dispExpression="concat(nombre, ' (', numero_documento, ')')"
