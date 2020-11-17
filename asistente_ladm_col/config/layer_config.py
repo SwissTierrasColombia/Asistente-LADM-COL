@@ -467,49 +467,6 @@ class LayerConfig:
         return dict_automatic_values
 
     @staticmethod
-    def get_dict_display_expressions(names, models):
-        display_expressions = dict()
-
-        for model_key in models:
-            if model_key == LADMNames.SURVEY_MODEL_KEY:
-                display_expressions.update({
-                    names.LC_BOUNDARY_POINT_T: names.T_ID_F,
-                    names.LC_SURVEY_POINT_T: names.T_ID_F,
-                    names.LC_CONTROL_POINT_T: names.T_ID_F,
-                    names.LC_BOUNDARY_T: names.T_ID_F,
-                    names.LC_PLOT_T: names.T_ID_F,
-                    names.LC_BUILDING_T: names.T_ID_F,
-                    names.LC_BUILDING_UNIT_T: names.T_ID_F,
-                    names.LC_RIGHT_OF_WAY_T: names.T_ID_F,
-                    names.LC_RIGHT_T: names.T_ID_F,
-                    names.LC_RESTRICTION_T: names.T_ID_F,
-                    names.LC_ADMINISTRATIVE_SOURCE_T: names.T_ID_F,
-                    names.LC_SPATIAL_SOURCE_T: names.T_ID_F,
-                    names.LC_PARTY_T: "concat({}, ' - ',  {})".format(names.LC_PARTY_T_DOCUMENT_ID_F,
-                                                                      names.COL_PARTY_T_NAME_F),
-                    names.LC_PARCEL_T: "concat({}, ' - ', {}, ' - ', {})".format(names.T_ID_F,
-                                                                                 names.LC_PARCEL_T_PARCEL_NUMBER_F,
-                                                                                 names.LC_PARCEL_T_FMI_F),
-                    names.LC_GROUP_PARTY_T: "concat({}, ' - ', {})".format(names.T_ID_F, names.COL_PARTY_T_NAME_F)
-                })
-            if model_key == LADMNames.SUPPLIES_MODEL_KEY:
-                display_expressions.update({
-                    names.GC_PARCEL_T: "concat('(', {}, ') ', {})".format(names.T_ID_F, names.GC_PARCEL_T_PARCEL_NUMBER_F)
-                })
-            if model_key == LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY:
-                display_expressions.update({
-                    names.SNR_PARCEL_REGISTRY_T: "concat('(', {}, ') ', {})".format(names.T_ID_F,
-                                                                                    names.SNR_PARCEL_REGISTRY_T_NEW_PARCEL_NUMBER_IN_FMI_F)
-                })
-            if model_key == LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY:
-                display_expressions.update({
-                    names.FDC_PARCEL_T: "concat('(', {}, ') ', {})".format(names.T_ID_F, names.FDC_PARCEL_T_PARCEL_NUMBER_F),
-                    names.FDC_USER_T: "concat({}, ' (', {}, ')')".format(names.FDC_USER_T_NAME_F, names.FDC_USER_T_DOCUMENT_ID_F)
-                })
-
-        return display_expressions
-
-    @staticmethod
     def get_layer_variables(names, models):
         layer_variables = dict()
 
