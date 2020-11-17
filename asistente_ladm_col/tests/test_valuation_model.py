@@ -124,7 +124,7 @@ class BaseTestValuationModel(BaseTestForModels, ABC):
                 }}
 
     def get_expected_table_and_fields_length(self):
-        return self.get_ili2db_names_count() + 176
+        return self.get_ili2db_names_count() + 180
 
 
 class TestValuationModelPG(BaseTestValuationModel, unittest.TestCase):
@@ -192,9 +192,6 @@ class TestValuationModelMSSQL(BaseTestValuationModel, unittest.TestCase):
     @classmethod
     def get_connector(cls) -> DBConnector:
         return get_mssql_conn(cls.schema)
-
-    def get_expected_table_and_fields_length(self):
-        return self.get_ili2db_names_count() + 175  # TODO Why does mssql have 187 (i.e., why one is missing)?
 
 
 if __name__ == '__main__':
