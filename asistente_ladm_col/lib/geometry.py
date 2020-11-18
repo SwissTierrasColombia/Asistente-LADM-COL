@@ -444,7 +444,7 @@ class GeometryUtils(QObject):
 
         Ideally, we could pass the whole layer2 as parameter for
         addTopologicalPoints or, at least, pass one multi-geometry containing
-        all geometries from layer2. However, onthe one side, the
+        all geometries from layer2. However, on the one side, the
         addTopologicalPoints function doesn't support a layer as parameter and,
         on the other side, there is a bug in the function that doesn't let it
         work with multi-geometries. That's why we need to traverse the whole
@@ -496,8 +496,13 @@ class GeometryUtils(QObject):
                                             'OUTPUT': 'memory:'})['OUTPUT']
         self.add_topological_vertices(approx_diff_layer, boundary_layer, names.T_ID_F)
 
+        # add_topological_vertices may produce invalid geometries, so we better play safe and fix them
+        fixed_geometries = processing.run("native:fixgeometries",
+                                          {'INPUT': approx_diff_layer,
+                                           'OUTPUT': 'memory:'})['OUTPUT']
+
         diff_layer = processing.run("native:difference",
-                                    {'INPUT': approx_diff_layer,
+                                    {'INPUT': fixed_geometries,
                                      'OVERLAY': boundary_layer,
                                      'OUTPUT': 'memory:'})['OUTPUT']
         difference_features = [{'geometry': feature.geometry(), 'id': feature[id_field]}
@@ -516,8 +521,14 @@ class GeometryUtils(QObject):
                                             'OUTPUT': 'memory:'})['OUTPUT']
         self.add_topological_vertices(plot_as_lines_layer, approx_diff_layer, names.T_ID_F)
 
+        # add_topological_vertices may produce invalid geometries, so we better play safe and fix them
+        fixed_geometries = processing.run("native:fixgeometries",
+                                          {'INPUT': plot_as_lines_layer,
+                                           'OUTPUT': 'memory:'})['OUTPUT']
+
         diff_layer = processing.run("native:difference",
-                                    {'INPUT': approx_diff_layer, 'OVERLAY': plot_as_lines_layer,
+                                    {'INPUT': approx_diff_layer,
+                                     'OVERLAY': fixed_geometries,
                                      'OUTPUT': 'memory:'})['OUTPUT']
 
         difference_features = [{'geometry': feature.geometry(), 'id': feature[id_field]}
