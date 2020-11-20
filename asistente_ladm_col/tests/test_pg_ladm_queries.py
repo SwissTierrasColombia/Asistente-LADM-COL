@@ -43,7 +43,7 @@ class TestPGLADMQueries(unittest.TestCase):
         kwargs = {'plot_t_ids': [-1]}
         self.assertEqual(self.ladm_queries.get_igac_basic_info(self.db_pg, **kwargs), {'lc_terreno': []})
 
-        kwargs = {'plot_t_ids': [1430]}
+        kwargs = {'plot_t_ids': [1440]}
         result = standardize_query_results(self.ladm_queries.get_igac_basic_info(self.db_pg, **kwargs))
         self.assertTrue(expected_result_ladm_basic_query == result, 'The result obtained is not as expected: {} {}'.format(expected_result_ladm_basic_query, result))
 
@@ -54,7 +54,7 @@ class TestPGLADMQueries(unittest.TestCase):
         kwargs = {'plot_t_ids': [-1]}
         self.assertEqual(self.ladm_queries.get_igac_legal_info(self.db_pg, **kwargs), {'lc_terreno': []})
 
-        kwargs = {'plot_t_ids': [1430]}
+        kwargs = {'plot_t_ids': [1440]}
         result = standardize_query_results(self.ladm_queries.get_igac_legal_info(self.db_pg, **kwargs))
         self.assertTrue(expected_result_ladm_legal_query == result, 'The result obtained is not as expected: {} {}'.format(expected_result_ladm_legal_query, result))
 
@@ -65,7 +65,7 @@ class TestPGLADMQueries(unittest.TestCase):
         kwargs = {'plot_t_ids': [-1]}
         self.assertEqual(self.ladm_queries.get_igac_property_record_card_info(self.db_pg, **kwargs), {'lc_terreno': []})
 
-        kwargs = {'plot_t_ids': [1430]}
+        kwargs = {'plot_t_ids': [1440]}
         result = standardize_query_results(self.ladm_queries.get_igac_property_record_card_info(self.db_pg, **kwargs))
         self.assertTrue(expected_result_ladm_property_record_card_query == result, 'The result obtained is not as expected: {} {}'.format(expected_result_ladm_property_record_card_query, result))
 
@@ -76,7 +76,7 @@ class TestPGLADMQueries(unittest.TestCase):
         kwargs = {'plot_t_ids': [-1]}
         self.assertEqual(self.ladm_queries.get_igac_physical_info(self.db_pg, **kwargs), {'lc_terreno': []})
 
-        kwargs = {'plot_t_ids': [1430]}
+        kwargs = {'plot_t_ids': [1440]}
         result = standardize_query_results(self.ladm_queries.get_igac_physical_info(self.db_pg, **kwargs))
         self.assertTrue(expected_result_ladm_physical_query == result, 'The result obtained is not as expected: {} {}'.format(expected_result_ladm_physical_query, result))
 
@@ -87,7 +87,7 @@ class TestPGLADMQueries(unittest.TestCase):
         kwargs = {'plot_t_ids': [-1]}
         self.assertEqual(self.ladm_queries.get_igac_economic_info(self.db_pg, **kwargs), {'lc_terreno': []})
 
-        kwargs = {'plot_t_ids': [1430]}
+        kwargs = {'plot_t_ids': [1440]}
         result = standardize_query_results(self.ladm_queries.get_igac_economic_info(self.db_pg, **kwargs))
         self.assertTrue(expected_result_ladm_economic_query == result, 'The result obtained is not as expected: {} {}'.format(expected_result_ladm_economic_query, result))
 

@@ -81,6 +81,9 @@ class TestGetLayers(unittest.TestCase):
                                                          db.names.LC_BOUNDARY_POINT_T],
                           db.names.LC_PLOT_T: [db.names.COL_SURFACE_RELATION_TYPE_D,
                                                db.names.COL_DIMENSION_TYPE_D,
+                                               db.names.COL_CONTENT_LEVEL_TYPE_D,
+                                               db.names.COL_REGISTRY_TYPE_D,
+                                               db.names.COL_STRUCTURE_TYPE_D,
                                                db.names.LC_PLOT_T]
                           }
 
@@ -159,8 +162,8 @@ class TestGetLayers(unittest.TestCase):
 
         QgsProject.instance().clear()
         self.app.core.get_layers(db, layers, load=True)
-        self.assertEqual(len(QgsProject.instance().mapLayers()), 17)
-        self.assertEqual(len(QgsProject.instance().layerTreeRoot().findLayers()), 17)
+        self.assertEqual(len(QgsProject.instance().mapLayers()), 20)
+        self.assertEqual(len(QgsProject.instance().layerTreeRoot().findLayers()), 20)
         self.assertEqual(len(QgsProject.instance().relationManager().relations()), 27)
 
         # Expected groups

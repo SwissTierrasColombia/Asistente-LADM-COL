@@ -16,7 +16,7 @@ expected_result_ladm_property_record_card_query = {
                             "FMI": None,
                             "Número predial": "253940000000000230073000000000",
                             "Número predial anterior": "25394000000230073000",
-                            "Tipo": "(Privado)"
+                            "Tipo": "(Predio) (Privado)"
                         }
                     }
                 ]

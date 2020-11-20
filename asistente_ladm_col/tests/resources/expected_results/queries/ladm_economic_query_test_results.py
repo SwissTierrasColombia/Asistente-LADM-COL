@@ -18,7 +18,7 @@ expected_result_ladm_economic_query = {
                             "Número predial": "253940000000000230073000000000",
                             "Número predial anterior": "25394000000230073000",
                             "Avalúo predio [COP]": None,
-                            "Tipo": "(Privado)",
+                            "Tipo": "(Predio) (Privado)",
                             "lc_construccion": [
                                 {
                                     "id": 595,

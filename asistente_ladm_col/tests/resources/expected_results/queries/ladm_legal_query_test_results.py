@@ -24,7 +24,7 @@ expected_result_ladm_legal_query = {
                                             {
                                                 "id": 677,
                                                 "attributes": {
-                                                    "Tipo de fuente administrativa": "Escritura pública",
+                                                    "Tipo de fuente administrativa": "(Documento público) Escritura pública",
                                                     "Ente emisor": None,
                                                     "Estado disponibilidad": "Disponible",
                                                     "Archivo fuente": "http://portal.proadmintierra.info:18888/filemanager/v1/file/Local?id=default.2019.2.18.10h18miMzK9"
@@ -76,7 +76,7 @@ expected_result_ladm_legal_query = {
                                             {
                                                 "id": 677,
                                                 "attributes": {
-                                                    "Tipo de fuente administrativa": "Escritura pública",
+                                                    "Tipo de fuente administrativa": "(Documento público) Escritura pública",
                                                     "Ente emisor": None,
                                                     "Estado disponibilidad": "Disponible",
                                                     "Archivo fuente": "http://portal.proadmintierra.info:18888/filemanager/v1/file/Local?id=default.2019.2.18.10h18miMzK9"
@@ -130,7 +130,7 @@ expected_result_ladm_legal_query = {
                                             {
                                                 "id": 635,
                                                 "attributes": {
-                                                    "Tipo de fuente administrativa": "Escritura pública",
+                                                    "Tipo de fuente administrativa": "(Documento público) Escritura pública",
                                                     "Ente emisor": None,
                                                     "Estado disponibilidad": "Disponible",
                                                     "Archivo fuente": "http://portal.proadmintierra.info:18888/filemanager/v1/file/Local?id=default.2019.2.18.10h18m064uu"

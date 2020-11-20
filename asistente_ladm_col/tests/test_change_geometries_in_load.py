@@ -17,7 +17,7 @@ from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             run_etl_model)
 from asistente_ladm_col.tests.utils import get_test_copy_path
 
-GPKG_PATH_DISTINCT_GEOMS = 'geopackage/test_distinct_geoms_v1_0.gpkg'
+GPKG_PATH_DISTINCT_GEOMS = 'geopackage/test_distinct_geoms_v1_1.gpkg'
 SCHEMA_DISTINCT_GEOMS = 'test_distinct_geoms'
 SCHEMA_LADM_COL_EMPTY = 'test_ladm_col_empty'
 
