@@ -446,7 +446,9 @@ DB_MAPPING_CONFIG = {
             "Captura_Geo.Captura_Geo.predio_construccion.predio..Captura_Geo.Captura_Geo.Predio": "FDC_BUILDING_T_PARCEL_F"
         }},
         "Captura_Geo.Captura_Geo.Construccion_historico": {QueryNames.VARIABLE_NAME: "FDC_LEGACY_BUILDING_T", QueryNames.FIELDS_DICT: {}},
-        "Captura_Geo.Captura_Geo.ContactoVisita": {QueryNames.VARIABLE_NAME: "FDC_VISIT_CONTACT_T", QueryNames.FIELDS_DICT: {}},
+        "Captura_Geo.Captura_Geo.ContactoVisita": {QueryNames.VARIABLE_NAME: "FDC_VISIT_CONTACT_T", QueryNames.FIELDS_DICT: {
+            "Captura_Geo.Captura_Geo.datosadicionales_contacto.datos_adicionales..Captura_Geo.Captura_Geo.Predio": "FDC_VISIT_CONTACT_T_PARCEL_F"
+        }},
         # Not there "Captura_Geo.Captura_Geo.DatosAdicionalesLevantamientoCatastral": {QueryNames.VARIABLE_NAME: "FDC_ADDITIONAL_DATA_SURVEY_T", QueryNames.FIELDS_DICT: {}},
         # Not there "Captura_Geo.Captura_Geo.DatosPHCondominio": {QueryNames.VARIABLE_NAME: "FDC_HP_CONDOMINIUM_T", QueryNames.FIELDS_DICT: {}},
         "Captura_Geo.Captura_Geo.Derecho": {QueryNames.VARIABLE_NAME: "FDC_RIGHT_T", QueryNames.FIELDS_DICT: {
@@ -469,16 +471,25 @@ DB_MAPPING_CONFIG = {
         #"Captura_Geo.Captura_Geo.propietario_propietario_contacto": {QueryNames.VARIABLE_NAME: "", QueryNames.FIELDS_DICT: {}},
         #"Captura_Geo.Captura_Geo.punto": {QueryNames.VARIABLE_NAME: "", QueryNames.FIELDS_DICT: {}},
         # Not there "Captura_Geo.Captura_Geo.lindero": {QueryNames.VARIABLE_NAME: "FDC_BOUNDARY_T", QueryNames.FIELDS_DICT: {}},
-        "Captura_Geo.Captura_Geo.NovedadFMI": {QueryNames.VARIABLE_NAME: "FDC_FMI_CHANGE_T", QueryNames.FIELDS_DICT: {}},
+        "Captura_Geo.Captura_Geo.NovedadFMI": {QueryNames.VARIABLE_NAME: "FDC_FMI_CHANGE_T", QueryNames.FIELDS_DICT: {
+            "Captura_Geo.Captura_Geo.Novedadfmi_datosadicionales.datosadicionales..Captura_Geo.Captura_Geo.Predio": "FDC_FMI_CHANGE_T_PARCEL_F"
+        }},
         "Captura_Geo.Captura_Geo.Novedad_Numeros_Prediales.Tipo_Novedad": {QueryNames.VARIABLE_NAME: "FDC_PARCEL_NUMBER_CHANGE_TYPE_D", QueryNames.FIELDS_DICT: {}},
-        "Captura_Geo.Captura_Geo.Novedad_Numeros_Prediales": {QueryNames.VARIABLE_NAME: "FDC_PARCEL_NUMBERS_CHANGE_T", QueryNames.FIELDS_DICT: {}},
+        "Captura_Geo.Captura_Geo.Novedad_Numeros_Prediales": {QueryNames.VARIABLE_NAME: "FDC_PARCEL_NUMBERS_CHANGE_T", QueryNames.FIELDS_DICT: {
+            "Captura_Geo.Captura_Geo.Novedadnumeropredial_datosadicionales.datosadicionales..Captura_Geo.Captura_Geo.Predio": "FDC_PARCEL_NUMBERS_CHANGE_T_PARCEL_F"
+        }},
         # Not there "Captura_Geo.Captura_Geo.ObjetoConstruccion": {QueryNames.VARIABLE_NAME: "FDC_BUILDING_OBJECT_T", QueryNames.FIELDS_DICT: {}},
-        "Captura_Geo.Captura_Geo.OfertasMercadoInmobiliario": {QueryNames.VARIABLE_NAME: "FDC_HOUSING_MARKET_OFFERS_T", QueryNames.FIELDS_DICT: {}},
+        "Captura_Geo.Captura_Geo.OfertasMercadoInmobiliario": {QueryNames.VARIABLE_NAME: "FDC_HOUSING_MARKET_OFFERS_T", QueryNames.FIELDS_DICT: {
+            "Captura_Geo.Captura_Geo.predio_ofertas_mercado.predio..Captura_Geo.Captura_Geo.Predio": "FDC_HOUSING_MARKET_OFFERS_T_PARCEL_F"
+        }},
         "Captura_Geo.Captura_Geo.Predio": {QueryNames.VARIABLE_NAME: "FDC_PARCEL_T", QueryNames.FIELDS_DICT: {
             "Captura_Geo.Captura_Geo.Predio.Numero_Predial": "FDC_PARCEL_T_PARCEL_NUMBER_F",
             "Captura_Geo.Captura_Geo.predio_reconocedores.reconocedor..Captura_Geo.Captura_Geo.Usuarios": "FDC_PARCEL_T_SURVEYOR_F"
         }},
-        "Captura_Geo.Captura_Geo.Predio_copropiedad": {QueryNames.VARIABLE_NAME: "FDC_PARCEL_COOWNERSHIP_T", QueryNames.FIELDS_DICT: {}},
+        "Captura_Geo.Captura_Geo.Predio_copropiedad": {QueryNames.VARIABLE_NAME: "FDC_PARCEL_COOWNERSHIP_T", QueryNames.FIELDS_DICT: {
+            "Captura_Geo.Captura_Geo.Predio_copropiedad.Predio..Captura_Geo.Captura_Geo.Predio": "FDC_PARCEL_COOWNERSHIP_T_PARCEL_F",
+            "Captura_Geo.Captura_Geo.Predio_copropiedad.copropiedad..Captura_Geo.Captura_Geo.Predio": "FDC_PARCEL_COOWNERSHIP_T_COOWNERSHIP_F"
+        }},
         # "Captura_Geo.Captura_Geo.predio_terreno": {QueryNames.VARIABLE_NAME: "FDC_PARCEL_PLOT_T", QueryNames.FIELDS_DICT: {}},
         "Captura_Geo.Captura_Geo.Punto_control": {QueryNames.VARIABLE_NAME: "FDC_CONTROL_POINT_T",QueryNames.FIELDS_DICT: {}},
         "Captura_Geo.Captura_Geo.Punto_levantamiento": {QueryNames.VARIABLE_NAME: "FDC_SURVEY_POINT_T",QueryNames.FIELDS_DICT: {}},

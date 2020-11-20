@@ -1040,6 +1040,11 @@ class LADMData(QObject):
         fdc_party_layer = layers[names.FDC_PARTY_T]
         fdc_admin_source_right_layer = layers[names.FDC_ADMINISTRATIVE_SOURCE_RIGHT_T]
         fdc_admin_source_layer = layers[names.FDC_ADMINISTRATIVE_SOURCE_T]
+        fdc_parcel_num_change_layer = layers[names.FDC_PARCEL_NUMBERS_CHANGE_T]
+        fdc_fmi_change_layer = layers[names.FDC_FMI_CHANGE_T]
+        fdc_visit_contact_layer = layers[names.FDC_VISIT_CONTACT_T]
+        fdc_market_offers_layer = layers[names.FDC_HOUSING_MARKET_OFFERS_T]
+        fdc_legacy_plot_layer = layers[names.FDC_LEGACY_PLOT_T]
 
         # Get receiver_ids that actually have at least one parcel assigned (basically, an INNER JOIN)
         # For that: Go to parcel layer and get uniques, then filter that list comparing it with receiver ids from users
@@ -1078,6 +1083,19 @@ class LADMData(QObject):
                                                                                fdc_parcel_layer)
             parcel_t_ids = list(parcel_data.values())
 
+            # # TODO: Uncomment Parcel Units for Captura_0.5
+            # # PARCEL UNITS RELATED TO PARCELS
+            # res_parcel_unit, parcel_unit_t_ids, msg_parcel_unit = LADMData.set_basket_to_parcel_units_related_to_parcels(
+            #     names,
+            #     t_basket,
+            #     fdc_parcel_layer,
+            #     parcel_t_ids)
+            # if not res_parcel_unit:
+            #     return False, msg_parcel_unit + QCoreApplication.translate(" Receiver {}.").format(receiver_dict[t_basket][0])
+            #
+            # # Update parcel_t_ids adding parcel units (since we will need related plots, buildings, and the like)
+            # parcel_t_ids = parcel_t_ids + parcel_unit_t_ids
+
             # PLOTS
             res_plots, len_plots, msg_plots = LADMData.set_basket_to_plots_related_to_parcels(names,
                                                                                               t_basket,
@@ -1109,6 +1127,39 @@ class LADMData(QObject):
             if not res_rights:
                 return False, msg_rights + QCoreApplication.translate(" Receiver {}.").format(receiver_dict[t_basket][0])
 
+            # NOVEDADES PREDIO
+            res_pn_change, len_pn_change, msg_pn_change = LADMData.set_basket_to_parcel_changes_related_to_parcels(names,
+                                                                                                                   t_basket,
+                                                                                                                   fdc_parcel_layer,
+                                                                                                                   fdc_parcel_num_change_layer,
+                                                                                                                   fdc_fmi_change_layer,
+                                                                                                                   parcel_t_ids)
+            if not res_pn_change:
+                return False, msg_pn_change + QCoreApplication.translate(" Receiver {}.").format(receiver_dict[t_basket][0])
+
+            # CONTACTS
+            res_contacts, len_contacts, msg_contacts = LADMData.set_basket_to_contacts_related_to_parcels(names,
+                                                                                                             t_basket,
+                                                                                                             fdc_parcel_layer,
+                                                                                                             fdc_visit_contact_layer,
+                                                                                                             fdc_market_offers_layer,
+                                                                                                             parcel_t_ids)
+
+            if not res_contacts:
+                return False, msg_contacts + QCoreApplication.translate(" Receiver {}.").format(
+                    receiver_dict[t_basket][0])
+
+            # LEGACY SPATIAL UNITS
+            res_l_plots, len_l_plots, msg_l_plots = LADMData.set_basket_to_legacy_spatial_units_related_to_parcels(
+                names,
+                t_basket,
+                fdc_parcel_layer,
+                fdc_legacy_plot_layer,
+                parcel_t_ids)
+            if not res_l_plots:
+                return False, msg_l_plots + QCoreApplication.translate(" Receiver {}.").format(
+                    receiver_dict[t_basket][0])
+
             Logger().info(__name__,
                           "--> Basket exported for receiver {}: {} parcels, {} plots, {} buildings, {} rights.".format(
                               t_basket,
@@ -1118,6 +1169,34 @@ class LADMData(QObject):
                               len_rights))
 
         return True, "Success!"
+
+    @staticmethod
+    def set_basket_to_parcel_units_related_to_parcels(names, t_basket, fdc_parcel_layer, parcel_t_ids):
+        # Get parcel_units from parcels and write the basket to the parcels table
+        parcel_unit_features = LADMData.get_referenced_features(names,
+                                                           fdc_parcel_layer,
+                                                           fdc_parcel_layer,
+                                                           names.FDC_PARCEL_T_PARENT_F,
+                                                           get_feature=True,  # get_fids
+                                                           t_ids=parcel_t_ids)
+
+        parcel_unit_dict = {parcel.id(): parcel[names.FDC_PARCEL_T_PARENT_F] for parcel in parcel_unit_features}
+        parcel_unit_ids = list(parcel_unit_dict.keys())
+        parcel_unit_t_ids = list(parcel_unit_dict.values())
+
+        if parcel_unit_ids:
+            res = LADMData.change_attribute_value(fdc_parcel_layer,
+                                                  names.T_BASKET_F,
+                                                  t_basket,
+                                                  parcel_unit_ids)
+            if not res:
+                return False, None, QCoreApplication.translate("LADMData",
+                                                               "Could not write basket id {} to related parcel units.".format(
+                                                                   t_basket))
+
+        # Note that we return parcel_unit_t_ids, because if a parent was allocated, then all its children will be
+        # allocated as well to the same receiver. This will even overwrite allocation made via GUI!
+        return True, parcel_unit_t_ids, 'Success!'
 
     @staticmethod
     def set_basket_to_plots_related_to_parcels(names, t_basket, fdc_parcel_layer, fdc_plot_layer, parcel_t_ids):
@@ -1254,6 +1333,103 @@ class LADMData(QObject):
                                                                            t_basket))
 
         return True, len(right_ids), 'Success!'
+
+    @staticmethod
+    def set_basket_to_parcel_changes_related_to_parcels(names, t_basket, fdc_parcel_layer, fdc_parcel_num_change_layer, fdc_fmi_change_layer, parcel_t_ids):
+        # Get parcel number change ids from parcels and write the basket
+        pn_change_ids = LADMData.get_referenced_features(names,
+                                                         fdc_parcel_layer,
+                                                         fdc_parcel_num_change_layer,
+                                                         names.FDC_PARCEL_NUMBERS_CHANGE_T_PARCEL_F,
+                                                         get_feature=False,  # get_fids
+                                                         t_ids=parcel_t_ids)
+        if pn_change_ids:
+            res = LADMData.change_attribute_value(fdc_parcel_num_change_layer,
+                                                  names.T_BASKET_F,
+                                                  t_basket,
+                                                  pn_change_ids)
+            if not res:
+                return False, None, QCoreApplication.translate("LADMData",
+                                                               "Could not write basket id {} to 'Parcel numbers change' layer.".format(
+                                                                   t_basket))
+
+        # Get FMI change ids from parcels and write the basket
+        fmi_change_ids = LADMData.get_referenced_features(names,
+                                                         fdc_parcel_layer,
+                                                         fdc_fmi_change_layer,
+                                                         names.FDC_FMI_CHANGE_T_PARCEL_F,
+                                                         get_feature=False,  # get_fids
+                                                         t_ids=parcel_t_ids)
+        if fmi_change_ids:
+            res = LADMData.change_attribute_value(fdc_fmi_change_layer,
+                                                  names.T_BASKET_F,
+                                                  t_basket,
+                                                  fmi_change_ids)
+            if not res:
+                return False, None, QCoreApplication.translate("LADMData",
+                                                               "Could not write basket id {} to 'FMI change' layer.".format(
+                                                                   t_basket))
+
+        return True, len(pn_change_ids), 'Success!'
+
+    @staticmethod
+    def set_basket_to_contacts_related_to_parcels(names, t_basket, fdc_parcel_layer, fdc_visit_contact_layer, fdc_market_offers_layer, parcel_t_ids):
+        # Get visit contact ids from parcels and write the basket
+        visit_contact_ids = LADMData.get_referenced_features(names,
+                                                             fdc_parcel_layer,
+                                                             fdc_visit_contact_layer,
+                                                             names.FDC_VISIT_CONTACT_T_PARCEL_F,
+                                                             get_feature=False,  # get_fids
+                                                             t_ids=parcel_t_ids)
+        if visit_contact_ids:
+            res = LADMData.change_attribute_value(fdc_visit_contact_layer,
+                                                  names.T_BASKET_F,
+                                                  t_basket,
+                                                  visit_contact_ids)
+            if not res:
+                return False, None, QCoreApplication.translate("LADMData",
+                                                               "Could not write basket id {} to 'Visit contact' layer.".format(
+                                                                   t_basket))
+
+        # Get housing market offer ids from parcels and write the basket
+        market_offer_ids = LADMData.get_referenced_features(names,
+                                                            fdc_parcel_layer,
+                                                            fdc_market_offers_layer,
+                                                            names.FDC_HOUSING_MARKET_OFFERS_T_PARCEL_F,
+                                                            get_feature=False,  # get_fids
+                                                            t_ids=parcel_t_ids)
+        if market_offer_ids:
+            res = LADMData.change_attribute_value(fdc_market_offers_layer,
+                                                  names.T_BASKET_F,
+                                                  t_basket,
+                                                  market_offer_ids)
+            if not res:
+                return False, None, QCoreApplication.translate("LADMData",
+                                                               "Could not write basket id {} to 'Housing market offers' layer.".format(
+                                                                   t_basket))
+
+        return True, len(visit_contact_ids), 'Success!'
+
+    @staticmethod
+    def set_basket_to_legacy_spatial_units_related_to_parcels(names, t_basket, fdc_parcel_layer, fdc_legacy_plot_layer, parcel_t_ids):
+        # Get legacy plots from parcels and write the basket
+        plot_ids = LADMData.get_referenced_features(names,
+                                                    fdc_parcel_layer,
+                                                    fdc_legacy_plot_layer,
+                                                    names.FDC_LEGACY_PLOT_T_PARCEL_F,
+                                                    get_feature=False,  # get_fids
+                                                    t_ids=parcel_t_ids)
+        if plot_ids:
+            res = LADMData.change_attribute_value(fdc_legacy_plot_layer,
+                                                  names.T_BASKET_F,
+                                                  t_basket,
+                                                  plot_ids)
+            if not res:
+                return False, None, QCoreApplication.translate("LADMData",
+                                                               "Could not write basket id {} to Legacy Plot layer.".format(
+                                                                   t_basket))
+
+        return True, len(plot_ids), 'Success!'
 
     @staticmethod
     def change_attribute_value(layer, field_name, value, fids=list(), filter=''):
