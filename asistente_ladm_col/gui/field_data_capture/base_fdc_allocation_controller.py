@@ -72,10 +72,13 @@ class BaseFDCAllocationController(QObject):
             self._db.names.FDC_PARTY_DOCUMENT_TYPE_D: None,
             self._db.names.FDC_BUILDING_T: None,
             self._db.names.FDC_BUILDING_UNIT_T: None,
+            self._db.names.FDC_CONVENTIONAL_QUALIFICATION_T: None,
             self._db.names.FDC_RIGHT_T: None,
             self._db.names.FDC_PARTY_T: None,
             self._db.names.FDC_ADMINISTRATIVE_SOURCE_RIGHT_T: None,
-            self._db.names.FDC_ADMINISTRATIVE_SOURCE_T: None
+            self._db.names.FDC_ADMINISTRATIVE_SOURCE_T: None,
+            self._db.names.FDC_HOUSING_MARKET_OFFERS_T: None,
+            self._db.names.FDC_LEGACY_PLOT_T: None
         }
 
     def add_layers(self, force=False):
@@ -153,11 +156,11 @@ class BaseFDCAllocationController(QObject):
         return self._layers[self._db.names.FDC_PARTY_DOCUMENT_TYPE_D]
 
     def update_plot_selection(self, parcel_ids):
-        plot_ids = self._ladm_data.get_referenced_features(self._db.names,
-                                                           self.parcel_layer(),
-                                                           self.plot_layer(),
-                                                           self._db.names.FDC_PLOT_T_PARCEL_F,
-                                                           fids=parcel_ids)
+        plot_ids = self._ladm_data.get_referencing_features(self._db.names,
+                                                            self.parcel_layer(),
+                                                            self.plot_layer(),
+                                                            self._db.names.FDC_PLOT_T_PARCEL_F,
+                                                            fids=parcel_ids)
         self.plot_layer().selectByIds(plot_ids)
 
     def get_parcel_numbers_from_selected_plots(self):
