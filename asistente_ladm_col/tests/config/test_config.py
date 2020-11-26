@@ -1,9 +1,9 @@
 TEST_SCHEMAS_MAPPING = {
     'test_ladm_col': 'ladm_col_v1_1.sql',
     'test_ladm_col_empty': 'test_ladm_col_empty_v1_1.sql',
-    'test_ladm_validations_topology_tables': 'test_ladm_validations_topology_tables_v1_0.sql',
+    'test_ladm_validations_topology_tables': 'test_ladm_validations_topology_tables_v1_1.sql',
     'test_ladm_col_queries': 'ladm_col_queries_v1_1.sql',
-    'test_change_detections': 'test_change_detections_v1_0.sql',
+    'test_change_detections': 'test_change_detections_v1_1.sql',
     'test_distinct_geoms': 'test_distinct_geoms_v1_1.sql',
     'test_ladm_survey_model': 'test_ladm_survey_model_v1_1.sql',
     'test_ladm_valuation_model': 'test_ladm_valuation_model_v1_1.sql',
@@ -18,7 +18,7 @@ TEST_SCHEMAS_MAPPING = {
     'ladm_col_210': 'ladm_col_operation_v_210.sql',
     'test_import_data':'test_import_data_ladm_v1_1.sql',
     'test_export_data': 'test_export_data_ladm_v1_1.sql',
-    'test_logic_quality_rules': 'test_ladm_logic_quality_rules_v1_0.sql',
+    'test_logic_quality_rules': 'test_ladm_logic_quality_rules_v1_1.sql',
     'test_export_data_qpkg': 'test_export_data_ladm_v1_1.gpkg',
     'test_empty_ladm_gpkg': 'test_empty_ladm_v1_1.gpkg',
     'test_ladm_survey_model_gpkg': 'test_ladm_survey_model_v1_1.gpkg',
@@ -33,7 +33,7 @@ TEST_SCHEMAS_MAPPING = {
     'topology_cases_gpkg': 'topology_cases.gpkg',
     'adjust_boundaries_cases_gpkg': 'adjust_boundaries_cases.gpkg',
     'no_interlis_gpkg': 'no_interlis.gpkg',
-    'test_logic_quality_rules_gpkg': 'test_logic_quality_rules_v1_0.gpkg',
+    'test_logic_quality_rules_gpkg': 'test_logic_quality_rules_v1_1.gpkg',
     'test_valid_quality_rules_gpkg': 'test_valid_quality_rules_v1_0.gpkg',
     'interlis_no_ladm_col_models_gpkg': 'interlis_no_ladm_col_models.gpkg'
 }
