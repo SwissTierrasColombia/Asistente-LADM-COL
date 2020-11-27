@@ -34,6 +34,6 @@ TEST_SCHEMAS_MAPPING = {
     'adjust_boundaries_cases_gpkg': 'adjust_boundaries_cases.gpkg',
     'no_interlis_gpkg': 'no_interlis.gpkg',
     'test_logic_quality_rules_gpkg': 'test_logic_quality_rules_v1_1.gpkg',
-    'test_valid_quality_rules_gpkg': 'test_valid_quality_rules_v1_0.gpkg',
+    'test_valid_quality_rules_gpkg': 'test_valid_quality_rules_v1_1.gpkg',
     'interlis_no_ladm_col_models_gpkg': 'interlis_no_ladm_col_models.gpkg'
 }
