@@ -397,6 +397,13 @@ VERSION "2020-07-21"  =
       Concreto_Cuatro_O_Mas_Pisos
     );
 
+    D_BooleanoTipo = (
+      !!@ ili2db.dispName = "Sí"
+      si,
+      !!@ ili2db.dispName = "No"
+      no
+    );
+
     D_CalificarTipo = (
       Residencial,
       Industrial,
@@ -478,6 +485,8 @@ VERSION "2020-07-21"  =
       Expansion_urbana
     );
 
+    /** Valores para indicar el tipo de condición de predio
+     */
     !!@ ili2db.dispName = "CondicionPredioTipo"
     D_CondicionPredioTipo = (
       /** Predio no sometido al régimen de propiedad horizontal.
@@ -487,12 +496,37 @@ VERSION "2020-07-21"  =
       /** Predio sometido al régimen de propiedad horizontal mediante escritura pública registrada
        */
       !!@ ili2db.dispName = "Propiedad horizontal"
-      PH,
+      PH(
+        !!@ ili2db.dispName = "(Propiedad horizontal) Matriz"
+        Matriz,
+        /** Apartamento, garaje, depósito o cualquier otro tipo de unidad predial dentro del PH que se encuentra debidamente inscrito en el registro de instrumentos públicos
+         */
+        !!@ ili2db.dispName = "(Propiedad horizontal) Unidad Predial"
+        Unidad_Predial
+      ),
       /** Predio sometido al régimen de propiedad horizontal mediante escritura pública registrada en cuyo reglamento define para cada unidad predial un área privada de terreno.
        */
       !!@ ili2db.dispName = "Condominio"
-      Condominio,
-      Parque_cementerio,
+      Condominio(
+        /** Predio matriz del condominio sobre el cual se segregan todas las unidades prediales.
+         */
+        !!@ ili2db.dispName = "(Condominio) Matriz"
+        Matriz,
+        /** Unidad predial dentro del condominio matriz.
+         */
+        !!@ ili2db.dispName = "(Condominio) Unidad predial"
+        Unidad_Predial
+      ),
+      Parque_cementerio(
+        /** Predios sobre los cuales las áreas de terreno y construcciones son dedicadas a la cremación, inhumación o enterramiento de personas fallecidas.
+         */
+        !!@ ili2db.dispName = "(Parque cementerio) Matriz"
+        Matriz,
+        /** Área o sección de terreno con función de tumba, esta debe encontrarse inscrita en el registro de instrumentos públicos.
+         */
+        !!@ ili2db.dispName = "(Parque Cementerio) Unidad predial"
+        Unidad_Predial
+      ),
       /** Espacio (terreno y construcción) diseñado y destinado para el tránsito de vehículos, personas, entre otros
        */
       !!@ ili2db.dispName = "Vía"
@@ -1371,7 +1405,65 @@ VERSION "2020-07-21"  =
        * 0381
        */
       !!@ ili2db.dispName = "Servidumbre de paso"
-      Servidumbre
+      Servidumbre(
+        /** Se trata de predio sirviente que sufre el gravamen para permitir la comunicación uso y bienestar de otro predio. (Artículo 905 del C.C.)
+         */
+        !!@ ili2db.dispName = "(Servidumbre) Tránsito"
+        Transito,
+        /** Es el gravamen impuesto sobre un predio para permitir la salida de las aguas sobrantes de otro predio. (Art. 928 del C.C.).
+         */
+        !!@ ili2db.dispName = "(Servidumbre) Aguas negras"
+        Aguas_Negras,
+        /** Permite realizar y mantener las obras necesarias para la eficiencia y segura ventilación. Las empresas de servicios públicos podrán pasar por predios ajenos por vía aérea y realizar en ellos las actividades necesarias para prestar el servicio. (Artículo 215 del Decreto 1275 de 1970, artículo 57 de la Ley 142 de 1994).
+         */
+        !!@ ili2db.dispName = "(Servidumbre) Aire"
+        Aire,
+        /** Supone para las entidades públicas que tienen a su cargo la construcción de centrales generadoras, líneas de interconexión, transmisión y prestación del servicio público de distribución de energía eléctrica, la facultad de pasar por los predios afectados, por vía aérea, subterránea o superficial, las líneas de transmisión y distribución del fluido eléctrico, ocupar las zonas objeto de servidumbre, transitar por los mismos, adelantar las obras, ejercer la vigilancia, conservación y mantenimiento y emplear los demás medios necesarios para su ejercicio. (Artículo 18 de la Ley 126 de 1938 y Artículo 25 de la Ley 56 de 1981). (Artículo 57 de la Ley 142 de 1994).
+         */
+        !!@ ili2db.dispName = "(Servidumbre) Energía eléctrica"
+        Energia_Electrica,
+        /** Es el conjunto de actividades ordenadas a la distribución de gas combustible, por tubería u otro medio, desde un sitio de acopio de grandes volúmenes o desde un gasoducto central hasta la instalación de un consumidor final, incluyendo su conexión y medición. 
+         *  Se constituye la servidumbre a favor de la explotación de los gases derivados del petróleo.
+         *  Cuando sea necesario las empresas que prestan el servicio podrán pasar por predios ajenos por vía subterránea o superficial los cables o tuberías, ocupar temporalmente las zonas que requieren esos predios, remover los cultivos y obstáculos de toda clase que se encuentren en ellos, transitar, adelantar las obras y ejercer vigilancia en ellos y en general realizar todas las actividades necesarias para prestar el servicio.
+         *  Las líneas de distribución de gas combustible, podrán atravesar los ríos, caudales, líneas férreas, puentes, calles, caminos, y cruzar acueductos, oleoductos, y otras líneas o conducciones. (Art. 14 númeral 28, y artículo 57 de la Ley 142 de 1994).
+         */
+        !!@ ili2db.dispName = "(Servidumbre) Gasoducto"
+        Gasoducto,
+        /** Tiene por objeto dar luz a un espacio cualquiera, cerrado y techado. 
+         * Se llama predio sirviente el que debe permitir el paso de la luz y predio dominante el que tiene derecho a ella. (Artículos 931 al 935 del Código Civil).
+         */
+        !!@ ili2db.dispName = "(Servidumbre) Luz"
+        Luz,
+        /** Se constituye a favor de la explotación de petróleo, comprendiendo el terreno suficiente para las estaciones de bombeo y demás dependencias necesarias para el funcionamiento de los oleoductos y el de establecer muelles, cargaderos y tuberías submarinas y fluviales. (Artículo 9 Decreto 1056 de 1954).
+         */
+        !!@ ili2db.dispName = "(Servidumbre) Oleoducto"
+        Oleoducto,
+        /** El predio inferior está sujeto a recibir las aguas que descienden del predio superior naturalmente, es decir, sin que la mano del hombre contribuya a ello. No se puede, por consiguiente, dirigir un albañal o acequia sobre el predio vecino, si no se ha constituido esta servidumbre especial. En el predio servil no se puede hacer cosa alguna que estorbe la servidumbre natural, ni el predio dominante, que la grave.
+         */
+        !!@ ili2db.dispName = "(Servidumbre) Agua"
+        Agua,
+        /** Para el ejercicio eficiente de la industria minera en todas sus fases y etapas, podrán establecerse las servidumbres que sean necesarias sobre los predios ubicados dentro o fuera del área objeto del título minero. Cuando, para la construcción, el montaje, la explotación, el acopio y el beneficio, en ejercicio de las servidumbres se requiera usar recursos naturales renovables, será indispensable que dicho uso esté autorizado por la autoridad ambiental, cuando la ley así lo exija. También procede el establecimiento de servidumbre sobre zonas, objeto de otros títulos mineros. Tales gravámenes no podrán impedir o dificultar la exploración o la explotación de la concesión que los soporte. (Art 166 Ley 685 de 2001)
+         */
+        !!@ ili2db.dispName = "(Servidumbre) Minera"
+        Minera,
+        /** La industria de los hidrocarburos está declarada de utilidad pública en sus ramos de exploración, producción, transporte, refinación y distribución. Los predios deberán soportar todas las servidumbres legales que sean necesarias para realizar las actividades de exploración, producción y transporte de los hidrocarburos, salvo las excepciones establecidas por la ley. Se entenderá que la servidumbre de ocupación de terrenos comprenderá el derecho a construir la infraestructura necesaria en campo e instalar todas las obras y servicios propios para beneficio del recurso de los hidrocarburos y del ejercicio de las demás servidumbres que se requieran. (Art. 1 Ley 1274 de 2009)
+         */
+        !!@ ili2db.dispName = "(Servidumbre) Legal de hidrocarburos"
+        Legal_Hidrocarburos,
+        /** Es el conjunto de derechos y obligaciones que dimanan de la existencia y disfrute en común de una pared, cerca, vallado, etc. 
+         * En todos los casos, y aun cuando conste que una cerca o pared divisoria pertenece exclusivamente a uno de los predios contiguos, el dueño del otro predio tendrá el derecho de hacer la medianería en todo o en parte, aun sin el consentimiento de su vecino, pagándole la mitad del valor del terreno en que está hecho el cerramiento, y la mitad del valor actual de la porción del cerramiento cuya medianería pretende. (Artículo 912 del C.C.).
+         */
+        !!@ ili2db.dispName = "(Servidumbre) Medianeria"
+        Medianeria,
+        /** Gravamen que afecta un predio, permitiendo que sobre el se conduzcan el alcantarillado que benefician a otro predio de diferente propietario.
+         */
+        !!@ ili2db.dispName = "(Servidumbre) Alcantarillado"
+        Alcantarillado,
+        /** Gravamen que afecta un predio, permitiendo que sobre el se conduzcan las aguas que benefician a otro predio de diferente propietario. (Artículos 919 a 930 del Código Civil; Artículo 214 del Decreto 1275 de 1970. Artículo 57 de la Ley 142 de 1998).
+         */
+        !!@ ili2db.dispName = "(Servidumbre) Acueducto"
+        Acueducto
+      )
     );
 
     D_ResultadoVisitaTipo = (
@@ -1420,7 +1512,8 @@ VERSION "2020-07-21"  =
 
     D_SexoTipo = (
       Masculino,
-      Femenino
+      Femenino,
+      Otro
     );
 
     D_TamanioBanioTipo = (
@@ -2094,16 +2187,16 @@ VERSION "2020-07-21"  =
     CLASS Fuente_Administrativa =
       !!@ ili2db.dispName = "Tipo"
       Tipo : MANDATORY Captura_Geo_V0_5.D_FuenteAdministrativaTipo;
-      !!@ ili2db.dispName = "Ente emisor"
-      Ente_Emisor : TEXT*255;
-      !!@ ili2db.dispName = "Observación"
-      Observacion : LADM_COL_V3_0.LADM_Nucleo.CharacterString;
       !!@ ili2db.dispName = "Número de fuente"
       Numero_Fuente : TEXT*150;
-      !!@ ili2db.dispName = "Archivo"
-      Ext_Archivo : TEXT*1000;
       !!@ ili2db.dispName = "Fecha documento fuente"
       Fecha_Documento_Fuente : INTERLIS.XMLDate;
+      !!@ ili2db.dispName = "Ente emisor"
+      Ente_Emisor : TEXT*255;
+      !!@ ili2db.dispName = "Adjunto"
+      Ext_Archivo : TEXT*1000;
+      !!@ ili2db.dispName = "Observación"
+      Observacion : LADM_COL_V3_0.LADM_Nucleo.CharacterString;
     END Fuente_Administrativa;
 
     /** Es la parte que tiene una relación con el predio por algún tipo de derecho, restricción, publicidad o responsabilidad
@@ -2148,38 +2241,12 @@ VERSION "2020-07-21"  =
        */
       !!@ ili2db.dispName = "Razón social"
       Razon_Social : TEXT*255;
-      !!@ ili2db.dispName = "Adjunto"
+      !!@ ili2db.dispName = "Adjunto 1"
       Adjunto : TEXT*1000;
       !!@ ili2db.dispName = "Adjunto 2"
       Adjunto_2 : TEXT*20;
-      !!@ ili2db.dispName = "¿Verificó la información del interesado?"
-      Validacion_Datos_Interesado : BOOLEAN;
-      !!@ ili2db.dispName = "¿Tiene datos de contacto?"
-      Datos_Contacto : BOOLEAN;
-      /** Numero de telefono de contacto del interesado.
-       */
-      !!@ ili2db.dispName = "Teléfono 1"
-      Telefono1 : TEXT*20;
-      /** Numero de telefono de contacto del interesado.
-       */
-      !!@ ili2db.dispName = "Teléfono 2"
-      Telefono2 : TEXT*20;
-      /** Domicilio para notificaciones del interesado.
-       */
-      !!@ ili2db.dispName = "Domicilio notificación"
-      Domicilio_Notificacion : TEXT*500;
-      /** Dirección de residencia del interesado.
-       */
-      !!@ ili2db.dispName = "Dirección de residencia"
-      Direccion_Residencia : TEXT*500;
-      /** Correo electrónico del interesado.
-       */
-      !!@ ili2db.dispName = "Correo electrónico"
-      Correo_Electronico : TEXT*100;
-      /** Indica si el interesado autoriza notificación vía correo electrónico
-       */
-      !!@ ili2db.dispName = "Autoriza notificación correo"
-      Autoriza_Notificacion_Correo : TEXT*20;
+      !!@ ili2db.dispName = "Cuota de participación"
+      Cuota_Participacion : 0.0000000000 .. 1.0000000000;
       /** Departamento de residencia del interesado.
        */
       !!@ ili2db.dispName = "Departamento"
@@ -2188,16 +2255,22 @@ VERSION "2020-07-21"  =
        */
       !!@ ili2db.dispName = "Municipio"
       Municipio : TEXT*100;
-      /** Vereda de residencia del interesado.
+      /** Dirección de residencia del interesado.
        */
-      !!@ ili2db.dispName = "Vereda"
-      Vereda : TEXT*100;
-      /** Corregimiento de residencia del interesado.
+      !!@ ili2db.dispName = "Dirección de residencia"
+      Direccion_Residencia : TEXT*500;
+      /** Numero de telefono de contacto del interesado.
        */
-      !!@ ili2db.dispName = "Corregimiento"
-      Corregimiento : TEXT*100;
-      !!@ ili2db.dispName = "¿Verificó los datos de contacto?"
-      Validacion_Datos_Contacto : BOOLEAN;
+      !!@ ili2db.dispName = "Teléfono"
+      Telefono1 : TEXT*20;
+      /** Correo electrónico del interesado.
+       */
+      !!@ ili2db.dispName = "Correo electrónico"
+      Correo_Electronico : TEXT*100;
+      /** Indica si el interesado autoriza notificación vía correo electrónico
+       */
+      !!@ ili2db.dispName = "Autoriza notificación correo"
+      Autoriza_Notificacion_Correo : Captura_Geo_V0_5.D_BooleanoTipo;
     END Interesado;
 
     !!@ ili2db.dispName = "Ofertas mercado inmobiliario"
@@ -2214,10 +2287,10 @@ VERSION "2020-07-21"  =
        */
       !!@ ili2db.dispName = "Tiempo de la oferta en el mercado inmobiliario en meses"
       Tiempo_Oferta_Mercado : 0 .. 1000;
-      !!@ ili2db.dispName = "Número de contacto del oferente"
-      Numero_Contacto_Oferente : MANDATORY TEXT*20;
       !!@ ili2db.dispName = "Nombre del oferente"
       Nombre_Oferente : MANDATORY TEXT*255;
+      !!@ ili2db.dispName = "Número de contacto del oferente"
+      Numero_Contacto_Oferente : MANDATORY TEXT*20;
     END OfertasMercadoInmobiliario;
 
     /** Clase especializada de BaUnit, que describe la unidad administrativa básica para el caso de Colombia.
@@ -2225,34 +2298,30 @@ VERSION "2020-07-21"  =
      */
     !!@ ili2db.dispName = "Predio"
     CLASS Predio =
-      /** Corresponde al código del departamento al cual pertenece el predio. Es asignado por DIVIPOLA y tiene 2 dígitos.
-       */
-      !!@ ili2db.dispName = "Departamento"
-      Departamento : MANDATORY TEXT*2;
-      /** Corresponde al código del municipio al cual pertenece el predio. Es asignado por DIVIPOLA y tiene 3 dígitos.
-       */
-      !!@ ili2db.dispName = "Municipio"
-      Municipio : MANDATORY TEXT*3;
       /** Identificador único temporal de cada predio que se asigna en el desarrollo del levantamiento catastral.
        */
       !!@ ili2db.dispName = "Identificador único de operación"
       Id_Operacion : MANDATORY TEXT*30;
+      /** Corresponde al código del departamento al cual pertenece el predio. Es asignado por DIVIPOLA y tiene 2 dígitos.
+       */
+      !!@ ili2db.dispName = "Departamento - Municipio"
+      Departamento_municipio : MANDATORY TEXT*255;
+      /** Corresponde al dato de tipo de predio incorporado en las bases de datos registrales
+       */
+      !!@ ili2db.dispName = "Clase del suelo según registro"
+      Clase_Suelo_Registro : Captura_Geo_V0_5.D_ClaseSueloTipo;
+      !!@ ili2db.dispName = "Categoría del suelo"
+      Categoria_suelo : Captura_Geo_V0_5.D_CategoriaSueloTipo;
+      /** Dirección del predio.
+       */
+      !!@ ili2db.dispName = "Dirección"
+      Direccion : BAG {0..*} OF LADM_COL_V3_0.LADM_Nucleo.ExtDireccion;
       !!@ ili2db.dispName = "¿Verificó los datos de Localización?"
       Validacion_Datos_Localizacion : BOOLEAN;
-      /** Indica si el predio tiene matricula inmobiliaria.
+      /** Anterior código númerico de veinte (20) digitos, que se le asigna a cada predio y busca localizarlo inequívocamente en los documentos catastrales, según el modelo determinado por el Instituto Geográfico Agustin Codazzi.
        */
-      !!@ ili2db.dispName = "Tiene FMI"
-      Tiene_FMI : MANDATORY BOOLEAN;
-      /** Circulo registral
-       */
-      !!@ ili2db.dispName = "Código ORIP"
-      Codigo_ORIP : TEXT*3;
-      /** Matricula inmobiliaria
-       */
-      !!@ ili2db.dispName = "Matrícula inmobiliaria"
-      Matricula_Inmobiliaria : TEXT*80;
-      !!@ ili2db.dispName = "¿Verificó los datos registrales?"
-      Validacion_Datos_Registrales : BOOLEAN;
+      !!@ ili2db.dispName = "Número único predial"
+      NUPRE : TEXT*11;
       /** Nuevo Código numérico de treinta (30) dígitos, que se le asigna a cada predio y busca localizarlo inequívocamente en los documentos catastrales, según el modelo determinado por el Instituto Geográfico Agustín Codazzi.
        */
       !!@ ili2db.dispName = "Número predial"
@@ -2261,74 +2330,74 @@ VERSION "2020-07-21"  =
        */
       !!@ ili2db.dispName = "Número predial anterior"
       Numero_Predial_Anterior : TEXT*20;
-      /** Anterior código númerico de veinte (20) digitos, que se le asigna a cada predio y busca localizarlo inequívocamente en los documentos catastrales, según el modelo determinado por el Instituto Geográfico Agustin Codazzi.
-       */
-      !!@ ili2db.dispName = "Número único predial"
-      NUPRE : TEXT*11;
       !!@ ili2db.dispName = "¿Verificó los datos catastrales?"
       Validacion_Datos_Catastrales : BOOLEAN;
-      /** Caracterización temática del predio.
+      /** Indica si el predio tiene matricula inmobiliaria.
        */
-      !!@ ili2db.dispName = "Condición del predio"
-      Condicion_Predio : MANDATORY Captura_Geo_V0_5.D_CondicionPredioTipo;
-      /** Corresponde al dato de tipo de predio incorporado en las bases de datos registrales
+      !!@ ili2db.dispName = "Tiene FMI"
+      Tiene_FMI : Captura_Geo_V0_5.D_BooleanoTipo;
+      /** Circulo registral
        */
-      !!@ ili2db.dispName = "Clase del suelo según registro"
-      Clase_Suelo_Registro : Captura_Geo_V0_5.D_ClaseSueloTipo;
-      !!@ ili2db.dispName = "Categoría del suelo"
-      Categoria_suelo : Captura_Geo_V0_5.D_CategoriaSueloTipo;
-      !!@ ili2db.dispName = "¿Verificó la condición del predio?"
-      Validacion_Condicion_Predio : BOOLEAN;
-      !!@ ili2db.dispName = "Área total de terreno"
-      Area_Total_Terreno : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];
-      !!@ ili2db.dispName = "Área total de terreno privada"
-      Area_Total_Terreno_Privada : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];
-      !!@ ili2db.dispName = "Área total de terreno común"
-      Area_Total_Terreno_Comun : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];
-      !!@ ili2db.dispName = "Área total construida"
-      Area_Total_Construida : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];
-      !!@ ili2db.dispName = "Área total construida privada"
-      Area_Total_Construida_Privada : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];
-      !!@ ili2db.dispName = "Área total construida común"
-      Area_Total_Construida_Comun : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];
-      !!@ ili2db.dispName = "Número de torres"
-      Numero_Torres : 0 .. 1000;
-      !!@ ili2db.dispName = "Total de unidades privadas"
-      Total_Unidades_Privadas : 0 .. 99999999;
-      !!@ ili2db.dispName = "Predio Matriz"
-      Predio_Matriz : TEXT*20;
-      !!@ ili2db.dispName = "Coeficiente"
-      Coeficiente : TEXT*20;
+      !!@ ili2db.dispName = "Código ORIP"
+      Codigo_ORIP : TEXT*3;
+      /** Matricula inmobiliaria
+       */
+      !!@ ili2db.dispName = "Matrícula inmobiliaria"
+      Matricula_Inmobiliaria : TEXT*80;
       /** Indica si el predio según la información registral cuenta con el valor de área en la cabida y linderos.
        */
       !!@ ili2db.dispName = "¿El predio tiene área registral?"
-      Tiene_Area_Registral : BOOLEAN;
+      Tiene_Area_Registral : Captura_Geo_V0_5.D_BooleanoTipo;
       !!@ ili2db.dispName = "Área registral en metros cuadrados"
       Area_Registral_M2 : 0.00 .. 10000000000000000000000.00 [LADM_COL_V3_0.m2];
+      !!@ ili2db.dispName = "¿Verificó los datos registrales?"
+      Validacion_Datos_Registrales : BOOLEAN;
+      /** Caracterización temática del predio.
+       */
+      !!@ ili2db.dispName = "Condición del predio"
+      Condicion_Predio : Captura_Geo_V0_5.D_CondicionPredioTipo;
+      !!@ ili2db.dispName = "Total de unidades privadas"
+      Total_Unidades_Privadas : 0 .. 99999999;
+      !!@ ili2db.dispName = "Número de torres"
+      Numero_Torres : 0 .. 1000;
+      !!@ ili2db.dispName = "Área total construida común"
+      Area_Total_Construida_Comun : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];
+      !!@ ili2db.dispName = "Área total construida privada"
+      Area_Total_Construida_Privada : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];
+      !!@ ili2db.dispName = "Área total construida"
+      Area_Total_Construida : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];
+      !!@ ili2db.dispName = "Área total de terreno común"
+      Area_Total_Terreno_Comun : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];
+      !!@ ili2db.dispName = "Área total de terreno privada"
+      Area_Total_Terreno_Privada : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];
+      !!@ ili2db.dispName = "Área total de terreno"
+      Area_Total_Terreno : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];
+      !!@ ili2db.dispName = "Predio Matriz"
+      Predio_Matriz : TEXT*20;
+      !!@ ili2db.dispName = "Coeficiente"
+      Coeficiente : 0.0000000000 .. 1.0000000000;
+      !!@ ili2db.dispName = "¿Verificó la condición del predio?"
+      Validacion_Condicion_Predio : BOOLEAN;
       /** Es la clasificación para fines estadísticos que se da a cada inmueble en su conjunto–terreno, construcciones o edificaciones-, en el momento de la identificación predial de conformidad con la actividad predominante que en él se desarrolle.
        */
       !!@ ili2db.dispName = "Destinación económica"
       Destinacion_Economica : Captura_Geo_V0_5.D_DestinacionEconomicaTipo;
       !!@ ili2db.dispName = "¿Verificó los datos de destinación económica?"
       Validacion_Destinacion_economica : BOOLEAN;
-      !!@ ili2db.dispName = "Fecha de visita predial"
-      Fecha_Visita_predial : INTERLIS.XMLDate;
+      !!@ ili2db.dispName = "Tipo de predio"
+      Predio_Tipo : Captura_Geo_V0_5.D_PredioTipo;
+      !!@ ili2db.dispName = "¿Verificó el tipo de Predio?"
+      Validacion_Tipo_Predio : BOOLEAN;
+      !!@ ili2db.dispName = "¿Verificó los derechos asociados al Predio?"
+      Validacion_derechos : BOOLEAN;
       !!@ ili2db.dispName = "Resultado de la visita predial"
       Resultado_Visita : Captura_Geo_V0_5.D_ResultadoVisitaTipo;
       /** Indica si dentro del proceso de formación o actualización catastral se suscribe acta de colindancia para el predio objeto de levantamiento catastral.
        */
       !!@ ili2db.dispName = "¿Se suscribe acta de colindancia?"
-      Suscribe_Acta_Colindancia : BOOLEAN;
-      !!@ ili2db.dispName = "Tipo de predio"
-      Predio_Tipo : MANDATORY Captura_Geo_V0_5.D_PredioTipo;
-      !!@ ili2db.dispName = "¿Verificó el tipo de Predio?"
-      Validacion_Tipo_Predio : BOOLEAN;
-      !!@ ili2db.dispName = "Observaciones"
-      Observaciones : TEXT*1000;
-      /** Dirección del predio.
-       */
-      !!@ ili2db.dispName = "Dirección"
-      Direccion : BAG {0..*} OF LADM_COL_V3_0.LADM_Nucleo.ExtDireccion;
+      Suscribe_Acta_Colindancia : Captura_Geo_V0_5.D_BooleanoTipo;
+      !!@ ili2db.dispName = "Fecha de visita predial"
+      Fecha_Visita_predial : INTERLIS.XMLDate;
       !!@ ili2db.dispName = "Tipo de documento de quien atendió la visita predial"
       Tipo_Documento_Quien_Atendio : Captura_Geo_V0_5.D_InteresadoDocumentoTipo;
       !!@ ili2db.dispName = "Numero de documento de quien atendió la visita predial"
@@ -2341,6 +2410,8 @@ VERSION "2020-07-21"  =
       Celular : TEXT*20;
       !!@ ili2db.dispName = "Correo electrónico"
       Correo_Electronico : TEXT*100;
+      !!@ ili2db.dispName = "Observaciones"
+      Observaciones : TEXT*1000;
     END Predio;
 
     !!@ ili2db.dispName = "Punto"
@@ -2353,6 +2424,16 @@ VERSION "2020-07-21"  =
       metodo_produccion_tipo : LADM_COL_V3_0.LADM_Nucleo.COL_MetodoProduccionTipo;
       geometria : ISO19107_PLANAS_V3_0.GM_Point3D;
     END punto;
+
+    /** Restricción legalmente constituida y registrada que afecta el derecho de un persona en relación con el predio.
+     */
+    !!@ ili2db.dispName = "Restricción"
+    CLASS Restriccion =
+      /** Tipo de Restricción que afecta el derecho.
+       */
+      !!@ ili2db.dispName = "Tipo"
+      Tipo : MANDATORY Captura_Geo_V0_5.D_RestriccionTipo;
+    END Restriccion;
 
     /** Porción de tierra con una extensión geográfica definida.
      */
@@ -2371,22 +2452,14 @@ VERSION "2020-07-21"  =
      */
     !!@ ili2db.dispName = "Terrenos históricos"
     CLASS Terreno_historico =
-      /** Área de terreno alfanumérica registrada en la base de datos catastral.
-       */
-      !!@ ili2db.dispName = "Área terreno alfanumérica"
-      Area_Terreno_Alfanumerica : 0.00 .. 99999999999999.98 [LADM_COL_V3_0.m2];
       /** Área de terreno digital registrada en la base de datos catastral.
        */
       !!@ ili2db.dispName = "Área terreno digital"
       Area_Terreno_Digital : 0.00 .. 99999999999999.98;
       /** Código de la manzana o vereda donde se localiza el terreno.
        */
-      !!@ ili2db.dispName = "Código de manzana vereda"
-      Manzana_Vereda_Codigo : TEXT*17;
-      /** Número de subterráneos en el terreno.
-       */
-      !!@ ili2db.dispName = "Número de subterráneos"
-      Numero_Subterraneos : 0 .. 999999999999999;
+      !!@ ili2db.dispName = "¿Es servidumbre de tránsito?"
+      verifica_servidumbre : TEXT*17;
       /** Polígono de la unidad de construcción existente en la base de datos catastral.
        */
       !!@ ili2db.dispName = "Geometría"
@@ -2397,6 +2470,8 @@ VERSION "2020-07-21"  =
      */
     !!@ ili2db.dispName = "Unidad de construcción"
     CLASS UnidadConstruccion =
+      !!@ ili2db.dispName = "Predio (Identificador único de operación)"
+      Predio : TEXT*20;
       /** Identificado de la unidad de construcción, su codificación puede ser por letras del abecedario.
        */
       !!@ ili2db.dispName = "Identificador"
@@ -2445,16 +2520,16 @@ VERSION "2020-07-21"  =
        */
       !!@ ili2db.dispName = "Altura"
       Altura : 1 .. 1000 [INTERLIS.m];
-      /** Observaciones generales respecto de la unidad de construcción.
-       */
-      !!@ ili2db.dispName = "Observaciones"
-      Observaciones : TEXT;
       !!@ ili2db.dispName = "Tipo de anexo"
       Tipo_Anexo : Captura_Geo_V0_5.D_AnexoTipo;
       /** Son las características de diseño y constructivas especiales de las construcciones y/o edificaciones.
        */
       !!@ ili2db.dispName = "Tipo tipología"
       Tipo_Tipologia : Captura_Geo_V0_5.D_TipologiaTipo;
+      /** Observaciones generales respecto de la unidad de construcción.
+       */
+      !!@ ili2db.dispName = "Observaciones"
+      Observaciones : TEXT;
       geometria : ISO19107_PLANAS_V3_0.GM_MultiSurface3D;
     END UnidadConstruccion;
 
@@ -2634,6 +2709,11 @@ VERSION "2020-07-21"  =
       predio -- {0..*} Predio;
       reconocedor -- {0..1} Usuarios;
     END predio_reconocedores;
+
+    ASSOCIATION predio_restriccion =
+      Predio -- {1} Predio;
+      Restriccion -- {0..*} Restriccion;
+    END predio_restriccion;
 
     ASSOCIATION predio_terreno =
       predio -- {1} Predio;
