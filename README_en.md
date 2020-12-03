@@ -12,7 +12,7 @@ Links of interest: [Documentation](https://swisstierrascolombia.github.io/Asiste
 A project of: [SwissTierras Colombia](https://swisstierrascolombia.com/) ([BSF-Swissphoto AG](http://bsf-swissphoto.com/) - [INCIGE SAS](http://www.incige.com/))
 
 
-:arrow_right: We suggest you to use QGIS v3.14.x, available at https://qgis.org/downloads/
+:arrow_right: With the current version of LADM-COL Assistant, we suggest you to use QGIS v3.14.16, available at https://qgis.org/downloads/
 
 ## Support per DB engine
 

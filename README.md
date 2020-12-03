@@ -14,7 +14,7 @@ Enlaces de interés: [Documentación](https://swisstierrascolombia.github.io/Asi
 Un proyecto de: [SwissTierras Colombia](https://swisstierrascolombia.com/) ([BSF-Swissphoto AG](http://bsf-swissphoto.com/) - [INCIGE S.A.S](http://www.incige.com/))
 
 
-:arrow_right: Te sugerimos utilizar QGIS v3.14.x, disponible en https://qgis.org/downloads/
+:arrow_right: Con la versión actual del Asistente LADM-COL, te sugerimos utilizar QGIS v3.14.16, disponible en https://qgis.org/downloads/
 
 ## Soporte de funcionalidades por motor de base de datos
 
