@@ -915,19 +915,20 @@ class LADMData(QObject):
         return {feature.id(): (feature[names.FDC_PARCEL_T_PARCEL_NUMBER_F], feature[get_field_name]) for feature in fdc_parcel_layer.getFeatures(request)}
 
     @staticmethod
-    def get_parcels_related_to_plots_field_data_capture(names, fids, fdc_plot_layer, fdc_parcel_layer):
+    def get_parcels_related_to_plots_field_data_capture(names, fids, fdc_plot_layer, fdc_parcel_layer, referencing_field):
         """
         :param names: Table and field names from the DB
         :param fids: list of plot ids
         :param fdc_plot_layer: plot layer from the Field Data Capture model
         :param fdc_parcel_layer: parcel layer from the Field Data Capture model
+        :param referencing_field: Plot field that references parcels
         :return: list of parcel ids related to the given plot ids
         """
         request = QgsFeatureRequest(fids)
         request.setFlags(QgsFeatureRequest.NoGeometry)
-        field_idx = fdc_plot_layer.fields().indexFromName(names.FDC_PLOT_T_PARCEL_F)
+        field_idx = fdc_plot_layer.fields().indexFromName(referencing_field)
         request.setSubsetOfAttributes([field_idx])
-        parcel_t_ids = [feature[names.FDC_PLOT_T_PARCEL_F] for feature in fdc_plot_layer.getFeatures(request)]
+        parcel_t_ids = [feature[referencing_field] for feature in fdc_plot_layer.getFeatures(request)]
 
         request = QgsFeatureRequest(QgsExpression("{} in ({})".format(names.T_ID_F, ",".join([str(t_id) for t_id in parcel_t_ids]))))
         request.setNoAttributes()

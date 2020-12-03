@@ -90,7 +90,7 @@ class BaseFDCAllocationController(QObject):
             if not res:
                 return False
 
-            self.iface.setActiveLayer(self._layers[self._db.names.FDC_PLOT_T])
+            self.iface.setActiveLayer(self._layers[self._db.names.FDC_LEGACY_PLOT_T])
             self.iface.zoomToActiveLayer()
 
             self.app.gui.freeze_map(False)
@@ -146,6 +146,9 @@ class BaseFDCAllocationController(QObject):
     def plot_layer(self):
         return self._layers[self._db.names.FDC_PLOT_T]
 
+    def legacy_plot_layer(self):
+        return self._layers[self._db.names.FDC_LEGACY_PLOT_T]
+
     def parcel_layer(self):
         return self._layers[self._db.names.FDC_PARCEL_T]
 
@@ -156,19 +159,22 @@ class BaseFDCAllocationController(QObject):
         return self._layers[self._db.names.FDC_PARTY_DOCUMENT_TYPE_D]
 
     def update_plot_selection(self, parcel_ids):
+        # Note that here we use legacy plots
         plot_ids = self._ladm_data.get_referencing_features(self._db.names,
                                                             self.parcel_layer(),
-                                                            self.plot_layer(),
-                                                            self._db.names.FDC_PLOT_T_PARCEL_F,
+                                                            self.legacy_plot_layer(),
+                                                            self._db.names.FDC_LEGACY_PLOT_T_PARCEL_F,
                                                             fids=parcel_ids)
-        self.plot_layer().selectByIds(plot_ids)
+        self.legacy_plot_layer().selectByIds(plot_ids)
 
     def get_parcel_numbers_from_selected_plots(self):
-        plot_ids = self.plot_layer().selectedFeatureIds()
+        # Note that here we use legacy plots
+        plot_ids = self.legacy_plot_layer().selectedFeatureIds()
         return self._ladm_data.get_parcels_related_to_plots_field_data_capture(self._db.names,
                                                                                plot_ids,
-                                                                               self.plot_layer(),
-                                                                               self.parcel_layer())
+                                                                               self.legacy_plot_layer(),
+                                                                               self.parcel_layer(),
+                                                                               self._db.names.FDC_LEGACY_PLOT_T_PARCEL_F)
 
     def save_allocation_for_receiver(self, parcel_ids, receiver_id):
         """

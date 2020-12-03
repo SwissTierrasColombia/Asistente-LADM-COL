@@ -170,10 +170,10 @@ class BaseAllocateParcelsInitialPanelWidget(QgsPanelWidget, WIDGET_UI):
 
     def connect_to_plot_selection(self, connect):
         if connect:
-            self._controller.plot_layer().selectionChanged.connect(self.update_parcel_selection)
+            self._controller.legacy_plot_layer().selectionChanged.connect(self.update_parcel_selection)
         else:
             try:
-                self._controller.plot_layer().selectionChanged.disconnect(self.update_parcel_selection)
+                self._controller.legacy_plot_layer().selectionChanged.disconnect(self.update_parcel_selection)
             except (TypeError, RuntimeError):  # Layer in C++ could be already deleted...
                 pass
 
