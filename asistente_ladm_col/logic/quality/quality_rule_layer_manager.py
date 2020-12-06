@@ -49,7 +49,8 @@ class QualityRuleLayerManager(QObject):
         self.__rule_keys = rule_keys
         self.__tolerance = tolerance
 
-        self.__quality_rule_layers_config = QualityRuleConfig.get_quality_rules_layer_config(self.__db.names)
+        models = self.app.core.get_active_models_per_db(db)
+        self.__quality_rule_layers_config = QualityRuleConfig.get_quality_rules_layer_config(self.__db.names, models)
 
         # {rule_key: {QUALITY_RULE_LAYERS: {layer_name: layer},
         #             QUALITY_RULE_LADM_COL_LAYERS: {layer_name: layer}}

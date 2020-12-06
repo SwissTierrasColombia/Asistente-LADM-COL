@@ -103,6 +103,9 @@ class QualityRules:
         elif id_quality_rule == EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_BUILDINGS:
             msg, level = self.polygon_quality_rules.check_building_unit_within_buildings(db, layers)
 
+        elif id_quality_rule == EnumQualityRule.Polygon.OVERLAPS_IN_FDC_PLOTS:
+            msg, level = self.polygon_quality_rules.check_overlapping_fdc_plots(db, layers)
+
         # LOGIC QUALITY RULES
         elif id_quality_rule == EnumQualityRule.Logic.PARCEL_RIGHT_RELATIONSHIP:
             msg, level = self.logic_quality_rules.check_parcel_right_relationship(db)

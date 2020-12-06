@@ -101,7 +101,7 @@ field_admin_role_gui[TOOLBAR] = [{  # Overwrite list of toolbars
         ACTION_LOAD_LAYERS,
         ACTION_INTEGRATE_SUPPLIES,
         SEPARATOR,
-        ACTION_CHECK_QUALITY_RULES,
+        ACTION_CHECK_QUALITY_FDC_RULES,
         ACTION_PARCEL_QUERY,
         SEPARATOR,
         {  # List of toolbars
@@ -125,6 +125,8 @@ field_coordinator_role_gui[TOOLBAR] = [{  # Overwrite list of toolbars
     ACTIONS: [
         ACTION_LOAD_LAYERS,
         ACTION_INTEGRATE_SUPPLIES,
+        SEPARATOR,
+        ACTION_CHECK_QUALITY_FDC_RULES,
         SEPARATOR,
         ACTION_SETTINGS
     ]
@@ -342,8 +344,10 @@ def get_role_config():
                 ACTION_SYNCHRONIZE_FIELD_DATA,
                 ACTION_INTEGRATE_SUPPLIES,
                 ACTION_PARCEL_QUERY,
-                ACTION_CHECK_QUALITY_RULES],
-            ROLE_QUALITY_RULES: COMMON_QUALITY_RULES,
+                ACTION_CHECK_QUALITY_FDC_RULES],
+            ROLE_QUALITY_RULES: [
+                EnumQualityRule.Polygon.OVERLAPS_IN_FDC_PLOTS
+            ],
             ROLE_GUI_CONFIG: field_admin_role_gui
         },
         FIELD_COORDINATOR_ROLE: {
@@ -355,9 +359,11 @@ def get_role_config():
             ROLE_ACTIONS: [
                 ACTION_EXPORT_DATA_FDC_COORDINATOR,
                 ACTION_ALLOCATE_PARCELS_FIELD_DATA_CAPTURE,
-                ACTION_SYNCHRONIZE_FIELD_DATA
+                ACTION_SYNCHRONIZE_FIELD_DATA,
+                ACTION_CHECK_QUALITY_FDC_RULES],
+            ROLE_QUALITY_RULES: [
+                EnumQualityRule.Polygon.OVERLAPS_IN_FDC_PLOTS
             ],
-            ROLE_QUALITY_RULES: list(),
             ROLE_GUI_CONFIG: field_coordinator_role_gui
         },
         OPERATOR_ROLE: {
@@ -428,7 +434,7 @@ def get_role_config():
                                                          "The <b>Advanced</b> role has access to all the functionality."),
             ROLE_ENABLED: True,
             ROLE_MODELS: advanced_role_models,
-            ROLE_ACTIONS: [ALL_ACTIONS],
+            ROLE_ACTIONS: ADVANCED_ROLE_ACTIONS,
             ROLE_QUALITY_RULES: COMMON_QUALITY_RULES,
             ROLE_GUI_CONFIG: advanced_role_gui
         }

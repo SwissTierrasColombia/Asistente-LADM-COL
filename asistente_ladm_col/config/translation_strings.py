@@ -41,6 +41,7 @@ from asistente_ladm_col.config.quality_rules_config import (QUALITY_RULE_ERROR_C
                                                             QUALITY_RULE_ERROR_CODE_E301101,
                                                             QUALITY_RULE_ERROR_CODE_E301102,
                                                             QUALITY_RULE_ERROR_CODE_E301103,
+                                                            QUALITY_RULE_ERROR_CODE_E320101,
                                                             QUALITY_RULE_ERROR_CODE_E400101,
                                                             QUALITY_RULE_ERROR_CODE_E400102,
                                                             # QUALITY_RULE_ERROR_CODE_E400201,
@@ -154,6 +155,7 @@ class TranslatableConfigStrings(QObject):
             EnumQualityRule.Polygon.BUILDINGS_SHOULD_BE_WITHIN_PLOTS: QCoreApplication.translate("TranslatableConfigStrings", "Buildings should be within Plots"),
             EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_PLOTS: QCoreApplication.translate("TranslatableConfigStrings", "Building Units should be within corresponding plots"),
             EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_BUILDINGS: QCoreApplication.translate("TranslatableConfigStrings", "Building Units should be within corresponding buildings"),
+            EnumQualityRule.Polygon.OVERLAPS_IN_FDC_PLOTS: QCoreApplication.translate("TranslatableConfigStrings", "FDC plots should not overlap"),
             EnumQualityRule.Logic.PARCEL_RIGHT_RELATIONSHIP: QCoreApplication.translate("TranslatableConfigStrings", "Parcel should have one and only one Right"),
             EnumQualityRule.Logic.FRACTION_SUM_FOR_PARTY_GROUPS: QCoreApplication.translate("TranslatableConfigStrings", "Group Party Fractions should sum 1"),
             EnumQualityRule.Logic.DEPARTMENT_CODE_HAS_TWO_NUMERICAL_CHARACTERS: QCoreApplication.translate("TranslatableConfigStrings", "Check that the department field of the parcel table has two numerical characters"),
@@ -221,6 +223,8 @@ class TranslatableConfigStrings(QObject):
             QUALITY_RULE_ERROR_CODE_E301101: QCoreApplication.translate("TranslatableConfigStrings", "La unidad de construcción no está dentro de ninguna construcción"),
             QUALITY_RULE_ERROR_CODE_E301102: QCoreApplication.translate("TranslatableConfigStrings", "La unidad de construcción cruza los límites de una construcción"),
             QUALITY_RULE_ERROR_CODE_E301103: QCoreApplication.translate("TranslatableConfigStrings", "La unidad de construcción está dentro de una construcción pero no dentro de su construcción correspondiente"),
+
+            QUALITY_RULE_ERROR_CODE_E320101: QCoreApplication.translate("TranslatableConfigStrings", "Los terrenos no deben superponerse"),
 
             # ERROR CODES FOR LOGIC QUALITY RULES
             QUALITY_RULE_ERROR_CODE_E400101: QCoreApplication.translate("TranslatableConfigStrings", "El predio tiene más de un derecho de dominio asociado"),

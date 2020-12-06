@@ -437,22 +437,33 @@ class AsistenteLADMCOLPlugin(QObject):
                                     ACTION_FIND_MISSING_SNC_SUPPLIES: self._missing_snc_supplies_action})
 
     def create_field_data_capture_actions(self):
-        self._allocate_parcels_field_data_capture_action = QAction(
-            QIcon(":/Asistente-LADM-COL/resources/images/tasks.png"),
-            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Allocate parcels"),
-            self.main_window)
-
-        self._synchronize_field_data_action = QAction(
-            QIcon(":/Asistente-LADM-COL/resources/images/synchronize.svg"),
-            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Synchronize field data"),
-            self.main_window)
+        self._export_data_fdc_coord_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/export_to_xtf.svg"),
+                                                     QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                                                "Export data for field data administrator"),
+                                                     self.main_window)
+        self._allocate_parcels_field_data_capture_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/tasks.png"),
+                                                                   QCoreApplication.translate("AsistenteLADMCOLPlugin", "Allocate parcels"),
+                                                                   self.main_window)
+        self._synchronize_field_data_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/synchronize.svg"),
+                                                      QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                                                 "Synchronize field data"),
+                                                      self.main_window)
+        self._quality_fdc_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/validation.svg"),
+                                           QCoreApplication.translate("AsistenteLADMCOLPlugin", "Quality"),
+                                           self.main_window)
 
         # Connections
+        self._export_data_fdc_coord_action.triggered.connect(partial(self.show_dlg_export_data_fdc_coordinator, self._context_collected))
         self._allocate_parcels_field_data_capture_action.triggered.connect(partial(self.show_allocate_parcels_field_data_capture, self._context_collected))
         self._synchronize_field_data_action.triggered.connect(partial(self.show_synchronize_field_data, self._context_collected))
+        self._quality_fdc_action.triggered.connect(partial(self.show_dlg_quality_fdc, self._context_collected))
 
-        self.gui_builder.register_actions({ACTION_ALLOCATE_PARCELS_FIELD_DATA_CAPTURE: self._allocate_parcels_field_data_capture_action,
-                                           ACTION_SYNCHRONIZE_FIELD_DATA: self._synchronize_field_data_action})
+        self.gui_builder.register_actions({
+            ACTION_EXPORT_DATA_FDC_COORDINATOR: self._export_data_fdc_coord_action,
+            ACTION_ALLOCATE_PARCELS_FIELD_DATA_CAPTURE: self._allocate_parcels_field_data_capture_action,
+            ACTION_SYNCHRONIZE_FIELD_DATA: self._synchronize_field_data_action,
+            ACTION_CHECK_QUALITY_FDC_RULES: self._quality_fdc_action
+        })
 
     def create_survey_actions(self):
         self._point_surveying_and_representation_survey_action = QAction(
@@ -648,9 +659,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self._export_data_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/export_to_xtf.svg"),
                                            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Export data"),
                                            self.main_window)
-        self._export_data_fdc_coord_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/export_to_xtf.svg"),
-                                           QCoreApplication.translate("AsistenteLADMCOLPlugin", "Export data for field data administrator"),
-                                           self.main_window)
         self._settings_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/settings.svg"),
                                         QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"),
                                         self.main_window)
@@ -663,7 +671,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self._import_schema_action.triggered.connect(partial(self.show_dlg_import_schema, self._context_collected, **{'selected_models':list()}))
         self._import_data_action.triggered.connect(partial(self.show_dlg_import_data, self._context_collected))
         self._export_data_action.triggered.connect(partial(self.show_dlg_export_data, self._context_collected))
-        self._export_data_fdc_coord_action.triggered.connect(partial(self.show_dlg_export_data_fdc_coordinator, self._context_collected))
         self._queries_action.triggered.connect(partial(self.show_queries, self._context_collected))
         self._load_layers_action.triggered.connect(partial(self.load_layers_from_qgis_model_baker, self._context_collected))
         self._settings_action.triggered.connect(partial(self.show_settings, self._context_settings))
@@ -675,11 +682,9 @@ class AsistenteLADMCOLPlugin(QObject):
             ACTION_REPORT_ANT: self._ant_map_action,
             ACTION_LOAD_LAYERS: self._load_layers_action,
             ACTION_PARCEL_QUERY: self._queries_action,
-            ACTION_CHECK_QUALITY_RULES: self._quality_survey_action,
             ACTION_SCHEMA_IMPORT: self._import_schema_action,
             ACTION_IMPORT_DATA: self._import_data_action,
             ACTION_EXPORT_DATA: self._export_data_action,
-            ACTION_EXPORT_DATA_FDC_COORDINATOR: self._export_data_fdc_coord_action,
             ACTION_SETTINGS: self._settings_action,
             ACTION_HELP: self._help_action,
             ACTION_ABOUT: self._about_action
@@ -1372,6 +1377,22 @@ class AsistenteLADMCOLPlugin(QObject):
     @_survey_model_required
     @_activate_processing_plugin
     def show_dlg_quality(self, *args):
+        quality_dialog = QualityDialog(self.main_window)
+        quality_dialog.exec_()
+
+        self.quality_rule_engine = QualityRuleEngine(self.get_db_connection(), quality_dialog.selected_rules)
+        self.quality_rule_engine.quality_rule_logger.show_message_emitted.connect(self.show_log_quality_message)
+        self.quality_rule_engine.quality_rule_logger.show_button_emitted.connect(self.show_log_quality_button)
+        self.quality_rule_engine.quality_rule_logger.set_initial_progress_emitted.connect(self.set_log_quality_initial_progress)
+        self.quality_rule_engine.quality_rule_logger.set_final_progress_emitted.connect(self.set_log_quality_final_progress)
+        self.quality_rule_engine.validate_quality_rules()
+
+    @_validate_if_wizard_is_open
+    @_qgis_model_baker_required
+    @_db_connection_required
+    @_field_data_capture_model_required
+    @_activate_processing_plugin
+    def show_dlg_quality_fdc(self, *args):
         quality_dialog = QualityDialog(self.main_window)
         quality_dialog.exec_()
 

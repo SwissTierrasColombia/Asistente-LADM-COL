@@ -51,6 +51,7 @@ from asistente_ladm_col.config.quality_rules_config import (QUALITY_RULE_ERROR_C
                                                             QUALITY_RULE_ERROR_CODE_E301101,
                                                             QUALITY_RULE_ERROR_CODE_E301102,
                                                             QUALITY_RULE_ERROR_CODE_E301103,
+                                                            QUALITY_RULE_ERROR_CODE_E320101,
                                                             QUALITY_RULE_LAYERS,
                                                             HAS_ADJUSTED_LAYERS,
                                                             QUALITY_RULE_LADM_COL_LAYERS)
@@ -81,6 +82,10 @@ class PolygonQualityRules:
     def check_overlapping_right_of_way(self, db, layers):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.OVERLAPS_IN_RIGHTS_OF_WAY)
         return self.__check_overlapping_polygons(db, rule, layers, QUALITY_RULE_ERROR_CODE_E300301)
+
+    def check_overlapping_fdc_plots(self, db, layers):
+        rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.OVERLAPS_IN_FDC_PLOTS)
+        return self.__check_overlapping_polygons(db, rule, layers, QUALITY_RULE_ERROR_CODE_E320101)
 
     def __check_overlapping_polygons(self, db, rule, layer_dict, error_code):
         polygon_layer_name = list(layer_dict[QUALITY_RULE_LAYERS].keys())[0] if layer_dict[QUALITY_RULE_LAYERS] else ""

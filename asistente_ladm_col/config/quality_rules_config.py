@@ -4,6 +4,7 @@ from qgis.core import QgsField
 
 from asistente_ladm_col.config.enums import EnumQualityRule
 from asistente_ladm_col.config.general_config import PREFIX_ERROR_CODE
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.utils.utils import get_key_for_quality_rule_adjusted_layer
 
 QUALITY_GROUP_NAME = "QUALITY_GROUP_NAME"
@@ -66,6 +67,8 @@ QUALITY_RULE_ERROR_CODE_E301003 = PREFIX_ERROR_CODE + str(EnumQualityRule.Polygo
 QUALITY_RULE_ERROR_CODE_E301101 = PREFIX_ERROR_CODE + str(EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_BUILDINGS.value) + '01'
 QUALITY_RULE_ERROR_CODE_E301102 = PREFIX_ERROR_CODE + str(EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_BUILDINGS.value) + '02'
 QUALITY_RULE_ERROR_CODE_E301103 = PREFIX_ERROR_CODE + str(EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_BUILDINGS.value) + '03'
+
+QUALITY_RULE_ERROR_CODE_E320101 = PREFIX_ERROR_CODE + str(EnumQualityRule.Polygon.OVERLAPS_IN_FDC_PLOTS.value) + '01'
 
 #ERROR CODES FOR LOGIC QUALITY RULES
 QUALITY_RULE_ERROR_CODE_E400101 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.PARCEL_RIGHT_RELATIONSHIP.value) + '01'
@@ -244,7 +247,6 @@ class QualityRuleConfig:
                             QUALITY_RULE_ERROR_CODE_E200501
                         ]
                     }
-
                 }
             },
             EnumQualityRule.Polygon: {
@@ -386,7 +388,19 @@ class QualityRuleConfig:
                             QUALITY_RULE_ERROR_CODE_E301102,
                             QUALITY_RULE_ERROR_CODE_E301103
                         ]
-                    }
+                    },
+                    EnumQualityRule.Polygon.OVERLAPS_IN_FDC_PLOTS: {
+                        QUALITY_RULE_ID: EnumQualityRule.Polygon.OVERLAPS_IN_FDC_PLOTS,
+                        QUALITY_RULE_NAME: translated_strings[EnumQualityRule.Polygon.OVERLAPS_IN_FDC_PLOTS],
+                        QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "cc_terreno_superposicion"),
+                        QUALITY_RULE_TABLE_FIELDS: [
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "id_terreno"), QVariant.String),
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "id_terreno_superpone"), QVariant.String)
+                        ],
+                        QUALITY_RULE_DOMAIN_ERROR_CODES: [
+                            QUALITY_RULE_ERROR_CODE_E320101
+                        ]
+                    },
                 }
             },
             EnumQualityRule.Logic: {
@@ -681,191 +695,208 @@ class QualityRuleConfig:
         }
 
     @staticmethod
-    def get_quality_rules_layer_config(names):
-        return {
-            EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS: {
-                QUALITY_RULE_LADM_COL_LAYERS: [names.LC_BOUNDARY_POINT_T],
-                QUALITY_RULE_ADJUSTED_LAYERS: {
-                    names.LC_BOUNDARY_POINT_T: {
-                        ADJUSTED_INPUT_LAYER: names.LC_BOUNDARY_POINT_T,
-                        ADJUSTED_REFERENCE_LAYER: names.LC_BOUNDARY_POINT_T}
-                }
-            }, EnumQualityRule.Point.OVERLAPS_IN_CONTROL_POINTS: {
-                QUALITY_RULE_LADM_COL_LAYERS: [names.LC_CONTROL_POINT_T],
-                QUALITY_RULE_ADJUSTED_LAYERS: {
-                    names.LC_CONTROL_POINT_T: {
-                        ADJUSTED_INPUT_LAYER: names.LC_CONTROL_POINT_T,
-                        ADJUSTED_REFERENCE_LAYER: names.LC_CONTROL_POINT_T}
-                }
-            }, EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES: {
-                QUALITY_RULE_LADM_COL_LAYERS: [names.LC_BOUNDARY_T,
-                                      names.POINT_BFS_T,
-                                      names.LC_BOUNDARY_POINT_T],
-                QUALITY_RULE_ADJUSTED_LAYERS: {
-                    names.LC_BOUNDARY_T: {
-                        ADJUSTED_INPUT_LAYER: names.LC_BOUNDARY_T,
-                        ADJUSTED_REFERENCE_LAYER: names.LC_BOUNDARY_POINT_T}
-                }
-            }, EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_PLOT_NODES: {
-                QUALITY_RULE_LADM_COL_LAYERS: [names.LC_PLOT_T,
-                                      names.LC_BOUNDARY_POINT_T],
-                QUALITY_RULE_ADJUSTED_LAYERS: {
-                    names.LC_PLOT_T: {
-                        ADJUSTED_INPUT_LAYER: names.LC_PLOT_T,
-                        ADJUSTED_REFERENCE_LAYER: names.LC_BOUNDARY_POINT_T
+    def get_quality_rules_layer_config(names, models):
+        config = dict()
+        for model_key in models:
+            if model_key == LADMNames.SURVEY_MODEL_KEY:
+                config.update({
+                    EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS: {
+                        QUALITY_RULE_LADM_COL_LAYERS: [names.LC_BOUNDARY_POINT_T],
+                        QUALITY_RULE_ADJUSTED_LAYERS: {
+                            names.LC_BOUNDARY_POINT_T: {
+                                ADJUSTED_INPUT_LAYER: names.LC_BOUNDARY_POINT_T,
+                                ADJUSTED_REFERENCE_LAYER: names.LC_BOUNDARY_POINT_T}
+                        }
+                    }, EnumQualityRule.Point.OVERLAPS_IN_CONTROL_POINTS: {
+                        QUALITY_RULE_LADM_COL_LAYERS: [names.LC_CONTROL_POINT_T],
+                        QUALITY_RULE_ADJUSTED_LAYERS: {
+                            names.LC_CONTROL_POINT_T: {
+                                ADJUSTED_INPUT_LAYER: names.LC_CONTROL_POINT_T,
+                                ADJUSTED_REFERENCE_LAYER: names.LC_CONTROL_POINT_T}
+                        }
+                    }, EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES: {
+                        QUALITY_RULE_LADM_COL_LAYERS: [names.LC_BOUNDARY_T,
+                                              names.POINT_BFS_T,
+                                              names.LC_BOUNDARY_POINT_T],
+                        QUALITY_RULE_ADJUSTED_LAYERS: {
+                            names.LC_BOUNDARY_T: {
+                                ADJUSTED_INPUT_LAYER: names.LC_BOUNDARY_T,
+                                ADJUSTED_REFERENCE_LAYER: names.LC_BOUNDARY_POINT_T}
+                        }
+                    }, EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_PLOT_NODES: {
+                        QUALITY_RULE_LADM_COL_LAYERS: [names.LC_PLOT_T,
+                                              names.LC_BOUNDARY_POINT_T],
+                        QUALITY_RULE_ADJUSTED_LAYERS: {
+                            names.LC_PLOT_T: {
+                                ADJUSTED_INPUT_LAYER: names.LC_PLOT_T,
+                                ADJUSTED_REFERENCE_LAYER: names.LC_BOUNDARY_POINT_T
+                            }
+                        }
+                    }, EnumQualityRule.Line.OVERLAPS_IN_BOUNDARIES: {
+                        QUALITY_RULE_LADM_COL_LAYERS: [names.LC_BOUNDARY_T],
+                        QUALITY_RULE_ADJUSTED_LAYERS: {
+                            names.LC_BOUNDARY_T: {
+                                ADJUSTED_INPUT_LAYER: names.LC_BOUNDARY_T,
+                                ADJUSTED_REFERENCE_LAYER: names.LC_BOUNDARY_T,
+                                FIX_ADJUSTED_LAYER: True
+                            }
+                        }
+                    }, EnumQualityRule.Line.BOUNDARIES_ARE_NOT_SPLIT: {
+                        QUALITY_RULE_LADM_COL_LAYERS: [names.LC_BOUNDARY_T],
+                        QUALITY_RULE_ADJUSTED_LAYERS: {
+                            names.LC_BOUNDARY_T: {
+                                ADJUSTED_INPUT_LAYER: names.LC_BOUNDARY_T,
+                                ADJUSTED_REFERENCE_LAYER: names.LC_BOUNDARY_T
+                            }
+                        }
+                    }, EnumQualityRule.Line.BOUNDARIES_COVERED_BY_PLOTS: {
+                        QUALITY_RULE_LADM_COL_LAYERS: [names.LC_PLOT_T,
+                                              names.LC_BOUNDARY_T,
+                                              names.LESS_BFS_T,
+                                              names.MORE_BFS_T],
+                        QUALITY_RULE_ADJUSTED_LAYERS: {
+                            names.LC_PLOT_T: {
+                                ADJUSTED_INPUT_LAYER: names.LC_PLOT_T,
+                                ADJUSTED_REFERENCE_LAYER: names.LC_BOUNDARY_T
+                            }
+                        }
+                    }, EnumQualityRule.Line.BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS: {
+                        QUALITY_RULE_LADM_COL_LAYERS: [names.LC_BOUNDARY_POINT_T,
+                                              names.POINT_BFS_T,
+                                              names.LC_BOUNDARY_T],
+                        QUALITY_RULE_ADJUSTED_LAYERS: {
+                            names.LC_BOUNDARY_T: {
+                                ADJUSTED_INPUT_LAYER: names.LC_BOUNDARY_T,
+                                ADJUSTED_REFERENCE_LAYER: names.LC_BOUNDARY_POINT_T
+                            }
+                        }
+                    }, EnumQualityRule.Line.DANGLES_IN_BOUNDARIES: {
+                        QUALITY_RULE_LADM_COL_LAYERS: [names.LC_BOUNDARY_T],
+                        QUALITY_RULE_ADJUSTED_LAYERS: {
+                            names.LC_BOUNDARY_T: {
+                                ADJUSTED_INPUT_LAYER: names.LC_BOUNDARY_T,
+                                ADJUSTED_REFERENCE_LAYER: names.LC_BOUNDARY_T
+                            }
+                        }
+                    }, EnumQualityRule.Polygon.OVERLAPS_IN_PLOTS: {
+                        QUALITY_RULE_LADM_COL_LAYERS: [names.LC_PLOT_T],
+                        QUALITY_RULE_ADJUSTED_LAYERS: {
+                            names.LC_PLOT_T: {
+                                ADJUSTED_INPUT_LAYER: names.LC_PLOT_T,
+                                ADJUSTED_REFERENCE_LAYER: names.LC_PLOT_T,
+                                FIX_ADJUSTED_LAYER: True
+                            }
+                        }
+                    }, EnumQualityRule.Polygon.OVERLAPS_IN_BUILDINGS: {
+                        QUALITY_RULE_LADM_COL_LAYERS: [names.LC_BUILDING_T],
+                        QUALITY_RULE_ADJUSTED_LAYERS: {
+                            names.LC_BUILDING_T: {
+                                ADJUSTED_INPUT_LAYER: names.LC_BUILDING_T,
+                                ADJUSTED_REFERENCE_LAYER: names.LC_BUILDING_T
+                            }
+                        }
+                    }, EnumQualityRule.Polygon.OVERLAPS_IN_RIGHTS_OF_WAY: {
+                        QUALITY_RULE_LADM_COL_LAYERS: [names.LC_RIGHT_OF_WAY_T],
+                        QUALITY_RULE_ADJUSTED_LAYERS: {
+                            names.LC_RIGHT_OF_WAY_T: {
+                                ADJUSTED_INPUT_LAYER: names.LC_RIGHT_OF_WAY_T,
+                                ADJUSTED_REFERENCE_LAYER: names.LC_RIGHT_OF_WAY_T
+                            }
+                        }
+                    }, EnumQualityRule.Polygon.PLOTS_COVERED_BY_BOUNDARIES: {
+                        QUALITY_RULE_LADM_COL_LAYERS: [names.LC_PLOT_T,
+                                              names.LC_BOUNDARY_T,
+                                              names.LESS_BFS_T,
+                                              names.MORE_BFS_T],
+                        QUALITY_RULE_ADJUSTED_LAYERS: {
+                            names.LC_PLOT_T: {
+                                ADJUSTED_INPUT_LAYER: names.LC_PLOT_T,
+                                ADJUSTED_REFERENCE_LAYER: names.LC_PLOT_T,
+                                FIX_ADJUSTED_LAYER: True
+                            }, names.LC_BOUNDARY_T: {  # This one uses an adjusted layer as reference layer!
+                                ADJUSTED_INPUT_LAYER: names.LC_BOUNDARY_T,
+                                ADJUSTED_REFERENCE_LAYER: get_key_for_quality_rule_adjusted_layer(names.LC_PLOT_T, names.LC_PLOT_T, True),
+                                FIX_ADJUSTED_LAYER: True
+                            }
+                        }
+                    }, EnumQualityRule.Polygon.RIGHT_OF_WAY_OVERLAPS_BUILDINGS: {
+                        QUALITY_RULE_LADM_COL_LAYERS: [names.LC_RIGHT_OF_WAY_T,
+                                              names.LC_BUILDING_T],
+                        QUALITY_RULE_ADJUSTED_LAYERS: {
+                            names.LC_RIGHT_OF_WAY_T: {
+                                ADJUSTED_INPUT_LAYER: names.LC_RIGHT_OF_WAY_T,
+                                ADJUSTED_REFERENCE_LAYER: names.LC_BUILDING_T
+                            }
+                        }
+                    }, EnumQualityRule.Polygon.GAPS_IN_PLOTS: {
+                        QUALITY_RULE_LADM_COL_LAYERS: [names.LC_PLOT_T],
+                        QUALITY_RULE_ADJUSTED_LAYERS: {
+                            names.LC_PLOT_T: {
+                                ADJUSTED_INPUT_LAYER: names.LC_PLOT_T,
+                                ADJUSTED_REFERENCE_LAYER: names.LC_PLOT_T,
+                                FIX_ADJUSTED_LAYER: True
+                            }
+                        }
+                    }, EnumQualityRule.Polygon.MULTIPART_IN_RIGHT_OF_WAY: {
+                        QUALITY_RULE_LADM_COL_LAYERS: [names.LC_RIGHT_OF_WAY_T]
+                    }, EnumQualityRule.Polygon.PLOT_NODES_COVERED_BY_BOUNDARY_POINTS: {
+                        QUALITY_RULE_LADM_COL_LAYERS: [names.LC_PLOT_T,
+                                                       names.LC_BOUNDARY_POINT_T],
+                        QUALITY_RULE_ADJUSTED_LAYERS: {
+                            names.LC_PLOT_T: {
+                                ADJUSTED_INPUT_LAYER: names.LC_PLOT_T,
+                                ADJUSTED_REFERENCE_LAYER: names.LC_BOUNDARY_POINT_T
+                            }
+                        }
+                    }, EnumQualityRule.Polygon.BUILDINGS_SHOULD_BE_WITHIN_PLOTS: {
+                        QUALITY_RULE_LADM_COL_LAYERS: [names.LC_BUILDING_T,
+                                                       names.LC_PLOT_T,
+                                                       names.LC_PARCEL_T,
+                                                       names.COL_UE_BAUNIT_T,
+                                                       names.LC_CONDITION_PARCEL_TYPE_D],
+                        QUALITY_RULE_ADJUSTED_LAYERS: {
+                            names.LC_BUILDING_T: {
+                                ADJUSTED_INPUT_LAYER: names.LC_BUILDING_T,
+                                ADJUSTED_REFERENCE_LAYER: names.LC_PLOT_T
+                            }
+                        }
+                    }, EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_PLOTS: {
+                        QUALITY_RULE_LADM_COL_LAYERS: [names.LC_BUILDING_UNIT_T,
+                                                       names.LC_PLOT_T,
+                                                       names.LC_PARCEL_T,
+                                                       names.COL_UE_BAUNIT_T,
+                                                       names.LC_CONDITION_PARCEL_TYPE_D],
+                        QUALITY_RULE_ADJUSTED_LAYERS: {
+                            names.LC_BUILDING_UNIT_T: {
+                                ADJUSTED_INPUT_LAYER: names.LC_BUILDING_UNIT_T,
+                                ADJUSTED_REFERENCE_LAYER: names.LC_PLOT_T
+                            }
+                        }
+                    }, EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_BUILDINGS: {
+                        QUALITY_RULE_LADM_COL_LAYERS: [names.LC_BUILDING_T,
+                                                       names.LC_BUILDING_UNIT_T,
+                                                       names.LC_PARCEL_T,
+                                                       names.COL_UE_BAUNIT_T,
+                                                       names.LC_CONDITION_PARCEL_TYPE_D],
+                        QUALITY_RULE_ADJUSTED_LAYERS: {
+                            names.LC_BUILDING_UNIT_T: {
+                                ADJUSTED_INPUT_LAYER: names.LC_BUILDING_UNIT_T,
+                                ADJUSTED_REFERENCE_LAYER: names.LC_BUILDING_T
+                            }
+                        }
                     }
-                }
-            }, EnumQualityRule.Line.OVERLAPS_IN_BOUNDARIES: {
-                QUALITY_RULE_LADM_COL_LAYERS: [names.LC_BOUNDARY_T],
-                QUALITY_RULE_ADJUSTED_LAYERS: {
-                    names.LC_BOUNDARY_T: {
-                        ADJUSTED_INPUT_LAYER: names.LC_BOUNDARY_T,
-                        ADJUSTED_REFERENCE_LAYER: names.LC_BOUNDARY_T,
-                        FIX_ADJUSTED_LAYER: True
-                    }
-                }
-            }, EnumQualityRule.Line.BOUNDARIES_ARE_NOT_SPLIT: {
-                QUALITY_RULE_LADM_COL_LAYERS: [names.LC_BOUNDARY_T],
-                QUALITY_RULE_ADJUSTED_LAYERS: {
-                    names.LC_BOUNDARY_T: {
-                        ADJUSTED_INPUT_LAYER: names.LC_BOUNDARY_T,
-                        ADJUSTED_REFERENCE_LAYER: names.LC_BOUNDARY_T
-                    }
-                }
-            }, EnumQualityRule.Line.BOUNDARIES_COVERED_BY_PLOTS: {
-                QUALITY_RULE_LADM_COL_LAYERS: [names.LC_PLOT_T,
-                                      names.LC_BOUNDARY_T,
-                                      names.LESS_BFS_T,
-                                      names.MORE_BFS_T],
-                QUALITY_RULE_ADJUSTED_LAYERS: {
-                    names.LC_PLOT_T: {
-                        ADJUSTED_INPUT_LAYER: names.LC_PLOT_T,
-                        ADJUSTED_REFERENCE_LAYER: names.LC_BOUNDARY_T
-                    }
-                }
-            }, EnumQualityRule.Line.BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS: {
-                QUALITY_RULE_LADM_COL_LAYERS: [names.LC_BOUNDARY_POINT_T,
-                                      names.POINT_BFS_T,
-                                      names.LC_BOUNDARY_T],
-                QUALITY_RULE_ADJUSTED_LAYERS: {
-                    names.LC_BOUNDARY_T: {
-                        ADJUSTED_INPUT_LAYER: names.LC_BOUNDARY_T,
-                        ADJUSTED_REFERENCE_LAYER: names.LC_BOUNDARY_POINT_T
-                    }
-                }
-            }, EnumQualityRule.Line.DANGLES_IN_BOUNDARIES: {
-                QUALITY_RULE_LADM_COL_LAYERS: [names.LC_BOUNDARY_T],
-                QUALITY_RULE_ADJUSTED_LAYERS: {
-                    names.LC_BOUNDARY_T: {
-                        ADJUSTED_INPUT_LAYER: names.LC_BOUNDARY_T,
-                        ADJUSTED_REFERENCE_LAYER: names.LC_BOUNDARY_T
-                    }
-                }
-            }, EnumQualityRule.Polygon.OVERLAPS_IN_PLOTS: {
-                QUALITY_RULE_LADM_COL_LAYERS: [names.LC_PLOT_T],
-                QUALITY_RULE_ADJUSTED_LAYERS: {
-                    names.LC_PLOT_T: {
-                        ADJUSTED_INPUT_LAYER: names.LC_PLOT_T,
-                        ADJUSTED_REFERENCE_LAYER: names.LC_PLOT_T,
-                        FIX_ADJUSTED_LAYER: True
-                    }
-                }
-            }, EnumQualityRule.Polygon.OVERLAPS_IN_BUILDINGS: {
-                QUALITY_RULE_LADM_COL_LAYERS: [names.LC_BUILDING_T],
-                QUALITY_RULE_ADJUSTED_LAYERS: {
-                    names.LC_BUILDING_T: {
-                        ADJUSTED_INPUT_LAYER: names.LC_BUILDING_T,
-                        ADJUSTED_REFERENCE_LAYER: names.LC_BUILDING_T
-                    }
-                }
-            }, EnumQualityRule.Polygon.OVERLAPS_IN_RIGHTS_OF_WAY: {
-                QUALITY_RULE_LADM_COL_LAYERS: [names.LC_RIGHT_OF_WAY_T],
-                QUALITY_RULE_ADJUSTED_LAYERS: {
-                    names.LC_RIGHT_OF_WAY_T: {
-                        ADJUSTED_INPUT_LAYER: names.LC_RIGHT_OF_WAY_T,
-                        ADJUSTED_REFERENCE_LAYER: names.LC_RIGHT_OF_WAY_T
-                    }
-                }
-            }, EnumQualityRule.Polygon.PLOTS_COVERED_BY_BOUNDARIES: {
-                QUALITY_RULE_LADM_COL_LAYERS: [names.LC_PLOT_T,
-                                      names.LC_BOUNDARY_T,
-                                      names.LESS_BFS_T,
-                                      names.MORE_BFS_T],
-                QUALITY_RULE_ADJUSTED_LAYERS: {
-                    names.LC_PLOT_T: {
-                        ADJUSTED_INPUT_LAYER: names.LC_PLOT_T,
-                        ADJUSTED_REFERENCE_LAYER: names.LC_PLOT_T,
-                        FIX_ADJUSTED_LAYER: True
-                    }, names.LC_BOUNDARY_T: {  # This one uses an adjusted layer as reference layer!
-                        ADJUSTED_INPUT_LAYER: names.LC_BOUNDARY_T,
-                        ADJUSTED_REFERENCE_LAYER: get_key_for_quality_rule_adjusted_layer(names.LC_PLOT_T, names.LC_PLOT_T, True),
-                        FIX_ADJUSTED_LAYER: True
-                    }
-                }
-            }, EnumQualityRule.Polygon.RIGHT_OF_WAY_OVERLAPS_BUILDINGS: {
-                QUALITY_RULE_LADM_COL_LAYERS: [names.LC_RIGHT_OF_WAY_T,
-                                      names.LC_BUILDING_T],
-                QUALITY_RULE_ADJUSTED_LAYERS: {
-                    names.LC_RIGHT_OF_WAY_T: {
-                        ADJUSTED_INPUT_LAYER: names.LC_RIGHT_OF_WAY_T,
-                        ADJUSTED_REFERENCE_LAYER: names.LC_BUILDING_T
-                    }
-                }
-            }, EnumQualityRule.Polygon.GAPS_IN_PLOTS: {
-                QUALITY_RULE_LADM_COL_LAYERS: [names.LC_PLOT_T],
-                QUALITY_RULE_ADJUSTED_LAYERS: {
-                    names.LC_PLOT_T: {
-                        ADJUSTED_INPUT_LAYER: names.LC_PLOT_T,
-                        ADJUSTED_REFERENCE_LAYER: names.LC_PLOT_T,
-                        FIX_ADJUSTED_LAYER: True
-                    }
-                }
-            }, EnumQualityRule.Polygon.MULTIPART_IN_RIGHT_OF_WAY: {
-                QUALITY_RULE_LADM_COL_LAYERS: [names.LC_RIGHT_OF_WAY_T]
-            }, EnumQualityRule.Polygon.PLOT_NODES_COVERED_BY_BOUNDARY_POINTS: {
-                QUALITY_RULE_LADM_COL_LAYERS: [names.LC_PLOT_T,
-                                               names.LC_BOUNDARY_POINT_T],
-                QUALITY_RULE_ADJUSTED_LAYERS: {
-                    names.LC_PLOT_T: {
-                        ADJUSTED_INPUT_LAYER: names.LC_PLOT_T,
-                        ADJUSTED_REFERENCE_LAYER: names.LC_BOUNDARY_POINT_T
-                    }
-                }
-            }, EnumQualityRule.Polygon.BUILDINGS_SHOULD_BE_WITHIN_PLOTS: {
-                QUALITY_RULE_LADM_COL_LAYERS: [names.LC_BUILDING_T,
-                                               names.LC_PLOT_T,
-                                               names.LC_PARCEL_T,
-                                               names.COL_UE_BAUNIT_T,
-                                               names.LC_CONDITION_PARCEL_TYPE_D],
-                QUALITY_RULE_ADJUSTED_LAYERS: {
-                    names.LC_BUILDING_T: {
-                        ADJUSTED_INPUT_LAYER: names.LC_BUILDING_T,
-                        ADJUSTED_REFERENCE_LAYER: names.LC_PLOT_T
-                    }
-                }
-            }, EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_PLOTS: {
-                QUALITY_RULE_LADM_COL_LAYERS: [names.LC_BUILDING_UNIT_T,
-                                               names.LC_PLOT_T,
-                                               names.LC_PARCEL_T,
-                                               names.COL_UE_BAUNIT_T,
-                                               names.LC_CONDITION_PARCEL_TYPE_D],
-                QUALITY_RULE_ADJUSTED_LAYERS: {
-                    names.LC_BUILDING_UNIT_T: {
-                        ADJUSTED_INPUT_LAYER: names.LC_BUILDING_UNIT_T,
-                        ADJUSTED_REFERENCE_LAYER: names.LC_PLOT_T
-                    }
-                }
-            }, EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_BUILDINGS: {
-                QUALITY_RULE_LADM_COL_LAYERS: [names.LC_BUILDING_T,
-                                               names.LC_BUILDING_UNIT_T,
-                                               names.LC_PARCEL_T,
-                                               names.COL_UE_BAUNIT_T,
-                                               names.LC_CONDITION_PARCEL_TYPE_D],
-                QUALITY_RULE_ADJUSTED_LAYERS: {
-                    names.LC_BUILDING_UNIT_T: {
-                        ADJUSTED_INPUT_LAYER: names.LC_BUILDING_UNIT_T,
-                        ADJUSTED_REFERENCE_LAYER: names.LC_BUILDING_T
-                    }
-                }
-            }
-        }
+                })
+            if model_key == LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY:
+                config.update({
+                    EnumQualityRule.Polygon.OVERLAPS_IN_FDC_PLOTS: {
+                        QUALITY_RULE_LADM_COL_LAYERS: [names.FDC_PLOT_T],
+                        QUALITY_RULE_ADJUSTED_LAYERS: {
+                            names.FDC_PLOT_T: {
+                                ADJUSTED_INPUT_LAYER: names.FDC_PLOT_T,
+                                ADJUSTED_REFERENCE_LAYER: names.FDC_PLOT_T,
+                                FIX_ADJUSTED_LAYER: True
+                            }
+                        }
+                    }})
+
+        return config

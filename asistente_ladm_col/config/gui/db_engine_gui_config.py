@@ -50,6 +50,7 @@ class DBEngineGUIConfig(QObject):
                       # ACTION_REPORT_ANT,
                       ACTION_CHANGE_DETECTION_SETTINGS,
                       ACTION_CHECK_QUALITY_RULES,
+                      ACTION_CHECK_QUALITY_FDC_RULES,
                       ACTION_ALLOCATE_PARCELS_FIELD_DATA_CAPTURE,
                       ACTION_SYNCHRONIZE_FIELD_DATA]
 
