@@ -30,6 +30,10 @@ class Symbology:
                 if getattr(names, "LC_RIGHT_OF_WAY_T", None):
                     style_dict[names.LC_RIGHT_OF_WAY_T] = 'style_right_of_way'
             elif model_key == LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY:
+                if getattr(names, "FDC_GENERAL_AREA_T", None):
+                    style_dict[names.FDC_GENERAL_AREA_T] = 'style_area_especifica_fdc'
+                if getattr(names, "FDC_SPECIFIC_AREA_T", None):
+                    style_dict[names.FDC_SPECIFIC_AREA_T] = 'style_area_especifica_fdc'
                 if getattr(names, "FDC_BOUNDARY_T", None):
                     style_dict[names.FDC_BOUNDARY_T] = 'style_boundary'
                 if getattr(names, "FDC_BOUNDARY_POINT_T", None):
@@ -40,10 +44,14 @@ class Symbology:
                     style_dict[names.FDC_CONTROL_POINT_T] = 'style_control_point'
                 if getattr(names, "FDC_PLOT_T", None):
                     style_dict[names.FDC_PLOT_T] = 'style_plot_polygon'
+                if getattr(names, "FDC_LEGACY_PLOT_T", None):
+                    style_dict[names.FDC_LEGACY_PLOT_T] = 'style_legacy_plot_fdc'
                 if getattr(names, "FDC_BUILDING_T", None):
                     style_dict[names.FDC_BUILDING_T] = 'style_building'
                 if getattr(names, "FDC_BUILDING_UNIT_T", None):
-                    style_dict[names.FDC_BUILDING_UNIT_T] = 'style_building_unit_25'
+                    style_dict[names.FDC_BUILDING_UNIT_T] = 'style_building_unit_fdc'
+                #if getattr(names, "FDC_PARCEL_T", None):
+                #    style_dict[names.FDC_PARCEL_T] = 'style_parcel_fdc'
 
         return style_dict
 

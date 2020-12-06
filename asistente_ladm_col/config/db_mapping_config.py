@@ -439,7 +439,8 @@ DB_MAPPING_CONFIG = {
         "Submodelo_Insumos_SNR.SNR_PersonaTitularTipo": {QueryNames.VARIABLE_NAME: "SNR_TITLE_HOLDER_TYPE_D", QueryNames.FIELDS_DICT: {}}
     },
     LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY: {
-        "Captura_Geo.Captura_Geo.Area_Intervencion": {QueryNames.VARIABLE_NAME: "FDC_OPERATION_AREA_T", QueryNames.FIELDS_DICT: {}},
+        "Captura_Geo.Captura_Geo.Area_Intervencion_general": {QueryNames.VARIABLE_NAME: "FDC_GENERAL_AREA_T", QueryNames.FIELDS_DICT: {}},
+        "Captura_Geo.Captura_Geo.Area_Intervencion_especifica": {QueryNames.VARIABLE_NAME: "FDC_SPECIFIC_AREA_T", QueryNames.FIELDS_DICT: {}},
         "Captura_Geo.Captura_Geo.CalificacionConvencional": {QueryNames.VARIABLE_NAME: "FDC_CONVENTIONAL_QUALIFICATION_T", QueryNames.FIELDS_DICT: {}},
         # Not there "Captura_Geo.Captura_Geo.CalificacionNoConvencional": {QueryNames.VARIABLE_NAME: "FDC_NON_CONVENTIONAL_QUALIFICATION_T", QueryNames.FIELDS_DICT: {}},
         "Captura_Geo.Captura_Geo.Construccion": {QueryNames.VARIABLE_NAME: "FDC_BUILDING_T", QueryNames.FIELDS_DICT: {

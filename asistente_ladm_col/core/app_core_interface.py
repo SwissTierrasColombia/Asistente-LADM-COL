@@ -397,9 +397,9 @@ class AppCoreInterface(QObject):
         self.set_form_groups(db, layer, layer_name)
         self.set_custom_layer_name(db, layer, layer_modifiers=layer_modifiers)
 
-        if layer.isSpatial():
-            self.set_layer_style(db, layer, layer_modifiers, models)
+        self.set_layer_style(db, layer, layer_modifiers, models)
 
+        if layer.isSpatial():
             visible = False
             if LayerConfig.VISIBLE_LAYER_MODIFIERS in layer_modifiers:
                 visible = layer_modifiers[LayerConfig.VISIBLE_LAYER_MODIFIERS]

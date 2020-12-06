@@ -45,6 +45,8 @@ class BaseFDCSynchronizationController(QObject):
     def initialize_layers(self):
         # A dict of layers that we'll use for the synchronization process (just as context)
         self._layers = {
+            self._db.names.FDC_GENERAL_AREA_T: None,
+            self._db.names.FDC_SPECIFIC_AREA_T: None,
             self._db.names.FDC_PLOT_T: None,
             self._db.names.FDC_PARCEL_T: None,
             self._db.names.FDC_USER_T: None,

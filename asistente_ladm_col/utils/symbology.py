@@ -79,6 +79,11 @@ class SymbologyUtils(QObject):
                 layer.setLabeling(labeling)
                 layer.setLabelsEnabled(True)
 
+            if not (renderer or labeling): # Last resort to load style
+                style_path = os.path.join(STYLES_DIR, qml_name + '.qml')
+                if os.path.isfile(style_path):
+                    layer.loadNamedStyle(style_path)
+
     def get_style_from_qml(self, qml_name):
         renderer = None
         labeling = None

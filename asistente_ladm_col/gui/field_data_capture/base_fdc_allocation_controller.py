@@ -66,6 +66,8 @@ class BaseFDCAllocationController(QObject):
         # A dict of layers that we'll use for the allocation process.
         # Note: all of them will be loaded into QGIS and we'll filter their features to set specific t_baskets.
         self._layers = {
+            self._db.names.FDC_GENERAL_AREA_T: None,
+            self._db.names.FDC_SPECIFIC_AREA_T: None,
             self._db.names.FDC_PLOT_T: None,
             self._db.names.FDC_PARCEL_T: None,
             self._db.names.FDC_USER_T: None,
