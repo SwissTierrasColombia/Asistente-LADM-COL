@@ -43,6 +43,7 @@ class DBMappingRegistry:
             QueryNames.VALUE_KEY: dict(),
             QueryNames.CODE_KEY: dict()
         }
+        self._cached_default_basket_t_id = None
 
         # To ease addition of new ili2db names (which must be done in several classes),
         # we keep them together in a dict {variable_name: variable_key}
@@ -117,7 +118,7 @@ class DBMappingRegistry:
     def reset_table_and_field_names(self):
         """
         Start TABLE_DICT from scratch to prepare the next mapping.
-        The other varis are set to None for the same reason.
+        The other vars are set to None for the same reason.
         """
         self.TABLE_DICT = dict()
 
@@ -237,3 +238,9 @@ class DBMappingRegistry:
                 return True, self._cached_wrong_domain_queries[QueryNames.VALUE_KEY][domain_table][key]
 
         return False, None
+
+    def cache_default_basket(self, default_basket_t_id):
+        self._cached_default_basket_t_id = default_basket_t_id
+
+    def get_default_basket(self):
+        return True if self._cached_default_basket_t_id else False, self._cached_default_basket_t_id

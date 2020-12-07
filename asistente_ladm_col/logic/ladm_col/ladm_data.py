@@ -1698,6 +1698,28 @@ class LADMData(QObject):
         return default_basket_id, msg
 
     @staticmethod
+    def get_default_basket_id(db):
+        """
+        To be used by QGIS expressions.
+        We have additional logic here to handle cached values.
+
+        :param db: DBConnector object
+        :return: Default basket's t_id (int)
+        """
+        # Try to get it from cache
+        found_in_cache, cached_value = db.names.get_default_basket()
+        if found_in_cache:
+            Logger().debug(__name__, "(From cache!) Default basket is '{}'".format(cached_value))
+            return cached_value
+
+        default_basket_id = None
+        if db.has_basket_col():
+            default_basket_id, msg = LADMData.get_or_create_default_ili2db_basket(db)
+            db.names.cache_default_basket(default_basket_id)
+
+        return default_basket_id
+
+    @staticmethod
     def get_document_types(names, fdc_document_types_table):
         data = dict()
         for feature in fdc_document_types_table.getFeatures():
