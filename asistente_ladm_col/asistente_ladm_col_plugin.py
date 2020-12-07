@@ -1240,7 +1240,10 @@ class AsistenteLADMCOLPlugin(QObject):
         # Get coordinator's basket (this call also updates all DB objects to use coordinator's t_basket)
         db = self.get_db_connection()
         controller = FDCAdminSynchronizationController(self.app.gui.iface, db, self.ladm_data)
-        res, basket_uuid, msg = controller.get_coordinator_basket(db)
+        msg_status = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Preparing coordinator's database to be exported...")
+        with ProcessWithStatus(msg_status):
+            res, basket_uuid, msg = controller.get_coordinator_basket(db)
+
         if not res:
             self.logger.warning_msg(__name__, msg)
             return

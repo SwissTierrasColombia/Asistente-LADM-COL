@@ -682,7 +682,6 @@ class LADMData(QObject):
         request.setFlags(QgsFeatureRequest.NoGeometry)
 
         if get_feature:
-            request.setSubsetOfAttributes([names.T_ID_F], referencing_layer.fields())  # Note this adds a new flag
             return [feature for feature in referencing_layer.getFeatures(request)]
 
         request.setNoAttributes()
@@ -1313,7 +1312,6 @@ class LADMData(QObject):
         right_ids = list(right_party_dict.keys())
         party_t_ids = list(right_party_dict.values())
         right_t_ids = [right[names.T_ID_F] for right in right_features]
-
         if right_ids:
             res = LADMData.change_attribute_value(fdc_right_layer,
                                                   names.T_BASKET_F,

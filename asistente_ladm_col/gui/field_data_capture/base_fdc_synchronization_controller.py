@@ -50,13 +50,15 @@ class BaseFDCSynchronizationController(QObject):
             self._db.names.FDC_PLOT_T: None,
             self._db.names.FDC_PARCEL_T: None,
             self._db.names.FDC_USER_T: None,
-            self._db.names.FDC_PARTY_DOCUMENT_TYPE_D: None
+            self._db.names.FDC_PARTY_DOCUMENT_TYPE_D: None,
+            self._db.names.FDC_LEGACY_PLOT_T: None
         }
 
         # A dict of layers to which we should set receiver's t_basket before synchronizing.
         # Note: These layers will get a t_basket for all their features, with no filter.
         self._receiver_layers = {
             self._db.names.FDC_ADMINISTRATIVE_SOURCE_T: None,
+            self._db.names.FDC_ADMINISTRATIVE_SOURCE_RIGHT_T: None,
             self._db.names.FDC_BUILDING_T: None,
             self._db.names.FDC_BUILDING_UNIT_T: None,
             self._db.names.FDC_CONVENTIONAL_QUALIFICATION_T: None,
