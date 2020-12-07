@@ -28,7 +28,10 @@ import webbrowser
 import qgis.utils
 from qgis.PyQt.QtCore import (QObject,
                               QCoreApplication)
-from qgis.core import QgsFeatureRequest
+from qgis.core import (QgsFeatureRequest,
+                       QgsCoordinateReferenceSystem)
+
+import processing
 
 from asistente_ladm_col.config.general_config import (DEPENDENCIES_BASE_PATH,
                                                       MODULE_HELP_MAPPING,
@@ -266,3 +269,26 @@ def remove_keys_from_dict(keys, dictionary):
 
 def get_key_for_quality_rule_adjusted_layer(input, reference, fix=False):
     return "{}..{}{}".format(input, reference, '..fix' if fix else '')
+
+
+def get_extent_for_processing(layer, scale=1.5):
+    # Get extent in this form: 'Xmin,Xmax,Ymin,Ymax [EPSG:9377]'
+    # Example: '4843772.266000000,4844770.188000000,2143021.638000000,2144006.634000000 [EPSG:9377]'
+    # See https://github.com/qgis/QGIS/blob/ccc34c76e714e5f6f87d2a329ca048896eb4c87f/src/gui/qgsextentwidget.cpp#L211
+
+    # layer.updateExtents(True)  # Required by GeoPackage, probably until EPSG:9377 is officially included in QGIS
+    # extent = layer.extent()
+
+    extent_layer = processing.run("native:polygonfromlayerextent", {
+        'INPUT': layer,
+        'ROUND_TO': 0,
+        'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
+    extent = extent_layer.extent()
+    extent.scale(scale)
+
+    return "{},{},{},{} [{}]".format(extent.xMinimum(),
+                                     extent.xMaximum(),
+                                     extent.yMinimum(),
+                                     extent.yMaximum(),
+                                     layer.crs().userFriendlyIdentifier(
+                                         QgsCoordinateReferenceSystem.ShortString))

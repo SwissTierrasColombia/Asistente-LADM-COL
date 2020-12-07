@@ -32,6 +32,7 @@ import processing
 from QgisModelBaker.libili2db.ili2dbutils import JavaNotFoundError
 from QgisModelBaker.libili2db import iliexporter
 
+from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.general_config import (JAVA_REQUIRED_VERSION,
                                                       FDC_WILD_CARD_BASKET_ID)
 from asistente_ladm_col.config.ladm_names import LADMNames
@@ -41,6 +42,7 @@ from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.qgis_model_baker.ili2db import Ili2DB
 from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 from asistente_ladm_col.utils.qt_utils import OverrideCursor
+from asistente_ladm_col.utils.utils import get_extent_for_processing
 
 
 class FieldDataCaptureDataExporter(QObject):
@@ -52,9 +54,11 @@ class FieldDataCaptureDataExporter(QObject):
         self._basket_dict = basket_dict  # {t_ili_tids: receiver_name}
         self._export_dir = export_dir
 
+        self.app = AppInterface()
+
         self._total_steps = len(self._basket_dict)
 
-        # Parameters for the "with offline project" mode
+        # Parameters for the "with offline project" mode (i.e., export from coordinator to surveyors)
         self._with_offline_project = with_offline_project
         self._template_project_path = template_project_path
         self._raster_layer = raster_layer
@@ -176,22 +180,23 @@ class FieldDataCaptureDataExporter(QObject):
 
         # Clip raster if any
         if self._raster_layer:
-            self.logger.info(__name__, "Clipping raster for the offline project... ({})".format(user_alias))
-            # Get extent of the Plot layer
-            plot_layer = QgsVectorLayer('{}|layername=terreno'.format(gpkg_path), 'plots', 'ogr')
-            if plot_layer.isValid():
-                # Extent in this form: 'Xmin,Xmax,Ymin,Ymax [EPSG:9377]'
-                # See https://github.com/qgis/QGIS/blob/ccc34c76e714e5f6f87d2a329ca048896eb4c87f/src/gui/qgsextentwidget.cpp#L211
-                #extent = plot_layer.extent()
-                extent = '4843772.266000000,4844770.188000000,2143021.638000000,2144006.634000000 [EPSG:9377]'
+            plot_layer = self.app.core.get_layer(db, db.names.FDC_LEGACY_PLOT_T, load=False)
+
+            if plot_layer and plot_layer.isValid() and plot_layer.featureCount():
+                self.logger.status(QCoreApplication.translate("FieldDataCaptureDataExporter", "Clipping raster for '{}'...").format(user_alias))
+                extent_str = get_extent_for_processing(plot_layer)
+                self.logger.debug(__name__, "...clipping raster to '{}'".format(extent_str))
 
                 # Clip raster and put the output in the offline folder
                 clipped_raster = os.path.join(offline_dir, 'raster.tif')
                 try:
-                    processing.run("gdal:cliprasterbyextent", {'INPUT': self._raster_layer,
-                                                               'PROJWIN': extent,
-                                                               'NODATA': None, 'OPTIONS': 'COMPRESS=JPEG|JPEG_QUALITY=75',
-                                                               'DATA_TYPE': 0, 'EXTRA': '', 'OUTPUT': clipped_raster})
+                    processing.run("gdal:cliprasterbyextent",
+                                   {'INPUT': self._raster_layer,
+                                    'PROJWIN': extent_str,
+                                    'OVERCRS': False, 'NODATA': None,
+                                    'OPTIONS': '',  # 'COMPRESS=JPEG|JPEG_QUALITY=75'
+                                    'DATA_TYPE': 0, 'EXTRA': '',
+                                    'OUTPUT': clipped_raster})
                 except:
                     pass
             update_progress(5)

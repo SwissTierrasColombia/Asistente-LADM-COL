@@ -49,7 +49,7 @@ class SplitDataForSurveyorsPanelWidget(BaseSplitDataForReceiversPanelWidget):
 
     def export_field_data(self):
         self.logger.clear_message_bar()
-        self._controllerraster_layer = self.cbo_raster_layer.currentLayer()
+        self._controller.raster_layer = self.cbo_raster_layer.currentLayer()
 
         template_path = self.qfw_file_template.filePath()
         if template_path and os.path.isfile(template_path):
