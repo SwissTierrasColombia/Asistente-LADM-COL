@@ -106,7 +106,7 @@ class FDCAdminSynchronizationController(BaseFDCSynchronizationController):
                                                      "First, choose a valid XTF file to synchronize.")
 
         # Now, we validate we have a correct single coordinator in the source DB.
-        # For that we need a physical DB.
+        # For that we need a physical (temporary) DB.
 
         # Schema import
         ili2db = Ili2DB()

@@ -204,6 +204,7 @@ class FieldDataCaptureDataExporter(QObject):
         # Copy template project
         project_path = os.path.join(offline_dir, '_qfield.qgs')
         shutil.copyfile(self._template_project_path, project_path)
+        self.logger.status()  # Clear the status bar
 
         return True, QCoreApplication.translate("FieldDataCaptureDataExporter", "Offline project for '{}' was created successfully!").format(user_alias)
 

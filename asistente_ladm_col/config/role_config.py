@@ -340,6 +340,7 @@ def get_role_config():
             ROLE_MODELS: get_field_admin_role_models(),
             ROLE_ACTIONS: [
                 ACTION_EXPORT_DATA,
+                ACTION_EXPORT_DATA_FDC_COORDINATOR,
                 ACTION_ALLOCATE_PARCELS_FIELD_DATA_CAPTURE,
                 ACTION_SYNCHRONIZE_FIELD_DATA,
                 ACTION_INTEGRATE_SUPPLIES,
