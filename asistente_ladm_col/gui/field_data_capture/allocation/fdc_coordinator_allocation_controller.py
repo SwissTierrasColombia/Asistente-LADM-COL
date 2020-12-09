@@ -31,6 +31,9 @@ class FDCCoordinatorAllocationController(BaseFDCAllocationController):
 
         self._with_offline_project = True
 
+    def area_layer(self):
+        return self._layers[self._db.names.FDC_SPECIFIC_AREA_T]
+
     def _get_parcel_field_referencing_receiver(self):
         return self._db.names.T_BASKET_F
 

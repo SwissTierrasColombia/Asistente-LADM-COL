@@ -857,6 +857,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self.app.core.get_layers(self.get_db_connection(), layers, True)
 
     def zoom_to_features(self, layer, ids=list(), t_ids=dict(), duration=500):
+        # Deprecate: You should use app.gui.zoom_to_features instead
+        # TODO: Move current calls to this method to app.gui.zoom_to_features_instead
         if t_ids:
             t_id_name = list(t_ids.keys())[0]
             t_ids_list = t_ids[t_id_name]

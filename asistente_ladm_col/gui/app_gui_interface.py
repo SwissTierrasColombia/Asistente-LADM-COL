@@ -20,6 +20,7 @@ from qgis.PyQt.QtCore import (QObject,
                               pyqtSlot,
                               pyqtSignal,
                               QCoreApplication)
+from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtWidgets import (QFileDialog,
                                  QDockWidget)
 
@@ -41,6 +42,7 @@ from asistente_ladm_col.config.translation_strings import (TranslatableConfigStr
                                                            ERROR_LAYER_GROUP)
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.processing.custom_processing_feedback import CustomFeedbackWithErrors
+from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 from asistente_ladm_col.utils.qgis_model_baker_utils import QgisModelBakerUtils
 from asistente_ladm_col.utils.qt_utils import ProcessWithStatus
 from asistente_ladm_col.utils.symbology import SymbologyUtils
@@ -257,6 +259,25 @@ class AppGUIInterface(QObject):
 
     def zoom_to_selected(self):
         self.iface.actionZoomToSelected().trigger()
+
+    def zoom_to_features(self, layer, ids=list(), t_ids=dict(), duration=500):
+        if t_ids:
+            ids = list()  # Otherwise we might end up mixing ids and t_ids params
+            t_id_name = list(t_ids.keys())[0]
+            t_ids_list = t_ids[t_id_name]
+
+            features = LADMData.get_features_from_t_ids(layer, t_id_name, t_ids_list, True, True)
+            for feature in features:
+                ids.append(feature.id())
+
+        if ids:
+            self.iface.mapCanvas().zoomToFeatureIds(layer, ids)
+            self.iface.mapCanvas().flashFeatureIds(layer,
+                                                   ids,
+                                                   QColor(255, 0, 0, 255),
+                                                   QColor(255, 0, 0, 0),
+                                                   flashes=1,
+                                                   duration=duration)
 
     def show_message(self, msg, level, duration=5):
         self.clear_message_bar()  # Remove previous messages before showing a new one

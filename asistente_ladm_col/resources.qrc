@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="/Asistente-LADM-COL">
+    <file>resources/images/select_by_area.png</file>
     <file>resources/images/warning.svg</file>
     <file>resources/images/synchronize_to_db.png</file>
     <file>resources/images/powered_by.png</file>

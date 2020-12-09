@@ -20,6 +20,9 @@ from qgis.PyQt.QtCore import (QCoreApplication,
                               QObject,
                               pyqtSignal)
 
+from qgis.core import QgsProcessingFeatureSourceDefinition
+import processing
+
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.gui.field_data_capture.allocation.fdc_data_exporter import FieldDataCaptureDataExporter
@@ -156,6 +159,17 @@ class BaseFDCAllocationController(QObject):
 
     def user_layer(self):
         return self._layers[self._db.names.FDC_USER_T]
+
+    def area_layer(self):
+        raise NotImplementedError
+
+    def area_layer_display_expression(self):
+        return "concat('{} ', {})".format(
+            QCoreApplication.translate("BaseFDCAllocationController", "Area"),
+            self._db.names.FDC_GENERAL_AREA_T_ID_F)
+
+    def area_layer_identifier_fields(self):
+        return [self._db.names.T_ID_F]
 
     def document_types_table(self):
         return self._layers[self._db.names.FDC_PARTY_DOCUMENT_TYPE_D]
@@ -328,3 +342,19 @@ class BaseFDCAllocationController(QObject):
                                                                                                   self.user_layer())
     def get_document_types(self):
         return self._ladm_data.get_document_types(self._db.names, self.document_types_table())
+
+    def zoom_to_area(self, t_ids):
+        self.app.gui.zoom_to_features(self.area_layer(), t_ids={self._db.names.T_ID_F: t_ids})
+
+    def select_by_area(self, t_id):
+        """
+        Select legacy plots by area.
+
+        :param t_id: Area's t_id
+        """
+        self.area_layer().selectByExpression("{} = {}".format(self._db.names.T_ID_F, t_id))
+        processing.run("native:selectbylocation", {'INPUT': self.legacy_plot_layer(),
+                                                   'PREDICATE': [0],  # intersects
+                                                   'INTERSECT': QgsProcessingFeatureSourceDefinition(self.area_layer().id(), True),
+                                                   'METHOD': 0})  # New selection
+        self.area_layer().removeSelection()

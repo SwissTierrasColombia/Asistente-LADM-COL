@@ -29,6 +29,9 @@ class FDCAdminAllocationController(BaseFDCAllocationController):
 
         self.receiver_type = self.coordinator_type  # Admin allocates parcels to coordinators
 
+    def area_layer(self):
+        return self._layers[self._db.names.FDC_GENERAL_AREA_T]
+
     def _get_parcel_field_referencing_receiver(self):
         return self._db.names.T_BASKET_F
 

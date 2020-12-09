@@ -641,7 +641,7 @@ class LADMData(QObject):
 
     @staticmethod
     def get_features_from_t_ids(layer, t_id_name, t_ids, no_attributes=False, no_geometry=False):
-        request = QgsFeatureRequest(QgsExpression("{} IN ('{}')".format(t_id_name, "','".join([str(t_id) for t_id in t_ids]))))
+        request = QgsFeatureRequest(QgsExpression("{} IN ({})".format(t_id_name, "','".join([str(t_id) for t_id in t_ids]))))
 
         if no_geometry:
             request.setFlags(QgsFeatureRequest.NoGeometry)
