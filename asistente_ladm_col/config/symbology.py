@@ -31,9 +31,9 @@ class Symbology:
                     style_dict[names.LC_RIGHT_OF_WAY_T] = 'style_right_of_way'
             elif model_key == LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY:
                 if getattr(names, "FDC_GENERAL_AREA_T", None):
-                    style_dict[names.FDC_GENERAL_AREA_T] = 'style_area_especifica_fdc'
+                    style_dict[names.FDC_GENERAL_AREA_T] = 'style_general_area_fdc'
                 if getattr(names, "FDC_SPECIFIC_AREA_T", None):
-                    style_dict[names.FDC_SPECIFIC_AREA_T] = 'style_area_especifica_fdc'
+                    style_dict[names.FDC_SPECIFIC_AREA_T] = 'style_specific_area_fdc'
                 if getattr(names, "FDC_BOUNDARY_T", None):
                     style_dict[names.FDC_BOUNDARY_T] = 'style_boundary'
                 if getattr(names, "FDC_BOUNDARY_POINT_T", None):

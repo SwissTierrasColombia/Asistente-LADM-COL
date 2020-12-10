@@ -243,7 +243,8 @@ class BaseFDCAllocationController(QObject):
             self.receiver_type,
             self._get_parcel_field_referencing_receiver(),
             self._get_receiver_referenced_field(),
-            self._layers)
+            self._layers,
+            [self.area_layer()])
 
         # Finally, export each basket to XTF
         basket_exporter = FieldDataCaptureDataExporter(self._db,

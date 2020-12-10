@@ -1054,7 +1054,7 @@ class LADMData(QObject):
         return expression
 
     @staticmethod
-    def set_basket_for_features_related_to_allocated_parcels_field_data_capture(db, receiver_type, referencing_field, referenced_field, layers):
+    def set_basket_for_features_related_to_allocated_parcels_field_data_capture(db, receiver_type, referencing_field, referenced_field, layers, layers_to_pass_complete):
         """
         Based on parcels that are allocated to receivers, get related objects in the DB and set the receiver's basket id
         to them. Note that both user and parcel layers already have the basket id correctly set.
@@ -1064,6 +1064,7 @@ class LADMData(QObject):
         :param referencing_field: Parcel layer field referencing receivers (in current implementation: t_basket)
         :param referenced_field: Receivers layer field referenced by parcels (in current implementation: t_basket)
         :param layers: Dict of layers to modify: {layer_name: QgsVectorLayer}
+        :param layers_to_pass_complete: List of layers that should be copied without any filter
         :return: {receiver_id: {parcel_layer_name: "expr_parcels", plot_layer_name: "expr_plots", ...}
         """
         names = db.names
@@ -1110,6 +1111,9 @@ class LADMData(QObject):
         # receiver's t_basket only to his associated DB objects.
         Logger().info(__name__, "Setting basket ids to db objects related to {} receivers...".format(len(receiver_ids)))
         for t_basket in receiver_ids:
+            # Set t_basket to layers that should be passed without any filter
+            LADMData.update_t_basket_in_layers(db, layers_to_pass_complete, t_basket)
+
             # Get parcels per receiver id --> {parcel_id: parcel_t_id}
             parcel_data = LADMData.get_parcels_for_receiver_field_data_capture(names.T_ID_F,  # We want parcel t_ids
                                                                                t_basket,
