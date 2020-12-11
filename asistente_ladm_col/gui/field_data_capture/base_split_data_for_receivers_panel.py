@@ -30,6 +30,7 @@ from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.enums import EnumLogHandler
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils import get_ui_class
+from asistente_ladm_col.utils.qt_utils import OverrideCursor
 
 WIDGET_UI = get_ui_class('field_data_capture/base_split_data_for_receivers_panel_widget.ui')
 
@@ -105,7 +106,8 @@ class BaseSplitDataForReceiversPanelWidget(QgsPanelWidget, WIDGET_UI):
             self.prb_export_field_data.setRange(0, 100)
             self.prb_export_field_data.setValue(0)
 
-            res, msg = self._controller.export_field_data(export_dir)
+            with OverrideCursor(Qt.WaitCursor):
+                res, msg = self._controller.export_field_data(export_dir)
 
             self.logger.success_warning(__name__, res, msg, EnumLogHandler.MESSAGE_BAR)
         else:

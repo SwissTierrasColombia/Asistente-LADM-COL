@@ -16,6 +16,7 @@
  *                                                                         *
  ***************************************************************************/
 """
+from asistente_ladm_col.lib.logger import Logger
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QObject,
                               pyqtSignal)
@@ -219,48 +220,75 @@ class BaseFDCAllocationController(QObject):
     def export_field_data(self, export_dir):
         names = self._db.names
 
-        # Get list of basket t_ili_tids to export
-        receivers_data = self._ladm_data.get_fdc_receivers_data(names, self.user_layer(),
-                                                                self._get_receiver_referenced_field(),
+        # 1) Get receivers' t_basket that actually have at least one parcel assigned (basically, an INNER JOIN)
+        # For that: Go to parcel layer and get uniques, then filter that list comparing it with receiver ids from users
+        receivers_dict = self._ladm_data.get_fdc_receivers_data(names, self.user_layer(),
+                                                                self._get_receiver_referenced_field(),  # t_basket
                                                                 self.receiver_type, full_name=False)
-        receiver_idx = self.parcel_layer().fields().indexOf(self._get_parcel_field_referencing_receiver())
-        receiver_ids = self.parcel_layer().uniqueValues(receiver_idx)
-        # Only t_basket of receivers with allocated parcels
-        basket_t_ids = [k for k in receivers_data.keys() if k in receiver_ids]
+        receiver_field_idx = self.parcel_layer().fields().indexOf(self._get_parcel_field_referencing_receiver())
+        receiver_ids_in_parcels = self.parcel_layer().uniqueValues(receiver_field_idx)
+
+        # Only t_basket of receivers with allocated parcels (remember that keys are receiver's t_baskets)
+        basket_t_ids = [k for k in receivers_dict.keys() if k in receiver_ids_in_parcels]
+
+        # 2) Get baskets info to export XTFs via ili2db (basically, an INNER JOIN)
+        #    basket_receiver_dict: {t_basket: {t_ili_tid: receiver_name}}
         basket_table = self._ladm_data.get_basket_table(self._db)
+        basket_receiver_dict = {f[names.T_ID_F]: {'t_ili_tid': f[names.T_ILI_TID_F],
+                                                  'name': receivers_dict[f[names.T_ID_F]][0]}
+                                for f in basket_table.getFeatures() if f[names.T_ID_F] in basket_t_ids}
 
-        # basket_dict: {t_ili_tid: receiver_name}
-        basket_dict = {f[names.T_ILI_TID_F]: receivers_data[f[names.T_ID_F]][0] for f in basket_table.getFeatures() if
-                       f[self._db.names.T_ID_F] in basket_t_ids}
-
-        if not basket_dict:
+        if not basket_receiver_dict:
             return False, QCoreApplication.translate("BaseFDCAllocationController",
                                                      "First allocate at least one parcel.")
 
-        # Now set basket id for allocated parcels' related features
-        res = self._ladm_data.set_basket_for_features_related_to_allocated_parcels_field_data_capture(
-            self._db,
-            self.receiver_type,
-            self._get_parcel_field_referencing_receiver(),
-            self._get_receiver_referenced_field(),
-            self._layers,
-            [self.area_layer()])
+        # 3) IMPORTANT: Before setting receiver's t_basket to objects related to allocated parcels,
+        #               let's reset t_basket in all tables, setting them to the default basket.
+        default_basket_id, msg = self._ladm_data.get_or_create_default_ili2db_basket(self._db)
+        if default_basket_id is None:
+            return False, msg
 
-        # Finally, export each basket to XTF
+        # Keep parcel and user tables untouched, because there we have the allocation info! Domains don't have baskets!
+        domains = [k for k,v in self._layers.items() if v.fields().indexOf(names.T_BASKET_F) < 0]
+        layers_to_not_reset = domains + [names.FDC_PARCEL_T, names.FDC_USER_T]
+        layers_to_reset = [v for k, v in self._layers.items() if k not in layers_to_not_reset]
+        res_reset = self._ladm_data.update_t_basket_in_layers(self._db, layers_to_reset, default_basket_id)
+        if not res_reset:
+            return False, QCoreApplication.translate("BaseFDCAllocationController",
+                                                     "Could not write default basket id ({}) in field data layers.").format(default_basket_id)
+
+        # 4) Now that we've reset t_baskets in all tables, proceed writing
+        #    each receiver's t_basket only to his associated DB objects.
+        Logger().info(__name__, "Setting basket ids to db objects related to {} receivers...".format(len(basket_t_ids)))
+
+        # Prepare basket exporter
         basket_exporter = FieldDataCaptureDataExporter(self._db,
-                                                       basket_dict,
+                                                       len(basket_receiver_dict),
                                                        export_dir,
                                                        self._with_offline_project,
                                                        self.template_project_path,
                                                        self.raster_layer)
         basket_exporter.total_progress_updated.connect(self.export_field_data_progress)  # Signal chaining
-        all_res = basket_exporter.export_baskets()
+        self.export_field_data_progress.emit(1)  # Let users know we started already
 
-        for basket, res in all_res.items():
-            if not res[0]:  # res: (bool, msg)
-                return res
+        for t_basket, data in basket_receiver_dict.items():
+            # Now set basket id for allocated parcels' related features
+            res, msg = self._ladm_data.set_basket_for_features_related_to_allocated_parcels_field_data_capture(
+                self._db,
+                t_basket,
+                data['name'],
+                self._get_parcel_field_referencing_receiver(),
+                self._layers,
+                [self.area_layer()])
+            if not res:
+                return False, msg
 
-        return True, self._successful_export_message(len(basket_dict), export_dir)
+            # Now, export the current basket to XTF
+            res_xtf, msg_xtf = basket_exporter.export_basket(data['t_ili_tid'], data['name'])
+            if not res_xtf:
+                return res, msg_xtf
+
+        return True, self._successful_export_message(len(basket_receiver_dict), export_dir)
 
     def _successful_export_message(self, count, export_dir):
         raise NotImplementedError

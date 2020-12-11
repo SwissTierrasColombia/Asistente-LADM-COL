@@ -18,11 +18,13 @@
 """
 import os
 
-from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import (Qt,
+                              QCoreApplication)
 from qgis.core import QgsMapLayerProxyModel
 
 from asistente_ladm_col.config.enums import EnumLogHandler
 from asistente_ladm_col.gui.field_data_capture.base_split_data_for_receivers_panel import BaseSplitDataForReceiversPanelWidget
+from asistente_ladm_col.utils.qt_utils import OverrideCursor
 
 
 class SplitDataForSurveyorsPanelWidget(BaseSplitDataForReceiversPanelWidget):
@@ -67,7 +69,8 @@ class SplitDataForSurveyorsPanelWidget(BaseSplitDataForReceiversPanelWidget):
             self.prb_export_field_data.setRange(0, 100)
             self.prb_export_field_data.setValue(0)
 
-            res, msg = self._controller.export_field_data(export_dir)
+            with OverrideCursor(Qt.WaitCursor):
+                res, msg = self._controller.export_field_data(export_dir)
 
             self.logger.success_warning(__name__, res, msg, EnumLogHandler.MESSAGE_BAR)
         else:
