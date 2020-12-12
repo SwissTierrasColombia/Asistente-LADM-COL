@@ -46,7 +46,8 @@ from asistente_ladm_col.config.change_detection_config import (PLOT_GEOMETRY_KEY
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.config.query_names import QueryNames
 from asistente_ladm_col.app_interface import AppInterface
-from asistente_ladm_col.lib.db.db_connector import DBConnector
+from asistente_ladm_col.lib.db.db_connector import (DBConnector,
+                                                    COMPOSED_KEY_SEPARATOR)
 from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
 from asistente_ladm_col.lib.logger import Logger
 
@@ -1692,6 +1693,61 @@ class LADMData(QObject):
             db.names.cache_default_basket(default_basket_id)
 
         return default_basket_id
+
+    def get_paired_domain_value(self, source_db, target_db, source_domain_table, target_domain_table, source_value):
+        """
+        For two identical domain tables in two different models (e.g., supplies and field data capture), it gets the
+        t_id of the paired domain value in the target domainn table, given a t_id in the source domain table. This
+        function compares the iliCodes for pairing up the records.
+
+        E.g., for a t_id 5 corresponding to MyDomainValue (iliCode) in the source DB, the function goes to the
+        indicated domain table in the target DB, searches for the same iliCode (MyDomainValue) and returns its t_id.
+
+        If the iliCode (or even the domain tables) cannot be found, this function returns None.
+
+        Note that we employ a cache for the whole target domain table in order to optimize subsequent calls.
+
+        :param source_db: DBConnector to the source db
+        :param target_db: DBConnector to the source db
+        :param source_domain_table: name of the source domain table
+        :param target_domain_table: name of the target domain table
+        :param source_value: t_id of the source value in the source domain table
+        :return: t_id of the paired value in the target domain table
+        """
+        # First attempt to retrieve from cache (note we store the cache in the target (main) db)
+        cache_key = source_db.get_display_conn_string() + COMPOSED_KEY_SEPARATOR + source_domain_table
+        found_in_cache, cached_value = target_db.names.get_paired_domain_value(cache_key, source_value)
+        if found_in_cache:
+            Logger().debug(__name__, "(From cache!) Paired domain value for '{}' ({}) is '{}'".format(source_value,
+                                                                                                      source_domain_table,
+                                                                                                      cached_value))
+            return cached_value
+
+        source_layer = self.app.core.get_layer(source_db, source_domain_table, load=False)
+        target_layer = self.app.core.get_layer(target_db, target_domain_table, load=False)
+        if not source_layer or not target_layer:
+            Logger().debug(__name__, "We couldn't find at least one of the domain tables given: {} or {}".format(
+                source_domain_table, target_domain_table))
+            return None
+
+        source_names = source_db.names
+        target_names = target_db.names
+        dict_pairs = dict()
+        for sf in source_layer.getFeatures():
+            for tf in target_layer.getFeatures():
+                if sf[source_names.ILICODE_F].lower() == tf[target_names.ILICODE_F].lower():
+                    dict_pairs[sf[source_names.T_ID_F]] = tf[target_names.T_ID_F]
+                    break
+
+        if dict_pairs:
+            target_db.names.cache_paired_domain(cache_key, dict_pairs)
+            target_value = dict_pairs.get(source_value)
+            Logger().debug(__name__, "Paired domain value for '{}' ({}) is '{}'".format(source_value,
+                                                                                        source_domain_table,
+                                                                                        target_value))
+            return target_value
+
+        return None
 
     @staticmethod
     def get_document_types(names, fdc_document_types_table):

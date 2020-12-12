@@ -83,6 +83,8 @@ class FDCCoordinatorSynchronizationController(BaseFDCSynchronizationController):
         return True, t_basket, basket_uuid, "Success!"
 
     def synchronize_data(self, db, file_path):
+        self.app.gui.clear_message_bar()
+
         # Validate db structure
         db_tmp = GPKGConnector(file_path)
         res, code, msg = db_tmp.test_connection()

@@ -99,6 +99,8 @@ class FDCAdminSynchronizationController(BaseFDCSynchronizationController):
         return res, basket_uuid, msg
 
     def synchronize_data(self, db, file_path):
+        self.app.gui.clear_message_bar()
+
         if file_path and os.path.isfile(file_path):
             self.app.settings.fdc_coordinator_xtf_path = file_path
         else:

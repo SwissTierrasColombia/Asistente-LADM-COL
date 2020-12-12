@@ -1,5 +1,6 @@
 from qgis.utils import qgsfunction
 
+from asistente_ladm_col.config.general_config import SUPPLIES_DB_SOURCE
 from asistente_ladm_col.config.translation_strings import TranslatableConfigStrings
 
 
@@ -75,8 +76,8 @@ def get_default_basket(feature, parent):
     Gets the t_id from the default basket in the DB. If it does not exist,
     it first creates the default basket and returns the newly created t_id.
 
-    : param feature: Not used, but mandatory for QGIS
-    : param parent: Not used, but mandatory for QGIS
+    :param feature: Not used, but mandatory for QGIS
+    :param parent: Not used, but mandatory for QGIS
     """
     debug = False
     res = None
@@ -92,6 +93,44 @@ def get_default_basket(feature, parent):
         else:
             res = plugin.ladm_data.get_default_basket_id(db)
 
+    return res
+
+
+@qgsfunction(args='auto', group='LADM-COL', helpText=TranslatableConfigStrings.help_get_paired_domain_value)
+def get_paired_domain_value(source_domain_table, target_domain_table, source_value, feature, parent):
+    """
+
+    :param source_domain_table: Name of the source domain table (in the main DB connection)
+    :param target_domain_table: Name of the target domain table (in the secondary DB connection)
+    :param source_value: t_id of the domain value in the source domain table
+    :param feature: Not used, but mandatory for QGIS
+    :param parent: Not used, but mandatory for QGIS
+    :return:
+    """
+    debug = False
+    res = None
+
+    from qgis import utils
+    if not "asistente_ladm_col" in utils.plugins:
+        res = -1 if debug else None
+    else:
+        plugin = utils.plugins["asistente_ladm_col"]  # Dict of active plugins
+        source_db = plugin.get_db_connection(SUPPLIES_DB_SOURCE)
+        target_db = plugin.get_db_connection()  # Because we expect it to be the db on which we'll continue to work
+
+        if not getattr(source_db.names, "T_ID_F", None):
+            source_db.test_connection()  # To generate db names
+        if not getattr(target_db.names, "T_ID_F", None):
+            target_db.test_connection()  # To generate db names
+
+        if source_db.names.T_ID_F is None or target_db.names.T_ID_F is None:
+            res = -2 if debug else None
+        else:
+            res = plugin.ladm_data.get_paired_domain_value(source_db,
+                                                           target_db,
+                                                           source_domain_table,
+                                                           target_domain_table,
+                                                           source_value)
     return res
 
 

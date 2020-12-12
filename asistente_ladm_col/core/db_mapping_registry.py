@@ -44,6 +44,7 @@ class DBMappingRegistry:
             QueryNames.CODE_KEY: dict()
         }
         self._cached_default_basket_t_id = None
+        self._cached_paired_domain_values = dict()  # {source_db_conn..domain_table_name: {s_t_id1: t_t_id1, ...}}
 
         # To ease addition of new ili2db names (which must be done in several classes),
         # we keep them together in a dict {variable_name: variable_key}
@@ -244,3 +245,13 @@ class DBMappingRegistry:
 
     def get_default_basket(self):
         return True if self._cached_default_basket_t_id else False, self._cached_default_basket_t_id
+
+    def cache_paired_domain(self, source_db_key, dict_pairs):
+        self._cached_paired_domain_values[source_db_key] = dict_pairs
+
+    def get_paired_domain_value(self, source_db_key, source_value):
+        dict_pairs = self._cached_paired_domain_values.get(source_db_key)
+        if dict_pairs:
+            return True, dict_pairs.get(source_value)
+
+        return False, None
