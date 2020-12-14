@@ -93,7 +93,7 @@
          <item row="1" column="1">
           <layout class="QHBoxLayout" name="horizontalLayout_2">
            <item>
-            <widget class="QLineEdit" name="txt_files_name_supplies"/>
+            <widget class="QLineEdit" name="txt_file_names_supplies"/>
            </item>
           </layout>
          </item>

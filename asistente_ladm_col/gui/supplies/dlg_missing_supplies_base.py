@@ -112,19 +112,19 @@ class MissingSuppliesBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         self.txt_file_path_uni.setValidator(file_validator_lis)
         self.txt_file_path_gdb.setValidator(dir_validator_gdb)
         self.txt_file_path_folder_supplies.setValidator(dir_validator_folder)
-        self.txt_files_name_supplies.setValidator(non_empty_validator_name)
+        self.txt_file_names_supplies.setValidator(non_empty_validator_name)
 
         self.txt_file_path_predio.textChanged.connect(self.validators.validate_line_edits)
         self.txt_file_path_uni.textChanged.connect(self.validators.validate_line_edits)
         self.txt_file_path_gdb.textChanged.connect(self.validators.validate_line_edits)
         self.txt_file_path_folder_supplies.textChanged.connect(self.validators.validate_line_edits)
-        self.txt_files_name_supplies.textChanged.connect(self.validators.validate_line_edits)
+        self.txt_file_names_supplies.textChanged.connect(self.validators.validate_line_edits)
 
         self.txt_file_path_predio.textChanged.connect(self.input_data_changed)
         self.txt_file_path_uni.textChanged.connect(self.input_data_changed)
         self.txt_file_path_gdb.textChanged.connect(self.input_data_changed)
         self.txt_file_path_folder_supplies.textChanged.connect(self.input_data_changed)
-        self.txt_files_name_supplies.textChanged.connect(self.input_data_changed)
+        self.txt_file_names_supplies.textChanged.connect(self.input_data_changed)
 
     def progress_configuration(self, base, num_process):
         """
@@ -197,7 +197,7 @@ class MissingSuppliesBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         settings.setValue('Asistente-LADM-COL/missing_supplies_{}/uni_path'.format(system), self.txt_file_path_uni.text())
         settings.setValue('Asistente-LADM-COL/missing_supplies_{}/gdb_path'.format(system), self.txt_file_path_gdb.text())
         settings.setValue('Asistente-LADM-COL/missing_supplies_{}/folder_path'.format(system), self.txt_file_path_folder_supplies.text())
-        settings.setValue('Asistente-LADM-COL/missing_supplies_{}/files_name'.format(system), self.txt_files_name_supplies.text())
+        settings.setValue('Asistente-LADM-COL/missing_supplies_{}/files_name'.format(system), self.txt_file_names_supplies.text())
 
     def restore_settings(self, system):
         settings = QSettings()
@@ -205,7 +205,7 @@ class MissingSuppliesBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         self.txt_file_path_uni.setText(settings.value('Asistente-LADM-COL/missing_supplies_{}/uni_path'.format(system), ''))
         self.txt_file_path_gdb.setText(settings.value('Asistente-LADM-COL/missing_supplies_{}/gdb_path'.format(system), ''))
         self.txt_file_path_folder_supplies.setText(settings.value('Asistente-LADM-COL/missing_supplies_{}/folder_path'.format(system), ''))
-        self.txt_files_name_supplies.setText(settings.value('Asistente-LADM-COL/missing_supplies_{}/files_name'.format(system), ''))
+        self.txt_file_names_supplies.setText(settings.value('Asistente-LADM-COL/missing_supplies_{}/files_name'.format(system), ''))
 
     def load_lis_files(self, alphanumeric_file_paths):
         root = QgsProject.instance().layerTreeRoot()
