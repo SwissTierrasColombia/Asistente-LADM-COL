@@ -63,7 +63,7 @@ class MissingCobolSuppliesDialog(MissingSuppliesBaseDialog):
         self.txt_file_path_uni.textChanged.emit(self.txt_file_path_uni.text())
         self.txt_file_path_gdb.textChanged.emit(self.txt_file_path_gdb.text())
         self.txt_file_path_folder_supplies.textChanged.emit(self.txt_file_path_folder_supplies.text())
-        self.txt_files_name_supplies.textChanged.emit(self.txt_files_name_supplies.text())
+        self.txt_file_names_supplies.textChanged.emit(self.txt_file_names_supplies.text())
         self.buttonBox.helpRequested.connect(self.show_help)
 
         # Initialize
@@ -75,11 +75,11 @@ class MissingCobolSuppliesDialog(MissingSuppliesBaseDialog):
         self.save_settings(self.data_system)
 
         self.folder_path = self.txt_file_path_folder_supplies.text()
-        self.files_name = self.txt_files_name_supplies.text().strip()
-        self.gpkg_path = os.path.join(self.folder_path, QCoreApplication.translate(
-                'MissingCobolSuppliesDialog', '{}.gpkg'.format(self.files_name)))
-        self.xlsx_path = os.path.join(self.folder_path, QCoreApplication.translate(
-                'MissingCobolSuppliesDialog', '{}.xlsx'.format(self.files_name)))
+        self.file_names = self.txt_file_names_supplies.text().strip()
+        self.gpkg_path = os.path.join(self.folder_path, 'MissingCobolSuppliesDialog', 
+                                      '{}.gpkg'.format(self.file_names))
+        self.xlsx_path = os.path.join(self.folder_path, 'MissingCobolSuppliesDialog', 
+                                      '{}.xlsx'.format(self.file_names))
 
         reply = self.validate_files_in_folder()
 
@@ -295,9 +295,9 @@ class MissingCobolSuppliesDialog(MissingSuppliesBaseDialog):
         
         uni_path = self.txt_file_path_uni.validator().validate(self.txt_file_path_uni.text().strip(), 0)[0]
         folder_path = self.txt_file_path_folder_supplies.validator().validate(self.txt_file_path_folder_supplies.text().strip(), 0)[0]
-        files_name = self.txt_files_name_supplies.validator().validate(self.txt_files_name_supplies.text().strip(), 0)[0]
+        file_names = self.txt_file_names_supplies.validator().validate(self.txt_file_names_supplies.text().strip(), 0)[0]
         
-        if uni_path == QValidator.Acceptable and folder_path == QValidator.Acceptable and files_name == QValidator.Acceptable and self.validate_common_inputs():
+        if uni_path == QValidator.Acceptable and folder_path == QValidator.Acceptable and file_names == QValidator.Acceptable and self.validate_common_inputs():
             return True
         else:
             return False
