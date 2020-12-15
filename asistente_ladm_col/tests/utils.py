@@ -252,17 +252,17 @@ def delete_features(layer):
         layer.deleteFeatures(list_ids)
 
 
-def standardize_query_results(result):
+def standardize_query_results(result, key_to_remove='id'):
     if isinstance(result, (list, dict)):
         if isinstance(result, dict):
-            result.pop('id', None)
+            result.pop(key_to_remove, None)
             for item in result:
-                standardize_query_results(result[item])
+                standardize_query_results(result[item], key_to_remove)
 
         elif isinstance(result, list):
             for item in result:
                 if isinstance(item, dict):
-                    standardize_query_results(item)
+                    standardize_query_results(item, key_to_remove)
     return result
 
 

@@ -28,7 +28,8 @@ import webbrowser
 import qgis.utils
 from qgis.PyQt.QtCore import (QObject,
                               QCoreApplication)
-from qgis.core import QgsFeatureRequest
+from qgis.core import (QgsFeatureRequest,
+                       QgsExpression)
 
 from asistente_ladm_col.config.general_config import (DEPENDENCIES_BASE_PATH,
                                                       MODULE_HELP_MAPPING,
@@ -266,3 +267,26 @@ def remove_keys_from_dict(keys, dictionary):
 
 def get_key_for_quality_rule_adjusted_layer(input, reference, fix=False):
     return "{}..{}{}".format(input, reference, '..fix' if fix else '')
+
+
+def get_field_values_by_another_field(layer, field, field_values, expected_field):
+    """
+    Returns the fields associated with a field based on another field.
+    :param layer: QgsMapLayer
+    :param field: Field name, it must be a unique field in the table
+    :param field_values: List of values to use for filtering the layer by field name
+    :param expected_field: name of the field from which the values are expected
+    :return: List of values associated with the expected field. Order is preserved
+    """
+    expr = QgsExpression('"{field}" in ({field_values})'.format(field=field, field_values=', '.join(
+        "'{}'".format(v) for v in field_values)))
+    features = [feature for feature in layer.getFeatures(QgsFeatureRequest(expr))]
+
+    expected_field_values = []
+    # Same order must be preserved in the returned array
+    for field_value in field_values:
+        for feature in features:
+            if feature[field] == field_value:
+                expected_field_values.append(feature[expected_field])
+                break
+    return expected_field_values
