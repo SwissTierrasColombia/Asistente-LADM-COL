@@ -68,7 +68,8 @@ class BaseFDCAllocationController(QObject):
 
     def initialize_layers(self):
         # A dict of layers that we'll use for the allocation process.
-        # Note: all of them will be loaded into QGIS and we'll filter their features to set specific t_baskets.
+        # Note: all of them will be loaded into QGIS and we'll use them either to filter their features to set specific
+        # t_baskets or to set the t_basket for all of their features (and thus, pass them completely to all receivers).
         self._layers = {
             self._db.names.FDC_GENERAL_AREA_T: None,
             self._db.names.FDC_SPECIFIC_AREA_T: None,
@@ -78,13 +79,18 @@ class BaseFDCAllocationController(QObject):
             self._db.names.FDC_PARTY_DOCUMENT_TYPE_D: None,
             self._db.names.FDC_BUILDING_T: None,
             self._db.names.FDC_BUILDING_UNIT_T: None,
+            self._db.names.FDC_CONTROL_POINT_T: None,
+            self._db.names.FDC_SURVEY_POINT_T: None,
+            self._db.names.FDC_BOUNDARY_POINT_T: None,
             self._db.names.FDC_CONVENTIONAL_QUALIFICATION_T: None,
             self._db.names.FDC_RIGHT_T: None,
             self._db.names.FDC_PARTY_T: None,
             self._db.names.FDC_ADMINISTRATIVE_SOURCE_RIGHT_T: None,
             self._db.names.FDC_ADMINISTRATIVE_SOURCE_T: None,
             self._db.names.FDC_HOUSING_MARKET_OFFERS_T: None,
-            self._db.names.FDC_LEGACY_PLOT_T: None
+            self._db.names.FDC_LEGACY_PLOT_T: None,
+            self._db.names.FDC_LEGACY_BUILDING_T: None,
+            self._db.names.FDC_LEGACY_BUILDING_UNIT_T: None
         }
 
     def add_layers(self, force=False):
@@ -158,8 +164,25 @@ class BaseFDCAllocationController(QObject):
     def parcel_layer(self):
         return self._layers[self._db.names.FDC_PARCEL_T]
 
+    def control_point_layer(self):
+        return self._layers[self._db.names.FDC_CONTROL_POINT_T]
+
+    def survey_point_layer(self):
+        return self._layers[self._db.names.FDC_SURVEY_POINT_T]
+
+    def boundary_point_layer(self):
+        return self._layers[self._db.names.FDC_BOUNDARY_POINT_T]
+
     def user_layer(self):
         return self._layers[self._db.names.FDC_USER_T]
+
+    def _layers_to_pass_complete(self):
+        """
+        A list of layers that should be passed complete (i.e., with no feature filter) to the receivers.
+
+        :return: List of QgsVectorLayers
+        """
+        return [self.area_layer(), self.boundary_point_layer(), self.survey_point_layer(), self.control_point_layer()]
 
     def area_layer(self):
         raise NotImplementedError
@@ -279,7 +302,7 @@ class BaseFDCAllocationController(QObject):
                 data['name'],
                 self._get_parcel_field_referencing_receiver(),
                 self._layers,
-                [self.area_layer()])
+                self._layers_to_pass_complete())
             if not res:
                 return False, msg
 

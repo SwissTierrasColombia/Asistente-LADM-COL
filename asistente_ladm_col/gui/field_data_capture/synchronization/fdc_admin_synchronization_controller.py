@@ -35,8 +35,8 @@ class FDCAdminSynchronizationController(BaseFDCSynchronizationController):
 
         self.receiver_ilicode = LADMNames.FDC_ROLE_TYPE_D_COORDINATOR_V
         self.receiver_type = self._ladm_data.get_domain_code_from_value(self._db,
-                                                                           self._db.names.FDC_ROLE_TYPE_D,
-                                                                           self.receiver_ilicode)
+                                                                        self._db.names.FDC_ROLE_TYPE_D,
+                                                                        self.receiver_ilicode)
 
     def _validate_single_receiver_in_source_db(self, db):
         """

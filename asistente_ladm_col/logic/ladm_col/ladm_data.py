@@ -27,7 +27,10 @@ from qgis.core import (NULL,
                        QgsFeature,
                        QgsVectorLayer,
                        QgsVectorLayerUtils,
-                       QgsAggregateCalculator)
+                       QgsAggregateCalculator,
+                       QgsProcessingFeatureSourceDefinition)
+import processing
+
 from asistente_ladm_col.config.enums import EnumLogMode
 from asistente_ladm_col.config.general_config import (DEFAULT_LOG_MODE,
                                                       DEFAULT_DATASET_NAME)
@@ -1080,6 +1083,8 @@ class LADMData(QObject):
         fdc_admin_source_layer = layers[names.FDC_ADMINISTRATIVE_SOURCE_T]
         fdc_market_offers_layer = layers[names.FDC_HOUSING_MARKET_OFFERS_T]
         fdc_legacy_plot_layer = layers[names.FDC_LEGACY_PLOT_T]
+        fdc_legacy_building_layer = layers[names.FDC_LEGACY_BUILDING_T]
+        fdc_legacy_building_unit_layer = layers[names.FDC_LEGACY_BUILDING_UNIT_T]
 
         # First, set t_basket to layers that should be passed without any filter
         LADMData.update_t_basket_in_layers(db, layers_to_pass_complete, t_basket)
@@ -1151,6 +1156,8 @@ class LADMData(QObject):
             t_basket,
             fdc_parcel_layer,
             fdc_legacy_plot_layer,
+            fdc_legacy_building_layer,
+            fdc_legacy_building_unit_layer,
             parcel_t_ids)
         if not res_l_plots:
             return False, msg_l_plots + QCoreApplication.translate(" Receiver {}.").format(receiver_name)
@@ -1366,7 +1373,7 @@ class LADMData(QObject):
         return True, len(market_offer_ids), 'Success!'
 
     @staticmethod
-    def set_basket_to_legacy_spatial_units_related_to_parcels(names, t_basket, fdc_parcel_layer, fdc_legacy_plot_layer, parcel_t_ids):
+    def set_basket_to_legacy_spatial_units_related_to_parcels(names, t_basket, fdc_parcel_layer, fdc_legacy_plot_layer, fdc_legacy_building_layer, fdc_legacy_building_unit_layer, parcel_t_ids):
         # Get legacy plots from parcels and write the basket
         plot_ids = LADMData.get_referencing_features(names,
                                                      fdc_parcel_layer,
@@ -1383,6 +1390,44 @@ class LADMData(QObject):
                 return False, None, QCoreApplication.translate("LADMData",
                                                                "Could not write basket id {} to Legacy Plot layer.".format(
                                                                    t_basket))
+
+            # Get legacy buildings that intersect selected legacy plots and write the basket
+            fdc_legacy_plot_layer.select(plot_ids)
+            processing.run("native:selectbylocation", {'INPUT': fdc_legacy_building_layer,
+                                                       'PREDICATE': [0],  # intersects
+                                                       'INTERSECT': QgsProcessingFeatureSourceDefinition(fdc_legacy_plot_layer.id(), True),
+                                                       'METHOD': 0})  # New selection
+            fdc_legacy_plot_layer.removeSelection()
+            legacy_building_ids = fdc_legacy_building_layer.selectedFeatureIds()
+            if legacy_building_ids:
+                res_buildings = LADMData.change_attribute_value(fdc_legacy_building_layer,
+                                                                names.T_BASKET_F,
+                                                                t_basket,
+                                                                legacy_building_ids)
+                fdc_legacy_building_layer.removeSelection()
+                if not res_buildings:
+                    return False, None, QCoreApplication.translate("LADMData",
+                                                                   "Could not write basket id {} to Legacy Building layer.".format(
+                                                                       t_basket))
+
+            # Get legacy building units that intersect selected legacy plots and write the basket
+            fdc_legacy_plot_layer.select(plot_ids)
+            processing.run("native:selectbylocation", {'INPUT': fdc_legacy_building_unit_layer,
+                                                       'PREDICATE': [0],  # intersects
+                                                       'INTERSECT': QgsProcessingFeatureSourceDefinition(fdc_legacy_plot_layer.id(), True),
+                                                       'METHOD': 0})  # New selection
+            fdc_legacy_plot_layer.removeSelection()
+            legacy_building_unit_ids = fdc_legacy_building_unit_layer.selectedFeatureIds()
+            if legacy_building_unit_ids:
+                res_building_units = LADMData.change_attribute_value(fdc_legacy_building_unit_layer,
+                                                                     names.T_BASKET_F,
+                                                                     t_basket,
+                                                                     legacy_building_unit_ids)
+                fdc_legacy_building_unit_layer.removeSelection()
+                if not res_building_units:
+                    return False, None, QCoreApplication.translate("LADMData",
+                                                                   "Could not write basket id {} to Legacy Building layer.".format(
+                                                                       t_basket))
 
         return True, len(plot_ids), 'Success!'
 

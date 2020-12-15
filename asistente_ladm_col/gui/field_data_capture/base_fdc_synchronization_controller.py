@@ -128,6 +128,10 @@ class BaseFDCSynchronizationController(QObject):
         raise NotImplementedError
 
     def _validate_source_receiver_in_target_db(self, source_db, fdc_source_user_layer, t_basket):
+        """
+        Validate that the receiver's t_ili_tid in the source_db (before an update) is in the target db to make sure
+        we've got a valid XTF (and not an XTF from receivers that were not even allocated any parcel).
+        """
         field_idx = self.user_layer().fields().indexOf(self._db.names.T_ILI_TID_F)
         target_t_ili_tids = self.user_layer().uniqueValues(field_idx)
 
