@@ -25,6 +25,7 @@ from asistente_ladm_col.app_interface import AppInterface
 
 class BaseFDCSynchronizationController(QObject):
     field_data_capture_layer_removed = pyqtSignal()
+    synchronize_field_data_progress = pyqtSignal(int)  # total progress (percentage)
 
     def __init__(self, iface, db, ladm_data):
         QObject.__init__(self)

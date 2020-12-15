@@ -85,26 +85,30 @@ class FDCCoordinatorSynchronizationController(BaseFDCSynchronizationController):
     def synchronize_data(self, db, file_path):
         self.app.gui.clear_message_bar()
 
+        self.synchronize_field_data_progress.emit(1)  # Let users know we already started
+
         # Validate db structure
         db_tmp = GPKGConnector(file_path)
         res, code, msg = db_tmp.test_connection()
         self.app.settings.fdc_surveyor_gpkg_path = file_path
-
         if not res:
             return False, QCoreApplication.translate("SynchronizeDataCoordinatorInitialPanelWidget",
                                                      "There was an error validating the GeoPackage database. Details: {}").format(
                 msg)
+        self.synchronize_field_data_progress.emit(15)
 
         # Validate that we have a single user, and it's a surveyor. Also, get his t_basket
         res, t_basket, basket_uuid, msg = self._validate_single_receiver_in_source_db(db_tmp)
         if not res:
             return False, QCoreApplication.translate("SynchronizeDataCoordinatorInitialPanelWidget", msg)
+        self.synchronize_field_data_progress.emit(25)
 
         # Set surveyor's t_basket and write it in all DB classes
         res = self._set_receiver_t_basket_to_layers(db_tmp, t_basket)
         if not res:
             return False, QCoreApplication.translate("SynchronizeDataCoordinatorInitialPanelWidget",
                                                      "There was an error preparing the GeoPackage database. See QGIS log for details")
+        self.synchronize_field_data_progress.emit(35)
 
         # Generate XTF
         ili2db = Ili2DB()
@@ -113,6 +117,7 @@ class FDCCoordinatorSynchronizationController(BaseFDCSynchronizationController):
         if not res:
             return False, QCoreApplication.translate("SynchronizeDataCoordinatorInitialPanelWidget",
                                                      "Error synchronizing surveyor's database. Details: {}").format(msg)
+        self.synchronize_field_data_progress.emit(50)
 
         # Run update
         res, msg = ili2db.update(db, xtf_path, FDC_COORDINATOR_DATASET_NAME)
@@ -120,5 +125,6 @@ class FDCCoordinatorSynchronizationController(BaseFDCSynchronizationController):
             return False, QCoreApplication.translate("SynchronizeDataCoordinatorInitialPanelWidget",
                                                      "Error synchronizing surveyor's database. Details: {}").format(msg)
 
+        self.synchronize_field_data_progress.emit(100)
         return True, QCoreApplication.translate("SynchronizeDataCoordinatorInitialPanelWidget",
                                                 "Surveyor's data have been synchronized successfully!")

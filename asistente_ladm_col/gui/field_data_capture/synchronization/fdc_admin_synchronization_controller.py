@@ -109,6 +109,7 @@ class FDCAdminSynchronizationController(BaseFDCSynchronizationController):
 
         # Now, we validate we have a correct single coordinator in the source DB.
         # For that we need a physical (temporary) DB.
+        self.synchronize_field_data_progress.emit(1)  # Let users know we already started
 
         # Schema import
         ili2db = Ili2DB()
@@ -118,17 +119,20 @@ class FDCAdminSynchronizationController(BaseFDCSynchronizationController):
         res_schema_import, msg_schema_import = ili2db.import_schema(source_db, [model.full_name()], create_basket_col=True)
         if not res_schema_import:
             return False, msg_schema_import
+        self.synchronize_field_data_progress.emit(10)
 
         # Import data
         source_db.test_connection()  # To build names object
         res_import_data, msg_import_data = ili2db.import_data(source_db, file_path)
         if not res_import_data:
             return False, msg_import_data
+        self.synchronize_field_data_progress.emit(30)
 
         # Do some checks to the source_db (user table; single coordinator, among others)
         res, t_basket, basket_uuid, msg = self._validate_single_receiver_in_source_db(source_db)
         if not res:
             return False, msg
+        self.synchronize_field_data_progress.emit(40)
 
         # Finally, check that the coordinator in the coordinator's DB is in the admin's DB.
         # Otherwise, it could be an attempt to import a DB from a coordinator of another admin or something.
@@ -136,6 +140,7 @@ class FDCAdminSynchronizationController(BaseFDCSynchronizationController):
         res, msg = self._validate_source_receiver_in_target_db(source_db, fdc_user_layer, t_basket)
         if not res:
             return False, msg
+        self.synchronize_field_data_progress.emit(50)
 
         # Run update
         ili2db = Ili2DB()  # We'll change of db, better start an ili2db object from scratch
@@ -145,5 +150,6 @@ class FDCAdminSynchronizationController(BaseFDCSynchronizationController):
                                                      "Error synchronizing coordinator's database. Details: {}").format(
                 msg)
 
+        self.synchronize_field_data_progress.emit(100)
         return True, QCoreApplication.translate("FDCAdminSynchronizationController",
                                                 "Coordinator's data have been synchronized successfully!")

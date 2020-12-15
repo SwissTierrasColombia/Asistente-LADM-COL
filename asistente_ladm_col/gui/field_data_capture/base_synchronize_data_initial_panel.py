@@ -45,6 +45,7 @@ class BaseSynchronizeDataInitialPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.parent.setWindowTitle(QCoreApplication.translate("BaseSynchronizeDataInitialPanelWidget", "Synchronize data"))
 
         self.btn_synchronize.clicked.connect(self.synchronize_data)
+        self._controller.synchronize_field_data_progress.connect(self.update_progress)
 
         self._update_connection_info()
 
@@ -65,3 +66,6 @@ class BaseSynchronizeDataInitialPanelWidget(QgsPanelWidget, WIDGET_UI):
     def synchronize_data(self):
         res, msg = self._controller.synchronize_data(self._db, self.qfw_input_file.filePath().strip())
         self.logger.success_warning(__name__, res, msg, EnumLogHandler.MESSAGE_BAR)
+
+    def update_progress(self, progress):
+        self.prb_synchronize_field_data.setValue(progress)
