@@ -21,7 +21,8 @@ import os.path
 from qgis.PyQt.QtCore import QSettings
 
 from asistente_ladm_col.config.general_config import (TOLERANCE_MAX_VALUE,
-                                                      PLUGIN_VERSION)
+                                                      PLUGIN_VERSION,
+                                                      QGSs_DIR)
 
 
 class AppSettings:
@@ -91,7 +92,7 @@ class AppSettings:
 
     @property
     def fdc_project_template_path(self):
-        return self.settings.value(self.FDC_PROJECT_TEMPLATE_PATH_KEY, os.path.expanduser('~'))
+        return self.settings.value(self.FDC_PROJECT_TEMPLATE_PATH_KEY, QGSs_DIR)
 
     @fdc_project_template_path.setter
     def fdc_project_template_path(self, value):

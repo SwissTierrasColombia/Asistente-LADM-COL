@@ -41,6 +41,7 @@ HELP_DIR_NAME = 'help'
 DEFAULT_USE_CUSTOM_MODELS = True
 DEFAULT_MODELS_DIR = os.path.join(PLUGIN_DIR, 'resources', 'models')
 STYLES_DIR = os.path.join(PLUGIN_DIR, 'resources', 'styles')
+QGSs_DIR = os.path.join(PLUGIN_DIR, 'resources', 'qgs')
 CTM12_PG_SCRIPT_PATH = os.path.join(PLUGIN_DIR, 'resources', 'sql', 'insert_ctm12_pg.sql')
 CTM12_GPKG_SCRIPT_PATH = os.path.join(PLUGIN_DIR, 'resources', 'sql', 'insert_ctm12_gpkg.sql')
 TOML_FILE_DIR = os.path.join(PLUGIN_DIR, 'resources', 'toml', 'LADM_COL_configuration.toml')
