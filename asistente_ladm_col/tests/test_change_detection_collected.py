@@ -9,10 +9,10 @@ from asistente_ladm_col.app_interface import AppInterface
 start_app()  # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
-from asistente_ladm_col.utils.utils import get_field_values_by_another_field
 from asistente_ladm_col.tests.utils import (get_pg_conn,
                                             normalize_response,
                                             standardize_query_results,
+                                            get_field_values_by_another_field,
                                             restore_schema,
                                             import_qgis_model_baker,
                                             unload_qgis_model_baker)
@@ -159,6 +159,7 @@ class TestChangeDetectionsCollected(unittest.TestCase):
         features_test = parcel_data_to_compare_changes_all_data
         features = self.ladm_data.get_parcel_data_to_compare_changes(self.db_pg)
         normalize_response(features)
+        standardize_query_results(features, key_to_remove="t_id")
         self.assertEqual(features, features_test)
 
         print("\nINFO: Validating get parcels data using search criterion...")
@@ -166,6 +167,7 @@ class TestChangeDetectionsCollected(unittest.TestCase):
         search_criterion = {self.names.LC_PARCEL_T_PARCEL_NUMBER_F: '253940000000000230055000000000'}
         features = self.ladm_data.get_parcel_data_to_compare_changes(self.db_pg, search_criterion=search_criterion)
         normalize_response(features)
+        standardize_query_results(features, key_to_remove="t_id")
         self.assertEqual(features, features_test)
 
         print("\nINFO: Validating get parcels data using search criterion...")

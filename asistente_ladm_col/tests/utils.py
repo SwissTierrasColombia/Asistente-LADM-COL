@@ -26,6 +26,7 @@ import psycopg2
 import pyodbc
 import qgis.utils
 from qgis.core import (QgsApplication,
+                       QgsExpression,
                        edit)
 from qgis.analysis import QgsNativeAlgorithms
 
@@ -33,6 +34,7 @@ from asistente_ladm_col.config.change_detection_config import PLOT_GEOMETRY_KEY
 from asistente_ladm_col.config.refactor_fields_mappings import RefactorFieldsMappings
 from asistente_ladm_col.asistente_ladm_col_plugin import AsistenteLADMCOLPlugin
 from asistente_ladm_col.config.general_config import FIELD_MAPPING_PARAMETER
+from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 
 QgsApplication.setPrefixPath('/usr', True)
 qgs = QgsApplication([], False)
@@ -345,3 +347,24 @@ def reproject_to_ctm12(layer):
         return res['OUTPUT']
 
     return layer
+
+def get_field_values_by_another_field(layer, field, field_values, expected_field):
+    """
+    Returns the fields associated with a field based on another field.
+    :param layer: QgsMapLayer
+    :param field: Field name, it must be a unique field in the table
+    :param field_values: List of values to use for filtering the layer by field name
+    :param expected_field: name of the field from which the values are expected
+    :return: List of values associated with the expected field. Order is preserved
+    """
+    expression = QgsExpression('"{field}" in ({field_values})'.format(field=field, field_values=', '.join("'{}'".format(v) for v in field_values)))
+    features = LADMData.get_features_by_expression(layer, expected_field, expression=expression, with_attributes=False)
+
+    expected_field_values = []
+    # Same order must be preserved in the returned array
+    for field_value in field_values:
+        for feature in features:
+            if feature[field] == field_value:
+                expected_field_values.append(feature[expected_field])
+                break
+    return expected_field_values
