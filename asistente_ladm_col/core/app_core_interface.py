@@ -693,7 +693,8 @@ class AppCoreInterface(QObject):
         if res and names:
             # Additionally, begin_lifespan, t_ili_tid, local_id and namespace should not be applied on update
             # (Using getattr because some models do not have all these names)
-            res = field_name not in [getattr(names, "T_ILI_TID_F", None),
+            res = field_name not in [getattr(names, "T_BASKET_F", None),
+                                     getattr(names, "T_ILI_TID_F", None),
                                      getattr(names, "OID_T_LOCAL_ID_F", None),
                                      getattr(names, "OID_T_NAMESPACE_F", None),
                                      getattr(names, "VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F", None)]
@@ -715,6 +716,9 @@ class AppCoreInterface(QObject):
         blv_f = getattr(db.names, "VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F", None)
         if blv_f and layer.fields().indexFromName(blv_f) != -1:
             dict_field_expression[db.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F] = "now()"
+
+        if layer.fields().indexOf(db.names.T_BASKET_F) > 0:  # Does our table support baskets?
+            dict_field_expression[db.names.T_BASKET_F] = "get_default_basket()"
 
         dict_automatic_values = LayerConfig.get_dict_automatic_values(db, layer_name, models)
         if dict_automatic_values:
