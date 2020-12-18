@@ -54,7 +54,7 @@ class BaseAllocateParcelsInitialPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.parent.setWindowTitle(QCoreApplication.translate("AllocateParcelsFieldDataCapturePanelWidget", "Allocate parcels"))
 
         self.cbo_areas.setSourceLayer(self._controller.area_layer())
-        self.cbo_areas.setDisplayExpression(self._controller.area_layer_display_expression())
+        self.set_area_display_expression()
         self.cbo_areas.setAllowNull(True)
         self.cbo_areas.setIdentifierFields(self._controller.area_layer_identifier_fields())
         self.cbo_areas.setIdentifierValuesToNull()
@@ -70,6 +70,7 @@ class BaseAllocateParcelsInitialPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.chk_show_only_not_allocated.stateChanged.connect(self.chk_check_state_changed)
         self.btn_reallocate.clicked.connect(self.reallocate_clicked)
         self.btn_select_by_area.clicked.connect(self.select_by_area)
+        self._controller.area_layer().afterCommitChanges.connect(self.refresh_area_features)  # Refresh features
         self.cbo_areas.identifierValueChanged.connect(self.selected_area_changed)
 
         self.connect_to_plot_selection(True)
@@ -289,6 +290,14 @@ class BaseAllocateParcelsInitialPanelWidget(QgsPanelWidget, WIDGET_UI):
                 self.discard_parcel_allocation(already_allocated)
         else:
             self.logger.info_msg(__name__, QCoreApplication.translate("AllocateParcelsFieldDataCapturePanelWidget", "Selected parcels are not yet allocated, so we cannot reallocate them."))
+
+    def refresh_area_features(self):
+        # Workaround to reload data after the area layer has been edited
+        self.cbo_areas.setDisplayExpression("")
+        self.set_area_display_expression()
+
+    def set_area_display_expression(self):
+        self.cbo_areas.setDisplayExpression(self._controller.area_layer_display_expression())
 
     def selected_area_changed(self):
         values = self.cbo_areas.identifierValues()
