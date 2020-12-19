@@ -103,15 +103,20 @@ class BaseFDCSynchronizationController(QObject):
         return True
 
     def get_receiver_layer_list(self, db):
-        layers = list(self._receiver_layers.values())
-        if None in layers:
-            self.app.core.get_layers(db, self._receiver_layers, load=False)
+        """
+        Since we receive the DB as parameter, we should not cache the layers!
 
-        if not self._receiver_layers:
+        :param db: DB Connector
+        :return: List of QgsVectorLayers
+        """
+        receiver_layers = self._receiver_layers.copy()
+        self.app.core.get_layers(db, receiver_layers, load=False)
+
+        if not receiver_layers:
             self.logger.critical(__name__, "Receiver layers could not be obtained!")
-            return dict()
+            return list()
 
-        return list(self._receiver_layers.values())
+        return list(receiver_layers.values())
 
     def db(self):
         return self._db
