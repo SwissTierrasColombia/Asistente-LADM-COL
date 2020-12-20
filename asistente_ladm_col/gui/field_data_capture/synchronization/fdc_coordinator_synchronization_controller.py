@@ -24,6 +24,7 @@ from asistente_ladm_col.config.general_config import FDC_COORDINATOR_DATASET_NAM
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.gui.field_data_capture.base_fdc_synchronization_controller import BaseFDCSynchronizationController
 from asistente_ladm_col.lib.db.gpkg_connector import GPKGConnector
+from asistente_ladm_col.lib.geometry import GeometryUtils
 from asistente_ladm_col.lib.qgis_model_baker.ili2db import Ili2DB
 
 
@@ -110,6 +111,9 @@ class FDCCoordinatorSynchronizationController(BaseFDCSynchronizationController):
                                                      "There was an error preparing the GeoPackage database. See QGIS log for details")
         self.synchronize_field_data_progress.emit(35)
 
+        # Make sure points have a valid Z value (otherwise, ili2db will complain when synchronizing)
+        GeometryUtils().set_valid_z_value(self.get_point_layers(db_tmp))
+
         # Generate XTF
         ili2db = Ili2DB()
         xtf_path = tempfile.mktemp() + '.xtf'
@@ -128,3 +132,15 @@ class FDCCoordinatorSynchronizationController(BaseFDCSynchronizationController):
         self.synchronize_field_data_progress.emit(100)
         return True, QCoreApplication.translate("SynchronizeDataCoordinatorInitialPanelWidget",
                                                 "Surveyor's data have been synchronized successfully!")
+
+    def get_point_layers(self, db):
+        point_layers = {db.names.FDC_BOUNDARY_POINT_T: None,
+                        db.names.FDC_SURVEY_POINT_T: None,
+                        db.names.FDC_CONTROL_POINT_T: None}
+        self.app.core.get_layers(db, point_layers, load=False)
+
+        if not point_layers:
+            self.logger.critical(__name__, "Receiver point layers could not be obtained!")
+            return list()
+
+        return list(point_layers.values())

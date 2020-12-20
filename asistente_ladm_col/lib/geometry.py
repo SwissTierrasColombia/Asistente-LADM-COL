@@ -24,7 +24,6 @@ from math import sqrt
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QObject,
                               QVariant)
-from qgis._core import QgsProcessingFeedback
 from qgis.core import (QgsField,
                        QgsGeometry,
                        QgsPolygon,
@@ -38,11 +37,13 @@ from qgis.core import (QgsField,
                        QgsVectorLayerEditUtils,
                        QgsVectorLayerUtils,
                        QgsWkbTypes,
-                       edit)
+                       edit,
+                       QgsExpression)
 
 import processing
 
 from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 from asistente_ladm_col.utils.crs_utils import get_crs_authid
 
 
@@ -1095,3 +1096,26 @@ class GeometryUtils(QObject):
         overlapping_point_ids = [item for sublist in overlapping_points for item in sublist]
 
         return (end_points, list(set(end_point_ids) - set(overlapping_point_ids)))
+
+    def set_valid_z_value(self, point_layers, z=0):
+        if not point_layers:
+            return False
+        expression = QgsExpression('z( $geometry ) = \'nan\' or z( $geometry ) is NULL')
+
+        for point_layer in point_layers:
+            # Let's find those points with invalid Z value
+            features = LADMData().get_features_by_expression(point_layer, '', expression, False, True)
+
+            # Now set Z values to 0 for matching features
+            self.logger.info_warning(__name__, len(features), "We'll set Z={} for {} features in layer {}".format(
+                z, len(features), point_layer.name()))
+            with edit(point_layer):
+                for feature in features:
+                    geom = feature.geometry()
+                    const_abstract_geom = geom.constGet()
+                    abstract_geom = const_abstract_geom.clone()
+                    if abstract_geom.is3D():
+                        abstract_geom.setZ(z)
+                    else:
+                        abstract_geom.addZValue(z)
+                    point_layer.changeGeometry(feature.id(), QgsGeometry(abstract_geom))
