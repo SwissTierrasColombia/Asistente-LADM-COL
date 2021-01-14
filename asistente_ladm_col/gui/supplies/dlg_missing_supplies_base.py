@@ -197,7 +197,7 @@ class MissingSuppliesBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         settings.setValue('Asistente-LADM-COL/missing_supplies_{}/uni_path'.format(system), self.txt_file_path_uni.text())
         settings.setValue('Asistente-LADM-COL/missing_supplies_{}/gdb_path'.format(system), self.txt_file_path_gdb.text())
         settings.setValue('Asistente-LADM-COL/missing_supplies_{}/folder_path'.format(system), self.txt_file_path_folder_supplies.text())
-        settings.setValue('Asistente-LADM-COL/missing_supplies_{}/files_name'.format(system), self.txt_file_names_supplies.text())
+        settings.setValue('Asistente-LADM-COL/missing_supplies_{}/file_names'.format(system), self.txt_file_names_supplies.text())
 
     def restore_settings(self, system):
         settings = QSettings()
@@ -205,7 +205,7 @@ class MissingSuppliesBaseDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         self.txt_file_path_uni.setText(settings.value('Asistente-LADM-COL/missing_supplies_{}/uni_path'.format(system), ''))
         self.txt_file_path_gdb.setText(settings.value('Asistente-LADM-COL/missing_supplies_{}/gdb_path'.format(system), ''))
         self.txt_file_path_folder_supplies.setText(settings.value('Asistente-LADM-COL/missing_supplies_{}/folder_path'.format(system), ''))
-        self.txt_file_names_supplies.setText(settings.value('Asistente-LADM-COL/missing_supplies_{}/files_name'.format(system), ''))
+        self.txt_file_names_supplies.setText(settings.value('Asistente-LADM-COL/missing_supplies_{}/file_names'.format(system), ''))
 
     def load_lis_files(self, alphanumeric_file_paths):
         root = QgsProject.instance().layerTreeRoot()

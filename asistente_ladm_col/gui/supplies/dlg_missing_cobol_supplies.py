@@ -76,10 +76,8 @@ class MissingCobolSuppliesDialog(MissingSuppliesBaseDialog):
 
         self.folder_path = self.txt_file_path_folder_supplies.text()
         self.file_names = self.txt_file_names_supplies.text().strip()
-        self.gpkg_path = os.path.join(self.folder_path, 'MissingCobolSuppliesDialog', 
-                                      '{}.gpkg'.format(self.file_names))
-        self.xlsx_path = os.path.join(self.folder_path, 'MissingCobolSuppliesDialog', 
-                                      '{}.xlsx'.format(self.file_names))
+        self.gpkg_path = os.path.join(self.folder_path, '{}.gpkg'.format(self.file_names))
+        self.xlsx_path = os.path.join(self.folder_path, '{}.xlsx'.format(self.file_names))
 
         reply = self.validate_files_in_folder()
 
