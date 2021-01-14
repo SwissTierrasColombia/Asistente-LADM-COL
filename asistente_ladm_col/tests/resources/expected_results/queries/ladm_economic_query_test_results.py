@@ -1,13 +1,11 @@
 expected_result_ladm_economic_query = {
     "lc_terreno": [
         {
-            "id": 1432,
             "attributes": {
                 "Avalúo [COP]": 493429.8,
                 "Área [m2]": 4934.3,
                 "lc_predio": [
                     {
-                        "id": 1007,
                         "attributes": {
                             "Nombre": "El Pomarroso",
                             "Departamento": "25",
@@ -21,13 +19,11 @@ expected_result_ladm_economic_query = {
                             "Tipo": "(Predio) (Privado)",
                             "lc_construccion": [
                                 {
-                                    "id": 595,
                                     "attributes": {
                                         "Avalúo [COP]": 0.5,
                                         "Área construcción": 108.0,
                                         "lc_unidadconstruccion": [
                                             {
-                                                "id": 1541,
                                                 "attributes": {
                                                     "Avalúo [COP]": 575417953.3,
                                                     "Área construida [m2]": 19.0,
@@ -39,7 +35,6 @@ expected_result_ladm_economic_query = {
                                                 }
                                             },
                                             {
-                                                "id": 1544,
                                                 "attributes": {
                                                     "Avalúo [COP]": 738516768.3,
                                                     "Área construida [m2]": 108.0,
@@ -54,13 +49,11 @@ expected_result_ladm_economic_query = {
                                     }
                                 },
                                 {
-                                    "id": 610,
                                     "attributes": {
                                         "Avalúo [COP]": 2.1,
                                         "Área construcción": 25.8,
                                         "lc_unidadconstruccion": [
                                             {
-                                                "id": 1531,
                                                 "attributes": {
                                                     "Avalúo [COP]": 650248999.1,
                                                     "Área construida [m2]": 25.8,

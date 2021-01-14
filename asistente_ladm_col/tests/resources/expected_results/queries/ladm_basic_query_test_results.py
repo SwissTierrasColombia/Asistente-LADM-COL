@@ -1,12 +1,10 @@
 expected_result_ladm_basic_query = {
     "lc_terreno": [
         {
-            "id": 1432,
             "attributes": {
                 "Área [m2]": 4934.3,
                 "extdireccion": [
                     {
-                        "id": 1433,
                         "attributes": {
                             "Tipo dirección": "Estructurada",
                             "Código postal": None,
@@ -14,7 +12,6 @@ expected_result_ladm_basic_query = {
                         }
                     },
                     {
-                        "id": 1434,
                         "attributes": {
                             "Tipo dirección": "Estructurada",
                             "Código postal": None,
@@ -24,7 +21,6 @@ expected_result_ladm_basic_query = {
                 ],
                 "lc_predio": [
                     {
-                        "id": 1007,
                         "attributes": {
                             "Nombre": "El Pomarroso",
                             "Departamento": "25",
@@ -37,7 +33,6 @@ expected_result_ladm_basic_query = {
                             "Tipo": "(Predio) (Privado)",
                             "lc_construccion": [
                                 {
-                                    "id": 595,
                                     "attributes": {
                                         "Área": 108.0,
                                         "extdireccion": [
@@ -45,7 +40,6 @@ expected_result_ladm_basic_query = {
                                         ],
                                         "lc_unidadconstruccion": [
                                             {
-                                                "id": 1541,
                                                 "attributes": {
                                                     "Número de pisos": 12,
                                                     "Número de habitaciones": 4,
@@ -60,7 +54,6 @@ expected_result_ladm_basic_query = {
                                                     "Uso": "(Comercial) Comercio",
                                                     "extdireccion": [
                                                         {
-                                                            "id": 1542,
                                                             "attributes": {
                                                                 "Tipo dirección": "Estructurada",
                                                                 "Código postal": None,
@@ -71,7 +64,6 @@ expected_result_ladm_basic_query = {
                                                 }
                                             },
                                             {
-                                                "id": 1544,
                                                 "attributes": {
                                                     "Número de pisos": 7,
                                                     "Número de habitaciones": 2,
@@ -93,12 +85,10 @@ expected_result_ladm_basic_query = {
                                     }
                                 },
                                 {
-                                    "id": 610,
                                     "attributes": {
                                         "Área": 25.8,
                                         "extdireccion": [
                                             {
-                                                "id": 611,
                                                 "attributes": {
                                                     "Tipo dirección": "Estructurada",
                                                     "Código postal": None,
@@ -106,7 +96,6 @@ expected_result_ladm_basic_query = {
                                                 }
                                             },
                                             {
-                                                "id": 612,
                                                 "attributes": {
                                                     "Tipo dirección": "Estructurada",
                                                     "Código postal": None,
@@ -116,7 +105,6 @@ expected_result_ladm_basic_query = {
                                         ],
                                         "lc_unidadconstruccion": [
                                             {
-                                                "id": 1531,
                                                 "attributes": {
                                                     "Número de pisos": 2,
                                                     "Número de habitaciones": 1,
@@ -131,7 +119,6 @@ expected_result_ladm_basic_query = {
                                                     "Uso": "(Comercial) Oficinas - Consultorios Coloniales",
                                                     "extdireccion": [
                                                         {
-                                                            "id": 1532,
                                                             "attributes": {
                                                                 "Tipo dirección": "Estructurada",
                                                                 "Código postal": None,
@@ -139,7 +126,6 @@ expected_result_ladm_basic_query = {
                                                             }
                                                         },
                                                         {
-                                                            "id": 1533,
                                                             "attributes": {
                                                                 "Tipo dirección": "Estructurada",
                                                                 "Código postal": None,
