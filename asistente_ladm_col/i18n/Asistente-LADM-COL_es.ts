@@ -157,38 +157,38 @@
         <translation>No hay capas para configurar sus relaciones.</translation>
     </message>
     <message>
-        <location filename="../core/app_core_interface.py" line="1024"/>
+        <location filename="../core/app_core_interface.py" line="1018"/>
         <source>No CSV file given or file doesn&apos;t exist.</source>
         <translation>No se especificó un archivo CSV o el archivo no existe.</translation>
     </message>
     <message>
-        <location filename="../core/app_core_interface.py" line="1056"/>
+        <location filename="../core/app_core_interface.py" line="1050"/>
         <source>CSV layer not valid!</source>
         <translation>¡La capa CSV no es válida!</translation>
     </message>
     <message>
-        <location filename="../core/app_core_interface.py" line="1080"/>
+        <location filename="../core/app_core_interface.py" line="1074"/>
         <source>There are overlapping points, we cannot import them into the DB! See selected points.</source>
         <translation>Hay puntos superpuestos, ¡no podemos importarlos a la base de datos! Revisa los puntos seleccionados en el mapa.</translation>
     </message>
     <message>
-        <location filename="../core/app_core_interface.py" line="1101"/>
+        <location filename="../core/app_core_interface.py" line="1095"/>
         <source>{} points were added succesfully to &apos;{}&apos;.</source>
         <translation>Se agregaron {} puntos a &apos;{}&apos; satisfactoriamente.</translation>
     </message>
     <message>
-        <location filename="../core/app_core_interface.py" line="1104"/>
+        <location filename="../core/app_core_interface.py" line="1098"/>
         <source>No point was added to &apos;{}&apos;. Most likely, the CSV does not have the required structure.</source>
         <translation>No se agregaron puntos a &apos;{}&apos;. Probablemente, el CSV no tiene la estructura requerida.</translation>
     </message>
     <message>
-        <location filename="../core/app_core_interface.py" line="1143"/>
+        <location filename="../core/app_core_interface.py" line="1137"/>
         <source>The output of the ETL-model has no features! Most likely, the CSV does not have the required structure.</source>
         <translation>¡El resultado del ETL no tiene ningún registro! Probablemente, el CSV no tiene la estructura requerida.</translation>
     </message>
     <message>
-        <location filename="../core/app_core_interface.py" line="1147"/>
-        <location filename="../core/app_core_interface.py" line="1202"/>
+        <location filename="../core/app_core_interface.py" line="1141"/>
+        <location filename="../core/app_core_interface.py" line="1196"/>
         <source>Model &apos;{}&apos; was not found and cannot be opened!</source>
         <translation>¡No se encontró el modelo &apos;{}&apos; y por ello no puede ser abierto!</translation>
     </message>
@@ -197,8 +197,8 @@
         <translation type="vanished">No se agregó ningún punto a &apos;{}&apos;.</translation>
     </message>
     <message>
-        <location filename="../core/app_core_interface.py" line="1119"/>
-        <location filename="../core/app_core_interface.py" line="1158"/>
+        <location filename="../core/app_core_interface.py" line="1113"/>
+        <location filename="../core/app_core_interface.py" line="1152"/>
         <source>You need to close the edit session on layer &apos;{}&apos; before using this tool!</source>
         <translation>¡Necesitas cerrar la sesión de edición sobre la capa &apos;{}&apos; antes de usar esta herramienta!</translation>
     </message>
@@ -1048,12 +1048,12 @@
         <translation type="vanished">No se pudo ejecutar una funcionalidad, la conexión a la base de datos no fue válida.</translation>
     </message>
     <message>
-        <location filename="../core/app_core_interface.py" line="1230"/>
+        <location filename="../core/app_core_interface.py" line="1224"/>
         <source>&apos;{}&apos; tool has been closed because there was a problem loading the requeries layers.</source>
         <translation>La herramienta &apos;{}&apos; se ha cerrado porque hubo un problema cargando las capas requeridas.</translation>
     </message>
     <message>
-        <location filename="../core/app_core_interface.py" line="1251"/>
+        <location filename="../core/app_core_interface.py" line="1245"/>
         <source>&apos;{}&apos; cannot be opened until the following layers are not in edit mode &apos;{}&apos;.</source>
         <translation>No se puede abrir &apos;{}&apos; hasta que las siguientes capas dejen de estar en edición: &apos;{}&apos;.</translation>
     </message>
@@ -1769,12 +1769,12 @@
         <translation type="vanished">Cargar datos a Calificación No Convencional de Unidades de Construcción...</translation>
     </message>
     <message>
-        <location filename="../config/wizard_config.py" line="436"/>
+        <location filename="../config/wizard_config.py" line="437"/>
         <source>building unit qualification valuation</source>
         <translation>calificación de unidad de construcción</translation>
     </message>
     <message>
-        <location filename="../config/wizard_config.py" line="438"/>
+        <location filename="../config/wizard_config.py" line="439"/>
         <source>Create building unit qualification valuation</source>
         <translation>Crear calificación de unidad de construcción</translation>
     </message>
@@ -1827,12 +1827,12 @@
         <translation type="vanished">¡La nueva Unidad de Construcción (modelo de Avalúos) (t_id={}) se creó exitosamente y fue asociada con su Unidad de Construcción (modelo Catastro-Registro) correspondiente (t_id={})!</translation>
     </message>
     <message>
-        <location filename="../config/wizard_config.py" line="410"/>
+        <location filename="../config/wizard_config.py" line="411"/>
         <source>building unit valuation</source>
         <translation>unidad de construcción avalúos</translation>
     </message>
     <message>
-        <location filename="../config/wizard_config.py" line="412"/>
+        <location filename="../config/wizard_config.py" line="413"/>
         <source>Create building unit valuation</source>
         <translation>Crear unidad de construcción avalúos</translation>
     </message>
@@ -1929,12 +1929,12 @@
 <context>
     <name>CreateExtAddressSurveyWizard</name>
     <message>
-        <location filename="../config/wizard_config.py" line="316"/>
+        <location filename="../config/wizard_config.py" line="317"/>
         <source>ext address</source>
         <translation>dirección</translation>
     </message>
     <message>
-        <location filename="../config/wizard_config.py" line="317"/>
+        <location filename="../config/wizard_config.py" line="318"/>
         <source>Create ext address</source>
         <translation>Crear dirección</translation>
     </message>
@@ -1958,12 +1958,12 @@
         <translation type="vanished">Ahora puedes empezar a capturar Zonas Homogéneas Geoeconómicas sobre el mapa...</translation>
     </message>
     <message>
-        <location filename="../config/wizard_config.py" line="368"/>
+        <location filename="../config/wizard_config.py" line="369"/>
         <source>geoeconomic zone</source>
         <translation>zona geoeconómica</translation>
     </message>
     <message>
-        <location filename="../config/wizard_config.py" line="370"/>
+        <location filename="../config/wizard_config.py" line="371"/>
         <source>Create geoeconomic zone</source>
         <translation>Crear zona geoeconómica</translation>
     </message>
@@ -2399,12 +2399,12 @@
         <translation type="vanished">Ahora puedes empezar a capturar Zonas Homogéneas Físicas sobre el mapa...</translation>
     </message>
     <message>
-        <location filename="../config/wizard_config.py" line="390"/>
+        <location filename="../config/wizard_config.py" line="391"/>
         <source>physical zone</source>
         <translation>zona homogénea física</translation>
     </message>
     <message>
-        <location filename="../config/wizard_config.py" line="391"/>
+        <location filename="../config/wizard_config.py" line="392"/>
         <source>Create physical zone</source>
         <translation>Crear zona homogénea física</translation>
     </message>
@@ -2435,12 +2435,12 @@
 <context>
     <name>CreatePlotSurveyWizard</name>
     <message>
-        <location filename="../config/wizard_config.py" line="293"/>
+        <location filename="../config/wizard_config.py" line="294"/>
         <source>plot</source>
         <translation>terreno</translation>
     </message>
     <message>
-        <location filename="../config/wizard_config.py" line="294"/>
+        <location filename="../config/wizard_config.py" line="295"/>
         <source>Create plot</source>
         <translation>Crear terreno</translation>
     </message>
@@ -2688,12 +2688,12 @@
 <context>
     <name>CreateRightOfWaySurveyWizard</name>
     <message>
-        <location filename="../config/wizard_config.py" line="342"/>
+        <location filename="../config/wizard_config.py" line="343"/>
         <source>right of way</source>
         <translation>servidumbre de paso</translation>
     </message>
     <message>
-        <location filename="../config/wizard_config.py" line="343"/>
+        <location filename="../config/wizard_config.py" line="344"/>
         <source>Create right of way</source>
         <translation>Crear servidumbre de paso</translation>
     </message>
@@ -7298,60 +7298,65 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
         <translation>Omisiones y Comisiones</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/dlg_missing_supplies.ui" line="35"/>
+        <location filename="../ui/supplies/dlg_missing_supplies.ui" line="86"/>
+        <source>File names</source>
+        <translation>Nombre de archivos</translation>
+    </message>
+    <message>
+        <location filename="../ui/supplies/dlg_missing_supplies.ui" line="112"/>
         <source>Configure Data Source</source>
         <translation>Configurar datos fuente</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/dlg_missing_supplies.ui" line="47"/>
+        <location filename="../ui/supplies/dlg_missing_supplies.ui" line="124"/>
         <source>Parcels blocked</source>
         <translation>Predios bloqueados</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/dlg_missing_supplies.ui" line="50"/>
+        <location filename="../ui/supplies/dlg_missing_supplies.ui" line="127"/>
         <source>PREDIO</source>
         <translation>PREDIO</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/dlg_missing_supplies.ui" line="69"/>
+        <location filename="../ui/supplies/dlg_missing_supplies.ui" line="146"/>
         <source>Parcels</source>
         <translation>Predios</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/dlg_missing_supplies.ui" line="72"/>
+        <location filename="../ui/supplies/dlg_missing_supplies.ui" line="149"/>
         <source>UNI</source>
         <translation>UNI</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/dlg_missing_supplies.ui" line="88"/>
-        <location filename="../ui/supplies/dlg_missing_supplies.ui" line="104"/>
-        <location filename="../ui/supplies/dlg_missing_supplies.ui" line="145"/>
-        <location filename="../ui/supplies/dlg_missing_supplies.ui" line="197"/>
+        <location filename="../ui/supplies/dlg_missing_supplies.ui" line="71"/>
+        <location filename="../ui/supplies/dlg_missing_supplies.ui" line="165"/>
+        <location filename="../ui/supplies/dlg_missing_supplies.ui" line="181"/>
+        <location filename="../ui/supplies/dlg_missing_supplies.ui" line="222"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/dlg_missing_supplies.ui" line="117"/>
+        <location filename="../ui/supplies/dlg_missing_supplies.ui" line="194"/>
         <source>GeoDatabase</source>
         <translation>GeoDatabase</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/dlg_missing_supplies.ui" line="120"/>
+        <location filename="../ui/supplies/dlg_missing_supplies.ui" line="197"/>
         <source>GDB</source>
         <translation>GDB</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/dlg_missing_supplies.ui" line="161"/>
+        <location filename="../ui/supplies/dlg_missing_supplies.ui" line="35"/>
         <source>Export data</source>
         <translation>Exportar datos</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/dlg_missing_supplies.ui" line="173"/>
+        <location filename="../ui/supplies/dlg_missing_supplies.ui" line="47"/>
         <source>Folder</source>
         <translation>Carpeta</translation>
     </message>
     <message>
-        <location filename="../ui/supplies/dlg_missing_supplies.ui" line="224"/>
+        <location filename="../ui/supplies/dlg_missing_supplies.ui" line="247"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -7391,27 +7396,27 @@ p, li { white-space: pre-wrap; }
         <translation>El archivo &lt;b&gt;xlsx&lt;/b&gt; ya existe en la carpeta elegida.&lt;br/&gt;&lt;br/&gt;¿Quieres sobreescribirlo?</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="228"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="229"/>
         <source>Errors in the &apos;ETL Omissions-Commissions&apos; model. See QGIS log for details.</source>
         <translation>Hubo errores en el modelo &apos;ETL Omisiones y Comisiones&apos;. Revisa el log de QGIS para más detalles.</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="251"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="259"/>
         <source>Errors in the &apos;Package layers&apos; algorithm. See QGIS log for details.</source>
         <translation>Hubo errores en el algoritmo de &apos;empaquetar capas&apos;. Revisa el log de QGIS para más detalles.</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="254"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="262"/>
         <source>Results missing supplies</source>
         <translation>Omisiones y Comisiones</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="260"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="268"/>
         <source>There were troubles loading {} layer.</source>
         <translation>Hubo problemas cargando la capa {}.</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="99"/>
+        <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="101"/>
         <source>Select folder to save data</source>
         <translation>Selecciona una carpeta para guardar los resultados</translation>
     </message>
@@ -7419,7 +7424,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MissingSNCSuppliesDialog</name>
     <message>
-        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="227"/>
+        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="228"/>
         <source>Errors in the &apos;ETL Omissions-Commissions&apos; model. See QGIS log for details.</source>
         <translation>Hubo errores en el modelo &apos;ETL Omisiones y Comisiones&apos;. Revisa el log de QGIS para más detalles.</translation>
     </message>
@@ -7459,17 +7464,17 @@ p, li { white-space: pre-wrap; }
         <translation>El archivo &lt;b&gt;xlsx&lt;/b&gt; ya existe en la carpeta elegida.&lt;br/&gt;&lt;br/&gt;¿Quieres sobreescribirlo?</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="250"/>
+        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="258"/>
         <source>Errors in the &apos;Package layers&apos; algorithm. See QGIS log for details.</source>
         <translation>Hubo errores en el algoritmo de &apos;empaquetar capas&apos;. Revisa el log de QGIS para más detalles.</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="253"/>
+        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="261"/>
         <source>Results missing supplies</source>
         <translation>Omisiones y Comisiones</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="259"/>
+        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="267"/>
         <source>There were troubles loading {} layer.</source>
         <translation>Hubo problemas cargando la capa {}.</translation>
     </message>
@@ -7477,57 +7482,57 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MissingSuppliesBaseDialog</name>
     <message>
-        <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="81"/>
+        <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="83"/>
         <source>Import</source>
         <translation>Importar</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="85"/>
+        <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="87"/>
         <source>Select the Predio .csv file with SNC data </source>
         <translation>Seleccione el archivo Predio.csv con datos SNC </translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="90"/>
+        <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="92"/>
         <source>Select the UNI .lis file with Cobol data </source>
         <translation>Selecciona el archivo UNI.lis con datos de Cobol </translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="139"/>
+        <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="145"/>
         <source>Warning</source>
         <translation>Advertencia</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="140"/>
+        <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="146"/>
         <source>The &apos;{}&apos; tool is still running. Do you want to cancel it? If you cancel, the data might be incomplete in the target database.</source>
         <translation>La herramienta &apos;{}&apos; todavía se está ejecutando. ¿Quieres cancelarla? Si cancelas, los datos en la base de datos de salida pueden estar incompletos.</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="147"/>
+        <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="153"/>
         <source>The &apos;{}&apos; tool was cancelled.</source>
         <translation>La herramienta &apos;{}&apos; fue cancelada.</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="204"/>
+        <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="212"/>
         <source>LIS Supplies</source>
         <translation>Insumos LIS</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="220"/>
+        <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="228"/>
         <source>SNC Alphanumeric Supplies</source>
         <translation>Insumos alfanuméricos del SNC</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="238"/>
+        <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="246"/>
         <source>There were troubles loading the GDB.</source>
         <translation>Hubo problemas cargando la GeoDatabase.</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="243"/>
+        <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="251"/>
         <source>GDB Supplies</source>
         <translation>Insumos GDB</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="254"/>
+        <location filename="../gui/supplies/dlg_missing_supplies_base.py" line="262"/>
         <source>The GDB does not have the required layers!</source>
         <translation>¡La GeoDatabase no tiene las capas requeridas!</translation>
     </message>
@@ -9666,41 +9671,41 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">¡Debes seleccionar un Sistema de Referencia con EPSG válido!</translation>
     </message>
     <message>
-        <location filename="../core/app_core_interface.py" line="939"/>
+        <location filename="../core/app_core_interface.py" line="933"/>
         <source>The tested service is valid to connect with Transitional System!</source>
         <translation>¡El servicio del Sistema de Transición es válido!</translation>
     </message>
     <message>
-        <location filename="../core/app_core_interface.py" line="944"/>
-        <location filename="../core/app_core_interface.py" line="948"/>
+        <location filename="../core/app_core_interface.py" line="938"/>
+        <location filename="../core/app_core_interface.py" line="942"/>
         <source>Response from the tested service is not as expected.</source>
         <translation>La respuesta del servidor no es la esperada. Servicio inválido.</translation>
     </message>
     <message>
-        <location filename="../core/app_core_interface.py" line="886"/>
+        <location filename="../core/app_core_interface.py" line="880"/>
         <source>The tested service is valid to upload files!</source>
         <translation>¡El servicio probado es válido para subir archivos!</translation>
     </message>
     <message>
-        <location filename="../core/app_core_interface.py" line="891"/>
+        <location filename="../core/app_core_interface.py" line="885"/>
         <source>The tested upload service is not compatible: no valid &apos;id&apos; found in response.</source>
         <translation>El servicio probado no es compatible: no se encontró un &apos;id&apos; válido en la respuesta.</translation>
     </message>
     <message>
-        <location filename="../core/app_core_interface.py" line="895"/>
+        <location filename="../core/app_core_interface.py" line="889"/>
         <source>Response from the tested service is not compatible: not valid JSON found.</source>
         <translation>La respuesta desde el servicio probado no es compatible: no se encontró un JSON válido.</translation>
     </message>
     <message>
-        <location filename="../core/app_core_interface.py" line="899"/>
-        <location filename="../core/app_core_interface.py" line="952"/>
+        <location filename="../core/app_core_interface.py" line="893"/>
+        <location filename="../core/app_core_interface.py" line="946"/>
         <location filename="../gui/queries/dockwidget_queries.py" line="493"/>
         <source>There was a problem connecting to the server. The server might be down or the service cannot be reached at the given URL.</source>
         <translation>Hubo un problema conectando al servidor. El servidor podría estar caído o el servicio puede no ser accesible desde la URL especificada.</translation>
     </message>
     <message>
-        <location filename="../core/app_core_interface.py" line="903"/>
-        <location filename="../core/app_core_interface.py" line="956"/>
+        <location filename="../core/app_core_interface.py" line="897"/>
+        <location filename="../core/app_core_interface.py" line="950"/>
         <location filename="../gui/queries/dockwidget_queries.py" line="497"/>
         <source>There was a problem connecting to Internet.</source>
         <translation>Hubo un problema con la conexión a Internet.</translation>
@@ -9711,8 +9716,8 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation>La URL no es válida</translation>
     </message>
     <message>
-        <location filename="../core/app_core_interface.py" line="907"/>
-        <location filename="../core/app_core_interface.py" line="960"/>
+        <location filename="../core/app_core_interface.py" line="901"/>
+        <location filename="../core/app_core_interface.py" line="954"/>
         <source>Not valid service URL to test!</source>
         <translation>¡La URL del servicio no es válida!</translation>
     </message>
@@ -9729,7 +9734,7 @@ You&apos;ll continue with a limited functionality until you configure an LADM-CO
 ¡Continuarás con funcionalidades limitadas hasta que configures una base de datos LADM-COL válida!</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_settings.py" line="293"/>
+        <location filename="../gui/dialogs/dlg_settings.py" line="294"/>
         <source>No LADM-COL DB has been configured! You&apos;ll continue with limited functionality until you configure a LADM-COL DB.
 
 Do you want to go to &apos;Create LADM-COL structure&apos; dialog?</source>
@@ -9738,27 +9743,27 @@ Do you want to go to &apos;Create LADM-COL structure&apos; dialog?</source>
 ¿Quieres ir al diálogo &quot;Crear estructura LADM-COL&quot;?</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_settings.py" line="295"/>
+        <location filename="../gui/dialogs/dlg_settings.py" line="296"/>
         <source>Important</source>
         <translation>Importante</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_settings.py" line="298"/>
+        <location filename="../gui/dialogs/dlg_settings.py" line="299"/>
         <source>Yes, go to create structure</source>
         <translation>Si, ir a crear estructura</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_settings.py" line="299"/>
+        <location filename="../gui/dialogs/dlg_settings.py" line="300"/>
         <source>No, I&apos;ll do it later</source>
         <translation>No, lo haré luego</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_settings.py" line="312"/>
+        <location filename="../gui/dialogs/dlg_settings.py" line="313"/>
         <source>Warning</source>
         <translation>Advertencia</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_settings.py" line="313"/>
+        <location filename="../gui/dialogs/dlg_settings.py" line="314"/>
         <source>You have a ST connection opened and you want to change your role.
 If you confirm that you want to change your role, you&apos;ll be logged out from the ST.
 
@@ -9769,12 +9774,12 @@ Si confirmas que quieres cambiar el rol, se cerrará tu sesión del Sistema de T
 ¿Realmente quieres cambiar el rol?</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_settings.py" line="353"/>
+        <location filename="../gui/dialogs/dlg_settings.py" line="354"/>
         <source>The source service is not valid, so it cannot be activated! Adjust such configuration before saving settings.</source>
         <translation>¡El servicio de fuentes documentales no es válido, por eso no puede activarse! Ajusta su configuración antes de guardar.</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_settings.py" line="553"/>
+        <location filename="../gui/dialogs/dlg_settings.py" line="554"/>
         <source>Missing roads will be marked as errors.</source>
         <translation>Las vías faltantes serán marcadas como errores.</translation>
     </message>
