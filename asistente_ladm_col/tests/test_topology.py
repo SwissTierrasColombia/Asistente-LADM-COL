@@ -19,16 +19,16 @@ class TestTopology(unittest.TestCase):
 
     def test_pair_boundary_plot(self):
         print('\nValidating pairs boundary-plot')
-        gpkg_path = get_test_copy_path('geopackage/tests_data.gpkg')
-        self.db_gpkg = get_gpkg_conn('tests_data_gpkg')
+        gpkg_path = get_test_copy_path('geopackage/static/quality_validations.gpkg')
+        self.db_gpkg = get_gpkg_conn('tests_quality_validations_gpkg')
         self.names = self.db_gpkg.names
         self.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 
-        uri = gpkg_path + '|layername={layername}'.format(layername='tests_boundaries')
-        boundary_layer = QgsVectorLayer(uri, 'tests_boundaries', 'ogr')
+        uri = gpkg_path + '|layername={layername}'.format(layername='topology_boundaries')
+        boundary_layer = QgsVectorLayer(uri, 'topology_boundaries', 'ogr')
 
-        uri = gpkg_path + '|layername={layername}'.format(layername='tests_plots')
-        plot_layer = QgsVectorLayer(uri, 'tests_plots', 'ogr')
+        uri = gpkg_path + '|layername={layername}'.format(layername='topology_plots')
+        plot_layer = QgsVectorLayer(uri, 'topology_plots', 'ogr')
 
         result1, result2 = GeometryUtils().get_pair_boundary_plot(boundary_layer,
                                                                            plot_layer,
