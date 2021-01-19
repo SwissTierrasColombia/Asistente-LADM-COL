@@ -64,7 +64,7 @@ class TesQualityRules(unittest.TestCase):
     def test_check_boundary_points_covered_by_plot_nodes(self):
         print('\nINFO: Validating boundary points are covered by plot nodes...')
 
-        gpkg_path = get_test_copy_path('geopackage/static/quality_validations.gpkg')
+        gpkg_path = get_test_copy_path('db/static/gpkg/quality_validations.gpkg')
         self.db_gpkg = get_gpkg_conn('tests_quality_validations_gpkg')
         names = self.db_gpkg.names
         names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
@@ -508,7 +508,7 @@ class TesQualityRules(unittest.TestCase):
     def test_get_missing_boundary_points_in_boundaries(self):
         print('\nINFO: Validating missing boundary points in boundaries...')
 
-        gpkg_path = get_test_copy_path('geopackage/static/quality_validations.gpkg')
+        gpkg_path = get_test_copy_path('db/static/gpkg/quality_validations.gpkg')
         self.db_gpkg = get_gpkg_conn('tests_quality_validations_gpkg')
         self.db_gpkg.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 
@@ -539,7 +539,7 @@ class TesQualityRules(unittest.TestCase):
     def test_get_missing_boundary_points_in_boundaries_without_points(self):
         print('\nINFO: Validating missing boundary points in boundaries without points...')
 
-        gpkg_path = get_test_copy_path('geopackage/static/quality_validations.gpkg')
+        gpkg_path = get_test_copy_path('db/static/gpkg/quality_validations.gpkg')
         self.db_gpkg = get_gpkg_conn('tests_quality_validations_gpkg')
         self.db_gpkg.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 
@@ -578,7 +578,7 @@ class TesQualityRules(unittest.TestCase):
     def test_check_missing_survey_points_in_buildings(self):
         print('\nINFO: Validating missing survey points in buildings...')
 
-        gpkg_path = get_test_copy_path('geopackage/static/quality_validations.gpkg')
+        gpkg_path = get_test_copy_path('db/static/gpkg/quality_validations.gpkg')
         self.db_gpkg = get_gpkg_conn('tests_quality_validations_gpkg')
         self.db_gpkg.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 
@@ -611,7 +611,7 @@ class TesQualityRules(unittest.TestCase):
     def test_check_plot_nodes_covered_by_boundary_points(self):
         print('\nINFO: Validating plot nodes are covered by boundary points...')
 
-        gpkg_path = get_test_copy_path('geopackage/static/quality_validations.gpkg')
+        gpkg_path = get_test_copy_path('db/static/gpkg/quality_validations.gpkg')
         self.db_gpkg = get_gpkg_conn('tests_quality_validations_gpkg')
         names = self.db_gpkg.names
         names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
@@ -647,7 +647,7 @@ class TesQualityRules(unittest.TestCase):
 
     def test_no_error_quality_rule(self):
 
-        gpkg_path = get_test_copy_path('geopackage/test_valid_quality_rules_v1_1.gpkg')
+        gpkg_path = get_test_copy_path('db/ladm/gpkg/test_valid_quality_rules_v1_1.gpkg')
         self.db_gpkg = get_gpkg_conn_from_path(gpkg_path)
         res, code, msg = self.db_gpkg.test_connection()
         self.assertTrue(res, msg)

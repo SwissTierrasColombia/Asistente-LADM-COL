@@ -34,7 +34,7 @@ class TesGeometryUtils(unittest.TestCase):
     def test_split_by_selected_boundary(self):
         print('\nINFO: Validation of the definition of selected boundary ...')
 
-        gpkg_path = get_test_copy_path('geopackage/static/adjust_boundaries_cases.gpkg')
+        gpkg_path = get_test_copy_path('db/static/gpkg/adjust_boundaries_cases.gpkg')
         self.db_gpkg = get_gpkg_conn('adjust_boundaries_cases_gpkg')
         names = self.db_gpkg.names
         names.T_ID_F = 't_id' # Static label is set because the database does not have the ladm structure
@@ -69,7 +69,7 @@ class TesGeometryUtils(unittest.TestCase):
     def _test_split_by_boundary(self):
         print('\nINFO: Validation of the definition of boundaries...')
 
-        gpkg_path = get_test_copy_path('geopackage/static/adjust_boundaries_cases.gpkg')
+        gpkg_path = get_test_copy_path('db/static/gpkg/adjust_boundaries_cases.gpkg')
         self.db_gpkg = get_gpkg_conn('adjust_boundaries_cases_gpkg')
         names = self.db_gpkg.names
         names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
@@ -104,7 +104,7 @@ class TesGeometryUtils(unittest.TestCase):
     def test_overlapping_points(self):
         print('\nINFO: Validating overlaps in points...')
         test_layer = 'overlapping_points'
-        gpkg_path = get_test_copy_path('geopackage/static/geometry_utils.gpkg')
+        gpkg_path = get_test_copy_path('db/static/gpkg/geometry_utils.gpkg')
         uri = gpkg_path + '|layername={}'.format(test_layer)
         overlapping_points_layer = QgsVectorLayer(uri, 'test_overlapping_points', 'ogr')
         self.assertEqual(overlapping_points_layer.featureCount(), 286, 'The number of features differs')
@@ -129,7 +129,7 @@ class TesGeometryUtils(unittest.TestCase):
 
     def test_get_overlapping_lines(self):
         print('\nINFO: Validating overlaps in boundaries...')
-        gpkg_path = get_test_copy_path('geopackage/static/geometry_utils.gpkg')
+        gpkg_path = get_test_copy_path('db/static/gpkg/geometry_utils.gpkg')
         self.db_gpkg = get_gpkg_conn('tests_geometry_util_gpkg')
         names = self.db_gpkg.names
         names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
@@ -204,7 +204,7 @@ class TesGeometryUtils(unittest.TestCase):
     def test_overlapping_polygons(self):
         print('\nINFO: Validating overlaps in polygons (plots)...')
 
-        gpkg_path = get_test_copy_path('geopackage/static/geometry_utils.gpkg')
+        gpkg_path = get_test_copy_path('db/static/gpkg/geometry_utils.gpkg')
         uri = gpkg_path + '|layername={layername}'.format(layername='overlapping_polygons')
         polygons_overlap_layer = QgsVectorLayer(uri, 'overlapping_polygons', 'ogr')
 
@@ -228,7 +228,7 @@ class TesGeometryUtils(unittest.TestCase):
     def test_find_vertices(self):
         print('\nINFO: Validating search for missing vertices...')
 
-        gpkg_path = get_test_copy_path('geopackage/static/topology_cases.gpkg')
+        gpkg_path = get_test_copy_path('db/static/gpkg/topology_cases.gpkg')
         self.db_gpkg = get_gpkg_conn('topology_cases_gpkg')
         names = self.db_gpkg.names
         names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
@@ -265,7 +265,7 @@ class TesGeometryUtils(unittest.TestCase):
     def test_polygons_must_be_covered_by_lines(self):
         print('\nINFO: Validating polygons must be covered by lines...')
 
-        gpkg_path = get_test_copy_path('geopackage/static/topology_cases.gpkg')
+        gpkg_path = get_test_copy_path('db/static/gpkg/topology_cases.gpkg')
         self.db_gpkg = get_gpkg_conn('topology_cases_gpkg')
         names = self.db_gpkg.names
         names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
@@ -299,7 +299,7 @@ class TesGeometryUtils(unittest.TestCase):
     def test_lines_must_be_covered_by_polygons(self):
         print('\nINFO: Validating lines must be covered by polygons...')
 
-        gpkg_path = get_test_copy_path('geopackage/static/topology_cases.gpkg')
+        gpkg_path = get_test_copy_path('db/static/gpkg/topology_cases.gpkg')
         self.db_gpkg = get_gpkg_conn('topology_cases_gpkg')
         names = self.db_gpkg.names
         names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
@@ -330,7 +330,7 @@ class TesGeometryUtils(unittest.TestCase):
     def test_intersection_polygons_tolerance(self):
         print('\nINFO: Validating intersection in polygons (plots)...')
 
-        gpkg_path = get_test_copy_path('geopackage/static/geometry_utils.gpkg')
+        gpkg_path = get_test_copy_path('db/static/gpkg/geometry_utils.gpkg')
         uri = gpkg_path + '|layername={layername}'.format(layername='overlapping_polygons')
         polygons_intersection_layer = QgsVectorLayer(uri, 'overlapping_polygons', 'ogr')
 

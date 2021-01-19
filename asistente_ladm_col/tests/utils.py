@@ -87,7 +87,7 @@ def get_gpkg_conn(gpkg_schema_name):
     db = None
     if gpkg_schema_name in TEST_SCHEMAS_MAPPING:
         gpkg_file_name = TEST_SCHEMAS_MAPPING[gpkg_schema_name]
-        gpkg_path = get_test_path('geopackage/{gpkg_file_name}'.format(gpkg_file_name=gpkg_file_name))
+        gpkg_path = get_test_path('db/{gpkg_file_name}'.format(gpkg_file_name=gpkg_file_name))
         dict_conn['dbfile'] = gpkg_path
         db = asistente_ladm_col_plugin.conn_manager.get_opened_db_connector_for_tests('gpkg', dict_conn)
 
@@ -98,7 +98,7 @@ def get_copy_gpkg_conn(gpkg_schema_name):
     db = None
     if gpkg_schema_name in TEST_SCHEMAS_MAPPING:
         gpkg_file_name = TEST_SCHEMAS_MAPPING[gpkg_schema_name]
-        gpkg_path = get_test_copy_path('geopackage/{gpkg_file_name}'.format(gpkg_file_name=gpkg_file_name))
+        gpkg_path = get_test_copy_path('db/{gpkg_file_name}'.format(gpkg_file_name=gpkg_file_name))
         dict_conn['dbfile'] = gpkg_path
         db = asistente_ladm_col_plugin.conn_manager.get_opened_db_connector_for_tests('gpkg', dict_conn)
 
@@ -297,8 +297,7 @@ def reset_db_mssql(schema):
 
 def restore_schema_mssql(schema):
     sql_cmd = "/opt/mssql-tools/bin/sqlcmd -S mssql,1433 -U  sa -P '<YourStrong!Passw0rd>' -d {} -I -i {} -r0 > /dev/null 2>&1"
-    dir_file = get_test_path("sql")
-    sql_file = dir_file + "/{}_mssql.sql".format(schema)
+    sql_file = os.path.join(get_test_path("db"), TEST_SCHEMAS_MAPPING['{}_mssql'.format(schema)])
 
     command = sql_cmd.format(schema, sql_file)
     print(command)

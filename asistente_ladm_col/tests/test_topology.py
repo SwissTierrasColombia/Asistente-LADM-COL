@@ -19,7 +19,7 @@ class TestTopology(unittest.TestCase):
 
     def test_pair_boundary_plot(self):
         print('\nValidating pairs boundary-plot')
-        gpkg_path = get_test_copy_path('geopackage/static/quality_validations.gpkg')
+        gpkg_path = get_test_copy_path('db/static/gpkg/quality_validations.gpkg')
         self.db_gpkg = get_gpkg_conn('tests_quality_validations_gpkg')
         self.names = self.db_gpkg.names
         self.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure

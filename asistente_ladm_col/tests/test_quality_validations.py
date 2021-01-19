@@ -32,7 +32,7 @@ class TesQualityValidations(unittest.TestCase):
     def test_validate_topology_relation_between_point_boundary_boundary(self):
         print('\nINFO: Validating that the relation between point boundary and boundary is registered in the topology table ...')
 
-        gpkg_path = get_test_copy_path('geopackage/static/quality_validations.gpkg')
+        gpkg_path = get_test_copy_path('db/static/gpkg/quality_validations.gpkg')
         self.db_gpkg = get_gpkg_conn('tests_quality_validations_gpkg')
         names = self.db_gpkg.names
         names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
@@ -105,7 +105,7 @@ class TesQualityValidations(unittest.TestCase):
     def test_check_right_of_way_overlaps_buildings(self):
         print('\nINFO: Validating Right of Way-Building overlaps...')
 
-        gpkg_path = get_test_copy_path('geopackage/static/quality_validations.gpkg')
+        gpkg_path = get_test_copy_path('db/static/gpkg/quality_validations.gpkg')
         uri = gpkg_path + '|layername={layername}'.format(layername='construccion')
         building_layer = QgsVectorLayer(uri, 'construccion', 'ogr')
         uri = gpkg_path + '|layername={layername}'.format(layername='servidumbre_transito')
@@ -130,7 +130,7 @@ class TesQualityValidations(unittest.TestCase):
 
     def test_boundary_dangles(self):
         print('\nINFO: Validating boundary_dangles...')
-        gpkg_path = get_test_copy_path('geopackage/static/geometry_utils.gpkg')
+        gpkg_path = get_test_copy_path('db/static/gpkg/geometry_utils.gpkg')
         self.db_gpkg = get_gpkg_conn('tests_geometry_util_gpkg')
         names = self.db_gpkg.names
         names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
@@ -152,7 +152,7 @@ class TesQualityValidations(unittest.TestCase):
 
     def test_boundary_dangles_no_dangles(self):
         print('\nINFO: Validating boundary_dangles with no dangles...')
-        gpkg_path = get_test_copy_path('geopackage/static/quality_validations.gpkg')
+        gpkg_path = get_test_copy_path('db/static/gpkg/quality_validations.gpkg')
         uri = gpkg_path + '|layername={layername}'.format(layername='boundary')
         boundary_layer = QgsVectorLayer(uri, 'dangles', 'ogr')
 
@@ -164,7 +164,7 @@ class TesQualityValidations(unittest.TestCase):
 
     def test_boundaries_are_not_split(self):
         print('\nINFO: Validating boundaries are not split...')
-        gpkg_path = get_test_copy_path('geopackage/static/quality_validations.gpkg')
+        gpkg_path = get_test_copy_path('db/static/gpkg/quality_validations.gpkg')
         self.db_gpkg = get_gpkg_conn('tests_quality_validations_gpkg')
         names = self.db_gpkg.names
         names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
@@ -192,7 +192,7 @@ class TesQualityValidations(unittest.TestCase):
         self.assertEqual(len(good_boundary_errors_list), 0)
 
     def test_check_gaps_in_plots(self):
-        gpkg_path = get_test_copy_path('geopackage/static/quality_validations.gpkg')
+        gpkg_path = get_test_copy_path('db/static/gpkg/quality_validations.gpkg')
         uri = gpkg_path + '|layername={layername}'.format(layername='check_gaps_in_plots')
         test_plots_layer = QgsVectorLayer(uri, 'check_gaps_in_plots', 'ogr')
 
@@ -301,7 +301,7 @@ class TesQualityValidations(unittest.TestCase):
 
     def test_multiparts_in_right_of_way(self):
         print('\nINFO: Validating right_of_way for no multipart geometries...')
-        gpkg_path = get_test_copy_path('geopackage/static/quality_validations.gpkg')
+        gpkg_path = get_test_copy_path('db/static/gpkg/quality_validations.gpkg')
         uri = gpkg_path + '|layername={layername}'.format(layername='right_of_way')
         right_of_way = QgsVectorLayer(uri, 'right_of_way', 'ogr')
 
@@ -331,7 +331,7 @@ class TesQualityValidations(unittest.TestCase):
     def test_check_buildings_within_plots(self):
         print('\nINFO: Validating buldings are within plots...')
 
-        gpkg_path = get_test_copy_path('geopackage/static/quality_validations.gpkg')
+        gpkg_path = get_test_copy_path('db/static/gpkg/quality_validations.gpkg')
         uri = gpkg_path + '|layername={layername}'.format(layername='buildings')
         building_layer = QgsVectorLayer(uri, 'buildings', 'ogr')
         self.assertEqual(building_layer.featureCount(), 6)

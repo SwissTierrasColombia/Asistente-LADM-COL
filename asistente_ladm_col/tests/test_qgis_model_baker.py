@@ -83,7 +83,7 @@ class TestQgisModelBaker(unittest.TestCase):
 
     def test_export_data_in_gpkg(self):
         print("\nINFO: Validate Export Data in GPKG...")
-        gpkg_path = get_test_copy_path('geopackage/test_export_data_ladm_v1_1.gpkg')
+        gpkg_path = get_test_copy_path('db/ladm/gpkg/test_export_data_ladm_v1_1.gpkg')
 
         base_config = BaseConfiguration()
         base_config.custom_model_directories = testdata_path(MODELS_PATH)
@@ -182,7 +182,7 @@ class TestQgisModelBaker(unittest.TestCase):
     def test_import_data_in_gpkg(self):
         print("\nINFO: Validate Import Data in GPKG...")
 
-        gpkg_path = get_test_copy_path('geopackage/test_import_data_ladm_v1_1.gpkg')
+        gpkg_path = get_test_copy_path('db/ladm/gpkg/test_import_data_ladm_v1_1.gpkg')
 
         base_config = BaseConfiguration()
         base_config.custom_model_directories = testdata_path(MODELS_PATH)
