@@ -875,7 +875,7 @@
       <Option name="active" type="bool" value="true"/>
       <Option name="alg_config"/>
       <Option name="alg_id" type="QString" value="native:fixgeometries"/>
-      <Option name="component_description" type="QString" value="Arreglando geometrías de la capa R_CONSTRUCION"/>
+      <Option name="component_description" type="QString" value="1_Arreglando geometrías de la capa R_CONSTRUCION"/>
       <Option name="component_pos_x" type="double" value="371.6677051784046"/>
       <Option name="component_pos_y" type="double" value="730.0971866409417"/>
       <Option name="dependencies"/>
@@ -896,7 +896,7 @@
       <Option name="active" type="bool" value="true"/>
       <Option name="alg_config"/>
       <Option name="alg_id" type="QString" value="native:fixgeometries"/>
-      <Option name="component_description" type="QString" value="Arreglando geometrías de la capa U_CONSTRUCION"/>
+      <Option name="component_description" type="QString" value="0_Arreglando geometrías de la capa U_CONSTRUCION"/>
       <Option name="component_pos_x" type="double" value="373.153500626029"/>
       <Option name="component_pos_y" type="double" value="653.148590781668"/>
       <Option name="dependencies"/>
@@ -3380,8 +3380,8 @@
       <Option name="alg_config"/>
       <Option name="alg_id" type="QString" value="native:mergevectorlayers"/>
       <Option name="component_description" type="QString" value="Combinando la capa U_CONSTRUCION con la capa R_CONSTRUCCION"/>
-      <Option name="component_pos_x" type="double" value="600.5524273267133"/>
-      <Option name="component_pos_y" type="double" value="649.3141979645635"/>
+      <Option name="component_pos_x" type="double" value="600.1746400273037"/>
+      <Option name="component_pos_y" type="double" value="649.6919852639732"/>
       <Option name="dependencies"/>
       <Option name="id" type="QString" value="native:mergevectorlayers_5"/>
       <Option name="outputs"/>
@@ -3408,12 +3408,12 @@
         </Option>
         <Option name="LAYERS" type="List">
           <Option type="Map">
-            <Option name="child_id" type="QString" value="native:fixgeometries_5"/>
+            <Option name="child_id" type="QString" value="native:fixgeometries_6"/>
             <Option name="output_name" type="QString" value="OUTPUT"/>
             <Option name="source" type="int" value="1"/>
           </Option>
           <Option type="Map">
-            <Option name="child_id" type="QString" value="native:fixgeometries_6"/>
+            <Option name="child_id" type="QString" value="native:fixgeometries_5"/>
             <Option name="output_name" type="QString" value="OUTPUT"/>
             <Option name="source" type="int" value="1"/>
           </Option>
@@ -5644,7 +5644,7 @@
                 <Option name="type" type="int" value="10"/>
               </Option>
               <Option type="Map">
-                <Option name="expression" type="QString" value="&quot;FECHA_INICIO_BLOQUEO&quot;"/>
+                <Option name="expression" type="QString" value="to_date(&quot;FECHA_INICIO_BLOQUEO&quot;, 'd/M/yy')"/>
                 <Option name="length" type="int" value="0"/>
                 <Option name="name" type="QString" value="fecha_alerta"/>
                 <Option name="precision" type="int" value="0"/>
