@@ -11,8 +11,8 @@ env:
   global:
   - OSGEO_USERNAME=agenciadeimplementacion
   - QGIS_TEST_VERSION=latest
-  - REMOTE_REPO_OWNER=SwissTierrasColombia
-  - REMOTE_REPO_NAME=Asistente-LADM-COL-docs
+  #- REMOTE_REPO_OWNER=SwissTierrasColombia    # Used for deploying docs
+  #- REMOTE_REPO_NAME=Asistente-LADM-COL-docs  # Used for deploying docs
   - secure: bU/mTC1JjyHOvFtu4bAgiz9a16LF9ICcsmd1RoqjDJoWFzLzQaGWVqOCLA19gZWQ9rVPdc8KhVRG5BffaecZGTjpgxpYC6jsi6DVKfbq5uX5v6F6wbLk+3OC5/w+XPKa1vl358U8zK4mf6WDDQ7ZQut2HLXBcdJFU+glikndHdkXXZoa3paL+iYDuK/skRhM3r+/VYq0xzEvxyMm9kELSMwl7iXVJw+Dr4lZEQELJWREKS7nHkizJ8rP3G51BB4owCGrb8x7Wqv3pTaMwGLUMHYLY3AuOlFnRTQLx3hcgHhCxmkast00ikamtRe3yHDaAOL4BYA7yOpt7cbT6uVxq3+2S6AsfksQUb1XrJj2LfkWjQbxPycfm87CE2zhiVWqwryNnwbcl3emSHangvanGGQL+dNbs0Nk+iV9ARVsl6Mknw+T0dbSTmp1NxpuFZRtzyDpo2Ceszr3jCKpIlir8DPJ0E1YBsfzYKU/jlKbIFwtj386zw0Mt8jM4I6seD4812IyaSliS7bFa0XmtJl9U3N7VYdMbx6jNblLHm8ATLa5DugoSQL2Y4YRNj58t/ja0m83l5vZ831lRRXNNg6dZH/l0VWhGEEx/PWzBbOLkghV+gEDRNW+eUUf0oWcUKLT4CM+6nQbGmNnbYV9M1FND7FAmhqcNURfamnzbYCskJY=
 install:
   - docker build --build-arg QGIS_TEST_VERSION=${QGIS_TEST_VERSION} .
@@ -24,7 +24,6 @@ before_deploy:
   - sudo apt-get -qq update
   - sudo apt-get install -y pyqt5-dev-tools qtchooser
   - pushd asistente_ladm_col; make clean; make all; popd
-  - ./scripts/release-docs.sh
   - zip -r asistente_ladm_col.zip asistente_ladm_col
     -x asistente_ladm_col/tests/\*
     \*.pyc \*/__pycache__/\*
