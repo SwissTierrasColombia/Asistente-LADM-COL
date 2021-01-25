@@ -41,7 +41,7 @@
     <link rel="index" title="Índice" href="genindex.html" />
     <link rel="search" title="Búsqueda" href="search.html" />
     <link rel="next" title="Consulta de datos" href="consulta_de_datos.html" />
-    <link rel="prev" title="Omisiones y comisiones" href="gestion_de_insumos/omisiones_y_comisiones.html" /> 
+    <link rel="prev" title="Captura de datos en campo" href="captura_de_datos_en_campo.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -58,6 +58,9 @@
             <a href="index.html" class="icon icon-home"> Asistente LADM-COL
           
 
+          
+            
+            <img src="_static/logo_asistente_ladm_col_96x100.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -85,16 +88,16 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+              <p class="caption"><span class="caption-text">Contenido:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="acerca_de.html">Acerca de</a></li>
-<li class="toctree-l1"><a class="reference internal" href="instalacion.html">Instalación</a></li>
+<li class="toctree-l1"><a class="reference internal" href="introduccion.html">Introducción</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuracion.html">Configuración</a></li>
-<li class="toctree-l1"><a class="reference internal" href="barra_de_herramientas.html">Barra de herramientas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="administracion_de_datos.html">Administración de datos</a></li>
 <li class="toctree-l1"><a class="reference internal" href="captura_y_estructura_de_datos.html">Captura y estructuración de datos</a></li>
-<li class="toctree-l1"><a class="reference internal" href="cargar_capas.html">Cargas capas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="barra_de_herramientas.html">Barra de herramientas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cargar_capas.html">Cargar capas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gestion_de_insumos.html">Gestión de insumos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="captura_de_datos_en_campo.html">Captura de datos en campo</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Reglas de calidad</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#reglas-para-puntos">Reglas para puntos</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#los-puntos-de-linderos-no-deben-superponerse">Los Puntos de Linderos no deben superponerse</a></li>
@@ -102,7 +105,6 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#reglas-para-lineas">Reglas para Líneas</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#los-segmentos-de-linderos-no-deben-ser-mas-largos-que">Los segmentos de Linderos no deben ser más largos que</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#los-linderos-no-deben-superponerse">Los Linderos no deben superponerse</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#los-nodos-de-linderos-deben-estar-cubiertos-por-putos-de-lindero">Los nodos de Linderos deben estar cubiertos por Putos de Lindero</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#los-linderos-no-deben-tener-nodos-sin-conectar">Los Linderos no deben tener nodos sin conectar</a></li>
@@ -114,7 +116,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#las-servidumbres-no-se-deben-superponer-con-construcciones">Las Servidumbres no se deben superponer con Construcciones</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#revisar-todo">Revisar Todo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#reglas-de-consistencia-logica">Reglas de consistencia lógica</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="consulta_de_datos.html">Consulta de datos</a></li>
@@ -172,7 +174,7 @@
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/reglas_de_calidad.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/reglas_de_calidad.md.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -187,155 +189,42 @@
             
   <div class="section" id="reglas-de-calidad">
 <h1>Reglas de calidad<a class="headerlink" href="#reglas-de-calidad" title="Enlazar permanentemente con este título">¶</a></h1>
-<a class=""
-               data-lightbox="group-84da7dca-8061-4da4-b06c-d88b0971c872"
-               href="_images/quality_rules.gif"
-               title="Reglas de calidad"
-               data-title="Reglas de calidad"
-               ><img src="_images/quality_rules.gif"
-                     class=""
-                     width="800"
-                     height="500"
-                     alt="Reglas de calidad"/>
-                </a><div class="section" id="reglas-para-puntos">
+<img src="_static/reglas_de_calidad/quality_rules.gif" alt="Reglas de calidad" style="height:500px;width:800px" /><div class="section" id="reglas-para-puntos">
 <h2>Reglas para puntos<a class="headerlink" href="#reglas-para-puntos" title="Enlazar permanentemente con este título">¶</a></h2>
 <div class="section" id="los-puntos-de-linderos-no-deben-superponerse">
 <h3>Los Puntos de Linderos no deben superponerse<a class="headerlink" href="#los-puntos-de-linderos-no-deben-superponerse" title="Enlazar permanentemente con este título">¶</a></h3>
-<a class=""
-               data-lightbox="group-3602e8e8-35a3-4a73-b865-43b45548bccd"
-               href="_images/boundary_points_should_not_overlap.gif"
-               title="Los Puntos de Linderos no deben superponerse"
-               data-title="Los Puntos de Linderos no deben superponerse"
-               ><img src="_images/boundary_points_should_not_overlap.gif"
-                     class=""
-                     width="800"
-                     height="500"
-                     alt="Los Puntos de Linderos no deben superponerse"/>
-                </a></div>
+<img src="_static/reglas_de_calidad/boundary_points_should_not_overlap.gif" alt="Los Puntos de Linderos no deben superponerse" style="height:500px;width:800px" /></div>
 <div class="section" id="los-puntos-de-control-no-deben-superponerse">
 <h3>Los Puntos de Control no deben superponerse<a class="headerlink" href="#los-puntos-de-control-no-deben-superponerse" title="Enlazar permanentemente con este título">¶</a></h3>
-<a class=""
-               data-lightbox="group-8a85154e-166b-4cea-ba9d-0f6513d3d8ee"
-               href="_images/control_points_should_not_overlap.gif"
-               title="Los Puntos de Control no deben superponerse"
-               data-title="Los Puntos de Control no deben superponerse"
-               ><img src="_images/control_points_should_not_overlap.gif"
-                     class=""
-                     width="800"
-                     height="500"
-                     alt="Los Puntos de Control no deben superponerse"/>
-                </a></div>
+<img src="_static/reglas_de_calidad/control_points_should_not_overlap.gif" alt="Los Puntos de Control no deben superponerse" style="height:500px;width:800px" /></div>
 </div>
 <div class="section" id="reglas-para-lineas">
 <h2>Reglas para Líneas<a class="headerlink" href="#reglas-para-lineas" title="Enlazar permanentemente con este título">¶</a></h2>
-<div class="section" id="los-segmentos-de-linderos-no-deben-ser-mas-largos-que">
-<h3>Los segmentos de Linderos no deben ser más largos que<a class="headerlink" href="#los-segmentos-de-linderos-no-deben-ser-mas-largos-que" title="Enlazar permanentemente con este título">¶</a></h3>
-<a class=""
-               data-lightbox="group-b89fa2a7-3c71-4bf2-9de6-e7584f1b91c9"
-               href="_images/quality_segments_longer_than.png"
-               title="Los segmentos de Linderos no deben ser más largos que"
-               data-title="Los segmentos de Linderos no deben ser más largos que"
-               ><img src="_images/quality_segments_longer_than.png"
-                     class=""
-                     width="509"
-                     height="503"
-                     alt="Los segmentos de Linderos no deben ser más largos que"/>
-                </a></div>
 <div class="section" id="los-linderos-no-deben-superponerse">
 <h3>Los Linderos no deben superponerse<a class="headerlink" href="#los-linderos-no-deben-superponerse" title="Enlazar permanentemente con este título">¶</a></h3>
-<a class=""
-               data-lightbox="group-f2825743-82b6-403e-a587-5a4e2d857e2f"
-               href="_images/boundary_should_not_overlap.gif"
-               title="Los Linderos no deben superponerse"
-               data-title="Los Linderos no deben superponerse"
-               ><img src="_images/boundary_should_not_overlap.gif"
-                     class=""
-                     width="800"
-                     height="500"
-                     alt="Los Linderos no deben superponerse"/>
-                </a></div>
+<img src="_static/reglas_de_calidad/boundary_should_not_overlap.gif" alt="Los Linderos no deben superponerse" style="height:500px;width:800px" /></div>
 <div class="section" id="los-nodos-de-linderos-deben-estar-cubiertos-por-putos-de-lindero">
 <h3>Los nodos de Linderos deben estar cubiertos por Putos de Lindero<a class="headerlink" href="#los-nodos-de-linderos-deben-estar-cubiertos-por-putos-de-lindero" title="Enlazar permanentemente con este título">¶</a></h3>
-<a class=""
-               data-lightbox="group-989d558b-aa14-4ad3-b3bd-c1cc467a8aae"
-               href="_images/boundary_nodes_should_be_covered_by_boundary_point.gif"
-               title="Los nodos de Linderos deben estar cubiertos por Putos de Lindero"
-               data-title="Los nodos de Linderos deben estar cubiertos por Putos de Lindero"
-               ><img src="_images/boundary_nodes_should_be_covered_by_boundary_point.gif"
-                     class=""
-                     width="800"
-                     height="500"
-                     alt="Los nodos de Linderos deben estar cubiertos por Putos de Lindero"/>
-                </a></div>
+<img src="_static/reglas_de_calidad/boundary_nodes_should_be_covered_by_boundary_point.gif" alt="Los nodos de Linderos deben estar cubiertos por Putos de Lindero" style="height:500px;width:800px" /></div>
 <div class="section" id="los-linderos-no-deben-tener-nodos-sin-conectar">
 <h3>Los Linderos no deben tener nodos sin conectar<a class="headerlink" href="#los-linderos-no-deben-tener-nodos-sin-conectar" title="Enlazar permanentemente con este título">¶</a></h3>
-<a class=""
-               data-lightbox="group-b5133b7f-b6ea-46ab-b231-c24a7f85fbd6"
-               href="_images/boundary_should_not_have_dangles.gif"
-               title="Los Linderos no deben tener nodos sin conectar"
-               data-title="Los Linderos no deben tener nodos sin conectar"
-               ><img src="_images/boundary_should_not_have_dangles.gif"
-                     class=""
-                     width="800"
-                     height="500"
-                     alt="Los Linderos no deben tener nodos sin conectar"/>
-                </a></div>
+<img src="_static/reglas_de_calidad/boundary_should_not_have_dangles.gif" alt="Los Linderos no deben tener nodos sin conectar" style="height:500px;width:800px" /></div>
 </div>
 <div class="section" id="reglas-para-poligonos">
 <h2>Reglas para Polígonos<a class="headerlink" href="#reglas-para-poligonos" title="Enlazar permanentemente con este título">¶</a></h2>
 <div class="section" id="los-terrenos-no-deben-superponerse">
 <h3>Los Terrenos no deben superponerse<a class="headerlink" href="#los-terrenos-no-deben-superponerse" title="Enlazar permanentemente con este título">¶</a></h3>
-<a class=""
-               data-lightbox="group-b1823d75-14f7-42d2-9f53-8546778f926a"
-               href="_images/plots_should_not_overlap.gif"
-               title="Los Terrenos no deben superponerse"
-               data-title="Los Terrenos no deben superponerse"
-               ><img src="_images/plots_should_not_overlap.gif"
-                     class=""
-                     width="800"
-                     height="500"
-                     alt="Los Terrenos no deben superponerse"/>
-                </a></div>
+<img src="_static/reglas_de_calidad/plots_should_not_overlap.gif" alt="Los Terrenos no deben superponerse" style="height:500px;width:800px" /></div>
 <div class="section" id="los-nodos-de-construccion-deben-estar-cubiertos-por-puntos-de-levantamiento">
 <h3>Los nodos de Construcción deben estar cubiertos por Puntos de Levantamiento<a class="headerlink" href="#los-nodos-de-construccion-deben-estar-cubiertos-por-puntos-de-levantamiento" title="Enlazar permanentemente con este título">¶</a></h3>
-<a class=""
-               data-lightbox="group-60f0bf46-224b-47b3-8139-8761fded67b2"
-               href="_images/buildings_nodes_should_be_coverd_by_survey_point.gif"
-               title="Los nodos de Construcción deben estar cubiertos por Puntos de Levantamiento"
-               data-title="Los nodos de Construcción deben estar cubiertos por Puntos de Levantamiento"
-               ><img src="_images/buildings_nodes_should_be_coverd_by_survey_point.gif"
-                     class=""
-                     width="800"
-                     height="500"
-                     alt="Los nodos de Construcción deben estar cubiertos por Puntos de Levantamiento"/>
-                </a></div>
+<img src="_static/reglas_de_calidad/buildings_nodes_should_be_coverd_by_survey_point.gif" alt="Los nodos de Construcción deben estar cubiertos por Puntos de Levantamiento" style="height:500px;width:800px" /></div>
 <div class="section" id="las-servidumbres-no-se-deben-superponer-con-construcciones">
 <h3>Las Servidumbres no se deben superponer con Construcciones<a class="headerlink" href="#las-servidumbres-no-se-deben-superponer-con-construcciones" title="Enlazar permanentemente con este título">¶</a></h3>
-<a class=""
-               data-lightbox="group-ec4fd18a-2579-440e-a180-f628f1fefb93"
-               href="_images/right_of_way_should_not_overlap_buildings.gif"
-               title="Las Servidumbres no se deben superponer con Construcciones"
-               data-title="Las Servidumbres no se deben superponer con Construcciones"
-               ><img src="_images/right_of_way_should_not_overlap_buildings.gif"
-                     class=""
-                     width="800"
-                     height="500"
-                     alt="Las Servidumbres no se deben superponer con Construcciones"/>
-                </a></div>
+<img src="_static/reglas_de_calidad/right_of_way_should_not_overlap_buildings.gif" alt="Las Servidumbres no se deben superponer con Construcciones" style="height:500px;width:800px" /></div>
 </div>
-<div class="section" id="revisar-todo">
-<h2>Revisar Todo<a class="headerlink" href="#revisar-todo" title="Enlazar permanentemente con este título">¶</a></h2>
-<a class=""
-               data-lightbox="group-3c4a0c5c-14d4-4dbb-ab31-f778162a9d06"
-               href="_images/test_all.gif"
-               title="Revisar todas las reglas al mismo tiempo"
-               data-title="Revisar todas las reglas al mismo tiempo"
-               ><img src="_images/test_all.gif"
-                     class=""
-                     width="800"
-                     height="500"
-                     alt="Revisar Todo"/>
-                </a></div>
+<div class="section" id="reglas-de-consistencia-logica">
+<h2>Reglas de consistencia lógica<a class="headerlink" href="#reglas-de-consistencia-logica" title="Enlazar permanentemente con este título">¶</a></h2>
+</div>
 </div>
 
 
@@ -349,7 +238,7 @@
         <a href="consulta_de_datos.html" class="btn btn-neutral float-right" title="Consulta de datos" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="gestion_de_insumos/omisiones_y_comisiones.html" class="btn btn-neutral float-left" title="Omisiones y comisiones" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="captura_de_datos_en_campo.html" class="btn btn-neutral float-left" title="Captura de datos en campo" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -358,7 +247,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2020, Agencia de implementación
+        &copy; Copyright 2017-hoy, SwissTierras Colombia
 
     </p>
   </div>
