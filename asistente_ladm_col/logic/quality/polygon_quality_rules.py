@@ -401,7 +401,7 @@ class PolygonQualityRules:
         # the contains function, so we make sure to have those buliding nodes on the plots to guarantee the contains
         # works as expected. Of course, we don't touch the original plots layer, so we make a copy first.
         topological_plots = self.app.core.get_layer_copy(layers[names.LC_PLOT_T])
-        self.geometry.add_topological_vertices(topological_plots, layers[names.LC_BUILDING_T], names.T_ID_F)
+        self.geometry.add_topological_vertices(topological_plots, layers[names.LC_BUILDING_T])
 
         # Now that we have a copy of the plot layer, we register it in the project, so that Processing can find it
         self.app.core.register_layers_to_project([topological_plots])

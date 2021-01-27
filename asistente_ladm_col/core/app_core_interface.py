@@ -1406,7 +1406,6 @@ class AppCoreInterface(QObject):
         """
         return [m_k for m_k in RoleRegistry().get_active_role_supported_models() if db.model_parser.model_version_is_supported[m_k]]
 
-    @_activate_processing_plugin
     def get_layer_copy(self, layer):
         res_copy = processing.run("ladm_col:copy_vector_layer",
                                   {'INPUT': layer,

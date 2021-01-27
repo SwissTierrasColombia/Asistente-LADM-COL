@@ -438,7 +438,7 @@ class GeometryUtils(QObject):
 
         return self.extract_geoms_by_type(clean_errors, [QgsWkbTypes.PolygonGeometry])
 
-    def add_topological_vertices(self, layer1, layer2, id_field):
+    def add_topological_vertices(self, layer1, layer2):
         """
         Modify layer1 adding vertices that are in layer2 and not in layer1
 
@@ -461,16 +461,12 @@ class GeometryUtils(QObject):
         index = QgsSpatialIndex(layer2)
         dict_features_layer2 = None
         candidate_features = None
-        id_field_idx1 = layer1.fields().indexFromName(id_field)
-        request1 = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx1])
-        id_field_idx2 = layer2.fields().indexFromName(id_field)
-        request2 = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx2])
 
         with edit(layer1):
             edit_layer = QgsVectorLayerEditUtils(layer1)
-            dict_features_layer2 = {feature.id(): feature for feature in layer2.getFeatures(request2)}
+            dict_features_layer2 = {f.id(): f for f in layer2.getFeatures(QgsFeatureRequest().setNoAttributes())}
 
-            for feature in layer1.getFeatures(request1):
+            for feature in layer1.getFeatures(QgsFeatureRequest().setNoAttributes()):
                 bbox = feature.geometry().boundingBox()
                 candidate_ids = index.intersects(bbox)
                 candidate_features = [dict_features_layer2[candidate_id] for candidate_id in candidate_ids]
@@ -494,7 +490,7 @@ class GeometryUtils(QObject):
                                            {'INPUT': plots_as_lines_layer,
                                             'OVERLAY': boundary_layer,
                                             'OUTPUT': 'memory:'})['OUTPUT']
-        self.add_topological_vertices(approx_diff_layer, boundary_layer, names.T_ID_F)
+        self.add_topological_vertices(approx_diff_layer, boundary_layer)
 
         # add_topological_vertices may produce invalid geometries, so we better play safe and fix them
         fixed_geometries = processing.run("native:fixgeometries",
@@ -519,7 +515,7 @@ class GeometryUtils(QObject):
                                            {'INPUT': boundary_layer,
                                             'OVERLAY': plot_as_lines_layer,
                                             'OUTPUT': 'memory:'})['OUTPUT']
-        self.add_topological_vertices(plot_as_lines_layer, approx_diff_layer, names.T_ID_F)
+        self.add_topological_vertices(plot_as_lines_layer, approx_diff_layer)
 
         # add_topological_vertices may produce invalid geometries, so we better play safe and fix them
         fixed_geometries = processing.run("native:fixgeometries",
