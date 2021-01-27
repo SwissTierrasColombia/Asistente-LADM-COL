@@ -331,6 +331,16 @@ class AppCoreInterface(QObject):
         return layers[0] if layers else None
 
     @staticmethod
+    def register_layers_to_project(layers):
+        # Note, this just registers the layers and does not load them, which means,
+        # those layers won't be visible in the QGIS layers panel
+        QgsProject.instance().addMapLayers(layers, False)
+
+    @staticmethod
+    def unregister_layers_from_project(layers):
+        QgsProject.instance().removeMapLayers([layer.id() for layer in layers])
+
+    @staticmethod
     def get_ladm_layer_from_qgis(db, layer_name, registry_type=None):
         """
         :param db: DB connection
@@ -1395,3 +1405,10 @@ class AppCoreInterface(QObject):
         :return: List of model keys that are in DB and are allowed for current role
         """
         return [m_k for m_k in RoleRegistry().get_active_role_supported_models() if db.model_parser.model_version_is_supported[m_k]]
+
+    @_activate_processing_plugin
+    def get_layer_copy(self, layer):
+        res_copy = processing.run("ladm_col:copy_vector_layer",
+                                  {'INPUT': layer,
+                                   'SINK': 'TEMPORARY_OUTPUT'})
+        return res_copy['OUTPUT']
