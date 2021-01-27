@@ -163,7 +163,7 @@ class QualityRuleLayerManager(QObject):
         :return: Dict of layers for the given rule_key. This dict has both a 'layers' dict which has the best available
                  layer (which means, if an adjusted layer is required, it will be preferred, and if no adjusted layer is
                  required, just pass the LADM-COL layer) and a 'ladm-col' dict with the original LADM-COL layers,
-                 because the quality rule might need to refere to the original object (or geometry) to build its result.
+                 because the quality rule might need to refer to the original object (or geometry) to build its result.
         """
         # Make sure we only call Prepare layers once for each call to run quality validations.
         if not self.__layers:

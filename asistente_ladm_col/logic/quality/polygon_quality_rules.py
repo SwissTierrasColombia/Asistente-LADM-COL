@@ -391,17 +391,25 @@ class PolygonQualityRules:
         data_provider.addAttributes(rule.error_table_fields)
         error_layer.updateFields()
 
-
         if layer_dict[HAS_ADJUSTED_LAYERS]:  # We'll get geometries from original layer later, so don't get them now
             key, attrs, get_geometry = None, [names.T_ID_F, names.T_ILI_TID_F], False
             ladm_col_building_layer = layer_dict[QUALITY_RULE_LADM_COL_LAYERS][names.LC_BUILDING_T]
         else:  # We'll get geometries from current layers, as they are the original ones already
             key, attrs, get_geometry = None, [names.T_ILI_TID_F], True
 
+        # Sometimes, nodes of the building that lie on plot boundaries but do not match a plot vertex, might break
+        # the contains function, so we make sure to have those buliding nodes on the plots to guarantee the contains
+        # works as expected. Of course, we don't touch the original plots layer, so we make a copy first.
+        topological_plots = self.app.core.get_layer_copy(layers[names.LC_PLOT_T])
+        self.geometry.add_topological_vertices(topological_plots, layers[names.LC_BUILDING_T], names.T_ID_F)
+
+        # Now that we have a copy of the plot layer, we register it in the project, so that Processing can find it
+        self.app.core.register_layers_to_project([topological_plots])
+
         # Gets dicts of {fid:{'attrs':{attr1:v1, ...}, 'geometry': QgsGeometry()}}
         building_disjoint, building_overlaps, building_within = GeometryUtils.get_relationships_among_polygons(
             layers[names.LC_BUILDING_T],
-            layers[names.LC_PLOT_T],
+            topological_plots,
             key,
             attrs,
             get_geometry
@@ -411,11 +419,14 @@ class PolygonQualityRules:
         if building_within:
             tid_buildings = self.check_building_not_associated_with_correct_plot(list(building_within.keys()),
                                                                                  layers[names.LC_BUILDING_T],
-                                                                                 layers[names.LC_PLOT_T],
+                                                                                 topological_plots,
                                                                                  layers[names.LC_PARCEL_T],
                                                                                  layers[names.COL_UE_BAUNIT_T],
                                                                                  layers[names.LC_CONDITION_PARCEL_TYPE_D],
                                                                                  names)
+
+        # Since we won't need the temporary layer topological_plots anymore, unregister it from the QGIS project
+        self.app.core.unregister_layers_from_project([topological_plots])
 
         # If needed, get geometries from LADM-COL original layer
         if layer_dict[HAS_ADJUSTED_LAYERS]:
