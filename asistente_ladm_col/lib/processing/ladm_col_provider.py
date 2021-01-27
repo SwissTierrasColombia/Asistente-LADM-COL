@@ -23,6 +23,7 @@ from processing.core.ProcessingConfig import (Setting,
 from asistente_ladm_col.lib.processing.algs.InsertFeaturesToLayer import InsertFeaturesToLayer
 from asistente_ladm_col.lib.processing.algs.PolygonsToLines import PolygonsToLines
 from asistente_ladm_col.lib.processing.algs.FieldCalculator import FieldsCalculator
+from asistente_ladm_col.lib.processing.algs.CopyVectorLayer import CopyVectorLayer
 
 
 class LADMCOLAlgorithmProvider(QgsProcessingProvider):
@@ -85,5 +86,5 @@ class LADMCOLAlgorithmProvider(QgsProcessingProvider):
         even if the list does not change, since the self.algs list is
         cleared before calling this method.
         """
-        for alg in [InsertFeaturesToLayer(), PolygonsToLines(), FieldsCalculator()]:
+        for alg in [InsertFeaturesToLayer(), PolygonsToLines(), FieldsCalculator(), CopyVectorLayer()]:
             self.addAlgorithm(alg)
