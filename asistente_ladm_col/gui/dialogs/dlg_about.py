@@ -37,7 +37,8 @@ from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.config.general_config import (HELP_DIR_NAME,
                                                       HELP_DOWNLOAD,
                                                       PLUGIN_VERSION,
-                                                      TEST_SERVER)
+                                                      TEST_SERVER,
+                                                      HELP_ASSET_NAME)
 from asistente_ladm_col.config.translator import (QGIS_LANG,
                                                   PLUGIN_DIR)
 from asistente_ladm_col.utils import get_ui_class
@@ -81,10 +82,7 @@ class AboutDialog(QDialog, DIALOG_UI):
         except TypeError as e:
             pass
 
-        if os.path.exists(os.path.join(PLUGIN_DIR,
-                                       HELP_DIR_NAME,
-                                       QGIS_LANG,
-                                       'index.html')):
+        if os.path.exists(os.path.join(PLUGIN_DIR, HELP_DIR_NAME, 'index.html')):
             self.btn_download_help.setText(QCoreApplication.translate("AboutDialog", "Open help from local folder"))
             self.btn_download_help.clicked.connect(self.show_help)
         else:
@@ -103,10 +101,7 @@ class AboutDialog(QDialog, DIALOG_UI):
             try:
                 with zipfile.ZipFile(tmpFile, "r") as zip_ref:
                     zip_ref.extractall(tmpFold)
-                    languages = glob.glob(os.path.join(tmpFold, 'asistente_ladm_col_docs/*'))
-
-                    for language in languages:
-                        shutil.move(language, os.path.join(PLUGIN_DIR, HELP_DIR_NAME, language[-2:]))
+                    shutil.move(tmpFold, os.path.join(PLUGIN_DIR, HELP_DIR_NAME))
 
             except zipfile.BadZipFile as e:
                 self.logger.warning_msg(__name__, QCoreApplication.translate("AboutDialog",
@@ -126,7 +121,7 @@ class AboutDialog(QDialog, DIALOG_UI):
     def download_help(self):
         if is_connected(TEST_SERVER):
             self.btn_download_help.setEnabled(False)
-            url = '/'.join([HELP_DOWNLOAD, PLUGIN_VERSION, 'asistente_ladm_col_docs.zip'])
+            url = '/'.join([HELP_DOWNLOAD, PLUGIN_VERSION, HELP_ASSET_NAME])
             fetcher_task = QgsNetworkContentFetcherTask(QUrl(url))
             fetcher_task.taskCompleted.connect(self.enable_download_button)
             fetcher_task.fetched.connect(partial(self.save_file, fetcher_task))

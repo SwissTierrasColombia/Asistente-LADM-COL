@@ -184,6 +184,7 @@ SUFFIX_GET_THUMBNAIL = "&thumbnail=true&size=large"
 
 # Documentation
 HELP_DOWNLOAD = 'https://github.com/SwissTierrasColombia/Asistente-LADM-COL-docs/releases/download'
+HELP_ASSET_NAME = "Asistente-LADM-COL-docs.zip"
 
 DEFAULT_DATASET_NAME = "Default dataset"
 FDC_DATASET_NAME = "Captura en campo"
