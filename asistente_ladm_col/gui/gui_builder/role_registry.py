@@ -41,6 +41,7 @@ class RoleRegistry(QObject, metaclass=SingletonQObject):
         ACTION_SCHEMA_IMPORT,
         ACTION_IMPORT_DATA,
         ACTION_EXPORT_DATA,
+        ACTION_XTF_MODEL_CONVERSION,
         ACTION_SETTINGS,
         ACTION_HELP,
         ACTION_ABOUT
