@@ -660,6 +660,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._import_schema_action.triggered.connect(partial(self.show_dlg_import_schema, self._context_collected, **{'selected_models':list()}))
         self._import_data_action.triggered.connect(partial(self.show_dlg_import_data, self._context_collected))
         self._export_data_action.triggered.connect(partial(self.show_dlg_export_data, self._context_collected))
+        self._xtf_model_conversion_action.triggered.connect(partial(self.show_dlg_xtf_model_conversion, self._context_collected))
         self._queries_action.triggered.connect(partial(self.show_queries, self._context_collected))
         self._load_layers_action.triggered.connect(partial(self.load_layers_from_qgis_model_baker, self._context_collected))
         self._settings_action.triggered.connect(partial(self.show_settings, self._context_settings))
@@ -1145,6 +1146,22 @@ class AsistenteLADMCOLPlugin(QObject):
             dlg.on_result.connect(context.get_slot_on_result())
 
         self.logger.info(__name__, "Export data dialog ({}) opened.".format(context.get_db_sources()[0]))
+        dlg.exec_()
+
+    @validate_if_wizard_is_open
+    def show_dlg_xtf_model_conversion(self, *args):
+        from .gui.xtf_model_conversion.dlg_xtf_model_conversion import XtfModelConversionDialog
+
+        if not args or not isinstance(args[0], Context):
+            return
+
+        context = args[0]
+
+        dlg = XtfModelConversionDialog(self.main_window)
+        if isinstance(context, TaskContext):
+            dlg.on_result.connect(context.get_slot_on_result())
+
+        self.logger.info(__name__, "XTF Model Conversion dialog ({}) opened.".format(context.get_db_sources()[0]))
         dlg.exec_()
 
     @validate_if_wizard_is_open
