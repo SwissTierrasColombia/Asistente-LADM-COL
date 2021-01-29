@@ -645,6 +645,9 @@ class AsistenteLADMCOLPlugin(QObject):
         self._export_data_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/export_to_xtf.svg"),
                                            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Export data"),
                                            self.main_window)
+        self._xtf_model_conversion_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/schema.png"),
+                                           QCoreApplication.translate("AsistenteLADMCOLPlugin", "XTF model conversion"),
+                                           self.main_window)
         self._settings_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/settings.svg"),
                                         QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"),
                                         self.main_window)
@@ -672,6 +675,7 @@ class AsistenteLADMCOLPlugin(QObject):
             ACTION_SCHEMA_IMPORT: self._import_schema_action,
             ACTION_IMPORT_DATA: self._import_data_action,
             ACTION_EXPORT_DATA: self._export_data_action,
+            ACTION_XTF_MODEL_CONVERSION: self._xtf_model_conversion_action,
             ACTION_SETTINGS: self._settings_action,
             ACTION_HELP: self._help_action,
             ACTION_ABOUT: self._about_action
