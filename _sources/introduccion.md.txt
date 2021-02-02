@@ -4,11 +4,11 @@
 
 ## Generalidades
 
-El Asistente LADM-COL es un complemento para [QGIS](http://qgis.org) que permite crear y mantener datos conformes con [LADM-COL](https://github.com/SwissTierrasColombia/LADM-COL), así  como importar, visualizar, capturar, consultar, transformar (mediante  ETLs), validar y generar archivos de intercambio de [INTERLIS](http://www.interlis.ch/index_e.htm) (.XTF). Se integra al Sistema de Transición para realizar tareas que requieren análisis y validación de datos espaciales.
+El Asistente LADM-COL es un complemento para [QGIS](http://qgis.org) que permite crear y mantener datos conformes con [LADM-COL](https://github.com/SwissTierrasColombia/LADM-COL), así  como importar, visualizar, capturar, consultar, transformar (mediante  ETLs), validar y generar archivos de intercambio de [INTERLIS](https://www.interlis.ch/en) (.XTF). Se integra al Sistema de Transición para realizar tareas que requieren análisis y validación de datos espaciales.
 
 Licencia: [GNU General Public License v3.0](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/blob/master/LICENSE)
 
-Enlaces de interés: [Galería](#galería)
+Enlaces de interés: [Galería](#galeria)
 
 Un proyecto de: [SwissTierras Colombia](https://swisstierrascolombia.com/) ([BSF-Swissphoto AG](http://bsf-swissphoto.com/) - [INCIGE S.A.S](http://www.incige.com/))
 
