@@ -1,18 +1,22 @@
 # Introducción
 
+
+
 ## Generalidades
 
 El Asistente LADM-COL es un complemento para [QGIS](http://qgis.org) que permite crear y mantener datos conformes con [LADM-COL](https://github.com/SwissTierrasColombia/LADM-COL), así  como importar, visualizar, capturar, consultar, transformar (mediante  ETLs), validar y generar archivos de intercambio de [INTERLIS](http://www.interlis.ch/index_e.htm) (.XTF). Se integra al Sistema de Transición para realizar tareas que requieren análisis y validación de datos espaciales.
 
 Licencia: [GNU General Public License v3.0](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/blob/master/LICENSE)
 
-Enlaces de interés: [Documentación](https://swisstierrascolombia.github.io/Asistente-LADM-COL), [Galería](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/blob/master/README.md#galería)
+Enlaces de interés: [Galería](#galería)
 
 Un proyecto de: [SwissTierras Colombia](https://swisstierrascolombia.com/) ([BSF-Swissphoto AG](http://bsf-swissphoto.com/) - [INCIGE S.A.S](http://www.incige.com/))
 
+
+
 ### Soporte de funcionalidades por motor de base de datos
 
-La versión actual ([3.1.3](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/3.1.0)) del Asistente LADM-COL depende del plugin [QGIS Model Baker v6.1.1.5](https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.5/QgisModelBaker_6115.zip) y soporta los motores de Base de Datos PostgreSQL/PostGIS, GeoPackage y SQL Server.
+La versión actual ([3.1.4](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/3.1.4)) del Asistente LADM-COL depende del plugin [QGIS Model Baker v6.1.1.5](https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.5/QgisModelBaker_6115.zip) y soporta los motores de Base de Datos PostgreSQL/PostGIS, GeoPackage y SQL Server.
 
 Este es el soporte funcional para cada motor:
 
@@ -28,6 +32,32 @@ Este es el soporte funcional para cada motor:
 | Identificación de novedades       |         Si         |            Si            |            Parcial          |
 | Sistema de Transición             |         Si         |            Si            |            Si               |
 
+
+
+### Galería
+
++ Reglas de Calidad
+
+  <a href="https://s3.amazonaws.com/media-p.slid.es/uploads/308098/images/6343636/quality_rules_25-min.gif" target="_blank"><img src="https://s3.amazonaws.com/media-p.slid.es/uploads/308098/images/6343636/quality_rules_25-min.gif" alt="Reglas de Calidad" title="Reglas de Calidad" style="width:800px" /></a>
+
++ Consultas
+
+  <a href="https://s3.amazonaws.com/media-p.slid.es/uploads/1024195/images/6290636/query_25.gif" target="_blank"><img src="https://s3.amazonaws.com/media-p.slid.es/uploads/1024195/images/6290636/query_25.gif" alt="Consultas" title="Consultas" style="width:800px" /></a>
+
++ Reportes
+
+  <a href="https://s3.amazonaws.com/media-p.slid.es/uploads/1024195/images/6290657/report_25.gif" target="_blank"><img src="https://s3.amazonaws.com/media-p.slid.es/uploads/1024195/images/6290657/report_25.gif" alt="Reportes" title="Reportes" style="width:800px" /></a>
+
++ Identificación de Novedades
+
+  <a href="https://s3.amazonaws.com/media-p.slid.es/uploads/1024195/images/6293473/novedades_short_40_slides.gif" target="_blank"><img src="https://s3.amazonaws.com/media-p.slid.es/uploads/1024195/images/6293473/novedades_short_40_slides.gif" alt="Identificación de Novedades" title="Identificación de Novedades" style="width:800px" /></a>
+
++ Integración con el Sistema de Transición
+
+  <a href="https://user-images.githubusercontent.com/27906888/83693002-b6f17900-a5ba-11ea-8d62-0ed25b2a7cfe.gif" target="_blank"><img src="https://user-images.githubusercontent.com/27906888/83693002-b6f17900-a5ba-11ea-8d62-0ed25b2a7cfe.gif" alt="Sistema de Transición" title="Sistema de Transición" style="width:800px" /></a>
+
+
+
 ### Funcionalidades
 
 #### Administración de datos
@@ -37,95 +67,75 @@ Este es el soporte funcional para cada motor:
   - Exportar datos a archivo de transferencia (.XTF).
   - Importar/exportar datos desde y hacia archivos de transferencia (.XTF) desactivando la validación de los mismos. 
   - Soporte de tres motores para manejar datos de LADM-COL:
-    - :elephant: PostgreSQL/PostGIS: Soporte total.
-    - :package: GeoPackage: Soporte total, exceptuando el módulo de reportes.
-    - :copyright: SQL Server: Soporte parcial. Gestión de insumos y reportes no están soportados.
+    - PostgreSQL/PostGIS: Soporte total.
+    - GeoPackage: Soporte total, exceptuando el módulo de reportes.
+    - SQL Server: Soporte parcial. Gestión de insumos y reportes no están soportados.
 
 #### Captura y estructuración de datos
 
 + Capturar datos para el modelo de aplicación de Levantamiento Catastral v1.0 ([descargar](https://github.com/SwissTierrasColombia/LADM_COL/releases/download/1.0/Modelo_Aplicacion_LADMCOL_Levantamiento_Catastral_V1_0.zip)).
-
  - Agregar puntos a las capas `Punto Lindero`, `Punto Levantamiento` y `Punto Control`:
    - Desde archivo CSV con la estructura requerida.
      - Validar para evitar insertar puntos superpuestos.
    - Desde otra capa con cualquier estructura, definiendo un mapeo de campos.
-   
  - Agregar `Linderos`:
    - Digitalizando sobre el mapa.
      - Ayudas para la digitalización:
        - Configuración automática de snapping y de valores predeterminados para campos.
        - Construir linderos a partir de líneas seleccionadas (partiéndolas automáticamente por cambio de colindancia).
    - Desde otra capa con cualquier estructura, definiendo un mapeo de campos.
-   
  - Crear `Terrenos`:
    - A partir de linderos seleccionados.
    - Desde otra capa con cualquier estructura, definiendo un mapeo de campos.
-   
  - Llenar automáticamente tablas de topología:
    - `PuntosCCL` (relaciona `Punto Lindero` y `Lindero`)
    - `MasCCL`    (relaciona `Lindero` y `Terreno`)
    - `Menos`     (relaciona `Terreno` y sus anillos/huecos internos)
-   
  - Crear `Construcciones` y `Unidades de Construcción`:
    - Digitalizando sobre el mapa.
      - Ayudas para la digitalización:
        - Configuración automática de snapping y de valores predeterminados para campos.
    - Desde otra capa con cualquier estructura, definiendo un mapeo de campos.
-   
  - Crear `Servidumbres de Paso`:
    - Digitalizando sobre el mapa el polígono de la servidumbre o el eje de la misma con un ancho.
      - Ayudas para la digitalización:
        - Configuración automática de snapping y de valores predeterminados para campos.
    - Desde otra capa con cualquier estructura, definiendo un mapeo de campos.
    - Crear relaciones de restricciones y beneficiados.
-   
  - Asociar direcciones a los `Terrenos`, `Construcciones` y `Unidades de Construcción`.
-
  - Crear `Predios`:
    - Usando formularios preconfigurados.
      - Y relacionando el nuevo `Predio` con un `Terreno` y/o una o varias `Construcciones` previamente seleccionadas.
    - Desde otra tabla con cualquier estructura, definiendo un mapeo de campos.
-   
  - Crear `Interesados Naturales` e `Interesados Jurídicos`:
    - Usando formularios preconfigurados.
    - Desde otra tabla con cualquier estructura, definiendo un mapeo de campos.
-   
  - Crear `Agrupaciones de Interesados`:
-   
    - Usando un formulario preconfigurado.
-   
  - Crear `Fuente Espacial` y `Fuente Administrativa`:
    - Usando formularios preconfigurados.
      - Y relacionando la nueva `Fuente Espacial` a `Terrenos`, `Linderos` o `Puntos` previamente seleccionados.
    - Desde otra tabla con cualquier estructura, definiendo un mapeo de campos.
-   
  - Crear `Archivos Fuente`:
    - Asociar fuentes a archivos fuente.
    - Almacenar archivos fuente en servidor en el momento de guardar cambios o
      posteriormente, de forma masiva.
-   
  - Crear `Derechos`, `Restricciones` y `Responsabilidades` (`RRR`):
    - Usando formularios preconfigurados (relacionando el nuevo objeto a `Fuentes Administrativas` previamente seleccionadas).
    - Desde otra tabla con cualquier estructura, definiendo un mapeo de campos.
-   
-  - Importar datos alfanuméricos desde [estructura intermedia en Excel](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/blob/master/asistente_ladm_col/resources/excel/datos_estructura_excel.xlsx).
   - Configurar valores automáticos para campos `t_ili_tid`, `espacio_de_nombres` y `local_id`.
   - Usar estilos preconfigurados en archivos QML para asignarlos a las capas cargadas.
 
 #### Cargar capas
 
 + Seleccionar en un diálogo las capas a cargar de cualquier modelo de la base de datos o esquema:
-
 - Usar el plugin 'QGIS Model Baker' para cargar capas con formularios, relaciones y dominios configurados.
-
 - Cargar conjuntos de capas preconfigurados.
-
 
 #### Gestión de Insumos
 
 - ETL para generar insumos catastrales a partir de datos del IGAC (fuente SNC).
 - ETL para generar insumos catastrales a partir de datos del IGAC (fuente Cobol).
-
  - Generar reporte de Omisiones y Comisiones.
 
 #### Validaciones de calidad
@@ -181,9 +191,7 @@ Este es el soporte funcional para cada motor:
 #### Identificación de Novedades
 
  - Identificar novedades:
-
    - Comparar base de datos del barrido contra datos de insumos y evidenciar diferencias masivas y por predio tanto en el componente alfanumérico como geográfico.
-
 
 #### Sistema de Transición
 
@@ -195,36 +203,19 @@ Este es el soporte funcional para cada motor:
      - ETL para generar insumos catastrales a partir de datos del IGAC (fuente Cobol).
  - Soporte de roles y generación de interfaz de usuario para cada rol.
 
-### Galería
-
- + Reglas de Calidad![Reglas de Calidad](https://s3.amazonaws.com/media-p.slid.es/uploads/308098/images/6343636/quality_rules_25-min.gif)
-
-+ Consultas
-
-  ![Consultas](https://s3.amazonaws.com/media-p.slid.es/uploads/1024195/images/6290636/query_25.gif)
-
-+ Reportes
-
-  ![Reportes](https://s3.amazonaws.com/media-p.slid.es/uploads/1024195/images/6290657/report_25.gif)
-
-+ Identificación de Novedades
-
-  ![Identificación de Novedades](https://s3.amazonaws.com/media-p.slid.es/uploads/1024195/images/6293473/novedades_short_40_slides.gif)
-
-+ Integración con el Sistema de Transición
-
-  ![insumos](https://user-images.githubusercontent.com/27906888/83693002-b6f17900-a5ba-11ea-8d62-0ed25b2a7cfe.gif)
 
 
 ### Suscríbete a los lanzamientos del Asistente-LADM_COL
 
-1. Ingrese al siguiente [enlace](https://gitpunch.com).
-2. Busque Asistente-LADM_COL.
-3. Seleccione ingrese correo electronico.
-4. Inicia sesión o regístrate el correo electrónico y la contraseña.
-5. Listo, estás suscrito a los lanzamientos del Asistente-LADM_COL.
+1. Ingresa al siguiente [enlace](https://gitpunch.com).
+2. Busca "Asistente-LADM-COL".
+3. Selecciona "Ingresar correo electronico" (enter email).
+4. Inicia sesión o regístrate con tu correo electrónico y contraseña.
+5. Listo, estás suscrito a los lanzamientos del Asistente-LADM-COL.
 
-<img src="_static/instalacion/suscribe_notification_new_release.gif" alt="Suscribirse al lanzamiento de versiones Asistente LADM-COL" />
+  <a href="_static/instalacion/suscribe_notification_new_release.gif" target="_blank"><img src="_static/instalacion/suscribe_notification_new_release.gif" alt="Suscribirse al lanzamiento de versiones Asistente LADM-COL" title="Suscribirse al lanzamiento de versiones Asistente LADM-COL" style="width:800px" /></a>
+
+
 
 
 
@@ -244,32 +235,30 @@ Para usar el Asistente LADM-COL se requiere:
    - PostgreSQL 9.5 o superior (funciona PostgreSQL 10, 11 o 12).
    - PostGIS 2.4 o superior.
  - Complementos de QGIS (al instalar el Asistente LADM-COL usando el Administrador de Complementos de QGIS, las dependencias se instalarán automáticamente):
-   - QGIS Model Baker [v6.1.1.4](https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.4/QgisModelBaker_6114.zip).
+   - QGIS Model Baker v6.1.1.5.
    - MapSwipe Tool v1.2
 
 
 ### Proceso de instalación
 
-- Es necesario tener el Software QGIS versión 3 instalado, recomendamos usar la versión 3.10.0-A Coruña o superior, para obtener este diríjete a [la página de descargas de QGIS](https://qgis.org/es/site/forusers/download.html).
+- Es necesario tener el Software QGIS versión 3 instalado, recomendamos usar la versión v3.14.16 o superior, para obtenerlo diríjete a [la página de descargas de QGIS](https://qgis.org/downloads/).
 
-- El proceso puede ser observado graficamete en el siguiente GIF:
+- El proceso puede ser observado gráficamete en el siguiente GIF:
 
-    <img src="_static/instalacion/instalation.gif" alt="Proceso de instalación del plugin" style="width:800px" />
+  <a href="_static/instalacion/instalation.gif" target="_blank"><img src="_static/instalacion/instalation.gif" alt="Proceso de instalación del plugin" title="Proceso de instalación del plugin" style="width:800px" /></a>
 
-- Asegúrate de tener la última versión del plugin QgisModelBaker, el Asistente LADM_COL
-  depende de este plugin para funcionar, de lo contrario este mensaje aparecerá:  <img src="_static/instalacion/error_asistente_qgis_model_baker.png" alt="Error de dependencia QgisModelBaker" />
+- En caso de no contar con la versión corrcta del plugin QgisModelBaker, el Asistente LADM-COL mostrará un mensaje similar a este:  
+  <a href="_static/instalacion/error_asistente_qgis_model_baker.png" target="_blank"><img src="_static/instalacion/error_asistente_qgis_model_baker.png" alt="Error de dependencia QgisModelBaker" title="Error de dependencia QgisModelBaker" style="width:800px" /></a>
+  
+- Si tienes un error con el QgisModelBaker requerido, puedes instalar el plugin QgisModelBaker como en el siguiente GIF:
 
-- Si tienes un error, puedes instalar el plugin QgisModelBaker como en el siguiente gif:
-
-    <img src="_static/instalacion/instalation_qgis_model_baker.gif" alt="Instalación de QgisModelBaker" style="width:800px" />
-
-
-### Habilitar proyección Origen Nacional
-
-Para poder usar la proyección con Origen Único Nacional antes de que esta sea agregada oficialmente en la base de datos de Sistemas de Referencia de QGIS, debemos permitir que el Asistente LADM-COL configure dicha proyección.
-
-Para ello, basta con otorgar estos dos permisos de escritura al usuario con el cual usamos QGIS:
-
-<img src="_static/instalacion/permisos_srs.gif" alt="Habilitar proyección Origen Nacional" style="width:800px" />
+  <a href="_static/instalacion/instalation_qgis_model_baker.gif" target="_blank"><img src="_static/instalacion/instalation_qgis_model_baker.gif" alt="Instalación de QgisModelBaker" title="Instalación de QgisModelBaker" style="width:800px" /></a>
 
 
+### Habilitar proyección "Origen Nacional"
+
+Para poder usar la proyección "Origen Nacional", debemos permitir que el Asistente LADM-COL configure dicha proyección (esto porque dicha proyección aún no está disponible en la base de datos oficial de Sistemas de Referencia de QGIS).
+
+Para ello, basta con otorgar permisos de escritura sobre la base de datos de sistemas de referencia de QGIS (llamada `srs6.db` o simplemente `srs.db`) y sobre la carpeta que contiene al archivo `srs6.db` (o `srs.db`), al usuario con el cual usamos QGIS. El siguiente GIF ilustra este proceso:
+
+<a href="_static/instalacion/permisos_srs.gif" target="_blank"><img src="_static/instalacion/permisos_srs.gif" alt="Habilitar proyección Origen Nacional" title="Habilitar proyección Origen Nacional" style="width:800px" /></a>
