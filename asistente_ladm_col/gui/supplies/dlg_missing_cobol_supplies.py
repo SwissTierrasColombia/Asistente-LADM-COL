@@ -301,4 +301,4 @@ class MissingCobolSuppliesDialog(MissingSuppliesBaseDialog):
             return False
 
     def show_help(self):
-        show_plugin_help('supplies')
+        show_plugin_help('omission_commission_cobol')

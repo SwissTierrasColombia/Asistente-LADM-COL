@@ -71,4 +71,4 @@ class STCancelTaskDialog(QDialog, DIALOG_TRANSITION_SYSTEM_UI):
         self.bar.pushMessage(message, level, 0)
 
     def show_help(self):
-        show_plugin_help('transitional_system')
+        show_plugin_help('transitional_system_cancel_task')

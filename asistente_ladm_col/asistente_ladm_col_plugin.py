@@ -306,13 +306,16 @@ class AsistenteLADMCOLPlugin(QObject):
                                                        "Go to the folder <a href='file:///{normalized_folder}'>{folder}</a> and grant the current user permissions to write over that folder and over the '<b>{filename}</b>' file.<br><br>" \
                                                        "Once you're done, click <b>Ok</b> to continue loading <i>LADM-COL Assistant</i>. " \
                                                        "If you click <b>Cancel</b>, the <i>LADM-COL Assistant</i> won't be available, as the CTM12 projection is a prerequisite.".format(normalized_folder=normalize_local_url(folder), folder=folder, filename=filename)))
-            msg_box.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+            msg_box.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel | QMessageBox.Help)
             msg_box.setDefaultButton(QMessageBox.Ok)
             reply = msg_box.exec_()
 
             if reply == QMessageBox.Ok:
                 self.initialize_requirements()
             else:
+                if reply == QMessageBox.Help:
+                    show_plugin_help('enable_ctm12')
+
                 self.unload()
                 self.logger.critical_msg(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
                     "'Origen Nacional' projection could not be configured. Therefore you cannot use this version of the LADM-COL Assistant."))

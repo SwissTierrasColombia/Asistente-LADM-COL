@@ -93,4 +93,4 @@ class WelcomeScreenDialog(QDialog, DIALOG_UI):
                 break
 
     def show_help(self):
-        show_plugin_help()
+        show_plugin_help('welcome_screen')
