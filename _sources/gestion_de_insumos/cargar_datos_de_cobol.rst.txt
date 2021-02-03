@@ -1,2 +1,0 @@
-Cargar datos de COBOL
-**********************

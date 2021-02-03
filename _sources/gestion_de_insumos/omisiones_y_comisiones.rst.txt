@@ -1,2 +1,0 @@
-Omisiones y comisiones
-***********************
