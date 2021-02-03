@@ -4,12 +4,20 @@
     <meta charset="UTF-8">
 </head>
 <body>
-<p>Cambios en la version <b>3.1.3</b></p>
+<p>Cambios en la version <b>3.1.4</b></p>
 <ul>
-    <li>Actualización de reporte de omisiones y comisiones para Cobol y SNC.</li>
-    <li>Las expresiones de despliegue (display expressions) ahora son configurables por los usuarios usando un arhivo con extensión TOML.</li>
-    <li>Corrección de llenado de relaciones de servidumbre de tránsito.</li>
-    <li>Se ejecuta automáticamente el proceso "reparar geometrías" luego de agregar puntos topológicos con el fin de evitar geometrías mal formadas (Fix <a href="https://github.com/SwissTierrasColombia/Asistente-LADM-COL/issues/381">#381</a>).</li>
+    <li> Ajustes:
+        <ul>
+            <li>Soporte de ETLs de SNC/Cobol a submodelo de insumos para QGIS v3.16.x</li>
+            <li>Ajuste a caso extremo de las reglas de calidad '<i>Las construcciones deben estar dentro de su terreno correspondiente</i>', '<i>Las unidades de construcción deben estar dentro de su terreno correspondiente</i>' y '<i>Las unidades de construcción deben estar dentro de su construcción correspondiente</i>'. (Fix <a href="https://github.com/SwissTierrasColombia/Asistente-LADM-COL/issues/410">#410</a>)</li>
+        </ul>
+    </li>
+    <li> Documentación:
+        <ul>
+            <li>Mejoras en la organización y en la gestión de la documentación: automatización de publicación y de release.</li>
+            <li>Reestructuración y nuevas secciones en la documentación.</li>
+        </ul>
+    </li>
 </ul>
 </body>
 </html>
