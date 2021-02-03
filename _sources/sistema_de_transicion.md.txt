@@ -8,4 +8,8 @@
 
 ## Ver tareas
 
+## Subir archivo
+
+## Cancelar tarea
+
 ## Salir

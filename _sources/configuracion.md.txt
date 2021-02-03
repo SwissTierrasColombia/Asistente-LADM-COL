@@ -71,4 +71,6 @@ Es posible configurar a través de un repositorio de datos una ruta de acceso UR
 <img src="_static/configuracion/source_settings.gif" alt="Fuentes" style="height:500px;width:800px" />
 
 
-   
+
+## Avanzado
+

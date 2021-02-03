@@ -113,6 +113,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#requerimientos-minimos">Requerimientos mínimos</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#proceso-de-instalacion">Proceso de instalación</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#habilitar-proyeccion-origen-nacional">Habilitar proyección «Origen Nacional»</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dialogo-de-bienvenida">Diálogo de bienvenida</a></li>
 </ul>
 </li>
 </ul>
@@ -602,6 +603,14 @@ posteriormente, de forma masiva.</p></li>
 <p>Para poder usar la proyección «Origen Nacional», debemos permitir que el Asistente LADM-COL configure dicha proyección (esto porque dicha proyección aún no está disponible en la base de datos oficial de Sistemas de Referencia de QGIS).</p>
 <p>Para ello, basta con otorgar permisos de escritura sobre la base de datos de sistemas de referencia de QGIS (llamada <code class="docutils literal notranslate"><span class="pre">srs6.db</span></code> o simplemente <code class="docutils literal notranslate"><span class="pre">srs.db</span></code>) y sobre la carpeta que contiene al archivo <code class="docutils literal notranslate"><span class="pre">srs6.db</span></code> (o <code class="docutils literal notranslate"><span class="pre">srs.db</span></code>), al usuario con el cual usamos QGIS. El siguiente GIF ilustra este proceso:</p>
 <p><a href="_static/instalacion/permisos_srs.gif" target="_blank"><img src="_static/instalacion/permisos_srs.gif" alt="Habilitar proyección Origen Nacional" title="Habilitar proyección Origen Nacional" style="width:800px" /></a></p>
+</div>
+<div class="section" id="dialogo-de-bienvenida">
+<h3>Diálogo de bienvenida<a class="headerlink" href="#dialogo-de-bienvenida" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>Al terminar la instalación del Asistente LADM-COL, obtendrás una diálogo como este:</p>
+<p><img alt="_images/dialogo_bienvenida.png" src="_images/dialogo_bienvenida.png" /></p>
+<p>En este diálogo puedes elegir rol (o perfil) con el cuál utilizarás el Asistente LADM-COL. El rol elegido definirá el conjunto de módulos, barra de herramientas, modelos e incluso, reglas de calidad, que tendrás a disposición desde la interfaz del Asistente LADM-COL.</p>
+<p>Por ejemplo, el rol <code class="docutils literal notranslate"><span class="pre">Básico</span></code> no tiene acceso a generar reportes, pero los roles <code class="docutils literal notranslate"><span class="pre">Gestor</span></code> y <code class="docutils literal notranslate"><span class="pre">Avanzado</span></code> si; el rol <code class="docutils literal notranslate"><span class="pre">Proveedor</span> <span class="pre">de</span> <span class="pre">insumos</span></code> tiene acceso al módulo de Gestión de insumos, pero el rol <code class="docutils literal notranslate"><span class="pre">Operador</span></code> no; el rol <code class="docutils literal notranslate"><span class="pre">Proveedor</span> <span class="pre">de</span> <span class="pre">insumos</span></code> solamente tiene acceso a los submodelos de Insumos, pero no tiene acceso al Modelo de Aplicación de Levantamiento Catastral, que si está disponible para otros roles.</p>
+<p>Si bien el diálogo de bienvenida te permite elegir el rol que estará activo cuando empieces a usar el Asistente LADM-COL, siempre podrás configurar el rol activo desde el diálogo de <a class="reference external" href="configuracion.html#avanzado">configuración</a>.</p>
 </div>
 </div>
 </div>

@@ -262,3 +262,21 @@ Para poder usar la proyección "Origen Nacional", debemos permitir que el Asiste
 Para ello, basta con otorgar permisos de escritura sobre la base de datos de sistemas de referencia de QGIS (llamada `srs6.db` o simplemente `srs.db`) y sobre la carpeta que contiene al archivo `srs6.db` (o `srs.db`), al usuario con el cual usamos QGIS. El siguiente GIF ilustra este proceso:
 
 <a href="_static/instalacion/permisos_srs.gif" target="_blank"><img src="_static/instalacion/permisos_srs.gif" alt="Habilitar proyección Origen Nacional" title="Habilitar proyección Origen Nacional" style="width:800px" /></a>
+
+
+
+### Diálogo de bienvenida
+
+Al terminar la instalación del Asistente LADM-COL, obtendrás una diálogo como este:
+
+![](_static/instalacion/dialogo_bienvenida.png)
+
+En este diálogo puedes elegir rol (o perfil) con el cuál utilizarás el Asistente LADM-COL. El rol elegido definirá el conjunto de módulos, barra de herramientas, modelos e incluso, reglas de calidad, que tendrás a disposición desde la interfaz del Asistente LADM-COL.
+
+
+
+Por ejemplo, el rol `Básico` no tiene acceso a generar reportes, pero los roles `Gestor` y `Avanzado` si; el rol `Proveedor de insumos` tiene acceso al módulo de Gestión de insumos, pero el rol `Operador` no; el rol `Proveedor de insumos` solamente tiene acceso a los submodelos de Insumos, pero no tiene acceso al Modelo de Aplicación de Levantamiento Catastral, que si está disponible para otros roles.
+
+
+
+Si bien el diálogo de bienvenida te permite elegir el rol que estará activo cuando empieces a usar el Asistente LADM-COL, siempre podrás configurar el rol activo desde el diálogo de [configuración](configuracion.html#avanzado).
