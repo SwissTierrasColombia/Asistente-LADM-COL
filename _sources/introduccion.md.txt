@@ -271,9 +271,12 @@ Al terminar la instalación del Asistente LADM-COL, obtendrás una diálogo como
 
 ![](_static/instalacion/dialogo_bienvenida.png)
 
-En este diálogo puedes elegir rol (o perfil) con el cuál utilizarás el Asistente LADM-COL. El rol elegido definirá el conjunto de módulos, barra de herramientas, modelos e incluso, reglas de calidad, que tendrás a disposición desde la interfaz del Asistente LADM-COL.
+En este diálogo puedes elegir rol (o perfil) con el cuál utilizarás el Asistente LADM-COL.
 
-
+<div class="note">
+<p class="admonition-title">IMPORTANTE</p>
+<p>El rol elegido definirá el conjunto de módulos, barra de herramientas,  modelos e incluso, reglas de calidad, que tendrás a disposición desde la interfaz del Asistente LADM-COL.</p>
+</div>
 
 Por ejemplo, el rol `Básico` no tiene acceso a generar reportes, pero los roles `Gestor` y `Avanzado` si; el rol `Proveedor de insumos` tiene acceso al módulo de Gestión de insumos, pero el rol `Operador` no; el rol `Proveedor de insumos` solamente tiene acceso a los submodelos de Insumos, pero no tiene acceso al Modelo de Aplicación de Levantamiento Catastral, que si está disponible para otros roles.
 
