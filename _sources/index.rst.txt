@@ -3,7 +3,7 @@ Documentación del Asistente LADM-COL
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contenido:
+   :caption: DOCUMENTACIÓN
 
    introduccion.md
    configuracion.md
@@ -18,3 +18,10 @@ Documentación del Asistente LADM-COL
    reportes.md
    identificacion_de_novedades.md
    sistema_de_transicion.md
+   
+.. toctree::
+   :maxdepth: 2
+   :caption: TUTORIAL
+
+   tutorial/introduccion.md
+   tutorial/crear_estructura_ladm_col.md
