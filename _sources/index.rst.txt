@@ -25,3 +25,8 @@ Documentación del Asistente LADM-COL
 
    tutorial/introduccion.md
    tutorial/crear_estructura_ladm_col.md
+   tutorial/captura_y_estructuracion_de_datos.md
+   tutorial/reglas_de_calidad.md
+   tutorial/consulta_de_informacion.md
+   tutorial/exportar_importar_datos.md
+   tutorial/gestion_de_insumos.md

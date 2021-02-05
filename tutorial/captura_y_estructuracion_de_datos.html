@@ -1,0 +1,330 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="es" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="es" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Captura y Estructuración de Datos &mdash; documentación de Asistente LADM-COL - </title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/translations.js"></script>
+        <script src="../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
+        <script src="../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
+        <script src="../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/sphinxcontrib-images/LightBox2/lightbox2/css/lightbox.css" type="text/css" />
+    <link rel="index" title="Índice" href="../genindex.html" />
+    <link rel="search" title="Búsqueda" href="../search.html" />
+    <link rel="next" title="Reglas de Calidad" href="reglas_de_calidad.html" />
+    <link rel="prev" title="Crear Estructura LADM-COL" href="crear_estructura_ladm_col.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Asistente LADM-COL
+          
+
+          
+            
+            <img src="../_static/logo_asistente_ladm_col_96x100.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">DOCUMENTACIÓN</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../introduccion.html">Introducción</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuracion.html">Configuración</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../administracion_de_datos.html">Administración de datos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../captura_y_estructura_de_datos.html">Captura y estructuración de datos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../barra_de_herramientas.html">Barra de herramientas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cargar_capas.html">Cargar capas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gestion_de_insumos.html">Gestión de insumos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../captura_de_datos_en_campo.html">Captura de datos en campo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reglas_de_calidad.html">Reglas de calidad</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../consulta_de_datos.html">Consulta de datos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reportes.html">Reportes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../identificacion_de_novedades.html">Identificación de novedades</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sistema_de_transicion.html">Sistema de transición</a></li>
+</ul>
+<p class="caption"><span class="caption-text">TUTORIAL</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduccion.html">Introducción</a></li>
+<li class="toctree-l1"><a class="reference internal" href="crear_estructura_ladm_col.html">Crear Estructura LADM-COL</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Captura y Estructuración de Datos</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#preprocesamiento-de-insumos">Preprocesamiento de insumos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#paquete-de-topografia-y-representacion">Paquete de topografía y representación</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#puntos-de-lindero">Puntos de lindero</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#puntos-de-levantamiento">Puntos de levantamiento</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#puntos-de-control">Puntos de control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#creacion-de-linderos-y-sus-relaciones">Creación de linderos y sus relaciones</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#construccion-de-linderos">Construcción de linderos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#relacion-entre-puntos-y-linderos">Relación entre puntos y linderos</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#unidades-espaciales">Unidades Espaciales</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#creacion-de-terrenos-y-sus-relaciones">Creación de terrenos y sus relaciones</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#creacion-de-relacion-entre-los-linderos-y-los-terrenos">Creación de relacion entre los linderos y los terrenos</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#creacion-de-construcciones">Creación de construcciones</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#creacion-de-unidades-de-construccion">Creación de unidades de construcción</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#unidad-basica-administrativa">Unidad Básica Administrativa</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#crear-predio">Crear predio</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#interesados">Interesados</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#crear-agrupacion-de-interesados">Crear agrupación de interesados</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#fuentes">Fuentes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#rrr">RRR</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#crear-derecho">Crear derecho</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="reglas_de_calidad.html">Reglas de Calidad</a></li>
+<li class="toctree-l1"><a class="reference internal" href="consulta_de_informacion.html">Consulta de Información</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exportar_importar_datos.html">Exportar e Importar Datos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gestion_de_insumos.html">Gestión de Insumos</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Asistente LADM-COL</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Captura y Estructuración de Datos</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/tutorial/captura_y_estructuracion_de_datos.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="captura-y-estructuracion-de-datos">
+<h1>Captura y Estructuración de Datos<a class="headerlink" href="#captura-y-estructuracion-de-datos" title="Enlazar permanentemente con este título">¶</a></h1>
+<div class="section" id="preprocesamiento-de-insumos">
+<h2>Preprocesamiento de insumos<a class="headerlink" href="#preprocesamiento-de-insumos" title="Enlazar permanentemente con este título">¶</a></h2>
+</div>
+<div class="section" id="paquete-de-topografia-y-representacion">
+<h2>Paquete de topografía y representación<a class="headerlink" href="#paquete-de-topografia-y-representacion" title="Enlazar permanentemente con este título">¶</a></h2>
+<div class="section" id="puntos-de-lindero">
+<h3>Puntos de lindero<a class="headerlink" href="#puntos-de-lindero" title="Enlazar permanentemente con este título">¶</a></h3>
+</div>
+</div>
+<div class="section" id="puntos-de-levantamiento">
+<h2>Puntos de levantamiento<a class="headerlink" href="#puntos-de-levantamiento" title="Enlazar permanentemente con este título">¶</a></h2>
+</div>
+<div class="section" id="puntos-de-control">
+<h2>Puntos de control<a class="headerlink" href="#puntos-de-control" title="Enlazar permanentemente con este título">¶</a></h2>
+</div>
+<div class="section" id="creacion-de-linderos-y-sus-relaciones">
+<h2>Creación de linderos y sus relaciones<a class="headerlink" href="#creacion-de-linderos-y-sus-relaciones" title="Enlazar permanentemente con este título">¶</a></h2>
+<div class="section" id="construccion-de-linderos">
+<h3>Construcción de linderos<a class="headerlink" href="#construccion-de-linderos" title="Enlazar permanentemente con este título">¶</a></h3>
+</div>
+<div class="section" id="relacion-entre-puntos-y-linderos">
+<h3>Relación entre puntos y linderos<a class="headerlink" href="#relacion-entre-puntos-y-linderos" title="Enlazar permanentemente con este título">¶</a></h3>
+</div>
+</div>
+<div class="section" id="unidades-espaciales">
+<h2>Unidades Espaciales<a class="headerlink" href="#unidades-espaciales" title="Enlazar permanentemente con este título">¶</a></h2>
+<div class="section" id="creacion-de-terrenos-y-sus-relaciones">
+<h3>Creación de terrenos y sus relaciones<a class="headerlink" href="#creacion-de-terrenos-y-sus-relaciones" title="Enlazar permanentemente con este título">¶</a></h3>
+<div class="section" id="creacion-de-relacion-entre-los-linderos-y-los-terrenos">
+<h4>Creación de relacion entre los linderos y los terrenos<a class="headerlink" href="#creacion-de-relacion-entre-los-linderos-y-los-terrenos" title="Enlazar permanentemente con este título">¶</a></h4>
+</div>
+</div>
+<div class="section" id="creacion-de-construcciones">
+<h3>Creación de construcciones<a class="headerlink" href="#creacion-de-construcciones" title="Enlazar permanentemente con este título">¶</a></h3>
+</div>
+<div class="section" id="creacion-de-unidades-de-construccion">
+<h3>Creación de unidades de construcción<a class="headerlink" href="#creacion-de-unidades-de-construccion" title="Enlazar permanentemente con este título">¶</a></h3>
+</div>
+</div>
+<div class="section" id="unidad-basica-administrativa">
+<h2>Unidad Básica Administrativa<a class="headerlink" href="#unidad-basica-administrativa" title="Enlazar permanentemente con este título">¶</a></h2>
+<div class="section" id="crear-predio">
+<h3>Crear predio<a class="headerlink" href="#crear-predio" title="Enlazar permanentemente con este título">¶</a></h3>
+</div>
+</div>
+<div class="section" id="interesados">
+<h2>Interesados<a class="headerlink" href="#interesados" title="Enlazar permanentemente con este título">¶</a></h2>
+<div class="section" id="crear-agrupacion-de-interesados">
+<h3>Crear agrupación de interesados<a class="headerlink" href="#crear-agrupacion-de-interesados" title="Enlazar permanentemente con este título">¶</a></h3>
+</div>
+</div>
+<div class="section" id="fuentes">
+<h2>Fuentes<a class="headerlink" href="#fuentes" title="Enlazar permanentemente con este título">¶</a></h2>
+</div>
+<div class="section" id="rrr">
+<h2>RRR<a class="headerlink" href="#rrr" title="Enlazar permanentemente con este título">¶</a></h2>
+<div class="section" id="crear-derecho">
+<h3>Crear derecho<a class="headerlink" href="#crear-derecho" title="Enlazar permanentemente con este título">¶</a></h3>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="reglas_de_calidad.html" class="btn btn-neutral float-right" title="Reglas de Calidad" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="crear_estructura_ladm_col.html" class="btn btn-neutral float-left" title="Crear Estructura LADM-COL" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017-hoy, SwissTierras Colombia
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
