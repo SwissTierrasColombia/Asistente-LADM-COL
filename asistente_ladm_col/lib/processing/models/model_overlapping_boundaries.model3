@@ -5,9 +5,22 @@
       <Option value="true" type="bool" name="active"/>
       <Option name="alg_config"/>
       <Option value="native:difference" type="QString" name="alg_id"/>
+      <Option value="" type="QString" name="color"/>
+      <Option type="Map" name="comment">
+        <Option value="" type="QString" name="color"/>
+        <Option value="" type="QString" name="component_description"/>
+        <Option value="30" type="double" name="component_height"/>
+        <Option value="0" type="double" name="component_pos_x"/>
+        <Option value="0" type="double" name="component_pos_y"/>
+        <Option value="200" type="double" name="component_width"/>
+        <Option value="false" type="bool" name="outputs_collapsed"/>
+        <Option value="false" type="bool" name="parameters_collapsed"/>
+      </Option>
       <Option value="Intersected_Points" type="QString" name="component_description"/>
+      <Option value="30" type="double" name="component_height"/>
       <Option value="779" type="double" name="component_pos_x"/>
       <Option value="573" type="double" name="component_pos_y"/>
+      <Option value="200" type="double" name="component_width"/>
       <Option name="dependencies"/>
       <Option value="native:difference_1" type="QString" name="id"/>
       <Option name="outputs"/>
@@ -34,9 +47,22 @@
       <Option value="true" type="bool" name="active"/>
       <Option name="alg_config"/>
       <Option value="native:intersection" type="QString" name="alg_id"/>
+      <Option value="" type="QString" name="color"/>
+      <Option type="Map" name="comment">
+        <Option value="" type="QString" name="color"/>
+        <Option value="" type="QString" name="component_description"/>
+        <Option value="30" type="double" name="component_height"/>
+        <Option value="0" type="double" name="component_pos_x"/>
+        <Option value="0" type="double" name="component_pos_y"/>
+        <Option value="200" type="double" name="component_width"/>
+        <Option value="false" type="bool" name="outputs_collapsed"/>
+        <Option value="false" type="bool" name="parameters_collapsed"/>
+      </Option>
       <Option value="Lines_intersect" type="QString" name="component_description"/>
+      <Option value="30" type="double" name="component_height"/>
       <Option value="170" type="double" name="component_pos_x"/>
       <Option value="222" type="double" name="component_pos_y"/>
+      <Option value="200" type="double" name="component_width"/>
       <Option name="dependencies"/>
       <Option value="native:intersection_1" type="QString" name="id"/>
       <Option name="outputs"/>
@@ -52,7 +78,7 @@
         <Option type="List" name="INPUT_FIELDS">
           <Option type="Map">
             <Option value="2" type="int" name="source"/>
-            <Option value="" type="Unknown" name="static_value"/>
+            <Option type="invalid" name="static_value"/>
           </Option>
         </Option>
         <Option type="List" name="OVERLAY">
@@ -64,7 +90,7 @@
         <Option type="List" name="OVERLAY_FIELDS">
           <Option type="Map">
             <Option value="2" type="int" name="source"/>
-            <Option value="" type="Unknown" name="static_value"/>
+            <Option type="invalid" name="static_value"/>
           </Option>
         </Option>
       </Option>
@@ -73,9 +99,22 @@
       <Option value="true" type="bool" name="active"/>
       <Option name="alg_config"/>
       <Option value="native:intersection" type="QString" name="alg_id"/>
+      <Option value="" type="QString" name="color"/>
+      <Option type="Map" name="comment">
+        <Option value="" type="QString" name="color"/>
+        <Option value="" type="QString" name="component_description"/>
+        <Option value="30" type="double" name="component_height"/>
+        <Option value="0" type="double" name="component_pos_x"/>
+        <Option value="0" type="double" name="component_pos_y"/>
+        <Option value="200" type="double" name="component_width"/>
+        <Option value="false" type="bool" name="outputs_collapsed"/>
+        <Option value="false" type="bool" name="parameters_collapsed"/>
+      </Option>
       <Option value="Intersection_vertices" type="QString" name="component_description"/>
+      <Option value="30" type="double" name="component_height"/>
       <Option value="729" type="double" name="component_pos_x"/>
       <Option value="182" type="double" name="component_pos_y"/>
+      <Option value="200" type="double" name="component_width"/>
       <Option name="dependencies"/>
       <Option value="native:intersection_2" type="QString" name="id"/>
       <Option name="outputs"/>
@@ -92,7 +131,7 @@
         <Option type="List" name="INPUT_FIELDS">
           <Option type="Map">
             <Option value="2" type="int" name="source"/>
-            <Option value="" type="Unknown" name="static_value"/>
+            <Option type="invalid" name="static_value"/>
           </Option>
         </Option>
         <Option type="List" name="OVERLAY">
@@ -105,7 +144,7 @@
         <Option type="List" name="OVERLAY_FIELDS">
           <Option type="Map">
             <Option value="2" type="int" name="source"/>
-            <Option value="" type="Unknown" name="static_value"/>
+            <Option type="invalid" name="static_value"/>
           </Option>
         </Option>
       </Option>
@@ -114,9 +153,22 @@
       <Option value="true" type="bool" name="active"/>
       <Option name="alg_config"/>
       <Option value="native:lineintersections" type="QString" name="alg_id"/>
+      <Option value="" type="QString" name="color"/>
+      <Option type="Map" name="comment">
+        <Option value="" type="QString" name="color"/>
+        <Option value="" type="QString" name="component_description"/>
+        <Option value="30" type="double" name="component_height"/>
+        <Option value="0" type="double" name="component_pos_x"/>
+        <Option value="0" type="double" name="component_pos_y"/>
+        <Option value="200" type="double" name="component_width"/>
+        <Option value="false" type="bool" name="outputs_collapsed"/>
+        <Option value="false" type="bool" name="parameters_collapsed"/>
+      </Option>
       <Option value="point_intersections" type="QString" name="component_description"/>
+      <Option value="30" type="double" name="component_height"/>
       <Option value="507" type="double" name="component_pos_x"/>
       <Option value="283" type="double" name="component_pos_y"/>
+      <Option value="200" type="double" name="component_width"/>
       <Option name="dependencies"/>
       <Option value="native:lineintersections_1" type="QString" name="id"/>
       <Option name="outputs"/>
@@ -132,7 +184,7 @@
         <Option type="List" name="INPUT_FIELDS">
           <Option type="Map">
             <Option value="2" type="int" name="source"/>
-            <Option value="" type="Unknown" name="static_value"/>
+            <Option type="invalid" name="static_value"/>
           </Option>
         </Option>
         <Option type="List" name="INTERSECT">
@@ -144,7 +196,7 @@
         <Option type="List" name="INTERSECT_FIELDS">
           <Option type="Map">
             <Option value="2" type="int" name="source"/>
-            <Option value="" type="Unknown" name="static_value"/>
+            <Option type="invalid" name="static_value"/>
           </Option>
         </Option>
       </Option>
@@ -153,9 +205,22 @@
       <Option value="true" type="bool" name="active"/>
       <Option name="alg_config"/>
       <Option value="native:saveselectedfeatures" type="QString" name="alg_id"/>
+      <Option value="" type="QString" name="color"/>
+      <Option type="Map" name="comment">
+        <Option value="" type="QString" name="color"/>
+        <Option value="" type="QString" name="component_description"/>
+        <Option value="30" type="double" name="component_height"/>
+        <Option value="0" type="double" name="component_pos_x"/>
+        <Option value="0" type="double" name="component_pos_y"/>
+        <Option value="200" type="double" name="component_width"/>
+        <Option value="false" type="bool" name="outputs_collapsed"/>
+        <Option value="false" type="bool" name="parameters_collapsed"/>
+      </Option>
       <Option value="Save Selected Features" type="QString" name="component_description"/>
+      <Option value="30" type="double" name="component_height"/>
       <Option value="1023" type="double" name="component_pos_x"/>
       <Option value="425" type="double" name="component_pos_y"/>
+      <Option value="200" type="double" name="component_width"/>
       <Option name="dependencies"/>
       <Option value="native:saveselectedfeatures_1" type="QString" name="id"/>
       <Option name="outputs"/>
@@ -175,19 +240,49 @@
       <Option value="true" type="bool" name="active"/>
       <Option name="alg_config"/>
       <Option value="native:saveselectedfeatures" type="QString" name="alg_id"/>
+      <Option value="" type="QString" name="color"/>
+      <Option type="Map" name="comment">
+        <Option value="" type="QString" name="color"/>
+        <Option value="" type="QString" name="component_description"/>
+        <Option value="30" type="double" name="component_height"/>
+        <Option value="0" type="double" name="component_pos_x"/>
+        <Option value="0" type="double" name="component_pos_y"/>
+        <Option value="200" type="double" name="component_width"/>
+        <Option value="false" type="bool" name="outputs_collapsed"/>
+        <Option value="false" type="bool" name="parameters_collapsed"/>
+      </Option>
       <Option value="Save Selected Features" type="QString" name="component_description"/>
+      <Option value="30" type="double" name="component_height"/>
       <Option value="418" type="double" name="component_pos_x"/>
       <Option value="513" type="double" name="component_pos_y"/>
+      <Option value="200" type="double" name="component_width"/>
       <Option name="dependencies"/>
       <Option value="native:saveselectedfeatures_2" type="QString" name="id"/>
       <Option type="Map" name="outputs">
         <Option type="Map" name="Intersected_Lines">
           <Option value="native:saveselectedfeatures_2" type="QString" name="child_id"/>
+          <Option value="" type="QString" name="color"/>
+          <Option type="Map" name="comment">
+            <Option value="" type="QString" name="color"/>
+            <Option value="" type="QString" name="component_description"/>
+            <Option value="30" type="double" name="component_height"/>
+            <Option value="0" type="double" name="component_pos_x"/>
+            <Option value="0" type="double" name="component_pos_y"/>
+            <Option value="200" type="double" name="component_width"/>
+            <Option value="false" type="bool" name="outputs_collapsed"/>
+            <Option value="false" type="bool" name="parameters_collapsed"/>
+          </Option>
           <Option value="Intersected_Lines" type="QString" name="component_description"/>
+          <Option value="30" type="double" name="component_height"/>
           <Option value="540" type="double" name="component_pos_x"/>
           <Option value="658" type="double" name="component_pos_y"/>
+          <Option value="200" type="double" name="component_width"/>
+          <Option type="invalid" name="default_value"/>
+          <Option value="false" type="bool" name="mandatory"/>
           <Option value="Intersected_Lines" type="QString" name="name"/>
           <Option value="OUTPUT" type="QString" name="output_name"/>
+          <Option value="false" type="bool" name="outputs_collapsed"/>
+          <Option value="false" type="bool" name="parameters_collapsed"/>
         </Option>
       </Option>
       <Option value="true" type="bool" name="outputs_collapsed"/>
@@ -206,19 +301,49 @@
       <Option value="true" type="bool" name="active"/>
       <Option name="alg_config"/>
       <Option value="native:saveselectedfeatures" type="QString" name="alg_id"/>
+      <Option value="" type="QString" name="color"/>
+      <Option type="Map" name="comment">
+        <Option value="" type="QString" name="color"/>
+        <Option value="" type="QString" name="component_description"/>
+        <Option value="30" type="double" name="component_height"/>
+        <Option value="0" type="double" name="component_pos_x"/>
+        <Option value="0" type="double" name="component_pos_y"/>
+        <Option value="200" type="double" name="component_width"/>
+        <Option value="false" type="bool" name="outputs_collapsed"/>
+        <Option value="false" type="bool" name="parameters_collapsed"/>
+      </Option>
       <Option value="Save Selected Features" type="QString" name="component_description"/>
+      <Option value="30" type="double" name="component_height"/>
       <Option value="1032" type="double" name="component_pos_x"/>
       <Option value="791" type="double" name="component_pos_y"/>
+      <Option value="200" type="double" name="component_width"/>
       <Option name="dependencies"/>
       <Option value="native:saveselectedfeatures_3" type="QString" name="id"/>
       <Option type="Map" name="outputs">
         <Option type="Map" name="Intersected_Points">
           <Option value="native:saveselectedfeatures_3" type="QString" name="child_id"/>
+          <Option value="" type="QString" name="color"/>
+          <Option type="Map" name="comment">
+            <Option value="" type="QString" name="color"/>
+            <Option value="" type="QString" name="component_description"/>
+            <Option value="30" type="double" name="component_height"/>
+            <Option value="0" type="double" name="component_pos_x"/>
+            <Option value="0" type="double" name="component_pos_y"/>
+            <Option value="200" type="double" name="component_width"/>
+            <Option value="false" type="bool" name="outputs_collapsed"/>
+            <Option value="false" type="bool" name="parameters_collapsed"/>
+          </Option>
           <Option value="Intersected_Points" type="QString" name="component_description"/>
+          <Option value="30" type="double" name="component_height"/>
           <Option value="1181" type="double" name="component_pos_x"/>
           <Option value="876" type="double" name="component_pos_y"/>
+          <Option value="200" type="double" name="component_width"/>
+          <Option type="invalid" name="default_value"/>
+          <Option value="false" type="bool" name="mandatory"/>
           <Option value="Intersected_Points" type="QString" name="name"/>
           <Option value="OUTPUT" type="QString" name="output_name"/>
+          <Option value="false" type="bool" name="outputs_collapsed"/>
+          <Option value="false" type="bool" name="parameters_collapsed"/>
         </Option>
       </Option>
       <Option value="true" type="bool" name="outputs_collapsed"/>
@@ -237,9 +362,22 @@
       <Option value="true" type="bool" name="active"/>
       <Option name="alg_config"/>
       <Option value="qgis:extractspecificvertices" type="QString" name="alg_id"/>
+      <Option value="" type="QString" name="color"/>
+      <Option type="Map" name="comment">
+        <Option value="" type="QString" name="color"/>
+        <Option value="" type="QString" name="component_description"/>
+        <Option value="30" type="double" name="component_height"/>
+        <Option value="0" type="double" name="component_pos_x"/>
+        <Option value="0" type="double" name="component_pos_y"/>
+        <Option value="200" type="double" name="component_width"/>
+        <Option value="false" type="bool" name="outputs_collapsed"/>
+        <Option value="false" type="bool" name="parameters_collapsed"/>
+      </Option>
       <Option value="Extract specific vertices" type="QString" name="component_description"/>
+      <Option value="30" type="double" name="component_height"/>
       <Option value="455" type="double" name="component_pos_x"/>
       <Option value="75" type="double" name="component_pos_y"/>
+      <Option value="200" type="double" name="component_width"/>
       <Option name="dependencies"/>
       <Option value="qgis:extractspecificvertices_1" type="QString" name="id"/>
       <Option name="outputs"/>
@@ -264,9 +402,22 @@
       <Option value="true" type="bool" name="active"/>
       <Option name="alg_config"/>
       <Option value="qgis:selectbyexpression" type="QString" name="alg_id"/>
+      <Option value="" type="QString" name="color"/>
+      <Option type="Map" name="comment">
+        <Option value="" type="QString" name="color"/>
+        <Option value="" type="QString" name="component_description"/>
+        <Option value="30" type="double" name="component_height"/>
+        <Option value="0" type="double" name="component_pos_x"/>
+        <Option value="0" type="double" name="component_pos_y"/>
+        <Option value="200" type="double" name="component_width"/>
+        <Option value="false" type="bool" name="outputs_collapsed"/>
+        <Option value="false" type="bool" name="parameters_collapsed"/>
+      </Option>
       <Option value="lines_filtered" type="QString" name="component_description"/>
+      <Option value="30" type="double" name="component_height"/>
       <Option value="243" type="double" name="component_pos_x"/>
       <Option value="367" type="double" name="component_pos_y"/>
+      <Option value="200" type="double" name="component_width"/>
       <Option name="dependencies"/>
       <Option value="qgis:selectbyexpression_1" type="QString" name="id"/>
       <Option name="outputs"/>
@@ -298,9 +449,22 @@
       <Option value="true" type="bool" name="active"/>
       <Option name="alg_config"/>
       <Option value="qgis:selectbyexpression" type="QString" name="alg_id"/>
+      <Option value="" type="QString" name="color"/>
+      <Option type="Map" name="comment">
+        <Option value="" type="QString" name="color"/>
+        <Option value="" type="QString" name="component_description"/>
+        <Option value="30" type="double" name="component_height"/>
+        <Option value="0" type="double" name="component_pos_x"/>
+        <Option value="0" type="double" name="component_pos_y"/>
+        <Option value="200" type="double" name="component_width"/>
+        <Option value="false" type="bool" name="outputs_collapsed"/>
+        <Option value="false" type="bool" name="parameters_collapsed"/>
+      </Option>
       <Option value="Select by expression" type="QString" name="component_description"/>
+      <Option value="30" type="double" name="component_height"/>
       <Option value="969" type="double" name="component_pos_x"/>
       <Option value="274" type="double" name="component_pos_y"/>
+      <Option value="200" type="double" name="component_width"/>
       <Option name="dependencies"/>
       <Option value="qgis:selectbyexpression_2" type="QString" name="id"/>
       <Option name="outputs"/>
@@ -332,9 +496,22 @@
       <Option value="true" type="bool" name="active"/>
       <Option name="alg_config"/>
       <Option value="qgis:selectbyexpression" type="QString" name="alg_id"/>
+      <Option value="" type="QString" name="color"/>
+      <Option type="Map" name="comment">
+        <Option value="" type="QString" name="color"/>
+        <Option value="" type="QString" name="component_description"/>
+        <Option value="30" type="double" name="component_height"/>
+        <Option value="1091" type="double" name="component_pos_x"/>
+        <Option value="650" type="double" name="component_pos_y"/>
+        <Option value="200" type="double" name="component_width"/>
+        <Option value="true" type="bool" name="outputs_collapsed"/>
+        <Option value="true" type="bool" name="parameters_collapsed"/>
+      </Option>
       <Option value="points_filtered" type="QString" name="component_description"/>
+      <Option value="30" type="double" name="component_height"/>
       <Option value="891" type="double" name="component_pos_x"/>
       <Option value="695" type="double" name="component_pos_y"/>
+      <Option value="200" type="double" name="component_width"/>
       <Option name="dependencies"/>
       <Option value="qgis:selectbyexpression_3" type="QString" name="id"/>
       <Option name="outputs"/>
@@ -344,7 +521,7 @@
         <Option type="List" name="EXPRESSION">
           <Option type="Map">
             <Option value="2" type="int" name="source"/>
-            <Option value="&quot;t_id&quot; &lt; &quot;t_id_2&quot;" type="QString" name="static_value"/>
+            <Option value="(&quot;t_id&quot; &lt; &quot;t_id_2&quot;) and ($x !=0 and $y != 0)" type="QString" name="static_value"/>
           </Option>
         </Option>
         <Option type="List" name="INPUT">
@@ -363,7 +540,10 @@
       </Option>
     </Option>
   </Option>
+  <Option name="designerParameterValues"/>
+  <Option name="groupBoxes"/>
   <Option name="help"/>
+  <Option name="modelVariables"/>
   <Option value="LADM-COL" type="QString" name="model_group"/>
   <Option value="Overlapping_Boundaries" type="QString" name="model_name"/>
   <Option type="Map" name="parameterDefinitions">
@@ -371,42 +551,66 @@
       <Option type="List" name="data_types">
         <Option value="1" type="int"/>
       </Option>
-      <Option value="" type="Unknown" name="default"/>
+      <Option type="invalid" name="default"/>
+      <Option type="invalid" name="defaultGui"/>
       <Option value="Boundary" type="QString" name="description"/>
       <Option value="0" type="int" name="flags"/>
+      <Option value="" type="QString" name="help"/>
       <Option name="metadata"/>
       <Option value="Boundary" type="QString" name="name"/>
       <Option value="vector" type="QString" name="parameter_type"/>
     </Option>
     <Option type="Map" name="native:saveselectedfeatures_2:Intersected_Lines">
       <Option value="true" type="bool" name="create_by_default"/>
-      <Option value="0" type="int" name="data_type"/>
-      <Option value="" type="Unknown" name="default"/>
+      <Option value="-1" type="int" name="data_type"/>
+      <Option type="invalid" name="default"/>
+      <Option type="invalid" name="defaultGui"/>
       <Option value="Intersected_Lines" type="QString" name="description"/>
       <Option value="0" type="int" name="flags"/>
+      <Option value="" type="QString" name="help"/>
       <Option name="metadata"/>
       <Option value="native:saveselectedfeatures_2:Intersected_Lines" type="QString" name="name"/>
       <Option value="sink" type="QString" name="parameter_type"/>
+      <Option value="false" type="bool" name="supports_append"/>
       <Option value="true" type="bool" name="supports_non_file_outputs"/>
     </Option>
     <Option type="Map" name="native:saveselectedfeatures_3:Intersected_Points">
       <Option value="true" type="bool" name="create_by_default"/>
-      <Option value="0" type="int" name="data_type"/>
-      <Option value="" type="Unknown" name="default"/>
+      <Option value="-1" type="int" name="data_type"/>
+      <Option type="invalid" name="default"/>
+      <Option type="invalid" name="defaultGui"/>
       <Option value="Intersected_Points" type="QString" name="description"/>
       <Option value="0" type="int" name="flags"/>
+      <Option value="" type="QString" name="help"/>
       <Option name="metadata"/>
       <Option value="native:saveselectedfeatures_3:Intersected_Points" type="QString" name="name"/>
       <Option value="sink" type="QString" name="parameter_type"/>
+      <Option value="false" type="bool" name="supports_append"/>
       <Option value="true" type="bool" name="supports_non_file_outputs"/>
     </Option>
   </Option>
+  <Option name="parameterOrder"/>
   <Option type="Map" name="parameters">
     <Option type="Map" name="Boundary">
+      <Option value="" type="QString" name="color"/>
+      <Option type="Map" name="comment">
+        <Option value="" type="QString" name="color"/>
+        <Option value="" type="QString" name="component_description"/>
+        <Option value="30" type="double" name="component_height"/>
+        <Option value="0" type="double" name="component_pos_x"/>
+        <Option value="0" type="double" name="component_pos_y"/>
+        <Option value="200" type="double" name="component_width"/>
+        <Option value="false" type="bool" name="outputs_collapsed"/>
+        <Option value="false" type="bool" name="parameters_collapsed"/>
+      </Option>
       <Option value="Boundary" type="QString" name="component_description"/>
+      <Option value="30" type="double" name="component_height"/>
       <Option value="107" type="double" name="component_pos_x"/>
       <Option value="89" type="double" name="component_pos_y"/>
+      <Option value="200" type="double" name="component_width"/>
       <Option value="Boundary" type="QString" name="name"/>
+      <Option value="false" type="bool" name="outputs_collapsed"/>
+      <Option value="false" type="bool" name="parameters_collapsed"/>
     </Option>
   </Option>
 </Option>

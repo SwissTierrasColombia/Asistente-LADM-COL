@@ -63,7 +63,7 @@ def get_igac_basic_query(names, ladm_units):
                     OwnField(names.LC_PARCEL_T_FMI_F, "FMI"),
                     OwnField(names.LC_PARCEL_T_PARCEL_NUMBER_F, "Número predial"),
                     OwnField(names.LC_PARCEL_T_PREVIOUS_PARCEL_NUMBER_F, "Número predial anterior"),
-                    DomainOwnField(names.LC_PARCEL_T_TYPE_F, "Tipo", names.LC_PARCEL_TYPE_D)
+                    DomainOwnField(names.LC_PARCEL_T_TYPE_F, "Tipo", names.COL_BAUNIT_TYPE_D)
                 ],
                 QueryNames.LEVEL_TABLE: {
                     QueryNames.LEVEL_TABLE_NAME: names.LC_BUILDING_T,

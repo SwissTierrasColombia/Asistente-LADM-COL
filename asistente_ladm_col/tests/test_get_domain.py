@@ -12,6 +12,7 @@ start_app()  # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             unload_qgis_model_baker,
+                                            get_field_values_by_another_field,
                                             get_copy_gpkg_conn)
 from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 
@@ -31,15 +32,26 @@ class TestGetDomains(unittest.TestCase):
     def test_get_domain_value_from_code(self):
         print('\nINFO: Validating get domain value from code ...')
 
+        layers = {
+            self.db_gpkg.names.LC_CONDITION_PARCEL_TYPE_D: None,
+            self.db_gpkg.names.LC_RIGHT_TYPE_D: None
+        }
+        self.app.core.get_layers(self.db_gpkg, layers, load=True)
+        test_t_id = get_field_values_by_another_field(layers[self.db_gpkg.names.LC_CONDITION_PARCEL_TYPE_D],
+                                                      self.db_gpkg.names.ILICODE_F,
+                                                      [LADMNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY],
+                                                      self.db_gpkg.names.T_ID_F)[0]
+
         # Good parameters
-        value = self.ladm_data.get_domain_value_from_code(self.db_gpkg, self.db_gpkg.names.LC_CONDITION_PARCEL_TYPE_D, 1, value_is_ilicode=True)
+        value = self.ladm_data.get_domain_value_from_code(self.db_gpkg, self.db_gpkg.names.LC_CONDITION_PARCEL_TYPE_D, test_t_id, value_is_ilicode=True)
         self.assertEqual(value, LADMNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY)
 
-        value = self.ladm_data.get_domain_value_from_code(self.db_gpkg, self.db_gpkg.names.LC_CONDITION_PARCEL_TYPE_D, 1, value_is_ilicode=False)
+        value = self.ladm_data.get_domain_value_from_code(self.db_gpkg, self.db_gpkg.names.LC_CONDITION_PARCEL_TYPE_D, test_t_id, value_is_ilicode=False)
         self.assertEqual(value, 'No propiedad horizontal')
 
-        domain_layer = self.app.core.get_layer(self.db_gpkg, self.db_gpkg.names.LC_RIGHT_TYPE_D, load=True)
-        value = self.ladm_data.get_domain_value_from_code(self.db_gpkg, domain_layer, 1, value_is_ilicode=True)
+        test_t_id = get_field_values_by_another_field(layers[self.db_gpkg.names.LC_RIGHT_TYPE_D],
+                                                      self.db_gpkg.names.ILICODE_F, ['Dominio'], self.db_gpkg.names.T_ID_F)[0]
+        value = self.ladm_data.get_domain_value_from_code(self.db_gpkg, layers[self.db_gpkg.names.LC_RIGHT_TYPE_D], test_t_id, value_is_ilicode=True)
         self.assertEqual(value, 'Dominio')
 
         # Domain value not exit
@@ -88,16 +100,23 @@ class TestGetDomains(unittest.TestCase):
     def test_get_domain_code_from_value(self):
         print('\nINFO: Validating get domain code from value...')
 
+        layers = {
+            self.db_gpkg.names.LC_CONDITION_PARCEL_TYPE_D: None,
+            self.db_gpkg.names.LC_RIGHT_TYPE_D: None
+        }
+        self.app.core.get_layers(self.db_gpkg, layers, load=True)
+        test_t_id = get_field_values_by_another_field(layers[self.db_gpkg.names.LC_CONDITION_PARCEL_TYPE_D], self.db_gpkg.names.ILICODE_F, [LADMNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY], self.db_gpkg.names.T_ID_F)[0]
+
         # Good parameters
         value = self.ladm_data.get_domain_code_from_value(self.db_gpkg, self.db_gpkg.names.LC_CONDITION_PARCEL_TYPE_D, LADMNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY, value_is_ilicode=True)
-        self.assertEqual(value, 1)
+        self.assertEqual(value, test_t_id)
 
         value = self.ladm_data.get_domain_code_from_value(self.db_gpkg, self.db_gpkg.names.LC_CONDITION_PARCEL_TYPE_D, 'No propiedad horizontal', value_is_ilicode=False)
-        self.assertEqual(value, 1)
+        self.assertEqual(value, test_t_id)
 
-        domain_layer = self.app.core.get_layer(self.db_gpkg, self.db_gpkg.names.LC_RIGHT_TYPE_D, load=True)
-        value = self.ladm_data.get_domain_code_from_value(self.db_gpkg, domain_layer, 'Dominio', value_is_ilicode=True)
-        self.assertEqual(value, 1)
+        test_t_id = get_field_values_by_another_field(layers[self.db_gpkg.names.LC_RIGHT_TYPE_D], self.db_gpkg.names.ILICODE_F, ['Dominio'], self.db_gpkg.names.T_ID_F)[0]
+        value = self.ladm_data.get_domain_code_from_value(self.db_gpkg, layers[self.db_gpkg.names.LC_RIGHT_TYPE_D], 'Dominio', value_is_ilicode=True)
+        self.assertEqual(value, test_t_id)
 
         # Domain value not exit
         value = self.ladm_data.get_domain_code_from_value(self.db_gpkg, self.db_gpkg.names.LC_CONDITION_PARCEL_TYPE_D, 'value_none', value_is_ilicode=True)

@@ -524,6 +524,22 @@ class LayerConfig:
         return layer_sets
 
     @staticmethod
+    def get_tables_to_ignore(names, models):
+        tables_to_ignore = list()
+        for model_key in models:
+            if model_key == LADMNames.SURVEY_MODEL_KEY:
+                tables_to_ignore = [names.LC_NU_GROUP_SPATIAL_UNIT_T,
+                                    names.LC_NU_BOUNDARY_FACE_T,
+                                    names.LC_NU_LEGAL_SPACE_SERVICE_NETWORK_T,
+                                    names.LC_NU_LEGAL_SPACE_BUILDING_UNIT_T,
+                                    names.LC_NU_LEVEL_T,
+                                    names.LC_NU_REQUIRED_RELATION_BAUNITS_T,
+                                    names.LC_NU_REQUIRED_RELATION_SPATIAL_UNITS_T]
+
+        return tables_to_ignore
+
+
+    @staticmethod
     def get_dict_plural(names):
         """
         PLURAL WORDS, FOR DISPLAY PURPOSES

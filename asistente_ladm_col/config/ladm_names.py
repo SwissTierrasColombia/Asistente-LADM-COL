@@ -166,7 +166,7 @@ MODEL_CONFIG = {
     LADMNames.SURVEY_MODEL_KEY: {
         MODEL_ALIAS: QCoreApplication.translate("TranslatableConfigStrings", "Survey"),
         MODEL_IS_SUPPORTED: True,
-        MODEL_SUPPORTED_VERSION: "1.0",
+        MODEL_SUPPORTED_VERSION: "1.1",
         MODEL_HIDDEN_BY_DEFAULT: False,
         MODEL_CHECKED_BY_DEFAULT: True
     },
@@ -194,14 +194,14 @@ MODEL_CONFIG = {
     LADMNames.CADASTRAL_CARTOGRAPHY_MODEL_KEY: {
         MODEL_ALIAS: QCoreApplication.translate("TranslatableConfigStrings", "Reference cadastral cartography"),
         MODEL_IS_SUPPORTED: True,
-        MODEL_SUPPORTED_VERSION: "1.0",
+        MODEL_SUPPORTED_VERSION: "1.1",
         MODEL_HIDDEN_BY_DEFAULT: False,
         MODEL_CHECKED_BY_DEFAULT: False
     },
     LADMNames.VALUATION_MODEL_KEY: {
         MODEL_ALIAS: QCoreApplication.translate("TranslatableConfigStrings", "Valuation"),
         MODEL_IS_SUPPORTED: True,
-        MODEL_SUPPORTED_VERSION: "1.0",
+        MODEL_SUPPORTED_VERSION: "1.1",
         MODEL_HIDDEN_BY_DEFAULT: False,
         MODEL_CHECKED_BY_DEFAULT: False
     },

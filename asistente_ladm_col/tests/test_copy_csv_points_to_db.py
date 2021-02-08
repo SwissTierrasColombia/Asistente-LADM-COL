@@ -60,7 +60,7 @@ class TestCopy(unittest.TestCase):
         layer = self.app.core.get_layer(self.db_pg, self.names.LC_BOUNDARY_POINT_T, True)
         self.app.core.disable_automatic_fields(layer)
 
-        csv_path = get_test_path('csv/puntos_fixed_ladm_v1_0.csv')
+        csv_path = get_test_path('csv/puntos_fixed_ladm_v1_1.csv')
         txt_delimiter = ';'
         cbo_longitude = 'x'
         cbo_latitude = 'y'
@@ -87,7 +87,7 @@ class TestCopy(unittest.TestCase):
         with edit(csv_layer):
             for feature in csv_layer.getFeatures():
                 feature.setAttribute(idx_agreement_field, self.ladm_data.get_domain_code_from_value(self.db_pg, self.names.LC_AGREEMENT_TYPE_D, feature['_acuerdo']))
-                feature.setAttribute(idx_point_type_field, self.ladm_data.get_domain_code_from_value(self.db_pg, self.names.LC_POINT_TYPE_D, feature['_puntotipo']))
+                feature.setAttribute(idx_point_type_field, self.ladm_data.get_domain_code_from_value(self.db_pg, self.names.COL_POINT_TYPE_D, feature['_puntotipo']))
                 feature.setAttribute(idx_production_method_field, self.ladm_data.get_domain_code_from_value(self.db_pg, self.names.COL_PRODUCTION_METHOD_TYPE_D, feature['_metodoproduccion']))
                 csv_layer.updateFeature(feature)
 
@@ -104,7 +104,7 @@ class TestCopy(unittest.TestCase):
         layer = self.app.core.get_layer(self.db_pg, self.names.LC_BOUNDARY_POINT_T, True)
         self.app.core.disable_automatic_fields(layer)
 
-        csv_path = get_test_path('csv/puntos_crs_4326_wgs84_ladm_v1_0.csv')
+        csv_path = get_test_path('csv/puntos_crs_4326_wgs84_ladm_v1_1.csv')
         txt_delimiter = ';'
         cbo_longitude = 'x'
         cbo_latitude = 'y'
@@ -142,7 +142,7 @@ class TestCopy(unittest.TestCase):
         layer = self.app.core.get_layer(self.db_pg, self.names.LC_BOUNDARY_POINT_T, True)
         self.app.core.disable_automatic_fields(layer)
 
-        csv_path = get_test_path('csv/puntos_fixed_ladm_v1_0.csv')
+        csv_path = get_test_path('csv/puntos_fixed_ladm_v1_1.csv')
         txt_delimiter = ';'
         cbo_longitude = 'x'
         cbo_latitude = 'y'
@@ -178,13 +178,13 @@ class TestCopy(unittest.TestCase):
                 break
 
         self.assertEqual(row[colnames['id_punto_lindero']], '50')
-        self.assertEqual(row[colnames['puntotipo']], 169)
-        self.assertEqual(row[colnames['acuerdo']], 234)
+        self.assertEqual(row[colnames['puntotipo']], 17)
+        self.assertEqual(row[colnames['acuerdo']], 596)
         self.assertEqual(row[colnames['fotoidentificacion']], None)
         self.assertEqual(row[colnames['exactitud_horizontal']], 1.000)
         self.assertEqual(row[colnames['exactitud_vertical']], None)
         self.assertEqual(row[colnames['posicion_interpolacion']], None)
-        self.assertEqual(row[colnames['metodoproduccion']], 513)
+        self.assertEqual(row[colnames['metodoproduccion']], 1)
         self.assertEqual(row[colnames['espacio_de_nombres']], 'LC_PUNTOLINDERO')
         self.assertIsNotNone(row[colnames['local_id']])
         self.assertIsNone(row[colnames['ue_lc_servidumbretransito']])
@@ -202,7 +202,7 @@ class TestCopy(unittest.TestCase):
     def test_copy_csv_overlapping_to_db(self):
         print('\nINFO: Validating copy csv overlapping to db')
         clean_table(SCHEMA_LADM_COL_EMPTY, self.names.LC_BOUNDARY_POINT_T)
-        csv_path = get_test_path('csv/puntos_overlapping_ladm_v1_0.csv')
+        csv_path = get_test_path('csv/puntos_overlapping_ladm_v1_1.csv')
         txt_delimiter = ';'
         cbo_longitude = 'x'
         cbo_latitude = 'y'

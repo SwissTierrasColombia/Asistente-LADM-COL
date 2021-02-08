@@ -80,12 +80,12 @@ class BaseTestForAllModels(BaseTestForModels, ABC):
                 'LC_RESTRICTION_T',
                 'LC_RIGHT_OF_WAY_T',
                 'LC_PLOT_T',
-                'LC_ADMINISTRATIVE_SOURCE_TYPE_D',
+                'COL_ADMINISTRATIVE_SOURCE_TYPE_D',
                 'LC_PARTY_TYPE_D',
-                'LC_PARCEL_TYPE_D',
+                'COL_BAUNIT_TYPE_D',
                 'LC_CONTROL_POINT_TYPE_D',
                 'LC_SURVEY_POINT_TYPE_D',
-                'LC_POINT_TYPE_D',
+                'COL_POINT_TYPE_D',
                 'GC_PARCEL_T',
                 'GC_OWNER_T',
                 'GC_PLOT_T',
@@ -109,7 +109,9 @@ class BaseTestForAllModels(BaseTestForModels, ABC):
                  "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_UnidadConstruccion": "ue_mas_lc_unidadconstruccion",
                  "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Construccion": "ue_mas_lc_construccion",
                  "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_ServidumbreTransito": "ue_mas_lc_servidumbretransito",
-                 "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Terreno": "ue_mas_lc_terreno"
+                 "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Terreno": "ue_mas_lc_terreno",
+                 "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_NU_EspacioJuridicoRedServicios": "ue_mas_lc_nu_espaciojuridicoredservicios",
+                 "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_NU_EspacioJuridicoUnidadEdificacion": "ue_mas_lc_nu_espaciojuridicounidadedificacion"
                 },
                 "Submodelo_Integracion_Insumos.Datos_Integracion_Insumos.INI_PredioInsumos": {
                  "table_name": "ini_predioinsumos",
@@ -126,7 +128,7 @@ class BaseTestForAllModels(BaseTestForModels, ABC):
                 }}
 
     def get_expected_table_and_fields_length(self):
-        return self.get_ili2db_names_count() + 190
+        return self.get_ili2db_names_count() + 194
 
 
 class TestAllModelsPG(BaseTestForAllModels, unittest.TestCase):
@@ -155,7 +157,9 @@ class TestAllModelsPG(BaseTestForAllModels, unittest.TestCase):
                  "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_UnidadConstruccion": "ue_mas_lc_unidadconstruccion",
                  "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Construccion": "ue_mas_lc_construccion",
                  "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_ServidumbreTransito": "ue_mas_lc_servidumbretransito",
-                 "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Terreno": "ue_mas_lc_terreno"
+                 "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Terreno": "ue_mas_lc_terreno",
+                 "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_NU_EspacioJuridicoRedServicios": "ue_mas_lc_nu_espaciojuridicoredservicios",
+                 "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_NU_EspacioJuridicoUnidadEdificacion": "ue_mas_lc_nu_espaciojuridicounidadedificacion"
                 },
                 "Submodelo_Integracion_Insumos.Datos_Integracion_Insumos.INI_PredioInsumos": {
                  "table_name": "ini_predioinsumos",

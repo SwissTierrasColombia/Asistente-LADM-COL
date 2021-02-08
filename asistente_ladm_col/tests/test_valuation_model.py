@@ -94,12 +94,12 @@ class BaseTestValuationModel(BaseTestForModels, ABC):
                 'LC_RESTRICTION_T',
                 'LC_RIGHT_OF_WAY_T',
                 'LC_PLOT_T',
-                'LC_ADMINISTRATIVE_SOURCE_TYPE_D',
+                'COL_ADMINISTRATIVE_SOURCE_TYPE_D',
                 'LC_PARTY_TYPE_D',
-                'LC_PARCEL_TYPE_D',
+                'COL_BAUNIT_TYPE_D',
                 'LC_CONTROL_POINT_TYPE_D',
                 'LC_SURVEY_POINT_TYPE_D',
-                'LC_POINT_TYPE_D']
+                'COL_POINT_TYPE_D']
 
     def get_expected_dict(self):
         return {T_ID_KEY: 'T_Id',
@@ -124,7 +124,7 @@ class BaseTestValuationModel(BaseTestForModels, ABC):
                 }}
 
     def get_expected_table_and_fields_length(self):
-        return self.get_ili2db_names_count() + 176
+        return self.get_ili2db_names_count() + 180
 
 
 class TestValuationModelPG(BaseTestValuationModel, unittest.TestCase):
@@ -192,9 +192,6 @@ class TestValuationModelMSSQL(BaseTestValuationModel, unittest.TestCase):
     @classmethod
     def get_connector(cls) -> DBConnector:
         return get_mssql_conn(cls.schema)
-
-    def get_expected_table_and_fields_length(self):
-        return self.get_ili2db_names_count() + 175  # TODO Why does mssql have 187 (i.e., why one is missing)?
 
 
 if __name__ == '__main__':

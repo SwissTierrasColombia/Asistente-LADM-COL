@@ -85,7 +85,7 @@ class LADMData(QObject):
                 gc_plot_layer = layers[db.names.GC_PLOT_T]
 
         expression = QgsExpression("{} IN ('{}') ".format(db.names.GC_PLOT_T_GC_PARCEL_F, "','".join([str(t_id) for t_id in t_ids])))
-        features = self.get_features_by_expression(gc_plot_layer, db.names.T_ID_F, expression, with_attributes=True)
+        features = LADMData.get_features_by_expression(gc_plot_layer, db.names.T_ID_F, expression, with_attributes=True)
 
         plot_ids = list()
         for feature in features:
@@ -130,7 +130,7 @@ class LADMData(QObject):
 
         expression = QgsExpression("{} IN ({})".format(db.names.T_ID_F,
                                                        ",".join([str(t_id) for t_id in t_ids])))
-        features = self.get_features_by_expression(gc_plot_layer, db.names.T_ID_F, expression, with_attributes=True)
+        features = LADMData.get_features_by_expression(gc_plot_layer, db.names.T_ID_F, expression, with_attributes=True)
 
         parcel_t_ids = list()
         for feature in features:
@@ -144,9 +144,9 @@ class LADMData(QObject):
                                                           ",".join([str(id) for id in parcel_t_ids])))
 
         if field_name is None:
-            features = self.get_features_by_expression(gc_parcel_table, db.names.T_ID_F, expression)
+            features = LADMData.get_features_by_expression(gc_parcel_table, db.names.T_ID_F, expression)
         else:
-            features = self.get_features_by_expression(gc_parcel_table, db.names.T_ID_F, expression, with_attributes=True)
+            features = LADMData.get_features_by_expression(gc_parcel_table, db.names.T_ID_F, expression, with_attributes=True)
 
         for feature in features:
             if field_name is None: # We are only interested in the QGIS internal id, no need to get other fields
@@ -213,7 +213,7 @@ class LADMData(QObject):
         parcel_t_ids = [parcel_feature[db.names.T_ID_F] for parcel_feature in parcel_features]
 
         expression_plot_features = QgsExpression("{} IN ('{}')".format(db.names.GC_PLOT_T_GC_PARCEL_F, "','".join([str(parcel_t_id) for parcel_t_id in parcel_t_ids])))
-        plot_features = self.get_features_by_expression(layers[db.names.GC_PLOT_T], db.names.T_ID_F, expression_plot_features, with_attributes=True, with_geometry=True)
+        plot_features = LADMData.get_features_by_expression(layers[db.names.GC_PLOT_T], db.names.T_ID_F, expression_plot_features, with_attributes=True, with_geometry=True)
         dict_parcel_plot = {plot_feature[db.names.GC_PLOT_T_GC_PARCEL_F]: plot_feature[db.names.T_ID_F] for plot_feature in plot_features}
         dict_plot_features = {plot_feature[db.names.T_ID_F]: plot_feature for plot_feature in plot_features}
 
@@ -233,7 +233,7 @@ class LADMData(QObject):
         # ===================== Start adding party info ==================================================
         party_fields = [f.name() for f in layers[db.names.GC_OWNER_T].fields()]
         expression_parties_features = QgsExpression("{} IN ({})".format(db.names.GC_OWNER_T_PARCEL_ID_F, ",".join([str(id) for id in parcel_t_ids])))
-        party_features = self.get_features_by_expression(layers[db.names.GC_OWNER_T], db.names.T_ID_F, expression_parties_features, with_attributes=True)
+        party_features = LADMData.get_features_by_expression(layers[db.names.GC_OWNER_T], db.names.T_ID_F, expression_parties_features, with_attributes=True)
 
         dict_parcel_parties = dict()
         for party_feature in party_features:
@@ -316,7 +316,7 @@ class LADMData(QObject):
                                                     db.names.COL_UE_BAUNIT_T_PARCEL_F,
                                                     "','".join([str(t_id) for t_id in t_ids]),
                                                     db.names.COL_UE_BAUNIT_T_LC_PLOT_F))
-        features = self.get_features_by_expression(uebaunit_table, db.names.T_ID_F, expression, with_attributes=True)
+        features = LADMData.get_features_by_expression(uebaunit_table, db.names.T_ID_F, expression, with_attributes=True)
 
         plot_t_ids = list()
         for feature in features:
@@ -329,9 +329,9 @@ class LADMData(QObject):
         expression = QgsExpression("{} IN ('{}')".format(db.names.T_ID_F, "','".join([str(id) for id in plot_t_ids])))
 
         if field_name is None:
-            features = self.get_features_by_expression(plot_layer, db.names.T_ID_F, expression)
+            features = LADMData.get_features_by_expression(plot_layer, db.names.T_ID_F, expression)
         else:
-            features = self.get_features_by_expression(plot_layer, db.names.T_ID_F, expression, with_attributes=True)
+            features = LADMData.get_features_by_expression(plot_layer, db.names.T_ID_F, expression, with_attributes=True)
 
         for feature in features:
             if field_name is None: # We are only interested in the QGIS internal id, no need to get other fields
@@ -381,7 +381,7 @@ class LADMData(QObject):
                                                     db.names.COL_UE_BAUNIT_T_LC_PLOT_F,
                                                     ",".join([str(t_id) for t_id in t_ids]),
                                                     db.names.COL_UE_BAUNIT_T_PARCEL_F))
-        features = self.get_features_by_expression(uebaunit_table, db.names.T_ID_F, expression, with_attributes=True)
+        features = LADMData.get_features_by_expression(uebaunit_table, db.names.T_ID_F, expression, with_attributes=True)
 
         parcel_t_ids = list()
         for feature in features:
@@ -395,9 +395,9 @@ class LADMData(QObject):
                                                           ",".join([str(id) for id in parcel_t_ids])))
 
         if field_name is None:
-            features = self.get_features_by_expression(parcel_table, db.names.T_ID_F, expression)
+            features = LADMData.get_features_by_expression(parcel_table, db.names.T_ID_F, expression)
         else:
-            features = self.get_features_by_expression(parcel_table, db.names.T_ID_F, expression, with_attributes=True)
+            features = LADMData.get_features_by_expression(parcel_table, db.names.T_ID_F, expression, with_attributes=True)
 
         for feature in features:
             if field_name is None: # We are only interested in the QGIS internal id, no need to get other fields
@@ -465,11 +465,11 @@ class LADMData(QObject):
         # =====================  Start adding plot info ==================================================
         parcel_t_ids = [parcel_feature[db.names.T_ID_F] for parcel_feature in parcel_features]
         expression_uebaunit_features = QgsExpression("{} IN ({}) AND {} IS NOT NULL".format(db.names.COL_UE_BAUNIT_T_PARCEL_F, ",".join([str(id) for id in parcel_t_ids]), db.names.COL_UE_BAUNIT_T_LC_PLOT_F))
-        uebaunit_features = self.get_features_by_expression(layers[db.names.COL_UE_BAUNIT_T], db.names.T_ID_F, expression_uebaunit_features, with_attributes=True)
+        uebaunit_features = LADMData.get_features_by_expression(layers[db.names.COL_UE_BAUNIT_T], db.names.T_ID_F, expression_uebaunit_features, with_attributes=True)
 
         plot_t_ids = [feature[db.names.COL_UE_BAUNIT_T_LC_PLOT_F] for feature in uebaunit_features]
         expression_plot_features = QgsExpression("{} IN ('{}')".format(db.names.T_ID_F, "','".join([str(id) for id in plot_t_ids])))
-        plot_features = self.get_features_by_expression(layers[db.names.LC_PLOT_T], db.names.T_ID_F, expression_plot_features, with_attributes=True, with_geometry=True)
+        plot_features = LADMData.get_features_by_expression(layers[db.names.LC_PLOT_T], db.names.T_ID_F, expression_plot_features, with_attributes=True, with_geometry=True)
 
         dict_parcel_plot = {uebaunit_feature[db.names.COL_UE_BAUNIT_T_PARCEL_F]: uebaunit_feature[db.names.COL_UE_BAUNIT_T_LC_PLOT_F] for uebaunit_feature in uebaunit_features}
         dict_plot_features = {plot_feature[db.names.T_ID_F]: plot_feature for plot_feature in plot_features}
@@ -487,12 +487,12 @@ class LADMData(QObject):
 
         # ===================== Start adding party info ==================================================
         expression_right_features = QgsExpression("{} IN ({})".format(db.names.COL_BAUNIT_RRR_T_UNIT_F, ",".join([str(id) for id in parcel_t_ids])))
-        right_features = self.get_features_by_expression(layers[db.names.LC_RIGHT_T], db.names.T_ID_F, expression_right_features, with_attributes=True)
+        right_features = LADMData.get_features_by_expression(layers[db.names.LC_RIGHT_T], db.names.T_ID_F, expression_right_features, with_attributes=True)
 
         dict_party_right = {right_feature[db.names.COL_RRR_PARTY_T_LC_PARTY_F]: right_feature for right_feature in right_features if right_feature[db.names.COL_RRR_PARTY_T_LC_PARTY_F] != NULL}
         party_t_ids = [right_feature[db.names.COL_RRR_PARTY_T_LC_PARTY_F] for right_feature in right_features if right_feature[db.names.COL_RRR_PARTY_T_LC_PARTY_F] != NULL]
         expression_party_features = QgsExpression("{} IN ({})".format(db.names.T_ID_F, ",".join([str(id) for id in party_t_ids])))
-        party_features = self.get_features_by_expression(layers[db.names.LC_PARTY_T], db.names.T_ID_F, expression_party_features, with_attributes=True)
+        party_features = LADMData.get_features_by_expression(layers[db.names.LC_PARTY_T], db.names.T_ID_F, expression_party_features, with_attributes=True)
 
         dict_parcel_parties = dict()
         for right_feature in right_features:
@@ -549,7 +549,7 @@ class LADMData(QObject):
         dict_group_party_right = {right_feature[db.names.COL_RRR_PARTY_T_LC_GROUP_PARTY_F]: right_feature for right_feature in right_features if right_feature[db.names.COL_RRR_PARTY_T_LC_GROUP_PARTY_F] != NULL}
         group_party_t_ids = [right_feature[db.names.COL_RRR_PARTY_T_LC_GROUP_PARTY_F] for right_feature in right_features if right_feature[db.names.COL_RRR_PARTY_T_LC_GROUP_PARTY_F] != NULL]
         expression_members_features = QgsExpression("{} IN ({})".format(db.names.MEMBERS_T_GROUP_PARTY_F, ",".join([str(id) for id in group_party_t_ids])))
-        members_features = self.get_features_by_expression(layers[db.names.MEMBERS_T], db.names.T_ID_F, expression_members_features, with_attributes=True)
+        members_features = LADMData.get_features_by_expression(layers[db.names.MEMBERS_T], db.names.T_ID_F, expression_members_features, with_attributes=True)
 
         dict_group_party_parties = dict()  # {id_group_party: [id_party1, id_party2]}
         for members_feature in members_features:
@@ -564,7 +564,7 @@ class LADMData(QObject):
         party_t_ids = list(set(party_t_ids))
 
         expression_party_features = QgsExpression("{} IN ({})".format(db.names.T_ID_F, ",".join([str(id) for id in party_t_ids])))
-        party_features = self.get_features_by_expression(layers[db.names.LC_PARTY_T], db.names.T_ID_F, expression_party_features, with_attributes=True)
+        party_features = LADMData.get_features_by_expression(layers[db.names.LC_PARTY_T], db.names.T_ID_F, expression_party_features, with_attributes=True)
 
         dict_parties = dict()  # {id_party: {tipo_documento: CC, documento_identidad: 123456, nombre: Pepito}}
         for party_feature in party_features:
@@ -617,13 +617,14 @@ class LADMData(QObject):
             field_name = list(search_criterion.keys())[0]
             field_value = list(search_criterion.values())[0]
             expression = QgsExpression("{}='{}'".format(field_name, field_value))
-            features = self.get_features_by_expression(layer, t_id_name, expression=expression, with_attributes=with_attributes, with_geometry=with_geometry)
+            features = LADMData.get_features_by_expression(layer, t_id_name, expression=expression, with_attributes=with_attributes, with_geometry=with_geometry)
         else:
-            features = self.get_features_by_expression(layer, t_id_name, with_attributes=with_attributes, with_geometry=with_geometry)
+            features = LADMData.get_features_by_expression(layer, t_id_name, with_attributes=with_attributes, with_geometry=with_geometry)
 
         return features
 
-    def get_features_by_expression(self, layer, t_id_name, expression=None, with_attributes=False, with_geometry=False):
+    @staticmethod
+    def get_features_by_expression(layer, t_id_name, expression=None, with_attributes=False, with_geometry=False):
         # TODO: It should be possible to pass a list of attributes to retrieve
 
         if expression is None:

@@ -1,12 +1,10 @@
 expected_result_ladm_legal_query = {
     "lc_terreno": [
         {
-            "id": 1432,
             "attributes": {
                 "Área [m2]": 4934.3,
                 "lc_predio": [
                     {
-                        "id": 1007,
                         "attributes": {
                             "Nombre": "El Pomarroso",
                             "NUPRE": "0033",
@@ -16,15 +14,13 @@ expected_result_ladm_legal_query = {
                             "Número predial anterior": "25394000000230073000",
                             "lc_derecho": [
                                 {
-                                    "id": 2970,
                                     "attributes": {
                                         "Tipo de derecho": "Dominio",
                                         "Descripción": "1918_descripcion",
                                         "lc_fuenteadministrativa": [
                                             {
-                                                "id": 677,
                                                 "attributes": {
-                                                    "Tipo de fuente administrativa": "Escritura pública",
+                                                    "Tipo de fuente administrativa": "(Documento público) Escritura pública",
                                                     "Ente emisor": None,
                                                     "Estado disponibilidad": "Disponible",
                                                     "Archivo fuente": "http://portal.proadmintierra.info:18888/filemanager/v1/file/Local?id=default.2019.2.18.10h18miMzK9"
@@ -33,7 +29,6 @@ expected_result_ladm_legal_query = {
                                         ],
                                         "lc_interesado": [
                                             {
-                                                "id": 731,
                                                 "attributes": {
                                                     "Tipo": "Persona natural",
                                                     "Cédula de ciudadanía": "4",
@@ -41,7 +36,6 @@ expected_result_ladm_legal_query = {
                                                     "Género": None,
                                                     "lc_interesadocontacto": [
                                                         {
-                                                            "id": 754,
                                                             "attributes": {
                                                                 "Teléfono 1": "111_telefono1",
                                                                 "Teléfono 2": "111_telefono2",
@@ -50,7 +44,6 @@ expected_result_ladm_legal_query = {
                                                             }
                                                         },
                                                         {
-                                                            "id": 755,
                                                             "attributes": {
                                                                 "Teléfono 1": "111_2_telefono1",
                                                                 "Teléfono 2": "111_2_telefono2",
@@ -68,15 +61,13 @@ expected_result_ladm_legal_query = {
                                     }
                                 },
                                 {
-                                    "id": 2971,
                                     "attributes": {
                                         "Tipo de derecho": "Dominio",
                                         "Descripción": "1895_descripcion",
                                         "lc_fuenteadministrativa": [
                                             {
-                                                "id": 677,
                                                 "attributes": {
-                                                    "Tipo de fuente administrativa": "Escritura pública",
+                                                    "Tipo de fuente administrativa": "(Documento público) Escritura pública",
                                                     "Ente emisor": None,
                                                     "Estado disponibilidad": "Disponible",
                                                     "Archivo fuente": "http://portal.proadmintierra.info:18888/filemanager/v1/file/Local?id=default.2019.2.18.10h18miMzK9"
@@ -85,7 +76,6 @@ expected_result_ladm_legal_query = {
                                         ],
                                         "lc_interesado": [
                                             {
-                                                "id": 731,
                                                 "attributes": {
                                                     "Tipo": "Persona natural",
                                                     "Cédula de ciudadanía": "4",
@@ -93,7 +83,6 @@ expected_result_ladm_legal_query = {
                                                     "Género": None,
                                                     "lc_interesadocontacto": [
                                                         {
-                                                            "id": 754,
                                                             "attributes": {
                                                                 "Teléfono 1": "111_telefono1",
                                                                 "Teléfono 2": "111_telefono2",
@@ -102,7 +91,6 @@ expected_result_ladm_legal_query = {
                                                             }
                                                         },
                                                         {
-                                                            "id": 755,
                                                             "attributes": {
                                                                 "Teléfono 1": "111_2_telefono1",
                                                                 "Teléfono 2": "111_2_telefono2",
@@ -122,15 +110,13 @@ expected_result_ladm_legal_query = {
                             ],
                             "lc_restriccion": [
                                 {
-                                    "id": 1406,
                                     "attributes": {
                                         "Tipo de restricción": "(Servidumbre) Acueducto",
                                         "Descripción": "descripcion",
                                         "lc_fuenteadministrativa": [
                                             {
-                                                "id": 635,
                                                 "attributes": {
-                                                    "Tipo de fuente administrativa": "Escritura pública",
+                                                    "Tipo de fuente administrativa": "(Documento público) Escritura pública",
                                                     "Ente emisor": None,
                                                     "Estado disponibilidad": "Disponible",
                                                     "Archivo fuente": "http://portal.proadmintierra.info:18888/filemanager/v1/file/Local?id=default.2019.2.18.10h18m064uu"
@@ -142,13 +128,11 @@ expected_result_ladm_legal_query = {
                                         ],
                                         "lc_agrupacioninteresados": [
                                             {
-                                                "id": 592,
                                                 "attributes": {
                                                     "Tipo de agrupación de interesados": "Grupo civil",
                                                     "Nombre": "2",
                                                     "lc_interesado": [
                                                         {
-                                                            "id": 739,
                                                             "attributes": {
                                                                 "Tipo": "Persona natural",
                                                                 "Cédula de ciudadanía": "1",
@@ -156,7 +140,6 @@ expected_result_ladm_legal_query = {
                                                                 "Género": None,
                                                                 "lc_interesadocontacto": [
                                                                     {
-                                                                        "id": 753,
                                                                         "attributes": {
                                                                             "Teléfono 1": "1_2_telefono1",
                                                                             "Teléfono 2": "1_2_telefono2",
@@ -165,7 +148,6 @@ expected_result_ladm_legal_query = {
                                                                         }
                                                                     },
                                                                     {
-                                                                        "id": 756,
                                                                         "attributes": {
                                                                             "Teléfono 1": "1_telefono1",
                                                                             "Teléfono 2": "1_telefono2",
@@ -178,7 +160,6 @@ expected_result_ladm_legal_query = {
                                                             }
                                                         },
                                                         {
-                                                            "id": 741,
                                                             "attributes": {
                                                                 "Tipo": "Persona natural",
                                                                 "Cédula de ciudadanía": "36",
@@ -191,7 +172,6 @@ expected_result_ladm_legal_query = {
                                                             }
                                                         },
                                                         {
-                                                            "id": 743,
                                                             "attributes": {
                                                                 "Tipo": "Persona natural",
                                                                 "Cédula de ciudadanía": "14",

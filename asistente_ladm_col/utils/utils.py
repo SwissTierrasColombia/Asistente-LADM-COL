@@ -28,7 +28,8 @@ import webbrowser
 import qgis.utils
 from qgis.PyQt.QtCore import (QObject,
                               QCoreApplication)
-from qgis.core import QgsFeatureRequest
+from qgis.core import (QgsFeatureRequest,
+                       QgsExpression)
 
 from asistente_ladm_col.config.general_config import (DEPENDENCIES_BASE_PATH,
                                                       MODULE_HELP_MAPPING,

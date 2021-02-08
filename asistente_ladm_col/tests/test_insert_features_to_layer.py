@@ -43,7 +43,7 @@ class TestInsertFeaturesToLayer(unittest.TestCase):
         # Config settings
         QSettings().setValue('Asistente-LADM-COL/automatic_values/automatic_values_in_batch_mode', True)
 
-        source_layer_path = get_test_copy_path("geopackage/insert_features_to_layer.gpkg") + "|layername=a"
+        source_layer_path = get_test_copy_path("db/ladm/gpkg/insert_features_to_layer.gpkg") + "|layername=a"
 
         layer_cadastral_parcel = self.app.core.get_layer(self.db, self.db.names.GC_PARCEL_T, load=True)
         # self.set_automatic_fields(db, layer, layer_name)  # Since this is the first get_layer(), no need to call it
@@ -70,7 +70,7 @@ class TestInsertFeaturesToLayer(unittest.TestCase):
         QSettings().setValue('Asistente-LADM-COL/automatic_values/automatic_values_in_batch_mode', True)
         QSettings().setValue('Asistente-LADM-COL/automatic_values/t_ili_tid_enabled', False)
 
-        source_layer_path = get_test_copy_path("geopackage/insert_features_to_layer.gpkg") + "|layername=a"
+        source_layer_path = get_test_copy_path("db/ladm/gpkg/insert_features_to_layer.gpkg") + "|layername=a"
 
         layer_cadastral_parcel = self.app.core.get_layer(self.db, self.db.names.GC_PARCEL_T, load=True)
         self.app.core.set_automatic_fields(self.db, layer_cadastral_parcel, self.db.names.GC_PARCEL_T, self.app.core.get_active_models_per_db(self.db))
@@ -96,7 +96,7 @@ class TestInsertFeaturesToLayer(unittest.TestCase):
         # Config settings
         QSettings().setValue('Asistente-LADM-COL/automatic_values/automatic_values_in_batch_mode', False)
 
-        source_layer_path = get_test_copy_path("geopackage/insert_features_to_layer.gpkg") + "|layername=a"
+        source_layer_path = get_test_copy_path("db/ladm/gpkg/insert_features_to_layer.gpkg") + "|layername=a"
 
         layer_cadastral_parcel = self.app.core.get_layer(self.db, self.db.names.GC_PARCEL_T, load=True)
         self.app.core.set_automatic_fields(self.db, layer_cadastral_parcel, self.db.names.GC_PARCEL_T, self.app.core.get_active_models_per_db(self.db))

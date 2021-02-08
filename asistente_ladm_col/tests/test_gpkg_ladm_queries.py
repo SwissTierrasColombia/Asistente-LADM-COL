@@ -8,6 +8,7 @@ from qgis.testing import (unittest,
 start_app() # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.tests.utils import (get_copy_gpkg_conn,
+                                            get_field_values_by_another_field,
                                             standardize_query_results,
                                             import_asistente_ladm_col,
                                             import_qgis_model_baker,
@@ -48,12 +49,15 @@ class TestGPKGLADMQueries(unittest.TestCase):
         QgsExpression.registerFunction(get_domain_code_from_value)
         QgsExpression.registerFunction(get_domain_value_from_code)
 
-        # Standardize query results: id's are removed because it depends on the database test data
-        standardize_query_results(expected_result_ladm_basic_query)
-        standardize_query_results(expected_result_ladm_economic_query)
-        standardize_query_results(expected_result_ladm_legal_query)
-        standardize_query_results(expected_result_ladm_physical_query)
-        standardize_query_results(expected_result_ladm_property_record_card_query)
+        # Plots to be consulted are defined
+        layers = {
+            cls.db_gpkg.names.LC_PLOT_T: None
+        }
+        cls.plugin.app.core.get_layers(cls.db_gpkg, layers, load=True)
+        cls.test_plot_t_ids = get_field_values_by_another_field(layers[cls.db_gpkg.names.LC_PLOT_T],
+                                                                cls.db_gpkg.names.T_ILI_TID_F,
+                                                                ['fc68c492-fad5-4a7b-98a3-6104e84a4ec4'],
+                                                                cls.db_gpkg.names.T_ID_F)
 
     def test_ladm_queries_igac_basic_query(self):
         print("\nINFO: Validating basic info query from IGAC...")
@@ -62,7 +66,7 @@ class TestGPKGLADMQueries(unittest.TestCase):
         kwargs = {'plot_t_ids': [-1]}
         self.assertEqual(self.ladm_queries.get_igac_basic_info(self.db_gpkg, **kwargs), {'lc_terreno': []})
 
-        kwargs = {'plot_t_ids': [886]}
+        kwargs = {'plot_t_ids': self.test_plot_t_ids}
         result = standardize_query_results(self.ladm_queries.get_igac_basic_info(self.db_gpkg, **kwargs))
         self.assertTrue(expected_result_ladm_basic_query == result, 'The result obtained is not as expected: {} {}'.format(expected_result_ladm_basic_query, result))
 
@@ -73,7 +77,7 @@ class TestGPKGLADMQueries(unittest.TestCase):
         kwargs = {'plot_t_ids': [-1]}
         self.assertEqual(self.ladm_queries.get_igac_legal_info(self.db_gpkg, **kwargs), {'lc_terreno': []})
 
-        kwargs = {'plot_t_ids': [886]}
+        kwargs = {'plot_t_ids': self.test_plot_t_ids}
         result = standardize_query_results(self.ladm_queries.get_igac_legal_info(self.db_gpkg, **kwargs))
         self.assertTrue(expected_result_ladm_legal_query == result, 'The result obtained is not as expected: {} {}'.format(expected_result_ladm_legal_query, result))
 
@@ -84,7 +88,7 @@ class TestGPKGLADMQueries(unittest.TestCase):
         kwargs = {'plot_t_ids': [-1]}
         self.assertEqual(self.ladm_queries.get_igac_property_record_card_info(self.db_gpkg, **kwargs), {'lc_terreno': []})
 
-        kwargs = {'plot_t_ids': [886]}
+        kwargs = {'plot_t_ids': self.test_plot_t_ids}
         result = standardize_query_results(self.ladm_queries.get_igac_property_record_card_info(self.db_gpkg, **kwargs))
         self.assertTrue(expected_result_ladm_property_record_card_query == result, 'The result obtained is not as expected: {} {}'.format(expected_result_ladm_property_record_card_query, result))
 
@@ -95,7 +99,7 @@ class TestGPKGLADMQueries(unittest.TestCase):
         kwargs = {'plot_t_ids': [-1]}
         self.assertEqual(self.ladm_queries.get_igac_physical_info(self.db_gpkg, **kwargs), {'lc_terreno': []})
 
-        kwargs = {'plot_t_ids': [886]}
+        kwargs = {'plot_t_ids': self.test_plot_t_ids}
         result = standardize_query_results(self.ladm_queries.get_igac_physical_info(self.db_gpkg, **kwargs))
         self.assertTrue(expected_result_ladm_physical_query == result, 'The result obtained is not as expected: {} {}'.format(expected_result_ladm_physical_query, result))
 
@@ -106,7 +110,7 @@ class TestGPKGLADMQueries(unittest.TestCase):
         kwargs = {'plot_t_ids': [-1]}
         self.assertEqual(self.ladm_queries.get_igac_economic_info(self.db_gpkg, **kwargs), {'lc_terreno': []})
 
-        kwargs = {'plot_t_ids': [886]}
+        kwargs = {'plot_t_ids': self.test_plot_t_ids}
         result = standardize_query_results(self.ladm_queries.get_igac_economic_info(self.db_gpkg, **kwargs))
         self.assertTrue(expected_result_ladm_economic_query == result, 'The result obtained is not as expected: {} {}'.format(expected_result_ladm_economic_query, result))
 

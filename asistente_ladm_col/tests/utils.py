@@ -26,6 +26,7 @@ import psycopg2
 import pyodbc
 import qgis.utils
 from qgis.core import (QgsApplication,
+                       QgsExpression,
                        edit)
 from qgis.analysis import QgsNativeAlgorithms
 
@@ -33,6 +34,7 @@ from asistente_ladm_col.config.change_detection_config import PLOT_GEOMETRY_KEY
 from asistente_ladm_col.config.refactor_fields_mappings import RefactorFieldsMappings
 from asistente_ladm_col.asistente_ladm_col_plugin import AsistenteLADMCOLPlugin
 from asistente_ladm_col.config.general_config import FIELD_MAPPING_PARAMETER
+from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 
 QgsApplication.setPrefixPath('/usr', True)
 qgs = QgsApplication([], False)
@@ -85,7 +87,7 @@ def get_gpkg_conn(gpkg_schema_name):
     db = None
     if gpkg_schema_name in TEST_SCHEMAS_MAPPING:
         gpkg_file_name = TEST_SCHEMAS_MAPPING[gpkg_schema_name]
-        gpkg_path = get_test_path('geopackage/{gpkg_file_name}'.format(gpkg_file_name=gpkg_file_name))
+        gpkg_path = get_test_path('db/{gpkg_file_name}'.format(gpkg_file_name=gpkg_file_name))
         dict_conn['dbfile'] = gpkg_path
         db = asistente_ladm_col_plugin.conn_manager.get_opened_db_connector_for_tests('gpkg', dict_conn)
 
@@ -96,7 +98,7 @@ def get_copy_gpkg_conn(gpkg_schema_name):
     db = None
     if gpkg_schema_name in TEST_SCHEMAS_MAPPING:
         gpkg_file_name = TEST_SCHEMAS_MAPPING[gpkg_schema_name]
-        gpkg_path = get_test_copy_path('geopackage/{gpkg_file_name}'.format(gpkg_file_name=gpkg_file_name))
+        gpkg_path = get_test_copy_path('db/{gpkg_file_name}'.format(gpkg_file_name=gpkg_file_name))
         dict_conn['dbfile'] = gpkg_path
         db = asistente_ladm_col_plugin.conn_manager.get_opened_db_connector_for_tests('gpkg', dict_conn)
 
@@ -252,17 +254,17 @@ def delete_features(layer):
         layer.deleteFeatures(list_ids)
 
 
-def standardize_query_results(result):
+def standardize_query_results(result, key_to_remove='id'):
     if isinstance(result, (list, dict)):
         if isinstance(result, dict):
-            result.pop('id', None)
+            result.pop(key_to_remove, None)
             for item in result:
-                standardize_query_results(result[item])
+                standardize_query_results(result[item], key_to_remove)
 
         elif isinstance(result, list):
             for item in result:
                 if isinstance(item, dict):
-                    standardize_query_results(item)
+                    standardize_query_results(item, key_to_remove)
     return result
 
 
@@ -295,8 +297,7 @@ def reset_db_mssql(schema):
 
 def restore_schema_mssql(schema):
     sql_cmd = "/opt/mssql-tools/bin/sqlcmd -S mssql,1433 -U  sa -P '<YourStrong!Passw0rd>' -d {} -I -i {} -r0 > /dev/null 2>&1"
-    dir_file = get_test_path("sql")
-    sql_file = dir_file + "/{}_mssql.sql".format(schema)
+    sql_file = os.path.join(get_test_path("db"), TEST_SCHEMAS_MAPPING['{}_mssql'.format(schema)])
 
     command = sql_cmd.format(schema, sql_file)
     print(command)
@@ -345,3 +346,24 @@ def reproject_to_ctm12(layer):
         return res['OUTPUT']
 
     return layer
+
+def get_field_values_by_another_field(layer, field, field_values, expected_field):
+    """
+    Returns the fields associated with a field based on another field.
+    :param layer: QgsMapLayer
+    :param field: Field name, it must be a unique field in the table
+    :param field_values: List of values to use for filtering the layer by field name
+    :param expected_field: name of the field from which the values are expected
+    :return: List of values associated with the expected field. Order is preserved
+    """
+    expression = QgsExpression('"{field}" in ({field_values})'.format(field=field, field_values=', '.join("'{}'".format(v) for v in field_values)))
+    features = LADMData.get_features_by_expression(layer, expected_field, expression=expression, with_attributes=False)
+
+    expected_field_values = []
+    # Same order must be preserved in the returned array
+    for field_value in field_values:
+        for feature in features:
+            if feature[field] == field_value:
+                expected_field_values.append(feature[expected_field])
+                break
+    return expected_field_values

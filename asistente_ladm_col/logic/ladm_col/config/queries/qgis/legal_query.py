@@ -20,7 +20,7 @@ def get_igac_legal_query(names, ladm_units):
 
     lc_administrative_source_fields = [
         DomainOwnField(names.LC_ADMINISTRATIVE_SOURCE_T_TYPE_F, "Tipo de fuente administrativa",
-                       names.LC_ADMINISTRATIVE_SOURCE_TYPE_D),
+                       names.COL_ADMINISTRATIVE_SOURCE_TYPE_D),
         OwnField(names.LC_ADMINISTRATIVE_SOURCE_T_EMITTING_ENTITY_F, "Ente emisor"),
         DomainOwnField(names.COL_SOURCE_T_AVAILABILITY_STATUS_F, "Estado disponibilidad",
                        names.COL_AVAILABILITY_TYPE_D),
