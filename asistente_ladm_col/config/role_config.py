@@ -101,6 +101,8 @@ field_admin_role_gui[TOOLBAR] = [{  # Overwrite list of toolbars
         ACTION_LOAD_LAYERS,
         ACTION_INTEGRATE_SUPPLIES,
         SEPARATOR,
+        ACTION_MOVE_NODES,
+        SEPARATOR,
         ACTION_CHECK_QUALITY_FDC_RULES,
         ACTION_PARCEL_QUERY,
         SEPARATOR,
@@ -125,6 +127,8 @@ field_coordinator_role_gui[TOOLBAR] = [{  # Overwrite list of toolbars
     ACTIONS: [
         ACTION_LOAD_LAYERS,
         ACTION_INTEGRATE_SUPPLIES,
+        SEPARATOR,
+        ACTION_MOVE_NODES,
         SEPARATOR,
         ACTION_CHECK_QUALITY_FDC_RULES,
         SEPARATOR,
@@ -345,7 +349,8 @@ def get_role_config():
                 ACTION_SYNCHRONIZE_FIELD_DATA,
                 ACTION_INTEGRATE_SUPPLIES,
                 ACTION_PARCEL_QUERY,
-                ACTION_CHECK_QUALITY_FDC_RULES],
+                ACTION_CHECK_QUALITY_FDC_RULES,
+                ACTION_MOVE_NODES],
             ROLE_QUALITY_RULES: [
                 EnumQualityRule.Polygon.OVERLAPS_IN_FDC_PLOTS
             ],
@@ -361,7 +366,8 @@ def get_role_config():
                 ACTION_EXPORT_DATA_FDC_COORDINATOR,
                 ACTION_ALLOCATE_PARCELS_FIELD_DATA_CAPTURE,
                 ACTION_SYNCHRONIZE_FIELD_DATA,
-                ACTION_CHECK_QUALITY_FDC_RULES],
+                ACTION_CHECK_QUALITY_FDC_RULES,
+                ACTION_MOVE_NODES],
             ROLE_QUALITY_RULES: [
                 EnumQualityRule.Polygon.OVERLAPS_IN_FDC_PLOTS
             ],

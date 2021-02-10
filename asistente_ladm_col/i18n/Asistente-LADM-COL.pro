@@ -99,6 +99,7 @@ SOURCES = ../__init__.py \
           ../gui/dialogs/dlg_log_quality.py \
           ../gui/dialogs/dlg_quality.py \
           ../gui/dialogs/dlg_settings.py \
+          ../gui/dialogs/dlg_topological_edition.py \
           ../gui/dialogs/dlg_upload_progress.py \
           ../gui/dialogs/dlg_welcome_screen.py \
           ../gui/field_data_capture/allocate_parcels_initial_panel.py \

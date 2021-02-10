@@ -1020,7 +1020,6 @@ class AsistenteLADMCOLPlugin(QObject):
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
-    @_survey_model_required
     def call_topological_editing(self, *args):
         self.app.enable_topological_editing(self.get_db_connection())
 

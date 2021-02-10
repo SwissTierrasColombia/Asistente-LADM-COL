@@ -1,8 +1,7 @@
+from qgis.PyQt.QtGui import QIcon
 from qgis.core import NULL
 
-from asistente_ladm_col.config.general_config import PLUGINS_DIR
 from asistente_ladm_col.config.ladm_names import LADMNames
-from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
 from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 
 
@@ -731,3 +730,49 @@ class LayerConfig:
             #names.LC_PARCEL_T: [names.LC_PARCEL_T_DEPARTMENT_F,
             #                    names.LC_PARCEL_T_MUNICIPALITY_F]  # list of fields of the layer to block its edition
         }
+
+    @staticmethod
+    def get_topological_edition_configuration(names, models):
+        plots = list()
+        buildings = list()
+        fdc_plots = list()
+        fdc_buildings = list()
+        icons = dict()
+
+        for model_key in models:
+            if model_key == LADMNames.SURVEY_MODEL_KEY:
+                plots = [
+                    names.LC_BOUNDARY_POINT_T,
+                    names.LC_BOUNDARY_T,
+                    names.LC_PLOT_T
+                ]
+                buildings = [
+                    names.LC_SURVEY_POINT_T,
+                    names.LC_BUILDING_T,
+                    names.LC_BUILDING_UNIT_T
+                ]
+                icons.update({
+                    names.LC_BOUNDARY_POINT_T: QIcon(":/Asistente-LADM-COL/resources/images/points.png"),
+                    names.LC_BOUNDARY_T: QIcon(":/Asistente-LADM-COL/resources/images/lines.png"),
+                    names.LC_PLOT_T: QIcon(":/Asistente-LADM-COL/resources/images/polygons.png"),
+                    names.LC_SURVEY_POINT_T: QIcon(":/Asistente-LADM-COL/resources/images/points.png"),
+                    names.LC_BUILDING_T: QIcon(":/Asistente-LADM-COL/resources/images/polygons.png"),
+                    names.LC_BUILDING_UNIT_T: QIcon(":/Asistente-LADM-COL/resources/images/polygons.png")
+                })
+            elif model_key == LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY:
+                fdc_plots = [
+                    names.FDC_BOUNDARY_POINT_T,
+                    names.FDC_PLOT_T
+                ]
+                fdc_buildings = [
+                    names.FDC_SURVEY_POINT_T,
+                    names.FDC_BUILDING_UNIT_T
+                ]
+                icons.update({
+                    names.FDC_BOUNDARY_POINT_T: QIcon(":/Asistente-LADM-COL/resources/images/points.png"),
+                    names.FDC_PLOT_T: QIcon(":/Asistente-LADM-COL/resources/images/polygons.png"),
+                    names.FDC_SURVEY_POINT_T: QIcon(":/Asistente-LADM-COL/resources/images/points.png"),
+                    names.FDC_BUILDING_UNIT_T: QIcon(":/Asistente-LADM-COL/resources/images/polygons.png")
+                })
+
+        return plots, buildings, fdc_plots, fdc_buildings, icons
