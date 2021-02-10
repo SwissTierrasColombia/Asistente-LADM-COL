@@ -1242,25 +1242,32 @@ class AsistenteLADMCOLPlugin(QObject):
 
         context = args[0]
 
-        # Get coordinator's basket (this call also updates all DB objects to use coordinator's t_basket)
-        db = self.get_db_connection()
-        controller = FDCAdminSynchronizationController(self.app.gui.iface, db, self.ladm_data)
-        msg_status = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Preparing coordinator's database to be exported...")
-        with ProcessWithStatus(msg_status):
-            res, basket_uuid, msg = controller.get_coordinator_basket(db)
+        reply = QMessageBox.question(self.main_window,
+                                     QCoreApplication.translate("AsistenteLADMCOLPlugin", "Warning"),
+                                     QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                                "You are about to alter the coordinator's database losing the allocation information. This is nonetheless required for exporting the XTF and sending it to the Administrator.\n\nAre you sure you want to proceed?"),
+                                     QMessageBox.Yes, QMessageBox.No)
 
-        if not res:
-            self.logger.warning_msg(__name__, msg)
-            return
+        if reply == QMessageBox.Yes:
+            # Get coordinator's basket (this call also updates all DB objects to use coordinator's t_basket)
+            db = self.get_db_connection()
+            controller = FDCAdminSynchronizationController(self.app.gui.iface, db, self.ladm_data)
+            msg_status = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Preparing coordinator's database to be exported...")
+            with ProcessWithStatus(msg_status):
+                res, basket_uuid, msg = controller.get_coordinator_basket(db)
 
-        dlg = DialogExportData(self.iface, self.conn_manager, context, parent=self.main_window)
-        if isinstance(context, TaskContext):
-            dlg.on_result.connect(context.get_slot_on_result())
+            if not res:
+                self.logger.warning_msg(__name__, msg)
+                return
 
-        dlg.set_baskets([basket_uuid])
-        self.logger.debug(__name__, "Basket ({}) set for exporting XTF data.".format(basket_uuid))
-        self.logger.info(__name__, "Export data dialog ({}) opened.".format(context.get_db_sources()[0]))
-        dlg.exec_()
+            dlg = DialogExportData(self.iface, self.conn_manager, context, parent=self.main_window)
+            if isinstance(context, TaskContext):
+                dlg.on_result.connect(context.get_slot_on_result())
+
+            dlg.set_baskets([basket_uuid])
+            self.logger.debug(__name__, "Basket ({}) set for exporting XTF data.".format(basket_uuid))
+            self.logger.info(__name__, "Export data dialog ({}) opened.".format(context.get_db_sources()[0]))
+            dlg.exec_()
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
