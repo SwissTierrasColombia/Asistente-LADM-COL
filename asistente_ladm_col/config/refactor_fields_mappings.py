@@ -388,6 +388,16 @@ class RefactorFieldsMappings:
                 {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16},
                 {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16}
             ]
+        elif layer_name == names.LC_BOUNDARY_T:
+            mapping = [
+                {'expression': '{}'.format(names.T_ILI_TID_F), 'length': -1, 'name': '{}'.format(names.T_ILI_TID_F), 'precision': -1, 'type': 10},
+                {'expression': 'coalesce( $length, 0)', 'length': 6, 'name': '{}'.format(names.LC_BOUNDARY_T_LENGTH_F), 'precision': 1, 'type': 6, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.COL_BFS_T_TEXTUAL_LOCATION_F), 'length': 255, 'name': '{}'.format(names.COL_BFS_T_TEXTUAL_LOCATION_F), 'precision': -1, 'type': 10},
+                {'expression': '"{}"'.format(names.OID_T_NAMESPACE_F), 'length': 255, 'name': '{}'.format(names.OID_T_NAMESPACE_F), 'precision': -1, 'type': 10, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.OID_T_LOCAL_ID_F), 'length': 255, 'name': '{}'.format(names.OID_T_LOCAL_ID_F), 'precision': -1, 'type': 10, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16, 'constraints': QgsFieldConstraints.ConstraintNotNull},
+                {'expression': '"{}"'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'length': -1, 'name': '{}'.format(names.VERSIONED_OBJECT_T_END_LIFESPAN_VERSION_F), 'precision': -1, 'type': 16}
+            ]
 
         # If the user wants to enable automatic fields...
         if QSettings().value('Asistente-LADM-COL/automatic_values/automatic_values_in_batch_mode', DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE, bool):

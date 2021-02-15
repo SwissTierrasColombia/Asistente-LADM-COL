@@ -17,18 +17,23 @@
  ***************************************************************************/
 """
 from qgis.PyQt.QtCore import (QCoreApplication,
-                              QObject,
-                              QSettings)
+                              Qt,
+                              QObject)
 from qgis.PyQt.QtWidgets import QMessageBox
 from qgis.core import (Qgis,
                        QgsProject,
+                       QgsExpression,
+                       edit,
                        QgsVectorLayerUtils)
 
 from asistente_ladm_col.config.enums import EnumLayerRegistryType
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.geometry import GeometryUtils
+from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
+from asistente_ladm_col.utils.qt_utils import OverrideCursor
 
+import processing
 
 class ToolBar(QObject):
 
@@ -41,22 +46,24 @@ class ToolBar(QObject):
 
     def build_boundary(self, db):
         QgsProject.instance().setAutoTransaction(False)
-        layer = self.app.core.get_ladm_layer_from_qgis(db, db.names.LC_BOUNDARY_T, EnumLayerRegistryType.IN_LAYER_TREE)
         use_selection = True
 
-        if layer is None:
-            self.logger.message_with_button_load_layer_emitted.emit(
-                QCoreApplication.translate("ToolBar", "First load the layer {} into QGIS!").format(db.names.LC_BOUNDARY_T),
-                QCoreApplication.translate("ToolBar", "Load layer {} now").format(db.names.LC_BOUNDARY_T), db.names.LC_BOUNDARY_T, Qgis.Warning)
-            return
-        else:
-            if layer.selectedFeatureCount() == 0:
+        with OverrideCursor(Qt.WaitCursor):
+            layers = {
+                db.names.LC_BOUNDARY_T: None,
+                db.names.POINT_BFS_T: None,
+                db.names.MORE_BFS_T: None,
+                db.names.LESS_BFS_T: None
+            }
+            self.app.core.get_layers(db, layers, load=True)
+
+            if layers[db.names.LC_BOUNDARY_T].selectedFeatureCount() == 0:
 
                 reply = QMessageBox.question(None,
                                              QCoreApplication.translate("ToolBar", "Continue?"),
                                              QCoreApplication.translate("ToolBar",
                                                                         "There are no selected boundaries. Do you want to use all the {} boundaries in the database?").format(
-                                                 layer.featureCount()),
+                                                 layers[db.names.LC_BOUNDARY_T].featureCount()),
                                              QMessageBox.Yes | QMessageBox.Cancel, QMessageBox.Cancel)
                 if reply == QMessageBox.Yes:
                     use_selection = False
@@ -64,37 +71,63 @@ class ToolBar(QObject):
                     self.logger.warning_msg(__name__, QCoreApplication.translate("ToolBar", "First select at least one boundary!"))
                     return
 
-        if use_selection:
-            new_boundary_geoms, boundaries_to_del_ids = self.geometry.fix_selected_boundaries(db.names, layer, db.names.T_ID_F)
-            num_boundaries = layer.selectedFeatureCount()
-        else:
-            new_boundary_geoms, boundaries_to_del_ids = self.geometry.fix_boundaries(layer, db.names.T_ID_F)
-            num_boundaries = layer.featureCount()
+            boundary_t_ids = list()
+            if use_selection:
+                boundary_t_ids = [f[db.names.T_ID_F] for f in layers[db.names.LC_BOUNDARY_T].selectedFeatures()]
+                num_boundaries = layers[db.names.LC_BOUNDARY_T].selectedFeatureCount()
+            else:
+                boundary_t_ids = [f[db.names.T_ID_F] for f in layers[db.names.LC_BOUNDARY_T].getFeatures()]
+                layers[db.names.LC_BOUNDARY_T].selectAll()
+                num_boundaries = layers[db.names.LC_BOUNDARY_T].featureCount()
 
-        if len(new_boundary_geoms) > 0:
-            layer.startEditing()  # Safe, even if layer is already on editing state
+            if boundary_t_ids:
+                boundary_topology_relation = {
+                    db.names.POINT_BFS_T: db.names.POINT_BFS_T_LC_BOUNDARY_F,
+                    db.names.MORE_BFS_T: db.names.MORE_BFS_T_LC_BOUNDARY_F,
+                    db.names.LESS_BFS_T: db.names.LESS_BFS_T_LC_BOUNDARY_F
+                }
 
-            # the boundaries that are to be replaced are removed
-            layer.deleteFeatures(boundaries_to_del_ids)
+                topology_affected_features = {
+                    db.names.POINT_BFS_T: 0,
+                    db.names.MORE_BFS_T: 0,
+                    db.names.LESS_BFS_T: 0
+                }
 
-            # Create features based on segment geometries
-            new_fix_boundary_features = list()
-            for boundary_geom in new_boundary_geoms:
-                feature = QgsVectorLayerUtils().createFeature(layer, boundary_geom)
+                for topology_table_name, topology_boundary_field in boundary_topology_relation.items():
+                    expression = QgsExpression('"{field}" in ({field_values})'.format(field=topology_boundary_field, field_values=', '.join("'{}'".format(v) for v in boundary_t_ids)))
+                    features = LADMData.get_features_by_expression(layers[topology_table_name], db.names.T_ID_F, expression=expression)
+                    select_ids_topology_table = [f.id() for f in features]
 
-                # TODO: Remove when local id and namespace are defined
-                feature.setAttribute(db.names.OID_T_LOCAL_ID_F, 1)
-                feature.setAttribute(db.names.OID_T_NAMESPACE_F, db.names.LC_BOUNDARY_T)
+                    # Number of records affected in each of the topology tables
+                    topology_affected_features[topology_table_name] = len(select_ids_topology_table)
 
-                new_fix_boundary_features.append(feature)
+                    if select_ids_topology_table:
+                        with edit(layers[topology_table_name]):
+                            layers[topology_table_name].deleteFeatures(select_ids_topology_table)
 
-            layer.addFeatures(new_fix_boundary_features)
-            self.logger.info_msg(__name__, QCoreApplication.translate("ToolBar",
-                                           "{} feature(s) was(were) analyzed generating {} boundary(ies)!").format(
-                    num_boundaries, len(new_fix_boundary_features)))
-            self.iface.mapCanvas().refresh()
-        else:
-            self.logger.info_msg(__name__, QCoreApplication.translate("ToolBar", "There are no boundaries to build."))
+                selected_boundaries_layer = processing.run("native:saveselectedfeatures", {'INPUT': layers[db.names.LC_BOUNDARY_T], 'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
+                build_boundaries_layer = self.geometry.build_boundaries(selected_boundaries_layer)
+
+                with edit(layers[db.names.LC_BOUNDARY_T]):
+                    layers[db.names.LC_BOUNDARY_T].deleteSelectedFeatures()
+
+                self.app.core.run_etl_model_in_backgroud_mode(db, build_boundaries_layer, db.names.LC_BOUNDARY_T)
+
+                self.logger.info_msg(__name__, QCoreApplication.translate("ToolBar",
+                                                                          "{} feature(s) was(were) analyzed generating {} boundary(ies)!").format(num_boundaries, build_boundaries_layer.featureCount()))
+                self.iface.mapCanvas().refresh()
+
+                # topology tables are recalculated with the new boundaries
+                if topology_affected_features[db.names.POINT_BFS_T]:
+                    # it is not possible to use the features selected by the user because they have been removed
+                    self.fill_topology_table_pointbfs(db, False)
+
+                if topology_affected_features[db.names.MORE_BFS_T] + topology_affected_features[db.names.LESS_BFS_T] > 0:
+                    # it is not possible to use the features selected by the user because they have been removed
+                    self.fill_topology_tables_morebfs_less(db, False)
+
+            else:
+                self.logger.info_msg(__name__, QCoreApplication.translate("ToolBar", "There are no boundaries to build."))
 
     def fill_topology_table_pointbfs(self, db, use_selection=True):
         layers = {

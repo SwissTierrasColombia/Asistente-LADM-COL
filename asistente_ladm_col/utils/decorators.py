@@ -166,6 +166,19 @@ def _qgis_model_baker_required(func_to_decorate):
 
     return decorated_function
 
+def _grass7_required(func_to_decorate):
+    @wraps(func_to_decorate)
+    def decorated_function(*args, **kwargs):
+        try:
+            import processing
+            grass7 = processing.algs.grass7.Grass7Utils.Grass7Utils
+            print(grass7.installedVersion())
+            return func_to_decorate(*args, **kwargs)
+        except AttributeError:
+            msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "GRASS not found.")
+            Logger().warning(__name__, msg)
+    return decorated_function
+
 def _activate_processing_plugin(func_to_decorate):
     @wraps(func_to_decorate)
     def decorated_function(*args, **kwargs):
