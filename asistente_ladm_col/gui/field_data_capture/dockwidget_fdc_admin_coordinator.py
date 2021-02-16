@@ -40,7 +40,11 @@ class DockWidgetFDCAdminCoordinator(BaseDockWidgetFDC):
 
     def _initialize_allocate_initial_panel(self):
         if not self.add_allocation_layers():
-            return False
+            return False, QCoreApplication.translate("DockWidgetFDCAdminCoordinator", "A layer could not be found!")
+
+        res, msg = self._allocation_controller.check_prerequisites()
+        if not res:
+            return res, msg
 
         self.allocate_panel = AllocateParcelsAdminInitialPanelWidget(self, self._allocation_controller)
         self.allocate_panel.allocate_parcels_to_receiver_panel_requested.connect(self.show_allocate_parcels_to_receiver_panel)
@@ -50,11 +54,11 @@ class DockWidgetFDCAdminCoordinator(BaseDockWidgetFDC):
         self.allocate_panel.fill_data()
         self.setWindowTitle(QCoreApplication.translate("DockWidgetFDCAdminCoordinator", "Allocate parcels Admin-Coordinator"))
 
-        return True
+        return True, ""
 
     def _initialize_synchronize_initial_panel(self):
         if not self.add_synchronization_layers():
-            return False
+            return False, QCoreApplication.translate("DockWidgetFDCAdminCoordinator", "A layer could not be found!")
 
         self.synchronize_panel = SynchronizeDataAdminInitialPanelWidget(self,
                                                                         self._synchronization_controller,
@@ -62,7 +66,7 @@ class DockWidgetFDCAdminCoordinator(BaseDockWidgetFDC):
         self.widget.setMainPanel(self.synchronize_panel)
         self.setWindowTitle(QCoreApplication.translate("DockWidgetFDCAdminCoordinator", "Synchronize data from coordinator"))
 
-        return True
+        return True, ""
 
     def _get_receivers_panel(self):
         return ConfigureCoordinatorsPanelWidget(self, self._allocation_controller)

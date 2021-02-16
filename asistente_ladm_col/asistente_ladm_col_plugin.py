@@ -1006,9 +1006,12 @@ class AsistenteLADMCOLPlugin(QObject):
                                                                            self.ladm_data,
                                                                            allocate_mode=allocate)
 
-        self.gui_builder.register_dock_widget(DOCK_WIDGET_FIELD_DATA_CAPTURE, dock_widget_field_data_capture)
-        self.conn_manager.db_connection_changed.connect(dock_widget_field_data_capture.update_db_connection)
-        self.app.gui.add_tabified_dock_widget(Qt.RightDockWidgetArea, dock_widget_field_data_capture)
+        if dock_widget_field_data_capture.prerequisites_met:
+            self.gui_builder.register_dock_widget(DOCK_WIDGET_FIELD_DATA_CAPTURE, dock_widget_field_data_capture)
+            self.conn_manager.db_connection_changed.connect(dock_widget_field_data_capture.update_db_connection)
+            self.app.gui.add_tabified_dock_widget(Qt.RightDockWidgetArea, dock_widget_field_data_capture)
+        else:
+            dock_widget_field_data_capture = None
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required

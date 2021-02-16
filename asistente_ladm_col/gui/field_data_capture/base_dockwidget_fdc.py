@@ -55,14 +55,14 @@ class BaseDockWidgetFDC(QgsDockWidget, DOCKWIDGET_UI):
         if allocate_mode:
             self._allocation_controller = self._get_allocation_controller(iface, ladm_data)
             self._allocation_controller.field_data_capture_layer_removed.connect(self.layer_removed)
-            res = self._initialize_allocate_initial_panel()
+            self.prerequisites_met, msg = self._initialize_allocate_initial_panel()
         else:  # Synchronize mode
             self._synchronization_controller = self._get_synchronization_controller(iface, ladm_data)
             self._synchronization_controller.field_data_capture_layer_removed.connect(self.layer_removed)
-            res = self._initialize_synchronize_initial_panel()
+            self.prerequisites_met, msg = self._initialize_synchronize_initial_panel()
 
-        if not res:
-            self.logger.warning(__name__, "The FDC dockwidget couldn't be initialized properly because a layer could not be found!")
+        if not self.prerequisites_met:
+            self.logger.warning_msg(__name__, msg)
 
     def _get_allocation_controller(self, iface, ladm_data):
         raise NotImplementedError

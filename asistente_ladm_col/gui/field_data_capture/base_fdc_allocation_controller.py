@@ -117,6 +117,21 @@ class BaseFDCAllocationController(QObject):
 
         return True
 
+    def check_prerequisites(self):
+        #  Check that parcel has no NULLs in parcel number field, which is used as base for allocating parcels
+        parcel_layer = self._layers[self._db.names.FDC_PARCEL_T]
+
+        features = self._ladm_data.get_features_by_expression(parcel_layer,
+                                                              self._db.names.T_ID_F,
+                                                              expression="{} IS NULL".format(
+                                                                  self._db.names.FDC_PARCEL_T_PARCEL_NUMBER_F))
+        if features:
+            return False, QCoreApplication.translate("BaseFDCAllocationController",
+                                                     "There are parcels with a NULL value in the parcel number. The allocation depends on parcel numbers, so fill all parcel numbers before opening the parcel allocation.")
+
+        return True, ""
+
+
     def get_parcel_receiver_data(self):
         """
         Obtain parcel-receiver pairs (if no receiver is associated with the parcel, just return None in that field)

@@ -633,6 +633,8 @@ class LADMData(QObject):
         if expression is None:
             request = QgsFeatureRequest()
         else:
+            if isinstance(expression, str):
+                expression = QgsExpression(expression)
             request = QgsFeatureRequest(expression)
 
         if not with_geometry:
