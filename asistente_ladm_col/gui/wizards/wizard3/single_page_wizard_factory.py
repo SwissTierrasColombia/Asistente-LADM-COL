@@ -10,14 +10,16 @@ from asistente_ladm_col import Logger
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.general_config import WIZARD_UI, WIZARD_FEATURE_NAME, WIZARD_TOOL_NAME, \
     WIZARD_EDITING_LAYER_NAME, WIZARD_LAYERS, WIZARD_READ_ONLY_FIELDS, WIZARD_HELP, WIZARD_HELP_PAGES, WIZARD_HELP1, \
-    WIZARD_QSETTINGS, WIZARD_QSETTINGS_LOAD_DATA_TYPE, WIZARD_MAP_LAYER_PROXY_MODEL
+    WIZARD_QSETTINGS, WIZARD_QSETTINGS_LOAD_DATA_TYPE, WIZARD_MAP_LAYER_PROXY_MODEL, WIZARD_STRINGS
 from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.config.translation_strings import TranslatableConfigStrings
+from asistente_ladm_col.gui.wizards.wizard_pages.logic import Logic
+from asistente_ladm_col.gui.wizards.wizard_pages.select_source import SelectSource
 from asistente_ladm_col.utils.ui import load_ui
 from asistente_ladm_col.utils.utils import show_plugin_help
 
 
-class SinglePageWizardFactory: # (QWizard):
+class SinglePageWizardFactory(QWizard):
 
     update_wizard_is_open_flag = pyqtSignal(bool)
 
@@ -34,14 +36,18 @@ class SinglePageWizardFactory: # (QWizard):
         self.names = self._db.names
         self.help_strings = HelpStrings()
         self.translatable_config_strings = TranslatableConfigStrings()
-        load_ui(self.wizard_config[WIZARD_UI], self)
+        # load_ui(self.wizard_config[WIZARD_UI], self)
 
         self.WIZARD_FEATURE_NAME = self.wizard_config[WIZARD_FEATURE_NAME]
         self.WIZARD_TOOL_NAME = self.wizard_config[WIZARD_TOOL_NAME]
         self.EDITING_LAYER_NAME = self.wizard_config[WIZARD_EDITING_LAYER_NAME]
         self._layers = self.wizard_config[WIZARD_LAYERS]
+
+        self.logic = Logic(self.app, db, self._layers, wizard_settings)
+
         self.set_ready_only_field()
 
+        self.wizardPage1 = None
         self.init_gui()
 
     # 1
@@ -53,49 +59,43 @@ class SinglePageWizardFactory: # (QWizard):
 
     # 1
     def init_gui(self):
+        # it creates the page (select source)
+        self.wizardPage1 = SelectSource(self.logic.get_field_mappings_file_names(),
+                                        self.logic.get_filters(), self.wizard_config[WIZARD_STRINGS])
+        self.wizardPage1.option_changed.connect(self.adjust_page_1_controls)
         self.restore_settings()
-        self.rad_create_manually.toggled.connect(self.adjust_page_1_controls)
-        self.adjust_page_1_controls()
+        self.wizardPage1.controls_changed()
 
         self.button(QWizard.FinishButton).clicked.connect(self.finished_dialog)
         self.button(QWizard.HelpButton).clicked.connect(self.show_help)
         self.rejected.connect(self.close_wizard)
-        self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.Filter(self.wizard_config[WIZARD_MAP_LAYER_PROXY_MODEL]))
 
-    # 2 init_gui
+        self.addPage(self.wizardPage1)
+
+    # (absWizardFactory)
     def restore_settings(self):
         settings = QSettings()
 
         load_data_type = settings.value(self.wizard_config[WIZARD_QSETTINGS][WIZARD_QSETTINGS_LOAD_DATA_TYPE]) or 'create_manually'
         if load_data_type == 'refactor':
-            self.rad_refactor.setChecked(True)
+            self.wizardPage1.enabled_refactor = True
         else:
-            self.rad_create_manually.setChecked(True)
+            self.wizardPage1.enabled_create_manually = True
 
     # 2 init_gui
     def adjust_page_1_controls(self):
-        self.cbo_mapping.clear()
-        self.cbo_mapping.addItem("")
-        self.cbo_mapping.addItems(self.app.core.get_field_mappings_file_names(self.EDITING_LAYER_NAME))
-
-        if self.rad_refactor.isChecked():
-            self.lbl_refactor_source.setEnabled(True)
-            self.mMapLayerComboBox.setEnabled(True)
-            self.lbl_field_mapping.setEnabled(True)
-            self.cbo_mapping.setEnabled(True)
+        finish_button_text = ''
+        if self.wizardPage1.enabled_refactor:
             finish_button_text = QCoreApplication.translate("WizardTranslations", "Import")
-            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(self._db, self._layers[self.EDITING_LAYER_NAME]))
-        elif self.rad_create_manually.isChecked():
-            self.lbl_refactor_source.setEnabled(False)
-            self.mMapLayerComboBox.setEnabled(False)
-            self.lbl_field_mapping.setEnabled(False)
-            self.cbo_mapping.setEnabled(False)
+            self.wizardPage1.set_help_text(self.help_strings.get_refactor_help_string(self._db, self._layers[self.EDITING_LAYER_NAME]))
+        elif self.wizardPage1.enabled_create_manually:
             finish_button_text = QCoreApplication.translate("WizardTranslations", "Create")
-            self.txt_help_page_1.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP1])
+            self.wizardPage1.set_help_text(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP1])
 
-        self.wizardPage1.setButtonText(QWizard.FinishButton, finish_button_text)
+        # check
+        self.setButtonText(QWizard.FinishButton, finish_button_text)
 
-    # 2 init_gui
+    # (absWizardFactory)
     def show_help(self):
         show_plugin_help(self.wizard_config[WIZARD_HELP])
 
@@ -112,7 +112,7 @@ class SinglePageWizardFactory: # (QWizard):
         self.update_wizard_is_open_flag.emit(False)
         self.close()
 
-    # 3 close_wizard
+    # (absWizardFactory)
     def rollback_in_layers_with_empty_editing_buffer(self):
         for layer_name in self._layers:
             if self._layers[layer_name] is not None:  # If the layer was removed, this becomes None
@@ -127,7 +127,7 @@ class SinglePageWizardFactory: # (QWizard):
         except:
             pass
 
-    # 4 disconnect_signals
+    # (absWizardFactory)
     def finish_feature_creation(self, layerId, features):
         message = self.post_save(features)
 
@@ -139,35 +139,30 @@ class SinglePageWizardFactory: # (QWizard):
     def finished_dialog(self):
         self.save_settings()
 
-        if self.rad_refactor.isChecked():
-            if self.mMapLayerComboBox.currentLayer() is not None:
-                field_mapping = self.cbo_mapping.currentText()
-                res_etl_model = self.app.core.show_etl_model(self._db,
-                                                               self.mMapLayerComboBox.currentLayer(),
-                                                               self.EDITING_LAYER_NAME,
-                                                               field_mapping=field_mapping)
-                if res_etl_model: # Features were added?
-                    self.app.gui.redraw_all_layers()  # Redraw all layers to show imported data
-
-                    # If the result of the etl_model is successful and we used a stored recent mapping, we delete the
-                    # previous mapping used (we give preference to the latest used mapping)
-                    if field_mapping:
-                        self.app.core.delete_old_field_mapping(field_mapping)
-
-                    self.app.core.save_field_mapping(self.EDITING_LAYER_NAME)
-            else:
-                self.logger.warning_msg(__name__, QCoreApplication.translate("WizardTranslations",
-                    "Select a source layer to set the field mapping to '{}'.").format(self.EDITING_LAYER_NAME))
-
-            self.close_wizard()
-        elif self.rad_create_manually.isChecked():
+        if self.wizardPage1.enabled_refactor:
+            self.__create_from_refactor()
+        elif self.wizardPage1.enabled_create_manually:
             self.prepare_feature_creation()
 
-    # 3 finish_dialog
+    def __create_from_refactor(self):
+        selected_layer = self.wizardPage1.selected_layer
+        field_mapping = self.wizardPage1.field_mapping
+        editing_layer_name = self.wizard_config[WIZARD_EDITING_LAYER_NAME]
+
+        if selected_layer is not None:
+            self.logic.create_from_refactor(selected_layer, editing_layer_name, field_mapping)
+        else:
+            self.logger.warning_msg(__name__, QCoreApplication.translate("WizardTranslations",
+                                                                           "Select a source layer to set the field mapping to '{}'.").format(
+                editing_layer_name))
+
+        self.close_wizard()
+
+    # (absWizardFactory)
     def save_settings(self):
         settings = QSettings()
         settings.setValue(self.wizard_config[WIZARD_QSETTINGS][WIZARD_QSETTINGS_LOAD_DATA_TYPE],
-                          'create_manually' if self.rad_create_manually.isChecked() else 'refactor')
+                          'create_manually' if self.wizardPage1.enabled_create_manually else 'refactor')
 
     # 3 finish_dialog
     def prepare_feature_creation(self):

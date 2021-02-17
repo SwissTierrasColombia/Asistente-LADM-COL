@@ -37,20 +37,33 @@ from asistente_ladm_col.config.general_config import (WIZARD_CLASS,
                                                       WIZARD_CREATE_GEOECONOMIC_ZONE_VALUATION,
                                                       WIZARD_CREATE_PHYSICAL_ZONE_VALUATION,
                                                       WIZARD_CREATE_BUILDING_UNIT_VALUATION,
-                                                      WIZARD_CREATE_BUILDING_UNIT_QUALIFICATION_VALUATION)
+                                                      WIZARD_CREATE_BUILDING_UNIT_QUALIFICATION_VALUATION,
+                                                      WIZARD_STRINGS, WIZARD_SEL_SOURCE_TITLE,
+                                                      WIZARD_SEL_SOURCE_ENTERING_DATA_MANUALLY)
 
 from asistente_ladm_col.config.enums import EnumWizardType
-from asistente_ladm_col.gui.wizards.survey.wiz_create_parcel_survey import CreateParcelSurveyWizard
-from asistente_ladm_col.gui.wizards.survey.wiz_create_rrr_survey import CreateRRRSurveyWizard
+# from asistente_ladm_col.gui.wizards.survey.wiz_create_parcel_survey import CreateParcelSurveyWizard
+# from asistente_ladm_col.gui.wizards.survey.wiz_create_rrr_survey import CreateRRRSurveyWizard
 from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.gui.wizards.survey.wiz_create_spatial_source_survey import CreateSpatialSourceSurveyWizard
-from asistente_ladm_col.gui.wizards.survey.wiz_create_ext_address_survey import CreateExtAddressSurveyWizard
-from asistente_ladm_col.gui.wizards.survey.wiz_create_plot_survey import CreatePlotSurveyWizard
+# from asistente_ladm_col.gui.wizards.survey.wiz_create_ext_address_survey import CreateExtAddressSurveyWizard
+# from asistente_ladm_col.gui.wizards.survey.wiz_create_plot_survey import CreatePlotSurveyWizard
 from asistente_ladm_col.gui.wizards.survey.wiz_create_right_of_way_survey import CreateRightOfWaySurveyWizard
-from asistente_ladm_col.gui.wizards.single_page_spatial_wizard_factory import SinglePageSpatialWizardFactory
-from asistente_ladm_col.gui.wizards.single_page_wizard_factory import SinglePageWizardFactory
+# from asistente_ladm_col.gui.wizards.single_page_spatial_wizard_factory import SinglePageSpatialWizardFactory
+# from asistente_ladm_col.gui.wizards.single_page_wizard_factory import SinglePageWizardFactory
 from asistente_ladm_col.gui.wizards.valuation.wiz_create_building_unit_qualification_valuation import CreateBuildingUnitQualificationValuationWizard
-from asistente_ladm_col.gui.wizards.valuation.wiz_create_building_unit_valuation import CreateBuildingUnitValuationWizard
+# from asistente_ladm_col.gui.wizards.valuation.wiz_create_building_unit_valuation import CreateBuildingUnitValuationWizard
+
+from asistente_ladm_col.gui.wizards.wizard3.create_building_unit_valuation import CreateBuildingUnitValuationWizard
+from asistente_ladm_col.gui.wizards.wizard3.create_parcel_survey import CreateParcelSurveyWizard
+from asistente_ladm_col.gui.wizards.wizard3.create_plot_survey import CreatePlotSurveyWizard
+from asistente_ladm_col.gui.wizards.wizard3.create_rrr_survey import CreateRRRSurveyWizard
+
+from asistente_ladm_col.gui.wizards.wizard3.create_spatial_source_survey import CreateSpatialSourceSurveyWizard
+
+from asistente_ladm_col.gui.wizards.wizard3.single_page_spatial_wizard_factory import SinglePageSpatialWizardFactory
+from asistente_ladm_col.gui.wizards.wizard3.single_page_wizard_factory import SinglePageWizardFactory
+from asistente_ladm_col.gui.wizards.wizard3.create_ext_address_survey import CreateExtAddressSurveyWizard
 
 help_strings = HelpStrings()
 
@@ -76,6 +89,10 @@ class WizardConfig:
                     WIZARD_HELP1: help_strings.WIZ_CREATE_COL_PARTY_SURVEY_PAGE_1_OPTION_FORM,
                     WIZARD_HELP2: ""
                 },
+                WIZARD_STRINGS: {
+                    WIZARD_SEL_SOURCE_TITLE: "How would you like to create parties?",  # TODO Translate
+                    WIZARD_SEL_SOURCE_ENTERING_DATA_MANUALLY: "Entering data manually using a form"  # TODO Translate
+                },
                 WIZARD_LAYERS: {names.LC_PARTY_T: None},
                 WIZARD_EDITING_LAYER_NAME: names.LC_PARTY_T,
                 WIZARD_READ_ONLY_FIELDS: [names.COL_PARTY_T_NAME_F],
@@ -97,6 +114,10 @@ class WizardConfig:
                 WIZARD_HELP_PAGES: {
                     WIZARD_HELP1: help_strings.WIZ_CREATE_ADMINISTRATIVE_SOURCE_PAGE_1_OPTION_FORM,
                     WIZARD_HELP2: ""
+                },
+                WIZARD_STRINGS: {
+                    WIZARD_SEL_SOURCE_TITLE: "How would you like to create administrative sources?",  # TODO Translate
+                    WIZARD_SEL_SOURCE_ENTERING_DATA_MANUALLY: "Entering data manually using a form"  # TODO Translate
                 },
                 WIZARD_LAYERS: {
                     names.LC_ADMINISTRATIVE_SOURCE_T: None,
@@ -177,6 +198,7 @@ class WizardConfig:
                 WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.PolygonLayer
             }
         elif wizard_config_name == WIZARD_CREATE_RIGHT_SURVEY:
+            print('ok')
             return {
                 WIZARD_TYPE: EnumWizardType.MULTI_PAGE_WIZARD_TYPE,
                 WIZARD_CLASS: CreateRRRSurveyWizard,
@@ -201,6 +223,7 @@ class WizardConfig:
                 WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry
             }
         elif wizard_config_name == WIZARD_CREATE_RESTRICTION_SURVEY:
+            print('ok')
             return {
                 WIZARD_TYPE: EnumWizardType.MULTI_PAGE_WIZARD_TYPE,
                 WIZARD_CLASS: CreateRRRSurveyWizard,
@@ -240,6 +263,10 @@ class WizardConfig:
                 WIZARD_HELP_PAGES: {
                     WIZARD_HELP1: help_strings.WIZ_CREATE_SPATIAL_SOURCE_SURVEY_PAGE_1_OPTION_FORM,
                     WIZARD_HELP2: help_strings.WIZ_CREATE_SPATIAL_SOURCE_SURVEY_PAGE_2
+                },
+                WIZARD_STRINGS: {
+                    WIZARD_SEL_SOURCE_TITLE: "How would you like to create spatial sources?",  # TODO Translate
+                    WIZARD_SEL_SOURCE_ENTERING_DATA_MANUALLY: "Entering data manually using a form"  # TODO Translate
                 },
                 WIZARD_LAYERS: {
                     names.LC_SPATIAL_SOURCE_T: None,
