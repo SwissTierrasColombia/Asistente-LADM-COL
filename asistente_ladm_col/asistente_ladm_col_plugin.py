@@ -1468,11 +1468,30 @@ class AsistenteLADMCOLPlugin(QObject):
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     def show_wizard(self, wizard_name, *args, **kwargs):
+        from asistente_ladm_col.gui.wizards.wizard_mgr import WizardManager
+        #
+        # wiz_settings = self.wizard_config.get_wizard_config(self.get_db_connection().names, "wizard_create_col_party_cadastral")
+        #
+        # if self.app.core.required_layers_are_available(self.get_db_connection(),
+        #                                                   wiz_settings[WIZARD_LAYERS],
+        #                                                   wiz_settings[WIZARD_TOOL_NAME]):
+        #     app = AppInterface()
+        #
+        #     wz = WizardManager(self.iface, self.get_db_connection(), wiz_settings, app)
+        #
+        #     wz.get_view().exec_()
+
+        # pass
         wiz_settings = self.wizard_config.get_wizard_config(self.get_db_connection().names, wizard_name)
         if self.app.core.required_layers_are_available(self.get_db_connection(),
                                                          wiz_settings[WIZARD_LAYERS],
                                                          wiz_settings[WIZARD_TOOL_NAME]):
+            # if wizard_name == WIZARD_CREATE_SPATIAL_SOURCE_SURVEY:
+            #     app = AppInterface()
+            #     self.wiz = MultiPage(self.iface, self.get_db_connection(), wiz_settings, app)
+            # else:
             self.wiz = wiz_settings[WIZARD_CLASS](self.iface, self.get_db_connection(), wiz_settings)
+
             if wiz_settings[WIZARD_TYPE] & EnumWizardType.SPATIAL_WIZARD:
                 # Required signal for wizard geometry creating
                 self.wiz.set_finalize_geometry_creation_enabled_emitted.connect(self.set_enable_finalize_geometry_creation_action)

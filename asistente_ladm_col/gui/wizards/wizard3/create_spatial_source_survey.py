@@ -16,7 +16,7 @@ from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.config.translation_strings import TranslatableConfigStrings
 from asistente_ladm_col.gui.wizards.wizard_pages.logic import Logic
 from asistente_ladm_col.gui.wizards.wizard_pages.select_source import SelectSource
-from asistente_ladm_col.gui.wizards.wizard_pages.select_spatial_source import SelectSpatialSource
+from asistente_ladm_col.gui.wizards.wizard_pages.select_spatial_source import AsistenteWizardPage
 from asistente_ladm_col.utils.qt_utils import disable_next_wizard, enable_next_wizard
 from asistente_ladm_col.utils.select_map_tool import SelectMapTool
 from asistente_ladm_col.utils.ui import load_ui
@@ -40,7 +40,6 @@ class CreateSpatialSourceSurveyWizard(QWizard):
         self.names = self._db.names
         self.help_strings = HelpStrings()
         self.translatable_config_strings = TranslatableConfigStrings()
-        # al no cargar la parte visual, se requiere cargar la segunda página
         # load_ui(self.wizard_config[WIZARD_UI], self)
 
         self.WIZARD_FEATURE_NAME = self.wizard_config[WIZARD_FEATURE_NAME]
@@ -80,7 +79,7 @@ class CreateSpatialSourceSurveyWizard(QWizard):
         self.button(QWizard.HelpButton).clicked.connect(self.show_help)
         self.rejected.connect(self.close_wizard)
 
-        self.wizardPage2 = SelectSpatialSource()
+        self.wizardPage2 = AsistenteWizardPage(self.wizard_config[WIZARD_UI])
         self.wizardPage1.controls_changed()
 
         self.addPage(self.wizardPage1)
@@ -100,26 +99,18 @@ class CreateSpatialSourceSurveyWizard(QWizard):
         finish_button_text = ''
 
         if self.wizardPage1.enabled_refactor:
-            print("1")
             disable_next_wizard(self)
             self.wizardPage1.setFinalPage(True)
             finish_button_text = QCoreApplication.translate("WizardTranslations", "Import")
             self.wizardPage1.set_help_text(self.help_strings.get_refactor_help_string(self._db, self._layers[self.EDITING_LAYER_NAME]))
             self.wizardPage1.setButtonText(QWizard.FinishButton, finish_button_text)
         elif self.wizardPage1.enabled_create_manually:
-            print("2")
             enable_next_wizard(self)
             self.wizardPage1.setFinalPage(False)
             finish_button_text = QCoreApplication.translate("WizardTranslations", "Create")
             self.wizardPage1.set_help_text(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP1])
 
-        print(self.wizardPage1.isFinalPage())
-        print(self.wizardPage2.isFinalPage())
-
-        # verificar si esto es diferente a hacerlo en el wizard
-        # self.setButtonText(QWizard.FinishButton, finish_button_text)
         self.wizardPage2.setButtonText(QWizard.FinishButton, finish_button_text)
-        # self.wizardPage2.setButtonText(QWizard.FinishButton, finish_button_text)
 
     # (absWizardFactory)
     def show_help(self):
@@ -148,7 +139,7 @@ class CreateSpatialSourceSurveyWizard(QWizard):
                     if not self._layers[layer_name].editBuffer().isModified():
                         self._layers[layer_name].rollBack()
 
-    # 3 close_wizard
+    # (wizardFactory)
     def disconnect_signals(self):
         # if isinstance(self, SelectFeatureByExpressionDialogWrapper):
         self.disconnect_signals_select_features_by_expression()
@@ -161,6 +152,7 @@ class CreateSpatialSourceSurveyWizard(QWizard):
         except:
             pass
 
+    # (absWizardFactory)
     def finish_feature_creation(self, layerId, features):
         message = self.post_save(features)
 
@@ -221,9 +213,9 @@ class CreateSpatialSourceSurveyWizard(QWizard):
 
     def save_settings(self):
         settings = QSettings()
-        settings.setValue(self.wizard_config[WIZARD_QSETTINGS][WIZARD_QSETTINGS_LOAD_DATA_TYPE],
-                          'create_manually' if self.wizardPage1.enabled_create_manually else 'refactor')
+        settings.setValue(self.wizard_config[WIZARD_QSETTINGS][WIZARD_QSETTINGS_LOAD_DATA_TYPE], 'create_manually' if self.wizardPage1.enabled_create_manually else 'refactor')
 
+    # (absWizardFactory)
     def prepare_feature_creation(self):
         result = self.prepare_feature_creation_layers()
         if result:
@@ -231,6 +223,7 @@ class CreateSpatialSourceSurveyWizard(QWizard):
         else:
             self.close_wizard(show_message=False)
 
+    # (editFeature)
     def edit_feature(self):
         # selecciona la capa
         self.iface.layerTreeView().setCurrentLayer(self._layers[self.EDITING_LAYER_NAME])
@@ -238,6 +231,7 @@ class CreateSpatialSourceSurveyWizard(QWizard):
         self._layers[self.EDITING_LAYER_NAME].committedFeaturesAdded.connect(self.finish_feature_creation)
         self.open_form(self._layers[self.EDITING_LAYER_NAME])
 
+    # (wizardFactory)
     def open_form(self, layer):
         if not layer.isEditable():
             layer.startEditing()
@@ -272,8 +266,7 @@ class CreateSpatialSourceSurveyWizard(QWizard):
     # (absWizardFactory)
     def form_rejected(self):
         message = QCoreApplication.translate("WizardTranslations",
-                                             "'{}' tool has been closed because you just closed the form.").format(
-            self.WIZARD_TOOL_NAME)
+                                             "'{}' tool has been closed because you just closed the form.").format(self.WIZARD_TOOL_NAME)
         self.close_wizard(message)
 
     # (this class)
@@ -289,6 +282,7 @@ class CreateSpatialSourceSurveyWizard(QWizard):
         layer.selectionChanged.disconnect(self.check_selected_features)
 
     # ------------------------------------------>>>  SelectFeaturesOnMapWrapper
+    # (map)
     def init_map_tool(self):
         try:
             self.canvas.mapToolSet.disconnect(self.map_tool_changed)
@@ -296,6 +290,7 @@ class CreateSpatialSourceSurveyWizard(QWizard):
             pass
         self.canvas.setMapTool(self.maptool)
 
+    # (map)
     def disconnect_signals_select_features_on_map(self):
         self.disconnect_signals_controls_select_features_on_map()
 

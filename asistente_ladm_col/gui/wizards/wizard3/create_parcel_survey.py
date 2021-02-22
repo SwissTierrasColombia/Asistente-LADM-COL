@@ -11,13 +11,15 @@ from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.general_config import WIZARD_UI, WIZARD_FEATURE_NAME, WIZARD_TOOL_NAME, \
     WIZARD_EDITING_LAYER_NAME, WIZARD_LAYERS, WIZARD_READ_ONLY_FIELDS, WIZARD_HELP, WIZARD_HELP_PAGES, WIZARD_HELP1, \
     WIZARD_QSETTINGS, WIZARD_QSETTINGS_LOAD_DATA_TYPE, WIZARD_MAP_LAYER_PROXY_MODEL, WIZARD_HELP2, CSS_COLOR_OKAY_LABEL, \
-    CSS_COLOR_ERROR_LABEL, WIZARD_QSETTINGS_TYPE_PARCEL_SELECTED, CSS_COLOR_INACTIVE_LABEL
+    CSS_COLOR_ERROR_LABEL, WIZARD_QSETTINGS_TYPE_PARCEL_SELECTED, CSS_COLOR_INACTIVE_LABEL, WIZARD_STRINGS
 from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.config.translation_strings import TranslatableConfigStrings
+from asistente_ladm_col.gui.wizards.wizard_pages.logic import Logic
+from asistente_ladm_col.gui.wizards.wizard_pages.select_source import SelectSource
+from asistente_ladm_col.gui.wizards.wizard_pages.select_spatial_source import AsistenteWizardPage
 from asistente_ladm_col.utils.qt_utils import disable_next_wizard, enable_next_wizard
 from asistente_ladm_col.utils.select_map_tool import SelectMapTool
-from asistente_ladm_col.utils.ui import load_ui
 from asistente_ladm_col.utils.utils import show_plugin_help
 from qgis.gui import QgsExpressionSelectionDialog
 
@@ -38,14 +40,19 @@ class CreateParcelSurveyWizard(QWizard):
         self.names = self._db.names
         self.help_strings = HelpStrings()
         self.translatable_config_strings = TranslatableConfigStrings()
-        load_ui(self.wizard_config[WIZARD_UI], self)
+        # load_ui(self.wizard_config[WIZARD_UI], self)
 
         self.WIZARD_FEATURE_NAME = self.wizard_config[WIZARD_FEATURE_NAME]
         self.WIZARD_TOOL_NAME = self.wizard_config[WIZARD_TOOL_NAME]
         self.EDITING_LAYER_NAME = self.wizard_config[WIZARD_EDITING_LAYER_NAME]
         self._layers = self.wizard_config[WIZARD_LAYERS]
+
+        self.logic = Logic(self.app, db, self._layers, wizard_settings)
+
         self.set_ready_only_field()
 
+        self.wizardPage1 = None
+        self.wizardPage2 = None
         self.init_gui()
 
         # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>>>>> map tool
@@ -66,15 +73,23 @@ class CreateParcelSurveyWizard(QWizard):
 
     # (multiPageWizardFactory)
     def init_gui(self):
-        self.restore_settings()
-        self.rad_create_manually.toggled.connect(self.adjust_page_1_controls)
-        self.adjust_page_1_controls()
+        # it creates the page (select source)
+        self.wizardPage1 = SelectSource(self.logic.get_field_mappings_file_names(),
+                                          self.logic.get_filters(), self.wizard_config[WIZARD_STRINGS])
+        self.wizardPage1.option_changed.connect(self.adjust_page_1_controls)
 
         self.button(QWizard.NextButton).clicked.connect(self.adjust_page_2_controls)
         self.button(QWizard.FinishButton).clicked.connect(self.finished_dialog)
         self.button(QWizard.HelpButton).clicked.connect(self.show_help)
         self.rejected.connect(self.close_wizard)
-        self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.Filter(self.wizard_config[WIZARD_MAP_LAYER_PROXY_MODEL]))
+
+        self.wizardPage2 = AsistenteWizardPage(self.wizard_config[WIZARD_UI])
+
+        self.addPage(self.wizardPage1)
+        self.addPage(self.wizardPage2)
+        self.restore_settings()
+        self.wizardPage1.controls_changed()
+
 
     # (this class)
     def restore_settings(self):
@@ -82,37 +97,28 @@ class CreateParcelSurveyWizard(QWizard):
 
         load_data_type = settings.value(self.wizard_config[WIZARD_QSETTINGS][WIZARD_QSETTINGS_LOAD_DATA_TYPE]) or 'create_manually'
         if load_data_type == 'refactor':
-            self.rad_refactor.setChecked(True)
+            self.wizardPage1.enabled_refactor = True
         else:
-            self.rad_create_manually.setChecked(True)
+            self.wizardPage1.enabled_create_manually = True
 
-        self.type_of_parcel_selected = settings.value(self.wizard_config[WIZARD_QSETTINGS][WIZARD_QSETTINGS_TYPE_PARCEL_SELECTED])
+        # revisar
+        self.wizardPage2.type_of_parcel_selected = settings.value(self.wizard_config[WIZARD_QSETTINGS][WIZARD_QSETTINGS_TYPE_PARCEL_SELECTED])
 
     # (multiPageWizardFactory)
     def adjust_page_1_controls(self):
-        self.cbo_mapping.clear()
-        self.cbo_mapping.addItem("")
-        self.cbo_mapping.addItems(self.app.core.get_field_mappings_file_names(self.EDITING_LAYER_NAME))
+        finish_button_text = ''
 
-        if self.rad_refactor.isChecked():
-            self.lbl_refactor_source.setEnabled(True)
-            self.mMapLayerComboBox.setEnabled(True)
-            self.lbl_field_mapping.setEnabled(True)
-            self.cbo_mapping.setEnabled(True)
+        if self.wizardPage1.enabled_refactor:
             disable_next_wizard(self)
             self.wizardPage1.setFinalPage(True)
             finish_button_text = QCoreApplication.translate("WizardTranslations", "Import")
-            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(self._db, self._layers[self.EDITING_LAYER_NAME]))
+            self.wizardPage1.set_help_text(self.help_strings.get_refactor_help_string(self._db, self._layers[self.EDITING_LAYER_NAME]))
             self.wizardPage1.setButtonText(QWizard.FinishButton, finish_button_text)
-        elif self.rad_create_manually.isChecked():
-            self.lbl_refactor_source.setEnabled(False)
-            self.mMapLayerComboBox.setEnabled(False)
-            self.lbl_field_mapping.setEnabled(False)
-            self.cbo_mapping.setEnabled(False)
+        elif self.wizardPage1.enabled_create_manually:
             enable_next_wizard(self)
             self.wizardPage1.setFinalPage(False)
             finish_button_text = QCoreApplication.translate("WizardTranslations", "Create")
-            self.txt_help_page_1.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP1])
+            self.wizardPage1.set_help_text(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP1])
 
         self.wizardPage2.setButtonText(QWizard.FinishButton, finish_button_text)
 
@@ -127,7 +133,7 @@ class CreateParcelSurveyWizard(QWizard):
         if show_message:
             self.logger.info_msg(__name__, message)
 
-        #if isinstance(self, SelectFeaturesOnMapWrapper):
+        # if isinstance(self, SelectFeaturesOnMapWrapper):
         self.init_map_tool()
 
         self.rollback_in_layers_with_empty_editing_buffer()
@@ -180,19 +186,19 @@ class CreateParcelSurveyWizard(QWizard):
         for feature in self._layers[self.names.LC_CONDITION_PARCEL_TYPE_D].getFeatures():
             self.dict_parcel_type[feature[self.names.DISPLAY_NAME_F]] = feature[self.names.ILICODE_F]
 
-        if self.cb_parcel_type.count() == 0:
+        if self.wizardPage2.cb_parcel_type.count() == 0:
             for feature in self._layers[self.names.LC_CONDITION_PARCEL_TYPE_D].getFeatures():
                 if feature[self.names.ILICODE_F] in constraint_types_of_parcels:
-                    self.cb_parcel_type.addItem(feature[self.names.DISPLAY_NAME_F], feature[self.names.T_ID_F])
+                    self.wizardPage2.cb_parcel_type.addItem(feature[self.names.DISPLAY_NAME_F], feature[self.names.T_ID_F])
 
             # Select previous option saved
-            if self.type_of_parcel_selected:
-                index = self.cb_parcel_type.findText(self.type_of_parcel_selected)
+            if self.wizardPage2.type_of_parcel_selected:
+                index = self.wizardPage2.cb_parcel_type.findText(self.wizardPage2.type_of_parcel_selected)
                 if index != -1:
-                    self.cb_parcel_type.setCurrentIndex(index)
+                    self.wizardPage2.cb_parcel_type.setCurrentIndex(index)
 
-        self.cb_parcel_type.currentTextChanged.connect(self.validate_type_of_parcel)
-        self.cb_parcel_type.currentTextChanged.emit(self.cb_parcel_type.currentText())
+        self.wizardPage2.cb_parcel_type.currentTextChanged.connect(self.validate_type_of_parcel)
+        self.wizardPage2.cb_parcel_type.currentTextChanged.emit(self.wizardPage2.cb_parcel_type.currentText())
 
         # Check if a previous feature is selected
         self.check_selected_features()
@@ -207,10 +213,11 @@ class CreateParcelSurveyWizard(QWizard):
 
     # (this class)
     def prepare_feature_creation_layers(self):
-        #if isinstance(self, SelectFeaturesOnMapWrapper):
+        # if isinstance(self, SelectFeaturesOnMapWrapper):
         # Add signal to check if a layer was removed
         self.connect_on_removing_layers()
 
+        # parte diferente del método original
         self._spatial_unit_layers = {
             self.names.LC_PLOT_T: self._layers[self.names.LC_PLOT_T],
             self.names.LC_BUILDING_T: self._layers[self.names.LC_BUILDING_T],
@@ -225,36 +232,30 @@ class CreateParcelSurveyWizard(QWizard):
     def  finished_dialog(self):
         self.save_settings()
 
-        if self.rad_refactor.isChecked():
-            if self.mMapLayerComboBox.currentLayer() is not None:
-                field_mapping = self.cbo_mapping.currentText()
-                res_etl_model = self.app.core.show_etl_model(self._db,
-                                                               self.mMapLayerComboBox.currentLayer(),
-                                                               self.EDITING_LAYER_NAME,
-                                                               field_mapping=field_mapping)
-                if res_etl_model: # Features were added?
-                    self.app.gui.redraw_all_layers()  # Redraw all layers to show imported data
-
-                    # If the result of the etl_model is successful and we used a stored recent mapping, we delete the
-                    # previous mapping used (we give preference to the latest used mapping)
-                    if field_mapping:
-                        self.app.core.delete_old_field_mapping(field_mapping)
-
-                    self.app.core.save_field_mapping(self.EDITING_LAYER_NAME)
-            else:
-                self.logger.warning_msg(__name__, QCoreApplication.translate("WizardTranslations",
-                    "Select a source layer to set the field mapping to '{}'.").format(self.EDITING_LAYER_NAME))
-
-            self.close_wizard()
-
-        elif self.rad_create_manually.isChecked():
+        if self.wizardPage1.enabled_refactor:
+            self.__create_from_refactor()
+        elif self.wizardPage1.enabled_create_manually:
             self.prepare_feature_creation()
+
+    def __create_from_refactor(self):
+        selected_layer = self.wizardPage1.selected_layer
+        field_mapping = self.wizardPage1.field_mapping
+        editing_layer_name = self.wizard_config[WIZARD_EDITING_LAYER_NAME]
+
+        if selected_layer is not None:
+            self.logic.create_from_refactor(selected_layer, editing_layer_name, field_mapping)
+        else:
+            self.logger.warning_msg(__name__, QCoreApplication.translate("WizardTranslations",
+                "Select a source layer to set the field mapping to '{}'.").format(editing_layer_name))
+
+        self.close_wizard()
 
     # (this class)
     def save_settings(self):
         settings = QSettings()
-        settings.setValue(self.wizard_config[WIZARD_QSETTINGS][WIZARD_QSETTINGS_LOAD_DATA_TYPE], 'create_manually' if self.rad_create_manually.isChecked() else 'refactor')
-        settings.setValue(self.wizard_config[WIZARD_QSETTINGS][WIZARD_QSETTINGS_TYPE_PARCEL_SELECTED], self.cb_parcel_type.currentText())
+        settings.setValue(self.wizard_config[WIZARD_QSETTINGS][WIZARD_QSETTINGS_LOAD_DATA_TYPE],
+                          'create_manually' if self.wizardPage1.enabled_create_manually else 'refactor')
+        settings.setValue(self.wizard_config[WIZARD_QSETTINGS][WIZARD_QSETTINGS_TYPE_PARCEL_SELECTED], self.wizardPage2.cb_parcel_type.currentText())
 
     # (absWizardFactory)
     def prepare_feature_creation(self):
@@ -282,7 +283,7 @@ class CreateParcelSurveyWizard(QWizard):
     # (this class)
     def exec_form(self, layer):
         feature = self.get_feature_exec_form(layer)
-        feature[self.names.LC_PARCEL_T_PARCEL_TYPE_F] = self.cb_parcel_type.currentText()
+        feature[self.names.LC_PARCEL_T_PARCEL_TYPE_F] = self.wizardPage2.cb_parcel_type.currentText()
 
         dialog = self.iface.getFeatureForm(layer, feature)
         dialog.rejected.connect(self.form_rejected)
@@ -293,7 +294,7 @@ class CreateParcelSurveyWizard(QWizard):
 
             # assigns the type of parcel before to creating it
             parcel_condition_field_idx = layer.getFeature(fid).fieldNameIndex(self.names.LC_PARCEL_T_PARCEL_TYPE_F)
-            layer.changeAttributeValue(fid, parcel_condition_field_idx, self.cb_parcel_type.itemData(self.cb_parcel_type.currentIndex()))
+            layer.changeAttributeValue(fid, parcel_condition_field_idx, self.wizardPage2.cb_parcel_type.itemData(self.wizardPage2.cb_parcel_type.currentIndex()))
 
             saved = layer.commitChanges()
 
@@ -351,9 +352,9 @@ class CreateParcelSurveyWizard(QWizard):
 
     # (this class)
     def disconnect_signals_controls_select_features_on_map(self):
-        signals = [self.btn_plot_map.clicked,
-                   self.btn_building_map.clicked,
-                   self.btn_building_unit_map.clicked]
+        signals = [self.wizardPage2.btn_plot_map.clicked,
+                   self.wizardPage2.btn_building_map.clicked,
+                   self.wizardPage2.btn_building_unit_map.clicked]
 
         for signal in signals:
             try:
@@ -426,14 +427,14 @@ class CreateParcelSurveyWizard(QWizard):
     # ------------------------------------------>>> THIS CLASS
     def check_selected_features(self):
         constraint_types_of_parcels = LayerConfig.get_constraint_types_of_parcels(self.names)
-        self.lb_plot.setText(QCoreApplication.translate("WizardTranslations", "<b>Plot(s)</b>: {count} Feature(s) Selected").format(count=self._layers[self.names.LC_PLOT_T].selectedFeatureCount()))
-        self.lb_plot.setStyleSheet(CSS_COLOR_OKAY_LABEL)  # Default color
-        self.lb_building.setText(QCoreApplication.translate("WizardTranslations","<b>Building(s)</b>: {count} Feature(s) Selected").format(count=self._layers[self.names.LC_BUILDING_T].selectedFeatureCount()))
-        self.lb_building.setStyleSheet(CSS_COLOR_OKAY_LABEL)  # Default color
-        self.lb_building_unit.setText(QCoreApplication.translate("WizardTranslations","<b>Building unit(s)</b>: {count} Feature(s) Selected").format(count=self._layers[self.names.LC_BUILDING_UNIT_T].selectedFeatureCount()))
-        self.lb_building_unit.setStyleSheet(CSS_COLOR_OKAY_LABEL)  # Default color
+        self.wizardPage2.lb_plot.setText(QCoreApplication.translate("WizardTranslations", "<b>Plot(s)</b>: {count} Feature(s) Selected").format(count=self._layers[self.names.LC_PLOT_T].selectedFeatureCount()))
+        self.wizardPage2.lb_plot.setStyleSheet(CSS_COLOR_OKAY_LABEL)  # Default color
+        self.wizardPage2.lb_building.setText(QCoreApplication.translate("WizardTranslations","<b>Building(s)</b>: {count} Feature(s) Selected").format(count=self._layers[self.names.LC_BUILDING_T].selectedFeatureCount()))
+        self.wizardPage2.lb_building.setStyleSheet(CSS_COLOR_OKAY_LABEL)  # Default color
+        self.wizardPage2.lb_building_unit.setText(QCoreApplication.translate("WizardTranslations","<b>Building unit(s)</b>: {count} Feature(s) Selected").format(count=self._layers[self.names.LC_BUILDING_UNIT_T].selectedFeatureCount()))
+        self.wizardPage2.lb_building_unit.setStyleSheet(CSS_COLOR_OKAY_LABEL)  # Default color
 
-        parcel_type = self.dict_parcel_type[self.cb_parcel_type.currentText()]
+        parcel_type = self.dict_parcel_type[self.wizardPage2.cb_parcel_type.currentText()]
         for spatial_unit in constraint_types_of_parcels[parcel_type]:
             _layer = self._spatial_unit_layers[spatial_unit]
 
@@ -447,19 +448,19 @@ class CreateParcelSurveyWizard(QWizard):
                 _color = CSS_COLOR_INACTIVE_LABEL
 
             if spatial_unit == self.names.LC_PLOT_T:
-                self.lb_plot.setStyleSheet(_color)
+                self.wizardPage2.lb_plot.setStyleSheet(_color)
             elif spatial_unit == self.names.LC_BUILDING_T:
-                self.lb_building.setStyleSheet(_color)
+                self.wizardPage2.lb_building.setStyleSheet(_color)
             elif spatial_unit == self.names.LC_BUILDING_UNIT_T:
-                self.lb_building_unit.setStyleSheet(_color)
+                self.wizardPage2.lb_building_unit.setStyleSheet(_color)
 
         self.button(self.FinishButton).setEnabled(self.is_constraint_satisfied(parcel_type))
 
     def disconnect_signals_select_features_by_expression(self):
-        signals = [self.btn_plot_expression.clicked,
-                   self.btn_building_expression.clicked,
-                   self.btn_building_unit_expression.clicked,
-                   self.cb_parcel_type.currentTextChanged]
+        signals = [self.wizardPage2.btn_plot_expression.clicked,
+                   self.wizardPage2.btn_building_expression.clicked,
+                   self.wizardPage2.btn_building_unit_expression.clicked,
+                   self.wizardPage2.cb_parcel_type.currentTextChanged]
 
         for signal in signals:
             try:
@@ -468,14 +469,14 @@ class CreateParcelSurveyWizard(QWizard):
                 pass
 
     def register_select_features_by_expression(self):
-        self.btn_plot_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.LC_PLOT_T]))
-        self.btn_building_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.LC_BUILDING_T]))
-        self.btn_building_unit_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.LC_BUILDING_UNIT_T]))
+        self.wizardPage2.btn_plot_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.LC_PLOT_T]))
+        self.wizardPage2.btn_building_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.LC_BUILDING_T]))
+        self.wizardPage2.btn_building_unit_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.LC_BUILDING_UNIT_T]))
 
     def register_select_feature_on_map(self):
-        self.btn_plot_map.clicked.connect(partial(self.select_features_on_map, self._layers[self.names.LC_PLOT_T]))
-        self.btn_building_map.clicked.connect(partial(self.select_features_on_map, self._layers[self.names.LC_BUILDING_T]))
-        self.btn_building_unit_map.clicked.connect(partial(self.select_features_on_map, self._layers[self.names.LC_BUILDING_UNIT_T]))
+        self.wizardPage2.btn_plot_map.clicked.connect(partial(self.select_features_on_map, self._layers[self.names.LC_PLOT_T]))
+        self.wizardPage2.btn_building_map.clicked.connect(partial(self.select_features_on_map, self._layers[self.names.LC_BUILDING_T]))
+        self.wizardPage2.btn_building_unit_map.clicked.connect(partial(self.select_features_on_map, self._layers[self.names.LC_BUILDING_UNIT_T]))
 
     def post_save(self, features):
         constraint_types_of_parcels = LayerConfig.get_constraint_types_of_parcels(self.names)
@@ -497,20 +498,20 @@ class CreateParcelSurveyWizard(QWizard):
                 building_unit_ids = list()
 
                 # Apply restriction to the selection
-                if self.names.LC_PLOT_T in constraint_types_of_parcels[self.dict_parcel_type[self.cb_parcel_type.currentText()]]:
-                    if constraint_types_of_parcels[self.dict_parcel_type[self.cb_parcel_type.currentText()]][self.names.LC_PLOT_T] is not None:
+                if self.names.LC_PLOT_T in constraint_types_of_parcels[self.dict_parcel_type[self.wizardPage2.cb_parcel_type.currentText()]]:
+                    if constraint_types_of_parcels[self.dict_parcel_type[self.wizardPage2.cb_parcel_type.currentText()]][self.names.LC_PLOT_T] is not None:
                         plot_ids = [f[self.names.T_ID_F] for f in self._layers[self.names.LC_PLOT_T].selectedFeatures()]
                 else:
                     plot_ids = [f[self.names.T_ID_F] for f in self._layers[self.names.LC_PLOT_T].selectedFeatures()]
 
-                if self.names.LC_BUILDING_T in constraint_types_of_parcels[self.dict_parcel_type[self.cb_parcel_type.currentText()]]:
-                    if constraint_types_of_parcels[self.dict_parcel_type[self.cb_parcel_type.currentText()]][self.names.LC_BUILDING_T] is not None:
+                if self.names.LC_BUILDING_T in constraint_types_of_parcels[self.dict_parcel_type[self.wizardPage2.cb_parcel_type.currentText()]]:
+                    if constraint_types_of_parcels[self.dict_parcel_type[self.wizardPage2.cb_parcel_type.currentText()]][self.names.LC_BUILDING_T] is not None:
                         building_ids = [f[self.names.T_ID_F] for f in self._layers[self.names.LC_BUILDING_T].selectedFeatures()]
                 else:
                     building_ids = [f[self.names.T_ID_F] for f in self._layers[self.names.LC_BUILDING_T].selectedFeatures()]
 
-                if self.names.LC_BUILDING_UNIT_T in constraint_types_of_parcels[self.dict_parcel_type[self.cb_parcel_type.currentText()]]:
-                    if constraint_types_of_parcels[self.dict_parcel_type[self.cb_parcel_type.currentText()]][self.names.LC_BUILDING_UNIT_T] is not None:
+                if self.names.LC_BUILDING_UNIT_T in constraint_types_of_parcels[self.dict_parcel_type[self.wizardPage2.cb_parcel_type.currentText()]]:
+                    if constraint_types_of_parcels[self.dict_parcel_type[self.wizardPage2.cb_parcel_type.currentText()]][self.names.LC_BUILDING_UNIT_T] is not None:
                         building_unit_ids = [f[self.names.T_ID_F] for f in
                                              self._layers[self.names.LC_BUILDING_UNIT_T].selectedFeatures()]
                 else:
@@ -572,12 +573,12 @@ class CreateParcelSurveyWizard(QWizard):
     def validate_type_of_parcel(self, parcel_type):
         constraint_types_of_parcels = LayerConfig.get_constraint_types_of_parcels(self.names)
         # Activate all push buttons
-        self.btn_plot_map.setEnabled(True)
-        self.btn_plot_expression.setEnabled(True)
-        self.btn_building_map.setEnabled(True)
-        self.btn_building_expression.setEnabled(True)
-        self.btn_building_unit_map.setEnabled(True)
-        self.btn_building_unit_expression.setEnabled(True)
+        self.wizardPage2.btn_plot_map.setEnabled(True)
+        self.wizardPage2.btn_plot_expression.setEnabled(True)
+        self.wizardPage2.btn_building_map.setEnabled(True)
+        self.wizardPage2.btn_building_expression.setEnabled(True)
+        self.wizardPage2.btn_building_unit_map.setEnabled(True)
+        self.wizardPage2.btn_building_unit_expression.setEnabled(True)
 
         parcel_type = self.dict_parcel_type[parcel_type]
 
@@ -585,24 +586,24 @@ class CreateParcelSurveyWizard(QWizard):
         for spatial_unit in constraint_types_of_parcels[parcel_type]:
             if constraint_types_of_parcels[parcel_type][spatial_unit] is None:
                 if spatial_unit == self.names.LC_PLOT_T:
-                    self.btn_plot_map.setEnabled(False)
-                    self.btn_plot_expression.setEnabled(False)
+                    self.wizardPage2.btn_plot_map.setEnabled(False)
+                    self.wizardPage2.btn_plot_expression.setEnabled(False)
                 elif spatial_unit == self.names.LC_BUILDING_T:
-                    self.btn_building_map.setEnabled(False)
-                    self.btn_building_expression.setEnabled(False)
+                    self.wizardPage2.btn_building_map.setEnabled(False)
+                    self.wizardPage2.btn_building_expression.setEnabled(False)
                 elif spatial_unit == self.names.LC_BUILDING_UNIT_T:
-                    self.btn_building_unit_map.setEnabled(False)
-                    self.btn_building_unit_expression.setEnabled(False)
+                    self.wizardPage2.btn_building_unit_map.setEnabled(False)
+                    self.wizardPage2.btn_building_unit_expression.setEnabled(False)
 
         self.update_help_message(parcel_type)
         self.check_selected_features()
 
     def update_help_message(self, parcel_type):
         msg_parcel_type = self.help_strings.get_message_parcel_type(parcel_type)
-        msg_parcel_type = msg_parcel_type.replace(parcel_type, self.cb_parcel_type.currentText())
+        msg_parcel_type = msg_parcel_type.replace(parcel_type, self.wizardPage2.cb_parcel_type.currentText())
 
         msg_help = self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP2].format(msg_parcel_type=msg_parcel_type)
-        self.txt_help_page_2.setHtml(msg_help)
+        self.wizardPage2.txt_help_page_2.setHtml(msg_help)
 
     def is_constraint_satisfied(self, parcel_type):
         constraint_types_of_parcels = LayerConfig.get_constraint_types_of_parcels(self.names)

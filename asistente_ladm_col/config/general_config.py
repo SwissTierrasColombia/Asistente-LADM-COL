@@ -236,6 +236,10 @@ WIZARD_LAYERS = "wizard_layers"
 WIZARD_EDITING_LAYER_NAME = "wizard_editing_layer_name"
 WIZARD_MAP_LAYER_PROXY_MODEL = "wizard_map_layer_proxy_model"
 WIZARD_READ_ONLY_FIELDS = "wizard_read_only_fields"
+WIZARD_STRINGS = "wizard_strings"
+WIZARD_SEL_SOURCE_TITLE = "wizard_sel_source_title",
+WIZARD_SEL_SOURCE_ENTERING_DATA_MANUALLY = "wizard_sel_source_entering_data_manually"
+
 
 # Cadastral model
 WIZARD_CREATE_COL_PARTY_CADASTRAL = "wizard_create_col_party_cadastral"

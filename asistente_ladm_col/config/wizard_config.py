@@ -198,20 +198,24 @@ class WizardConfig:
                 WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.PolygonLayer
             }
         elif wizard_config_name == WIZARD_CREATE_RIGHT_SURVEY:
-            print('ok')
+            print('ok1')
             return {
                 WIZARD_TYPE: EnumWizardType.MULTI_PAGE_WIZARD_TYPE,
                 WIZARD_CLASS: CreateRRRSurveyWizard,
                 WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateRightSurveyWizard", "right"),
                 WIZARD_TOOL_NAME: QCoreApplication.translate("CreateRightSurveyWizard", "Create right"),
                 WIZARD_HELP: "create_right",
-                WIZARD_UI: "wizards/survey/wiz_create_right_survey.ui",
+                WIZARD_UI: "wizards/wizard_pages/survey/wiz_create_right_survey.ui",
                 WIZARD_QSETTINGS: {
                     WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM-COL/wizards/right_load_data_type"
                 },
                 WIZARD_HELP_PAGES: {
                     WIZARD_HELP1: help_strings.WIZ_CREATE_RIGHT_SURVEY_PAGE_1_OPTION_FORM,
                     WIZARD_HELP2: help_strings.WIZ_CREATE_RIGHT_SURVEY_PAGE_2
+                },
+                WIZARD_STRINGS: {
+                    WIZARD_SEL_SOURCE_TITLE: "What source do you want to associate the right with?",  # TODO Translate
+                    WIZARD_SEL_SOURCE_ENTERING_DATA_MANUALLY: "Entering data manually using a form"  # TODO Translate
                 },
                 WIZARD_LAYERS: {
                     names.LC_RIGHT_T: None,
@@ -230,13 +234,17 @@ class WizardConfig:
                 WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateRestrictionSurveyWizard", "restriction"),
                 WIZARD_TOOL_NAME: QCoreApplication.translate("CreateRestrictionSurveyWizard", "Create restriction"),
                 WIZARD_HELP: "create_restriction",
-                WIZARD_UI: "wizards/survey/wiz_create_restriction_survey.ui",
+                WIZARD_UI: "wizards/wizard_pages/survey/wiz_create_restriction_survey.ui",
                 WIZARD_QSETTINGS: {
                     WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM-COL/wizards/restriction_load_data_type"
                 },
                 WIZARD_HELP_PAGES: {
                     WIZARD_HELP1: help_strings.WIZ_CREATE_RESTRICTION_SURVEY_PAGE_1_OPTION_FORM,
                     WIZARD_HELP2: help_strings.WIZ_CREATE_RESTRICTION_SURVEY_PAGE_2
+                },
+                WIZARD_STRINGS: {
+                    WIZARD_SEL_SOURCE_TITLE: "How would you like to create restrictions?",  # TODO Translate
+                    WIZARD_SEL_SOURCE_ENTERING_DATA_MANUALLY: "Entering data manually using a form"  # TODO Translate
                 },
                 WIZARD_LAYERS: {
                     names.LC_RESTRICTION_T: None,
@@ -256,7 +264,7 @@ class WizardConfig:
                 WIZARD_TOOL_NAME: QCoreApplication.translate("CreateSpatialSourceSurveyWizard",
                                                                                 "Create spatial source"),
                 WIZARD_HELP: "create_spatial_source",
-                WIZARD_UI: "wizards/survey/wiz_create_spatial_source_survey.ui",
+                WIZARD_UI: "wizards/wizard_pages/survey/wiz_create_spatial_source_survey.ui",
                 WIZARD_QSETTINGS: {
                     WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM-COL/wizards/spatial_source_load_data_type"
                 },
@@ -291,7 +299,7 @@ class WizardConfig:
                 WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateParcelSurveyWizard", "parcel"),
                 WIZARD_TOOL_NAME: QCoreApplication.translate("CreateParcelSurveyWizard", "Create parcel"),
                 WIZARD_HELP: "create_parcel",
-                WIZARD_UI: "wizards/survey/wiz_create_parcel_survey.ui",
+                WIZARD_UI: "wizards/wizard_pages/survey/wiz_create_parcel_survey.ui",
                 WIZARD_QSETTINGS: {
                     WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM-COL/wizards/parcel_load_data_type",
                     WIZARD_QSETTINGS_TYPE_PARCEL_SELECTED: "Asistente-LADM-COL/wizards/type_of_parcel_selected"
@@ -299,6 +307,10 @@ class WizardConfig:
                 WIZARD_HELP_PAGES: {
                     WIZARD_HELP1: help_strings.WIZ_CREATE_PARCEL_SURVEY_PAGE_1_OPTION_EXISTING_PLOT,
                     WIZARD_HELP2: help_strings.WIZ_CREATE_PARCEL_SURVEY_PAGE_2
+                },
+                WIZARD_STRINGS: {
+                    WIZARD_SEL_SOURCE_TITLE: "How would you like to create parcels?",  # TODO Translate
+                    WIZARD_SEL_SOURCE_ENTERING_DATA_MANUALLY: "Entering data manually using a form"  # TODO Translate
                 },
                 WIZARD_LAYERS: {
                     names.LC_PLOT_T: None,
@@ -321,13 +333,17 @@ class WizardConfig:
                 WIZARD_FEATURE_NAME: QCoreApplication.translate("CreatePlotSurveyWizard", "plot"),
                 WIZARD_TOOL_NAME: QCoreApplication.translate("CreatePlotSurveyWizard", "Create plot"),
                 WIZARD_HELP: "create_plot",
-                WIZARD_UI: "wizards/survey/wiz_create_plot_survey.ui",
+                WIZARD_UI: "wizards/wizard_pages/survey/wiz_create_plot_survey.ui",
                 WIZARD_QSETTINGS: {
                     WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM-COL/wizards/plot_load_data_type"
                 },
                 WIZARD_HELP_PAGES: {
                     WIZARD_HELP1: help_strings.WIZ_CREATE_PLOT_SURVEY_PAGE_1_OPTION_BOUNDARIES,
                     WIZARD_HELP2: help_strings.WIZ_CREATE_PLOT_SURVEY_PAGE_2
+                },
+                WIZARD_STRINGS: {
+                    WIZARD_SEL_SOURCE_TITLE: "How would you like to create plots?",  # TODO Translate
+                    WIZARD_SEL_SOURCE_ENTERING_DATA_MANUALLY: "Selecting existing boundaries"  # TODO Translate
                 },
                 WIZARD_LAYERS: {
                     names.LC_PLOT_T: None,
