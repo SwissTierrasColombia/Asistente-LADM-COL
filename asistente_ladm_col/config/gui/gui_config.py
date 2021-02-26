@@ -178,7 +178,9 @@ class GUI_Config(QObject):
                     ICON: FIELD_DATA_CAPTURE_ICON,
                     ACTIONS: [
                         ACTION_ALLOCATE_PARCELS_FIELD_DATA_CAPTURE,
-                        ACTION_SYNCHRONIZE_FIELD_DATA
+                        ACTION_SYNCHRONIZE_FIELD_DATA,
+                        SEPARATOR,
+                        ACTION_LOAD_TEMPLATE_FIELD_DATA
                     ]
                 },
                 SEPARATOR,

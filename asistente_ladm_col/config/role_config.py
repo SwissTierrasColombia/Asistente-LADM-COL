@@ -347,6 +347,7 @@ def get_role_config():
                 ACTION_EXPORT_DATA_FDC_COORDINATOR,
                 ACTION_ALLOCATE_PARCELS_FIELD_DATA_CAPTURE,
                 ACTION_SYNCHRONIZE_FIELD_DATA,
+                ACTION_LOAD_TEMPLATE_FIELD_DATA,
                 ACTION_INTEGRATE_SUPPLIES,
                 ACTION_PARCEL_QUERY,
                 ACTION_CHECK_QUALITY_FDC_RULES,
@@ -366,6 +367,7 @@ def get_role_config():
                 ACTION_EXPORT_DATA_FDC_COORDINATOR,
                 ACTION_ALLOCATE_PARCELS_FIELD_DATA_CAPTURE,
                 ACTION_SYNCHRONIZE_FIELD_DATA,
+                ACTION_LOAD_TEMPLATE_FIELD_DATA,
                 ACTION_CHECK_QUALITY_FDC_RULES,
                 ACTION_MOVE_NODES],
             ROLE_QUALITY_RULES: [

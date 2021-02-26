@@ -31,7 +31,8 @@ from qgis.PyQt.QtGui import QIcon, QColor
 from qgis.PyQt.QtWidgets import (QAction,
                                  QPushButton,
                                  QProgressBar,
-                                 QMessageBox)
+                                 QMessageBox,
+                                 QFileDialog)
 from qgis.core import (Qgis,
                        QgsApplication,
                        QgsProcessingModelAlgorithm,
@@ -43,6 +44,7 @@ from asistente_ladm_col.config.ladm_names import MODEL_CONFIG
 from asistente_ladm_col.config.role_config import get_role_config
 from asistente_ladm_col.gui.field_data_capture.dockwidget_fdc_admin_coordinator import DockWidgetFDCAdminCoordinator
 from asistente_ladm_col.gui.field_data_capture.dockwidget_fdc_coordinator_surveyor import DockWidgetFDCCoordinatorSurveyor
+from asistente_ladm_col.gui.field_data_capture.fdc_template_converter import TemplateConverterFieldDataCapture
 from asistente_ladm_col.gui.field_data_capture.synchronization.fdc_admin_synchronization_controller import \
     FDCAdminSynchronizationController
 from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
@@ -452,6 +454,10 @@ class AsistenteLADMCOLPlugin(QObject):
                                                       QCoreApplication.translate("AsistenteLADMCOLPlugin",
                                                                                  "Synchronize field data"),
                                                       self.main_window)
+        self._load_template_project_fdc_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/qgs.svg"),
+                                                         QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                                                    "View/edit field data using template project"),
+                                                         self.main_window)
         self._quality_fdc_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/validation.svg"),
                                            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Quality"),
                                            self.main_window)
@@ -460,12 +466,14 @@ class AsistenteLADMCOLPlugin(QObject):
         self._export_data_fdc_coord_action.triggered.connect(partial(self.show_dlg_export_data_fdc_coordinator, self._context_collected))
         self._allocate_parcels_field_data_capture_action.triggered.connect(partial(self.show_allocate_parcels_field_data_capture, self._context_collected))
         self._synchronize_field_data_action.triggered.connect(partial(self.show_synchronize_field_data, self._context_collected))
+        self._load_template_project_fdc_action.triggered.connect(partial(self.load_template_project_field_data_capture, self._context_collected))
         self._quality_fdc_action.triggered.connect(partial(self.show_dlg_quality_fdc, self._context_collected))
 
         self.gui_builder.register_actions({
             ACTION_EXPORT_DATA_FDC_COORDINATOR: self._export_data_fdc_coord_action,
             ACTION_ALLOCATE_PARCELS_FIELD_DATA_CAPTURE: self._allocate_parcels_field_data_capture_action,
             ACTION_SYNCHRONIZE_FIELD_DATA: self._synchronize_field_data_action,
+            ACTION_LOAD_TEMPLATE_FIELD_DATA: self._load_template_project_fdc_action,
             ACTION_CHECK_QUALITY_FDC_RULES: self._quality_fdc_action
         })
 
@@ -1012,6 +1020,23 @@ class AsistenteLADMCOLPlugin(QObject):
             self.app.gui.add_tabified_dock_widget(Qt.RightDockWidgetArea, dock_widget_field_data_capture)
         else:
             dock_widget_field_data_capture = None
+
+    @_validate_if_wizard_is_open
+    @_qgis_model_baker_required
+    @_db_connection_required
+    @_field_data_capture_model_required
+    def load_template_project_field_data_capture(self, *args):
+        filename, matched_filter = QFileDialog.getOpenFileName(self.main_window,
+                                                               QCoreApplication.translate("AsistenteLADMCOLPlugin", "Select a template (.qgs) project to view/edit field data"),
+                                                               self.app.settings.fdc_project_template_path,
+                                                               QCoreApplication.translate("AsistenteLADMCOLPlugin", "QGIS template project (*.qgs)"))
+        if filename:
+            self.app.settings.fdc_project_template_path = filename
+
+            template_converter = TemplateConverterFieldDataCapture(self.get_db_connection())
+            template_converter.convert_template_project(filename)
+        else:
+            self.logger.warning_msg(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin", "You haven't selected a template (.qgs) project."), 5)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required

@@ -59,7 +59,7 @@ class DBEngineGUIConfig(QObject):
                                      ACTION_FIND_MISSING_SNC_SUPPLIES,
                                      ACTION_INTEGRATE_SUPPLIES]
 
-    PG_ACTIONS = [ALL_ACTIONS]
+    PG_ACTIONS = [ALL_ACTIONS]  # Including ACTION_LOAD_TEMPLATE_FIELD_DATA, not declared above 'cause it's PG-specific
 
     MSSQL_ACTIONS = COMMON_ACTIONS
 

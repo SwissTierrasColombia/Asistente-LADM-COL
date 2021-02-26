@@ -537,6 +537,27 @@ class PGConnector(ClientServerDB):
 
         return ' '.join(uri)
 
+    def get_qgis_layer_source(self, layer_name, layer_info):
+        dict_conn = self._dict_conn_params
+        source = []
+        source += ['host={}'.format(dict_conn['host'])]
+        source += ['port={}'.format(dict_conn['port'])]
+        source += ['user=\'{}\''.format(dict_conn['username'])]
+        #source += ['password=\'{}\''.format(dict_conn['password'])]
+        source += ['dbname=\'{}\''.format(dict_conn['database'])]
+        source += ['key=\'{}\''.format(layer_info[QueryNames.PRIMARY_KEY].lower())]
+        source += ['checkPrimaryKeyUnicity=\'1\'']
+
+        if layer_info[QueryNames.GEOMETRY_COLUMN]:
+            source += ['srid={}'.format(layer_info[QueryNames.SRID])]
+            source += ['type={}'.format(layer_info[QueryNames.GEOMETRY_TYPE_MODEL_BAKER])]
+            source += ['table="{}"."{}"'.format(self.schema, layer_name.lower())]
+            source += ['({})'.format(layer_info[QueryNames.GEOMETRY_COLUMN])]
+        else:
+            source += ['table="{}"."{}"'.format(self.schema, layer_name.lower())]
+
+        return ' '.join(source)
+
     def get_ili2db_version(self):
         res, msg = self.check_and_fix_connection()
         if not res:

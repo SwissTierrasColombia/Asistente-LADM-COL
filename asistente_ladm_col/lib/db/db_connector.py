@@ -137,6 +137,20 @@ class DBConnector(QObject):
         """
         raise NotImplementedError
 
+    def get_qgis_layer_source(self, layer_name, layer_info):
+        """
+        :param layer_name: Name of the layer for which the QGIS source needs to be built
+        :param layer_info: Cached dict with layer info. We get this dict from Model Baker.
+                           This dict needs at least the following keys:
+                            + 'primary_key'
+                            + 'geometry_column'
+                            + 'srid'
+                            + 'type'
+                           See app.core.get_cached_layers().
+        :return: QGIS source string
+        """
+        raise NotImplementedError
+
     def survey_model_exists(self):
         if self.read_model_parser():
             return self.model_parser.survey_model_exists()
