@@ -5,7 +5,7 @@ from qgis.PyQt.QtCore import (QCoreApplication,
                               QSettings,
                               pyqtSignal)
 from qgis.PyQt.QtWidgets import QWizard, QMessageBox
-from qgis.core import QgsMapLayerProxyModel, QgsVectorLayerUtils, QgsVectorLayerUtils, QgsGeometry, Qgis
+from qgis.core import QgsMapLayerProxyModel, QgsVectorLayerUtils, QgsVectorLayerUtils, QgsGeometry
 from asistente_ladm_col import Logger
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.general_config import WIZARD_UI, WIZARD_FEATURE_NAME, \
@@ -14,9 +14,9 @@ from asistente_ladm_col.config.general_config import WIZARD_UI, WIZARD_FEATURE_N
     CSS_COLOR_ERROR_LABEL, WIZARD_STRINGS, WIZARD_TOOL_NAME
 from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.config.translation_strings import TranslatableConfigStrings
+from asistente_ladm_col.gui.wizards.wizard_pages.asistente_wizard_page import AsistenteWizardPage
 from asistente_ladm_col.gui.wizards.wizard_pages.logic import Logic
 from asistente_ladm_col.gui.wizards.wizard_pages.select_source import SelectSource
-from asistente_ladm_col.gui.wizards.wizard_pages.select_spatial_source import AsistenteWizardPage
 from asistente_ladm_col.utils.qt_utils import disable_next_wizard, enable_next_wizard
 from asistente_ladm_col.utils.select_map_tool import SelectMapTool
 from asistente_ladm_col.utils.utils import show_plugin_help

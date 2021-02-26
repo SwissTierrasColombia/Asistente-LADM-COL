@@ -360,7 +360,7 @@ class WizardConfig:
                 WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateExtAddressSurveyWizard", "ext address"),
                 WIZARD_TOOL_NAME: QCoreApplication.translate("CreateExtAddressSurveyWizard", "Create ext address"),
                 WIZARD_HELP: "associate_ext_address",
-                WIZARD_UI: "wizards/survey/wiz_associate_extaddress_survey.ui",
+                WIZARD_UI: "wizards/wizard_pages/survey/wiz_associate_extaddress_survey.ui",
                 WIZARD_QSETTINGS: {
                     WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM-COL/wizards/ext_address_load_data_type"
                 },
@@ -368,6 +368,10 @@ class WizardConfig:
                     WIZARD_HELP1: help_strings.WIZ_ASSOCIATE_EXTADDRESS_SURVEY_PAGE_2_OPTION_1,
                     WIZARD_HELP2: help_strings.WIZ_ASSOCIATE_EXTADDRESS_SURVEY_PAGE_2_OPTION_2,
                     WIZARD_HELP3: help_strings.WIZ_ASSOCIATE_EXTADDRESS_SURVEY_PAGE_2_OPTION_3
+                },
+                WIZARD_STRINGS: {
+                    WIZARD_SEL_SOURCE_TITLE: "How would you like to create and associate addresses?",  # TODO Translate
+                    WIZARD_SEL_SOURCE_ENTERING_DATA_MANUALLY: "Entering data manually using a form"  # TODO Translate
                 },
                 WIZARD_LAYERS: {
                     names.EXT_ADDRESS_S: None,

@@ -14,9 +14,9 @@ from asistente_ladm_col.config.general_config import WIZARD_UI, WIZARD_FEATURE_N
     WIZARD_QSETTINGS, WIZARD_QSETTINGS_LOAD_DATA_TYPE, WIZARD_MAP_LAYER_PROXY_MODEL, WIZARD_HELP2, WIZARD_STRINGS
 from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.config.translation_strings import TranslatableConfigStrings
+from asistente_ladm_col.gui.wizards.wizard_pages.asistente_wizard_page import AsistenteWizardPage
 from asistente_ladm_col.gui.wizards.wizard_pages.logic import Logic
 from asistente_ladm_col.gui.wizards.wizard_pages.select_source import SelectSource
-from asistente_ladm_col.gui.wizards.wizard_pages.select_spatial_source import AsistenteWizardPage
 from asistente_ladm_col.utils.qt_utils import disable_next_wizard, enable_next_wizard
 from asistente_ladm_col.utils.select_map_tool import SelectMapTool
 from asistente_ladm_col.utils.ui import load_ui

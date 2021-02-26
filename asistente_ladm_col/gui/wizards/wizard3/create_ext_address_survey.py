@@ -13,9 +13,12 @@ from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.general_config import WIZARD_UI, WIZARD_FEATURE_NAME, WIZARD_TOOL_NAME, \
     WIZARD_EDITING_LAYER_NAME, WIZARD_LAYERS, WIZARD_READ_ONLY_FIELDS, WIZARD_HELP, WIZARD_HELP_PAGES, WIZARD_HELP1, \
     WIZARD_QSETTINGS, WIZARD_QSETTINGS_LOAD_DATA_TYPE, WIZARD_MAP_LAYER_PROXY_MODEL, DEFAULT_SRS_AUTHID, \
-    CSS_COLOR_INACTIVE_LABEL, CSS_COLOR_OKAY_LABEL, CSS_COLOR_ERROR_LABEL, WIZARD_HELP2, WIZARD_HELP3
+    CSS_COLOR_INACTIVE_LABEL, CSS_COLOR_OKAY_LABEL, CSS_COLOR_ERROR_LABEL, WIZARD_HELP2, WIZARD_HELP3, WIZARD_STRINGS
 from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.config.translation_strings import TranslatableConfigStrings
+from asistente_ladm_col.gui.wizards.wizard_pages.asistente_wizard_page import AsistenteWizardPage
+from asistente_ladm_col.gui.wizards.wizard_pages.logic import Logic
+from asistente_ladm_col.gui.wizards.wizard_pages.select_source import SelectSource
 from asistente_ladm_col.utils.crs_utils import get_crs_authid
 from asistente_ladm_col.utils.qt_utils import disable_next_wizard, enable_next_wizard
 from asistente_ladm_col.utils.select_map_tool import SelectMapTool
@@ -40,14 +43,18 @@ class CreateExtAddressSurveyWizard(QWizard):
         self.names = self._db.names
         self.help_strings = HelpStrings()
         self.translatable_config_strings = TranslatableConfigStrings()
-        load_ui(self.wizard_config[WIZARD_UI], self)
 
         self.WIZARD_FEATURE_NAME = self.wizard_config[WIZARD_FEATURE_NAME]
         self.WIZARD_TOOL_NAME = self.wizard_config[WIZARD_TOOL_NAME]
         self.EDITING_LAYER_NAME = self.wizard_config[WIZARD_EDITING_LAYER_NAME]
         self._layers = self.wizard_config[WIZARD_LAYERS]
+
+        self.logic = Logic(self.app, db, self._layers, wizard_settings)
+
         self.set_ready_only_field()
 
+        self.wizardPage1 = None
+        self.wizardPage2 = None
         self.init_gui()
 
         # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>>>>> map interaction expansion
@@ -73,17 +80,23 @@ class CreateExtAddressSurveyWizard(QWizard):
 
     # (multiPageSpatialWizard)
     def init_gui(self):
-        self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.Filter(self.wizard_config[WIZARD_MAP_LAYER_PROXY_MODEL]))
-        self.mMapLayerComboBox.layerChanged.connect(self.import_layer_changed)
-
+        # it creates the page (select source)
+        self.wizardPage1 = SelectSource(self.logic.get_field_mappings_file_names(),
+                                          self.logic.get_filters(), self.wizard_config[WIZARD_STRINGS])
+        self.wizardPage1.option_changed.connect(self.adjust_page_1_controls)
         self.restore_settings()
-        self.rad_create_manually.toggled.connect(self.adjust_page_1_controls)
-        self.adjust_page_1_controls()
 
         self.button(QWizard.NextButton).clicked.connect(self.adjust_page_2_controls)
         self.button(QWizard.FinishButton).clicked.connect(self.finished_dialog)
         self.button(QWizard.HelpButton).clicked.connect(self.show_help)
         self.rejected.connect(self.close_wizard)
+
+        self.wizardPage2 = AsistenteWizardPage(self.wizard_config[WIZARD_UI])
+        self.wizardPage1.controls_changed()
+        self.wizardPage1.layer_changed.connect(self.import_layer_changed)
+
+        self.addPage(self.wizardPage1)
+        self.addPage(self.wizardPage2)
 
     # (absWizardFactory)
     def restore_settings(self):
@@ -91,38 +104,28 @@ class CreateExtAddressSurveyWizard(QWizard):
 
         load_data_type = settings.value(self.wizard_config[WIZARD_QSETTINGS][WIZARD_QSETTINGS_LOAD_DATA_TYPE]) or 'create_manually'
         if load_data_type == 'refactor':
-            self.rad_refactor.setChecked(True)
+            self.wizardPage1.enabled_refactor = True
         else:
-            self.rad_create_manually.setChecked(True)
+            self.wizardPage1.enabled_create_manually = True
 
     # (multiPageSpatialWizard)
     def adjust_page_1_controls(self):
-        self.cbo_mapping.clear()
-        self.cbo_mapping.addItem("")
-        self.cbo_mapping.addItems(self.app.core.get_field_mappings_file_names(self.EDITING_LAYER_NAME))
+        finish_button_text = ''
 
-        if self.rad_refactor.isChecked():
-            self.lbl_refactor_source.setEnabled(True)
-            self.mMapLayerComboBox.setEnabled(True)
-            self.lbl_field_mapping.setEnabled(True)
-            self.cbo_mapping.setEnabled(True)
+        if self.wizardPage1.enabled_refactor:
             disable_next_wizard(self)
             self.wizardPage1.setFinalPage(True)
-            self.import_layer_changed(self.mMapLayerComboBox.currentLayer())
             finish_button_text = QCoreApplication.translate("WizardTranslations", "Import")
-            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(self._db, self._layers[self.EDITING_LAYER_NAME]))
+            self.wizardPage1.set_help_text(self.help_strings.get_refactor_help_string(self._db, self._layers[self.EDITING_LAYER_NAME]))
             self.wizardPage1.setButtonText(QWizard.FinishButton, finish_button_text)
-        elif self.rad_create_manually.isChecked():
-            self.lbl_refactor_source.setEnabled(False)
-            self.mMapLayerComboBox.setEnabled(False)
-            self.lbl_field_mapping.setEnabled(False)
-            self.cbo_mapping.setEnabled(False)
+            self.import_layer_changed(self.wizardPage1.selected_layer)
+        elif self.wizardPage1.enabled_create_manually:
             self.wizardPage1.setFinalPage(False)
             enable_next_wizard(self)
             self.wizardPage1.setFinalPage(False)
-            self.lbl_refactor_source.setStyleSheet('')
+            self.wizardPage1.lbl_refactor_source.setStyleSheet('')
             finish_button_text = QCoreApplication.translate("WizardTranslations", "Create")
-            self.txt_help_page_1.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP1])
+            self.wizardPage1.set_help_text(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP1])
 
         self.wizardPage2.setButtonText(QWizard.FinishButton, finish_button_text)
 
@@ -199,9 +202,9 @@ class CreateExtAddressSurveyWizard(QWizard):
         # if isinstance(self, SelectFeaturesOnMapWrapper):
         self.register_select_feature_on_map()
 
-        self.rad_to_plot.toggled.connect(self.toggle_spatial_unit)
-        self.rad_to_building.toggled.connect(self.toggle_spatial_unit)
-        self.rad_to_building_unit.toggled.connect(self.toggle_spatial_unit)
+        self.wizardPage2.rad_to_plot.toggled.connect(self.toggle_spatial_unit)
+        self.wizardPage2.rad_to_building.toggled.connect(self.toggle_spatial_unit)
+        self.wizardPage2.rad_to_building_unit.toggled.connect(self.toggle_spatial_unit)
         self.toggle_spatial_unit()
 
     # (spatialWizardFactory)
@@ -223,40 +226,33 @@ class CreateExtAddressSurveyWizard(QWizard):
                 self._layers[layer_name].willBeDeleted.connect(self.layer_removed)
 
     # ------------------------------------------>>>  FINISH DIALOG
-    # SpatialWizardFactory
+    # (spatialWizardFactory)
     def finished_dialog(self):
         self.save_settings()
 
-        if self.rad_refactor.isChecked():
-            if self.mMapLayerComboBox.currentLayer() is not None:
-                field_mapping = self.cbo_mapping.currentText()
-                res_etl_model = self.app.core.show_etl_model(self._db,
-                                                               self.mMapLayerComboBox.currentLayer(),
-                                                               self.EDITING_LAYER_NAME,
-                                                               field_mapping=field_mapping)
-                if res_etl_model: # Features were added?
-                    self.app.gui.redraw_all_layers()  # Redraw all layers to show imported data
-
-                    # If the result of the etl_model is successful and we used a stored recent mapping, we delete the
-                    # previous mapping used (we give preference to the latest used mapping)
-                    if field_mapping:
-                        self.app.core.delete_old_field_mapping(field_mapping)
-
-                    self.app.core.save_field_mapping(self.EDITING_LAYER_NAME)
-            else:
-                self.logger.warning_msg(__name__, QCoreApplication.translate("WizardTranslations",
-                    "Select a source layer to set the field mapping to '{}'.").format(self.EDITING_LAYER_NAME))
-
-            self.close_wizard()
-
-        elif self.rad_create_manually.isChecked():
+        if self.wizardPage1.enabled_refactor:
+            self.__create_from_refactor()
+        elif self.wizardPage1.enabled_create_manually:
             self.set_finalize_geometry_creation_enabled_emitted.emit(True)
             self.prepare_feature_creation()
+
+    def __create_from_refactor(self):
+        selected_layer = self.wizardPage1.selected_layer
+        field_mapping = self.wizardPage1.field_mapping
+        editing_layer_name = self.wizard_config[WIZARD_EDITING_LAYER_NAME]
+
+        if selected_layer is not None:
+            self.logic.create_from_refactor(selected_layer, editing_layer_name, field_mapping)
+        else:
+            self.logger.warning_msg(__name__, QCoreApplication.translate("WizardTranslations",
+                "Select a source layer to set the field mapping to '{}'.").format(editing_layer_name))
+
+        self.close_wizard()
 
     # (absWizardFactory)
     def save_settings(self):
         settings = QSettings()
-        settings.setValue(self.wizard_config[WIZARD_QSETTINGS][WIZARD_QSETTINGS_LOAD_DATA_TYPE], 'create_manually' if self.rad_create_manually.isChecked() else 'refactor')
+        settings.setValue(self.wizard_config[WIZARD_QSETTINGS][WIZARD_QSETTINGS_LOAD_DATA_TYPE], 'create_manually' if self.wizardPage1.enabled_create_manually else 'refactor')
 
     # (absWizardFactory)
     def prepare_feature_creation(self):
@@ -328,9 +324,7 @@ class CreateExtAddressSurveyWizard(QWizard):
 
     # (absWizardFactory)
     def form_rejected(self):
-        message = QCoreApplication.translate("WizardTranslations",
-                                             "'{}' tool has been closed because you just closed the form.").format(
-            self.WIZARD_TOOL_NAME)
+        message = QCoreApplication.translate("WizardTranslations", "'{}' tool has been closed because you just closed the form.").format(self.WIZARD_TOOL_NAME)
         self.close_wizard(message)
 
     # (this class)
@@ -512,129 +506,129 @@ class CreateExtAddressSurveyWizard(QWizard):
     # ----------------------------------++++++++++++++++++++++++++++++++++++++++++++-------->>> THIS CLASS
     def toggle_spatial_unit(self):
 
-        self.btn_plot_map.setEnabled(False)
-        self.btn_building_map.setEnabled(False)
-        self.btn_building_unit_map.setEnabled(False)
+        self.wizardPage2.btn_plot_map.setEnabled(False)
+        self.wizardPage2.btn_building_map.setEnabled(False)
+        self.wizardPage2.btn_building_unit_map.setEnabled(False)
 
-        self.btn_plot_expression.setEnabled(False)
-        self.btn_building_expression.setEnabled(False)
-        self.btn_building_unit_expression.setEnabled(False)
+        self.wizardPage2.btn_plot_expression.setEnabled(False)
+        self.wizardPage2.btn_building_expression.setEnabled(False)
+        self.wizardPage2.btn_building_unit_expression.setEnabled(False)
 
-        if self.rad_to_plot.isChecked():
-            self.txt_help_page_2.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP1])
+        if self.wizardPage2.rad_to_plot.isChecked():
+            self.wizardPage2.txt_help_page_2.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP1])
             self._current_layer = self._layers[self.names.LC_PLOT_T]
 
-            self.btn_plot_map.setEnabled(True)
-            self.btn_plot_expression.setEnabled(True)
+            self.wizardPage2.btn_plot_map.setEnabled(True)
+            self.wizardPage2.btn_plot_expression.setEnabled(True)
 
-        elif self.rad_to_building.isChecked():
-            self.txt_help_page_2.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP2])
-            self._current_layer = self._layers[self.names.LC_BUILDING_T]
+        elif self.wizardPage2.rad_to_building.isChecked():
+            self.wizardPage2.txt_help_page_2.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP2])
+            self.wizardPage2._current_layer = self._layers[self.names.LC_BUILDING_T]
 
-            self.btn_building_map.setEnabled(True)
-            self.btn_building_expression.setEnabled(True)
+            self.wizardPage2.btn_building_map.setEnabled(True)
+            self.wizardPage2.btn_building_expression.setEnabled(True)
 
-        elif self.rad_to_building_unit.isChecked():
-            self.txt_help_page_2.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP3])
+        elif self.wizardPage2.rad_to_building_unit.isChecked():
+            self.wizardPage2.txt_help_page_2.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP3])
             self._current_layer = self._layers[self.names.LC_BUILDING_UNIT_T]
 
-            self.btn_building_unit_map.setEnabled(True)
-            self.btn_building_unit_expression.setEnabled(True)
+            self.wizardPage2.btn_building_unit_map.setEnabled(True)
+            self.wizardPage2.btn_building_unit_expression.setEnabled(True)
 
         self.iface.setActiveLayer(self._current_layer)
         self.check_selected_features()
 
     def check_selected_features(self):
-        self.rad_to_plot.setText(QCoreApplication.translate("WizardTranslations", "Plot(s): {count} Feature(s) Selected").format(count=self._layers[self.names.LC_PLOT_T].selectedFeatureCount()))
-        self.rad_to_building.setText(QCoreApplication.translate("WizardTranslations", "Building(s): {count} Feature(s) Selected").format(count=self._layers[self.names.LC_BUILDING_T].selectedFeatureCount()))
-        self.rad_to_building_unit.setText(QCoreApplication.translate("WizardTranslations", "Building unit(s): {count} Feature(s) Selected").format(count=self._layers[self.names.LC_BUILDING_UNIT_T].selectedFeatureCount()))
+        self.wizardPage2.rad_to_plot.setText(QCoreApplication.translate("WizardTranslations", "Plot(s): {count} Feature(s) Selected").format(count=self._layers[self.names.LC_PLOT_T].selectedFeatureCount()))
+        self.wizardPage2.rad_to_building.setText(QCoreApplication.translate("WizardTranslations", "Building(s): {count} Feature(s) Selected").format(count=self._layers[self.names.LC_BUILDING_T].selectedFeatureCount()))
+        self.wizardPage2.rad_to_building_unit.setText(QCoreApplication.translate("WizardTranslations", "Building unit(s): {count} Feature(s) Selected").format(count=self._layers[self.names.LC_BUILDING_UNIT_T].selectedFeatureCount()))
 
         if self._current_layer is None:
             if self._db.get_ladm_layer_name(self.iface.activeLayer()) == self.names.LC_PLOT_T:
-                self.rad_to_plot.setChecked(True)
+                self.wizardPage2.rad_to_plot.setChecked(True)
                 self._current_layer = self._layers[self.names.LC_PLOT_T]
             elif self._db.get_ladm_layer_name(self.iface.activeLayer()) == self.names.LC_BUILDING_T:
-                self.rad_to_building.setChecked(True)
+                self.wizardPage2.rad_to_building.setChecked(True)
                 self._current_layer = self._layers[self.names.LC_BUILDING_T]
             elif self._db.get_ladm_layer_name(self.iface.activeLayer()) == self.names.LC_BUILDING_UNIT_T:
-                self.rad_to_building_unit.setChecked(True)
+                self.wizardPage2.rad_to_building_unit.setChecked(True)
                 self._current_layer = self._layers[self.names.LC_BUILDING_UNIT_T]
             else:
                 # Select layer that have least one feature selected
                 # as current layer when current layer is not defined
                 if self._layers[self.names.LC_PLOT_T].selectedFeatureCount():
-                    self.rad_to_plot.setChecked(True)
+                    self.wizardPage2.rad_to_plot.setChecked(True)
                     self._current_layer = self._layers[self.names.LC_PLOT_T]
                 elif self._layers[self.names.LC_BUILDING_T].selectedFeatureCount():
-                    self.rad_to_building.setChecked(True)
+                    self.wizardPage2.rad_to_building.setChecked(True)
                     self._current_layer = self._layers[self.names.LC_BUILDING_T]
                 elif self._layers[self.names.LC_BUILDING_UNIT_T].selectedFeatureCount():
-                    self.rad_to_building_unit.setChecked(True)
+                    self.wizardPage2.rad_to_building_unit.setChecked(True)
                     self._current_layer = self._layers[self.names.LC_BUILDING_UNIT_T]
                 else:
                     # By default current_layer will be plot layer
-                    self.rad_to_plot.setChecked(True)
+                    self.wizardPage2.rad_to_plot.setChecked(True)
                     self._current_layer = self._layers[self.names.LC_PLOT_T]
 
-        if self.rad_to_plot.isChecked():
-            self.rad_to_building.setStyleSheet(CSS_COLOR_INACTIVE_LABEL)
-            self.rad_to_building_unit.setStyleSheet(CSS_COLOR_INACTIVE_LABEL)
+        if self.wizardPage2.rad_to_plot.isChecked():
+            self.wizardPage2.rad_to_building.setStyleSheet(CSS_COLOR_INACTIVE_LABEL)
+            self.wizardPage2.rad_to_building_unit.setStyleSheet(CSS_COLOR_INACTIVE_LABEL)
 
             # Check selected features in plot layer
             if self._layers[self.names.LC_PLOT_T].selectedFeatureCount() == 1:
-                self.rad_to_plot.setStyleSheet(CSS_COLOR_OKAY_LABEL)
+                self.wizardPage2.rad_to_plot.setStyleSheet(CSS_COLOR_OKAY_LABEL)
             elif self._layers[self.names.LC_PLOT_T].selectedFeatureCount() > 1:
                 # the color of the text is changed to highlight when there are more than one feature selected
-                self.rad_to_plot.setStyleSheet(CSS_COLOR_ERROR_LABEL)
+                self.wizardPage2.rad_to_plot.setStyleSheet(CSS_COLOR_ERROR_LABEL)
             else:
                 # the color of the text is changed to highlight that there is no selection
-                self.rad_to_plot.setStyleSheet(CSS_COLOR_ERROR_LABEL)
+                self.wizardPage2.rad_to_plot.setStyleSheet(CSS_COLOR_ERROR_LABEL)
 
-        elif self.rad_to_building.isChecked():
-            self.rad_to_plot.setStyleSheet(CSS_COLOR_INACTIVE_LABEL)
-            self.rad_to_building_unit.setStyleSheet(CSS_COLOR_INACTIVE_LABEL)
+        elif self.wizardPage2.rad_to_building.isChecked():
+            self.wizardPage2.rad_to_plot.setStyleSheet(CSS_COLOR_INACTIVE_LABEL)
+            self.wizardPage2.rad_to_building_unit.setStyleSheet(CSS_COLOR_INACTIVE_LABEL)
 
             # Check selected features in building layer
             if self._layers[self.names.LC_BUILDING_T].selectedFeatureCount() == 1:
-                self.rad_to_building.setStyleSheet(CSS_COLOR_OKAY_LABEL)
+                self.wizardPage2.rad_to_building.setStyleSheet(CSS_COLOR_OKAY_LABEL)
             elif self._layers[self.names.LC_BUILDING_T].selectedFeatureCount() > 1:
                 # the color of the text is changed to highlight when there are more than one feature selected
-                self.rad_to_building.setStyleSheet(CSS_COLOR_ERROR_LABEL)
+                self.wizardPage2.rad_to_building.setStyleSheet(CSS_COLOR_ERROR_LABEL)
             else:
                 # the color of the text is changed to highlight that there is no selection
-                self.rad_to_building.setStyleSheet(CSS_COLOR_ERROR_LABEL)
+                self.wizardPage2.rad_to_building.setStyleSheet(CSS_COLOR_ERROR_LABEL)
 
-        elif self.rad_to_building_unit.isChecked():
-            self.rad_to_plot.setStyleSheet(CSS_COLOR_INACTIVE_LABEL)
-            self.rad_to_building.setStyleSheet(CSS_COLOR_INACTIVE_LABEL)
+        elif self.wizardPage2.rad_to_building_unit.isChecked():
+            self.wizardPage2.rad_to_plot.setStyleSheet(CSS_COLOR_INACTIVE_LABEL)
+            self.wizardPage2.rad_to_building.setStyleSheet(CSS_COLOR_INACTIVE_LABEL)
 
             # Check selected features in building unit layer
             if self._layers[self.names.LC_BUILDING_UNIT_T].selectedFeatureCount() == 1:
-                self.rad_to_building_unit.setStyleSheet(CSS_COLOR_OKAY_LABEL)
+                self.wizardPage2.rad_to_building_unit.setStyleSheet(CSS_COLOR_OKAY_LABEL)
             elif self._layers[self.names.LC_BUILDING_UNIT_T].selectedFeatureCount() > 1:
                 # the color of the text is changed to highlight when there are more than one features selected
-                self.rad_to_building_unit.setStyleSheet(CSS_COLOR_ERROR_LABEL)
+                self.wizardPage2.rad_to_building_unit.setStyleSheet(CSS_COLOR_ERROR_LABEL)
             else:
                 # the color of the text is changed to highlight that there is no selection
-                self.rad_to_building_unit.setStyleSheet(CSS_COLOR_ERROR_LABEL)
+                self.wizardPage2.rad_to_building_unit.setStyleSheet(CSS_COLOR_ERROR_LABEL)
 
         # Zoom to selected feature
         self.canvas.zoomToSelected(self._current_layer)
 
         # Condition for enabling the finish button
-        if self.rad_to_plot.isChecked() and self._layers[self.names.LC_PLOT_T].selectedFeatureCount() == 1:
+        if self.wizardPage2.rad_to_plot.isChecked() and self._layers[self.names.LC_PLOT_T].selectedFeatureCount() == 1:
             self.button(self.FinishButton).setDisabled(False)
-        elif self.rad_to_building.isChecked() and self._layers[self.names.LC_BUILDING_T].selectedFeatureCount() == 1:
+        elif self.wizardPage2.rad_to_building.isChecked() and self._layers[self.names.LC_BUILDING_T].selectedFeatureCount() == 1:
             self.button(self.FinishButton).setDisabled(False)
-        elif self.rad_to_building_unit.isChecked() and self._layers[self.names.LC_BUILDING_UNIT_T].selectedFeatureCount() == 1:
+        elif self.wizardPage2.rad_to_building_unit.isChecked() and self._layers[self.names.LC_BUILDING_UNIT_T].selectedFeatureCount() == 1:
             self.button(self.FinishButton).setDisabled(False)
         else:
             self.button(self.FinishButton).setDisabled(True)
 
     def disconnect_signals_select_features_by_expression(self):
-        signals = [self.btn_plot_expression.clicked,
-                   self.btn_building_expression.clicked,
-                   self.btn_building_unit_expression.clicked]
+        signals = [self.wizardPage2.btn_plot_expression.clicked,
+                   self.wizardPage2.btn_building_expression.clicked,
+                   self.wizardPage2.btn_building_unit_expression.clicked]
 
         for signal in signals:
             try:
@@ -643,19 +637,19 @@ class CreateExtAddressSurveyWizard(QWizard):
                 pass
 
     def register_select_features_by_expression(self):
-        self.btn_plot_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.LC_PLOT_T]))
-        self.btn_building_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.LC_BUILDING_T]))
-        self.btn_building_unit_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.LC_BUILDING_UNIT_T]))
+        self.wizardPage2.btn_plot_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.LC_PLOT_T]))
+        self.wizardPage2.btn_building_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.LC_BUILDING_T]))
+        self.wizardPage2.btn_building_unit_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.LC_BUILDING_UNIT_T]))
 
     def register_select_feature_on_map(self):
-        self.btn_plot_map.clicked.connect(partial(self.select_features_on_map, self._layers[self.names.LC_PLOT_T]))
-        self.btn_building_map.clicked.connect(partial(self.select_features_on_map, self._layers[self.names.LC_BUILDING_T]))
-        self.btn_building_unit_map.clicked.connect(partial(self.select_features_on_map, self._layers[self.names.LC_BUILDING_UNIT_T]))
+        self.wizardPage2.btn_plot_map.clicked.connect(partial(self.select_features_on_map, self._layers[self.names.LC_PLOT_T]))
+        self.wizardPage2.btn_building_map.clicked.connect(partial(self.select_features_on_map, self._layers[self.names.LC_BUILDING_T]))
+        self.wizardPage2.btn_building_unit_map.clicked.connect(partial(self.select_features_on_map, self._layers[self.names.LC_BUILDING_UNIT_T]))
 
     def disconnect_signals_controls_select_features_on_map(self):
-        signals = [self.btn_plot_map.clicked,
-                   self.btn_building_map.clicked,
-                   self.btn_building_unit_map.clicked]
+        signals = [self.wizardPage2.btn_plot_map.clicked,
+                   self.wizardPage2.btn_building_map.clicked,
+                   self.wizardPage2.btn_building_unit_map.clicked]
 
         for signal in signals:
             try:
@@ -687,10 +681,11 @@ class CreateExtAddressSurveyWizard(QWizard):
         if layer:
             crs = get_crs_authid(layer.crs())
             if crs != DEFAULT_SRS_AUTHID:
-                self.lbl_refactor_source.setStyleSheet('color: orange')
-                self.lbl_refactor_source.setToolTip(QCoreApplication.translate("WizardTranslations",
+                self.wizardPage1.lbl_refactor_source.setStyleSheet('color: orange')
+                self.wizardPage1.lbl_refactor_source.setToolTip(QCoreApplication.translate("WizardTranslations",
                                                                                "This layer will be reprojected for you to '{}' (Colombian National Origin),<br>before attempting to import it into LADM-COL.").format(
                     DEFAULT_SRS_AUTHID))
             else:
-                self.lbl_refactor_source.setStyleSheet('')
-                self.lbl_refactor_source.setToolTip('')
+                self.wizardPage1.lbl_refactor_source.setStyleSheet('')
+                self.wizardPage1.lbl_refactor_source.setToolTip('')
+

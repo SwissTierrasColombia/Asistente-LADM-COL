@@ -1,17 +1,21 @@
+import processing
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QObject,
                               QSettings,
-                              pyqtSignal, Qgis)
+                              pyqtSignal)
 
 from qgis.PyQt.QtWidgets import QWizard, QMessageBox
-from qgis.core import QgsProject,QgsMapLayerProxyModel, QgsVectorLayerUtils, QgsVectorLayerUtils, QgsGeometry
+from qgis.core import QgsProject,QgsMapLayerProxyModel, QgsVectorLayer, QgsVectorLayerUtils, QgsVectorLayerUtils, QgsGeometry
 from asistente_ladm_col import Logger
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.general_config import WIZARD_UI, WIZARD_FEATURE_NAME, WIZARD_TOOL_NAME, \
     WIZARD_EDITING_LAYER_NAME, WIZARD_LAYERS, WIZARD_READ_ONLY_FIELDS, WIZARD_HELP, WIZARD_HELP_PAGES, WIZARD_HELP1, \
-    WIZARD_QSETTINGS, WIZARD_QSETTINGS_LOAD_DATA_TYPE, WIZARD_MAP_LAYER_PROXY_MODEL, DEFAULT_SRS_AUTHID
+    WIZARD_QSETTINGS, WIZARD_QSETTINGS_LOAD_DATA_TYPE, WIZARD_MAP_LAYER_PROXY_MODEL, DEFAULT_SRS_AUTHID, WIZARD_STRINGS, \
+    WIZARD_HELP2
 from asistente_ladm_col.config.help_strings import HelpStrings
-from asistente_ladm_col.config.translation_strings import TranslatableConfigStrings
+from asistente_ladm_col.config.translation_strings import TranslatableConfigStrings, RIGHT_OF_WAY_LINE_LAYER
+from asistente_ladm_col.gui.wizards.wizard_pages.logic import Logic
+from asistente_ladm_col.gui.wizards.wizard_pages.select_source_2 import SelectSource2
 from asistente_ladm_col.utils.crs_utils import get_crs_authid
 from asistente_ladm_col.utils.ui import load_ui
 from asistente_ladm_col.utils.utils import show_plugin_help
@@ -34,14 +38,18 @@ class CreateRightOfWaySurveyWizard: # (SinglePageSpatialWizardFactory):
         self.names = self._db.names
         self.help_strings = HelpStrings()
         self.translatable_config_strings = TranslatableConfigStrings()
-        load_ui(self.wizard_config[WIZARD_UI], self)
+        # load_ui(self.wizard_config[WIZARD_UI], self)
 
         self.WIZARD_FEATURE_NAME = self.wizard_config[WIZARD_FEATURE_NAME]
         self.WIZARD_TOOL_NAME = self.wizard_config[WIZARD_TOOL_NAME]
         self.EDITING_LAYER_NAME = self.wizard_config[WIZARD_EDITING_LAYER_NAME]
         self._layers = self.wizard_config[WIZARD_LAYERS]
+
+        self.logic = Logic(self.app, db, self._layers, wizard_settings)
+
         self.set_ready_only_field()
 
+        self.wizardPage1 = None
         self.init_gui()
 
         # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>>>>> map interaction expansion
@@ -64,66 +72,47 @@ class CreateRightOfWaySurveyWizard: # (SinglePageSpatialWizardFactory):
 
     # (this class)
     def init_gui(self):
-        self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.Filter(self.wizard_config[WIZARD_MAP_LAYER_PROXY_MODEL]))
-        self.mMapLayerComboBox.layerChanged.connect(self.import_layer_changed)
-
+        # it creates the page (select source)
+        self.wizardPage1 = SelectSource2(self.logic.get_field_mappings_file_names(),
+                                          self.logic.get_filters(), self.wizard_config[WIZARD_STRINGS])
+        self.wizardPage1.option_changed.connect(self.adjust_page_1_controls)
         self.restore_settings()
-        self.rad_create_manually.toggled.connect(self.adjust_page_1_controls)
-        self.rad_digitizing_line.toggled.connect(self.adjust_page_1_controls)
-        self.adjust_page_1_controls()
 
         self.button(QWizard.FinishButton).clicked.connect(self.finished_dialog)
         self.button(QWizard.HelpButton).clicked.connect(self.show_help)
-        self.width_line_edit.setValue(1.0)
+        self.wizardPage2.width_line_edit.setValue(1.0)
         self.rejected.connect(self.close_wizard)
+
+        self.wizardPage1.controls_changed()
+        self.wizardPage1.layer_changed.connect(self.import_layer_changed)
+
+        self.addPage(self.wizardPage1)
 
     # (this class)
     def restore_settings(self):
         settings = QSettings()
 
-        load_data_type = settings.value(self.wizard_config[WIZARD_QSETTINGS][WIZARD_QSETTINGS_LOAD_DATA_TYPE]) or 'digitizing_line'
+        load_data_type = settings.value(self.wizard_config[WIZARD_QSETTINGS][WIZARD_QSETTINGS_LOAD_DATA_TYPE]) or 'create_manually'
         if load_data_type == 'refactor':
-            self.rad_refactor.setChecked(True)
-        elif load_data_type == 'create_manually':
-            self.rad_create_manually.setChecked(True)
+            self.wizardPage1.enabled_refactor = True
         else:
-            self.rad_digitizing_line.setChecked(True)
+            self.wizardPage1.enabled_create_manually = True
 
     # (this class)
     def adjust_page_1_controls(self):
-        self.cbo_mapping.clear()
-        self.cbo_mapping.addItem("")
-        self.cbo_mapping.addItems(self.app.core.get_field_mappings_file_names(self.EDITING_LAYER_NAME))
+        finish_button_text = ''
 
-        if self.rad_refactor.isChecked():
-            self.lbl_width.setEnabled(False)
-            self.width_line_edit.setEnabled(False)
-            self.lbl_refactor_source.setEnabled(True)
-            self.mMapLayerComboBox.setEnabled(True)
-            self.lbl_field_mapping.setEnabled(True)
-            self.cbo_mapping.setEnabled(True)
-            self.import_layer_changed(self.mMapLayerComboBox.currentLayer())
+        if self.wizardPage1.enabled_refactor:
             finish_button_text = QCoreApplication.translate("WizardTranslations", "Import")
-            self.txt_help_page_1.setHtml(self.help_strings.get_refactor_help_string(self._db, self._layers[self.EDITING_LAYER_NAME]))
-        elif self.rad_create_manually.isChecked():
-            self.lbl_refactor_source.setEnabled(False)
-            self.mMapLayerComboBox.setEnabled(False)
-            self.lbl_width.setEnabled(False)
-            self.width_line_edit.setEnabled(False)
-            self.lbl_field_mapping.setEnabled(False)
-            self.cbo_mapping.setEnabled(False)
+            self.wizardPage1.set_help_text(self.help_strings.get_refactor_help_string(self._db, self._layers[self.EDITING_LAYER_NAME]))
+            self.import_layer_changed(self.wizardPage1.selected_layer)
+        elif self.wizardPage1.enabled_create_manually:
             finish_button_text = QCoreApplication.translate("WizardTranslations", "Create")
-            self.txt_help_page_1.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP1])
+            self.wizardPage1.set_help_text(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP1])
             self.lbl_refactor_source.setStyleSheet('')
-        elif self.rad_digitizing_line.isChecked():
-            self.width_line_edit.setEnabled(True)
-            self.lbl_width.setEnabled(True)
-            self.lbl_refactor_source.setEnabled(False)
-            self.mMapLayerComboBox.setEnabled(False)
-            self.lbl_field_mapping.setEnabled(False)
-            self.cbo_mapping.setEnabled(False)
+        elif self.wizardPage1.enabled_digitalizing_line:
             finish_button_text = QCoreApplication.translate("WizardTranslations", "Create")
-            self.txt_help_page_1.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP2])
+            self.wizardPage1.set_help_text(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP2])
             self.lbl_refactor_source.setStyleSheet('')
 
         self.wizardPage1.setButtonText(QWizard.FinishButton, finish_button_text)
@@ -210,47 +199,38 @@ class CreateRightOfWaySurveyWizard: # (SinglePageSpatialWizardFactory):
     def finished_dialog(self):
         self.save_settings()
 
-        if self.rad_refactor.isChecked():
-            self.type_geometry_creation = None
-            if self.mMapLayerComboBox.currentLayer() is not None:
-                field_mapping = self.cbo_mapping.currentText()
-                res_etl_model = self.app.core.show_etl_model(self._db,
-                                                             self.mMapLayerComboBox.currentLayer(),
-                                                             self.EDITING_LAYER_NAME,
-                                                             field_mapping=field_mapping)
-                if res_etl_model: # Features were added?
-                    self.app.gui.redraw_all_layers()  # Redraw all layers to show imported data
-
-                    # If the result of the etl_model is successful and we used a stored recent mapping, we delete the
-                    # previous mapping used (we give preference to the latest used mapping)
-                    if field_mapping:
-                        self.app.core.delete_old_field_mapping(field_mapping)
-
-                    self.app.core.save_field_mapping(self.EDITING_LAYER_NAME)
-
-            else:
-                self.logger.warning_msg(__name__, QCoreApplication.translate("WizardTranslations",
-                    "Select a source layer to set the field mapping to '{}'.").format(self.EDITING_LAYER_NAME))
-
-            self.close_wizard()
-
-        elif self.rad_create_manually.isChecked():
+        if self.wizardPage1.enabled_refactor:
+            self.__create_from_refactor()
+        elif self.wizardPage1.enabled_create_manually:
             self.set_finalize_geometry_creation_enabled_emitted.emit(True)
             self.type_geometry_creation = "digitizing_polygon"
             self.prepare_feature_creation()
-        elif self.rad_digitizing_line.isChecked():
+        elif self.wizardPage1.enabled_digitalizing_line:
             self.set_finalize_geometry_creation_enabled_emitted.emit(True)
             self.type_geometry_creation = "digitizing_line"
             self.prepare_feature_creation()
+
+    def __create_from_refactor(self):
+        selected_layer = self.wizardPage1.selected_layer
+        field_mapping = self.wizardPage1.field_mapping
+        editing_layer_name = self.wizard_config[WIZARD_EDITING_LAYER_NAME]
+
+        if selected_layer is not None:
+            self.logic.create_from_refactor(selected_layer, editing_layer_name, field_mapping)
+        else:
+            self.logger.warning_msg(__name__, QCoreApplication.translate("WizardTranslations",
+                "Select a source layer to set the field mapping to '{}'.").format(editing_layer_name))
+
+        self.close_wizard()
 
     # (this class)
     def save_settings(self):
         settings = QSettings()
 
         load_data_type = 'refactor'
-        if self.rad_create_manually.isChecked():
+        if self.wizardPage1.enabled_create_manually:
             load_data_type = 'create_manually'
-        elif self.rad_digitizing_line.isChecked():
+        elif self.wizardPage1.enabled_digitalizing_line.isChecked():
             load_data_type = 'digitizing_line'
 
         settings.setValue(self.wizard_config[WIZARD_QSETTINGS][WIZARD_QSETTINGS_LOAD_DATA_TYPE], load_data_type)
@@ -346,7 +326,8 @@ class CreateRightOfWaySurveyWizard: # (SinglePageSpatialWizardFactory):
     # (this class)
     def get_feature_with_buffer_right_of_way(self, layer):
         params = {'INPUT': layer,
-                  'DISTANCE': self.width_line_edit.value(),
+                  # property in select source?
+                  'DISTANCE': self.wizardPage1.width_line_edit.value(),
                   'SEGMENTS': 5,
                   'END_CAP_STYLE': 1,  # Flat
                   'JOIN_STYLE': 2,
@@ -370,9 +351,7 @@ class CreateRightOfWaySurveyWizard: # (SinglePageSpatialWizardFactory):
 
     # (absWizardFactory)
     def form_rejected(self):
-        message = QCoreApplication.translate("WizardTranslations",
-                                             "'{}' tool has been closed because you just closed the form.").format(
-            self.WIZARD_TOOL_NAME)
+        message = QCoreApplication.translate("WizardTranslations", "'{}' tool has been closed because you just closed the form.").format(self.WIZARD_TOOL_NAME)
         self.close_wizard(message)
 
     # (this class)
@@ -486,10 +465,10 @@ class CreateRightOfWaySurveyWizard: # (SinglePageSpatialWizardFactory):
         if layer:
             crs = get_crs_authid(layer.crs())
             if crs != DEFAULT_SRS_AUTHID:
-                self.lbl_refactor_source.setStyleSheet('color: orange')
-                self.lbl_refactor_source.setToolTip(QCoreApplication.translate("WizardTranslations",
+                self.wizardPage1.lbl_refactor_source.setStyleSheet('color: orange')
+                self.wizardPage1.lbl_refactor_source.setToolTip(QCoreApplication.translate("WizardTranslations",
                                                                    "This layer will be reprojected for you to '{}' (Colombian National Origin),<br>before attempting to import it into LADM-COL.").format(
                     DEFAULT_SRS_AUTHID))
             else:
-                self.lbl_refactor_source.setStyleSheet('')
-                self.lbl_refactor_source.setToolTip('')
+                self.wizardPage1.lbl_refactor_source.setStyleSheet('')
+                self.wizardPage1.lbl_refactor_source.setToolTip('')
