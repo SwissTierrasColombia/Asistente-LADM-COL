@@ -58,6 +58,7 @@ from asistente_ladm_col.config.enums import (EnumDbActionType,
 from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       ANT_MAP_REPORT,
                                                       DEFAULT_LOG_MODE,
+                                                      FDC_WILD_CARD_BASKET_ID,
                                                       SUPPLIES_DB_SOURCE,
                                                       PLUGIN_VERSION,
                                                       RELEASE_URL,
@@ -1033,8 +1034,13 @@ class AsistenteLADMCOLPlugin(QObject):
         if filename:
             self.app.settings.fdc_project_template_path = filename
 
-            template_converter = TemplateConverterFieldDataCapture(self.get_db_connection())
+            db = self.get_db_connection()
+            template_converter = TemplateConverterFieldDataCapture(db)
             template_converter.convert_template_project(filename)
+
+            # Now we need to make sure we have the 9999 basket in the DB, since field forms
+            # will use it and should already have default values for t_basket as 9999
+            self.ladm_data.get_or_create_default_ili2db_basket(db, FDC_WILD_CARD_BASKET_ID)
         else:
             self.logger.warning_msg(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin", "You haven't selected a template (.qgs) project."), 5)
 
