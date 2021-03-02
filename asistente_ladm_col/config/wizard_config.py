@@ -134,13 +134,17 @@ class WizardConfig:
                 WIZARD_FEATURE_NAME: QCoreApplication.translate("CreateBoundarySurveyWizard", "boundary"),
                 WIZARD_TOOL_NAME: QCoreApplication.translate("CreateBoundarySurveyWizard", "Create boundary"),
                 WIZARD_HELP: "create_boundaries",
-                WIZARD_UI: "wizards/survey/wiz_create_boundaries_survey.ui",
+                WIZARD_UI: "wizards/wizard_pages/survey/wiz_create_boundaries_survey.ui",
                 WIZARD_QSETTINGS: {
                     WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM-COL/wizards/boundary_load_data_type"
                 },
                 WIZARD_HELP_PAGES: {
                     WIZARD_HELP1: help_strings.WIZ_DEFINE_BOUNDARIES_SURVEY_PAGE_1_OPTION_DIGITIZE,
                     WIZARD_HELP2: ""
+                },
+                WIZARD_STRINGS: {
+                    WIZARD_SEL_SOURCE_TITLE: "How would you like to create boundaries?",  # TODO Translate
+                    WIZARD_SEL_SOURCE_ENTERING_DATA_MANUALLY: "Digitizing"  # TODO Translate
                 },
                 WIZARD_LAYERS: {
                     names.LC_BOUNDARY_T: None,
@@ -334,6 +338,7 @@ class WizardConfig:
                 WIZARD_TOOL_NAME: QCoreApplication.translate("CreatePlotSurveyWizard", "Create plot"),
                 WIZARD_HELP: "create_plot",
                 WIZARD_UI: "wizards/wizard_pages/survey/wiz_create_plot_survey.ui",
+                # WIZARD_UI: "wizards/survey/wiz_create_plot_survey.ui",
                 WIZARD_QSETTINGS: {
                     WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM-COL/wizards/plot_load_data_type"
                 },

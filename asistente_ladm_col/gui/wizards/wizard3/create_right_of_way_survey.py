@@ -17,11 +17,10 @@ from asistente_ladm_col.config.translation_strings import TranslatableConfigStri
 from asistente_ladm_col.gui.wizards.wizard_pages.logic import Logic
 from asistente_ladm_col.gui.wizards.wizard_pages.select_source_2 import SelectSource2
 from asistente_ladm_col.utils.crs_utils import get_crs_authid
-from asistente_ladm_col.utils.ui import load_ui
 from asistente_ladm_col.utils.utils import show_plugin_help
 
 
-class CreateRightOfWaySurveyWizard: # (SinglePageSpatialWizardFactory):
+class CreateRightOfWaySurveyWizard(QWizard):
 
     update_wizard_is_open_flag = pyqtSignal(bool)
     set_finalize_geometry_creation_enabled_emitted = pyqtSignal(bool)
@@ -80,7 +79,7 @@ class CreateRightOfWaySurveyWizard: # (SinglePageSpatialWizardFactory):
 
         self.button(QWizard.FinishButton).clicked.connect(self.finished_dialog)
         self.button(QWizard.HelpButton).clicked.connect(self.show_help)
-        self.wizardPage2.width_line_edit.setValue(1.0)
+        self.wizardPage1.width_line_edit.setValue(1.0)
         self.rejected.connect(self.close_wizard)
 
         self.wizardPage1.controls_changed()
@@ -95,8 +94,10 @@ class CreateRightOfWaySurveyWizard: # (SinglePageSpatialWizardFactory):
         load_data_type = settings.value(self.wizard_config[WIZARD_QSETTINGS][WIZARD_QSETTINGS_LOAD_DATA_TYPE]) or 'create_manually'
         if load_data_type == 'refactor':
             self.wizardPage1.enabled_refactor = True
-        else:
+        elif load_data_type == 'create_manually':
             self.wizardPage1.enabled_create_manually = True
+        else:
+            self.wizardPage1.enabled_digitalizing_line.setChecked(True)
 
     # (this class)
     def adjust_page_1_controls(self):
@@ -109,11 +110,11 @@ class CreateRightOfWaySurveyWizard: # (SinglePageSpatialWizardFactory):
         elif self.wizardPage1.enabled_create_manually:
             finish_button_text = QCoreApplication.translate("WizardTranslations", "Create")
             self.wizardPage1.set_help_text(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP1])
-            self.lbl_refactor_source.setStyleSheet('')
+            self.wizardPage1.lbl_refactor_source.setStyleSheet('')
         elif self.wizardPage1.enabled_digitalizing_line:
             finish_button_text = QCoreApplication.translate("WizardTranslations", "Create")
             self.wizardPage1.set_help_text(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP2])
-            self.lbl_refactor_source.setStyleSheet('')
+            self.wizardPage1.lbl_refactor_source.setStyleSheet('')
 
         self.wizardPage1.setButtonText(QWizard.FinishButton, finish_button_text)
 
@@ -230,7 +231,7 @@ class CreateRightOfWaySurveyWizard: # (SinglePageSpatialWizardFactory):
         load_data_type = 'refactor'
         if self.wizardPage1.enabled_create_manually:
             load_data_type = 'create_manually'
-        elif self.wizardPage1.enabled_digitalizing_line.isChecked():
+        elif self.wizardPage1.enabled_digitalizing_line:
             load_data_type = 'digitizing_line'
 
         settings.setValue(self.wizard_config[WIZARD_QSETTINGS][WIZARD_QSETTINGS_LOAD_DATA_TYPE], load_data_type)

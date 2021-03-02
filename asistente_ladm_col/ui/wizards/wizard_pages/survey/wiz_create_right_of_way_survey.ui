@@ -1,31 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>wiz_create_building_operation</class>
- <widget class="QWizard" name="wiz_create_building_operation">
+ <widget class="QWizardPage" name="wizardPage1">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>650</width>
-    <height>375</height>
+    <width>602</width>
+    <height>294</height>
    </rect>
   </property>
-  <property name="cursor">
-   <cursorShape>ArrowCursor</cursorShape>
-  </property>
   <property name="windowTitle">
-   <string>Create Right of Way</string>
+   <string>Form</string>
   </property>
-  <property name="options">
-   <set>QWizard::HaveHelpButton</set>
-  </property>
-  <widget class="QWizardPage" name="wizardPage1">
-   <property name="title">
-    <string/>
-   </property>
-   <property name="subTitle">
-    <string/>
-   </property>
    <layout class="QGridLayout" name="gridLayout">
     <property name="leftMargin">
      <number>9</number>
@@ -247,7 +234,6 @@
      </widget>
     </item>
    </layout>
-  </widget>
  </widget>
  <customwidgets>
   <customwidget>

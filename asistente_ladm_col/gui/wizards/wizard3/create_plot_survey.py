@@ -1,5 +1,5 @@
 from functools import partial
-
+from qgis.core import Qgis
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QObject,
                               QSettings,
