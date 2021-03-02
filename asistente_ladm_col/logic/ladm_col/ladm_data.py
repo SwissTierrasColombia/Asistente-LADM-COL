@@ -1394,6 +1394,7 @@ class LADMData(QObject):
                                                                    t_basket))
 
             # Get legacy buildings that intersect selected legacy plots and write the basket
+            fdc_legacy_plot_layer.removeSelection()
             fdc_legacy_plot_layer.select(plot_ids)
             processing.run("native:selectbylocation", {'INPUT': fdc_legacy_building_layer,
                                                        'PREDICATE': [0],  # intersects
