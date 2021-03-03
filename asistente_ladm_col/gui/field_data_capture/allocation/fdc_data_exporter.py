@@ -192,7 +192,8 @@ class FieldDataCaptureDataExporter(QObject):
                                     'PROJWIN': extent_str,
                                     'OVERCRS': False, 'NODATA': None,
                                     'OPTIONS': '',  # 'COMPRESS=JPEG|JPEG_QUALITY=75'
-                                    'DATA_TYPE': 0, 'EXTRA': '',
+                                    'DATA_TYPE': 0,
+                                    'EXTRA' : '--config CHECK_DISK_FREE_SPACE NO',
                                     'OUTPUT': clipped_raster})
                 except:
                     pass
