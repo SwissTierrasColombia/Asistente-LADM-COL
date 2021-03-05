@@ -16,6 +16,7 @@ from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.config.translation_strings import TranslatableConfigStrings
+from asistente_ladm_col.gui.wizards.wizard_pages.create_manually import CreateManually
 from asistente_ladm_col.utils.qt_utils import disable_next_wizard, enable_next_wizard
 from asistente_ladm_col.utils.select_map_tool import SelectMapTool
 from asistente_ladm_col.utils.ui import load_ui
@@ -54,6 +55,14 @@ class CreateBuildingUnitValuationWizard(QWizard):
         self.maptool = self.canvas.mapTool()
         self.select_maptool = None
         self.logger = Logger()
+
+        self.__init_new_items()
+
+    def __init_new_items(self):
+        self.__manual_feature_creator = CreateManually(self.iface, self.app, self.logger,
+                                                       self._layers[self.EDITING_LAYER_NAME], self.WIZARD_FEATURE_NAME)
+
+        self.__manual_feature_creator.register_observer(self)
 
     # (absWizardFactory)
     def set_ready_only_field(self, read_only=True):
@@ -226,53 +235,11 @@ class CreateBuildingUnitValuationWizard(QWizard):
         settings = QSettings()
         settings.setValue(self.wizard_config[WIZARD_QSETTINGS][WIZARD_QSETTINGS_LOAD_DATA_TYPE], 'create_manually' if self.rad_create_manually.isChecked() else 'refactor')
 
-    # (absWizardFactory)
     def prepare_feature_creation(self):
-        result = self.prepare_feature_creation_layers()
-        if result:
-            self.edit_feature()
+        if self.prepare_feature_creation_layers():
+            self.__manual_feature_creator.create_manually()
         else:
             self.close_wizard(show_message=False)
-
-    # (editFeature)
-    def edit_feature(self):
-        # selecciona la capa
-        self.iface.layerTreeView().setCurrentLayer(self._layers[self.EDITING_LAYER_NAME])
-        # agrega el evento
-        self._layers[self.EDITING_LAYER_NAME].committedFeaturesAdded.connect(self.finish_feature_creation)
-        self.open_form(self._layers[self.EDITING_LAYER_NAME])
-
-    # (wizardFactory)
-    def open_form(self, layer):
-        if not layer.isEditable():
-            layer.startEditing()
-
-        self.exec_form(layer)
-
-    # (absWizardFactory)
-    def exec_form(self, layer):
-        feature = self.get_feature_exec_form(layer)
-        dialog = self.iface.getFeatureForm(layer, feature)
-        dialog.rejected.connect(self.form_rejected)
-        dialog.setModal(True)
-
-        if dialog.exec_():
-            self.exec_form_advanced(layer)
-            saved = layer.commitChanges()
-
-            if not saved:
-                layer.rollBack()
-                self.logger.warning_msg(__name__, QCoreApplication.translate("WizardTranslations",
-                    "Error while saving changes. {} could not be created.").format(self.WIZARD_FEATURE_NAME))
-                for e in layer.commitErrors():
-                    self.logger.warning(__name__, "Commit error: {}".format(e))
-        else:
-            layer.rollBack()
-        self.iface.mapCanvas().refresh()
-
-    # (wizard factory)
-    def get_feature_exec_form(self, layer):
-        return self.app.core.get_new_feature(layer)
 
     # (absWizardFactory)
     def form_rejected(self):
