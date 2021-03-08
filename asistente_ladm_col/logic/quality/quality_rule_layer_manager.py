@@ -28,7 +28,10 @@ from asistente_ladm_col.config.quality_rules_config import (QualityRuleConfig,
                                                             QUALITY_RULE_ADJUSTED_LAYERS,
                                                             ADJUSTED_REFERENCE_LAYER,
                                                             ADJUSTED_INPUT_LAYER,
-                                                            FIX_ADJUSTED_LAYER, HAS_ADJUSTED_LAYERS)
+                                                            ADJUSTED_BEHAVIOR,
+                                                            ADJUSTED_TOPOLOGICAL_POINTS,
+                                                            FIX_ADJUSTED_LAYER,
+                                                            HAS_ADJUSTED_LAYERS)
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qt_utils import ProcessWithStatus
 from asistente_ladm_col.utils.utils import get_key_for_quality_rule_adjusted_layer
@@ -103,23 +106,26 @@ class QualityRuleLayerManager(QObject):
                     if rule_key in self.__rule_keys:  # Only get selected rules' layers
                         count_rules += 1
                         self.logger.status(QCoreApplication.translate("QualityRuleLayerManager",
-                                                                      "Preparing tolerance on layers... {}%").format(int(count_rules/total_rules*100)))
+                                                                      "Preparing tolerance on layers... ({} de {})").format(count_rules, total_rules))
                         if QUALITY_RULE_ADJUSTED_LAYERS in rule_layers_config:
 
                             for layer_name, snap_config in rule_layers_config[QUALITY_RULE_ADJUSTED_LAYERS].items():
                                 # Read from config
                                 input_name = snap_config[ADJUSTED_INPUT_LAYER]  # input layer name
                                 reference_name = snap_config[ADJUSTED_REFERENCE_LAYER]  # reference layer name
+                                behavior = snap_config[ADJUSTED_BEHAVIOR] if ADJUSTED_BEHAVIOR in snap_config else None
                                 fix = snap_config[FIX_ADJUSTED_LAYER] if FIX_ADJUSTED_LAYER in snap_config else False
+                                add_topological_points = snap_config[ADJUSTED_TOPOLOGICAL_POINTS] if ADJUSTED_TOPOLOGICAL_POINTS in snap_config else False
 
-                                # Get input and reference layers (note that they could be adjusted layers)
+                                # Get input and reference layers. Note that they could be adjusted layers and in that
+                                # case they would have a composed name (see get_key_for_quality_rule_adjusted_layer())
                                 input = self.__adjusted_layers_cache[input_name] if input_name in self.__adjusted_layers_cache else ladm_layers[input_name]
                                 reference = self.__adjusted_layers_cache[reference_name] if reference_name in self.__adjusted_layers_cache else ladm_layers[reference_name]
 
                                 # Try to reuse if already calculated!
                                 adjusted_layers_key = get_key_for_quality_rule_adjusted_layer(input_name, reference_name, fix)
                                 if adjusted_layers_key not in self.__adjusted_layers_cache:
-                                    self.__adjusted_layers_cache[adjusted_layers_key] = self.app.core.adjust_layer(input, reference, self.__tolerance, fix)
+                                    self.__adjusted_layers_cache[adjusted_layers_key] = self.app.core.adjust_layer(input, reference, self.__tolerance, behavior, fix, add_topological_points)
 
                                 adjusted_layers[rule_key][layer_name] = self.__adjusted_layers_cache[adjusted_layers_key]
 

@@ -864,7 +864,7 @@ class AsistenteLADMCOLPlugin(QObject):
                                                duration=duration)
 
     def show_log_quality_message(self, msg, count):
-        self.progress_message_bar = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
+        self.progress_message_bar = self.iface.messageBar().createMessage("Asistente LADM-COL", msg)
         self.log_quality_validation_progress = QProgressBar()
         self.log_quality_validation_progress.setFixedWidth(80)
         self.log_quality_total_rule_count = count
