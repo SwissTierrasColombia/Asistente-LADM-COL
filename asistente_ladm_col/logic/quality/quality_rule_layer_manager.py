@@ -106,7 +106,7 @@ class QualityRuleLayerManager(QObject):
                     if rule_key in self.__rule_keys:  # Only get selected rules' layers
                         count_rules += 1
                         self.logger.status(QCoreApplication.translate("QualityRuleLayerManager",
-                                                                      "Preparing tolerance on layers... ({} de {})").format(count_rules, total_rules))
+                                                                      "Preparing tolerance on layers... ({} out of {})").format(count_rules, total_rules))
                         if QUALITY_RULE_ADJUSTED_LAYERS in rule_layers_config:
 
                             for layer_name, snap_config in rule_layers_config[QUALITY_RULE_ADJUSTED_LAYERS].items():
