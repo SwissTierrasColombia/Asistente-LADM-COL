@@ -856,7 +856,9 @@ class QualityRuleConfig:
                 QUALITY_RULE_ADJUSTED_LAYERS: {
                     names.LC_BUILDING_UNIT_T: {
                         ADJUSTED_INPUT_LAYER: names.LC_BUILDING_UNIT_T,
-                        ADJUSTED_REFERENCE_LAYER: names.LC_PLOT_T
+                        ADJUSTED_REFERENCE_LAYER: names.LC_PLOT_T,
+                        ADJUSTED_BEHAVIOR: 0,
+                        ADJUSTED_TOPOLOGICAL_POINTS: True
                     }
                 }
             }, EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_BUILDINGS: {
@@ -868,7 +870,9 @@ class QualityRuleConfig:
                 QUALITY_RULE_ADJUSTED_LAYERS: {
                     names.LC_BUILDING_UNIT_T: {
                         ADJUSTED_INPUT_LAYER: names.LC_BUILDING_UNIT_T,
-                        ADJUSTED_REFERENCE_LAYER: names.LC_BUILDING_T
+                        ADJUSTED_REFERENCE_LAYER: names.LC_BUILDING_T,
+                        ADJUSTED_BEHAVIOR: 0,
+                        ADJUSTED_TOPOLOGICAL_POINTS: True
                     }
                 }
             }
