@@ -125,7 +125,8 @@ from asistente_ladm_col.gui.dialogs.dlg_quality import QualityDialog
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
 from asistente_ladm_col.gui.dialogs.dlg_welcome_screen import WelcomeScreenDialog
 from asistente_ladm_col.gui.queries.dockwidget_queries import DockWidgetQueries
-from asistente_ladm_col.gui.reports.reports import ReportGenerator
+from asistente_ladm_col.gui.reports.ant_map_report import ANTMapReport
+from asistente_ladm_col.gui.reports.annex_17_map_report import Annex17MapReport
 from asistente_ladm_col.gui.right_of_way import RightOfWay
 from asistente_ladm_col.gui.toolbar import ToolBar
 from asistente_ladm_col.gui.transitional_system.dlg_upload_file import STUploadFileDialog
@@ -136,6 +137,7 @@ from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.processing.ladm_col_provider import LADMCOLAlgorithmProvider
 from asistente_ladm_col.logic.quality.quality_rule_engine import QualityRuleEngine
 from asistente_ladm_col.utils.decorators import (_db_connection_required,
+                                                 _validate_if_plot_is_selected,
                                                  _validate_if_wizard_is_open,
                                                  _qgis_model_baker_required,
                                                  _activate_processing_plugin,
@@ -223,7 +225,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self.right_of_way = RightOfWay()
         self.toolbar = ToolBar(self.iface)
         self.ladm_data = LADMData()
-        self.report_generator = ReportGenerator(self.ladm_data)
 
         self.create_actions()
         self.register_dock_widgets()
@@ -279,7 +280,6 @@ class AsistenteLADMCOLPlugin(QObject):
             self.show_message_with_buttons_change_detection_all_and_per_parcel)
 
         self.app.gui.add_indicators_requested.connect(self.add_indicators)
-        self.report_generator.enable_action_requested.connect(self.enable_action)
         self.session.login_status_changed.connect(self.set_login_controls_visibility)
 
     @staticmethod
@@ -1032,20 +1032,30 @@ class AsistenteLADMCOLPlugin(QObject):
     def call_fill_right_of_way_relations(self, *args):
         self.right_of_way.fill_right_of_way_relations(self.get_db_connection())
 
+    @_validate_if_plot_is_selected
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
     @_cadastral_cartography_model_required
     @_survey_model_required
     def call_ant_map_report_generation(self, *args):
-        self.report_generator.generate_report(self.get_db_connection(), ANT_MAP_REPORT)
+        ant_map_report = ANTMapReport(self.get_db_connection())
+        ant_map_report.enable_action_requested.connect(self.enable_action)
+        ant_map_report.exec_()
+        ant_map_report.enable_action_requested.disconnect(self.enable_action)
+        del ant_map_report
 
+    @_validate_if_plot_is_selected
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
     @_survey_model_required
     def call_annex_17_report_generation(self, *args):
-        self.report_generator.generate_report(self.get_db_connection(), ANNEX_17_REPORT)
+        annex_17_map_report = Annex17MapReport(self.get_db_connection())
+        annex_17_map_report.enable_action_requested.connect(self.enable_action)
+        annex_17_map_report.exec_()
+        annex_17_map_report.enable_action_requested.disconnect(self.enable_action)
+        del annex_17_map_report
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required

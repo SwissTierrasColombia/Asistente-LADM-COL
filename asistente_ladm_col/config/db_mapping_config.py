@@ -489,6 +489,7 @@ DB_MAPPING_CONFIG = {
     LADMNames.CADASTRAL_CARTOGRAPHY_MODEL_KEY: {
         "Submodelo_Cartografia_Catastral.LimitesOperativosCatastro.CC_LimiteMunicipio": {QueryNames.VARIABLE_NAME: "CC_MUNICIPALITY_BOUNDARY_T", QueryNames.FIELDS_DICT: {
             "Submodelo_Cartografia_Catastral.LimitesOperativosCatastro.CC_LimiteMunicipio.Nombre_Municipio": "CC_MUNICIPALITY_BOUNDARY_T_NAME_MUNICIPALITY_F",
+            "Submodelo_Cartografia_Catastral.LimitesOperativosCatastro.CC_LimiteMunicipio.Codigo_Municipio": "CC_MUNICIPALITY_BOUNDARY_T_CODE_MUNICIPALITY_F",
             "Submodelo_Cartografia_Catastral.LimitesOperativosCatastro.CC_LimiteMunicipio.Geometria": "CC_MUNICIPALITY_BOUNDARY_T_GEOMETRY_F"
         }},
         "Submodelo_Cartografia_Catastral.LimitesOperativosCatastro.CC_PerimetroUrbano": {QueryNames.VARIABLE_NAME: "CC_URBAN_PERIMETER_T", QueryNames.FIELDS_DICT: {
