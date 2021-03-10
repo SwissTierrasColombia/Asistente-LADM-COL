@@ -172,6 +172,72 @@ def get_annex17_point_data_query(names, schema, plot_id):
                 FROM puntos_lindero, puntos_terreno_ordenados ORDER BY {T_ID_F}, distance
                 LIMIT (SELECT count({T_ID_F}) FROM puntos_lindero)
             ) tmp_puntos_lindero_ordenados ORDER BY id
+        ),
+        -- Se orientan cada uno de los linderos que conforman el terreno en el sentido de las manecillas del reloj
+        nodo_inicial_lindero AS (
+            SELECT {T_ID_F}, ST_PointN(geom, 1) AS geom FROM linderos
+        ),
+        nodo_inicial_mas_uno_lindero AS (
+            SELECT {T_ID_F}, ST_PointN(geom, 2) AS geom FROM linderos
+        ),
+        dist_nodo_punto_lindero AS (
+            SELECT DISTINCT ON(n_il.{T_ID_F}) n_il.{T_ID_F}, plo.id AS pn1, plo.parte, plo.punto_inicial, plo.punto_final
+            FROM puntos_lindero_ordenados AS plo, nodo_inicial_lindero n_il
+            ORDER BY n_il.{T_ID_F}, st_distance(plo.geom, n_il.geom)
+        ),
+        dist_nodo_punto_mas_uno_lindero AS (
+            SELECT DISTINCT ON(nimul.{T_ID_F}) nimul.{T_ID_F}, plo.id AS pn2, plo.parte, plo.punto_inicial, plo.punto_final
+            FROM puntos_lindero_ordenados AS plo, nodo_inicial_mas_uno_lindero nimul
+            ORDER BY nimul.{T_ID_F}, st_distance(plo.geom, nimul.geom)
+        ),
+        pre_order_lindero AS (
+            SELECT dn1.*, pn2 FROM dist_nodo_punto_lindero AS dn1 JOIN dist_nodo_punto_mas_uno_lindero AS dn2 ON dn1.{T_ID_F} = dn2.{T_ID_F}
+        ),
+        linderos_orientados AS (
+            SELECT l.{T_ID_F},
+                    CASE WHEN pn1=punto_final AND pn2=punto_inicial THEN geom
+                         WHEN pn1=punto_inicial AND pn2=punto_final AND pn1 + 1 != pn2 THEN ST_Reverse(geom)
+                         WHEN pn1 < pn2 THEN geom
+                         ELSE ST_Reverse(geom)
+                    END AS geom
+            FROM pre_order_lindero pol JOIN linderos l ON pol.{T_ID_F} = l.{T_ID_F}
+        ),
+        -- Se obtienen la secuencia de nodos que conforman cada uno de los linderos
+        nodos_lindero_ubicacion AS (
+            SELECT DISTINCT ON (code) code, nl.{T_ID_F}, nl.path, x, y, id, parte FROM (
+                SELECT {T_ID_F} ||''|| (ST_DumpPoints(geom)).path[1] AS code,  {T_ID_F},
+                   (ST_DumpPoints(geom)).path[1], (ST_DumpPoints(geom)).geom, ST_NumPoints(geom) AS numpoints FROM linderos_orientados
+            ) AS nl, puntos_lindero_ordenados AS plo
+            WHERE nl.path != 1 AND nl.path != numpoints
+            ORDER BY code, st_distance(nl.geom, plo.geom)
+        ),
+        secuencia_nodos AS (
+            SELECT {T_ID_F}, array_to_string(array_agg(nlu.id || ': N=' || trunc(y,2) || ', E=' || trunc(x,2) ), '; ') AS nodos
+            FROM nodos_lindero_ubicacion AS nlu
+            GROUP BY {T_ID_F}
+        ),
+        -- Se obtiene el punto incial de cada uno de los linderos
+        -- Los linderos ya estan orientados siguiendo la orientación del terreno en el sentido de las manecillas del reloj
+        linderos_punto_inicial AS (
+            SELECT {T_ID_F}, st_startpoint(geom) AS geom FROM linderos_orientados
+        ),
+        linderos_punto_final AS (
+            SELECT {T_ID_F}, st_endpoint(geom) AS geom FROM linderos_orientados
+        ),
+        lindero_punto_inicio_fin AS (
+            SELECT lindero_punto_desde.{T_ID_F},  lindero_punto_desde.parte, desde, hasta  FROM (
+                SELECT DISTINCT ON(lpi.{T_ID_F}) lpi.{T_ID_F}, plo.id AS "desde", plo.parte FROM puntos_lindero_ordenados AS plo, linderos_punto_inicial lpi ORDER BY lpi.{T_ID_F}, st_distance(plo.geom, lpi.geom)
+            ) AS lindero_punto_desde JOIN
+            (
+                SELECT DISTINCT ON(lpf.{T_ID_F}) lpf.{T_ID_F}, plo.id AS "hasta" FROM puntos_lindero_ordenados AS plo, linderos_punto_final lpf ORDER BY lpf.{T_ID_F}, st_distance(plo.geom, lpf.geom)
+            ) AS lindero_punto_hasta ON lindero_punto_desde.{T_ID_F} = lindero_punto_hasta.{T_ID_F}
+            ORDER BY parte, desde, hasta
+        ),
+        linderos_desde_hasta AS (
+            SELECT lpif.{T_ID_F}, geom, parte, desde, hasta FROM lindero_punto_inicio_fin AS lpif JOIN linderos_orientados AS lo ON lpif.{T_ID_F} = lo.{T_ID_F}
+        ),
+        puntos_lindero_ordenados_con_prioridad AS (
+            SELECT *, CASE WHEN id in (SELECT desde FROM linderos_desde_hasta) THEN 20 ELSE 10 END prioridad FROM puntos_lindero_ordenados ORDER BY id
         )
         SELECT array_to_json(array_agg(features)) AS features
         FROM (
@@ -182,10 +248,10 @@ def get_annex17_point_data_query(names, schema, plot_id):
                 ,row_to_json((
                         SELECT l
                         FROM (
-                            SELECT id AS point_number
+                            SELECT id AS point_number, prioridad AS priority
                             ) AS l
                         )) AS properties
-            FROM puntos_lindero_ordenados order by id
+            FROM puntos_lindero_ordenados_con_prioridad ORDER BY id
             ) AS f
         ) AS ff;""".format(**vars(names),  # Custom keys are searched in Table And Field Names object
                            schema=schema,

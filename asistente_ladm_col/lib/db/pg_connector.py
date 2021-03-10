@@ -29,7 +29,8 @@ from asistente_ladm_col.config.enums import (EnumTestLevel,
                                              EnumTestConnectionMsg)
 from asistente_ladm_col.lib.db.db_connector import (ClientServerDB,
                                                     DBConnector)
-from asistente_ladm_col.logic.ladm_col.config.reports.ant_report.pg import ant_map_plot_query
+from asistente_ladm_col.logic.ladm_col.config.reports.ant_report.pg import (ant_map_plot_query,
+                                                                            ant_building_data_query)
 from asistente_ladm_col.logic.ladm_col.config.reports.annex_17_report.pg import (annex17_building_data_query,
                                                                                  annex17_point_data_query,
                                                                                  annex17_plot_data_query)
@@ -268,6 +269,17 @@ class PGConnector(ClientServerDB):
         else:
             return True, cur.fetchall()[0][0]
 
+    def get_ant_building_data(self, plot_id):
+        res, msg = self.check_and_fix_connection()
+        if not res:
+            return res, msg
+
+        cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        query = ant_building_data_query.get_ant_building_data_query(self.names, self.schema, plot_id)
+        cur.execute(query)
+
+        return True, cur.fetchall()[0][0]
+
     def get_annex17_building_data(self, plot_id):
         res, msg = self.check_and_fix_connection()
         if not res:
@@ -359,17 +371,6 @@ class PGConnector(ClientServerDB):
 
         cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         query = ant_map_plot_query.get_municipality_boundary(self.names, self.schema, plot_id, overview)
-        cur.execute(query)
-
-        return True, cur.fetchone()[0]
-
-    def get_ant_map_boundaries(self, plot_id):
-        res, msg = self.check_and_fix_connection()
-        if not res:
-            return res, msg
-
-        cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        query = ant_map_plot_query.get_map_boundaries(self.names, self.schema, plot_id)
         cur.execute(query)
 
         return True, cur.fetchone()[0]
