@@ -98,6 +98,18 @@ class ReportGenerator(QObject):
 
         return new_file_path
 
+    def create_geojson_file(self, json_data, report_type):
+        if json_data:
+            report_data_dir = self.get_report_data_dir(report_type)
+            file_name = self.get_tmp_filename('data', 'geojson')
+            new_file_path = os.path.join(report_data_dir, file_name)
+
+            with open(new_file_path, 'w') as new_geojson:
+                new_geojson.write(json.dumps(json_data))
+            return "file://{dirname}/{filename}".format(dirname=os.path.basename(report_data_dir),
+                                                        filename=file_name)
+        return None
+
     def get_layer_geojson(self, db, layer_name, plot_id, report_type):
         if report_type == ANNEX_17_REPORT:
             if layer_name in ('terreno', 'terreno_overview', 'terrenos', 'terrenos_overview'):
@@ -141,19 +153,33 @@ class ReportGenerator(QObject):
         for layer in layers:
             if 'geoJson' in layer:
                 result, data = self.get_layer_geojson(db, layer['name'], plot_id, report_type)
-                if result: layer['geoJson'] = data
+                if result:
+                    layer['geoJson'] = self.create_geojson_file(data, report_type)
 
         overview_layers = json_data['attributes']['overviewMap']['layers']
         for layer in overview_layers:
             if 'geoJson' in layer:
                 result, data = self.get_layer_geojson(db, layer['name'], plot_id, report_type)
-                if result: layer['geoJson'] = data
+                if result:
+                    layer['geoJson'] = self.create_geojson_file(data, report_type)
 
         new_json_file_path = os.path.join(tmp_dir, self.get_tmp_filename('json_data_{}'.format(plot_id), 'json'))
         with open(new_json_file_path, 'w') as new_json:
             new_json.write(json.dumps(json_data))
 
         return new_json_file_path
+
+    def clean_report_data_dir(self, report_type):
+        report_data_dir = os.path.join(DEPENDENCY_REPORTS_DIR_NAME, report_type, 'data')
+        for dirpath, dirnames, filenames in os.walk(report_data_dir):
+            for filename in filenames:
+                os.unlink(os.path.join(dirpath, filename))
+
+    def get_report_data_dir(self, report_type):
+        report_data_dir = os.path.join(DEPENDENCY_REPORTS_DIR_NAME, report_type, 'data')
+        if not os.path.exists(report_data_dir):
+            os.makedirs(report_data_dir)
+        return report_data_dir
 
     def get_tmp_dir(self, create_random=True):
         if create_random:
@@ -292,6 +318,7 @@ class ReportGenerator(QObject):
                         pass  # progressBar was deleted
 
         os.remove(yaml_config_path)
+        self.clean_report_data_dir(report_type)
 
         self.enable_action_requested.emit(report_type, True)
         self.logger.clear_message_bar()
