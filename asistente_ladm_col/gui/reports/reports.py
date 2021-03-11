@@ -234,7 +234,7 @@ class ReportGenerator(QObject):
                 plot_id = selected_plot[db.names.T_ID_F]
 
                 geometry = selected_plot.geometry()
-                abstract_geometry = geometry.get()
+                abstract_geometry = geometry.constGet()
                 if abstract_geometry.ringCount() > 1:
                     polygons_with_holes.append(str(plot_id))
                     self.logger.warning(__name__, QCoreApplication.translate("ReportGenerator",
