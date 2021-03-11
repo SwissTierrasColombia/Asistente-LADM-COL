@@ -406,7 +406,7 @@ class GeometryUtils(QObject):
 
         feature_error = list()
 
-        if diff_geoms.wkbType() == QgsWkbTypes.Polygon:
+        if diff_geoms.type() == QgsWkbTypes.PolygonGeometry and not QgsWkbTypes.isMultiType(diff_geoms.wkbType()):
             diff_geoms.convertToMultiType()
 
         try:
