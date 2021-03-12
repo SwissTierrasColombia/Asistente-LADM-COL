@@ -88,6 +88,17 @@ class TestGetDomains(unittest.TestCase):
     def test_get_domain_code_from_value(self):
         print('\nINFO: Validating get domain code from value...')
 
+        # Test the cache
+        # These 4 asserts deal with a particular issue that happened when passing the table name in lower case.
+        # The value was always calculated and returned (not from the cache).
+        found_in_cache, cached_value = self.db_gpkg.names.get_domain_code(self.db_gpkg.names.LC_AGREEMENT_TYPE_D.lower(), 'Acuerdo', True)
+        self.assertFalse(found_in_cache, "We don't expect to find 'Acuerdo' in the cache...")
+        value = self.ladm_data.get_domain_code_from_value(self.db_gpkg, self.db_gpkg.names.LC_AGREEMENT_TYPE_D.lower(), 'Acuerdo', value_is_ilicode=True)
+        self.assertEqual(value, 1)
+        found_in_cache, cached_value = self.db_gpkg.names.get_domain_code(self.db_gpkg.names.LC_AGREEMENT_TYPE_D.lower(), 'Acuerdo', True)
+        self.assertTrue(found_in_cache, "We expect to find 'Acuerdo' in the cache...")
+        self.assertEqual(cached_value, 1)
+
         # Good parameters
         value = self.ladm_data.get_domain_code_from_value(self.db_gpkg, self.db_gpkg.names.LC_CONDITION_PARCEL_TYPE_D, LADMNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY, value_is_ilicode=True)
         self.assertEqual(value, 1)

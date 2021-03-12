@@ -825,8 +825,6 @@ class LADMData(QObject):
             domain_table = self.app.core.get_layer(db, domain_table, False, emit_map_freeze=False)
 
         if domain_table is not None:
-            domain_table_name = domain_table.name()
-
             expression = "\"{}\" = '{}'".format(db.names.ILICODE_F if value_is_ilicode else db.names.DISPLAY_NAME_F, value)
             request = QgsFeatureRequest(QgsExpression(expression))
             request.setSubsetOfAttributes([db.names.T_ID_F], domain_table.fields())
