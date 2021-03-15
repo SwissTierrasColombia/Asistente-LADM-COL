@@ -32,7 +32,7 @@ from qgis.PyQt.QtCore import pyqtSignal
 from asistente_ladm_col.config.general_config import WIZARD_SEL_SOURCE_TITLE, WIZARD_SEL_SOURCE_ENTERING_DATA_MANUALLY
 from asistente_ladm_col.utils import get_ui_class
 
-WIDGET_UI = get_ui_class('wizards/wizard_pages/select_source.ui')
+WIDGET_UI = get_ui_class('wizards/wizard_pages/survey/wiz_create_right_of_way_survey.ui')
 
 
 class SelectSource2(QWizardPage, WIDGET_UI):

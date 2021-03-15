@@ -48,7 +48,7 @@ from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.gui.wizards.survey.wiz_create_spatial_source_survey import CreateSpatialSourceSurveyWizard
 # from asistente_ladm_col.gui.wizards.survey.wiz_create_ext_address_survey import CreateExtAddressSurveyWizard
 # from asistente_ladm_col.gui.wizards.survey.wiz_create_plot_survey import CreatePlotSurveyWizard
-from asistente_ladm_col.gui.wizards.survey.wiz_create_right_of_way_survey import CreateRightOfWaySurveyWizard
+# from asistente_ladm_col.gui.wizards.survey.wiz_create_right_of_way_survey import CreateRightOfWaySurveyWizard
 # from asistente_ladm_col.gui.wizards.single_page_spatial_wizard_factory import SinglePageSpatialWizardFactory
 # from asistente_ladm_col.gui.wizards.single_page_wizard_factory import SinglePageWizardFactory
 from asistente_ladm_col.gui.wizards.valuation.wiz_create_building_unit_qualification_valuation import CreateBuildingUnitQualificationValuationWizard
@@ -57,6 +57,7 @@ from asistente_ladm_col.gui.wizards.valuation.wiz_create_building_unit_qualifica
 from asistente_ladm_col.gui.wizards.wizard3.create_building_unit_valuation import CreateBuildingUnitValuationWizard
 from asistente_ladm_col.gui.wizards.wizard3.create_parcel_survey import CreateParcelSurveyWizard
 from asistente_ladm_col.gui.wizards.wizard3.create_plot_survey import CreatePlotSurveyWizard
+from asistente_ladm_col.gui.wizards.wizard3.create_right_of_way_survey import CreateRightOfWaySurveyWizard
 from asistente_ladm_col.gui.wizards.wizard3.create_rrr_survey import CreateRRRSurveyWizard
 
 from asistente_ladm_col.gui.wizards.wizard3.create_spatial_source_survey import CreateSpatialSourceSurveyWizard
@@ -168,6 +169,10 @@ class WizardConfig:
                 WIZARD_HELP_PAGES: {
                     WIZARD_HELP1: help_strings.WIZ_CREATE_BUILDING_SURVEY_PAGE_1_OPTION_POINTS,
                     WIZARD_HELP2: ""
+                },
+                WIZARD_STRINGS: {
+                    WIZARD_SEL_SOURCE_TITLE: "How would you like to create buildings?",  # TODO Translate
+                    WIZARD_SEL_SOURCE_ENTERING_DATA_MANUALLY: "Digitizing"  # TODO Translate
                 },
                 WIZARD_LAYERS: {
                     names.LC_BUILDING_T: None,
@@ -404,6 +409,10 @@ class WizardConfig:
                     WIZARD_HELP2: help_strings.WIZ_CREATE_RIGHT_OF_WAY_SURVEY_PAGE_1_OPTION2_POINTS,
                     WIZARD_HELP3: help_strings.WIZ_ASSOCIATE_EXTADDRESS_SURVEY_PAGE_2_OPTION_2,
                     WIZARD_HELP4: help_strings.WIZ_ASSOCIATE_EXTADDRESS_SURVEY_PAGE_2_OPTION_3
+                },
+                WIZARD_STRINGS: {
+                    WIZARD_SEL_SOURCE_TITLE: "How would you like to create and associate addresses?",  # TODO Translate
+                    WIZARD_SEL_SOURCE_ENTERING_DATA_MANUALLY: "Entering data manually using a form"  # TODO Translate
                 },
                 WIZARD_LAYERS: {
                     names.LC_RIGHT_OF_WAY_T: None,

@@ -12,6 +12,7 @@ from asistente_ladm_col.config.general_config import WIZARD_UI, WIZARD_FEATURE_N
     WIZARD_QSETTINGS, WIZARD_QSETTINGS_LOAD_DATA_TYPE, WIZARD_MAP_LAYER_PROXY_MODEL, DEFAULT_SRS_AUTHID, WIZARD_STRINGS
 from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.config.translation_strings import TranslatableConfigStrings
+from asistente_ladm_col.gui.wizards.wizard_pages.create_manually_spatial import CreateManuallySpatial
 from asistente_ladm_col.gui.wizards.wizard_pages.logic import Logic
 from asistente_ladm_col.gui.wizards.wizard_pages.select_source import SelectSource
 from asistente_ladm_col.utils.crs_utils import get_crs_authid
@@ -56,6 +57,16 @@ class SinglePageSpatialWizardFactory(QWizard):
         self.select_maptool = None
         # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>>>>> SpatialWizardFactory
         self.set_disable_digitize_actions()
+
+        self.__init_new_items()
+
+    def __init_new_items(self):
+        self.__manual_feature_creator = \
+            CreateManuallySpatial(self.iface, self.app, self.logger,
+                                  self._layers[self.EDITING_LAYER_NAME],
+                                  self.WIZARD_FEATURE_NAME, 9)
+
+        self.__manual_feature_creator.register_observer(self)
 
     # (absWizardFactory)
     def set_ready_only_field(self, read_only=True):
@@ -212,75 +223,13 @@ class SinglePageSpatialWizardFactory(QWizard):
 
     # (absWizardFactory)
     def prepare_feature_creation(self):
-        result = self.prepare_feature_creation_layers()
-        if result:
-            self.edit_feature()
-        else:
-            self.close_wizard(show_message=False)
-
-    # (spatialWizardFactory)
-    def edit_feature(self):
-        self.iface.layerTreeView().setCurrentLayer(self._layers[self.EDITING_LAYER_NAME])
-        self._layers[self.EDITING_LAYER_NAME].committedFeaturesAdded.connect(self.finish_feature_creation)
-
-        # Disable transactions groups
-        QgsProject.instance().setAutoTransaction(False)
-
-        # Activate snapping
-        self.app.core.active_snapping_all_layers(tolerance=9)
-        self.open_form(self._layers[self.EDITING_LAYER_NAME])
-
-        self.logger.info_msg(__name__, QCoreApplication.translate("WizardTranslations",
-           "You can now start capturing {} digitizing on the map...").format(self.WIZARD_FEATURE_NAME))
-
-    # spatialWizardFactory
-    def open_form(self, layer):
-        if not layer.isEditable():
-            layer.startEditing()
-
-        # oculta el formulario
-        self.app.core.suppress_form(layer, True)
-        self.iface.actionAddFeature().trigger()
-
-    # (absWizardFactory)    NO OPEN_FORM
-    def exec_form(self, layer):
-        feature = self.get_feature_exec_form(layer)
-        dialog = self.iface.getFeatureForm(layer, feature)
-        dialog.rejected.connect(self.form_rejected)
-        dialog.setModal(True)
-
-        if dialog.exec_():
-            self.exec_form_advanced(layer)
-            saved = layer.commitChanges()
-
-            if not saved:
-                layer.rollBack()
-                self.logger.warning_msg(__name__, QCoreApplication.translate("WizardTranslations",
-                    "Error while saving changes. {} could not be created.").format(self.WIZARD_FEATURE_NAME))
-                for e in layer.commitErrors():
-                    self.logger.warning(__name__, "Commit error: {}".format(e))
-        else:
-            layer.rollBack()
-        self.iface.mapCanvas().refresh()
-
-    # (SpatialWizardFactory)
-    def get_feature_exec_form(self, layer):
-        self.set_finalize_geometry_creation_enabled_emitted.emit(False)
-        feature = None
-        for id, added_feature in layer.editBuffer().addedFeatures().items():
-            feature = added_feature
-            break
-
-        return feature
+        self.connect_on_removing_layers()
+        self.__manual_feature_creator.create_manually()
 
     # (absWizardFactory)
     def form_rejected(self):
         message = QCoreApplication.translate("WizardTranslations", "'{}' tool has been closed because you just closed the form.").format(self.WIZARD_TOOL_NAME)
         self.close_wizard(message)
-
-    # (this class)
-    def exec_form_advanced(self, layer):
-        pass
 
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>>>>> map interaction expansion
     # (map interaction expansion)
@@ -311,24 +260,9 @@ class SinglePageSpatialWizardFactory(QWizard):
         self.close_wizard(message)
 
     def save_created_geometry(self):
-        message = None
-        if self._layers[self.EDITING_LAYER_NAME].editBuffer():
-            if len(self._layers[self.EDITING_LAYER_NAME].editBuffer().addedFeatures()) == 1:
-                feature = [value for index, value in self._layers[self.EDITING_LAYER_NAME].editBuffer().addedFeatures().items()][0]
-                if feature.geometry().isGeosValid():
-                    self.exec_form(self._layers[self.EDITING_LAYER_NAME])
-                else:
-                    message = QCoreApplication.translate("WizardTranslations", "The geometry is invalid. Do you want to return to the edit session?")
-            else:
-                if len(self._layers[self.EDITING_LAYER_NAME].editBuffer().addedFeatures()) == 0:
-                    message = QCoreApplication.translate("WizardTranslations", "No geometry has been created. Do you want to return to the edit session?")
-                else:
-                    message = QCoreApplication.translate("WizardTranslations", "Several geometries were created but only one was expected. Do you want to return to the edit session?")
+        self.__manual_feature_creator.save_created_geometry()
 
-        if message:
-            self.show_message_associate_geometry_creation(message)
-
-    def show_message_associate_geometry_creation(self, message):
+    def show_message_associate_geometry_creation(self, message, layer):
         msg = QMessageBox(self)
         msg.setIcon(QMessageBox.Question)
         msg.setText(message)
@@ -339,8 +273,8 @@ class SinglePageSpatialWizardFactory(QWizard):
 
         if reply == QMessageBox.No:
             # stop edition in close_wizard crash qgis
-            if self._layers[self.EDITING_LAYER_NAME].isEditable():
-                self._layers[self.EDITING_LAYER_NAME].rollBack()
+            if layer.isEditable():
+                layer.rollBack()
 
             message = QCoreApplication.translate("WizardTranslations", "'{}' tool has been closed.").format(
                 self.WIZARD_TOOL_NAME)
@@ -379,3 +313,31 @@ class SinglePageSpatialWizardFactory(QWizard):
                 self.wizardPage1.lbl_refactor_source.setStyleSheet('')
                 self.wizardPage1.lbl_refactor_source.setToolTip('')
 
+    def feature_for_dialog_getting(self, feature_params):
+        pass
+
+    def geometry_finalized(self, finalized_geometry_params):
+        is_geometry_finalized = finalized_geometry_params["finalized"]
+        self.set_finalize_geometry_creation_enabled_emitted.emit(is_geometry_finalized)
+
+    def dialog_succeed(self, dialog_succeed_params):
+        pass
+
+    def invalid_geometry(self, invalid_geometry_params):
+        layer = invalid_geometry_params['layer']
+        message = QCoreApplication.translate("WizardTranslations", "The geometry is invalid. Do you want to return to the edit session?")
+
+        self.show_message_associate_geometry_creation(message, layer)
+
+    def zero_or_many_features_added(self, zero_or_many_features_added_params):
+        features_amount = zero_or_many_features_added_params['len_features_added']
+        layer = zero_or_many_features_added_params['layer']
+
+        if features_amount == 0:
+            message = QCoreApplication.translate("WizardTranslations",
+                                                 "No geometry has been created. Do you want to return to the edit session?")
+        else:
+            message = QCoreApplication.translate("WizardTranslations",
+                                                 "Several geometries were created but only one was expected. Do you want to return to the edit session?")
+
+        self.show_message_associate_geometry_creation(message, layer)

@@ -1,8 +1,5 @@
 from qgis.PyQt.QtCore import (QCoreApplication,
-                              QObject,  # QString,
-                              pyqtSignal)
-
-from qgis.core import QgsVectorLayer
+                              QObject)
 
 
 class CreateManually(QObject):
