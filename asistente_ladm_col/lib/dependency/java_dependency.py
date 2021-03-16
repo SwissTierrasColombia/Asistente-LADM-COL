@@ -77,7 +77,7 @@ class JavaDependency(Dependency):
                                                                                  "There was an error with the download. The downloaded file is invalid."))
                 except PermissionError as e:
                     self.logger.warning_msg(__name__, QCoreApplication.translate("JavaDependency",
-                                                                                 "Java couldn't be installed. Check if it is possible to write into this folder: <a href='file:///{path}'>{path}</a>").format(path=normalize_local_url(os.path.join(DEPENDENCIES_BASE_PATH), DICT_JAVA_DIR_NAME[KEY_JAVA_OS_VERSION])))
+                                                                                 "Java couldn't be installed. Check if it is possible to write into this folder: <a href='file:///{path}'>{path}</a>").format(path=normalize_local_url(os.path.join(DEPENDENCIES_BASE_PATH, DICT_JAVA_DIR_NAME[KEY_JAVA_OS_VERSION]))))
 
             else:
                 self.logger.warning_msg(__name__, QCoreApplication.translate("JavaDependency",
