@@ -6,7 +6,9 @@
         begin                : 2018-10-17
         git sha              : :%H$
         copyright            : (C) 2018 by Germán Carrillo (BSF Swissphoto)
+                             : (C) 2021 by Leonardo Cardona (BSF Swissphoto)
         email                : gcarrillo@linuxmail.org
+                             : leo dot cardona dot p at gmail dot com
  ***************************************************************************/
 /***************************************************************************
  *                                                                         *
@@ -35,8 +37,7 @@ from qgis.PyQt.QtWidgets import (QFileDialog,
                                  QProgressBar)
 from qgis.core import QgsDataSourceUri
 
-from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
-                                                      URL_REPORTS_LIBRARIES,
+from asistente_ladm_col.config.general_config import (URL_REPORTS_LIBRARIES,
                                                       DEPENDENCY_REPORTS_DIR_NAME)
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.lib.logger import Logger
@@ -46,9 +47,8 @@ from asistente_ladm_col.lib.dependency.report_dependency import ReportDependency
 from asistente_ladm_col.lib.dependency.java_dependency import JavaDependency
 
 
-class ReportGenerator(QObject):
+class AbsReportFactory(QObject):
     LOG_TAB = 'LADM-COL Reports'
-
     enable_action_requested = pyqtSignal(str, bool)
 
     def __init__(self, ladm_data):
@@ -61,6 +61,7 @@ class ReportGenerator(QObject):
 
         self.report_dependency = ReportDependency()
         self.report_dependency.download_dependency_completed.connect(self.download_report_complete)
+        self.report_name = None
 
         self.encoding = locale.getlocale()[1]
         # This might be unset
@@ -98,51 +99,21 @@ class ReportGenerator(QObject):
 
         return new_file_path
 
-    def create_geojson_file(self, json_data, report_type):
+    def create_geojson_file(self, json_data):
         if json_data:
-            report_data_dir = self.get_report_data_dir(report_type)
+            report_data_dir = self.get_report_data_dir()
             file_name = self.get_tmp_filename('data', 'geojson')
             new_file_path = os.path.join(report_data_dir, file_name)
 
             with open(new_file_path, 'w') as new_geojson:
                 new_geojson.write(json.dumps(json_data))
-            return "file://{dirname}/{filename}".format(dirname=os.path.basename(report_data_dir),
-                                                        filename=file_name)
+            return "file://{dirname}/{filename}".format(dirname=os.path.basename(report_data_dir), filename=file_name)
         return None
 
-    def get_layer_geojson(self, db, layer_name, plot_id, report_type):
-        if report_type == ANNEX_17_REPORT:
-            if layer_name in ('terreno', 'terreno_overview', 'terrenos', 'terrenos_overview'):
-                # True if you want the selected plot and False if you want the plots surrounding the selected plot
-                mode = True if layer_name in ('terreno', 'terreno_overview') else False
-                overview = True if layer_name in ('terrenos_overview', 'terreno_overview') else False
-                return db.get_annex17_plot_data(plot_id, mode, overview)
-            elif layer_name == 'construcciones':
-                return db.get_annex17_building_data(plot_id)
-            elif layer_name == 'punto_lindero':
-                return db.get_annex17_point_data(plot_id)
-        else: #report_type == ANT_MAP_REPORT:
-            if layer_name in ('terreno', 'terreno_overview', 'terrenos', 'terrenos_overview'):
-                mode = True if layer_name in ('terreno', 'terreno_overview') else False
-                overview = True if layer_name in ('terrenos_overview', 'terreno_overview') else False
-                return db.get_ant_map_plot_data(plot_id, mode, overview)
-            elif layer_name == 'linderos':
-                return db.get_ant_map_boundaries(plot_id)
-            elif layer_name == 'construcciones':
-                return db.get_annex17_building_data(plot_id)
-            elif layer_name == 'punto_lindero':
-                return db.get_annex17_point_data(plot_id)
-            elif layer_name in ('vias', 'vias_overview'):
-                overview = False if layer_name == 'vias' else True
-                return db.get_ant_map_road_nomenclature(plot_id, overview)
-            elif layer_name in ('limite_urbano', 'limite_urbano_overview'):
-                overview = False if layer_name == 'limite_urbano' else True
-                return db.get_ant_map_urban_limit(plot_id, overview)
-            elif layer_name in ('limite_municipio', 'limite_municipio_overview'):
-                overview = False if layer_name == 'limite_municipio' else True
-                return db.get_ant_map_municipality_boundary(plot_id, overview)
+    def get_layer_geojson(self, db, layer_name, plot_id):
+        raise NotImplementedError
 
-    def update_json_data(self, db, json_spec_file, plot_id, tmp_dir, report_type):
+    def update_json_data(self, db, json_spec_file, plot_id, tmp_dir):
         json_data = dict()
         with open(json_spec_file) as f:
             json_data = json.load(f)
@@ -152,16 +123,16 @@ class ReportGenerator(QObject):
         layers = json_data['attributes']['map']['layers']
         for layer in layers:
             if 'geoJson' in layer:
-                result, data = self.get_layer_geojson(db, layer['name'], plot_id, report_type)
+                result, data = self.get_layer_geojson(db, layer['name'], plot_id)
                 if result:
-                    layer['geoJson'] = self.create_geojson_file(data, report_type)
+                    layer['geoJson'] = self.create_geojson_file(data)
 
         overview_layers = json_data['attributes']['overviewMap']['layers']
         for layer in overview_layers:
             if 'geoJson' in layer:
-                result, data = self.get_layer_geojson(db, layer['name'], plot_id, report_type)
+                result, data = self.get_layer_geojson(db, layer['name'], plot_id)
                 if result:
-                    layer['geoJson'] = self.create_geojson_file(data, report_type)
+                    layer['geoJson'] = self.create_geojson_file(data)
 
         new_json_file_path = os.path.join(tmp_dir, self.get_tmp_filename('json_data_{}'.format(plot_id), 'json'))
         with open(new_json_file_path, 'w') as new_json:
@@ -169,14 +140,14 @@ class ReportGenerator(QObject):
 
         return new_json_file_path
 
-    def clean_report_data_dir(self, report_type):
-        report_data_dir = os.path.join(DEPENDENCY_REPORTS_DIR_NAME, report_type, 'data')
+    def clean_report_data_dir(self):
+        report_data_dir = os.path.join(DEPENDENCY_REPORTS_DIR_NAME, self.report_name, 'data')
         for dirpath, dirnames, filenames in os.walk(report_data_dir):
             for filename in filenames:
                 os.unlink(os.path.join(dirpath, filename))
 
-    def get_report_data_dir(self, report_type):
-        report_data_dir = os.path.join(DEPENDENCY_REPORTS_DIR_NAME, report_type, 'data')
+    def get_report_data_dir(self):
+        report_data_dir = os.path.join(DEPENDENCY_REPORTS_DIR_NAME, self.report_name, 'data')
         if not os.path.exists(report_data_dir):
             os.makedirs(report_data_dir)
         return report_data_dir
@@ -190,7 +161,7 @@ class ReportGenerator(QObject):
     def get_tmp_filename(self, basename, extension='gpkg'):
         return "{}_{}.{}".format(basename, str(time.time()).replace(".",""), extension)
 
-    def generate_report(self, db, report_type):
+    def generate_report(self, db):
         # Check if mapfish and Jasper are installed, otherwise show where to
         # download them from and return
         if not self.report_dependency.check_if_dependency_is_valid():
@@ -226,7 +197,7 @@ class ReportGenerator(QObject):
             return
         QSettings().setValue("Asistente-LADM-COL/reports/save_into_dir", save_into_folder)
 
-        config_path = os.path.join(DEPENDENCY_REPORTS_DIR_NAME, report_type)
+        config_path = os.path.join(DEPENDENCY_REPORTS_DIR_NAME, self.report_name)
         json_spec_file = os.path.join(config_path, 'spec_json_file.json')
 
         script_name = ''
@@ -240,7 +211,7 @@ class ReportGenerator(QObject):
             self.logger.warning(__name__, "Script file for reports wasn't found! {}".format(script_path))
             return
 
-        self.enable_action_requested.emit(report_type, False)
+        self.enable_action_requested.emit(self.report_name, False)
 
         # Update config file
         yaml_config_path = self.update_yaml_config(db, config_path)
@@ -277,7 +248,7 @@ class ReportGenerator(QObject):
                     continue
 
                 # Generate data file
-                json_file = self.update_json_data(db, json_spec_file, plot_id, tmp_dir, report_type)
+                json_file = self.update_json_data(db, json_spec_file, plot_id, tmp_dir)
                 self.logger.debug(__name__, "JSON file for reports: {}".format(json_file))
 
                 # Run sh/bat passing config and data files
@@ -289,7 +260,7 @@ class ReportGenerator(QObject):
 
                 parcel_number = self.ladm_data.get_parcels_related_to_plots(db, [plot_id], db.names.LC_PARCEL_T_PARCEL_NUMBER_F) or ['']
                 self.app.gui.activate_layer(plot_layer)  # Previous function changed the selected layer, so, select again plot layer
-                file_name = '{}_{}_{}.pdf'.format(report_type, plot_id, parcel_number[0])
+                file_name = '{}_{}_{}.pdf'.format(self.report_name, plot_id, parcel_number[0])
 
                 current_report_path = os.path.join(save_into_folder, file_name)
                 proc.start(script_path, ['-config', yaml_config_path, '-spec', json_file, '-output', current_report_path])
@@ -318,9 +289,9 @@ class ReportGenerator(QObject):
                         pass  # progressBar was deleted
 
         os.remove(yaml_config_path)
-        self.clean_report_data_dir(report_type)
+        self.clean_report_data_dir()
 
-        self.enable_action_requested.emit(report_type, True)
+        self.enable_action_requested.emit(self.report_name, True)
         self.logger.clear_message_bar()
 
         if total == count:

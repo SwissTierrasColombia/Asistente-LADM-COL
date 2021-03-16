@@ -125,7 +125,8 @@ from asistente_ladm_col.gui.dialogs.dlg_quality import QualityDialog
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
 from asistente_ladm_col.gui.dialogs.dlg_welcome_screen import WelcomeScreenDialog
 from asistente_ladm_col.gui.queries.dockwidget_queries import DockWidgetQueries
-from asistente_ladm_col.gui.reports.reports import ReportGenerator
+from asistente_ladm_col.gui.reports.ant_map_report import ANTMapReport
+from asistente_ladm_col.gui.reports.annex_17_map_report import Annex17MapReport
 from asistente_ladm_col.gui.right_of_way import RightOfWay
 from asistente_ladm_col.gui.toolbar import ToolBar
 from asistente_ladm_col.gui.transitional_system.dlg_upload_file import STUploadFileDialog
@@ -223,7 +224,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self.right_of_way = RightOfWay()
         self.toolbar = ToolBar(self.iface)
         self.ladm_data = LADMData()
-        self.report_generator = ReportGenerator(self.ladm_data)
+        self.ant_map_report = ANTMapReport(self.ladm_data)
+        self.annex_17_map_report = Annex17MapReport(self.ladm_data)
 
         self.create_actions()
         self.register_dock_widgets()
@@ -279,7 +281,8 @@ class AsistenteLADMCOLPlugin(QObject):
             self.show_message_with_buttons_change_detection_all_and_per_parcel)
 
         self.app.gui.add_indicators_requested.connect(self.add_indicators)
-        self.report_generator.enable_action_requested.connect(self.enable_action)
+        self.ant_map_report.enable_action_requested.connect(self.enable_action)
+        self.annex_17_map_report.enable_action_requested.connect(self.enable_action)
         self.session.login_status_changed.connect(self.set_login_controls_visibility)
 
     @staticmethod
@@ -1038,14 +1041,14 @@ class AsistenteLADMCOLPlugin(QObject):
     @_cadastral_cartography_model_required
     @_survey_model_required
     def call_ant_map_report_generation(self, *args):
-        self.report_generator.generate_report(self.get_db_connection(), ANT_MAP_REPORT)
+        self.ant_map_report.generate_report(self.get_db_connection())
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
     @_survey_model_required
     def call_annex_17_report_generation(self, *args):
-        self.report_generator.generate_report(self.get_db_connection(), ANNEX_17_REPORT)
+        self.annex_17_map_report.generate_report(self.get_db_connection())
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
