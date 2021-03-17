@@ -448,8 +448,8 @@ class LayerConfig:
                     }
                 elif layer_name == names.LC_PARCEL_T:
                     dict_automatic_values = {
-                        names.LC_PARCEL_T_DEPARTMENT_F: 'substr("{}", 0, 2)'.format(names.LC_PARCEL_T_PARCEL_NUMBER_F),
-                        names.LC_PARCEL_T_MUNICIPALITY_F: 'substr("{}", 3, 3)'.format(names.LC_PARCEL_T_PARCEL_NUMBER_F)
+                        # names.LC_PARCEL_T_DEPARTMENT_F: 'substr("{}", 0, 2)'.format(names.LC_PARCEL_T_PARCEL_NUMBER_F),
+                        # names.LC_PARCEL_T_MUNICIPALITY_F: 'substr("{}", 3, 3)'.format(names.LC_PARCEL_T_PARCEL_NUMBER_F)
                     }
                 elif layer_name == names.LC_ADMINISTRATIVE_SOURCE_T:
                     dict_automatic_values = {
