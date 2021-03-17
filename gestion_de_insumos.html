@@ -98,9 +98,16 @@
 <li class="toctree-l1"><a class="reference internal" href="barra_de_herramientas.html">Barra de herramientas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cargar_capas.html">Cargar capas</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Gestión de insumos</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#ejecutar-etl-de-insumos">Ejecutar ETL de Insumos</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#reporte-omisiones-y-comisiones-cobol">Reporte Omisiones y Comisiones - COBOL</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#reporte-omisiones-y-comisiones-snc">Reporte Omisiones y Comisiones - SNC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ejecutar-etl-de-insumos">Ejecutar ETL de Insumos</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#etl-snc-al-submodelo-de-insumos">ETL SNC al Submodelo de insumos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#etl-cobol-a-submodelo-de-insumos">ETL COBOL a submodelo de insumos</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#reporte-de-omisiones-y-comisiones">Reporte de Omisiones y Comisiones</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#reporte-omisiones-y-comisiones-cobol">Reporte Omisiones y Comisiones - COBOL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reporte-omisiones-y-comisiones-snc">Reporte Omisiones y Comisiones - SNC</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="captura_de_datos_en_campo.html">Captura de datos en campo</a></li>
@@ -185,14 +192,124 @@
             
   <div class="section" id="gestion-de-insumos">
 <h1>Gestión de insumos<a class="headerlink" href="#gestion-de-insumos" title="Enlazar permanentemente con este título">¶</a></h1>
-<img src="_static/sistema_de_transicion/transitional_system.gif" alt="Sistema de transición" style="height:500px;width:800px" /><div class="section" id="ejecutar-etl-de-insumos">
+<p><a class="" data-lightbox="Sistema de transición" href="_static/sistema_de_transicion/transitional_system.gif" title="Sistema de transición" data-title="Sistema de transición"><img src="_static/sistema_de_transicion/transitional_system.gif" class="align-center" width="800px" height="500px" alt="Sistema de transición">
+</a></p>
+<div class="section" id="ejecutar-etl-de-insumos">
 <h2>Ejecutar ETL de Insumos<a class="headerlink" href="#ejecutar-etl-de-insumos" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Las ETLs (Extracción, Transformación y Cargue) que llevan los datos desde SNC (Sistema Nacional Catastral) o COBOL (<strong>CO</strong>mmon <strong>B</strong>usiness-<strong>O</strong>riented <strong>L</strong>anguage) al submodelo de insumos se pueden ejecutar desde un wizard en el Asistente LADM-COL.</p>
+<div class="seealso">
+<p class="admonition-title">TIP</p>
+<p>Se recomienda ejecutar la ETL que lleva los datos desde COBOL o SNC al submodelo de insumos desde el perfil de <b>Proveedor de Insumos</b> del Asistente LADM-COL.</p>
+</div><div class="note">
+<p class="admonition-title">IMPORTANTE</p>
+<p>Antes de ejecutar la ETL de COBOL o SNC al submodelo de insumos, <a href="https://swisstierrascolombia.github.io/Asistente-LADM-COL/administracion_de_datos.html#crear-estructura-ladm-col">crea la estructura de base de datos</a> desde Administración de datos --> Crear estructura</p>
+</div><div class="section" id="etl-snc-al-submodelo-de-insumos">
+<h3>ETL SNC al Submodelo de insumos<a class="headerlink" href="#etl-snc-al-submodelo-de-insumos" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>Para Ejecutar la ETL SNC es necesario que del sistema SNC se extraigan los siguientes archivos para la zona de trabajo de interés:</p>
+<table border="1" class="docutils">
+<thead>
+<tr>
+<th></th>
+<th><strong>Alfanuméricos</strong></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>predio_bloqueo.csv</td>
+<td>persona_predio.csv *</td>
+<td>unidad_construccion_comp.csv *</td>
+</tr>
+<tr>
+<td>persona.csv *</td>
+<td>direccion.csv *</td>
+<td>ficha_matriz.csv</td>
+</tr>
+<tr>
+<td>predio.csv *</td>
+<td>unidad_construccion.csv *</td>
+<td>ficha_matriz_predio.csv</td>
+</tr>
+<tr>
+<td>ficha_matriz_torre.csv</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table><table border="1" class="docutils">
+<thead>
+<tr>
+<th><strong>Geográficos</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GDB (Geodatabase) *</td>
+</tr>
+</tbody>
+</table><p>* <em>Archivo obligatorio para ejecutar el ETL.</em></p>
+<div class="warning">
+<p class="admonition-title">ADVERTENCIA</p>
+<p>Antes de ejecutar el ETL de SNC, se debe verificar la configuración de la conexión a la base de datos destino para evitar sobreescribir datos a una estructura incorrecta.</p>
+</div><p><a class="" data-lightbox="ETL SNC" href="_static/gestion_de_insumos/etl_snc.gif" title="ETL SNC" data-title="ETL SNC"><img src="_static/gestion_de_insumos/etl_snc.gif" class="align-center" width="800px" height="500px" alt="ETL SNC">
+</a></p>
 </div>
+<div class="section" id="etl-cobol-a-submodelo-de-insumos">
+<h3>ETL COBOL a submodelo de insumos<a class="headerlink" href="#etl-cobol-a-submodelo-de-insumos" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>Para Ejecutar la ETL COBOL es necesario que del sistema COBOL se extraigan los siguiente archivos para la zona de trabajo de interés:</p>
+<table border="1" class="docutils">
+<thead>
+<tr>
+<th></th>
+<th align="center"><strong>Alfanuméricos</strong></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>blo.lis</td>
+<td align="center">uni.lis *</td>
+<td>ter.lis *</td>
+</tr>
+<tr>
+<td>pro.lis *</td>
+<td align="center"></td>
+<td></td>
+</tr>
+</tbody>
+</table><table border="1" class="docutils">
+<thead>
+<tr>
+<th><strong>Geográficos</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GDB (Geodatabase) *</td>
+</tr>
+</tbody>
+</table><p>* <em>Archivo obligatorio para ejecutar el ETL.</em></p>
+<div class="warning">
+<p class="admonition-title">ADVERTENCIA</p>
+<p>Antes de ejecutar la ETL de COBOL, se debe verificar la configuración de la conexión a la base de datos destino para evitar sobreescribir datos a una estructura incorrecta.</p>
+</div><p><a class="" data-lightbox="ETL Cobol" href="_static/gestion_de_insumos/etl_cobol.gif" title="ETL Cobol" data-title="ETL Cobol"><img src="_static/gestion_de_insumos/etl_cobol.gif" class="align-center" width="800px" height="500px" alt="ETL Cobol">
+</a></p>
+</div>
+</div>
+<div class="section" id="reporte-de-omisiones-y-comisiones">
+<h2>Reporte de Omisiones y Comisiones<a class="headerlink" href="#reporte-de-omisiones-y-comisiones" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Esta funcionalidad facilita la generación del reporte de omisiones y comisiones para los datos de <strong>COBOL</strong> y <strong>SNC</strong>, este reporte nos permite identificar las inconsistencias de completitud del dato, y depurar el error tanto en la información gráfica como alfanumérica. Para esto es necesario contar con la información asociada al predio que se encuentra en el archivo <strong>uni.lis</strong> para el caso de <strong>COBOL</strong>, y para el caso <strong>SNC</strong> se encuentra en el archivo <strong>predio.csv</strong>. La información geográfica para ambos casos se encuentra en el archivo con formato <strong>GDB</strong>.</p>
+<p>Despues de ejecutar el reporte, las capas geográficas resultantes se almacenarán en un archivo con formato <strong>GeoPackage (GPKG)</strong> y la estadistica de los datos se almacenará en un archivo en formato <strong>Excel (XLS)</strong> a los cuales se les podrá asígnar un nombre y quedarán en la carpeta seleccionada en el momento de ejecutar el reporte.</p>
 <div class="section" id="reporte-omisiones-y-comisiones-cobol">
-<h2>Reporte Omisiones y Comisiones - COBOL<a class="headerlink" href="#reporte-omisiones-y-comisiones-cobol" title="Enlazar permanentemente con este título">¶</a></h2>
+<h3>Reporte Omisiones y Comisiones - COBOL<a class="headerlink" href="#reporte-omisiones-y-comisiones-cobol" title="Enlazar permanentemente con este título">¶</a></h3>
+<p><a class="" data-lightbox="Omisiones y Comisiones Cobol" href="_static/gestion_de_insumos/omisiones_comisiones_cobol.gif" title="Omisiones y Comisiones Cobol" data-title="Omisiones y Comisiones Cobol"><img src="_static/gestion_de_insumos/omisiones_comisiones_cobol.gif" class="align-center" width="800px" height="500px" alt="Omisiones y Comisiones Cobol">
+</a></p>
 </div>
 <div class="section" id="reporte-omisiones-y-comisiones-snc">
-<h2>Reporte Omisiones y Comisiones - SNC<a class="headerlink" href="#reporte-omisiones-y-comisiones-snc" title="Enlazar permanentemente con este título">¶</a></h2>
+<h3>Reporte Omisiones y Comisiones - SNC<a class="headerlink" href="#reporte-omisiones-y-comisiones-snc" title="Enlazar permanentemente con este título">¶</a></h3>
+<p><a class="" data-lightbox="Omisiones y Comisiones SNC" href="_static/gestion_de_insumos/omisiones_comisiones_snc.gif" title="Omisiones y Comisiones SNC" data-title="Omisiones y Comisiones SNC"><img src="_static/gestion_de_insumos/omisiones_comisiones_snc.gif" class="align-center" width="800px" height="500px" alt="Omisiones y Comisiones SNC">
+</a></p>
+</div>
 </div>
 </div>
 

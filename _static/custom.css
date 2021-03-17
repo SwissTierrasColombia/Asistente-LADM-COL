@@ -5,3 +5,12 @@
 .seealso .admonition-title {
   background: #7fde6a !important;
 }
+
+p {
+  text-align: justify;
+}
+
+table{
+  margin-right: auto;
+  margin-left: auto;
+}
