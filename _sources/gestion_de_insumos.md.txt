@@ -1,8 +1,5 @@
 # Gestión de insumos
 
-<a class="" data-lightbox="Sistema de transición" href="_static/sistema_de_transicion/transitional_system.gif" title="Sistema de transición" data-title="Sistema de transición"><img src="_static/sistema_de_transicion/transitional_system.gif" class="align-center" width="800px" height="500px" alt="Sistema de transición">
-</a>
-
 ## Ejecutar ETL de Insumos
 
 Las ETLs (Extracción, Transformación y Cargue) que llevan los datos desde SNC (Sistema Nacional Catastral) o COBOL (**CO**mmon **B**usiness-**O**riented **L**anguage) al submodelo de insumos se pueden ejecutar desde un wizard en el Asistente LADM-COL.
