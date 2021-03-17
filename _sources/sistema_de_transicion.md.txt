@@ -1,8 +1,7 @@
 # Sistema de transición
 
-<img src="_static/sistema_de_transicion/transitional_system.gif" alt="Sistema de transición" style="height:500px;width:800px" />
-
-
+<a class="" data-lightbox="Sistema de transición" href="_static/sistema_de_transicion/transitional_system.gif" title="Sistema de transición" data-title="Sistema de transición"><img src="_static/sistema_de_transicion/transitional_system.gif" class="align-center" width="800px" alt="Sistema de transición"/>
+</a>
 
 ## Autenticación
 
