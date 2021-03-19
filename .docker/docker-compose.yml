@@ -1,0 +1,42 @@
+version: "3"
+services:
+  postgres:
+    image: kartoza/postgis:13-3.1
+    volumes:
+      - postgis-data:/var/lib/postgresql
+      - dbbackups:/backups
+    environment:
+      # If you need to create multiple database you can add coma separated databases eg gis,data
+      - POSTGRES_DB=ladm_col
+      - POSTGRES_USER=usuario_ladm_col
+      - POSTGRES_PASS=clave_ladm_col
+      - ALLOW_IP_RANGE=0.0.0.0/0
+      # Add extensions you need to be enabled by default in the DB. Default are the five specified below
+      - POSTGRES_MULTIPLE_EXTENSIONS=postgis
+  mssql:
+    image: microsoft/mssql-server-linux:2017-latest
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: <YourStrong!Passw0rd>
+    ports:
+      - "1433:1433"
+
+  qgis:
+    build:
+      context: ..
+      dockerfile: ./.docker/Dockerfile
+      args:
+        QGIS_TEST_VERSION: ${QGIS_TEST_VERSION}
+    tty: true
+    volumes:
+      - ${GITHUB_WORKSPACE}:/usr/src
+    depends_on:
+      - postgres
+      - mssql
+    links:
+      - postgres
+      - mssql
+    command: ["/usr/src/scripts/run-docker-tests.sh"]
+volumes:
+  postgis-data:
+  dbbackups:
