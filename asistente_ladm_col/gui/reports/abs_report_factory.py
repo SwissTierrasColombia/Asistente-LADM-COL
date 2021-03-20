@@ -187,6 +187,8 @@ class AbsReportFactory(QDialog):
         return True
 
     def generate_report(self, plot_layer, selected_plots, save_into_folder):
+        self.check_report_dependency()
+        self.check_java_dependency()
 
         config_path = os.path.join(DEPENDENCY_REPORTS_DIR_NAME, self.report_name)
         json_spec_file = os.path.join(config_path, 'spec_json_file.json')
