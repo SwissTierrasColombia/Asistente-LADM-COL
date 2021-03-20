@@ -529,3 +529,20 @@ def _with_override_cursor(func_to_decorate):
             func_to_decorate(*args, **kwargs)
 
     return decorated_function
+
+
+def _validate_if_plot_is_selected(func_to_decorate):
+    @wraps(func_to_decorate)
+    def decorated_function(*args, **kwargs):
+        inst = args[0]
+        db = inst.get_db_connection()
+
+        plot_layer = inst.app.core.get_layer(db, db.names.LC_PLOT_T, load=True)
+        selected_plots = plot_layer.selectedFeatures()
+        if not selected_plots:
+            inst.logger.warning_msg(__name__, QCoreApplication.translate("ReportGenerator",
+                                                                         "To generate reports, first select at least a plot!"))
+            return
+
+        func_to_decorate(*args, **kwargs)
+    return decorated_function

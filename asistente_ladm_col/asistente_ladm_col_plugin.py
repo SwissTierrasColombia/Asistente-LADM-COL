@@ -137,6 +137,7 @@ from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.processing.ladm_col_provider import LADMCOLAlgorithmProvider
 from asistente_ladm_col.logic.quality.quality_rule_engine import QualityRuleEngine
 from asistente_ladm_col.utils.decorators import (_db_connection_required,
+                                                 _validate_if_plot_is_selected,
                                                  _validate_if_wizard_is_open,
                                                  _qgis_model_baker_required,
                                                  _activate_processing_plugin,
@@ -224,8 +225,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self.right_of_way = RightOfWay()
         self.toolbar = ToolBar(self.iface)
         self.ladm_data = LADMData()
-        self.ant_map_report = ANTMapReport(self.ladm_data)
-        self.annex_17_map_report = Annex17MapReport(self.ladm_data)
+        self.ant_map_report = ANTMapReport(self.get_db_connection())
+        self.annex_17_map_report = Annex17MapReport(self.get_db_connection())
 
         self.create_actions()
         self.register_dock_widgets()
@@ -1035,20 +1036,24 @@ class AsistenteLADMCOLPlugin(QObject):
     def call_fill_right_of_way_relations(self, *args):
         self.right_of_way.fill_right_of_way_relations(self.get_db_connection())
 
+    @_validate_if_plot_is_selected
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
     @_cadastral_cartography_model_required
     @_survey_model_required
     def call_ant_map_report_generation(self, *args):
-        self.ant_map_report.generate_report(self.get_db_connection())
+        self.ant_map_report.update_db_connection(self.get_db_connection())
+        self.ant_map_report.exec_()
 
+    @_validate_if_plot_is_selected
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
     @_survey_model_required
     def call_annex_17_report_generation(self, *args):
-        self.annex_17_map_report.generate_report(self.get_db_connection())
+        self.annex_17_map_report.update_db_connection(self.get_db_connection())
+        self.annex_17_map_report.exec_()
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required

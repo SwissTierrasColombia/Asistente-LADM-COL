@@ -29,11 +29,10 @@ import time
 from qgis.PyQt.QtCore import (Qt,
                               QObject,
                               QCoreApplication,
-                              QSettings,
                               QProcess,
                               QEventLoop,
                               pyqtSignal)
-from qgis.PyQt.QtWidgets import (QFileDialog,
+from qgis.PyQt.QtWidgets import (QDialog,
                                  QProgressBar)
 from qgis.core import QgsDataSourceUri
 
@@ -41,19 +40,21 @@ from asistente_ladm_col.config.general_config import (URL_REPORTS_LIBRARIES,
                                                       DEPENDENCY_REPORTS_DIR_NAME)
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 from asistente_ladm_col.utils.qt_utils import (normalize_local_url,
                                                OverrideCursor)
 from asistente_ladm_col.lib.dependency.report_dependency import ReportDependency
 from asistente_ladm_col.lib.dependency.java_dependency import JavaDependency
 
 
-class AbsReportFactory(QObject):
+class AbsReportFactory(QDialog):
     LOG_TAB = 'LADM-COL Reports'
     enable_action_requested = pyqtSignal(str, bool)
 
-    def __init__(self, ladm_data):
+    def __init__(self, db):
         QObject.__init__(self)
-        self.ladm_data = ladm_data
+        self.db = db
+        self.ladm_data = LADMData()
         self.logger = Logger()
         self.app = AppInterface()
         self.java_dependency = JavaDependency()
@@ -62,6 +63,7 @@ class AbsReportFactory(QObject):
         self.report_dependency = ReportDependency()
         self.report_dependency.download_dependency_completed.connect(self.download_report_complete)
         self.report_name = None
+        self.report_ui = None
 
         self.encoding = locale.getlocale()[1]
         # This might be unset
@@ -69,6 +71,9 @@ class AbsReportFactory(QObject):
             self.encoding = 'UTF8'
 
         self._downloading = False
+
+    def init_gui(self):
+        raise NotImplementedError
 
     def stderr_ready(self, proc):
         text = bytes(proc.readAllStandardError()).decode(self.encoding)
@@ -78,19 +83,19 @@ class AbsReportFactory(QObject):
         text = bytes(proc.readAllStandardOutput()).decode(self.encoding)
         self.logger.info(__name__, text, tab=self.LOG_TAB)
 
-    def update_yaml_config(self, db, config_path):
+    def update_yaml_config(self, config_path):
         text = ''
-        qgs_uri = QgsDataSourceUri(db.uri)
+        qgs_uri = QgsDataSourceUri(self.db.uri)
 
         with open(os.path.join(config_path, 'config_template.yaml')) as f:
             text = f.read()
             text = text.format(
                 '{}',
-                DB_USER = qgs_uri.username(),
-                DB_PASSWORD = qgs_uri.password(),
-                DB_HOST = qgs_uri.host(),
-                DB_PORT = qgs_uri.port(),
-                DB_NAME = qgs_uri.database()
+                DB_USER=qgs_uri.username(),
+                DB_PASSWORD=qgs_uri.password(),
+                DB_HOST=qgs_uri.host(),
+                DB_PORT=qgs_uri.port(),
+                DB_NAME=qgs_uri.database()
             )
         new_file_path = os.path.join(config_path, self.get_tmp_filename('yaml_config', 'yaml'))
 
@@ -110,27 +115,30 @@ class AbsReportFactory(QObject):
             return "file://{dirname}/{filename}".format(dirname=os.path.basename(report_data_dir), filename=file_name)
         return None
 
-    def get_layer_geojson(self, db, layer_name, plot_id):
+    def update_db_connection(self, db):
+        self.db = db
+
+    def get_layer_geojson(self, layer_name, plot_id):
         raise NotImplementedError
 
-    def update_json_data(self, db, json_spec_file, plot_id, tmp_dir):
+    def update_json_data(self, json_spec_file, plot_id, tmp_dir):
         json_data = dict()
         with open(json_spec_file) as f:
             json_data = json.load(f)
 
         json_data['attributes']['id'] = plot_id
-        json_data['attributes']['datasetName'] = db.schema
+        json_data['attributes']['datasetName'] = self.db.schema
         layers = json_data['attributes']['map']['layers']
         for layer in layers:
             if 'geoJson' in layer:
-                result, data = self.get_layer_geojson(db, layer['name'], plot_id)
+                result, data = self.get_layer_geojson(layer['name'], plot_id)
                 if result:
                     layer['geoJson'] = self.create_geojson_file(data)
 
         overview_layers = json_data['attributes']['overviewMap']['layers']
         for layer in overview_layers:
             if 'geoJson' in layer:
-                result, data = self.get_layer_geojson(db, layer['name'], plot_id)
+                result, data = self.get_layer_geojson(layer['name'], plot_id)
                 if result:
                     layer['geoJson'] = self.create_geojson_file(data)
 
@@ -161,41 +169,24 @@ class AbsReportFactory(QObject):
     def get_tmp_filename(self, basename, extension='gpkg'):
         return "{}_{}.{}".format(basename, str(time.time()).replace(".",""), extension)
 
-    def generate_report(self, db):
+    def check_report_dependency(self):
         # Check if mapfish and Jasper are installed, otherwise show where to
         # download them from and return
         if not self.report_dependency.check_if_dependency_is_valid():
             self.report_dependency.download_dependency(URL_REPORTS_LIBRARIES)
-            return
+            return False
+        return True
 
+    def check_java_dependency(self):
         java_home_set = self.java_dependency.set_java_home()
         if not java_home_set:
             self.java_dependency.get_java_on_demand()
             self.logger.info_msg(__name__, QCoreApplication.translate("ReportGenerator",
-                                                                         "Java is a prerequisite. Since it was not found, it is being configured..."))
-            return
+                                                                      "Java is a prerequisite. Since it was not found, it is being configured..."))
+            return False
+        return True
 
-        plot_layer = self.app.core.get_layer(db, db.names.LC_PLOT_T, load=True)
-        if not plot_layer:
-            return
-
-        selected_plots = plot_layer.selectedFeatures()
-        if not selected_plots:
-            self.logger.warning_msg(__name__, QCoreApplication.translate("ReportGenerator",
-                                    "To generate reports, first select at least a plot!"))
-            return
-
-        # Where to store the reports?
-        previous_folder = QSettings().value("Asistente-LADM-COL/reports/save_into_dir", ".")
-        save_into_folder = QFileDialog.getExistingDirectory(
-                        None,
-                        QCoreApplication.translate("ReportGenerator", "Select a folder to save the reports to be generated"),
-                        previous_folder)
-        if not save_into_folder:
-            self.logger.warning_msg(__name__, QCoreApplication.translate("ReportGenerator",
-                                    "You need to select a folder where to save the reports before continuing."))
-            return
-        QSettings().setValue("Asistente-LADM-COL/reports/save_into_dir", save_into_folder)
+    def generate_report(self, plot_layer, selected_plots, save_into_folder):
 
         config_path = os.path.join(DEPENDENCY_REPORTS_DIR_NAME, self.report_name)
         json_spec_file = os.path.join(config_path, 'spec_json_file.json')
@@ -214,7 +205,7 @@ class AbsReportFactory(QObject):
         self.enable_action_requested.emit(self.report_name, False)
 
         # Update config file
-        yaml_config_path = self.update_yaml_config(db, config_path)
+        yaml_config_path = self.update_yaml_config(config_path)
         self.logger.debug(__name__, "Config file for reports: {}".format(yaml_config_path))
 
         total = len(selected_plots)
@@ -237,18 +228,18 @@ class AbsReportFactory(QObject):
 
         with OverrideCursor(Qt.WaitCursor):
             for selected_plot in selected_plots:
-                plot_id = selected_plot[db.names.T_ID_F]
+                plot_id = selected_plot[self.db.names.T_ID_F]
 
                 geometry = selected_plot.geometry()
                 abstract_geometry = geometry.get()
                 if abstract_geometry.ringCount() > 1:
                     polygons_with_holes.append(str(plot_id))
                     self.logger.warning(__name__, QCoreApplication.translate("ReportGenerator",
-                        "Skipping Annex 17 for plot with {}={} because it has holes. The reporter module does not support such polygons.").format(db.names.T_ID_F, plot_id))
+                        "Skipping Annex 17 for plot with {}={} because it has holes. The reporter module does not support such polygons.").format(self.db.names.T_ID_F, plot_id))
                     continue
 
                 # Generate data file
-                json_file = self.update_json_data(db, json_spec_file, plot_id, tmp_dir)
+                json_file = self.update_json_data(json_spec_file, plot_id, tmp_dir)
                 self.logger.debug(__name__, "JSON file for reports: {}".format(json_file))
 
                 # Run sh/bat passing config and data files
@@ -258,7 +249,7 @@ class AbsReportFactory(QObject):
                 proc.readyReadStandardOutput.connect(
                     functools.partial(self.stdout_ready, proc=proc))
 
-                parcel_number = self.ladm_data.get_parcels_related_to_plots(db, [plot_id], db.names.LC_PARCEL_T_PARCEL_NUMBER_F) or ['']
+                parcel_number = self.ladm_data.get_parcels_related_to_plots(self.db, [plot_id], self.db.names.LC_PARCEL_T_PARCEL_NUMBER_F) or ['']
                 self.app.gui.activate_layer(plot_layer)  # Previous function changed the selected layer, so, select again plot layer
                 file_name = '{}_{}_{}.pdf'.format(self.report_name, plot_id, parcel_number[0])
 
