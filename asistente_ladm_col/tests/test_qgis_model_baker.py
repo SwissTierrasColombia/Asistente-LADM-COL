@@ -77,6 +77,7 @@ class TestQgisModelBaker(unittest.TestCase):
         exporter.tool = DbIliMode.ili2pg
         exporter.configuration = configuration
         exporter.configuration.xtffile = os.path.join(tempfile.mkdtemp(), 'test_export_data.xtf')
+        # exporter.stderr.connect(self.on_stderr)
         self.assertEqual(exporter.run(), iliexporter.Exporter.SUCCESS)
         self.check_export_xtf(exporter.configuration.xtffile)
         db_pg.conn.close()
@@ -102,6 +103,7 @@ class TestQgisModelBaker(unittest.TestCase):
         exporter.tool = DbIliMode.ili2gpkg
         exporter.configuration = configuration
         exporter.configuration.xtffile = os.path.join(self.base_test_path, 'test_export_data.xtf')
+        # exporter.stderr.connect(self.on_stderr)
         self.assertEqual(exporter.run(), iliexporter.Exporter.SUCCESS)
         self.check_export_xtf(exporter.configuration.xtffile)
 
@@ -160,6 +162,7 @@ class TestQgisModelBaker(unittest.TestCase):
         importer.tool = DbIliMode.ili2pg
         importer.configuration = configuration
         importer.configuration.xtffile = testdata_path('xtf/test_ladm_col_queries_v1_0.xtf')
+        # importer.stderr.connect(self.on_stderr)
         self.assertEqual(importer.run(), iliimporter.Importer.SUCCESS)
 
         generator = Generator(
@@ -209,6 +212,7 @@ class TestQgisModelBaker(unittest.TestCase):
         importer.tool = DbIliMode.ili2gpkg
         importer.configuration = configuration
         importer.configuration.xtffile = testdata_path('xtf/test_ladm_col_queries_v1_0.xtf')
+        # importer.stderr.connect(self.on_stderr)
         self.assertEqual(importer.run(), iliimporter.Importer.SUCCESS)
 
         config_manager = GpkgCommandConfigManager(importer.configuration)
@@ -255,7 +259,7 @@ class TestQgisModelBaker(unittest.TestCase):
         importer = iliimporter.Importer()
         importer.tool = DbIliMode.ili2pg
         importer.configuration = configuration
-
+        # importer.stderr.connect(self.on_stderr)
         self.assertEqual(importer.run(), iliimporter.Importer.SUCCESS)
 
         generator = Generator(
@@ -294,7 +298,7 @@ class TestQgisModelBaker(unittest.TestCase):
         importer = iliimporter.Importer()
         importer.tool = DbIliMode.ili2gpkg
         importer.configuration = configuration
-
+        # importer.stderr.connect(self.on_stderr)
         self.assertEqual(importer.run(), iliimporter.Importer.SUCCESS)
 
         config_manager = GpkgCommandConfigManager(importer.configuration)
@@ -338,7 +342,7 @@ class TestQgisModelBaker(unittest.TestCase):
         importer = iliimporter.Importer()
         importer.tool = DbIliMode.ili2mssql
         importer.configuration = configuration
-
+        # importer.stderr.connect(self.on_stderr)
         self.assertEqual(importer.run(), iliimporter.Importer.SUCCESS)
 
         generator = Generator(DbIliMode.ili2mssql,
@@ -391,6 +395,7 @@ class TestQgisModelBaker(unittest.TestCase):
         importer.tool = DbIliMode.ili2mssql
         importer.configuration = configuration
         importer.configuration.xtffile = testdata_path('xtf/test_ladm_col_queries_v1_0.xtf')
+        # importer.stderr.connect(self.on_stderr)
         self.assertEqual(importer.run(), iliimporter.Importer.SUCCESS)
 
         generator = Generator(DbIliMode.ili2mssql,
@@ -444,9 +449,14 @@ class TestQgisModelBaker(unittest.TestCase):
         exporter.tool = DbIliMode.ili2mssql
         exporter.configuration = configuration
         exporter.configuration.xtffile = os.path.join(tempfile.mkdtemp(), 'test_export_data.xtf')
+        # exporter.stderr.connect(self.on_stderr)
         self.assertEqual(exporter.run(), iliexporter.Exporter.SUCCESS)
         self.check_export_xtf(exporter.configuration.xtffile)
         db_conn.conn.close()
+
+    def on_stderr(self, text):
+        textlines = text.splitlines()
+        print(textlines)
 
     @classmethod
     def tearDownClass(cls):
