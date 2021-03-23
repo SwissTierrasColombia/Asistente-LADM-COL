@@ -256,14 +256,21 @@ Se recomienda:
 - Instalar *docker-compose* usando los [binarios](https://github.com/docker/compose/releases).
 - NOTA: La [instalación](https://www.how2shout.com/how-to/how-to-install-docker-ce-on-ubuntu-20-04-lts-focal-fossa.html) en el SO Ubuntu 20.04 es más sencilla.
 
+Antes de ejecutar las pruebas unitarias, necesitas definir estas dos variables de entorno (asegúrate de usar tu propia ruta a la raíz del repositorio para la primera variable):
+
+```sh
+export GITHUB_WORKSPACE=/home/Asistente-LADM-COL
+export QGIS_TEST_VERSION="release-3_16"
+```
+
 El comando para ejecutar las pruebas es (ejecutar desde la raíz del repositorio):
 ```sh
-docker-compose run --rm qgis
+docker-compose -f .docker/docker-compose.yml run --rm qgis
 ```
 
 En caso de requerir recrear la imagen de docker se puede ejecutar:
 ```sh
-docker-compose down --rmi local && docker-compose build
+docker-compose -f .docker/docker-compose.yml down --rmi local && docker-compose -f .docker/docker-compose.yml build
 ```
 
 ### Pruebas asistidas (para la interfaz de usuario)

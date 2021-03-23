@@ -199,14 +199,22 @@ To run the tests locally you need to have *docker* and *docker-compose* installe
 - Install *docker-compose* using the [binaries](https://github.com/docker/compose/releases).
 - NOTE: [installing Docker](https://www.how2shout.com/how-to/how-to-install-docker-ce-on-ubuntu-20-04-lts-focal-fossa.html) on Ubuntu 20.04 is easier.
 
-The command to execute unit tests is (execute from the repository's root folder):
+Before running unit tests, you need to set these 2 environment variables (make sure you use your own repository's root path for the first one):
+
 ```sh
-docker-compose run --rm qgis
+export GITHUB_WORKSPACE=/home/Asistente-LADM-COL
+export QGIS_TEST_VERSION="release-3_16"
 ```
 
-If you need to recreate docker image, you can use:
+The command to execute unit tests is (execute from the repository's root folder):
+
 ```sh
-docker-compose down --rmi local && docker-compose build
+docker-compose -f .docker/docker-compose.yml run --rm qgis
+```
+
+If you need to recreate the docker image, you can use:
+```sh
+docker-compose -f .docker/docker-compose.yml down --rmi local && docker-compose -f .docker/docker-compose.yml build
 ```
 
 ### Assisted tests (for the GUI)
