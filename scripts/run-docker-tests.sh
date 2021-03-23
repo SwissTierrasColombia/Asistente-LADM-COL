@@ -28,14 +28,11 @@ do
   fi
   sleep 2
 done
-PGPASSWORD='clave_ladm_col' psql -h postgres -U usuario_ladm_col -p 5432 -l &> /dev/null
 printf "\n"
 
 pushd /usr/src/asistente_ladm_col
 make
 cd ..
 export PYTHONPATH=/usr/share/qgis/python/plugins:$PYTHONPATH
-# xvfb-run nose2-3 asistente_ladm_col.tests.test_quality_validations
-# xvfb-run nose2-3 asistente_ladm_col.tests.test_qgis_model_baker
-xvfb-run nose2-3 
+xvfb-run nose2-3  # asistente_ladm_col.tests.test_quality_validations
 popd
