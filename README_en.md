@@ -1,6 +1,6 @@
 [![License](https://img.shields.io/github/license/SwissTierrasColombia/Asistente-LADM-COL.svg)](https://tldrlegal.com/license/gnu-general-public-license-v3-%28gpl-3%29)
 [![Release](https://img.shields.io/github/release/SwissTierrasColombia/Asistente-LADM-COL.svg)](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases)
-[![Build Status](https://travis-ci.org/SwissTierrasColombia/Asistente-LADM-COL.svg?branch=master)](https://travis-ci.org/SwissTierrasColombia/Asistente-LADM-COL)
+[![Continuous integration](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/actions/workflows/main.yml/badge.svg)](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/actions/workflows/main.yml)
 
 # LADM-COL Assistant
 [QGIS](http://qgis.org) plugin to capture and maintain data compliant with [LADM-COL](https://github.com/SwissTierrasColombia/LADM-COL) as well as to generate [INTERLIS](http://www.interlis.ch/index_e.htm) interchange files (.XTF) to be used by several actors in land administration.
