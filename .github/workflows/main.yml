@@ -26,4 +26,4 @@ jobs:
         with:
           submodules: recursive
       - name: Test on QGIS
-        run: docker-compose -f .docker/docker-compose.yml run qgis /usr/src/scripts/run-docker-tests.sh
+        run: docker-compose -f .docker/docker-compose.yml run qgis
