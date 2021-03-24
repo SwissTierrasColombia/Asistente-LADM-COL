@@ -455,8 +455,8 @@ class TestQgisModelBaker(unittest.TestCase):
         db_conn.conn.close()
 
     def on_stderr(self, text):
-        textlines = text.splitlines()
-        print(textlines)
+        if text:
+            print("   ", text)
 
     @classmethod
     def tearDownClass(cls):

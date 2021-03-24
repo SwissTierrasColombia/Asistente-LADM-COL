@@ -23,7 +23,7 @@ import_processing()
 import processing
 
 
-class TesGeometryUtils(unittest.TestCase):
+class TestGeometryUtils(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -127,7 +127,7 @@ class TesGeometryUtils(unittest.TestCase):
             self.assertEqual(len(unique_points), 1, 'The intersection failed, points are not equal')
             self.assertEqual(list(unique_points)[0], list(expected_overlaps.values())[0])
 
-    def test_get_overlapping_lines(self):
+    def _test_get_overlapping_lines(self):
         print('\nINFO: Validating overlaps in boundaries...')
         gpkg_path = get_test_copy_path('db/static/gpkg/geometry_utils.gpkg')
         self.db_gpkg = get_gpkg_conn('tests_geometry_util_gpkg')
@@ -254,7 +254,7 @@ class TesGeometryUtils(unittest.TestCase):
             geom_polygon = clone_polygons.getFeature(1).geometry()
             init_vertex_geom = [vertex for vertex in geom_polygon.vertices()]
 
-            self.geometry.add_topological_vertices(clone_polygons, lines_layer, names.T_ID_F)
+            self.geometry.add_topological_vertices(clone_polygons, lines_layer)
 
             geom_polygon = clone_polygons.getFeature(1).geometry()
             adjusted_vertex_geom = [vertex for vertex in geom_polygon.vertices()]

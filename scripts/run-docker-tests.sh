@@ -20,7 +20,7 @@ set -e
 chmod u+x /usr/src/scripts/setup-mssql.sh
 /usr/src/scripts/setup-mssql.sh
 
-printf "Wait a moment while loading the database."
+printf "Wait a moment while loading the PG database."
 for i in {1..15}
 do
   if PGPASSWORD='clave_ladm_col' psql -h postgres -U usuario_ladm_col -p 5432 -l &> /dev/null; then

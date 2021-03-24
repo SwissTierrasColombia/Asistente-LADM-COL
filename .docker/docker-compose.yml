@@ -1,7 +1,7 @@
 version: "3"
 services:
   postgres:
-    image: kartoza/postgis:12.0
+    image: kartoza/postgis:11.5-2.5
     volumes:
       - postgis-data:/var/lib/postgresql
       - dbbackups:/backups
