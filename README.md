@@ -1,6 +1,6 @@
 [![License](https://img.shields.io/github/license/SwissTierrasColombia/Asistente-LADM-COL.svg)](https://tldrlegal.com/license/gnu-general-public-license-v3-%28gpl-3%29)
 [![Release](https://img.shields.io/github/release/SwissTierrasColombia/Asistente-LADM-COL.svg)](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases)
-[![Build Status](https://travis-ci.org/SwissTierrasColombia/Asistente-LADM-COL.svg?branch=master)](https://travis-ci.org/SwissTierrasColombia/Asistente-LADM-COL)
+[![Continuous integration](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/actions/workflows/main.yml/badge.svg)](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/actions/workflows/main.yml)
 
 You can read the docs in [English](README_en.md).
 
@@ -13,9 +13,12 @@ Enlaces de interés: [Documentación](https://swisstierrascolombia.github.io/Asi
 
 Un proyecto de: [SwissTierras Colombia](https://swisstierrascolombia.com/) ([BSF-Swissphoto AG](http://bsf-swissphoto.com/) - [INCIGE S.A.S](http://www.incige.com/))
 
+
+:arrow_right: Con la versión actual del Asistente LADM-COL, te sugerimos utilizar QGIS v3.14.16, disponible en https://qgis.org/downloads/
+
 ## Soporte de funcionalidades por motor de base de datos
 
-La versión actual ([3.1.0](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/3.1.0)) del Asistente LADM-COL depende del plugin [QGIS Model Baker v6.1.1.4](https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.4/QgisModelBaker_6114.zip) y soporta los motores de Base de Datos PostgreSQL/PostGIS, GeoPackage y SQL Server.
+La versión actual ([3.1.4](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/3.1.4)) del Asistente LADM-COL depende del plugin [QGIS Model Baker v6.1.1.5](https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.5/QgisModelBaker_6115.zip) y soporta los motores de Base de Datos PostgreSQL/PostGIS, GeoPackage y SQL Server.
 
 Este es el soporte funcional para cada motor: 
 
@@ -46,7 +49,7 @@ Para usar el Asistente LADM-COL se requiere:
    - PostGIS 2.4 o superior.
    - (Opcional) SQL Server 2012 o superior.
  - Complementos de QGIS (al instalar el Asistente LADM-COL usando el Administrador de Complementos de QGIS, las dependencias se instalarán automáticamente):
-   - QGIS Model Baker v6.1.1.4
+   - QGIS Model Baker v6.1.1.5
    - MapSwipe Tool v1.2
 
 ## Galería
@@ -253,14 +256,21 @@ Se recomienda:
 - Instalar *docker-compose* usando los [binarios](https://github.com/docker/compose/releases).
 - NOTA: La [instalación](https://www.how2shout.com/how-to/how-to-install-docker-ce-on-ubuntu-20-04-lts-focal-fossa.html) en el SO Ubuntu 20.04 es más sencilla.
 
+Antes de ejecutar las pruebas unitarias, necesitas definir estas dos variables de entorno (asegúrate de usar tu propia ruta a la raíz del repositorio para la primera variable):
+
+```sh
+export GITHUB_WORKSPACE=/home/Asistente-LADM-COL
+export QGIS_TEST_VERSION="release-3_16"
+```
+
 El comando para ejecutar las pruebas es (ejecutar desde la raíz del repositorio):
 ```sh
-docker-compose run --rm qgis
+docker-compose -f .docker/docker-compose.yml run --rm qgis
 ```
 
 En caso de requerir recrear la imagen de docker se puede ejecutar:
 ```sh
-docker-compose down --rmi local && docker-compose build
+docker-compose -f .docker/docker-compose.yml down --rmi local && docker-compose -f .docker/docker-compose.yml build
 ```
 
 ### Pruebas asistidas (para la interfaz de usuario)

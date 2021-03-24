@@ -63,6 +63,7 @@ class MissingCobolSuppliesDialog(MissingSuppliesBaseDialog):
         self.txt_file_path_uni.textChanged.emit(self.txt_file_path_uni.text())
         self.txt_file_path_gdb.textChanged.emit(self.txt_file_path_gdb.text())
         self.txt_file_path_folder_supplies.textChanged.emit(self.txt_file_path_folder_supplies.text())
+        self.txt_file_names_supplies.textChanged.emit(self.txt_file_names_supplies.text())
         self.buttonBox.helpRequested.connect(self.show_help)
 
         # Initialize
@@ -74,10 +75,9 @@ class MissingCobolSuppliesDialog(MissingSuppliesBaseDialog):
         self.save_settings(self.data_system)
 
         self.folder_path = self.txt_file_path_folder_supplies.text()
-        self.gpkg_path = os.path.join(self.folder_path, QCoreApplication.translate(
-                'MissingCobolSuppliesDialog', 'missing_supplies_cobol.gpkg'))
-        self.xlsx_path = os.path.join(self.folder_path, QCoreApplication.translate(
-                'MissingCobolSuppliesDialog', 'missing_supplies_cobol.xlsx'))
+        self.file_names = self.txt_file_names_supplies.text().strip()
+        self.gpkg_path = os.path.join(self.folder_path, '{}.gpkg'.format(self.file_names))
+        self.xlsx_path = os.path.join(self.folder_path, '{}.xlsx'.format(self.file_names))
 
         reply = self.validate_files_in_folder()
 
@@ -206,16 +206,17 @@ class MissingCobolSuppliesDialog(MissingSuppliesBaseDialog):
                 'uni':self.alphanumeric_file_paths['uni'],
                 'uterreno': self.gdb_layer_paths['U_TERRENO'],
                 'uunidad': self.gdb_layer_paths['U_UNIDAD'],
-                'qgis:refactorfields_1:COMISIONES_TERRENO':'TEMPORARY_OUTPUT',
-                'qgis:refactorfields_2:OMISIONES_TERRENO':'TEMPORARY_OUTPUT',
-                'qgis:refactorfields_3:COMISIONES_MEJORAS':'TEMPORARY_OUTPUT',
-                'qgis:refactorfields_4:OMISIONES_MEJORAS':'TEMPORARY_OUTPUT',
-                'qgis:refactorfields_5:COMISIONES_UNID_PH':'TEMPORARY_OUTPUT',
-                'qgis:refactorfields_6:OMISIONES_UNID_PH':'TEMPORARY_OUTPUT',
-                'qgis:refactorfields_7:COMISIONES_MZ':'TEMPORARY_OUTPUT',
-                'qgis:refactorfields_8:OMISIONES_MZ':'TEMPORARY_OUTPUT',
-                'qgis:refactorfields_9:COMISIONES_VR':'TEMPORARY_OUTPUT',
-                'qgis:refactorfields_10:OMISIONES_VR':'TEMPORARY_OUTPUT'},
+                'native:removeduplicatesbyattribute_2:COMISIONES_MZ':'TEMPORARY_OUTPUT',
+                'native:removeduplicatesbyattribute_3:OMISIONES_MZ':'TEMPORARY_OUTPUT',
+                'native:removeduplicatesbyattribute_4:COMISIONES_VR':'TEMPORARY_OUTPUT',
+                'native:removeduplicatesbyattribute_5:OMISIONES_VR':'TEMPORARY_OUTPUT',
+                'native:removeduplicatesbyattribute_6:COMISIONES_UNID_PH':'TEMPORARY_OUTPUT',
+                'native:removeduplicatesbyattribute_7:OMISIONES_UNID_PH':'TEMPORARY_OUTPUT',
+                'native:removeduplicatesbyattribute_8:COMISIONES_TERRENO':'TEMPORARY_OUTPUT',
+                'native:removeduplicatesbyattribute_9:OMISIONES_TERRENO':'TEMPORARY_OUTPUT',
+                'native:removeduplicatesbyattribute_10:COMISIONES_MEJORAS':'TEMPORARY_OUTPUT',
+                'native:removeduplicatesbyattribute_11:OMISIONES_MEJORAS':'TEMPORARY_OUTPUT',
+                'qgis:aggregate_12:TABLA_RESUMEN':'TEMPORARY_OUTPUT'},
                 feedback=self.custom_feedback)
         except QgsProcessingException as e:
             if self.custom_feedback.isCanceled():
@@ -230,10 +231,17 @@ class MissingCobolSuppliesDialog(MissingSuppliesBaseDialog):
         self.logger.info(__name__, "Missing Cobol Supplies model finished.")
         return True, ''
 
-    def package_results(self, output):
+    def package_results(self, output):  
+        keys_deleted = []
+
         for name in output.keys():
             if isinstance(output[name], QgsVectorLayer):
                 output[name].setName(name.split(':')[2])
+            else:
+                keys_deleted.append(name)
+
+        for key_deleted in keys_deleted:
+            output.pop(key_deleted, None)
 
         try:
             output_geopackage = processing.run("native:package", {'LAYERS': list(output.values()),
@@ -268,7 +276,7 @@ class MissingCobolSuppliesDialog(MissingSuppliesBaseDialog):
     def generate_excel_report(self):
         gdal.VectorTranslate(self.xlsx_path,
                              self.gpkg_path,
-                             options='-f XLSX {}'.format(self.names_gpkg.strip()))
+                             options='-f XLSX {}'.format(self.spreadsheet_structure))
 
     def disable_widgets(self):
         """
@@ -284,12 +292,13 @@ class MissingCobolSuppliesDialog(MissingSuppliesBaseDialog):
         """
         
         uni_path = self.txt_file_path_uni.validator().validate(self.txt_file_path_uni.text().strip(), 0)[0]
-        state_path = self.txt_file_path_folder_supplies.validator().validate(self.txt_file_path_folder_supplies.text().strip(), 0)[0]
+        folder_path = self.txt_file_path_folder_supplies.validator().validate(self.txt_file_path_folder_supplies.text().strip(), 0)[0]
+        file_names = self.txt_file_names_supplies.validator().validate(self.txt_file_names_supplies.text().strip(), 0)[0]
         
-        if uni_path == QValidator.Acceptable and state_path == QValidator.Acceptable and self.validate_common_inputs():
+        if uni_path == QValidator.Acceptable and folder_path == QValidator.Acceptable and file_names == QValidator.Acceptable and self.validate_common_inputs():
             return True
         else:
             return False
 
     def show_help(self):
-        show_plugin_help('supplies')
+        show_plugin_help('omission_commission_cobol')

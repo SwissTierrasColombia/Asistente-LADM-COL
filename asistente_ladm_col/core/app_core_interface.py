@@ -56,7 +56,8 @@ from qgis.core import (Qgis,
                        QgsVectorLayer,
                        QgsCoordinateReferenceSystem,
                        QgsWkbTypes,
-                       QgsProcessingException)
+                       QgsProcessingException,
+                       QgsProcessingFeatureSourceDefinition)
 
 import processing
 
@@ -331,6 +332,16 @@ class AppCoreInterface(QObject):
         return layers[0] if layers else None
 
     @staticmethod
+    def register_layers_to_project(layers):
+        # Note, this just registers the layers and does not load them, which means,
+        # those layers won't be visible in the QGIS layers panel
+        QgsProject.instance().addMapLayers(layers, False)
+
+    @staticmethod
+    def unregister_layers_from_project(layers):
+        QgsProject.instance().removeMapLayers([layer.id() for layer in layers])
+
+    @staticmethod
     def get_ladm_layer_from_qgis(db, layer_name, registry_type=None):
         """
         :param db: DB connection
@@ -383,7 +394,6 @@ class AppCoreInterface(QObject):
 
         self.configure_missing_relations(db, layer, layer_name)
         self.configure_missing_bags_of_enum(db, layer, layer_name)
-        self.set_display_expressions(db, layer, layer_name, models)
         self.set_layer_variables(db, layer, layer_name, models)
         self.set_custom_widgets(db, layer, layer_name, models)
         self.set_custom_read_only_fiels(db, layer, layer_name)
@@ -531,11 +541,6 @@ class AppCoreInterface(QObject):
         """
         node = QgsProject.instance().layerTreeRoot().findLayer(layer.id())
         self.set_node_visibility_requested.emit(node, visible)
-
-    def set_display_expressions(self, db, layer, layer_name, models):
-        dict_display_expressions = LayerConfig.get_dict_display_expressions(db.names, models)
-        if layer_name in dict_display_expressions:
-            layer.setDisplayExpression(dict_display_expressions[layer_name])
 
     def set_layer_variables(self, db, layer, layer_name, models):
         layer_variables = LayerConfig.get_layer_variables(db.names, models)
@@ -1335,39 +1340,42 @@ class AppCoreInterface(QObject):
         cursor.execute(get_ctm12_bounds_exist_query())
         return cursor.fetchone()[0] == 1
 
-    def adjust_layer(self, input_layer, reference_layer, tolerance=0, fix=False, input_only_selected=False):
+    def adjust_layer(self, input_layer, reference_layer, tolerance=0, behavior=None, fix=False, add_topological_points=False, input_only_selected=False):
         """
         Returns an adjusted layer.
 
         :param input_layer: Layer to adjust
         :param reference_layer: Reference layer for the adjustment
         :param tolerance: Tolerance in mm.!!!
+        :param behavior: QGIS behavior to adjust the layer. Values:
+                            0: Prefer aligning nodes, insert extra vertices where required
+                            1: Prefer closest point, insert extra vertices where required
+                            2: Prefer aligning nodes, don't insert new vertices
+                            3: Prefer closest point, don't insert new vertices
+                            4: Move end points only, prefer aligning nodes
+                            5: Move end points only, prefer closest point
+                            6: Snap end points to end points only
+                            7: Snap to anchor nodes (single layer only)
         :param fix: Whether the result should be fixed or not
-        :param input_only_selected: Whether we should onlly use selected features from input layer
+        :param add_topological_points: Whether all features in the result should have topological points or not. Note
+                                       these are topological points from the features of the same result layer.
+        :param input_only_selected: Whether we should only use selected features from input layer
         :return: Adjusted and eventually fixed QgsVectorLayer
         """
         # Single layer --> behavior 7
         # Different layers --> behavior 2, tolerance + 0.001
-        single_layer = input_layer == reference_layer
-        if single_layer and input_layer.geometryType() == QgsWkbTypes.PointGeometry:
-            behavior = 7  # It's a bit aggressive for polygons, for points works fine
-        else:
-            behavior = 2
-            tolerance += 0.001  # Behavior 2 doesn't work with exact tolerance
+        if behavior is None:
+            if input_layer == reference_layer and input_layer.geometryType() == QgsWkbTypes.PointGeometry:
+                behavior = 7  # It's a bit aggressive for polygons, for points it works fine
+            else:
+                behavior = 2
+                tolerance += 0.001  # Behavior 2 doesn't work with exact tolerance
 
         tolerance /= 1000  # Tolerance comes in mm., we need it in m.
         input_layer_name = input_layer.name()
 
-        # TODO: Replace the following block by a simple
-        #       QgsProcessingFeatureSourceDefinition(input_layer.id(), input_only_selected) as 'INPUT'
-        #       when this QGIS issue (https://github.com/qgis/QGIS/issues/37394) is solved.
-        if input_only_selected:
-            input_layer = processing.run("native:saveselectedfeatures", {'INPUT':input_layer,'OUTPUT':'TEMPORARY_OUTPUT'})['OUTPUT']
-            if single_layer:
-                reference_layer = input_layer
-
         params = {
-            'INPUT': input_layer,
+            'INPUT': QgsProcessingFeatureSourceDefinition(input_layer.id(), input_only_selected),
             'REFERENCE_LAYER': reference_layer,
             'TOLERANCE': tolerance,
             'BEHAVIOR': behavior,
@@ -1375,7 +1383,7 @@ class AppCoreInterface(QObject):
         }
         feedback = CustomFeedbackWithErrors()
         try:
-            res = processing.run("qgis:snapgeometries", params, feedback=feedback)['OUTPUT']
+            res = processing.run("native:snapgeometries", params, feedback=feedback)['OUTPUT']
         except QgsProcessingException as e:
             self.logger.warning_msg(__name__, QCoreApplication.translate("AppCoreInterface",
                                                                          "'{}' and '{}' layers could not be adjusted. Details: {}".format(
@@ -1391,6 +1399,11 @@ class AppCoreInterface(QObject):
                 'OUTPUT': 'TEMPORARY_OUTPUT'}
             res = processing.run("native:fixgeometries", params)['OUTPUT']
 
+        if add_topological_points:
+            self.logger.debug(__name__,
+                              "Adding topological points to the adjusted layer ({})...".format(input_layer_name))
+            GeometryUtils().add_topological_vertices(res, res)  # Note: Topological points against the same result layer
+
         return res
 
     def get_active_models_per_db(self, db):
@@ -1401,3 +1414,9 @@ class AppCoreInterface(QObject):
         :return: List of model keys that are in DB and are allowed for current role
         """
         return [m_k for m_k in RoleRegistry().get_active_role_supported_models() if db.model_parser.model_version_is_supported[m_k]]
+
+    def get_layer_copy(self, layer):
+        res_copy = processing.run("ladm_col:copy_vector_layer",
+                                  {'INPUT': layer,
+                                   'SINK': 'TEMPORARY_OUTPUT'})
+        return res_copy['OUTPUT']

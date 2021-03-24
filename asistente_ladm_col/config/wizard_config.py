@@ -276,6 +276,7 @@ class WizardConfig:
                 WIZARD_LAYERS: {
                     names.LC_PLOT_T: None,
                     names.LC_PARCEL_T: None,
+                    names.LC_RIGHT_T: None,
                     names.LC_BUILDING_T: None,
                     names.LC_BUILDING_UNIT_T: None,
                     names.COL_UE_BAUNIT_T: None,

@@ -82,7 +82,7 @@ class LoginSTDialog(QDialog, DIALOG_UI):
         self.bar.pushMessage(message, level, duration)
 
     def show_help(self):
-        show_plugin_help('transitional_system')
+        show_plugin_help('transitional_system_login')
 
     def reject(self):
         if self.should_emit_role_changed:

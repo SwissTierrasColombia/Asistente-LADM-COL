@@ -406,7 +406,7 @@ class GeometryUtils(QObject):
 
         feature_error = list()
 
-        if diff_geoms.wkbType() == QgsWkbTypes.Polygon:
+        if diff_geoms.type() == QgsWkbTypes.PolygonGeometry and not QgsWkbTypes.isMultiType(diff_geoms.wkbType()):
             diff_geoms.convertToMultiType()
 
         try:
@@ -438,13 +438,13 @@ class GeometryUtils(QObject):
 
         return self.extract_geoms_by_type(clean_errors, [QgsWkbTypes.PolygonGeometry])
 
-    def add_topological_vertices(self, layer1, layer2, id_field):
+    def add_topological_vertices(self, layer1, layer2):
         """
         Modify layer1 adding vertices that are in layer2 and not in layer1
 
         Ideally, we could pass the whole layer2 as parameter for
         addTopologicalPoints or, at least, pass one multi-geometry containing
-        all geometries from layer2. However, onthe one side, the
+        all geometries from layer2. However, on the one side, the
         addTopologicalPoints function doesn't support a layer as parameter and,
         on the other side, there is a bug in the function that doesn't let it
         work with multi-geometries. That's why we need to traverse the whole
@@ -461,16 +461,12 @@ class GeometryUtils(QObject):
         index = QgsSpatialIndex(layer2)
         dict_features_layer2 = None
         candidate_features = None
-        id_field_idx1 = layer1.fields().indexFromName(id_field)
-        request1 = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx1])
-        id_field_idx2 = layer2.fields().indexFromName(id_field)
-        request2 = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx2])
 
         with edit(layer1):
             edit_layer = QgsVectorLayerEditUtils(layer1)
-            dict_features_layer2 = {feature.id(): feature for feature in layer2.getFeatures(request2)}
+            dict_features_layer2 = {f.id(): f for f in layer2.getFeatures(QgsFeatureRequest().setNoAttributes())}
 
-            for feature in layer1.getFeatures(request1):
+            for feature in layer1.getFeatures(QgsFeatureRequest().setNoAttributes()):
                 bbox = feature.geometry().boundingBox()
                 candidate_ids = index.intersects(bbox)
                 candidate_features = [dict_features_layer2[candidate_id] for candidate_id in candidate_ids]
@@ -494,10 +490,15 @@ class GeometryUtils(QObject):
                                            {'INPUT': plots_as_lines_layer,
                                             'OVERLAY': boundary_layer,
                                             'OUTPUT': 'memory:'})['OUTPUT']
-        self.add_topological_vertices(approx_diff_layer, boundary_layer, names.T_ID_F)
+        self.add_topological_vertices(approx_diff_layer, boundary_layer)
+
+        # add_topological_vertices may produce invalid geometries, so we better play safe and fix them
+        fixed_geometries = processing.run("native:fixgeometries",
+                                          {'INPUT': approx_diff_layer,
+                                           'OUTPUT': 'memory:'})['OUTPUT']
 
         diff_layer = processing.run("native:difference",
-                                    {'INPUT': approx_diff_layer,
+                                    {'INPUT': fixed_geometries,
                                      'OVERLAY': boundary_layer,
                                      'OUTPUT': 'memory:'})['OUTPUT']
         difference_features = [{'geometry': feature.geometry(), 'id': feature[id_field]}
@@ -514,10 +515,16 @@ class GeometryUtils(QObject):
                                            {'INPUT': boundary_layer,
                                             'OVERLAY': plot_as_lines_layer,
                                             'OUTPUT': 'memory:'})['OUTPUT']
-        self.add_topological_vertices(plot_as_lines_layer, approx_diff_layer, names.T_ID_F)
+        self.add_topological_vertices(plot_as_lines_layer, approx_diff_layer)
+
+        # add_topological_vertices may produce invalid geometries, so we better play safe and fix them
+        fixed_geometries = processing.run("native:fixgeometries",
+                                          {'INPUT': plot_as_lines_layer,
+                                           'OUTPUT': 'memory:'})['OUTPUT']
 
         diff_layer = processing.run("native:difference",
-                                    {'INPUT': approx_diff_layer, 'OVERLAY': plot_as_lines_layer,
+                                    {'INPUT': approx_diff_layer,
+                                     'OVERLAY': fixed_geometries,
                                      'OUTPUT': 'memory:'})['OUTPUT']
 
         difference_features = [{'geometry': feature.geometry(), 'id': feature[id_field]}

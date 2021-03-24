@@ -62,7 +62,7 @@ class RightOfWay(QObject):
         restriction_right_of_way_t_id = [feature for feature in layers[db.names.LC_RESTRICTION_TYPE_D].getFeatures(exp)][0][db.names.T_ID_F]
 
         if layers[db.names.LC_PLOT_T].selectedFeatureCount() == 0 or layers[db.names.LC_RIGHT_OF_WAY_T].selectedFeatureCount() == 0 or layers[db.names.LC_ADMINISTRATIVE_SOURCE_T].selectedFeatureCount() == 0:
-            if self.app.core.get_ladm_layer_from_qgis(db, db.names.LC_PLOT_T, EnumLayerRegistryType.IN_CANVAS) is None:
+            if self.app.core.get_ladm_layer_from_qgis(db, db.names.LC_PLOT_T, EnumLayerRegistryType.IN_LAYER_TREE) is None:
                 self.logger.message_with_button_load_layer_emitted.emit(
                     QCoreApplication.translate("RightOfWay",
                                                "First load the layer {} into QGIS and select at least one plot!").format(db.names.LC_PLOT_T),
@@ -92,7 +92,7 @@ class RightOfWay(QObject):
 
             if len(id_pairs) < len(plot_ids):
                 # If any relationship plot-parcel is not found, we don't need to continue
-                self.qlogger.warning_msg(__name__, QCoreApplication.translate("RightOfWay",
+                self.logger.warning_msg(__name__, QCoreApplication.translate("RightOfWay",
                     "One or more pairs id_plot-id_parcel weren't found, this is needed to create benefited and restriction relations."))
                 return
 

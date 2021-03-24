@@ -100,29 +100,35 @@ class ReportGenerator(QObject):
 
     def get_layer_geojson(self, db, layer_name, plot_id, report_type):
         if report_type == ANNEX_17_REPORT:
-            if layer_name == 'terreno':
-                return db.get_annex17_plot_data(plot_id, 'only_id')
-            elif layer_name == 'terrenos':
-                return db.get_annex17_plot_data(plot_id, 'all_but_id')
-            elif layer_name == 'terrenos_all':
-                return db.get_annex17_plot_data(plot_id, 'all')
+            if layer_name in ('terreno', 'terreno_overview', 'terrenos', 'terrenos_overview'):
+                # True if you want the selected plot and False if you want the plots surrounding the selected plot
+                mode = True if layer_name in ('terreno', 'terreno_overview') else False
+                overview = True if layer_name in ('terrenos_overview', 'terreno_overview') else False
+                return db.get_annex17_plot_data(plot_id, mode, overview)
             elif layer_name == 'construcciones':
-                return db.get_annex17_building_data()
-            else:
+                return db.get_annex17_building_data(plot_id)
+            elif layer_name == 'punto_lindero':
                 return db.get_annex17_point_data(plot_id)
         else: #report_type == ANT_MAP_REPORT:
-            if layer_name == 'terreno':
-                return db.get_ant_map_plot_data(plot_id, 'only_id')
-            elif layer_name == 'terrenos':
-                return db.get_ant_map_plot_data(plot_id, 'all_but_id')
-            elif layer_name == 'terrenos_all':
-                return db.get_annex17_plot_data(plot_id, 'all')
+            if layer_name in ('terreno', 'terreno_overview', 'terrenos', 'terrenos_overview'):
+                mode = True if layer_name in ('terreno', 'terreno_overview') else False
+                overview = True if layer_name in ('terrenos_overview', 'terreno_overview') else False
+                return db.get_ant_map_plot_data(plot_id, mode, overview)
+            elif layer_name == 'linderos':
+                return db.get_ant_map_boundaries(plot_id)
             elif layer_name == 'construcciones':
-                return db.get_annex17_building_data()
-            elif layer_name == 'puntoLindero':
+                return db.get_annex17_building_data(plot_id)
+            elif layer_name == 'punto_lindero':
                 return db.get_annex17_point_data(plot_id)
-            else: #layer_name == 'cambio_colindancia':
-                return db.get_ant_map_neighbouring_change_data(plot_id)
+            elif layer_name in ('vias', 'vias_overview'):
+                overview = False if layer_name == 'vias' else True
+                return db.get_ant_map_road_nomenclature(plot_id, overview)
+            elif layer_name in ('limite_urbano', 'limite_urbano_overview'):
+                overview = False if layer_name == 'limite_urbano' else True
+                return db.get_ant_map_urban_limit(plot_id, overview)
+            elif layer_name in ('limite_municipio', 'limite_municipio_overview'):
+                overview = False if layer_name == 'limite_municipio' else True
+                return db.get_ant_map_municipality_boundary(plot_id, overview)
 
     def update_json_data(self, db, json_spec_file, plot_id, tmp_dir, report_type):
         json_data = dict()
@@ -133,11 +139,15 @@ class ReportGenerator(QObject):
         json_data['attributes']['datasetName'] = db.schema
         layers = json_data['attributes']['map']['layers']
         for layer in layers:
-            layer['geoJson'] = self.get_layer_geojson(db, layer['name'], plot_id, report_type)
+            if 'geoJson' in layer:
+                result, data = self.get_layer_geojson(db, layer['name'], plot_id, report_type)
+                if result: layer['geoJson'] = data
 
         overview_layers = json_data['attributes']['overviewMap']['layers']
         for layer in overview_layers:
-            layer['geoJson'] = self.get_layer_geojson(db, layer['name'], plot_id, report_type)
+            if 'geoJson' in layer:
+                result, data = self.get_layer_geojson(db, layer['name'], plot_id, report_type)
+                if result: layer['geoJson'] = data
 
         new_json_file_path = os.path.join(tmp_dir, self.get_tmp_filename('json_data_{}'.format(plot_id), 'json'))
         with open(new_json_file_path, 'w') as new_json:
@@ -227,7 +237,6 @@ class ReportGenerator(QObject):
             progress)
 
         polygons_with_holes = []
-        multi_polygons = []
 
         with OverrideCursor(Qt.WaitCursor):
             for selected_plot in selected_plots:
@@ -239,11 +248,6 @@ class ReportGenerator(QObject):
                     polygons_with_holes.append(str(plot_id))
                     self.logger.warning(__name__, QCoreApplication.translate("ReportGenerator",
                         "Skipping Annex 17 for plot with {}={} because it has holes. The reporter module does not support such polygons.").format(db.names.T_ID_F, plot_id))
-                    continue
-                if abstract_geometry.numGeometries() > 1:
-                    multi_polygons.append(str(plot_id))
-                    self.logger.warning(__name__, QCoreApplication.translate("ReportGenerator",
-                        "Skipping Annex 17 for plot with {}={} because it is a multi-polygon. The reporter module does not support such polygons.").format(db.names.T_ID_F, plot_id))
                     continue
 
                 # Generate data file
@@ -258,6 +262,7 @@ class ReportGenerator(QObject):
                     functools.partial(self.stdout_ready, proc=proc))
 
                 parcel_number = self.ladm_data.get_parcels_related_to_plots(db, [plot_id], db.names.LC_PARCEL_T_PARCEL_NUMBER_F) or ['']
+                self.app.gui.activate_layer(plot_layer)  # Previous function changed the selected layer, so, select again plot layer
                 file_name = '{}_{}_{}.pdf'.format(report_type, plot_id, parcel_number[0])
 
                 current_report_path = os.path.join(save_into_folder, file_name)
@@ -304,10 +309,6 @@ class ReportGenerator(QObject):
                 details_msg += QCoreApplication.translate("ReportGenerator",
                                                           " The following polygons were skipped because they have holes and are not supported: {}.").format(
                     ", ".join(polygons_with_holes))
-            if multi_polygons:
-                details_msg += QCoreApplication.translate("ReportGenerator",
-                                                          " The following polygons were skipped because they are multi-polygons and are not supported: {}.").format(
-                    ", ".join(multi_polygons))
 
             if total == 1:
                 msg = QCoreApplication.translate("ReportGenerator", "The report for plot {} couldn't be generated!{} See QGIS log (tab '{}') for details.").format(plot_id, details_msg, self.LOG_TAB)

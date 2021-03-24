@@ -492,5 +492,21 @@ DB_MAPPING_CONFIG = {
         "Captura_Geo.D_VolumenTipo": {QueryNames.VARIABLE_NAME: "FDC_VOLUME_TYPE_D", QueryNames.FIELDS_DICT: {}},
         #"Captura_Geo.D_puntoLevTipo": {QueryNames.VARIABLE_NAME: "", QueryNames.FIELDS_DICT: {}},
         #"Captura_Geo.SNR_CalidadDerechoTipo": {QueryNames.VARIABLE_NAME: "", QueryNames.FIELDS_DICT: {}},
+    },
+    LADMNames.CADASTRAL_CARTOGRAPHY_MODEL_KEY: {
+        "Submodelo_Cartografia_Catastral.LimitesOperativosCatastro.CC_LimiteMunicipio": {QueryNames.VARIABLE_NAME: "CC_MUNICIPALITY_BOUNDARY_T", QueryNames.FIELDS_DICT: {
+            "Submodelo_Cartografia_Catastral.LimitesOperativosCatastro.CC_LimiteMunicipio.Nombre_Municipio": "CC_MUNICIPALITY_BOUNDARY_T_NAME_MUNICIPALITY_F",
+            "Submodelo_Cartografia_Catastral.LimitesOperativosCatastro.CC_LimiteMunicipio.Geometria": "CC_MUNICIPALITY_BOUNDARY_T_GEOMETRY_F"
+        }},
+        "Submodelo_Cartografia_Catastral.LimitesOperativosCatastro.CC_PerimetroUrbano": {QueryNames.VARIABLE_NAME: "CC_URBAN_PERIMETER_T", QueryNames.FIELDS_DICT: {
+            "Submodelo_Cartografia_Catastral.LimitesOperativosCatastro.CC_PerimetroUrbano.Nombre_Geografico": "CC_URBAN_PERIMETER_T_GEOGRAPHIC_NAME_F",
+            "Submodelo_Cartografia_Catastral.LimitesOperativosCatastro.CC_PerimetroUrbano.Geometria": "CC_URBAN_PERIMETER_T_GEOMETRY_F"
+        }},
+        "Submodelo_Cartografia_Catastral.LimitesOperativosCatastro.CC_NomenclaturaVial": {QueryNames.VARIABLE_NAME: "CC_ROAD_NOMENCLATURE_T", QueryNames.FIELDS_DICT: {
+            "Submodelo_Cartografia_Catastral.LimitesOperativosCatastro.CC_NomenclaturaVial.Numero_Via": "CC_ROAD_NOMENCLATURE_T_ROAD_NUMBER_F",
+            "Submodelo_Cartografia_Catastral.LimitesOperativosCatastro.CC_NomenclaturaVial.Tipo_Via": "CC_ROAD_NOMENCLATURE_T_ROAD_TYPE_F",
+            "Submodelo_Cartografia_Catastral.LimitesOperativosCatastro.CC_NomenclaturaVial.Geometria": "CC_ROAD_NOMENCLATURE_T_GEOMETRY_F"
+        }},
+        "Submodelo_Cartografia_Catastral.LimitesOperativosCatastro.CC_NomenclaturaVial.Tipo_Via": {QueryNames.VARIABLE_NAME: "CC_ROAD_TYPE_D", QueryNames.FIELDS_DICT: {}},
     }
 }

@@ -85,11 +85,7 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       MAP_SWIPE_TOOL_PLUGIN_NAME,
                                                       MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION,
                                                       MAP_SWIPE_TOOL_EXACT_REQUIRED_VERSION,
-                                                      MAP_SWIPE_TOOL_REQUIRED_VERSION_URL,
-                                                      QFIELD_SYNC_PLUGIN_NAME,
-                                                      QFIELD_SYNC_MIN_REQUIRED_VERSION,
-                                                      QFIELD_SYNC_EXACT_REQUIRED_VERSION,
-                                                      QFIELD_SYNC_REQUIRED_VERSION_URL)
+                                                      MAP_SWIPE_TOOL_REQUIRED_VERSION_URL)
 from asistente_ladm_col.config.layer_tree_indicator_config import LayerTreeIndicatorConfig
 from asistente_ladm_col.config.task_steps_config import TaskStepsConfig
 from asistente_ladm_col.config.translation_strings import (TOOLBAR_FINALIZE_GEOMETRY_CREATION,
@@ -148,8 +144,8 @@ from asistente_ladm_col.utils.decorators import (_db_connection_required,
                                                  _supplies_model_required,
                                                  _valuation_model_required,
                                                  _survey_model_required,
+                                                 _cadastral_cartography_model_required,
                                                  _field_data_capture_model_required,
-                                                 _qfield_sync_required,
                                                  _update_context_to_current_role)
 from asistente_ladm_col.utils.utils import show_plugin_help
 from asistente_ladm_col.utils.qt_utils import (ProcessWithStatus, 
@@ -205,10 +201,6 @@ class AsistenteLADMCOLPlugin(QObject):
                                            MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION,
                                            MAP_SWIPE_TOOL_EXACT_REQUIRED_VERSION,
                                            MAP_SWIPE_TOOL_REQUIRED_VERSION_URL)
-        self.qfs_plugin = PluginDependency(QFIELD_SYNC_PLUGIN_NAME,
-                                           QFIELD_SYNC_MIN_REQUIRED_VERSION,
-                                           QFIELD_SYNC_EXACT_REQUIRED_VERSION,
-                                           QFIELD_SYNC_REQUIRED_VERSION_URL)
 
         # We need a couple of contexts when running tools, so, prepare them in advance
         self._context_collected = Context()  # By default, only collected source is set
@@ -314,13 +306,16 @@ class AsistenteLADMCOLPlugin(QObject):
                                                        "Go to the folder <a href='file:///{normalized_folder}'>{folder}</a> and grant the current user permissions to write over that folder and over the '<b>{filename}</b>' file.<br><br>" \
                                                        "Once you're done, click <b>Ok</b> to continue loading <i>LADM-COL Assistant</i>. " \
                                                        "If you click <b>Cancel</b>, the <i>LADM-COL Assistant</i> won't be available, as the CTM12 projection is a prerequisite.".format(normalized_folder=normalize_local_url(folder), folder=folder, filename=filename)))
-            msg_box.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+            msg_box.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel | QMessageBox.Help)
             msg_box.setDefaultButton(QMessageBox.Ok)
             reply = msg_box.exec_()
 
             if reply == QMessageBox.Ok:
                 self.initialize_requirements()
             else:
+                if reply == QMessageBox.Help:
+                    show_plugin_help('enable_ctm12')
+
                 self.unload()
                 self.logger.critical_msg(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
                     "'Origen Nacional' projection could not be configured. Therefore you cannot use this version of the LADM-COL Assistant."))
@@ -869,7 +864,7 @@ class AsistenteLADMCOLPlugin(QObject):
                                                duration=duration)
 
     def show_log_quality_message(self, msg, count):
-        self.progress_message_bar = self.iface.messageBar().createMessage("Asistente LADM_COL", msg)
+        self.progress_message_bar = self.iface.messageBar().createMessage("Asistente LADM-COL", msg)
         self.log_quality_validation_progress = QProgressBar()
         self.log_quality_validation_progress.setFixedWidth(80)
         self.log_quality_total_rule_count = count
@@ -971,7 +966,6 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
-    @_qfield_sync_required
     @_db_connection_required
     @_field_data_capture_model_required
     def show_allocate_parcels_field_data_capture(self, *args):
@@ -979,7 +973,6 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
-    @_qfield_sync_required
     @_db_connection_required
     @_field_data_capture_model_required
     def show_synchronize_field_data(self):
@@ -1042,6 +1035,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
+    @_cadastral_cartography_model_required
     @_survey_model_required
     def call_ant_map_report_generation(self, *args):
         self.report_generator.generate_report(self.get_db_connection(), ANT_MAP_REPORT)

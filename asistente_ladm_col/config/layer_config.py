@@ -448,8 +448,8 @@ class LayerConfig:
                     }
                 elif layer_name == names.LC_PARCEL_T:
                     dict_automatic_values = {
-                        names.LC_PARCEL_T_DEPARTMENT_F: 'substr("{}", 0, 2)'.format(names.LC_PARCEL_T_PARCEL_NUMBER_F),
-                        names.LC_PARCEL_T_MUNICIPALITY_F: 'substr("{}", 3, 3)'.format(names.LC_PARCEL_T_PARCEL_NUMBER_F)
+                        # names.LC_PARCEL_T_DEPARTMENT_F: 'substr("{}", 0, 2)'.format(names.LC_PARCEL_T_PARCEL_NUMBER_F),
+                        # names.LC_PARCEL_T_MUNICIPALITY_F: 'substr("{}", 3, 3)'.format(names.LC_PARCEL_T_PARCEL_NUMBER_F)
                     }
                 elif layer_name == names.LC_ADMINISTRATIVE_SOURCE_T:
                     dict_automatic_values = {
@@ -465,49 +465,6 @@ class LayerConfig:
                                                              LADMNames.FDC_PARTY_DOCUMENT_TYPE_D_ILICODE_F_CC_V))}
 
         return dict_automatic_values
-
-    @staticmethod
-    def get_dict_display_expressions(names, models):
-        display_expressions = dict()
-
-        for model_key in models:
-            if model_key == LADMNames.SURVEY_MODEL_KEY:
-                display_expressions.update({
-                    names.LC_BOUNDARY_POINT_T: names.T_ID_F,
-                    names.LC_SURVEY_POINT_T: names.T_ID_F,
-                    names.LC_CONTROL_POINT_T: names.T_ID_F,
-                    names.LC_BOUNDARY_T: names.T_ID_F,
-                    names.LC_PLOT_T: names.T_ID_F,
-                    names.LC_BUILDING_T: names.T_ID_F,
-                    names.LC_BUILDING_UNIT_T: names.T_ID_F,
-                    names.LC_RIGHT_OF_WAY_T: names.T_ID_F,
-                    names.LC_RIGHT_T: names.T_ID_F,
-                    names.LC_RESTRICTION_T: names.T_ID_F,
-                    names.LC_ADMINISTRATIVE_SOURCE_T: names.T_ID_F,
-                    names.LC_SPATIAL_SOURCE_T: names.T_ID_F,
-                    names.LC_PARTY_T: "concat({}, ' - ',  {})".format(names.LC_PARTY_T_DOCUMENT_ID_F,
-                                                                      names.COL_PARTY_T_NAME_F),
-                    names.LC_PARCEL_T: "concat({}, ' - ', {}, ' - ', {})".format(names.T_ID_F,
-                                                                                 names.LC_PARCEL_T_PARCEL_NUMBER_F,
-                                                                                 names.LC_PARCEL_T_FMI_F),
-                    names.LC_GROUP_PARTY_T: "concat({}, ' - ', {})".format(names.T_ID_F, names.COL_PARTY_T_NAME_F)
-                })
-            if model_key == LADMNames.SUPPLIES_MODEL_KEY:
-                display_expressions.update({
-                    names.GC_PARCEL_T: "concat('(', {}, ') ', {})".format(names.T_ID_F, names.GC_PARCEL_T_PARCEL_NUMBER_F)
-                })
-            if model_key == LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY:
-                display_expressions.update({
-                    names.SNR_PARCEL_REGISTRY_T: "concat('(', {}, ') ', {})".format(names.T_ID_F,
-                                                                                    names.SNR_PARCEL_REGISTRY_T_NEW_PARCEL_NUMBER_IN_FMI_F)
-                })
-            if model_key == LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY:
-                display_expressions.update({
-                    names.FDC_PARCEL_T: "concat('(', {}, ') ', {})".format(names.T_ID_F, names.FDC_PARCEL_T_PARCEL_NUMBER_F),
-                    names.FDC_USER_T: "concat({}, ' ', {})".format(names.FDC_USER_T_FIRST_NAME_F, names.FDC_USER_T_FIRST_LAST_NAME_F)
-                })
-
-        return display_expressions
 
     @staticmethod
     def get_layer_variables(names, models):
@@ -731,35 +688,3 @@ class LayerConfig:
             #names.LC_PARCEL_T: [names.LC_PARCEL_T_DEPARTMENT_F,
             #                    names.LC_PARCEL_T_MUNICIPALITY_F]  # list of fields of the layer to block its edition
         }
-
-    @staticmethod
-    def get_field_data_capture_layer_config(names):
-        import sys
-        sys.path.append(PLUGINS_DIR)
-
-        layer_config = dict()
-
-        from qfieldsync.core.layer import SyncAction
-        if getattr(names, "FDC_PARCEL_T", None):
-            layer_config[names.FDC_PARCEL_T] = SyncAction.OFFLINE
-        if getattr(names, "FDC_PLOT_T", None):
-            layer_config[names.FDC_PLOT_T] = SyncAction.OFFLINE
-        if getattr(names, "FDC_USER_T", None):
-            layer_config[names.FDC_USER_T] = SyncAction.NO_ACTION
-        if getattr(names, "COL_DIMENSION_TYPE_D", None):
-            layer_config[names.COL_DIMENSION_TYPE_D] = SyncAction.NO_ACTION
-        if getattr(names, "COL_SURFACE_RELATION_TYPE_D", None):
-            layer_config[names.COL_SURFACE_RELATION_TYPE_D] = SyncAction.NO_ACTION
-        if getattr(names, "FDC_VOLUME_TYPE_D", None):
-            layer_config[names.FDC_VOLUME_TYPE_D] = SyncAction.NO_ACTION
-        if getattr(names, "FDC_CONDITION_PARCEL_TYPE_D", None):
-            layer_config[names.FDC_CONDITION_PARCEL_TYPE_D] = SyncAction.NO_ACTION
-        if getattr(names, "FDC_PARCEL_TYPE_D", None):
-            layer_config[names.FDC_PARCEL_TYPE_D] = SyncAction.NO_ACTION
-        if getattr(names, "FDC_LANDCLASS_TYPE_D", None):
-            layer_config[names.FDC_LANDCLASS_TYPE_D] = SyncAction.NO_ACTION
-        if getattr(names, "FDC_PARTY_DOCUMENT_TYPE_D", None):
-            layer_config[names.FDC_PARTY_DOCUMENT_TYPE_D] = SyncAction.NO_ACTION
-
-        return layer_config
-

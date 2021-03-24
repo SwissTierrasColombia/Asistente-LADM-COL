@@ -376,7 +376,7 @@ class PolygonQualityRules:
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.BUILDINGS_SHOULD_BE_WITHIN_PLOTS)
         names = db.names
 
-        layers = layer_dict[QUALITY_RULE_LAYERS]
+        layers = layer_dict[QUALITY_RULE_LAYERS]  # Note: here we get the best available layers (not necessarily LADM)
 
         if not layers:
             return QCoreApplication.translate("PolygonQualityRules", "At least one required layer (plot, boundary, parcel, ue_baunit, codition parcel type) was not found!"), Qgis.Critical
@@ -391,17 +391,25 @@ class PolygonQualityRules:
         data_provider.addAttributes(rule.error_table_fields)
         error_layer.updateFields()
 
-
         if layer_dict[HAS_ADJUSTED_LAYERS]:  # We'll get geometries from original layer later, so don't get them now
             key, attrs, get_geometry = None, [names.T_ID_F, names.T_ILI_TID_F], False
             ladm_col_building_layer = layer_dict[QUALITY_RULE_LADM_COL_LAYERS][names.LC_BUILDING_T]
         else:  # We'll get geometries from current layers, as they are the original ones already
             key, attrs, get_geometry = None, [names.T_ILI_TID_F], True
 
+        # Sometimes, nodes of the building that lie on plot boundaries but do not match a plot vertex, might break
+        # the contains function, so we make sure to have those building nodes on the plots to guarantee the contains
+        # works as expected. Of course, we don't touch the original plots layer, so we make a copy first.
+        topological_plots = self.app.core.get_layer_copy(layers[names.LC_PLOT_T])
+        self.geometry.add_topological_vertices(topological_plots, layers[names.LC_BUILDING_T])
+
+        # Now that we have a copy of the plot layer, we register it in the project, so that Processing can find it
+        self.app.core.register_layers_to_project([topological_plots])
+
         # Gets dicts of {fid:{'attrs':{attr1:v1, ...}, 'geometry': QgsGeometry()}}
         building_disjoint, building_overlaps, building_within = GeometryUtils.get_relationships_among_polygons(
             layers[names.LC_BUILDING_T],
-            layers[names.LC_PLOT_T],
+            topological_plots,
             key,
             attrs,
             get_geometry
@@ -411,11 +419,14 @@ class PolygonQualityRules:
         if building_within:
             tid_buildings = self.check_building_not_associated_with_correct_plot(list(building_within.keys()),
                                                                                  layers[names.LC_BUILDING_T],
-                                                                                 layers[names.LC_PLOT_T],
+                                                                                 topological_plots,
                                                                                  layers[names.LC_PARCEL_T],
                                                                                  layers[names.COL_UE_BAUNIT_T],
                                                                                  layers[names.LC_CONDITION_PARCEL_TYPE_D],
                                                                                  names)
+
+        # Since we won't need the temporary layer topological_plots anymore, unregister it from the QGIS project
+        self.app.core.unregister_layers_from_project([topological_plots])
 
         # If needed, get geometries from LADM-COL original layer
         if layer_dict[HAS_ADJUSTED_LAYERS]:
@@ -587,7 +598,7 @@ class PolygonQualityRules:
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_PLOTS)
         names = db.names
 
-        layers = layer_dict[QUALITY_RULE_LAYERS]
+        layers = layer_dict[QUALITY_RULE_LAYERS]  # Note: here we get the best available layers (not necessarily LADM)
 
         if not layers:
             return QCoreApplication.translate("PolygonQualityRules", "At least one required layer (plot, building unit, ue_baunit, parcel) was not found!"), Qgis.Critical
@@ -602,17 +613,25 @@ class PolygonQualityRules:
         data_provider.addAttributes(rule.error_table_fields)
         error_layer.updateFields()
 
-
         if layer_dict[HAS_ADJUSTED_LAYERS]:  # We'll get geometries from original layer later, so don't get them now
             key, attrs, get_geometry = None, [names.T_ID_F, names.T_ILI_TID_F], False
             ladm_col_building_unit_layer = layer_dict[QUALITY_RULE_LADM_COL_LAYERS][names.LC_BUILDING_UNIT_T]
         else:  # We'll get geometries from current layers, as they are the original ones already
             key, attrs, get_geometry = None, [names.T_ILI_TID_F], True
 
+        # Sometimes, nodes of the b. unit that lie on plot boundaries but do not match a plot vertex, might break
+        # the contains function, so we make sure to have those b. unit nodes on the plots to guarantee the contains
+        # works as expected. Of course, we don't touch the original plots layer, so we make a copy first.
+        topological_plots = self.app.core.get_layer_copy(layers[names.LC_PLOT_T])
+        self.geometry.add_topological_vertices(topological_plots, layers[names.LC_BUILDING_UNIT_T])
+
+        # Now that we have a copy of the plot layer, we register it in the project, so that Processing can find it
+        self.app.core.register_layers_to_project([topological_plots])
+
         # Gets dicts of {fid:{'attrs':{attr1:v1, ...}, 'geometry': QgsGeometry()}}
         building_units_disjoint_plots, building_units_overlaps_plots, building_units_within_plots = GeometryUtils.get_relationships_among_polygons(
             layers[names.LC_BUILDING_UNIT_T],
-            layers[names.LC_PLOT_T],
+            topological_plots,
             key,
             attrs,
             get_geometry
@@ -621,11 +640,14 @@ class PolygonQualityRules:
         tids_building_units_bad_relation_plots = self.check_building_unit_not_associated_with_correct_plot(
             list(building_units_within_plots.keys()),  # fids
             layers[names.LC_BUILDING_UNIT_T],
-            layers[names.LC_PLOT_T],
+            topological_plots,
             layers[names.LC_PARCEL_T],
             layers[names.COL_UE_BAUNIT_T],
             layers[names.LC_CONDITION_PARCEL_TYPE_D],
             names)
+
+        # Since we won't need the temporary layer topological_plots anymore, unregister it from the QGIS project
+        self.app.core.unregister_layers_from_project([topological_plots])
 
         # If needed, get geometries from LADM-COL original layer
         if layer_dict[HAS_ADJUSTED_LAYERS]:
@@ -701,7 +723,7 @@ class PolygonQualityRules:
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_BUILDINGS)
         names = db.names
 
-        layers = layer_dict[QUALITY_RULE_LAYERS]
+        layers = layer_dict[QUALITY_RULE_LAYERS]  # Note: here we get the best available layers (not necessarily LADM)
 
         if not layers:
             return QCoreApplication.translate("PolygonQualityRules", "At least one required layer (building unit, ue_baunit, building, parcel) was not found!"), Qgis.Critical
@@ -716,17 +738,25 @@ class PolygonQualityRules:
         data_provider.addAttributes(rule.error_table_fields)
         error_layer.updateFields()
 
-
         if layer_dict[HAS_ADJUSTED_LAYERS]:  # We'll get geometries from original layer later, so don't get them now
             key, attrs, get_geometry = None, [names.T_ID_F, names.T_ILI_TID_F], False
             ladm_col_building_unit_layer = layer_dict[QUALITY_RULE_LADM_COL_LAYERS][names.LC_BUILDING_UNIT_T]
         else:  # We'll get geometries from current layers, as they are the original ones already
             key, attrs, get_geometry = None, [names.T_ILI_TID_F], True
 
+        # Sometimes, nodes of the b. unit that lie on building boundaries but do not match a building vertex, might
+        # break the contains function, so we make sure to have those b. unit nodes on the buildings to guarantee the
+        # contains works as expected. Of course, we don't touch the original building layer, so we make a copy first.
+        topological_buildings = self.app.core.get_layer_copy(layers[names.LC_BUILDING_T])
+        self.geometry.add_topological_vertices(topological_buildings, layers[names.LC_BUILDING_UNIT_T])
+
+        # Now that we have a copy of the building layer, we register it in the project, so that Processing can find it
+        self.app.core.register_layers_to_project([topological_buildings])
+
         # Gets dicts of {fid:{'attrs':{attr1:v1, ...}, 'geometry': QgsGeometry()}}
         building_units_disjoint_buildings, building_units_overlaps_buildings, building_units_within_building = GeometryUtils.get_relationships_among_polygons(
             layers[names.LC_BUILDING_UNIT_T],
-            layers[names.LC_BUILDING_T],
+            topological_buildings,
             key,
             attrs,
             get_geometry
@@ -737,11 +767,14 @@ class PolygonQualityRules:
             t_ids_building_units_bad_relation_buildings = self.check_building_unit_not_associated_with_correct_building(
                 list(building_units_within_building.keys()),  # fids
                 layers[names.LC_BUILDING_UNIT_T],
-                layers[names.LC_BUILDING_T],
+                topological_buildings,
                 layers[names.LC_PARCEL_T],
                 layers[names.COL_UE_BAUNIT_T],
                 layers[names.LC_CONDITION_PARCEL_TYPE_D],
                 names)
+
+        # Since we won't need the temporary layer topological_buildings anymore, unregister it from the QGIS project
+        self.app.core.unregister_layers_from_project([topological_buildings])
 
         # If needed, get geometries from LADM-COL original layer
         if layer_dict[HAS_ADJUSTED_LAYERS]:
@@ -1122,25 +1155,26 @@ class PolygonQualityRules:
                 boundary_geom = dict_boundary[boundary_id].geometry()
                 intersection = plot_geom.intersection(boundary_geom)
 
-                if intersection.type() != QgsWkbTypes.LineGeometry:
-                    if intersection.type() == QgsWkbTypes.UnknownGeometry:
-                        has_line = False
-                        for part in intersection.asGeometryCollection():
-                            if part.isMultipart():
-                                for i in range(part.numGeometries()):
-                                    if QgsWkbTypes.geometryType(
-                                            part.geometryN(i).wkbType()) == QgsWkbTypes.LineGeometry:
+                if not intersection.isEmpty():
+                    if intersection.type() != QgsWkbTypes.LineGeometry:
+                        if intersection.type() == QgsWkbTypes.UnknownGeometry:
+                            has_line = False
+                            for part in intersection.asGeometryCollection():
+                                if part.isMultipart():
+                                    for i in range(part.numGeometries()):
+                                        if QgsWkbTypes.geometryType(
+                                                part.geometryN(i).wkbType()) == QgsWkbTypes.LineGeometry:
+                                            has_line = True
+                                            break
+                                else:
+                                    if part.type() == QgsWkbTypes.LineGeometry:
                                         has_line = True
                                         break
-                            else:
-                                if part.type() == QgsWkbTypes.LineGeometry:
-                                    has_line = True
-                                    break
-                        if not has_line:
-                            # Remove point intersections plot-boundary
+                            if not has_line:
+                                # Remove point intersections plot-boundary
+                                dict_spatial_join_plot_boundary.remove(item_sj)
+                        else:
                             dict_spatial_join_plot_boundary.remove(item_sj)
-                    else:
-                        dict_spatial_join_plot_boundary.remove(item_sj)
 
         # Check relation between plot and boundary not registered in more_bfs
         errors_not_in_more_bfs = list()
@@ -1171,20 +1205,21 @@ class PolygonQualityRules:
             # check intersections difference to line, we check that collections dont have lines parts
             intersection = inner_ring_geom.intersection(boundary_geom)
             has_line = False
-            if intersection.type() != QgsWkbTypes.LineGeometry:
-                if intersection.type() == QgsWkbTypes.UnknownGeometry:
-                    for part in intersection.asGeometryCollection():
-                        if part.isMultipart():
-                            for i in range(part.numGeometries()):
-                                if QgsWkbTypes.geometryType(part.geometryN(i).wkbType()) == QgsWkbTypes.LineGeometry:
+            if not intersection.isEmpty():
+                if intersection.type() != QgsWkbTypes.LineGeometry:
+                    if intersection.type() == QgsWkbTypes.UnknownGeometry:
+                        for part in intersection.asGeometryCollection():
+                            if part.isMultipart():
+                                for i in range(part.numGeometries()):
+                                    if QgsWkbTypes.geometryType(part.geometryN(i).wkbType()) == QgsWkbTypes.LineGeometry:
+                                        has_line = True
+                                        break
+                            else:
+                                if part.type() == QgsWkbTypes.LineGeometry:
                                     has_line = True
                                     break
-                        else:
-                            if part.type() == QgsWkbTypes.LineGeometry:
-                                has_line = True
-                                break
-            else:
-                has_line = True
+                else:
+                    has_line = True
 
             if has_line:
                 tmp_dict_plot_boundary = {'plot_id': int(plot_ring_id.split('-')[0]), 'boundary_id': boundary_id}

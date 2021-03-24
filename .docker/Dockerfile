@@ -1,4 +1,4 @@
-ARG QGIS_TEST_VERSION=release-3_16
+ARG QGIS_TEST_VERSION
 FROM  qgis/qgis:${QGIS_TEST_VERSION}
 LABEL maintainer="matthias@opengis.ch"
 

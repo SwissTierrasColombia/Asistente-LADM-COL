@@ -210,17 +210,12 @@ def show_plugin_help(module='', offline=False):
 
     # If we don't have Internet access check if the documentation is in the
     # expected local dir and show it. Otherwise, show a warning message.
-    # web_url = "{}/{}/{}".format(HELP_URL, QGIS_LANG, PLUGIN_VERSION)  # TODO: To be used when the documentation has been versioned
+    # web_url points to gh-pages initially
     web_url = HELP_URL
 
     _is_connected = is_connected(TEST_SERVER)
     if offline or not _is_connected:
-
-        help_path = os.path.join(
-            PLUGIN_DIR,
-            HELP_DIR_NAME,
-            QGIS_LANG
-        )
+        help_path = os.path.join(PLUGIN_DIR, HELP_DIR_NAME)
         if os.path.exists(help_path):
             url = os.path.join("file://", help_path)
         else:

@@ -47,7 +47,7 @@ push_tag() {
   popd
 }
 
-clone_repo
+#clone_repo
 #install_deps
 #build_repo
-push_tag
+#push_tag

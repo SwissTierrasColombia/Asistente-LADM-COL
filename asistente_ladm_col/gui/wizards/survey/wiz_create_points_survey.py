@@ -535,4 +535,12 @@ class CreatePointsSurveyWizard(QWizard, WIZARD_UI):
         self.update_crs_info()
 
     def show_help(self):
-        show_plugin_help("create_points")
+        help_section = "create_points"
+        if self.rad_control_point.isChecked():
+            help_section = "create_control_point"
+        elif self.rad_survey_point.isChecked():
+            help_section = "create_survey_point"
+        else:
+            help_section = "create_boundary_point"
+
+        show_plugin_help(help_section)

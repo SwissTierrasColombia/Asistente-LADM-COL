@@ -70,35 +70,45 @@ CYPTO_MD5SUM = 'a42e671dcc78f519020a16f4c47da588'
 # Version to be installed when creating reports (annex 17 - ANT Map)
 # (Other versions, if found, will be dropped in favor of this one)
 DEPENDENCY_REPORTS_DIR_NAME = os.path.join(DEPENDENCIES_BASE_PATH, 'impresion')
-REPORTS_REQUIRED_VERSION = '0.8'
+REPORTS_REQUIRED_VERSION = '1.0'
 URL_REPORTS_LIBRARIES = 'https://github.com/SwissTierrasColombia/LADM-COL_Reports/releases/download/{}/impresion.zip'.format(REPORTS_REQUIRED_VERSION)
-REPORTS_LIBRARIES_MD5SUM = 'ebccc3bd2e4a9ccaf1da7b94dd222347'
+REPORTS_LIBRARIES_MD5SUM = '1298ecaa7a56d639ab0e83897f8d7dbd'
 
 MODULE_HELP_MAPPING = {
     '' : 'index.html', # default module is '', just go to index.html
-    'supplies': 'gestion_de_insumos.html',
-    'transitional_system': 'sistema_de_transicion.html',
-    'create_admin_source': 'captura_y_estructura_de_datos/fuentes.html#fuente-administrativa',
-    'create_parcel': 'captura_y_estructura_de_datos/unidad_basica_administrativa.html#predio',
-    'create_points': 'captura_y_estructura_de_datos/topografia_y_representacion.html#crear-punto',
-    'create_boundaries': 'captura_y_estructura_de_datos/topografia_y_representacion.html#crear-lindero',
-    'create_plot': 'captura_y_estructura_de_datos/unidad_espacial.html#crear-terreno',
-    'create_building': 'captura_y_estructura_de_datos/unidad_espacial.html#crear-construccion',
-    'create_building_unit': 'captura_y_estructura_de_datos/unidad_espacial.html#crear-unidad-de-construccion',
-    'create_right_of_way':'captura_y_estructura_de_datos/unidad_espacial.html#crear-servidumbre-de-paso',
-    'associate_ext_address': 'captura_y_estructura_de_datos/unidad_espacial.html#relacionar-extdireccion',
-    'create_right': 'captura_y_estructura_de_datos/rrr.html#derecho',
-    'create_restriction': 'captura_y_estructura_de_datos/rrr.html#restriccion',
-    'create_spatial_source': 'captura_y_estructura_de_datos/fuentes.html#fuente-espacial',
+    'associate_ext_address': 'captura_y_estructura_de_datos.html#relacionar-direccion',
+    'create_admin_source': 'captura_y_estructura_de_datos.html#crear-fuente-administrativa',
+    'create_parcel': 'captura_y_estructura_de_datos.html#crear-predio',
+    'create_points': 'captura_y_estructura_de_datos.html#crear-punto',
+    'create_boundary_point': 'captura_y_estructura_de_datos.html#punto-lindero',
+    'create_survey_point': 'captura_y_estructura_de_datos.html#punto-levantamiento',
+    'create_control_point': 'captura_y_estructura_de_datos.html#punto-de-control',
+    'create_boundaries': 'captura_y_estructura_de_datos.html#crear-lindero',
+    'create_plot': 'captura_y_estructura_de_datos.html#crear-terreno',
+    'create_building': 'captura_y_estructura_de_datos.html#crear-construccion',
+    'create_building_unit': 'captura_y_estructura_de_datos.html#crear-unidad-de-construccion',
+    'create_right_of_way':'captura_y_estructura_de_datos.html#crear-servidumbre-de-transito',
+    'create_right': 'captura_y_estructura_de_datos.html#crear-derecho',
+    'create_restriction': 'captura_y_estructura_de_datos.html#crear-restriccion',
+    'create_spatial_source': 'captura_y_estructura_de_datos.html#crear-fuente-espacial',
+    'enable_ctm12': 'introduccion.html#habilitar-proyeccion-origen-nacional',
+    'export_data': 'administracion_de_datos.html#exportar-datos',
+    'group_party': 'captura_y_estructura_de_datos.html#crear-agrupacion-de-interesados',
+    'import_from_excel': 'captura_y_estructura_de_datos/importar_desde_estructura_intermedia.html',
+    'import_schema' : 'administracion_de_datos.html#crear-estructura-ladm-col',
+    'import_data' : 'administracion_de_datos.html#importar-datos',
     'load_layers': 'cargar_capas.html',
-    'party': 'captura_y_estructura_de_datos/interesado.html#crear-interesado',
-    'group_party': 'captura_y_estructura_de_datos/interesado.html#agrupacion-de-interesados',
+    'omission_commission_cobol': 'gestion_de_insumos.html#reporte-omisiones-y-comisiones-cobol',
+    'omission_commission_snc': 'gestion_de_insumos.html#reporte-omisiones-y-comisiones-snc',
+    'party': 'captura_y_estructura_de_datos.html#crear-interesado',
     'quality_rules': 'reglas_de_calidad.html',
     'settings': 'configuracion.html',
-    'import_from_excel': 'captura_y_estructura_de_datos/importar_desde_estructura_intermedia.html',
-    'import_schema' : 'administracion_de_datos/crear_estructura_ladm_col.html',
-    'import_data' : 'administracion_de_datos/importar_datos.html',
-    'export_data' : 'administracion_de_datos/exportar_datos.html'
+    'supplies': 'gestion_de_insumos.html',
+    'transitional_system': 'sistema_de_transicion.html',
+    'transitional_system_cancel_task': 'sistema_de_transicion.html#cancelar-tarea',
+    'transitional_system_login': 'sistema_de_transicion.html#autenticacion',
+    'transitional_system_upload_file': 'sistema_de_transicion.html#subir-archivo',
+    'welcome_screen': 'introduccion.html#dialogo-de-bienvenida'
 }
 
 QGIS_REQUIRED_VERSION = '3.16.0 Hannover'
@@ -150,12 +160,6 @@ MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION = "1.2"
 MAP_SWIPE_TOOL_EXACT_REQUIRED_VERSION = True
 MAP_SWIPE_TOOL_REQUIRED_VERSION_URL = ''  # 'https://plugins.qgis.org/plugins/mapswipetool_plugin/version/1.2/download/'
 
-# Configure QField Sync Dependency
-QFIELD_SYNC_PLUGIN_NAME = "qfieldsync"
-QFIELD_SYNC_MIN_REQUIRED_VERSION = "3.2.0.1"
-QFIELD_SYNC_EXACT_REQUIRED_VERSION = True
-QFIELD_SYNC_REQUIRED_VERSION_URL = 'https://github.com/SwissTierrasColombia/qfieldsync/releases/download/v3.2.0.1/qfieldsync_3201.zip'  # ''
-
 SOURCE_DB = '_SOURCE_'
 SUPPLIES_DB_SOURCE = 'SUPPLIES'
 COLLECTED_DB_SOURCE = 'COLLECTED'
@@ -190,6 +194,7 @@ SUFFIX_GET_THUMBNAIL = "&thumbnail=true&size=large"
 
 # Documentation
 HELP_DOWNLOAD = 'https://github.com/SwissTierrasColombia/Asistente-LADM-COL-docs/releases/download'
+HELP_ASSET_NAME = "Asistente-LADM-COL-docs.zip"
 
 DEFAULT_DATASET_NAME = "Default dataset"
 FDC_DATASET_NAME = "Captura en campo"
