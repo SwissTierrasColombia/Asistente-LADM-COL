@@ -72,6 +72,8 @@
     <file>resources/images/pdf.svg</file>
     <file>resources/images/synchronize.svg</file>
     <file>resources/images/qgs.svg</file>
+    <file>resources/images/mobile.svg</file>
+    <file>resources/images/network.png</file>
     <file>resources/csv/template_boundary_points.csv</file>
     <file>resources/csv/template_survey_points.csv</file>
     <file>resources/csv/template_control_points.csv</file>

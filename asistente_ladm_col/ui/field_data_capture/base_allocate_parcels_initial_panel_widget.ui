@@ -116,7 +116,7 @@
        </property>
        <property name="icon">
         <iconset resource="../../resources.qrc">
-         <normaloff>:/Asistente-LADM-COL/resources/images/process.svg</normaloff>:/Asistente-LADM-COL/resources/images/process.svg</iconset>
+         <normaloff>:/Asistente-LADM-COL/resources/images/network.png</normaloff>:/Asistente-LADM-COL/resources/images/network.png</iconset>
        </property>
        <property name="iconSize">
         <size>

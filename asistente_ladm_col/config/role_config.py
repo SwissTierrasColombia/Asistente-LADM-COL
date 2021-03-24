@@ -104,7 +104,6 @@ field_admin_role_gui[TOOLBAR] = [{  # Overwrite list of toolbars
         ACTION_MOVE_NODES,
         SEPARATOR,
         ACTION_CHECK_QUALITY_FDC_RULES,
-        ACTION_PARCEL_QUERY,
         SEPARATOR,
         {  # List of toolbars
             WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Reports"),
@@ -115,6 +114,9 @@ field_admin_role_gui[TOOLBAR] = [{  # Overwrite list of toolbars
                 ACTION_REPORT_ANT
             ]
         },
+        ACTION_ALLOCATE_PARCELS_FIELD_DATA_CAPTURE,
+        ACTION_SYNCHRONIZE_FIELD_DATA,
+        ACTION_LOAD_TEMPLATE_FIELD_DATA,
         SEPARATOR,
         ACTION_SETTINGS
     ]
@@ -131,6 +133,10 @@ field_coordinator_role_gui[TOOLBAR] = [{  # Overwrite list of toolbars
         ACTION_MOVE_NODES,
         SEPARATOR,
         ACTION_CHECK_QUALITY_FDC_RULES,
+        SEPARATOR,
+        ACTION_ALLOCATE_PARCELS_FIELD_DATA_CAPTURE,
+        ACTION_SYNCHRONIZE_FIELD_DATA,
+        ACTION_LOAD_TEMPLATE_FIELD_DATA,
         SEPARATOR,
         ACTION_SETTINGS
     ]
@@ -344,12 +350,10 @@ def get_role_config():
             ROLE_MODELS: get_field_admin_role_models(),
             ROLE_ACTIONS: [
                 ACTION_EXPORT_DATA,
-                ACTION_EXPORT_DATA_FDC_COORDINATOR,
                 ACTION_ALLOCATE_PARCELS_FIELD_DATA_CAPTURE,
                 ACTION_SYNCHRONIZE_FIELD_DATA,
                 ACTION_LOAD_TEMPLATE_FIELD_DATA,
                 ACTION_INTEGRATE_SUPPLIES,
-                ACTION_PARCEL_QUERY,
                 ACTION_CHECK_QUALITY_FDC_RULES,
                 ACTION_MOVE_NODES],
             ROLE_QUALITY_RULES: [

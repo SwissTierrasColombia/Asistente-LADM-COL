@@ -218,7 +218,7 @@ DOCK_WIDGET_TRANSITION_SYSTEM = "dock_widget_transition_system"
 
 SURVEYING_ICON = ":/Asistente-LADM-COL/resources/images/surveying.png"
 DATA_MANAGEMENT_ICON = ":/Asistente-LADM-COL/resources/images/create_db.png"
-FIELD_DATA_CAPTURE_ICON = ":/Asistente-LADM-COL/resources/images/process.svg"
+FIELD_DATA_CAPTURE_ICON = ":/Asistente-LADM-COL/resources/images/mobile.svg"
 DATA_CREATION_ICON = ":/Asistente-LADM-COL/resources/images/data_creation.svg"
 ST_ICON = ":/Asistente-LADM-COL/resources/images/st.svg"
 OPERATION_ICON = ":/Asistente-LADM-COL/resources/images/icon.png"
