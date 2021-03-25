@@ -16,6 +16,6 @@ export SQLPASSWORD='<YourStrong!Passw0rd>'
 export PATH=$PATH:/opt/mssql-tools/bin
 
 echo "sleep"
-sleep 20
+sleep 90
 
 sqlcmd -S $SQLHOST,$SQLPORT -U $SQLUSER -P $SQLPASSWORD -Q "CREATE DATABASE ladm_col;"
