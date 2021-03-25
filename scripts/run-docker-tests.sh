@@ -26,9 +26,10 @@ do
   if PGPASSWORD='clave_ladm_col' psql -h postgres -U usuario_ladm_col -p 5432 -l &> /dev/null; then
     break
   fi
+  printf "\nAttempt $i..."
   sleep 2
 done
-printf "\n"
+printf "\nPostgreSQL ready!\n"
 
 pushd /usr/src/asistente_ladm_col
 make
