@@ -24,7 +24,6 @@ from math import sqrt
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QObject,
                               QVariant)
-from qgis._core import QgsProcessingFeedback
 from qgis.core import (QgsField,
                        QgsGeometry,
                        QgsPolygon,
@@ -33,6 +32,7 @@ from qgis.core import (QgsField,
                        QgsLineString,
                        QgsMultiLineString,
                        QgsProcessingFeedback,
+                       QgsProcessingException,
                        QgsSpatialIndex,
                        QgsVectorLayer,
                        QgsVectorLayerEditUtils,
@@ -43,6 +43,7 @@ from qgis.core import (QgsField,
 import processing
 
 from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.lib.processing.custom_processing_feedback import CustomFeedbackWithErrors
 from asistente_ladm_col.utils.crs_utils import get_crs_authid
 
 
@@ -261,13 +262,18 @@ class GeometryUtils(QObject):
         if line_layer.featureCount() == 0:
             return None
 
-        feedback = QgsProcessingFeedback()
-        dict_res = processing.run("model:Overlapping_Boundaries", {
-                    'Boundary':line_layer,
-                    'native:saveselectedfeatures_2:Intersected_Lines':'memory:',
-                    'native:saveselectedfeatures_3:Intersected_Points':'memory:'
-                },
-                feedback=feedback)
+        feedback = CustomFeedbackWithErrors()
+        try:
+            dict_res = processing.run("model:Overlapping_Boundaries", {
+                'Boundary': line_layer,
+                'native:saveselectedfeatures_2:Intersected_Lines': 'memory:',
+                'native:saveselectedfeatures_3:Intersected_Points': 'memory:'
+            }, feedback=feedback)
+        except QgsProcessingException as e:
+            self.logger.warning(__name__, QCoreApplication.translate("Geometry",
+                                                                     "Error running the model to extract overlapping boundaries. Details: {}".format(
+                                                                         feedback.msg)))
+            dict_res = dict()
 
         return dict_res
 

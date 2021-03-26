@@ -81,7 +81,9 @@ class LineQualityRules:
             if overlapping is None:
                 return (QCoreApplication.translate("LineQualityRules",
                                  "There are no boundaries to check for overlaps!"), Qgis.Warning)
-
+            elif not overlapping:  # overlapping might be {}
+                return (QCoreApplication.translate("LineQualityRules",
+                                 "There was an error extracting overlapping boundaries! See the log for details."), Qgis.Warning)
             else:
                 points_intersected = overlapping['native:saveselectedfeatures_3:Intersected_Points']
                 lines_intersected = overlapping['native:saveselectedfeatures_2:Intersected_Lines']

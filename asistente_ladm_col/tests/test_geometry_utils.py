@@ -139,6 +139,7 @@ class TestGeometryUtils(unittest.TestCase):
         self.assertEqual(boundary_overlap_layer.featureCount(), 15)
 
         overlapping = self.geometry.get_overlapping_lines(boundary_overlap_layer)
+        self.assertNotEqual(overlapping, dict())
 
         error_line_layer = overlapping['native:saveselectedfeatures_2:Intersected_Lines']
         error_point_layer = overlapping['native:saveselectedfeatures_3:Intersected_Points']
