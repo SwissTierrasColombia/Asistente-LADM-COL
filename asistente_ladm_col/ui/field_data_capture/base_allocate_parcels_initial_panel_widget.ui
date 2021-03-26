@@ -14,7 +14,7 @@
    <string>Initial Panel Widget Allocate Parcels</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="4" column="0">
+   <item row="5" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_4">
      <item>
       <widget class="QPushButton" name="btn_show_summary">
@@ -22,10 +22,10 @@
         <string>Show summary</string>
        </property>
        <property name="text">
-        <string/>
+        <string>Export</string>
        </property>
        <property name="icon">
-        <iconset resource="../../resources.qrc">
+        <iconset>
          <normaloff>:/Asistente-LADM-COL/resources/images/tasks.png</normaloff>:/Asistente-LADM-COL/resources/images/tasks.png</iconset>
        </property>
        <property name="iconSize">
@@ -55,10 +55,10 @@
         <string>Reallocate selected parcels</string>
        </property>
        <property name="text">
-        <string/>
+        <string>Reallocate</string>
        </property>
        <property name="icon">
-        <iconset resource="../../resources.qrc">
+        <iconset>
          <normaloff>:/Asistente-LADM-COL/resources/images/deselect.png</normaloff>:/Asistente-LADM-COL/resources/images/deselect.png</iconset>
        </property>
        <property name="iconSize">
@@ -75,10 +75,10 @@
         <string>Allocate selected parcels</string>
        </property>
        <property name="text">
-        <string/>
+        <string>Allocate</string>
        </property>
        <property name="icon">
-        <iconset resource="../../resources.qrc">
+        <iconset>
          <normaloff>:/Asistente-LADM-COL/resources/images/select.png</normaloff>:/Asistente-LADM-COL/resources/images/select.png</iconset>
        </property>
        <property name="iconSize">
@@ -91,32 +91,42 @@
      </item>
     </layout>
    </item>
-   <item row="0" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
+   <item row="3" column="0">
+    <widget class="QCheckBox" name="chk_show_only_not_allocated">
+     <property name="text">
+      <string>Show only not allocated parcels</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <spacer name="horizontalSpacer_3">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Operational area</string>
        </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
+      </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="btn_configure_receivers">
+      <widget class="QgsFeatureListComboBox" name="cbo_areas"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_select_by_area">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="toolTip">
-        <string>Configure receivers</string>
+        <string>Select parcels by area</string>
        </property>
        <property name="text">
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="../../resources.qrc">
-         <normaloff>:/Asistente-LADM-COL/resources/images/network.png</normaloff>:/Asistente-LADM-COL/resources/images/network.png</iconset>
+        <iconset>
+         <normaloff>:/Asistente-LADM-COL/resources/images/select_by_area.png</normaloff>:/Asistente-LADM-COL/resources/images/select_by_area.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -205,35 +215,38 @@
      </item>
     </layout>
    </item>
-   <item row="3" column="0">
-    <widget class="QCheckBox" name="chk_show_only_not_allocated">
-     <property name="text">
-      <string>Show only not allocated parcels</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout">
+   <item row="4" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
-      <widget class="QgsFeatureListComboBox" name="cbo_areas"/>
+      <spacer name="horizontalSpacer_3">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="btn_select_by_area">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
+      <widget class="QPushButton" name="btn_configure_receivers">
        <property name="toolTip">
-        <string>Select parcels by area</string>
+        <string>Configure receivers</string>
        </property>
        <property name="text">
-        <string/>
+        <string>Create receiver</string>
        </property>
        <property name="icon">
-        <iconset resource="../../resources.qrc">
-         <normaloff>:/Asistente-LADM-COL/resources/images/select_by_area.png</normaloff>:/Asistente-LADM-COL/resources/images/select_by_area.png</iconset>
+        <iconset>
+         <normaloff>:/Asistente-LADM-COL/resources/images/network.png</normaloff>:/Asistente-LADM-COL/resources/images/network.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>24</width>
+         <height>24</height>
+        </size>
        </property>
       </widget>
      </item>
@@ -245,13 +258,14 @@
   <customwidget>
    <class>QgsFeatureListComboBox</class>
    <extends>QComboBox</extends>
-   <header>qgis.gui</header>
+   <header>qgsfeaturelistcombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsFilterLineEdit</class>
    <extends>QLineEdit</extends>
-   <header>qgis.gui</header>
+   <header>qgsfilterlineedit.h</header>
   </customwidget>
  </customwidgets>
+ <resources/>
  <connections/>
 </ui>
