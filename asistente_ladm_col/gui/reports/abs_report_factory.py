@@ -121,8 +121,9 @@ class AbsReportFactory(QDialog):
     def get_layer_geojson(self, layer_name, plot_id):
         raise NotImplementedError
 
-    def update_json_data(self, json_spec_file, plot_id, tmp_dir):
+    def update_json_data(self, json_spec_file, plot_feature, tmp_dir):
         json_data = dict()
+        plot_id = plot_feature[self.db.names.T_ID_F]
         with open(json_spec_file) as f:
             json_data = json.load(f)
 
@@ -187,8 +188,11 @@ class AbsReportFactory(QDialog):
         return True
 
     def generate_report(self, plot_layer, selected_plots, save_into_folder):
-        self.check_report_dependency()
-        self.check_java_dependency()
+        if not self.check_report_dependency():
+            self.close()
+
+        if not self.check_java_dependency():
+            self.close()
 
         config_path = os.path.join(DEPENDENCY_REPORTS_DIR_NAME, self.report_name)
         json_spec_file = os.path.join(config_path, 'spec_json_file.json')
@@ -241,7 +245,7 @@ class AbsReportFactory(QDialog):
                     continue
 
                 # Generate data file
-                json_file = self.update_json_data(json_spec_file, plot_id, tmp_dir)
+                json_file = self.update_json_data(json_spec_file, selected_plot, tmp_dir)
                 self.logger.debug(__name__, "JSON file for reports: {}".format(json_file))
 
                 # Run sh/bat passing config and data files

@@ -225,8 +225,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self.right_of_way = RightOfWay()
         self.toolbar = ToolBar(self.iface)
         self.ladm_data = LADMData()
-        self.ant_map_report = ANTMapReport(self.get_db_connection())
-        self.annex_17_map_report = Annex17MapReport(self.get_db_connection())
 
         self.create_actions()
         self.register_dock_widgets()
@@ -282,8 +280,6 @@ class AsistenteLADMCOLPlugin(QObject):
             self.show_message_with_buttons_change_detection_all_and_per_parcel)
 
         self.app.gui.add_indicators_requested.connect(self.add_indicators)
-        self.ant_map_report.enable_action_requested.connect(self.enable_action)
-        self.annex_17_map_report.enable_action_requested.connect(self.enable_action)
         self.session.login_status_changed.connect(self.set_login_controls_visibility)
 
     @staticmethod
@@ -1043,8 +1039,11 @@ class AsistenteLADMCOLPlugin(QObject):
     @_cadastral_cartography_model_required
     @_survey_model_required
     def call_ant_map_report_generation(self, *args):
-        self.ant_map_report.update_db_connection(self.get_db_connection())
-        self.ant_map_report.exec_()
+        ant_map_report = ANTMapReport(self.get_db_connection())
+        ant_map_report.enable_action_requested.connect(self.enable_action)
+        ant_map_report.exec_()
+        ant_map_report.enable_action_requested.disconnect(self.enable_action)
+        del ant_map_report
 
     @_validate_if_plot_is_selected
     @_validate_if_wizard_is_open
@@ -1052,8 +1051,11 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     @_survey_model_required
     def call_annex_17_report_generation(self, *args):
-        self.annex_17_map_report.update_db_connection(self.get_db_connection())
-        self.annex_17_map_report.exec_()
+        annex_17_map_report = Annex17MapReport(self.get_db_connection())
+        annex_17_map_report.enable_action_requested.connect(self.enable_action)
+        annex_17_map_report.exec_()
+        annex_17_map_report.enable_action_requested.disconnect(self.enable_action)
+        del annex_17_map_report
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
