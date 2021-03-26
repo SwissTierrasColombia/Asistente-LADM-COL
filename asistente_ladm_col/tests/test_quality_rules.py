@@ -652,8 +652,6 @@ class TesQualityRules(unittest.TestCase):
         res, code, msg = self.db_gpkg.test_connection()
         self.assertTrue(res, msg)
 
-        # When the tests are run the REGEXP function is not found, so we register it
-        self.db_gpkg.conn.create_function("REGEXP", 2, _regexp)
         query_manager = ConfigDBsSupported().get_db_factory(self.db_gpkg.engine).get_ladm_queries()
 
         rules = [EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS,
@@ -760,8 +758,6 @@ class TesQualityRules(unittest.TestCase):
         res, code, msg = db_gpkg.test_connection()
         self.assertTrue(res, msg)
 
-        # When the tests are run the REGEXP function is not found, so we register it
-        db_gpkg.conn.create_function("REGEXP", 2, _regexp)
         self.check_logic_quality_rules(db_gpkg)
 
     def check_logic_quality_rules(self, db):
@@ -813,11 +809,6 @@ class TesQualityRules(unittest.TestCase):
         print("INFO: Unloading Model Baker...")
         unload_qgis_model_baker()
 
-
-def _regexp(pattern, value):
-    if value is None:
-        return None
-    return re.search(pattern, value) is not None
 
 if __name__ == '__main__':
     nose2.main()
