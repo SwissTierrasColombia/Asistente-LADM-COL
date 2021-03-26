@@ -105,22 +105,28 @@ class TesQualityRules(unittest.TestCase):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Line.BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS)
         schema_name = 'test_ladm_validations_topology_tables'
         self.db_pg = get_pg_conn(schema_name)
-        self.names = self.db_pg.names
+        names = self.db_pg.names
 
         res, code, msg = self.db_pg.test_connection()
         self.assertTrue(res, msg)
-        self.assertIsNotNone(self.names.LC_BOUNDARY_POINT_T, 'Names is None')
+        self.assertIsNotNone(names.LC_BOUNDARY_POINT_T, 'Names is None')
 
-        boundary_point_layer = self.app.core.get_layer(self.db_pg, self.names.LC_BOUNDARY_POINT_T, load=True)
+        layers = {names.LC_BOUNDARY_POINT_T: None,
+                  names.LC_BOUNDARY_T: None,
+                  names.LC_PLOT_T: None,
+                  names.POINT_BFS_T: None}
+        self.app.core.get_layers(self.db_pg, layers, load=True)
+
+        boundary_point_layer = layers[names.LC_BOUNDARY_POINT_T]
         self.assertEqual(boundary_point_layer.featureCount(), 109)
 
-        boundary_layer = self.app.core.get_layer(self.db_pg, self.names.LC_BOUNDARY_T, load=True)
+        boundary_layer = layers[names.LC_BOUNDARY_T]
         self.assertEqual(boundary_layer.featureCount(), 22)
 
-        plot_layer = self.app.core.get_layer(self.db_pg, self.names.LC_PLOT_T, load=True)
+        plot_layer = layers[names.LC_PLOT_T]
         self.assertEqual(plot_layer.featureCount(), 17)
 
-        point_bfs_layer = self.app.core.get_layer(self.db_pg, self.names.POINT_BFS_T, load=True)
+        point_bfs_layer = layers[names.POINT_BFS_T]
         self.assertEqual(point_bfs_layer.featureCount(), 81)
 
         error_layer = QgsVectorLayer("Point?crs={}".format(get_crs_authid(boundary_layer.sourceCrs())), rule.error_table_name, "memory")
@@ -128,7 +134,7 @@ class TesQualityRules(unittest.TestCase):
         data_provider.addAttributes(rule.error_table_fields)
         error_layer.updateFields()
 
-        features = self.quality_rules.line_quality_rules.get_boundary_nodes_features_not_covered_by_boundary_points(self.db_pg, boundary_point_layer, boundary_layer, point_bfs_layer, error_layer, self.names.T_ID_F)
+        features = self.quality_rules.line_quality_rules.get_boundary_nodes_features_not_covered_by_boundary_points(self.db_pg, boundary_point_layer, boundary_layer, point_bfs_layer, error_layer, names.T_ID_F)
 
         # the algorithm was successfully executed
         self.assertEqual(len(features), 33)
@@ -206,22 +212,30 @@ class TesQualityRules(unittest.TestCase):
         self.assertTrue(res, msg)
         self.assertIsNotNone(names.LC_BOUNDARY_POINT_T, 'Names is None')
 
-        boundary_point_layer = self.app.core.get_layer(self.db_pg, names.LC_BOUNDARY_POINT_T, load=True)
+        layers = {names.LC_BOUNDARY_POINT_T: None,
+                  names.LC_BOUNDARY_T: None,
+                  names.LC_PLOT_T: None,
+                  names.POINT_BFS_T: None,
+                  names.MORE_BFS_T: None,
+                  names.LESS_BFS_T: None}
+        self.app.core.get_layers(self.db_pg, layers, load=True)
+
+        boundary_point_layer = layers[names.LC_BOUNDARY_POINT_T]
         self.assertEqual(boundary_point_layer.featureCount(), 109)
 
-        boundary_layer = self.app.core.get_layer(self.db_pg, names.LC_BOUNDARY_T, load=True)
+        boundary_layer = layers[names.LC_BOUNDARY_T]
         self.assertEqual(boundary_layer.featureCount(), 22)
 
-        plot_layer = self.app.core.get_layer(self.db_pg, names.LC_PLOT_T, load=True)
+        plot_layer = layers[names.LC_PLOT_T]
         self.assertEqual(plot_layer.featureCount(), 17)
 
-        point_bfs_layer = self.app.core.get_layer(self.db_pg, names.POINT_BFS_T, load=True)
+        point_bfs_layer = layers[names.POINT_BFS_T]
         self.assertEqual(point_bfs_layer.featureCount(), 81)
 
-        more_bfs_layer = self.app.core.get_layer(self.db_pg, names.MORE_BFS_T, load=True)
+        more_bfs_layer = layers[names.MORE_BFS_T]
         self.assertEqual(more_bfs_layer.featureCount(), 18)
 
-        less_layer = self.app.core.get_layer(self.db_pg, names.LESS_BFS_T, load=True)
+        less_layer = layers[names.LESS_BFS_T]
         self.assertEqual(less_layer.featureCount(), 6)
 
         error_layer = QgsVectorLayer("Point?crs={}".format(get_crs_authid(boundary_layer.sourceCrs())), rule.error_table_name, "memory")
@@ -328,22 +342,30 @@ class TesQualityRules(unittest.TestCase):
         self.assertTrue(res, msg)
         self.assertIsNotNone(names.LC_BOUNDARY_POINT_T, 'Names is None')
 
-        boundary_point_layer = self.app.core.get_layer(self.db_pg, names.LC_BOUNDARY_POINT_T, load=True)
+        layers = {names.LC_BOUNDARY_POINT_T: None,
+                  names.LC_BOUNDARY_T: None,
+                  names.LC_PLOT_T: None,
+                  names.POINT_BFS_T: None,
+                  names.MORE_BFS_T: None,
+                  names.LESS_BFS_T: None}
+        self.app.core.get_layers(self.db_pg, layers, load=True)
+
+        boundary_point_layer = layers[names.LC_BOUNDARY_POINT_T]
         self.assertEqual(boundary_point_layer.featureCount(), 109)
 
-        boundary_layer = self.app.core.get_layer(self.db_pg, names.LC_BOUNDARY_T, load=True)
+        boundary_layer = layers[names.LC_BOUNDARY_T]
         self.assertEqual(boundary_layer.featureCount(), 22)
 
-        plot_layer = self.app.core.get_layer(self.db_pg, names.LC_PLOT_T, load=True)
+        plot_layer = layers[names.LC_PLOT_T]
         self.assertEqual(plot_layer.featureCount(), 17)
 
-        point_bfs_layer = self.app.core.get_layer(self.db_pg, names.POINT_BFS_T, load=True)
+        point_bfs_layer = layers[names.POINT_BFS_T]
         self.assertEqual(point_bfs_layer.featureCount(), 81)
 
-        more_bfs_layer = self.app.core.get_layer(self.db_pg, names.MORE_BFS_T, load=True)
+        more_bfs_layer = layers[names.MORE_BFS_T]
         self.assertEqual(more_bfs_layer.featureCount(), 18)
 
-        less_layer = self.app.core.get_layer(self.db_pg, names.LESS_BFS_T, load=True)
+        less_layer = layers[names.LESS_BFS_T]
         self.assertEqual(less_layer.featureCount(), 6)
 
         error_layer = QgsVectorLayer("MultiLineString?crs={}".format(get_crs_authid(plot_layer.sourceCrs())), rule.error_table_name, "memory")
@@ -419,22 +441,30 @@ class TesQualityRules(unittest.TestCase):
         self.assertTrue(res, msg)
         self.assertIsNotNone(names.LC_BOUNDARY_POINT_T, 'Names is None')
 
-        boundary_point_layer = self.app.core.get_layer(self.db_pg, names.LC_BOUNDARY_POINT_T, load=True)
+        layers = {names.LC_BOUNDARY_POINT_T: None,
+                  names.LC_BOUNDARY_T: None,
+                  names.LC_PLOT_T: None,
+                  names.POINT_BFS_T: None,
+                  names.MORE_BFS_T: None,
+                  names.LESS_BFS_T: None}
+        self.app.core.get_layers(self.db_pg, layers, load=True)
+
+        boundary_point_layer = layers[names.LC_BOUNDARY_POINT_T]
         self.assertEqual(boundary_point_layer.featureCount(), 109)
 
-        boundary_layer = self.app.core.get_layer(self.db_pg, names.LC_BOUNDARY_T, load=True)
+        boundary_layer = layers[names.LC_BOUNDARY_T]
         self.assertEqual(boundary_layer.featureCount(), 22)
 
-        plot_layer = self.app.core.get_layer(self.db_pg, names.LC_PLOT_T, load=True)
+        plot_layer = layers[names.LC_PLOT_T]
         self.assertEqual(plot_layer.featureCount(), 17)
 
-        point_bfs_layer = self.app.core.get_layer(self.db_pg, names.POINT_BFS_T, load=True)
+        point_bfs_layer = layers[names.POINT_BFS_T]
         self.assertEqual(point_bfs_layer.featureCount(), 81)
 
-        more_bfs_layer = self.app.core.get_layer(self.db_pg, names.MORE_BFS_T, load=True)
+        more_bfs_layer = layers[names.MORE_BFS_T]
         self.assertEqual(more_bfs_layer.featureCount(), 18)
 
-        less_layer = self.app.core.get_layer(self.db_pg, names.LESS_BFS_T, load=True)
+        less_layer = layers[names.LESS_BFS_T]
         self.assertEqual(less_layer.featureCount(), 6)
 
         error_layer = QgsVectorLayer("MultiLineString?crs={}".format(get_crs_authid(plot_layer.sourceCrs())), rule.error_table_name, "memory")
@@ -646,7 +676,6 @@ class TesQualityRules(unittest.TestCase):
                           'Error in: Plot node {} is not covered by boundary point'.format(item['id']))
 
     def test_no_error_quality_rule(self):
-
         gpkg_path = get_test_copy_path('db/ladm/gpkg/test_valid_quality_rules_v1_1.gpkg')
         self.db_gpkg = get_gpkg_conn_from_path(gpkg_path)
         res, code, msg = self.db_gpkg.test_connection()
