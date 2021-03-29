@@ -23,6 +23,7 @@ from qgis.PyQt.QtCore import (QCoreApplication,
                               QVariant)
 from qgis.core import (Qgis,
                        QgsField,
+                       QgsFeature,
                        QgsGeometry,
                        QgsPointXY,
                        QgsProcessingFeedback,
@@ -214,10 +215,17 @@ class PointQualityRules:
         filter_fs = []
         fs = []
         for f in tmp_boundary_nodes_layer.getFeatures(request):
-            item = [f[id_field], f.geometry().asWkt()]
+            f_id = f[id_field]
+            f_geom = f.geometry()
+
+            new_feature = QgsFeature()
+            new_feature.setGeometry(f_geom)
+            new_feature.setAttributes([f_id])
+
+            item = [f_id, f_geom.asWkt()]
             if item not in filter_fs:
                 filter_fs.append(item)
-                fs.append(f)
+                fs.append(new_feature)
         del filter_fs
         boundary_nodes_layer.dataProvider().addFeatures(fs)
         processing.run("native:createspatialindex",
