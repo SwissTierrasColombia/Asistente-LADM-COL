@@ -1073,6 +1073,8 @@ class PolygonQualityRules:
                                             'SORT_ASCENDING': True,
                                             'SORT_NULLS_FIRST': False,
                                             'OUTPUT': 'memory:'})['OUTPUT']
+        processing.run("native:createspatialindex",
+                       {'INPUT': inner_rings_layer})  # spatial index is created for better performance
 
 
         id_field_idx = inner_rings_layer.fields().indexFromName(id_field)

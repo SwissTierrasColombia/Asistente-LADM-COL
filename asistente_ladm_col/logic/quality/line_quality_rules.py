@@ -341,6 +341,9 @@ class LineQualityRules:
                                                'SORT_NULLS_FIRST': False,
                                                'OUTPUT': 'memory:'})['OUTPUT']
 
+        processing.run("native:createspatialindex",
+                       {'INPUT': boundary_nodes_layer})  # spatial index is created for better performance
+
         # Spatial Join between boundary_nodes and boundary_points
         spatial_join_layer = processing.run("qgis:joinattributesbylocation",
                                             {'INPUT': boundary_nodes_layer,

@@ -220,6 +220,8 @@ class PointQualityRules:
                 fs.append(f)
         del filter_fs
         boundary_nodes_layer.dataProvider().addFeatures(fs)
+        processing.run("native:createspatialindex",
+                       {'INPUT': boundary_nodes_layer})  # spatial index is created for better performance
 
         # Spatial Join between boundary_points and boundary_nodes
         spatial_join_layer = processing.run("qgis:joinattributesbylocation",
