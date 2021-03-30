@@ -26,4 +26,8 @@ class AllocateParcelsCoordinatorInitialPanelWidget(BaseAllocateParcelsInitialPan
         BaseAllocateParcelsInitialPanelWidget.__init__(self, parent, controller)
 
         self.btn_configure_receivers.setToolTip(QCoreApplication.translate("AllocateParcelsAdminInitialPanelWidget",
-                                                                           "Configure surveyors"))
+                                                                           "Open a new panel to configure surveyors in charge of the coordinator"))
+        self.btn_configure_receivers.setText(QCoreApplication.translate("AllocateParcelsAdminInitialPanelWidget",
+                                                                        "Configure surveyors"))
+
+        self._receiver_name = QCoreApplication.translate("AllocateParcelsCoordinatorInitialPanelWidget", "Surveyor")

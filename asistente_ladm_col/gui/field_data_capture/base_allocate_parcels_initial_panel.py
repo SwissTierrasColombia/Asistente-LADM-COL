@@ -204,6 +204,14 @@ class BaseAllocateParcelsInitialPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.tbl_parcels.clearSelection()  # Selection might be remembered from the status before converting to offline
 
     def call_allocate_parcels_to_receiver_panel(self):
+        # First, check if we have receivers, otherwise it makes no sense to continue
+        receivers = self._controller.get_receivers_data(False)
+        if not receivers:
+            self.logger.warning_msg(__name__, QCoreApplication.translate("AllocateParcelsFieldDataCapturePanelWidget",
+                                                                         "First you need to configure at least one {}.").format(
+                self._receiver_name.lower()), 10)
+            return
+
         # Make sure that all selected items are not yet allocated, otherwise, allow users to deallocate selected
         already_allocated = list()  # [parcel_fid1, ...]
         for parcel_fid, parcel_number in self.__selected_items.items():

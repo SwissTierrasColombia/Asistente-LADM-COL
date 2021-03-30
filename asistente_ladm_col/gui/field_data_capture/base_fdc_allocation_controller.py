@@ -333,7 +333,6 @@ class BaseFDCAllocationController(QObject):
 
     def get_receivers_data(self, full_name=True):
         """
-        :param receiver_type: Type of receiver that will be retrieved
         :param full_name: Whether the full name should be retrieved or only an alias
         :return: {receiver_t_id: (receiver_name, receiver_doc_id)}
         """

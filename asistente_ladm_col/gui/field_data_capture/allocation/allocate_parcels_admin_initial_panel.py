@@ -26,4 +26,8 @@ class AllocateParcelsAdminInitialPanelWidget(BaseAllocateParcelsInitialPanelWidg
         BaseAllocateParcelsInitialPanelWidget.__init__(self, parent, controller)
 
         self.btn_configure_receivers.setToolTip(QCoreApplication.translate("AllocateParcelsAdminInitialPanelWidget",
-                                                                           "Configure coordinators"))
+                                                                           "Open a new panel to configure coordinators in charge of the admin"))
+        self.btn_configure_receivers.setText(QCoreApplication.translate("AllocateParcelsAdminInitialPanelWidget",
+                                                                        "Configure coordinators"))
+
+        self._receiver_name = QCoreApplication.translate("AllocateParcelsAdminInitialPanelWidget", "Coordinator")

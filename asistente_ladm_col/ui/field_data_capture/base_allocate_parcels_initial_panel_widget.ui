@@ -79,7 +79,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>:/Asistente-LADM-COL/resources/images/select.png</normaloff>:/Asistente-LADM-COL/resources/images/select.png</iconset>
+         <normaloff>:/Asistente-LADM-COL/resources/images/select_green.png</normaloff>:/Asistente-LADM-COL/resources/images/select_green.png</iconset>
        </property>
        <property name="iconSize">
         <size>
