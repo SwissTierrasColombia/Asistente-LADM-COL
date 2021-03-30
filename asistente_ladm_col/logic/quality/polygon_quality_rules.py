@@ -97,7 +97,7 @@ class PolygonQualityRules:
 
             if QgsWkbTypes.isMultiType(polygon_layer.wkbType()) and polygon_layer.geometryType() == QgsWkbTypes.PolygonGeometry:
                 polygon_layer = processing.run("native:multiparttosingleparts",
-                                               {'INPUT': polygon_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+                                               {'INPUT': polygon_layer, 'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
 
             overlapping = self.geometry.get_overlapping_polygons(polygon_layer)
 
@@ -496,7 +496,7 @@ class PolygonQualityRules:
 
         # Get spatial relation (within) between building and plots
         building_layer.selectByIds(building_within)
-        building_within_plots_layer = processing.run("qgis:joinattributesbylocation",
+        building_within_plots_layer = processing.run("native:joinattributesbylocation",
                                                      {'INPUT': QgsProcessingFeatureSourceDefinition(building_layer.id(), True),
                                                       'JOIN': plot_layer,
                                                       'PREDICATE': [5],  # within
@@ -504,7 +504,7 @@ class PolygonQualityRules:
                                                       'METHOD': 0,  # 1 to many
                                                       'DISCARD_NONMATCHING': True,
                                                       'PREFIX': '',
-                                                      'OUTPUT': 'memory:'})['OUTPUT']
+                                                      'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
         building_layer.removeSelection()  # Remove previous selection
 
         # Get building units within plots
@@ -838,7 +838,7 @@ class PolygonQualityRules:
 
         # Get spatial relation (within) between building units and plots
         building_unit_layer.selectByIds(building_units_within_plots)
-        building_unit_within_plot_layer = processing.run("qgis:joinattributesbylocation",
+        building_unit_within_plot_layer = processing.run("native:joinattributesbylocation",
              {'INPUT': QgsProcessingFeatureSourceDefinition(building_unit_layer.id(), True),
               'JOIN': plot_layer,
               'PREDICATE': [5],  # within
@@ -846,7 +846,7 @@ class PolygonQualityRules:
               'METHOD': 0,  # 1 to many
               'DISCARD_NONMATCHING': True,
               'PREFIX': '',
-              'OUTPUT': 'memory:'})['OUTPUT']
+              'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
         building_unit_layer.removeSelection()  # Remove previous selection
 
         # Get building units within plots
@@ -931,7 +931,7 @@ class PolygonQualityRules:
 
         # Get spatial relation (within) between building units and buildings
         building_unit_layer.selectByIds(building_units_within_building)
-        building_unit_within_building_layer = processing.run("qgis:joinattributesbylocation",
+        building_unit_within_building_layer = processing.run("native:joinattributesbylocation",
              {'INPUT': QgsProcessingFeatureSourceDefinition(building_unit_layer.id(), True),
               'JOIN': building_layer,
               'PREDICATE': [5],  # within
@@ -939,7 +939,7 @@ class PolygonQualityRules:
               'METHOD': 0,  # 1 to many
               'DISCARD_NONMATCHING': True,
               'PREFIX': '',
-              'OUTPUT': 'memory:'})['OUTPUT']
+              'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
         building_unit_layer.removeSelection()  # Remove previous selection
 
         # Get building units within buildings
@@ -1029,7 +1029,7 @@ class PolygonQualityRules:
         """
         dict_uuid_plots = get_uuid_dict(plot_layer, db.names, id_field)
         dict_uuid_boundary = get_uuid_dict(boundary_layer, db.names, id_field)
-        plot_as_lines_layer = processing.run("ladm_col:polygonstolines", {'INPUT': plot_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+        plot_as_lines_layer = processing.run("ladm_col:polygonstolines", {'INPUT': plot_layer, 'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
 
         # create dict with layer data
         id_field_idx = plot_as_lines_layer.fields().indexFromName(id_field)
@@ -1057,7 +1057,7 @@ class PolygonQualityRules:
                                             'SORT_EXPRESSION': '',
                                             'SORT_ASCENDING': True,
                                             'SORT_NULLS_FIRST': False,
-                                            'OUTPUT': 'memory:'})['OUTPUT']
+                                            'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
 
 
         id_field_idx = inner_rings_layer.fields().indexFromName(id_field)
@@ -1066,7 +1066,7 @@ class PolygonQualityRules:
         dict_inner_rings = {'{}-{}'.format(feature[id_field], feature['AUTO']): feature for feature in inner_rings_layer.getFeatures(request)}
 
         # spatial joins between inner rings and boundary
-        spatial_join_inner_rings_boundary_layer = processing.run("qgis:joinattributesbylocation",
+        spatial_join_inner_rings_boundary_layer = processing.run("native:joinattributesbylocation",
                                                                  {'INPUT': inner_rings_layer,
                                                                   'JOIN': boundary_layer,
                                                                   'PREDICATE': [0],  # Intersects
@@ -1074,7 +1074,7 @@ class PolygonQualityRules:
                                                                   'METHOD': 0,
                                                                   'DISCARD_NONMATCHING': True,
                                                                   'PREFIX': '',
-                                                                  'OUTPUT': 'memory:'})['OUTPUT']
+                                                                  'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
         # The id field has the same name for both layers
         # This list is only used to check plot's inner rings without boundaries
         dict_spatial_join_inner_rings_boundary = [{'plot_ring_id': '{}-{}'.format(feature[id_field], feature['AUTO']), 'boundary_id': feature[id_field + '_2']}
@@ -1086,7 +1086,7 @@ class PolygonQualityRules:
                                                   for feature in spatial_join_inner_rings_boundary_layer.getFeatures()]
 
         # Spatial join between plot as lines and boundary
-        spatial_join_plot_boundary_layer = processing.run("qgis:joinattributesbylocation",
+        spatial_join_plot_boundary_layer = processing.run("native:joinattributesbylocation",
                                                           {'INPUT': plot_as_lines_layer,
                                                            'JOIN': boundary_layer,
                                                            'PREDICATE': [0],
@@ -1094,7 +1094,7 @@ class PolygonQualityRules:
                                                            'METHOD': 0,
                                                            'DISCARD_NONMATCHING': True,
                                                            'PREFIX': '',
-                                                           'OUTPUT': 'memory:'})['OUTPUT']
+                                                           'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
         # The id field has the same name for both layers
         dict_spatial_join_plot_boundary = [{'plot_id': feature[id_field], 'boundary_id': feature[id_field + '_2']}
                                            for feature in spatial_join_plot_boundary_layer.getFeatures()]

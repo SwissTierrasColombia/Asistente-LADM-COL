@@ -256,7 +256,7 @@ class CreateRightOfWaySurveyWizard(SinglePageSpatialWizardFactory):
                   'JOIN_STYLE': 2,
                   'MITER_LIMIT': 2,
                   'DISSOLVE': False,
-                  'OUTPUT': 'memory:'}
+                  'OUTPUT': 'TEMPORARY_OUTPUT'}
         buffered_right_of_way_layer = processing.run("native:buffer", params)['OUTPUT']
         buffer_geometry = buffered_right_of_way_layer.getFeature(1).geometry()
         feature = QgsVectorLayerUtils().createFeature(self._layers[self.EDITING_LAYER_NAME], buffer_geometry)

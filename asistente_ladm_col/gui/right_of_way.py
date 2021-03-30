@@ -117,7 +117,7 @@ class RightOfWay(QObject):
                         len(id_pairs)
                     ))
 
-            spatial_join_layer = processing.run("qgis:joinattributesbylocation",
+            spatial_join_layer = processing.run("native:joinattributesbylocation",
                                                 {
                                                     'INPUT': layers[db.names.LC_PLOT_T],
                                                     'JOIN': QgsProcessingFeatureSourceDefinition(layers[db.names.LC_RIGHT_OF_WAY_T].id(), True),
@@ -126,7 +126,7 @@ class RightOfWay(QObject):
                                                     'METHOD': 0,
                                                     'DISCARD_NONMATCHING': True,
                                                     'PREFIX': '',
-                                                    'OUTPUT': 'memory:'})['OUTPUT']
+                                                    'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
 
             restriction_features = layers[db.names.LC_RESTRICTION_T].getFeatures()
             existing_restriction_pairs = [(restriction_feature[db.names.COL_BAUNIT_RRR_T_UNIT_F], restriction_feature[db.names.COL_RRR_T_DESCRIPTION_F]) for restriction_feature in restriction_features]

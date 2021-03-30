@@ -267,8 +267,8 @@ class GeometryUtils(QObject):
         try:
             dict_res = processing.run("model:Overlapping_Boundaries", {
                 'Boundary': line_layer,
-                'native:saveselectedfeatures_2:Intersected_Lines': 'memory:',
-                'native:saveselectedfeatures_3:Intersected_Points': 'memory:'
+                'native:saveselectedfeatures_2:Intersected_Lines': 'TEMPORARY_OUTPUT',
+                'native:saveselectedfeatures_3:Intersected_Points': 'TEMPORARY_OUTPUT'
             }, feedback=feedback)
         except QgsProcessingException as e:
             self.logger.warning(__name__, QCoreApplication.translate("Geometry",
@@ -459,10 +459,10 @@ class GeometryUtils(QObject):
         nonetheless, to improve efficiency.
         """
         if QgsWkbTypes.isMultiType(layer2.wkbType()):
-            layer2 = processing.run("native:multiparttosingleparts", {'INPUT': layer2, 'OUTPUT': 'memory:'})['OUTPUT']
+            layer2 = processing.run("native:multiparttosingleparts", {'INPUT': layer2, 'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
 
         if layer2.geometryType() == QgsWkbTypes.PolygonGeometry:
-            layer2 = processing.run("ladm_col:polygonstolines", {'INPUT': layer2, 'OUTPUT': 'memory:'})['OUTPUT']
+            layer2 = processing.run("ladm_col:polygonstolines", {'INPUT': layer2, 'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
 
         geom_added = list()
         index = QgsSpatialIndex(layer2)
@@ -496,18 +496,18 @@ class GeometryUtils(QObject):
         approx_diff_layer = processing.run("native:difference",
                                            {'INPUT': plots_as_lines_layer,
                                             'OVERLAY': boundary_layer,
-                                            'OUTPUT': 'memory:'})['OUTPUT']
+                                            'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
         self.add_topological_vertices(approx_diff_layer, boundary_layer)
 
         # add_topological_vertices may produce invalid geometries, so we better play safe and fix them
         fixed_geometries = processing.run("native:fixgeometries",
                                           {'INPUT': approx_diff_layer,
-                                           'OUTPUT': 'memory:'})['OUTPUT']
+                                           'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
 
         diff_layer = processing.run("native:difference",
                                     {'INPUT': fixed_geometries,
                                      'OVERLAY': boundary_layer,
-                                     'OUTPUT': 'memory:'})['OUTPUT']
+                                     'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
         difference_features = [{'geometry': feature.geometry(), 'id': feature[id_field]}
                                for feature in diff_layer.getFeatures()]
 
@@ -521,18 +521,18 @@ class GeometryUtils(QObject):
         approx_diff_layer = processing.run("native:difference",
                                            {'INPUT': boundary_layer,
                                             'OVERLAY': plot_as_lines_layer,
-                                            'OUTPUT': 'memory:'})['OUTPUT']
+                                            'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
         self.add_topological_vertices(plot_as_lines_layer, approx_diff_layer)
 
         # add_topological_vertices may produce invalid geometries, so we better play safe and fix them
         fixed_geometries = processing.run("native:fixgeometries",
                                           {'INPUT': plot_as_lines_layer,
-                                           'OUTPUT': 'memory:'})['OUTPUT']
+                                           'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
 
         diff_layer = processing.run("native:difference",
                                     {'INPUT': approx_diff_layer,
                                      'OVERLAY': fixed_geometries,
-                                     'OUTPUT': 'memory:'})['OUTPUT']
+                                     'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
 
         difference_features = [{'geometry': feature.geometry(), 'id': feature[id_field]}
                                for feature in diff_layer.getFeatures()]
@@ -541,7 +541,7 @@ class GeometryUtils(QObject):
 
     def clone_layer(self, layer):
         layer.selectAll()
-        clone_layer = processing.run("native:saveselectedfeatures", {'INPUT': layer, 'OUTPUT': 'memory:'})['OUTPUT']
+        clone_layer = processing.run("native:saveselectedfeatures", {'INPUT': layer, 'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
         layer.removeSelection()
 
         return clone_layer if type(clone_layer) == QgsVectorLayer else False
@@ -581,11 +581,11 @@ class GeometryUtils(QObject):
         return featureCollection, ids
 
     def get_begin_end_vertices_from_lines(self, layer):
-        point_layer = processing.run("qgis:extractspecificvertices",
-                                     {'VERTICES': '0,-1', 'INPUT': layer, 'OUTPUT': 'memory:' })['OUTPUT']
+        point_layer = processing.run("native:extractspecificvertices",
+                                     {'VERTICES': '0,-1', 'INPUT': layer, 'OUTPUT': 'TEMPORARY_OUTPUT' })['OUTPUT']
 
-        point_layer_uniques = processing.run("qgis:deleteduplicategeometries",
-                                             {'INPUT': point_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+        point_layer_uniques = processing.run("native:deleteduplicategeometries",
+                                             {'INPUT': point_layer, 'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
 
         return point_layer_uniques
 
@@ -630,7 +630,7 @@ class GeometryUtils(QObject):
         return selected_features
 
     def join_boundary_points_with_boundary_discard_nonmatching(self, boundary_point_layer, boundary_layer, id_field):
-        spatial_join_layer = processing.run("qgis:joinattributesbylocation",
+        spatial_join_layer = processing.run("native:joinattributesbylocation",
                                             {
                                                 'INPUT': boundary_point_layer,
                                                 'JOIN': boundary_layer,
@@ -639,7 +639,7 @@ class GeometryUtils(QObject):
                                                 'METHOD': 0,
                                                 'DISCARD_NONMATCHING': True,
                                                 'PREFIX': '',
-                                                'OUTPUT': 'memory:'})['OUTPUT']
+                                                'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
 
         id_field_idx = spatial_join_layer.fields().indexFromName(id_field)
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
@@ -853,10 +853,10 @@ class GeometryUtils(QObject):
             boundary_layer.selectByIds(selected_ids)
             selected_features = [feature for feature in boundary_layer.selectedFeatures()]
 
-        tmp_segments_layer = processing.run("native:explodelines", {'INPUT': boundary_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+        tmp_segments_layer = processing.run("native:explodelines", {'INPUT': boundary_layer, 'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
 
         # remove duplicate segments (algorithm don't work with duplicate geometries)
-        segments_layer = processing.run("qgis:deleteduplicategeometries", {'INPUT': tmp_segments_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+        segments_layer = processing.run("native:deleteduplicategeometries", {'INPUT': tmp_segments_layer, 'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
 
         id_field_idx = segments_layer.fields().indexFromName(id_field)
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
@@ -918,9 +918,9 @@ class GeometryUtils(QObject):
         return new_geometries, boundaries_to_del_unique_ids
 
     def fix_boundaries(self, layer, id_field):
-        tmp_segments_layer = processing.run("native:explodelines", {'INPUT': layer, 'OUTPUT': 'memory:'})['OUTPUT']
+        tmp_segments_layer = processing.run("native:explodelines", {'INPUT': layer, 'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
         # remove duplicate segments (algorithm don't with duplicate geometries)
-        segments_layer = processing.run("qgis:deleteduplicategeometries", {'INPUT': tmp_segments_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+        segments_layer = processing.run("native:deleteduplicategeometries", {'INPUT': tmp_segments_layer, 'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
         id_field_idx = segments_layer.fields().indexFromName(id_field)
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
         dict_features = {feature.id(): feature for feature in segments_layer.getFeatures(request)}
@@ -1046,9 +1046,9 @@ class GeometryUtils(QObject):
         Layer is created with unique vertices. It is necessary because 'remove duplicate vertices' processing
         algorithm does not filter the data as we need them
         """
-        tmp_plot_nodes_layer = processing.run("native:extractvertices", {'INPUT': polygon_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+        tmp_plot_nodes_layer = processing.run("native:extractvertices", {'INPUT': polygon_layer, 'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
 
-        duplicate_nodes_layer = processing.run("qgis:fieldcalculator", {
+        duplicate_nodes_layer = processing.run("native:fieldcalculator", {
             'INPUT': tmp_plot_nodes_layer,
             'FIELD_NAME': 'wkt_geom',
             'FIELD_TYPE': 2,  # String
@@ -1056,20 +1056,20 @@ class GeometryUtils(QObject):
             'FIELD_PRECISION': 3,
             'NEW_FIELD': True,
             'FORMULA': 'geom_to_wkt( $geometry )',
-            'OUTPUT': 'memory:'
+            'OUTPUT': 'TEMPORARY_OUTPUT'
         })['OUTPUT']
 
         unique_nodes_layer = processing.run("native:removeduplicatesbyattribute", {
             'INPUT': duplicate_nodes_layer,
             'FIELDS': [id_field, 'wkt_geom'],
-            'OUTPUT': 'memory:'})['OUTPUT']
+            'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
 
         return unique_nodes_layer
 
     @staticmethod
     def get_non_intersecting_geometries(input_layer, join_layer, id_field):
         # get non matching features between input and join layer
-        spatial_join_layer = processing.run("qgis:joinattributesbylocation",
+        spatial_join_layer = processing.run("native:joinattributesbylocation",
                                             {'INPUT': input_layer,
                                              'JOIN': join_layer,
                                              'PREDICATE': [0],  # Intersects
@@ -1077,7 +1077,7 @@ class GeometryUtils(QObject):
                                              'METHOD': 0,
                                              'DISCARD_NONMATCHING': False,
                                              'PREFIX': '',
-                                             'NON_MATCHING': 'memory:'})['NON_MATCHING']
+                                             'NON_MATCHING': 'TEMPORARY_OUTPUT'})['NON_MATCHING']
         features = list()
 
         for feature in spatial_join_layer.getFeatures():
@@ -1093,10 +1093,10 @@ class GeometryUtils(QObject):
         # 1. Run extract specific vertices
         # 2. Call to get_overlapping_points
         # 3. Obtain dangle ids (those not present in overlapping points result)
-        res = processing.run("qgis:extractspecificvertices", {
+        res = processing.run("native:extractspecificvertices", {
                 'INPUT': boundary_layer,
                 'VERTICES': '0,-1', # First and last
-                'OUTPUT': 'memory:'
+                'OUTPUT': 'TEMPORARY_OUTPUT'
             },
             feedback=QgsProcessingFeedback()
         )

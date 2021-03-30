@@ -313,9 +313,9 @@ class QGISLADMQuery:
             referencing_layer = filter_sub_level.referencing_layer
             spatial_operation = filter_sub_level.spatial_operation
             level_layer = self.app.core.get_layer(db, referencing_layer, False)
-            filter_level_layer = processing.run("native:extractbyattribute", {'INPUT': level_layer, 'FIELD': db.names.T_ID_F, 'OPERATOR': 0, 'VALUE': filter_field_values[0], 'OUTPUT': 'memory:'})['OUTPUT']
+            filter_level_layer = processing.run("native:extractbyattribute", {'INPUT': level_layer, 'FIELD': db.names.T_ID_F, 'OPERATOR': 0, 'VALUE': filter_field_values[0], 'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
 
-            parameters = {'INPUT': sub_level_layer, 'INTERSECT': filter_level_layer, 'OUTPUT': 'memory:'}
+            parameters = {'INPUT': sub_level_layer, 'INTERSECT': filter_level_layer, 'OUTPUT': 'TEMPORARY_OUTPUT'}
             if spatial_operation == EnumSpatialOperationType.INTERSECTS:
                 parameters['PREDICATE'] = [0]  # Intersects
             elif spatial_operation == EnumSpatialOperationType.OVERLAPS:

@@ -301,7 +301,7 @@ class LineQualityRules:
     def get_boundary_nodes_features_not_covered_by_boundary_points(self, db, boundary_point_layer, boundary_layer, point_bfs_layer, error_layer, id_field):
         dict_uuid_boundary_point = get_uuid_dict(boundary_point_layer, db.names, db.names.T_ID_F)
         dict_uuid_boundary = get_uuid_dict(boundary_layer, db.names, db.names.T_ID_F)
-        tmp_boundary_nodes_layer = processing.run("native:extractvertices", {'INPUT': boundary_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+        tmp_boundary_nodes_layer = processing.run("native:extractvertices", {'INPUT': boundary_layer, 'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
 
         # layer is created with unique vertices, it is necessary because 'remove duplicate vertices' processing algorithm does not filter the data as we need them
         boundary_nodes_unique_layer = QgsVectorLayer("Point?crs={}".format(boundary_layer.sourceCrs().authid()), 'unique boundary nodes', "memory")
@@ -330,10 +330,10 @@ class LineQualityRules:
                                                'SORT_EXPRESSION': '',
                                                'SORT_ASCENDING': True,
                                                'SORT_NULLS_FIRST': False,
-                                               'OUTPUT': 'memory:'})['OUTPUT']
+                                               'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
 
         # Spatial Join between boundary_nodes and boundary_points
-        spatial_join_layer = processing.run("qgis:joinattributesbylocation",
+        spatial_join_layer = processing.run("native:joinattributesbylocation",
                                             {'INPUT': boundary_nodes_layer,
                                              'JOIN': boundary_point_layer,
                                              'PREDICATE': [0],  # Intersects
@@ -341,7 +341,7 @@ class LineQualityRules:
                                              'METHOD': 0,
                                              'DISCARD_NONMATCHING': False,
                                              'PREFIX': '',
-                                             'OUTPUT': 'memory:'})['OUTPUT']
+                                             'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
 
         # create dict with layer data
         id_field_idx = boundary_nodes_layer.fields().indexFromName(id_field)
@@ -429,7 +429,7 @@ class LineQualityRules:
         """
         dict_uuid_plot = get_uuid_dict(plot_layer, db.names, db.names.T_ID_F)
         dict_uuid_boundary = get_uuid_dict(boundary_layer, db.names, db.names.T_ID_F)
-        plot_as_lines_layer = processing.run("ladm_col:polygonstolines", {'INPUT': plot_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+        plot_as_lines_layer = processing.run("ladm_col:polygonstolines", {'INPUT': plot_layer, 'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
 
         # create dict with layer data
         id_field_idx = plot_as_lines_layer.fields().indexFromName(id_field)
@@ -457,7 +457,7 @@ class LineQualityRules:
                                             'SORT_EXPRESSION': '',
                                             'SORT_ASCENDING': True,
                                             'SORT_NULLS_FIRST': False,
-                                            'OUTPUT': 'memory:'})['OUTPUT']
+                                            'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
 
         id_field_idx = inner_rings_layer.fields().indexFromName(id_field)
         auto_idx = inner_rings_layer.fields().indexFromName('AUTO')
@@ -467,7 +467,7 @@ class LineQualityRules:
         # spatial joins between boundary and inner rings
         # we use as input layer the rings because it is the existing information
         # in the terrain polygons and filters better because they are less records
-        spatial_join_inner_rings_boundary_layer = processing.run("qgis:joinattributesbylocation",
+        spatial_join_inner_rings_boundary_layer = processing.run("native:joinattributesbylocation",
                                                                  {'INPUT': boundary_layer,
                                                                   'JOIN': inner_rings_layer,
                                                                   'PREDICATE': [0],  # Intersects
@@ -475,7 +475,7 @@ class LineQualityRules:
                                                                   'METHOD': 0,
                                                                   'DISCARD_NONMATCHING': True,
                                                                   'PREFIX': '',
-                                                                  'OUTPUT': 'memory:'})['OUTPUT']
+                                                                  'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
 
         list_spatial_join_boundary_inner_rings = list()
         list_spatial_join_boundary_plot_ring = list()
@@ -488,7 +488,7 @@ class LineQualityRules:
             list_spatial_join_boundary_plot_ring.append({'plot_id': feature[id_field + '_2'], 'boundary_id': feature[id_field]})
 
         # Spatial join between boundary and plots as lines
-        spatial_join_boundary_plot_layer = processing.run("qgis:joinattributesbylocation",
+        spatial_join_boundary_plot_layer = processing.run("native:joinattributesbylocation",
                                                           {'INPUT': boundary_layer,
                                                            'JOIN': plot_as_lines_layer,
                                                            'PREDICATE': [0],
@@ -496,7 +496,7 @@ class LineQualityRules:
                                                            'METHOD': 0,
                                                            'DISCARD_NONMATCHING': True,
                                                            'PREFIX': '',
-                                                           'OUTPUT': 'memory:'})['OUTPUT']
+                                                           'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
 
         # The id field has the same name for both layers
         list_spatial_join_boundary_plot = [{'plot_id': feature[id_field + '_2'], 'boundary_id': feature[id_field]}
