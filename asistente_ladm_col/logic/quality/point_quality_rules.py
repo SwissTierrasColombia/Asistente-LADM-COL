@@ -199,7 +199,7 @@ class PointQualityRules:
         dict_uuid_boundary = {f[id_field]: f[db.names.T_ILI_TID_F] for f in boundary_layer.getFeatures()}
         dict_uuid_boundary_point = {f[id_field]: f[db.names.T_ILI_TID_F] for f in boundary_point_layer.getFeatures()}
 
-        tmp_boundary_nodes_layer = processing.run("native:extractvertices", {'INPUT': boundary_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+        tmp_boundary_nodes_layer = processing.run("native:extractvertices", {'INPUT': boundary_layer, 'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
 
         # layer is created with unique vertices
         # It is necessary because 'remove duplicate vertices' processing algorithm does not filter the data as we need them
@@ -222,7 +222,7 @@ class PointQualityRules:
         boundary_nodes_layer.dataProvider().addFeatures(fs)
 
         # Spatial Join between boundary_points and boundary_nodes
-        spatial_join_layer = processing.run("qgis:joinattributesbylocation",
+        spatial_join_layer = processing.run("native:joinattributesbylocation",
                        {'INPUT': boundary_point_layer,
                         'JOIN': boundary_nodes_layer,
                         'PREDICATE': [0], # Intersects
@@ -230,7 +230,7 @@ class PointQualityRules:
                         'METHOD': 0,
                         'DISCARD_NONMATCHING': False,
                         'PREFIX': '',
-                        'OUTPUT': 'memory:'})['OUTPUT']
+                        'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
 
         # create dict with layer data
         id_field_idx = boundary_point_layer.fields().indexFromName(id_field)
@@ -309,7 +309,7 @@ class PointQualityRules:
         res = dict()
 
         feedback = QgsProcessingFeedback()
-        extracted_vertices = processing.run("native:extractvertices", {'INPUT':boundary_layer,'OUTPUT':'memory:'}, feedback=feedback)
+        extracted_vertices = processing.run("native:extractvertices", {'INPUT':boundary_layer,'OUTPUT':'TEMPORARY_OUTPUT'}, feedback=feedback)
         extracted_vertices_layer = extracted_vertices['OUTPUT']
 
         # From vertices layer, get points with no overlap

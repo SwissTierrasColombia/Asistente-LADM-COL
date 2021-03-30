@@ -212,7 +212,7 @@ class TestGeometryUtils(unittest.TestCase):
         if QgsWkbTypes.isMultiType(polygons_overlap_layer.wkbType()) and \
                 polygons_overlap_layer.geometryType() == QgsWkbTypes.PolygonGeometry:
             polygons_overlap_layer = processing.run("native:multiparttosingleparts",
-                                           {'INPUT': polygons_overlap_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+                                           {'INPUT': polygons_overlap_layer, 'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
 
         expected_overlaps = [[11, 44], [11, 47], [12, 44], [12, 45], [12, 57], [48, 49], [53, 55], [61, 62], [63, 64], [63, 65], [64, 65], [66, 68], [67, 68]]
         flat_expected_overlaps = list(set([id for items in expected_overlaps for id in items]))  # Build a flat list of uniques ids
@@ -287,7 +287,7 @@ class TestGeometryUtils(unittest.TestCase):
             polygon_layer = QgsVectorLayer(uri_polygon, 'polygon_layer_{}'.format(i+1), 'ogr')
             lines_layer = QgsVectorLayer(uri_lines, 'lines_layer_{}'.format(i+1), 'ogr')
 
-            polygon_as_lines_layer = processing.run("ladm_col:polygonstolines", {'INPUT': polygon_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+            polygon_as_lines_layer = processing.run("ladm_col:polygonstolines", {'INPUT': polygon_layer, 'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
             diff_plot_boundary = self.geometry.difference_plot_boundary(names, polygon_as_lines_layer, lines_layer, 'fid')
 
             if diff_plot_boundary is not None:
@@ -319,7 +319,7 @@ class TestGeometryUtils(unittest.TestCase):
             polygon_layer = QgsVectorLayer(uri_polygon, 'polygon_layer_{}'.format(i+1), 'ogr')
             lines_layer = QgsVectorLayer(uri_lines, 'lines_layer_{}'.format(i+1), 'ogr')
 
-            polygon_as_lines_layer = processing.run("ladm_col:polygonstolines", {'INPUT': polygon_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+            polygon_as_lines_layer = processing.run("ladm_col:polygonstolines", {'INPUT': polygon_layer, 'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
             diff_boundary_plot = self.geometry.difference_boundary_plot(names, lines_layer, polygon_as_lines_layer, 'fid')
 
             if diff_boundary_plot is not None:

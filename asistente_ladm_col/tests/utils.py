@@ -340,7 +340,7 @@ def reproject_to_ctm12(layer):
         import_processing()
         parameters = {'INPUT': layer,
                       'TARGET_CRS': "EPSG:9377",
-                      'OUTPUT': 'memory:'}
+                      'OUTPUT': 'TEMPORARY_OUTPUT'}
 
         res = processing.run("native:reprojectlayer", parameters)
         return res['OUTPUT']

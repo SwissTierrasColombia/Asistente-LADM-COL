@@ -1045,14 +1045,14 @@ class AppCoreInterface(QObject):
             z = QgsProperty.fromExpression('\"{}\"'.format(elevation.strip()))
             parameters = {'INPUT': csv_layer,
                           'Z_VALUE': z,
-                          'OUTPUT': 'memory:'}
-            res = processing.run("qgis:setzvalue", parameters)
+                          'OUTPUT': 'TEMPORARY_OUTPUT'}
+            res = processing.run("native:setzvalue", parameters)
             csv_layer = res['OUTPUT']
 
         if reproject and crs != DEFAULT_SRS_AUTHID:
             parameters = {'INPUT': csv_layer,
                           'TARGET_CRS': get_ctm12_crs(),
-                          'OUTPUT': 'memory:'}
+                          'OUTPUT': 'TEMPORARY_OUTPUT'}
 
             res = processing.run("native:reprojectlayer", parameters)
             csv_layer = res['OUTPUT']
@@ -1064,7 +1064,7 @@ class AppCoreInterface(QObject):
 
         # Export needed to have edit capabilities in the dataprovider
         csv_layer.selectAll()
-        csv_layer_export = processing.run("native:saveselectedfeatures", {'INPUT': csv_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+        csv_layer_export = processing.run("native:saveselectedfeatures", {'INPUT': csv_layer, 'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
         csv_layer.removeSelection()
 
         return csv_layer_export
