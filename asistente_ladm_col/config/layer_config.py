@@ -423,28 +423,9 @@ class LayerConfig:
                     dict_automatic_values = {names.LC_BOUNDARY_T_LENGTH_F: "$length"}
                 elif layer_name == names.LC_PARTY_T:
                     dict_automatic_values = {
-                        names.COL_PARTY_T_NAME_F: """
-                            CASE
-                                WHEN {party_type} = get_domain_code_from_value('{domain_party_type}', '{LC_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V}', True, False)  THEN
-                                    concat({surname_1}, ' ', {surname_2}, ' ', {first_name_1}, ' ', {first_name_2})
-                                WHEN {party_type} = get_domain_code_from_value('{domain_party_type}', '{LC_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V}', True, False) THEN
-                                    {business_name}
-                            END
-                        """.format(party_type=names.LC_PARTY_T_TYPE_F,
-                                   domain_party_type=names.LC_PARTY_TYPE_D,
-                                   surname_1=names.LC_PARTY_T_SURNAME_1_F,
-                                   surname_2=names.LC_PARTY_T_SURNAME_2_F,
-                                   first_name_1=names.LC_PARTY_T_FIRST_NAME_1_F,
-                                   first_name_2=names.LC_PARTY_T_FIRST_NAME_2_F,
-                                   business_name=names.LC_PARTY_T_BUSINESS_NAME_F,
-                                   LC_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V=LADMNames.LC_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V,
-                                   LC_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V=LADMNames.LC_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V),
                         names.LC_PARTY_T_TYPE_F: "{}".format(ladm_data.get_domain_code_from_value(db,
                                                                                                   names.LC_PARTY_TYPE_D,
-                                                                                                  LADMNames.LC_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V)),
-                        names.LC_PARTY_T_ETHNIC_GROUP_F: "{}".format(ladm_data.get_domain_code_from_value(db,
-                                                                                                          names.LC_ETHNIC_GROUP_TYPE_D,
-                                                                                                          LADMNames.LC_PARTY_ETHNIC_GROUP_TYPE_D_NONE_V))
+                                                                                                  LADMNames.LC_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V))
                     }
                 elif layer_name == names.LC_PARCEL_T:
                     dict_automatic_values = {
