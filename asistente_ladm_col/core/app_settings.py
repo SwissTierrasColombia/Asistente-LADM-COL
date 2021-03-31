@@ -21,7 +21,8 @@ import os.path
 from qgis.PyQt.QtCore import QSettings
 
 from asistente_ladm_col.config.general_config import (TOLERANCE_MAX_VALUE,
-                                                      PLUGIN_VERSION)
+                                                      PLUGIN_VERSION,
+                                                      DEFAULT_TOLERANCE_VALUE)
 
 
 class AppSettings:
@@ -88,7 +89,7 @@ class AppSettings:
 
     @property
     def tolerance(self):
-        q_tolerance = self.settings.value(self.TOLERANCE_KEY, 0, int)
+        q_tolerance = self.settings.value(self.TOLERANCE_KEY, DEFAULT_TOLERANCE_VALUE, int)
         return q_tolerance if q_tolerance <= TOLERANCE_MAX_VALUE else TOLERANCE_MAX_VALUE
 
     @tolerance.setter

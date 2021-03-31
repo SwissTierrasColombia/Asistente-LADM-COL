@@ -74,11 +74,11 @@ class PointQualityRules:
         layer_name = list(layer_dict[QUALITY_RULE_LAYERS].keys())[0] if layer_dict[QUALITY_RULE_LAYERS] else None
         point_layer = list(layer_dict[QUALITY_RULE_LAYERS].values())[0] if layer_dict[QUALITY_RULE_LAYERS] else None
         if not point_layer:
-            return QCoreApplication.translate("PointQualityRules", "'{}' layer not found!").format(layer_name), Qgis.Critical
+            return QCoreApplication.translate("PointQualityRules", "'{}' layer not found!").format(layer_name), Qgis.Critical, list()
 
         if point_layer.featureCount() == 0:
             return (QCoreApplication.translate("PointQualityRules",
-                                               "There are no points in layer '{}' to check for overlaps!").format(layer_name), Qgis.Warning)
+                                               "There are no points in layer '{}' to check for overlaps!").format(layer_name), Qgis.Warning, list())
 
         else:
             error_layer = QgsVectorLayer("Point?crs={}".format(point_layer.sourceCrs().authid()), rule.error_table_name, "memory")
@@ -107,14 +107,13 @@ class PointQualityRules:
             error_layer.dataProvider().addFeatures(features)
 
             if error_layer.featureCount() > 0:
-                added_layer = self.app.gui.add_error_layer(db, error_layer)
                 return (QCoreApplication.translate("PointQualityRules",
-                                                   "A memory layer with {} overlapping points in '{}' has been added to the map!").format(added_layer.featureCount(), layer_name),
-                        Qgis.Critical)
+                                                   "A memory layer with {} overlapping points in '{}' has been added to the map!").format(error_layer.featureCount(), layer_name),
+                        Qgis.Critical, [error_layer])
             else:
                 return (QCoreApplication.translate("PointQualityRules",
                                                    "There are no overlapping points in layer '{}'!").format(layer_name),
-                        Qgis.Success)
+                        Qgis.Success, [error_layer])
 
     def check_boundary_points_covered_by_boundary_nodes(self, db, layer_dict):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES)
@@ -122,11 +121,11 @@ class PointQualityRules:
         layers = layer_dict[QUALITY_RULE_LAYERS]
 
         if not layers:
-            return QCoreApplication.translate("PointQualityRules", "At least one required layer (boundary, boundary point, point_bfs) was not found!"), Qgis.Critical
+            return QCoreApplication.translate("PointQualityRules", "At least one required layer (boundary, boundary point, point_bfs) was not found!"), Qgis.Critical, list()
 
         elif layers[db.names.LC_BOUNDARY_POINT_T].featureCount() == 0:
             return (QCoreApplication.translate("PointQualityRules",
-                             "There are no boundary points to check 'boundary points should be covered by boundary nodes'."), Qgis.Warning)
+                             "There are no boundary points to check 'boundary points should be covered by boundary nodes'."), Qgis.Warning, list())
         else:
             error_layer = QgsVectorLayer("Point?crs={}".format(layers[db.names.LC_BOUNDARY_POINT_T].sourceCrs().authid()),
                                          rule.error_table_name, "memory")
@@ -139,15 +138,13 @@ class PointQualityRules:
             error_layer.dataProvider().addFeatures(features)
 
             if error_layer.featureCount() > 0:
-                added_layer = self.app.gui.add_error_layer(db, error_layer)
-
                 return (QCoreApplication.translate(
                                  "PointQualityRules", "A memory layer with {} boundary points not covered by boundary nodes has been added to the map!")
-                                 .format(added_layer.featureCount()), Qgis.Critical)
+                                 .format(error_layer.featureCount()), Qgis.Critical, [error_layer])
 
             else:
                 return (QCoreApplication.translate("PointQualityRules",
-                                 "All boundary points are covered by boundary nodes!"), Qgis.Success)
+                                 "All boundary points are covered by boundary nodes!"), Qgis.Success, [error_layer])
 
     def check_boundary_points_covered_by_plot_nodes(self, db, layer_dict):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_PLOT_NODES)
@@ -155,11 +152,11 @@ class PointQualityRules:
         layers = layer_dict[QUALITY_RULE_LAYERS]
 
         if not layers:
-            return QCoreApplication.translate("PointQualityRules", "At least one required layer (plot, boundary point) was not found!"), Qgis.Critical
+            return QCoreApplication.translate("PointQualityRules", "At least one required layer (plot, boundary point) was not found!"), Qgis.Critical, list()
 
         if layers[db.names.LC_BOUNDARY_POINT_T].featureCount() == 0:
             return (QCoreApplication.translate("PointQualityRules",
-                             "There are no boundary points to check 'boundary points should be covered by Plot nodes'."), Qgis.Warning)
+                             "There are no boundary points to check 'boundary points should be covered by Plot nodes'."), Qgis.Warning, list())
 
         else:
             error_layer = QgsVectorLayer("Point?crs={}".format(layers[db.names.LC_BOUNDARY_POINT_T].sourceCrs().authid()),
@@ -185,14 +182,11 @@ class PointQualityRules:
             error_layer.dataProvider().addFeatures(features)
 
             if error_layer.featureCount() > 0:
-                added_layer = self.app.gui.add_error_layer(db, error_layer)
-
                 return (QCoreApplication.translate("PointQualityRules",
-                    "A memory layer with {} boundary points not covered by plot nodes has been added to the map!").format(added_layer.featureCount()), Qgis.Critical)
-
+                    "A memory layer with {} boundary points not covered by plot nodes has been added to the map!").format(error_layer.featureCount()), Qgis.Critical, [error_layer])
             else:
                 return (QCoreApplication.translate("PointQualityRules",
-                                 "All boundary points are covered by plot nodes!"), Qgis.Success)
+                                 "All boundary points are covered by plot nodes!"), Qgis.Success, [error_layer])
 
     # UTILITY METHODS
     def get_boundary_points_not_covered_by_boundary_nodes(self, db, boundary_point_layer, boundary_layer, point_bfs_layer, error_layer, id_field):

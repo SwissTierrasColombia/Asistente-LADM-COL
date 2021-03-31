@@ -87,7 +87,7 @@ class PolygonQualityRules:
         polygon_layer = list(layer_dict[QUALITY_RULE_LAYERS].values())[0] if layer_dict[QUALITY_RULE_LAYERS] else None
 
         if not polygon_layer:
-            return QCoreApplication.translate("PolygonQualityRules", "'{}' (polygon) layer not found!").format(polygon_layer_name), Qgis.Critical
+            return QCoreApplication.translate("PolygonQualityRules", "'{}' (polygon) layer not found!").format(polygon_layer_name), Qgis.Critical, list()
 
         if polygon_layer:
             error_layer = QgsVectorLayer("Polygon?crs={}".format(polygon_layer.sourceCrs().authid()), rule.error_table_name, "memory")
@@ -127,14 +127,13 @@ class PolygonQualityRules:
             error_layer.dataProvider().addFeatures(features)
 
             if error_layer.featureCount() > 0:
-                added_layer = self.app.gui.add_error_layer(db, error_layer)
-
                 return (QCoreApplication.translate("PolygonQualityRules",
                                  "A memory layer with {} overlapping polygons in layer '{}' has been added to the map!").format(
-                                 added_layer.featureCount(), polygon_layer_name), Qgis.Critical)
+                                 error_layer.featureCount(), polygon_layer_name), Qgis.Critical, [error_layer])
             else:
                 return (QCoreApplication.translate("PolygonQualityRules",
-                                 "There are no overlapping polygons in layer '{}'!").format(polygon_layer_name), Qgis.Success)
+                                                   "There are no overlapping polygons in layer '{}'!").format(
+                    polygon_layer_name), Qgis.Success, [error_layer])
 
     def check_plots_covered_by_boundaries(self, db, layer_dict):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.PLOTS_COVERED_BY_BOUNDARIES)
@@ -142,11 +141,11 @@ class PolygonQualityRules:
         layers = layer_dict[QUALITY_RULE_LAYERS]
 
         if not layers:
-            return QCoreApplication.translate("PolygonQualityRules", "At least one required layer (plot, boundary, more BFS, less BFS) was not found!"), Qgis.Critical
+            return QCoreApplication.translate("PolygonQualityRules", "At least one required layer (plot, boundary, more BFS, less BFS) was not found!"), Qgis.Critical, list()
 
         if layers[db.names.LC_PLOT_T].featureCount() == 0:
             return (QCoreApplication.translate("PolygonQualityRules",
-                             "There are no plots to check 'plots should be covered by boundaries'."), Qgis.Warning)
+                             "There are no plots to check 'plots should be covered by boundaries'."), Qgis.Warning, list())
         else:
             error_layer = QgsVectorLayer("MultiLineString?crs={}".format(layers[db.names.LC_PLOT_T].sourceCrs().authid()),
                                          rule.error_table_name, "memory")
@@ -177,14 +176,13 @@ class PolygonQualityRules:
                         feature.setGeometry(ladm_col_geoms[feature[plot_t_ili_tid_field]].constGet().boundary())  # Convert to lines
 
                 error_layer.dataProvider().addFeatures(features)
-                added_layer = self.app.gui.add_error_layer(db, error_layer)
 
                 return (QCoreApplication.translate("PolygonQualityRules",
-                                 "A memory layer with {} plots not covered by boundaries has been added to the map!").format(added_layer.featureCount()), Qgis.Critical)
+                                 "A memory layer with {} plots not covered by boundaries has been added to the map!").format(error_layer.featureCount()), Qgis.Critical, [error_layer])
 
             else:
                 return (QCoreApplication.translate("PolygonQualityRules",
-                                 "All plots are covered by boundaries!"), Qgis.Success)
+                                 "All plots are covered by boundaries!"), Qgis.Success, [error_layer])
 
     def check_right_of_way_overlaps_buildings(self, db, layer_dict):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.RIGHT_OF_WAY_OVERLAPS_BUILDINGS)
@@ -192,15 +190,15 @@ class PolygonQualityRules:
         layers = layer_dict[QUALITY_RULE_LAYERS]
 
         if not layers:
-            return QCoreApplication.translate("PolygonQualityRules", "At least one required layer (right of way, building) was not found!"), Qgis.Critical
+            return QCoreApplication.translate("PolygonQualityRules", "At least one required layer (right of way, building) was not found!"), Qgis.Critical, list()
 
         if layers[db.names.LC_RIGHT_OF_WAY_T].featureCount() == 0:
             return (QCoreApplication.translate("PolygonQualityRules",
-                             "There are no Right of Way features to check 'Right of Way should not overlap buildings'."), Qgis.Warning)
+                             "There are no Right of Way features to check 'Right of Way should not overlap buildings'."), Qgis.Warning, list())
 
         elif layers[db.names.LC_BUILDING_T].featureCount() == 0:
             return (QCoreApplication.translate("PolygonQualityRules",
-                             "There are no buildings to check 'Right of Way should not overlap buildings'."), Qgis.Warning)
+                             "There are no buildings to check 'Right of Way should not overlap buildings'."), Qgis.Warning, list())
 
         else:
             dict_uuid_building = get_uuid_dict(layers[db.names.LC_BUILDING_T], db.names)
@@ -227,14 +225,12 @@ class PolygonQualityRules:
                 data_provider.addFeatures(new_features)
 
             if error_layer.featureCount() > 0:
-                added_layer = self.app.gui.add_error_layer(db, error_layer)
-
                 return (QCoreApplication.translate("PolygonQualityRules",
                                  "A memory layer with {} Right of Way-Building overlaps has been added to the map!").format(
-                                 added_layer.featureCount()), Qgis.Critical)
+                                 error_layer.featureCount()), Qgis.Critical, [error_layer])
             else:
                 return (QCoreApplication.translate("PolygonQualityRules",
-                                 "There are no Right of Way-Building overlaps."), Qgis.Success)
+                                 "There are no Right of Way-Building overlaps."), Qgis.Success, [error_layer])
 
     def check_gaps_in_plots(self, db, dict_layer):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.GAPS_IN_PLOTS)
@@ -243,11 +239,11 @@ class PolygonQualityRules:
         plot_layer = list(dict_layer[QUALITY_RULE_LAYERS].values())[0] if dict_layer[QUALITY_RULE_LAYERS] else None
 
         if not plot_layer:
-            return QCoreApplication.translate("PolygonQualityRules", "'Plot' layer not found!"), Qgis.Critical
+            return QCoreApplication.translate("PolygonQualityRules", "'Plot' layer not found!"), Qgis.Critical, list()
 
         if plot_layer.featureCount() == 0:
             return (QCoreApplication.translate("PolygonQualityRules",
-                             "There are no Plot features to check 'Plot should not have gaps'."), Qgis.Warning)
+                             "There are no Plot features to check 'Plot should not have gaps'."), Qgis.Warning, list())
         else:
             error_layer = QgsVectorLayer("MultiPolygon?crs={}".format(plot_layer.sourceCrs().authid()),
                                          rule.error_table_name, "memory")
@@ -275,25 +271,23 @@ class PolygonQualityRules:
                 data_provider.addFeatures(new_features)
 
             if error_layer.featureCount() > 0:
-                added_layer = self.app.gui.add_error_layer(db, error_layer)
-
                 return (QCoreApplication.translate("PolygonQualityRules",
-                                 "A memory layer with {} gaps in layer Plots has been added to the map!").format(added_layer.featureCount()), Qgis.Critical)
-
+                                 "A memory layer with {} gaps in layer Plots has been added to the map!").format(
+                    error_layer.featureCount()), Qgis.Critical, [error_layer])
             else:
                 return (QCoreApplication.translate("PolygonQualityRules",
-                                 "There are no gaps in layer Plot."), Qgis.Success)
+                                 "There are no gaps in layer Plot."), Qgis.Success, [error_layer])
 
     def check_multiparts_in_right_of_way(self, db, layer_dict):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.MULTIPART_IN_RIGHT_OF_WAY)
 
         right_of_way_layer = list(layer_dict[QUALITY_RULE_LAYERS].values())[0] if layer_dict[QUALITY_RULE_LAYERS] else None
         if not right_of_way_layer:
-            return QCoreApplication.translate("PolygonQualityRules", "'Right of way' layer not found!"), Qgis.Critical
+            return QCoreApplication.translate("PolygonQualityRules", "'Right of way' layer not found!"), Qgis.Critical, list()
 
         if right_of_way_layer.featureCount() == 0:
             return (QCoreApplication.translate("PolygonQualityRules",
-                             "There are no Right Of Way features to check 'Right Of Way should not have Multipart geometries'."), Qgis.Warning)
+                             "There are no Right Of Way features to check 'Right Of Way should not have Multipart geometries'."), Qgis.Warning, list())
 
         else:
             error_layer = QgsVectorLayer("Polygon?crs={}".format(right_of_way_layer.sourceCrs().authid()),
@@ -316,15 +310,13 @@ class PolygonQualityRules:
                 data_provider.addFeatures(new_features)
 
             if error_layer.featureCount() > 0:
-                added_layer = self.app.gui.add_error_layer(db, error_layer)
-
                 return (QCoreApplication.translate("PolygonQualityRules",
                                  "A memory layer with {} multipart geometries in layer Right Of Way has been added to the map!").format(
-                                 added_layer.featureCount()), Qgis.Critical)
+                                 error_layer.featureCount()), Qgis.Critical, [error_layer])
 
             else:
                 return (QCoreApplication.translate("PolygonQualityRules",
-                                 "There are no multipart geometries in layer Right Of Way."), Qgis.Success)
+                                 "There are no multipart geometries in layer Right Of Way."), Qgis.Success, [error_layer])
 
     def check_plot_nodes_covered_by_boundary_points(self, db, layer_dict):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.PLOT_NODES_COVERED_BY_BOUNDARY_POINTS)
@@ -332,11 +324,11 @@ class PolygonQualityRules:
         layers = layer_dict[QUALITY_RULE_LAYERS]
 
         if not layers:
-            return QCoreApplication.translate("PolygonQualityRules", "At least one required layer (plot, boundary point) was not found!"), Qgis.Critical
+            return QCoreApplication.translate("PolygonQualityRules", "At least one required layer (plot, boundary point) was not found!"), Qgis.Critical, list()
 
         if layers[db.names.LC_PLOT_T].featureCount() == 0:
             return (QCoreApplication.translate("PolygonQualityRules",
-                             "There are no plots to check 'Plots should be covered by boundary points'."), Qgis.Warning)
+                             "There are no plots to check 'Plots should be covered by boundary points'."), Qgis.Warning, list())
         else:
             error_layer = QgsVectorLayer("Point?crs={}".format(layers[db.names.LC_PLOT_T].sourceCrs().authid()),
                                          rule.error_table_name,
@@ -362,15 +354,14 @@ class PolygonQualityRules:
             error_layer.dataProvider().addFeatures(features)
 
             if error_layer.featureCount() > 0:
-                added_layer = self.app.gui.add_error_layer(db, error_layer)
                 return (QCoreApplication.translate(
                                  "PolygonQualityRules",
                                  "A memory layer with {} plot nodes not covered by boundary points has been added to the map!")
-                                 .format(added_layer.featureCount()), Qgis.Critical)
+                                 .format(error_layer.featureCount()), Qgis.Critical, [error_layer])
 
             else:
                 return (QCoreApplication.translate("PolygonQualityRules",
-                                 "All plot nodes are covered by boundary points!"), Qgis.Success)
+                                 "All plot nodes are covered by boundary points!"), Qgis.Success, [error_layer])
 
     def check_building_within_plots(self, db, layer_dict):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.BUILDINGS_SHOULD_BE_WITHIN_PLOTS)
@@ -379,11 +370,11 @@ class PolygonQualityRules:
         layers = layer_dict[QUALITY_RULE_LAYERS]  # Note: here we get the best available layers (not necessarily LADM)
 
         if not layers:
-            return QCoreApplication.translate("PolygonQualityRules", "At least one required layer (plot, boundary, parcel, ue_baunit, codition parcel type) was not found!"), Qgis.Critical
+            return QCoreApplication.translate("PolygonQualityRules", "At least one required layer (plot, boundary, parcel, ue_baunit, codition parcel type) was not found!"), Qgis.Critical, list()
 
         if layers[names.LC_BUILDING_T].featureCount() == 0:
-            return (QCoreApplication.translate("PolygonQualityRules",
-                             "There are no buildings to check 'Building should be within Plots'."), Qgis.Warning)
+            return QCoreApplication.translate("PolygonQualityRules",
+                                               "There are no buildings to check 'Building should be within Plots'."), Qgis.Warning, list()
 
         error_layer = QgsVectorLayer("MultiPolygon?crs={}".format(layers[names.LC_BUILDING_T].sourceCrs().authid()),
                                      rule.error_table_name, "memory")
@@ -490,14 +481,12 @@ class PolygonQualityRules:
         data_provider.addFeatures(new_features)
 
         if error_layer.featureCount() > 0:
-            added_layer = self.app.gui.add_error_layer(db, error_layer)
-
             return (QCoreApplication.translate("PolygonQualityRules",
-                             "A memory layer with {} buildings not within a plot has been added to the map!").format(added_layer.featureCount()), Qgis.Critical)
+                             "A memory layer with {} buildings not within a plot has been added to the map!").format(error_layer.featureCount()), Qgis.Critical, [error_layer])
 
         else:
             return (QCoreApplication.translate("PolygonQualityRules",
-                             "All buildings are within a plot."), Qgis.Success)
+                             "All buildings are within a plot."), Qgis.Success, [error_layer])
 
 
     @staticmethod
@@ -601,11 +590,11 @@ class PolygonQualityRules:
         layers = layer_dict[QUALITY_RULE_LAYERS]  # Note: here we get the best available layers (not necessarily LADM)
 
         if not layers:
-            return QCoreApplication.translate("PolygonQualityRules", "At least one required layer (plot, building unit, ue_baunit, parcel) was not found!"), Qgis.Critical
+            return QCoreApplication.translate("PolygonQualityRules", "At least one required layer (plot, building unit, ue_baunit, parcel) was not found!"), Qgis.Critical, list()
 
         if layers[names.LC_BUILDING_UNIT_T].featureCount() == 0:
-            return (QCoreApplication.translate("PolygonQualityRules",
-                             "There are no buildings to check 'Building should be within Plots'."), Qgis.Warning)
+            return QCoreApplication.translate("PolygonQualityRules",
+                                              "There are no buildings to check 'Building should be within Plots'."), Qgis.Warning, list()
 
         error_layer = QgsVectorLayer("MultiPolygon?crs={}".format(layers[names.LC_BUILDING_UNIT_T].sourceCrs().authid()),
                                      rule.error_table_name, "memory")
@@ -711,13 +700,11 @@ class PolygonQualityRules:
         data_provider.addFeatures(new_features)
 
         if error_layer.featureCount() > 0:
-            added_layer = self.app.gui.add_error_layer(db, error_layer)
-
             return (QCoreApplication.translate("PolygonQualityRules",
-                             "A memory layer with {} building units not within a plot has been added to the map!").format(added_layer.featureCount()), Qgis.Critical)
+                             "A memory layer with {} building units not within a plot has been added to the map!").format(error_layer.featureCount()), Qgis.Critical, [error_layer])
         else:
             return (QCoreApplication.translate("PolygonQualityRules",
-                             "All building units are within a plot."), Qgis.Success)
+                             "All building units are within a plot."), Qgis.Success, [error_layer])
 
     def check_building_unit_within_buildings(self, db, layer_dict):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_BUILDINGS)
@@ -726,11 +713,11 @@ class PolygonQualityRules:
         layers = layer_dict[QUALITY_RULE_LAYERS]  # Note: here we get the best available layers (not necessarily LADM)
 
         if not layers:
-            return QCoreApplication.translate("PolygonQualityRules", "At least one required layer (building unit, ue_baunit, building, parcel) was not found!"), Qgis.Critical
+            return QCoreApplication.translate("PolygonQualityRules", "At least one required layer (building unit, ue_baunit, building, parcel) was not found!"), Qgis.Critical, list()
 
         if layers[names.LC_BUILDING_UNIT_T].featureCount() == 0:
             return (QCoreApplication.translate("PolygonQualityRules",
-                             "There are no building units to check 'Building units should be within Buildings'."), Qgis.Warning)
+                             "There are no building units to check 'Building units should be within Buildings'."), Qgis.Warning, list())
 
         error_layer = QgsVectorLayer("MultiPolygon?crs={}".format(layers[names.LC_BUILDING_UNIT_T].sourceCrs().authid()),
                                      rule.error_table_name, "memory")
@@ -838,13 +825,11 @@ class PolygonQualityRules:
         data_provider.addFeatures(new_features)
 
         if error_layer.featureCount() > 0:
-            added_layer = self.app.gui.add_error_layer(db, error_layer)
-
             return (QCoreApplication.translate("PolygonQualityRules",
-                             "A memory layer with {} building units not within a building has been added to the map!").format(added_layer.featureCount()), Qgis.Critical)
+                             "A memory layer with {} building units not within a building has been added to the map!").format(error_layer.featureCount()), Qgis.Critical, [error_layer])
         else:
             return (QCoreApplication.translate("PolygonQualityRules",
-                             "All building units are within a building."), Qgis.Success)
+                             "All building units are within a building."), Qgis.Success, [error_layer])
 
     @staticmethod
     def check_building_unit_not_associated_with_correct_plot(building_units_within_plots, building_unit_layer, plot_layer, parcel_layer, ue_baunit_layer, condition_parcel_layer, names):
