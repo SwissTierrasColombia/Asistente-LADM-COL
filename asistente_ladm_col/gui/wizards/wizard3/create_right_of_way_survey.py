@@ -150,12 +150,6 @@ class CreateRightOfWaySurveyWizard(QWizard):
         self.update_wizard_is_open_flag.emit(False)
         self.close()
 
-    # (this)
-    def remove_temporal_layer(self):
-        if self.temporal_layer:
-            self.temporal_layer.rollBack()
-            QgsProject.instance().removeMapLayer(self.temporal_layer)
-
     # (absWizardFactory)
     def rollback_in_layers_with_empty_editing_buffer(self):
         for layer_name in self._layers:
@@ -246,7 +240,6 @@ class CreateRightOfWaySurveyWizard(QWizard):
 
         translated_strings = self.translatable_config_strings.get_translatable_config_strings()
 
-        layer = None
         if self.type_geometry_creation == "digitizing_polygon":
             layer = self._layers[self.EDITING_LAYER_NAME]
         elif self.type_geometry_creation == "digitizing_line":

@@ -3,7 +3,7 @@ from qgis.PyQt.QtCore import (QCoreApplication,
 from qgis.core import QgsProject
 
 
-class CreateManuallySpatial: #  (QObject):
+class CreateManuallySpatial(QObject):
 
     # # feature_editing
     # __register_finish_feature
@@ -98,18 +98,16 @@ class CreateManuallySpatial: #  (QObject):
             self.__feature_name))
 
     def save_created_geometry(self):
-        layer = self.__layer_to_edit
-
-        if layer.editBuffer() and len(layer.editBuffer().addedFeatures()) == 1:
-            feature = [value for index, value in layer.editBuffer().addedFeatures().items()][0]
+        if self.__layer_to_edit.editBuffer() and len(self.__layer_to_edit.editBuffer().addedFeatures()) == 1:
+            feature = [value for index, value in self.__layer_to_edit.editBuffer().addedFeatures().items()][0]
 
             if feature.geometry().isGeosValid():
                 self.exec_form()
             else:
-                self.__notify_invalid_geometry({"layer": layer})
-        elif layer.editBuffer():
+                self.__notify_invalid_geometry({"layer": self.__layer_to_edit})
+        elif self.__layer_to_edit.editBuffer():
             self.__notify_zero_or_many_features_added(
-                {"len_features_added": len(layer.editBuffer().addedFeatures()), "layer": layer})
+                {"len_features_added": len(self.__layer_to_edit.editBuffer().addedFeatures()), "layer": self.__layer_to_edit})
 
     def exec_form(self):
         self.__notify_geometry_finalized({"finalized": False})
@@ -125,8 +123,6 @@ class CreateManuallySpatial: #  (QObject):
 
         layer = self.__layer
 
-        print(layer)
-        print(feature)
         dialog = self.__iface.getFeatureForm(layer, feature)
         self.__register_form_rejected_signal(dialog)
         dialog.setModal(True)
@@ -153,3 +149,8 @@ class CreateManuallySpatial: #  (QObject):
             break
 
         return feature
+
+    def disconnect_signals(self):
+        if self.__layer_to_edit != self.__layer:
+            self.__layer_to_edit.rollBack()
+            QgsProject.instance().removeMapLayer(self.__layer_to_edit)
