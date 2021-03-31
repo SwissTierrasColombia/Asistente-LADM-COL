@@ -974,6 +974,8 @@ class GeometryUtils(QObject):
                     res[f[key] if key else f.id()] = values
             return res
 
+        GeometryUtils.create_spatial_index(intersect_layer)  # spatial index is created for better performance
+
         # 1) Select input layer features disjoint from intersect layer features
         processing.run("native:selectbylocation", {'INPUT': input_layer,
                                                    'PREDICATE': [2],  # disjoint
@@ -1063,6 +1065,7 @@ class GeometryUtils(QObject):
             'INPUT': duplicate_nodes_layer,
             'FIELDS': [id_field, 'wkt_geom'],
             'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
+        GeometryUtils.create_spatial_index(unique_nodes_layer)  # spatial index is created for better performance
 
         return unique_nodes_layer
 

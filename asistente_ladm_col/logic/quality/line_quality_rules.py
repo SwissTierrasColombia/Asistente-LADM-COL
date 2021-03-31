@@ -331,6 +331,7 @@ class LineQualityRules:
                                                'SORT_ASCENDING': True,
                                                'SORT_NULLS_FIRST': False,
                                                'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
+        GeometryUtils.create_spatial_index(boundary_nodes_layer)  # spatial index is created for better performance
 
         # Spatial Join between boundary_nodes and boundary_points
         spatial_join_layer = processing.run("native:joinattributesbylocation",
