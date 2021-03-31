@@ -48,6 +48,7 @@ TEST_SCHEMAS_MAPPING = {
     'test_ladm_all_models_gpkg': 'ladm/gpkg/test_ladm_all_models_v1_1.gpkg',
     'tests_geometry_util_gpkg': 'static/gpkg/geometry_utils.gpkg',
     'tests_quality_validations_gpkg': 'static/gpkg/quality_validations.gpkg',
+    'tests_quality_rules_tolerance_gpkg': 'ladm/gpkg/test_quality_rules_tolerance.gpkg',
     'topology_cases_gpkg': 'static/gpkg/topology_cases.gpkg',
     'adjust_boundaries_cases_gpkg': 'static/gpkg/adjust_boundaries_cases.gpkg',
     'no_interlis_gpkg': 'static/gpkg/no_interlis.gpkg',
