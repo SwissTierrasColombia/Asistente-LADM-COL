@@ -506,8 +506,7 @@ class PGConnector(ClientServerDB):
                       layer_uri.database() == db_uri.database() and
                       layer_uri.host() == db_uri.host() and
                       layer_uri.port() == db_uri.port() and
-                      layer_uri.username() == db_uri.username() and
-                      layer_uri.password() == db_uri.password())
+                      layer_uri.username() == db_uri.username())
 
         return result
 
