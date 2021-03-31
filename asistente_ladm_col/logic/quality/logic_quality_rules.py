@@ -412,11 +412,10 @@ class LogicQualityRules:
     def return_message(self, db, rule_name, error_layer):
         feature_count = error_layer.featureCount()
         if feature_count:
-            self.app.gui.add_error_layer(db, error_layer)
             return (QCoreApplication.translate("LogicQualityRules",
                                                "A memory layer with {} errors has been added to the map after checking the '{}' logic consistency rule.").format(feature_count, rule_name),
-                    Qgis.Critical)
+                    Qgis.Critical, [error_layer])
         else:
             return (QCoreApplication.translate("LogicQualityRules",
                                                "No errors were found checking the '{}' logic consistency rule!").format(rule_name),
-                    Qgis.Success)
+                    Qgis.Success, [error_layer])

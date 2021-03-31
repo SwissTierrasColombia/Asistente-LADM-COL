@@ -199,7 +199,8 @@ HELP_ASSET_NAME = "Asistente-LADM-COL-docs.zip"
 DEFAULT_DATASET_NAME = "Default dataset"
 FDC_DATASET_NAME = "Captura en campo"
 
-TOLERANCE_MAX_VALUE = 5000  # In milimeters
+TOLERANCE_MAX_VALUE = 5000  # In millimeters
+DEFAULT_TOLERANCE_VALUE = 0  # In millimeters
 
 # Log topology rules
 LOG_QUALITY_PREFIX_TOPOLOGICAL_RULE_TITLE = "<h4>"
