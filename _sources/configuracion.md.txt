@@ -70,7 +70,7 @@ El listado desplegable **Fuente** permite elegir el motor de base de datos de in
 
 ## Modelos
 
-En esta pestaña se puede seleccionar el repositorio de modelos locales a utilizar, así como definir si se quieren deshabilitar las validaciones (por ejemplo, validaciones de estructura y de relaciones) sobre las operaciones de importar y exportar archivos XTF (ver sección [Adminninstración de datos](administracion_de_datos.html)).
+En esta pestaña se puede seleccionar el repositorio de modelos locales a utilizar, así como definir si se quieren deshabilitar las validaciones (por ejemplo, validaciones de estructura y de relaciones) sobre las operaciones de importar y exportar archivos XTF (ver sección [Administración de datos](administracion_de_datos.html)).
 
 <a class="" data-lightbox="Configuración de acceso a modelos" href="_static/configuracion/modelos.png" title="Configuración de acceso a modelos" data-title="Configuración de acceso a modelos"><img src="_static/configuracion/modelos.png" class="align-center" alt="Configuración de acceso a modelos"/></a>
 
@@ -90,15 +90,47 @@ En esta pestaña se definen parámetros generales para validaciones de calidad.
 
 ## Valores automáticos
 
-La mayoría de las clases en LADM_COL tiene dos atributos que combinados deben ser únicos en todo el `esquema/base de datos`. Se denominan `espacio_de_nombres` y `local_id`. Para hacer más fácil el llenado de estos atributos, el asistente LADM_COL puede configurarse con valores automáticos para ellos.
+<a class="" data-lightbox="Configuración de valores automáticos" href="_static/configuracion/valores_automaticos.png" title="Configuración de valores automáticos" data-title="Configuración de valores automáticos"><img src="_static/configuracion/valores_automaticos.png" class="align-center" alt="Configuración de valores automáticos"/></a>
+
+### Calcular campos automáticos al cargar datos masivamente
+
+Cuando cargas/importas datos masivamente (por ejemplo, utilizando el [mapeo de campos](captura_y_estructura_de_datos.html#como-usar-el-mapeo-de-campos)), puedes deshabilitar el cálculo de cualquier campo automático que esté configurado en la capa de destino. Para ello, debes desmarcar esta opción del diálogo configuración:
+
+<a class="" data-lightbox="Deshabilitar valores automáticos al cargar datos masivamente" href="_static/configuracion/deshabilitar_valores_automaticos.png" title="Deshabilitar valores automáticos al cargar datos masivamente" data-title="Deshabilitar valores automáticos al cargar datos masivamente"><img src="_static/configuracion/deshabilitar_valores_automaticos.png" class="align-center" alt="Deshabilitar valores automáticos al cargar datos masivamente"/></a>
+
+Esto permite que los valores que vienen de la capa origen, se mantengan y no sean sobreescritos por cálculos de valores automáticos.
+
+<div class="note">
+<p class="admonition-title">IMPORTANTE</p>
+<p>Al desmarcar esta opción, los valores automáticos solamente estarán deshabilitados durante el proceso de importación masiva. En el resto de operaciones, como la edición manual, los valores automáticos configurados seguirán activos.</p>
+</div>
+
+### Calcular t_ili_tid automáticamente
+
+Esta opción te permite obtener valores automáticos para la columna obligatoria `t_ili_tid` en el momento de crear registros en la base de datos.
+
+Esta columna contiene datos de tipo UUID para identificar unívocamente a los objetos del mundo real. Por ejemplo, el mismo terreno debería conservar su código UUID sin importar la base de datos, o incluso el motor de base de datos en el que se encuentre.
+
+<div class="seealso">
+<p class="admonition-title">TIP</p>
+<p>Si en alguna operación (por ejemplo, importando datos manualmente) necesitas definir una expresión de QGIS para obtener valores de tipo UUID para este campo, puedes usar la siguiente: <code class="docutils literal notranslate"><span class="pre">substr(uuid(), 2, 36)</span></code></p>
+</div>
+
+<div class="warning">
+<p class="admonition-title">ADVERTENCIA</p>
+<p>Los valores del campo t_ili_tid no pueden repetirse en tu base de datos. Afortunadamente, al generarlos de manera automática hay una probabilidad (casi) nula de obtener dos valores iguales.</p>
+</div>
+
+### Espacio de nombres y local id
+
+La mayoría de las clases en LADM-COL tiene dos atributos que combinados deben ser únicos en todo el `esquema/base de datos`. Se denominan `espacio_de_nombres` y `local_id`. Para hacer más fácil el llenado de estos atributos, el asistente LADM-COL puede configurarse con valores automáticos para ellos.
 
 Concretamente, `espacio_de_nombres` corresponderá a un prefijo opcional (p.e., MI_ORGANIZACION) más el nombre de la clase (p.e., LC_LINDERO): MI_ORGANIZATION_LINDERO.
 
-Por otra parte , `local_id` correspondera al ID del registro en la base de datos.
+Por otra parte , `local_id` correspondera al ID del registro en la base de datos de la institución que lo administra. Esto es, si la institución tiene un código interno para un registro, puede almacenarlo en el campo `local_id`.
 
-Si deseas llenar esos valores por tu cuenta desmarca las siguientes opciones en este formulario.
+Si deseas llenar esos valores por tu cuenta y no de forma automática, desmarca las cajas de chequeo correspondientes en la pestaña `Valores automáticos`.
 
-<a class="" data-lightbox="Configuración de valores automáticos" href="_static/configuracion/valores_automaticos.png" title="Configuración de valores automáticos" data-title="Configuración de valores automáticos"><img src="_static/configuracion/valores_automaticos.png" class="align-center" alt="Configuración de valores automáticos"/></a>
 
 ## Servicios
 

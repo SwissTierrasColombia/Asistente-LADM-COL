@@ -349,8 +349,16 @@ Para asociar una dirección a una unidad espacial (terreno, construcción o unid
 
 ## ¿Cómo usar el mapeo de campos?
 
-Puedes definir un mapeo para transofrmar campos y establecer correspondencias entre ellos, esto te permite importar los datos directamente en la base de datos desde otra capa o tabla cargada en QGIS.
+Para importar datos directamente desde una capa/tabla origen (cargada en QGIS) a tu capa/tabla destino, generalmente necesitarás configurar un emparejamiento (o mapeo) de campos, posiblemente incluyendo transformaciones de los mismos para garantizar que los valores guardados en tu capa/tabla destino correspondan correctamente con su estructura.
 
-Es posible elegir el mapeo a utilizar de una lista de mapeos recientes.
+<a class="" data-lightbox="Mapeo de campos" href="_static/captura_y_estructura_de_datos/example_refactor_fields.gif" title="Mapeo de campos" data-title="Mapeo de campos"><img src="_static/captura_y_estructura_de_datos/example_refactor_fields.gif" class="align-center" width="800px" alt="Mapeo de campos"/></a>
 
-  <img src="_static/captura_y_estructura_de_datos/example_refactor_fields.gif" alt="Mapeo de campos" style="width:800px" />
+<div class="seealso">
+<p class="admonition-title">TIP</p>
+<p>Si has definido mapeos anteriores para la misma capa destino, es posible elegir el mapeo a utilizar de una lista de mapeos recientes.</p>
+</div>
+
+<div class="warning">
+<p class="admonition-title">ADVERTENCIA</p>
+<p>Cuando importas datos usando el mapeo de campos, es muy conveniente deshabilitar cualquier cálculo automático configurado en la capa/tabla de destino. De lo contrario, los datos que provengan de la capa/tabla origen, al llegar a la capa/tabla destino, serán sobreescritos por los valores automáticos mencionados. Ver la sección <a href="configuracion.html#calcular-campos-automaticos-al-cargar-datos-masivamente">Configuración</a>.</p>
+</div>

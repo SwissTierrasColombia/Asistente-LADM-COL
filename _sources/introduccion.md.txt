@@ -247,7 +247,7 @@ Para usar el Asistente LADM-COL se requiere:
 
   <a href="_static/instalacion/instalation.gif" target="_blank"><img src="_static/instalacion/instalation.gif" alt="Proceso de instalación del plugin" title="Proceso de instalación del plugin" style="width:800px" /></a>
 
-- En caso de no contar con la versión corrcta del plugin QgisModelBaker, el Asistente LADM-COL mostrará un mensaje similar a este:  
+- En caso de no contar con la versión correcta del plugin QgisModelBaker, el Asistente LADM-COL mostrará un mensaje similar a este:
   <a href="_static/instalacion/error_asistente_qgis_model_baker.png" target="_blank"><img src="_static/instalacion/error_asistente_qgis_model_baker.png" alt="Error de dependencia QgisModelBaker" title="Error de dependencia QgisModelBaker" style="width:800px" /></a>
   
 - Si tienes un error con el QgisModelBaker requerido, puedes instalar el plugin QgisModelBaker como en el siguiente GIF:
