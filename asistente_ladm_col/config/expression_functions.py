@@ -3,7 +3,7 @@ from qgis.utils import qgsfunction
 from asistente_ladm_col.config.translation_strings import TranslatableConfigStrings
 
 
-@qgsfunction(args='auto', group='LADM-COL', helpText=TranslatableConfigStrings.help_get_domain_code_from_value)
+@qgsfunction(args='auto', group='LADM-COL', referenced_columns=[], helpText=TranslatableConfigStrings.help_get_domain_code_from_value)
 def get_domain_code_from_value(domain_table, value, value_is_ilicode, validate_conn, feature, parent):
     """
     Gets a t_id from a domain value
@@ -36,7 +36,7 @@ def get_domain_code_from_value(domain_table, value, value_is_ilicode, validate_c
     return res
 
 
-@qgsfunction(args='auto', group='LADM-COL')
+@qgsfunction(args='auto', group='LADM-COL', referenced_columns=[])
 def get_domain_value_from_code(domain_table, code, value_is_ilicode, validate_conn, feature, parent):
     """
     Gets a t_id from a domain value
