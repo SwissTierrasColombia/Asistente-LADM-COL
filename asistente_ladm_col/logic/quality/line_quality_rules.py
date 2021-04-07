@@ -251,7 +251,7 @@ class LineQualityRules:
 
             if error_layer.featureCount() > 0:
                 return (QCoreApplication.translate("LineQualityRules",
-                    "A memory layer with {} boundary vertices with no associated boundary points or with boundary points wrongly registered in the PointBFS table been added to the map!").format(added_layer.featureCount()), Qgis.Critical, [error_layer])
+                    "A memory layer with {} boundary vertices with no associated boundary points or with boundary points wrongly registered in the PointBFS table been added to the map!").format(error_layer.featureCount()), Qgis.Critical, [error_layer])
 
             else:
                 return (QCoreApplication.translate("LineQualityRules",
