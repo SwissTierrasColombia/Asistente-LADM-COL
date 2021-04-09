@@ -16,7 +16,7 @@ from asistente_ladm_col.config.general_config import WIZARD_UI, WIZARD_FEATURE_N
     CSS_COLOR_INACTIVE_LABEL, CSS_COLOR_OKAY_LABEL, CSS_COLOR_ERROR_LABEL, WIZARD_HELP2, WIZARD_HELP3, WIZARD_STRINGS
 from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.config.translation_strings import TranslatableConfigStrings
-from asistente_ladm_col.gui.wizards.abc.signal_disconnectable import SignalDisconnectable
+from asistente_ladm_col.gui.wizards.abc.signal_disconnectable import SignalDisconnectableMetaWiz
 from asistente_ladm_col.gui.wizards.wizard_pages.asistente_wizard_page import AsistenteWizardPage
 from asistente_ladm_col.gui.wizards.wizard_pages.create_manually_spatial import CreateManuallySpatial
 from asistente_ladm_col.gui.wizards.wizard_pages.logic import Logic
@@ -28,16 +28,11 @@ from asistente_ladm_col.utils.qt_utils import disable_next_wizard, enable_next_w
 from asistente_ladm_col.utils.utils import show_plugin_help
 
 
-class SignalDisconnectableMetaWiz(type(SignalDisconnectable), type(QWizard)):
-    pass
-
-
 class CreateExtAddressSurveyWizard(QWizard, metaclass=SignalDisconnectableMetaWiz):
     update_wizard_is_open_flag = pyqtSignal(bool)
     set_finalize_geometry_creation_enabled_emitted = pyqtSignal(bool)
 
     def __init__(self, iface, db, wizard_settings):
-        print("hola_ext")
         QWizard.__init__(self)
         self.iface = iface
         self._db = db
@@ -179,9 +174,8 @@ class CreateExtAddressSurveyWizard(QWizard, metaclass=SignalDisconnectableMetaWi
         # if isinstance(self, SelectFeatureByExpressionDialogWrapper):
         self.disconnect_signals_select_features_by_expression()
 
-        self.disconnect_signals_controls_select_features_on_map()
-
         # if isinstance(self, SelectFeaturesOnMapWrapper):
+        self.disconnect_signals_controls_select_features_on_map()
         self.__feature_on_map_selector.disconnect_signals()
         self.disconnect_signals_will_be_deleted()
 

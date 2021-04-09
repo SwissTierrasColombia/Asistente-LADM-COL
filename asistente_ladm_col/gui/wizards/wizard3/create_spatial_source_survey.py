@@ -16,6 +16,7 @@ from asistente_ladm_col.config.translation_strings import TranslatableConfigStri
 from asistente_ladm_col.gui.wizards.wizard_pages.asistente_wizard_page import AsistenteWizardPage
 from asistente_ladm_col.gui.wizards.wizard_pages.create_manually import CreateManually
 from asistente_ladm_col.gui.wizards.wizard_pages.logic import Logic
+from asistente_ladm_col.gui.wizards.wizard_pages.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
 from asistente_ladm_col.gui.wizards.wizard_pages.select_source import SelectSource
 from asistente_ladm_col.utils.qt_utils import disable_next_wizard, enable_next_wizard
 from asistente_ladm_col.utils.select_map_tool import SelectMapTool
@@ -55,9 +56,6 @@ class CreateSpatialSourceSurveyWizard(QWizard):
         self.init_gui()
 
         # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>>>>> map tool
-        self.canvas = self.iface.mapCanvas()
-        self.maptool = self.canvas.mapTool()
-        self.select_maptool = None
         self.logger = Logger()
 
         self.__init_new_items()
@@ -67,6 +65,10 @@ class CreateSpatialSourceSurveyWizard(QWizard):
                                                        self._layers[self.EDITING_LAYER_NAME], self.WIZARD_FEATURE_NAME)
 
         self.__manual_feature_creator.register_observer(self)
+
+        # map
+        self.__feature_on_map_selector = SelectFeaturesOnMapWrapper(self.iface, self.logger)
+        self.__feature_on_map_selector.register_observer(self)
 
     def set_ready_only_field(self, read_only=True):
         if self._layers[self.EDITING_LAYER_NAME] is not None:
@@ -130,7 +132,7 @@ class CreateSpatialSourceSurveyWizard(QWizard):
             self.logger.info_msg(__name__, message)
 
         # if isinstance(self, SelectFeaturesOnMapWrapper):
-        self.init_map_tool()
+        self.__feature_on_map_selector.init_map_tool()
 
         self.rollback_in_layers_with_empty_editing_buffer()
         self.disconnect_signals()
@@ -152,7 +154,9 @@ class CreateSpatialSourceSurveyWizard(QWizard):
         self.disconnect_signals_select_features_by_expression()
 
         # if isinstance(self, SelectFeaturesOnMapWrapper):
-        self.disconnect_signals_select_features_on_map()
+        self.disconnect_signals_controls_select_features_on_map()
+        self.__feature_on_map_selector.disconnect_signals()
+        self.disconnect_signals_will_be_deleted()
 
         try:
             self._layers[self.EDITING_LAYER_NAME].committedFeaturesAdded.disconnect(self.finish_feature_creation)
@@ -287,22 +291,7 @@ class CreateSpatialSourceSurveyWizard(QWizard):
 
     # ------------------------------------------>>>  SelectFeaturesOnMapWrapper
     # (map)
-    def init_map_tool(self):
-        try:
-            self.canvas.mapToolSet.disconnect(self.map_tool_changed)
-        except:
-            pass
-        self.canvas.setMapTool(self.maptool)
-
-    # (map)
-    def disconnect_signals_select_features_on_map(self):
-        self.disconnect_signals_controls_select_features_on_map()
-
-        try:
-            self.canvas.mapToolSet.disconnect(self.map_tool_changed)
-        except:
-            pass
-
+    def disconnect_signals_will_be_deleted(self):
         for layer_name in self._layers:
             try:
                 self._layers[layer_name].willBeDeleted.disconnect(self.layer_removed)
@@ -310,24 +299,9 @@ class CreateSpatialSourceSurveyWizard(QWizard):
                 pass
 
     def map_tool_changed(self, new_tool, old_tool):
-        self.canvas.mapToolSet.disconnect(self.map_tool_changed)
-
-        msg = QMessageBox(self)
-        msg.setIcon(QMessageBox.Question)
-        msg.setText(QCoreApplication.translate("WizardTranslations", "Do you really want to change the map tool?"))
-        msg.setWindowTitle(QCoreApplication.translate("WizardTranslations", "CHANGING MAP TOOL?"))
-        msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-        msg.button(QMessageBox.Yes).setText(QCoreApplication.translate("WizardTranslations", "Yes, and close the wizard"))
-        msg.button(QMessageBox.No).setText(QCoreApplication.translate("WizardTranslations", "No, continue editing"))
-        reply = msg.exec_()
-
-        if reply == QMessageBox.No:
-            self.canvas.setMapTool(old_tool)
-            self.canvas.mapToolSet.connect(self.map_tool_changed)
-        else:
-            message = QCoreApplication.translate("WizardTranslations",
-                                                 "'{}' tool has been closed because the map tool change.").format(self.WIZARD_TOOL_NAME)
-            self.close_wizard(message)
+        message = QCoreApplication.translate("WizardTranslations",
+                                             "'{}' tool has been closed because the map tool change.").format(self.WIZARD_TOOL_NAME)
+        self.close_wizard(message)
 
     def connect_on_removing_layers(self):
         for layer_name in self._layers:
@@ -344,32 +318,9 @@ class CreateSpatialSourceSurveyWizard(QWizard):
                                              "'{}' tool has been closed because you just removed a required layer.").format(self.WIZARD_TOOL_NAME)
         self.close_wizard(message)
 
-    def select_features_on_map(self, layer):
-        self.iface.setActiveLayer(layer)
-        self.setVisible(False)  # Make wizard disappear
-
-        # Enable Select Map Tool
-        self.select_maptool = SelectMapTool(self.canvas, layer, multi=True)
-
-        self.canvas.setMapTool(self.select_maptool)
-        # Connect signal that check if map tool change
-        # This is necessary after select the maptool
-        self.canvas.mapToolSet.connect(self.map_tool_changed)
-
-        # Connect signal that check a feature was selected
-        self.select_maptool.features_selected_signal.connect(self.features_selected)
-
     def features_selected(self):
         self.setVisible(True)  # Make wizard appear
         self.check_selected_features()
-
-        # Disconnect signal that check if map tool change
-        # This is necessary before changing the tool to the user's previous selection
-        self.canvas.mapToolSet.disconnect(self.map_tool_changed)
-        self.canvas.setMapTool(self.maptool)
-
-        self.logger.info(__name__, "Select maptool SIGNAL disconnected")
-        self.select_maptool.features_selected_signal.disconnect(self.features_selected)
 
     # ------------------------------------------>>> THIS CLASS
     def check_selected_features(self):
@@ -411,11 +362,31 @@ class CreateSpatialSourceSurveyWizard(QWizard):
         self.wizardPage2.btn_control_point_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.LC_CONTROL_POINT_T]))
 
     def register_select_feature_on_map(self):
-        self.wizardPage2.btn_plot_map.clicked.connect(partial(self.select_features_on_map, self._layers[self.names.LC_PLOT_T]))
-        self.wizardPage2.btn_boundary_map.clicked.connect(partial(self.select_features_on_map, self._layers[self.names.LC_BOUNDARY_T]))
-        self.wizardPage2.btn_boundary_point_map.clicked.connect(partial(self.select_features_on_map, self._layers[self.names.LC_BOUNDARY_POINT_T]))
-        self.wizardPage2.btn_survey_point_map.clicked.connect(partial(self.select_features_on_map, self._layers[self.names.LC_SURVEY_POINT_T]))
-        self.wizardPage2.btn_control_point_map.clicked.connect(partial(self.select_features_on_map, self._layers[self.names.LC_CONTROL_POINT_T]))
+        self.wizardPage2.btn_plot_map.clicked.connect(self.btn_plot_map_click)
+        self.wizardPage2.btn_boundary_map.clicked.connect(self.btn_boundary_map_click)
+        self.wizardPage2.btn_boundary_point_map.clicked.connect(self.btn_boundary_point_map_click)
+        self.wizardPage2.btn_survey_point_map.clicked.connect(self.btn_survey_point_map_click)
+        self.wizardPage2.btn_control_point_map.clicked.connect(self.btn_control_point_map_click)
+
+    def btn_plot_map_click(self):
+        self.setVisible(False)  # Make wizard disappear
+        self.__feature_on_map_selector.select_features_on_map(self._layers[self.names.LC_PLOT_T])
+
+    def btn_boundary_map_click(self):
+        self.setVisible(False)  # Make wizard disappear
+        self.__feature_on_map_selector.select_features_on_map(self._layers[self.names.LC_BOUNDARY_T])
+
+    def btn_boundary_point_map_click(self):
+        self.setVisible(False)  # Make wizard disappear
+        self.__feature_on_map_selector.select_features_on_map(self._layers[self.names.LC_BOUNDARY_POINT_T])
+
+    def btn_survey_point_map_click(self):
+        self.setVisible(False)
+        self.__feature_on_map_selector.select_features_on_map(self._layers[self.names.LC_SURVEY_POINT_T])
+
+    def btn_control_point_map_click(self):
+        self.setVisible(False)
+        self.__feature_on_map_selector.select_features_on_map(self._layers[self.names.LC_CONTROL_POINT_T])
 
     def disconnect_signals_controls_select_features_on_map(self):
         signals = [self.wizardPage2.btn_plot_map.clicked,

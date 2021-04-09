@@ -17,6 +17,7 @@ from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.config.translation_strings import TranslatableConfigStrings
 from asistente_ladm_col.gui.wizards.wizard_pages.create_manually import CreateManually
+from asistente_ladm_col.gui.wizards.wizard_pages.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
 from asistente_ladm_col.utils.qt_utils import disable_next_wizard, enable_next_wizard
 from asistente_ladm_col.utils.select_map_tool import SelectMapTool
 from asistente_ladm_col.utils.ui import load_ui
@@ -51,9 +52,6 @@ class CreateBuildingUnitValuationWizard(QWizard):
         self.init_gui()
 
         # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>>>>> map tool
-        self.canvas = self.iface.mapCanvas()
-        self.maptool = self.canvas.mapTool()
-        self.select_maptool = None
         self.logger = Logger()
 
         self.__init_new_items()
@@ -63,6 +61,10 @@ class CreateBuildingUnitValuationWizard(QWizard):
                                                        self._layers[self.EDITING_LAYER_NAME], self.WIZARD_FEATURE_NAME)
 
         self.__manual_feature_creator.register_observer(self)
+
+        # map
+        self.__feature_on_map_selector = SelectFeaturesOnMapWrapper(self.iface, self.logger)
+        self.__feature_on_map_selector.register_observer(self)
 
     # (absWizardFactory)
     def set_ready_only_field(self, read_only=True):
@@ -133,7 +135,7 @@ class CreateBuildingUnitValuationWizard(QWizard):
             self.logger.info_msg(__name__, message)
 
         #if isinstance(self, SelectFeaturesOnMapWrapper):
-        self.init_map_tool()
+        self.__feature_on_map_selector.init_map_tool()
 
         self.rollback_in_layers_with_empty_editing_buffer()
         self.disconnect_signals()
@@ -261,22 +263,7 @@ class CreateBuildingUnitValuationWizard(QWizard):
 
     # ------------------------------------------>>>  SelectFeaturesOnMapWrapper
     # (map)
-    def init_map_tool(self):
-        try:
-            self.canvas.mapToolSet.disconnect(self.map_tool_changed)
-        except:
-            pass
-        self.canvas.setMapTool(self.maptool)
-
-    # (map)
-    def disconnect_signals_select_features_on_map(self):
-        self.disconnect_signals_controls_select_features_on_map()
-
-        try:
-            self.canvas.mapToolSet.disconnect(self.map_tool_changed)
-        except:
-            pass
-
+    def disconnect_signals_will_be_deleted(self):
         for layer_name in self._layers:
             try:
                 self._layers[layer_name].willBeDeleted.disconnect(self.layer_removed)
@@ -285,7 +272,7 @@ class CreateBuildingUnitValuationWizard(QWizard):
 
     # (this class)
     def disconnect_signals_controls_select_features_on_map(self):
-        signals = [self.btn_map.clicked]
+        signals = [self.wizardPage2.btn_map.clicked]
 
         for signal in signals:
             try:
@@ -295,24 +282,9 @@ class CreateBuildingUnitValuationWizard(QWizard):
 
     # (map)
     def map_tool_changed(self, new_tool, old_tool):
-        self.canvas.mapToolSet.disconnect(self.map_tool_changed)
-
-        msg = QMessageBox(self)
-        msg.setIcon(QMessageBox.Question)
-        msg.setText(QCoreApplication.translate("WizardTranslations", "Do you really want to change the map tool?"))
-        msg.setWindowTitle(QCoreApplication.translate("WizardTranslations", "CHANGING MAP TOOL?"))
-        msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-        msg.button(QMessageBox.Yes).setText(QCoreApplication.translate("WizardTranslations", "Yes, and close the wizard"))
-        msg.button(QMessageBox.No).setText(QCoreApplication.translate("WizardTranslations", "No, continue editing"))
-        reply = msg.exec_()
-
-        if reply == QMessageBox.No:
-            self.canvas.setMapTool(old_tool)
-            self.canvas.mapToolSet.connect(self.map_tool_changed)
-        else:
-            message = QCoreApplication.translate("WizardTranslations",
-                                                 "'{}' tool has been closed because the map tool change.").format(self.WIZARD_TOOL_NAME)
-            self.close_wizard(message)
+        message = QCoreApplication.translate("WizardTranslations",
+                                             "'{}' tool has been closed because the map tool change.").format(self.WIZARD_TOOL_NAME)
+        self.close_wizard(message)
 
     # (map)
     def connect_on_removing_layers(self):
@@ -331,34 +303,10 @@ class CreateBuildingUnitValuationWizard(QWizard):
                                              "'{}' tool has been closed because you just removed a required layer.").format(self.WIZARD_TOOL_NAME)
         self.close_wizard(message)
 
-    # (map)
-    def select_features_on_map(self, layer):
-        self.iface.setActiveLayer(layer)
-        self.setVisible(False)  # Make wizard disappear
-
-        # Enable Select Map Tool
-        self.select_maptool = SelectMapTool(self.canvas, layer, multi=True)
-
-        self.canvas.setMapTool(self.select_maptool)
-        # Connect signal that check if map tool change
-        # This is necessary after select the maptool
-        self.canvas.mapToolSet.connect(self.map_tool_changed)
-
-        # Connect signal that check a feature was selected
-        self.select_maptool.features_selected_signal.connect(self.features_selected)
-
     # map
     def features_selected(self):
         self.setVisible(True)  # Make wizard appear
         self.check_selected_features()
-
-        # Disconnect signal that check if map tool change
-        # This is necessary before changing the tool to the user's previous selection
-        self.canvas.mapToolSet.disconnect(self.map_tool_changed)
-        self.canvas.setMapTool(self.maptool)
-
-        self.logger.info(__name__, "Select maptool SIGNAL disconnected")
-        self.select_maptool.features_selected_signal.disconnect(self.features_selected)
 
     # ------------------------------------------>>> THIS CLASS
     def check_selected_features(self):
@@ -372,7 +320,7 @@ class CreateBuildingUnitValuationWizard(QWizard):
         self.button(self.FinishButton).setEnabled(_count == 1)
 
     def disconnect_signals_select_features_by_expression(self):
-        signals = [self.btn_expression.clicked]
+        signals = [self.wizardPage2.btn_expression.clicked]
 
         for signal in signals:
             try:
@@ -381,10 +329,14 @@ class CreateBuildingUnitValuationWizard(QWizard):
                 pass
 
     def register_select_features_by_expression(self):
-        self.btn_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.LC_BUILDING_UNIT_T]))
+        self.wizardPage2.btn_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.LC_BUILDING_UNIT_T]))
 
     def register_select_feature_on_map(self):
-        self.btn_map.clicked.connect(partial(self.select_features_on_map, self._layers[self.names.LC_BUILDING_UNIT_T]))
+        self.wizardPage2.btn_map.clicked.connect(self.btn_map_click)
+
+    def btn_map_click(self):
+        self.setVisible(False)  # Make wizard disappear
+        self.__feature_on_map_selector.select_features_on_map(self._layers[self.names.LC_BUILDING_UNIT_T])
 
     def post_save(self, features):
         message = QCoreApplication.translate("WizardTranslations",
