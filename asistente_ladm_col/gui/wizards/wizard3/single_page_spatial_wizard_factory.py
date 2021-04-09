@@ -51,10 +51,6 @@ class SinglePageSpatialWizardFactory(QWizard):
         self.wizardPage1 = None
         self.init_gui()
 
-        # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>>>>> map interaction expansion
-        self.canvas = self.iface.mapCanvas()
-        self.maptool = self.canvas.mapTool()
-        self.select_maptool = None
         # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>>>>> SpatialWizardFactory
         self.set_disable_digitize_actions()
 

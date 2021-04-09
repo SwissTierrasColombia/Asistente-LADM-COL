@@ -11,18 +11,17 @@ from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.general_config import WIZARD_UI, WIZARD_FEATURE_NAME, WIZARD_TOOL_NAME, \
     WIZARD_EDITING_LAYER_NAME, WIZARD_LAYERS, WIZARD_READ_ONLY_FIELDS, WIZARD_HELP, WIZARD_HELP_PAGES, WIZARD_HELP1, \
     WIZARD_QSETTINGS, WIZARD_QSETTINGS_LOAD_DATA_TYPE, WIZARD_MAP_LAYER_PROXY_MODEL, WIZARD_HELP2, CSS_COLOR_OKAY_LABEL, \
-    CSS_COLOR_ERROR_LABEL, WIZARD_QSETTINGS_TYPE_PARCEL_SELECTED, CSS_COLOR_INACTIVE_LABEL
+    CSS_COLOR_ERROR_LABEL
 from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.config.ladm_names import LADMNames
-from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.config.translation_strings import TranslatableConfigStrings
 from asistente_ladm_col.gui.wizards.wizard_pages.create_manually import CreateManually
+from asistente_ladm_col.gui.wizards.wizard_pages.select_features_by_expression_dialog_wrapper import \
+    SelectFeatureByExpressionDialogWrapper
 from asistente_ladm_col.gui.wizards.wizard_pages.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
 from asistente_ladm_col.utils.qt_utils import disable_next_wizard, enable_next_wizard
-from asistente_ladm_col.utils.select_map_tool import SelectMapTool
 from asistente_ladm_col.utils.ui import load_ui
 from asistente_ladm_col.utils.utils import show_plugin_help
-from qgis.gui import QgsExpressionSelectionDialog
 
 
 class CreateBuildingUnitValuationWizard(QWizard):
@@ -63,8 +62,11 @@ class CreateBuildingUnitValuationWizard(QWizard):
         self.__manual_feature_creator.register_observer(self)
 
         # map
-        self.__feature_on_map_selector = SelectFeaturesOnMapWrapper(self.iface, self.logger)
-        self.__feature_on_map_selector.register_observer(self)
+        self.__feature_selector_on_map = SelectFeaturesOnMapWrapper(self.iface, self.logger)
+        self.__feature_selector_on_map.register_observer(self)
+
+        self.__feature_selector_by_expression = SelectFeatureByExpressionDialogWrapper(self.iface)
+        self.__feature_selector_by_expression.register_observer(self)
 
     # (absWizardFactory)
     def set_ready_only_field(self, read_only=True):
@@ -135,7 +137,7 @@ class CreateBuildingUnitValuationWizard(QWizard):
             self.logger.info_msg(__name__, message)
 
         #if isinstance(self, SelectFeaturesOnMapWrapper):
-        self.__feature_on_map_selector.init_map_tool()
+        self.__feature_selector_on_map.init_map_tool()
 
         self.rollback_in_layers_with_empty_editing_buffer()
         self.disconnect_signals()
@@ -153,12 +155,9 @@ class CreateBuildingUnitValuationWizard(QWizard):
 
     # (wizardFactory)
     def disconnect_signals(self):
-        # if isinstance(self, SelectFeatureByExpressionDialogWrapper):
-        self.disconnect_signals_select_features_by_expression()
-
-        # if isinstance(self, SelectFeaturesOnMapWrapper):
-        self.disconnect_signals_select_features_on_map()
-
+        self.disconnect_signals_of_feature_selector_buttons()
+        self.__feature_selector_on_map.disconnect_signals()
+        self.disconnect_signals_will_be_deleted()
         try:
             self._layers[self.EDITING_LAYER_NAME].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         except:
@@ -253,30 +252,12 @@ class CreateBuildingUnitValuationWizard(QWizard):
     def exec_form_advanced(self, layer):
         pass
 
-    # ------------------------------------------>>>  SelectFeatureByExpressionDialogWrapper
-    def select_features_by_expression(self, layer):
-        self.iface.setActiveLayer(layer)
-        dlg_expression_selection = QgsExpressionSelectionDialog(layer)
-        layer.selectionChanged.connect(self.check_selected_features)
-        dlg_expression_selection.exec()
-        layer.selectionChanged.disconnect(self.check_selected_features)
-
     # ------------------------------------------>>>  SelectFeaturesOnMapWrapper
     # (map)
     def disconnect_signals_will_be_deleted(self):
         for layer_name in self._layers:
             try:
                 self._layers[layer_name].willBeDeleted.disconnect(self.layer_removed)
-            except:
-                pass
-
-    # (this class)
-    def disconnect_signals_controls_select_features_on_map(self):
-        signals = [self.wizardPage2.btn_map.clicked]
-
-        for signal in signals:
-            try:
-                signal.disconnect()
             except:
                 pass
 
@@ -319,8 +300,8 @@ class CreateBuildingUnitValuationWizard(QWizard):
             self.lb_info.setStyleSheet(_color)
         self.button(self.FinishButton).setEnabled(_count == 1)
 
-    def disconnect_signals_select_features_by_expression(self):
-        signals = [self.wizardPage2.btn_expression.clicked]
+    def disconnect_signals_of_feature_selector_buttons(self):
+        signals = [self.wizardPage2.btn_expression.clicked, self.wizardPage2.btn_map.clicked]
 
         for signal in signals:
             try:
@@ -329,14 +310,14 @@ class CreateBuildingUnitValuationWizard(QWizard):
                 pass
 
     def register_select_features_by_expression(self):
-        self.wizardPage2.btn_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.LC_BUILDING_UNIT_T]))
+        self.wizardPage2.btn_expression.clicked.connect(partial(self.__feature_selector_by_expression.select_features_by_expression, self._layers[self.names.LC_BUILDING_UNIT_T]))
 
     def register_select_feature_on_map(self):
         self.wizardPage2.btn_map.clicked.connect(self.btn_map_click)
 
     def btn_map_click(self):
         self.setVisible(False)  # Make wizard disappear
-        self.__feature_on_map_selector.select_features_on_map(self._layers[self.names.LC_BUILDING_UNIT_T])
+        self.__feature_selector_on_map.select_features_on_map(self._layers[self.names.LC_BUILDING_UNIT_T])
 
     def post_save(self, features):
         message = QCoreApplication.translate("WizardTranslations",

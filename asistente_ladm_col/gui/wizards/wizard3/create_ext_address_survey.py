@@ -7,7 +7,6 @@ from qgis.PyQt.QtCore import (QCoreApplication,
 from qgis.gui import QgsExpressionSelectionDialog
 
 from qgis.PyQt.QtWidgets import QWizard, QMessageBox
-from qgis.core import QgsProject,QgsMapLayerProxyModel, QgsVectorLayerUtils, QgsVectorLayerUtils, QgsGeometry
 from asistente_ladm_col import Logger
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.general_config import WIZARD_UI, WIZARD_FEATURE_NAME, WIZARD_TOOL_NAME, \
@@ -20,6 +19,8 @@ from asistente_ladm_col.gui.wizards.abc.signal_disconnectable import SignalDisco
 from asistente_ladm_col.gui.wizards.wizard_pages.asistente_wizard_page import AsistenteWizardPage
 from asistente_ladm_col.gui.wizards.wizard_pages.create_manually_spatial import CreateManuallySpatial
 from asistente_ladm_col.gui.wizards.wizard_pages.logic import Logic
+from asistente_ladm_col.gui.wizards.wizard_pages.select_features_by_expression_dialog_wrapper import \
+    SelectFeatureByExpressionDialogWrapper
 from asistente_ladm_col.gui.wizards.wizard_pages.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
 from asistente_ladm_col.gui.wizards.wizard_pages.select_source import SelectSource
 from asistente_ladm_col.utils.crs_utils import get_crs_authid
@@ -79,8 +80,11 @@ class CreateExtAddressSurveyWizard(QWizard, metaclass=SignalDisconnectableMetaWi
         self.__manual_feature_creator.register_observer(self)
 
         # map
-        self.__feature_on_map_selector = SelectFeaturesOnMapWrapper(self.iface, self.logger, False)
-        self.__feature_on_map_selector.register_observer(self)
+        self.__feature_selector_on_map = SelectFeaturesOnMapWrapper(self.iface, self.logger, False)
+        self.__feature_selector_on_map.register_observer(self)
+
+        self.__feature_selector_by_expression = SelectFeatureByExpressionDialogWrapper(self.iface)
+        self.__feature_selector_by_expression.register_observer(self)
 
     # (absWizardFactory)
     def set_ready_only_field(self, read_only=True):
@@ -151,7 +155,7 @@ class CreateExtAddressSurveyWizard(QWizard, metaclass=SignalDisconnectableMetaWi
         if show_message:
             self.logger.info_msg(__name__, message)
 
-        self.__feature_on_map_selector.init_map_tool()
+        self.__feature_selector_on_map.init_map_tool()
 
         self.rollback_in_layers_with_empty_editing_buffer()
         self.set_finalize_geometry_creation_enabled_emitted.emit(False)
@@ -171,20 +175,14 @@ class CreateExtAddressSurveyWizard(QWizard, metaclass=SignalDisconnectableMetaWi
 
     # (spatialWizardFactory)
     def disconnect_signals(self):
-        # if isinstance(self, SelectFeatureByExpressionDialogWrapper):
-        self.disconnect_signals_select_features_by_expression()
-
-        # if isinstance(self, SelectFeaturesOnMapWrapper):
-        self.disconnect_signals_controls_select_features_on_map()
-        self.__feature_on_map_selector.disconnect_signals()
+        self.disconnect_signals_of_feature_selector_buttons()
+        self.__feature_selector_on_map.disconnect_signals()
         self.disconnect_signals_will_be_deleted()
 
         try:
             self._layers[self.EDITING_LAYER_NAME].committedFeaturesAdded.disconnect(self.finish_feature_creation)
         except:
             pass
-
-        self.disconnect_signals_map_interaction_expansion()
 
     # (absWizardFactory)
     def finish_feature_creation(self, layerId, features):
@@ -314,14 +312,6 @@ class CreateExtAddressSurveyWizard(QWizard, metaclass=SignalDisconnectableMetaWi
                                                  "'{}' tool has been closed because when try to create {} it was not possible to associate a space unit.").format(self.WIZARD_TOOL_NAME, self.EDITING_LAYER_NAME)
             self.close_wizard(message)
 
-    # ------------------------------------------>>>  SelectFeatureByExpressionDialogWrapper         ACA ACKA ACA
-    def select_features_by_expression(self, layer):
-        self.iface.setActiveLayer(layer)
-        dlg_expression_selection = QgsExpressionSelectionDialog(layer)
-        layer.selectionChanged.connect(self.check_selected_features)
-        dlg_expression_selection.exec()
-        layer.selectionChanged.disconnect(self.check_selected_features)
-
     # ------------------------------------------>>>  SelectFeaturesOnMapWrapper
     def disconnect_signals_will_be_deleted(self):
         for layer_name in self._layers:
@@ -355,13 +345,6 @@ class CreateExtAddressSurveyWizard(QWizard, metaclass=SignalDisconnectableMetaWi
 
         self.iface.actionRollbackAllEdits().setVisible(visible)
         self.iface.actionRollbackEdits().setVisible(visible)
-
-    def disconnect_signals_map_interaction_expansion(self):
-        for layer_name in self._layers:
-            try:
-                self._layers[layer_name].willBeDeleted.disconnect(self.layer_removed)
-            except:
-                pass
 
     def layer_removed(self):
         message = QCoreApplication.translate("WizardTranslations",
@@ -514,10 +497,13 @@ class CreateExtAddressSurveyWizard(QWizard, metaclass=SignalDisconnectableMetaWi
         else:
             self.button(self.FinishButton).setDisabled(True)
 
-    def disconnect_signals_select_features_by_expression(self):
+    def disconnect_signals_of_feature_selector_buttons(self):
         signals = [self.wizardPage2.btn_plot_expression.clicked,
                    self.wizardPage2.btn_building_expression.clicked,
-                   self.wizardPage2.btn_building_unit_expression.clicked]
+                   self.wizardPage2.btn_building_unit_expression.clicked,
+                   self.wizardPage2.btn_plot_map.clicked,
+                   self.wizardPage2.btn_building_map.clicked,
+                   self.wizardPage2.btn_building_unit_map.clicked]
 
         for signal in signals:
             try:
@@ -526,9 +512,9 @@ class CreateExtAddressSurveyWizard(QWizard, metaclass=SignalDisconnectableMetaWi
                 pass
 
     def register_select_features_by_expression(self):
-        self.wizardPage2.btn_plot_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.LC_PLOT_T]))
-        self.wizardPage2.btn_building_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.LC_BUILDING_T]))
-        self.wizardPage2.btn_building_unit_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.LC_BUILDING_UNIT_T]))
+        self.wizardPage2.btn_plot_expression.clicked.connect(partial(self.__feature_selector_by_expression.select_features_by_expression, self._layers[self.names.LC_PLOT_T]))
+        self.wizardPage2.btn_building_expression.clicked.connect(partial(self.__feature_selector_by_expression.select_features_by_expression, self._layers[self.names.LC_BUILDING_T]))
+        self.wizardPage2.btn_building_unit_expression.clicked.connect(partial(self.__feature_selector_by_expression.select_features_by_expression, self._layers[self.names.LC_BUILDING_UNIT_T]))
 
     def register_select_feature_on_map(self):
         self.wizardPage2.btn_plot_map.clicked.connect(self.btn_plot_map_click)
@@ -538,7 +524,7 @@ class CreateExtAddressSurveyWizard(QWizard, metaclass=SignalDisconnectableMetaWi
     def __call_feature_on_map_selector(self, layer):
         self.setVisible(False)  # Make wizard disappear
         self._current_layer = layer
-        self.__feature_on_map_selector.select_features_on_map(layer)
+        self.__feature_selector_on_map.select_features_on_map(layer)
 
     def btn_plot_map_click(self):
         self.__call_feature_on_map_selector(self._layers[self.names.LC_PLOT_T])
@@ -548,17 +534,6 @@ class CreateExtAddressSurveyWizard(QWizard, metaclass=SignalDisconnectableMetaWi
 
     def btn_building_unit_map_click(self):
         self.__call_feature_on_map_selector(self._layers[self.names.LC_BUILDING_UNIT_T])
-
-    def disconnect_signals_controls_select_features_on_map(self):
-        signals = [self.wizardPage2.btn_plot_map.clicked,
-                   self.wizardPage2.btn_building_map.clicked,
-                   self.wizardPage2.btn_building_unit_map.clicked]
-
-        for signal in signals:
-            try:
-                signal.disconnect()
-            except:
-                pass
 
     def post_save(self, features):
         message = QCoreApplication.translate("WizardTranslations",

@@ -16,6 +16,8 @@ from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.config.translation_strings import TranslatableConfigStrings
 from asistente_ladm_col.gui.wizards.wizard_pages.asistente_wizard_page import AsistenteWizardPage
 from asistente_ladm_col.gui.wizards.wizard_pages.logic import Logic
+from asistente_ladm_col.gui.wizards.wizard_pages.select_features_by_expression_dialog_wrapper import \
+    SelectFeatureByExpressionDialogWrapper
 from asistente_ladm_col.gui.wizards.wizard_pages.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
 from asistente_ladm_col.gui.wizards.wizard_pages.select_source import SelectSource
 from asistente_ladm_col.utils.qt_utils import disable_next_wizard, enable_next_wizard
@@ -60,8 +62,11 @@ class CreatePlotSurveyWizard(QWizard):
 
     def __init_new_items(self):
         # map
-        self.__feature_on_map_selector = SelectFeaturesOnMapWrapper(self.iface, self.logger)
-        self.__feature_on_map_selector.register_observer(self)
+        self.__feature_selector_on_map = SelectFeaturesOnMapWrapper(self.iface, self.logger)
+        self.__feature_selector_on_map.register_observer(self)
+
+        self.__feature_selector_by_expression = SelectFeatureByExpressionDialogWrapper(self.iface)
+        self.__feature_selector_by_expression.register_observer(self)
 
     def set_ready_only_field(self, read_only=True):
         if self._layers[self.EDITING_LAYER_NAME] is not None:
@@ -127,7 +132,7 @@ class CreatePlotSurveyWizard(QWizard):
             self.logger.info_msg(__name__, message)
 
         # if isinstance(self, SelectFeaturesOnMapWrapper):
-        self.__feature_on_map_selector.init_map_tool()
+        self.__feature_selector_on_map.init_map_tool()
 
         self.rollback_in_layers_with_empty_editing_buffer()
         self.disconnect_signals()
@@ -146,11 +151,8 @@ class CreatePlotSurveyWizard(QWizard):
     # (wizardFactory)
     def disconnect_signals(self):
         # if isinstance(self, SelectFeatureByExpressionDialogWrapper):
-        self.disconnect_signals_select_features_by_expression()
-
-        # if isinstance(self, SelectFeaturesOnMapWrapper):
-        self.disconnect_signals_controls_select_features_on_map()
-        self.__feature_on_map_selector.disconnect_signals()
+        self.disconnect_signals_of_feature_selector_buttons()
+        self.__feature_selector_on_map.disconnect_signals()
         self.disconnect_signals_will_be_deleted()
 
         try:
@@ -298,9 +300,10 @@ class CreatePlotSurveyWizard(QWizard):
 
         self.button(self.FinishButton).setEnabled(has_selected_boundaries)
 
-    def disconnect_signals_select_features_by_expression(self):
+    def disconnect_signals_of_feature_selector_buttons(self):
         signals = [self.wizardPage2.btn_expression.clicked,
-                   self.wizardPage2.btn_select_all.clicked]
+                   self.wizardPage2.btn_select_all.clicked,
+                   self.wizardPage2.btn_map.clicked]
 
         for signal in signals:
             try:
@@ -309,7 +312,7 @@ class CreatePlotSurveyWizard(QWizard):
                 pass
 
     def register_select_features_by_expression(self):
-        self.wizardPage2.btn_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.LC_BOUNDARY_T]))
+        self.wizardPage2.btn_expression.clicked.connect(partial(self.__feature_selector_by_expression.select_features_by_expression, self._layers[self.names.LC_BOUNDARY_T]))
         self.wizardPage2.btn_select_all.clicked.connect(partial(self.select_all_features, self._layers[self.names.LC_BOUNDARY_T]))
 
     def register_select_feature_on_map(self):
@@ -317,16 +320,7 @@ class CreatePlotSurveyWizard(QWizard):
 
     def btn_map_click(self):
         self.setVisible(False)  # Make wizard disappear
-        self.__feature_on_map_selector.select_features_on_map(self._layers[self.names.LC_BOUNDARY_T])
-
-    def disconnect_signals_controls_select_features_on_map(self):
-        signals = [self.wizardPage2.btn_map.clicked]
-
-        for signal in signals:
-            try:
-                signal.disconnect()
-            except:
-                pass
+        self.__feature_selector_on_map.select_features_on_map(self._layers[self.names.LC_BOUNDARY_T])
 
     def create_plots_from_boundaries(self):
         selected_boundaries = self._layers[self.names.LC_BOUNDARY_T].selectedFeatures()

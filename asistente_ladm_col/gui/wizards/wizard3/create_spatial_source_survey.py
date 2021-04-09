@@ -16,6 +16,8 @@ from asistente_ladm_col.config.translation_strings import TranslatableConfigStri
 from asistente_ladm_col.gui.wizards.wizard_pages.asistente_wizard_page import AsistenteWizardPage
 from asistente_ladm_col.gui.wizards.wizard_pages.create_manually import CreateManually
 from asistente_ladm_col.gui.wizards.wizard_pages.logic import Logic
+from asistente_ladm_col.gui.wizards.wizard_pages.select_features_by_expression_dialog_wrapper import \
+    SelectFeatureByExpressionDialogWrapper
 from asistente_ladm_col.gui.wizards.wizard_pages.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
 from asistente_ladm_col.gui.wizards.wizard_pages.select_source import SelectSource
 from asistente_ladm_col.utils.qt_utils import disable_next_wizard, enable_next_wizard
@@ -24,7 +26,7 @@ from asistente_ladm_col.utils.utils import show_plugin_help
 from qgis.gui import QgsExpressionSelectionDialog
 
 
-class CreateSpatialSourceSurveyWizard(QWizard):
+class CreateSpatialSourceSurveyWizard: #(QWizard):
     update_wizard_is_open_flag = pyqtSignal(bool)
 
     def __init__(self, iface, db, wizard_settings):
@@ -56,8 +58,6 @@ class CreateSpatialSourceSurveyWizard(QWizard):
         self.init_gui()
 
         # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>>>>> map tool
-        self.logger = Logger()
-
         self.__init_new_items()
 
     def __init_new_items(self):
@@ -67,8 +67,11 @@ class CreateSpatialSourceSurveyWizard(QWizard):
         self.__manual_feature_creator.register_observer(self)
 
         # map
-        self.__feature_on_map_selector = SelectFeaturesOnMapWrapper(self.iface, self.logger)
-        self.__feature_on_map_selector.register_observer(self)
+        self.__feature_selector_on_map = SelectFeaturesOnMapWrapper(self.iface, self.logger)
+        self.__feature_selector_on_map.register_observer(self)
+
+        self.__feature_selector_by_expression = SelectFeatureByExpressionDialogWrapper(self.iface)
+        self.__feature_selector_by_expression.register_observer(self)
 
     def set_ready_only_field(self, read_only=True):
         if self._layers[self.EDITING_LAYER_NAME] is not None:
@@ -132,7 +135,7 @@ class CreateSpatialSourceSurveyWizard(QWizard):
             self.logger.info_msg(__name__, message)
 
         # if isinstance(self, SelectFeaturesOnMapWrapper):
-        self.__feature_on_map_selector.init_map_tool()
+        self.__feature_selector_on_map.init_map_tool()
 
         self.rollback_in_layers_with_empty_editing_buffer()
         self.disconnect_signals()
@@ -151,11 +154,8 @@ class CreateSpatialSourceSurveyWizard(QWizard):
     # (wizardFactory)
     def disconnect_signals(self):
         # if isinstance(self, SelectFeatureByExpressionDialogWrapper):
-        self.disconnect_signals_select_features_by_expression()
-
-        # if isinstance(self, SelectFeaturesOnMapWrapper):
-        self.disconnect_signals_controls_select_features_on_map()
-        self.__feature_on_map_selector.disconnect_signals()
+        self.disconnect_signals_of_feature_selector_buttons()
+        self.__feature_selector_on_map.disconnect_signals()
         self.disconnect_signals_will_be_deleted()
 
         try:
@@ -226,44 +226,6 @@ class CreateSpatialSourceSurveyWizard(QWizard):
         settings = QSettings()
         settings.setValue(self.wizard_config[WIZARD_QSETTINGS][WIZARD_QSETTINGS_LOAD_DATA_TYPE], 'create_manually' if self.wizardPage1.enabled_create_manually else 'refactor')
 
-    def create_manually(self):
-        # self.prepare_feature_creation_layers()
-        self.connect_on_removing_layers()
-        result = True
-        if result:
-            # --------------------------------------- self.edit_feature()
-            # selecciona la capa
-            self.iface.layerTreeView().setCurrentLayer(self._layers[self.EDITING_LAYER_NAME])
-            # agrega el evento
-            self._layers[self.EDITING_LAYER_NAME].committedFeaturesAdded.connect(self.finish_feature_creation)
-            # ---------------------------------------++++ self.open_form(self._layers[self.EDITING_LAYER_NAME])
-            layer = self._layers[self.EDITING_LAYER_NAME]
-            if not layer.isEditable():
-                layer.startEditing()
-
-            # --------------------------------------------++++ self.exec_form(layer)
-            feature = self.app.core.get_new_feature(layer)  # self.get_feature_exec_form(layer)
-            dialog = self.iface.getFeatureForm(layer, feature)
-            dialog.rejected.connect(self.form_rejected)
-            dialog.setModal(True)
-
-            if dialog.exec_():
-                # pass  self.exec_form_advanced(layer)
-                saved = layer.commitChanges()
-
-                if not saved:
-                    layer.rollBack()
-                    self.logger.warning_msg(__name__, QCoreApplication.translate("WizardTranslations",
-                                                                                 "Error while saving changes. {} could not be created.").format(
-                        self.WIZARD_FEATURE_NAME))
-                    for e in layer.commitErrors():
-                        self.logger.warning(__name__, "Commit error: {}".format(e))
-            else:
-                layer.rollBack()
-            self.iface.mapCanvas().refresh()
-        else:
-            self.close_wizard(show_message=False)
-
     # (absWizardFactory)
     def prepare_feature_creation(self):
         if self.prepare_feature_creation_layers():
@@ -281,14 +243,6 @@ class CreateSpatialSourceSurveyWizard(QWizard):
     def exec_form_advanced(self, layer):
         pass
 
-    # ------------------------------------------>>>  SelectFeatureByExpressionDialogWrapper
-    def select_features_by_expression(self, layer):
-        self.iface.setActiveLayer(layer)
-        dlg_expression_selection = QgsExpressionSelectionDialog(layer)
-        layer.selectionChanged.connect(self.check_selected_features)
-        dlg_expression_selection.exec()
-        layer.selectionChanged.disconnect(self.check_selected_features)
-
     # ------------------------------------------>>>  SelectFeaturesOnMapWrapper
     # (map)
     def disconnect_signals_will_be_deleted(self):
@@ -298,7 +252,7 @@ class CreateSpatialSourceSurveyWizard(QWizard):
             except:
                 pass
 
-    def map_tool_changed(self, new_tool, old_tool):
+    def map_tool_changed(self):
         message = QCoreApplication.translate("WizardTranslations",
                                              "'{}' tool has been closed because the map tool change.").format(self.WIZARD_TOOL_NAME)
         self.close_wizard(message)
@@ -341,55 +295,13 @@ class CreateSpatialSourceSurveyWizard(QWizard):
         else:
             self.button(self.FinishButton).setDisabled(True)
 
-    def disconnect_signals_select_features_by_expression(self):
+    def disconnect_signals_of_feature_selector_buttons(self):
         signals = [self.wizardPage2.btn_plot_expression.clicked,
                    self.wizardPage2.btn_boundary_expression.clicked,
                    self.wizardPage2.btn_boundary_point_expression.clicked,
                    self.wizardPage2.btn_survey_point_expression.clicked,
-                   self.wizardPage2.btn_control_point_expression.clicked]
-
-        for signal in signals:
-            try:
-                signal.disconnect()
-            except:
-                pass
-
-    def register_select_features_by_expression(self):
-        self.wizardPage2.btn_plot_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.LC_PLOT_T]))
-        self.wizardPage2.btn_boundary_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.LC_BOUNDARY_T]))
-        self.wizardPage2.btn_boundary_point_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.LC_BOUNDARY_POINT_T]))
-        self.wizardPage2.btn_survey_point_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.LC_SURVEY_POINT_T]))
-        self.wizardPage2.btn_control_point_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.LC_CONTROL_POINT_T]))
-
-    def register_select_feature_on_map(self):
-        self.wizardPage2.btn_plot_map.clicked.connect(self.btn_plot_map_click)
-        self.wizardPage2.btn_boundary_map.clicked.connect(self.btn_boundary_map_click)
-        self.wizardPage2.btn_boundary_point_map.clicked.connect(self.btn_boundary_point_map_click)
-        self.wizardPage2.btn_survey_point_map.clicked.connect(self.btn_survey_point_map_click)
-        self.wizardPage2.btn_control_point_map.clicked.connect(self.btn_control_point_map_click)
-
-    def btn_plot_map_click(self):
-        self.setVisible(False)  # Make wizard disappear
-        self.__feature_on_map_selector.select_features_on_map(self._layers[self.names.LC_PLOT_T])
-
-    def btn_boundary_map_click(self):
-        self.setVisible(False)  # Make wizard disappear
-        self.__feature_on_map_selector.select_features_on_map(self._layers[self.names.LC_BOUNDARY_T])
-
-    def btn_boundary_point_map_click(self):
-        self.setVisible(False)  # Make wizard disappear
-        self.__feature_on_map_selector.select_features_on_map(self._layers[self.names.LC_BOUNDARY_POINT_T])
-
-    def btn_survey_point_map_click(self):
-        self.setVisible(False)
-        self.__feature_on_map_selector.select_features_on_map(self._layers[self.names.LC_SURVEY_POINT_T])
-
-    def btn_control_point_map_click(self):
-        self.setVisible(False)
-        self.__feature_on_map_selector.select_features_on_map(self._layers[self.names.LC_CONTROL_POINT_T])
-
-    def disconnect_signals_controls_select_features_on_map(self):
-        signals = [self.wizardPage2.btn_plot_map.clicked,
+                   self.wizardPage2.btn_control_point_expression.clicked,
+                   self.wizardPage2.btn_plot_map.clicked,
                    self.wizardPage2.btn_boundary_map.clicked,
                    self.wizardPage2.btn_boundary_point_map.clicked,
                    self.wizardPage2.btn_survey_point_map.clicked,
@@ -400,6 +312,40 @@ class CreateSpatialSourceSurveyWizard(QWizard):
                 signal.disconnect()
             except:
                 pass
+
+    def register_select_features_by_expression(self):
+        self.wizardPage2.btn_plot_expression.clicked.connect(partial(self.__feature_selector_by_expression.select_features_by_expression, self._layers[self.names.LC_PLOT_T]))
+        self.wizardPage2.btn_boundary_expression.clicked.connect(partial(self.__feature_selector_by_expression.select_features_by_expression, self._layers[self.names.LC_BOUNDARY_T]))
+        self.wizardPage2.btn_boundary_point_expression.clicked.connect(partial(self.__feature_selector_by_expression.select_features_by_expression, self._layers[self.names.LC_BOUNDARY_POINT_T]))
+        self.wizardPage2.btn_survey_point_expression.clicked.connect(partial(self.__feature_selector_by_expression.select_features_by_expression, self._layers[self.names.LC_SURVEY_POINT_T]))
+        self.wizardPage2.btn_control_point_expression.clicked.connect(partial(self.__feature_selector_by_expression.select_features_by_expression, self._layers[self.names.LC_CONTROL_POINT_T]))
+
+    def register_select_feature_on_map(self):
+        self.wizardPage2.btn_plot_map.clicked.connect(self.btn_plot_map_click)
+        self.wizardPage2.btn_boundary_map.clicked.connect(self.btn_boundary_map_click)
+        self.wizardPage2.btn_boundary_point_map.clicked.connect(self.btn_boundary_point_map_click)
+        self.wizardPage2.btn_survey_point_map.clicked.connect(self.btn_survey_point_map_click)
+        self.wizardPage2.btn_control_point_map.clicked.connect(self.btn_control_point_map_click)
+
+    def btn_plot_map_click(self):
+        self.setVisible(False)  # Make wizard disappear
+        self.__feature_selector_on_map.select_features_on_map(self._layers[self.names.LC_PLOT_T])
+
+    def btn_boundary_map_click(self):
+        self.setVisible(False)  # Make wizard disappear
+        self.__feature_selector_on_map.select_features_on_map(self._layers[self.names.LC_BOUNDARY_T])
+
+    def btn_boundary_point_map_click(self):
+        self.setVisible(False)  # Make wizard disappear
+        self.__feature_selector_on_map.select_features_on_map(self._layers[self.names.LC_BOUNDARY_POINT_T])
+
+    def btn_survey_point_map_click(self):
+        self.setVisible(False)
+        self.__feature_selector_on_map.select_features_on_map(self._layers[self.names.LC_SURVEY_POINT_T])
+
+    def btn_control_point_map_click(self):
+        self.setVisible(False)
+        self.__feature_selector_on_map.select_features_on_map(self._layers[self.names.LC_CONTROL_POINT_T])
 
     def post_save(self, features):
         message = QCoreApplication.translate("WizardTranslations",

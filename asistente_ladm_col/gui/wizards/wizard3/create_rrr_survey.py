@@ -5,7 +5,6 @@ from qgis.PyQt.QtCore import (QCoreApplication,
                               QSettings,
                               pyqtSignal)
 from qgis.PyQt.QtWidgets import QWizard
-from qgis.core import QgsMapLayerProxyModel
 from qgis.core import QgsVectorLayerUtils
 from asistente_ladm_col import Logger
 from asistente_ladm_col.app_interface import AppInterface
@@ -17,11 +16,11 @@ from asistente_ladm_col.config.translation_strings import TranslatableConfigStri
 from asistente_ladm_col.gui.wizards.wizard_pages.asistente_wizard_page import AsistenteWizardPage
 from asistente_ladm_col.gui.wizards.wizard_pages.create_manually import CreateManually
 from asistente_ladm_col.gui.wizards.wizard_pages.logic import Logic
+from asistente_ladm_col.gui.wizards.wizard_pages.select_features_by_expression_dialog_wrapper import \
+    SelectFeatureByExpressionDialogWrapper
 from asistente_ladm_col.gui.wizards.wizard_pages.select_source import SelectSource
 from asistente_ladm_col.utils.qt_utils import disable_next_wizard, enable_next_wizard
-from asistente_ladm_col.utils.ui import load_ui
 from asistente_ladm_col.utils.utils import show_plugin_help
-from qgis.gui import QgsExpressionSelectionDialog
 
 
 class CreateRRRSurveyWizard(QWizard):
@@ -63,6 +62,9 @@ class CreateRRRSurveyWizard(QWizard):
                                                        self._layers[self.EDITING_LAYER_NAME], self.WIZARD_FEATURE_NAME)
 
         self.__manual_feature_creator.register_observer(self)
+
+        self.__feature_selector_by_expression = SelectFeatureByExpressionDialogWrapper(self.iface)
+        self.__feature_selector_by_expression.register_observer(self)
 
     # (absWizardFactory)
     def set_ready_only_field(self, read_only=True):
@@ -149,7 +151,7 @@ class CreateRRRSurveyWizard(QWizard):
     # 3 close_wizard
     def disconnect_signals(self):
         # if isinstance(self, SelectFeatureByExpressionDialogWrapper):
-        self.disconnect_signals_select_features_by_expression()
+        self.disconnect_signals_of_feature_selector_buttons()
 
         try:
             self._layers[self.EDITING_LAYER_NAME].committedFeaturesAdded.disconnect(self.finish_feature_creation)
@@ -233,14 +235,6 @@ class CreateRRRSurveyWizard(QWizard):
     def exec_form_advanced(self, layer):
         pass
 
-    # ------------------------------------------>>>  SelectFeatureByExpressionDialogWrapper
-    def select_features_by_expression(self, layer):
-        self.iface.setActiveLayer(layer)
-        dlg_expression_selection = QgsExpressionSelectionDialog(layer)
-        layer.selectionChanged.connect(self.check_selected_features)
-        dlg_expression_selection.exec()
-        layer.selectionChanged.disconnect(self.check_selected_features)
-
     # ------------------------------------------>>> THIS CLASS
     def check_selected_features(self):
         # Check selected features in administrative source layer
@@ -251,7 +245,7 @@ class CreateRRRSurveyWizard(QWizard):
             self.wizardPage2.lb_admin_source.setText(QCoreApplication.translate("WizardTranslations", "<b>Administrative Source(s)</b>: 0 Features Selected"))
             self.button(self.FinishButton).setDisabled(True)
 
-    def disconnect_signals_select_features_by_expression(self):
+    def disconnect_signals_of_feature_selector_buttons(self):
         signals = [self.wizardPage2.btn_expression.clicked]
 
         for signal in signals:
@@ -261,7 +255,7 @@ class CreateRRRSurveyWizard(QWizard):
                 pass
 
     def register_select_features_by_expression(self):
-        self.wizardPage2.btn_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.LC_ADMINISTRATIVE_SOURCE_T]))
+        self.wizardPage2.btn_expression.clicked.connect(partial(self.__feature_selector_by_expression.select_features_by_expression, self._layers[self.names.LC_ADMINISTRATIVE_SOURCE_T]))
 
     def post_save(self, features):
         message = QCoreApplication.translate("WizardTranslations",

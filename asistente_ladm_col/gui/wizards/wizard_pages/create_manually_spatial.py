@@ -27,10 +27,6 @@ class CreateManuallySpatial(QObject):
     def register_observer(self, observer):
         self.__observer = observer
 
-    # def __notify_feature_editing(self, create_manually_params):
-    #     if self.__observer:
-    #         self.__observer.feature_editing(create_manually_params)
-
     def __register_finish_feature(self):
         if self.__observer:
             self.__layer.committedFeaturesAdded.connect(self.__observer.finish_feature_creation)
@@ -60,13 +56,6 @@ class CreateManuallySpatial(QObject):
             self.__observer.zero_or_many_features_added(zero_or_many_features_added_params)
 
     def create_manually(self, layer_to_edit=None):
-        #  params = {"layer": self.__edited_layer, "cancel": False}
-
-        #     edit_feature(): *******************************************************************
-        #  self.__notify_feature_editing(params)
-
-        #  if not params['cancel']:
-        #    return
         if layer_to_edit:
             self.__layer_to_edit = layer_to_edit
 
@@ -102,14 +91,14 @@ class CreateManuallySpatial(QObject):
             feature = [value for index, value in self.__layer_to_edit.editBuffer().addedFeatures().items()][0]
 
             if feature.geometry().isGeosValid():
-                self.exec_form()
+                self.__exec_form()
             else:
                 self.__notify_invalid_geometry({"layer": self.__layer_to_edit})
         elif self.__layer_to_edit.editBuffer():
             self.__notify_zero_or_many_features_added(
                 {"len_features_added": len(self.__layer_to_edit.editBuffer().addedFeatures()), "layer": self.__layer_to_edit})
 
-    def exec_form(self):
+    def __exec_form(self):
         self.__notify_geometry_finalized({"finalized": False})
 
         params = {"feature": None, "layer": self.__layer_to_edit, "customized_feature": False}

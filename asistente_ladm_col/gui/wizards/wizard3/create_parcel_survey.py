@@ -17,6 +17,8 @@ from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.config.translation_strings import TranslatableConfigStrings
 from asistente_ladm_col.gui.wizards.wizard_pages.asistente_wizard_page import AsistenteWizardPage
 from asistente_ladm_col.gui.wizards.wizard_pages.logic import Logic
+from asistente_ladm_col.gui.wizards.wizard_pages.select_features_by_expression_dialog_wrapper import \
+    SelectFeatureByExpressionDialogWrapper
 from asistente_ladm_col.gui.wizards.wizard_pages.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
 from asistente_ladm_col.gui.wizards.wizard_pages.select_source import SelectSource
 from asistente_ladm_col.utils.qt_utils import disable_next_wizard, enable_next_wizard
@@ -66,8 +68,11 @@ class CreateParcelSurveyWizard(QWizard):
 
     def __init_new_items(self):
         # map
-        self.__feature_on_map_selector = SelectFeaturesOnMapWrapper(self.iface, self.logger, False)
-        self.__feature_on_map_selector.register_observer(self)
+        self.__feature_selector_on_map = SelectFeaturesOnMapWrapper(self.iface, self.logger, False)
+        self.__feature_selector_on_map.register_observer(self)
+
+        self.__feature_selector_by_expression = SelectFeatureByExpressionDialogWrapper(self.iface)
+        self.__feature_selector_by_expression.register_observer(self)
 
     # (absWizardFactory)
     def set_ready_only_field(self, read_only=True):
@@ -139,7 +144,7 @@ class CreateParcelSurveyWizard(QWizard):
             self.logger.info_msg(__name__, message)
 
         # if isinstance(self, SelectFeaturesOnMapWrapper):
-        self.__feature_on_map_selector.init_map_tool()
+        self.__feature_selector_on_map.init_map_tool()
 
         self.rollback_in_layers_with_empty_editing_buffer()
         self.disconnect_signals()
@@ -159,10 +164,7 @@ class CreateParcelSurveyWizard(QWizard):
     def disconnect_signals(self):
         # if isinstance(self, SelectFeatureByExpressionDialogWrapper):
         self.disconnect_signals_select_features_by_expression()
-
-        # if isinstance(self, SelectFeaturesOnMapWrapper):
-        self.disconnect_signals_controls_select_features_on_map()
-        self.__feature_on_map_selector.disconnect_signals()
+        self.__feature_selector_on_map.disconnect_signals()
         self.disconnect_signals_will_be_deleted()
 
         try:
@@ -325,32 +327,12 @@ class CreateParcelSurveyWizard(QWizard):
                                              "'{}' tool has been closed because you just closed the form.").format(self.WIZARD_TOOL_NAME)
         self.close_wizard(message)
 
-    # ------------------------------------------>>>  SelectFeatureByExpressionDialogWrapper
-    def select_features_by_expression(self, layer):
-        self.iface.setActiveLayer(layer)
-        dlg_expression_selection = QgsExpressionSelectionDialog(layer)
-        layer.selectionChanged.connect(self.check_selected_features)
-        dlg_expression_selection.exec()
-        layer.selectionChanged.disconnect(self.check_selected_features)
-
     # ------------------------------------------>>>  SelectFeaturesOnMapWrapper
     # (map)
     def disconnect_signals_will_be_deleted(self):
         for layer_name in self._layers:
             try:
                 self._layers[layer_name].willBeDeleted.disconnect(self.layer_removed)
-            except:
-                pass
-
-    # (this class)
-    def disconnect_signals_controls_select_features_on_map(self):
-        signals = [self.wizardPage2.btn_plot_map.clicked,
-                   self.wizardPage2.btn_building_map.clicked,
-                   self.wizardPage2.btn_building_unit_map.clicked]
-
-        for signal in signals:
-            try:
-                signal.disconnect()
             except:
                 pass
 
@@ -414,7 +396,10 @@ class CreateParcelSurveyWizard(QWizard):
         signals = [self.wizardPage2.btn_plot_expression.clicked,
                    self.wizardPage2.btn_building_expression.clicked,
                    self.wizardPage2.btn_building_unit_expression.clicked,
-                   self.wizardPage2.cb_parcel_type.currentTextChanged]
+                   self.wizardPage2.cb_parcel_type.currentTextChanged,
+                   self.wizardPage2.btn_plot_map.clicked,
+                   self.wizardPage2.btn_building_map.clicked,
+                   self.wizardPage2.btn_building_unit_map.clicked]
 
         for signal in signals:
             try:
@@ -423,9 +408,9 @@ class CreateParcelSurveyWizard(QWizard):
                 pass
 
     def register_select_features_by_expression(self):
-        self.wizardPage2.btn_plot_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.LC_PLOT_T]))
-        self.wizardPage2.btn_building_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.LC_BUILDING_T]))
-        self.wizardPage2.btn_building_unit_expression.clicked.connect(partial(self.select_features_by_expression, self._layers[self.names.LC_BUILDING_UNIT_T]))
+        self.wizardPage2.btn_plot_expression.clicked.connect(partial(self.__feature_selector_by_expression.select_features_by_expression, self._layers[self.names.LC_PLOT_T]))
+        self.wizardPage2.btn_building_expression.clicked.connect(partial(self.__feature_selector_by_expression.select_features_by_expression, self._layers[self.names.LC_BUILDING_T]))
+        self.wizardPage2.btn_building_unit_expression.clicked.connect(partial(self.__feature_selector_by_expression.select_features_by_expression, self._layers[self.names.LC_BUILDING_UNIT_T]))
 
     def register_select_feature_on_map(self):
         self.wizardPage2.btn_plot_map.clicked.connect(self.btn_plot_map_click)
@@ -434,15 +419,15 @@ class CreateParcelSurveyWizard(QWizard):
 
     def btn_plot_map_click(self):
         self.setVisible(False)  # Make wizard disappear
-        self.__feature_on_map_selector.select_features_on_map(self._layers[self.names.LC_PLOT_T])
+        self.__feature_selector_on_map.select_features_on_map(self._layers[self.names.LC_PLOT_T])
 
     def btn_building_map_click(self):
         self.setVisible(False)  # Make wizard disappear
-        self.__feature_on_map_selector.select_features_on_map(self._layers[self.names.LC_BUILDING_T])
+        self.__feature_selector_on_map.select_features_on_map(self._layers[self.names.LC_BUILDING_T])
 
     def btn_building_unit_map_click(self):
         self.setVisible(False)  # Make wizard disappear
-        self.__feature_on_map_selector.select_features_on_map(self._layers[self.names.LC_BUILDING_UNIT_T])
+        self.__feature_selector_on_map.select_features_on_map(self._layers[self.names.LC_BUILDING_UNIT_T])
 
     def post_save(self, features):
         constraint_types_of_parcels = LayerConfig.get_constraint_types_of_parcels(self.names)
