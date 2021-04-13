@@ -1063,6 +1063,7 @@ class GeometryUtils(QObject):
             'INPUT': duplicate_nodes_layer,
             'FIELDS': [id_field, 'wkt_geom'],
             'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
+        GeometryUtils.create_spatial_index(unique_nodes_layer)  # spatial index is created for better performance
 
         return unique_nodes_layer
 

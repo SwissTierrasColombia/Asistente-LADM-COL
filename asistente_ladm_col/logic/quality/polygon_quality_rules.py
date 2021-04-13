@@ -1058,7 +1058,7 @@ class PolygonQualityRules:
                                             'SORT_ASCENDING': True,
                                             'SORT_NULLS_FIRST': False,
                                             'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
-
+        GeometryUtils.create_spatial_index(inner_rings_layer)  # spatial index is created for better performance
 
         id_field_idx = inner_rings_layer.fields().indexFromName(id_field)
         auto_idx = inner_rings_layer.fields().indexFromName('AUTO')
