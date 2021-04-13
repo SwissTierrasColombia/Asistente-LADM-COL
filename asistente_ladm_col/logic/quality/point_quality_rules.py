@@ -214,6 +214,7 @@ class PointQualityRules:
                 fs.append(f)
         del filter_fs
         boundary_nodes_layer.dataProvider().addFeatures(fs)
+        GeometryUtils.create_spatial_index(boundary_nodes_layer)  # spatial index is created for better performance
 
         # Spatial Join between boundary_points and boundary_nodes
         spatial_join_layer = processing.run("native:joinattributesbylocation",
