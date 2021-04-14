@@ -26,7 +26,7 @@ from asistente_ladm_col.utils.utils import show_plugin_help
 from qgis.gui import QgsExpressionSelectionDialog
 
 
-class CreateSpatialSourceSurveyWizard: #(QWizard):
+class CreateSpatialSourceSurveyWizard(QWizard):
     update_wizard_is_open_flag = pyqtSignal(bool)
 
     def __init__(self, iface, db, wizard_settings):
