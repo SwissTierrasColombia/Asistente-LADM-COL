@@ -254,7 +254,7 @@ Para usar el Asistente LADM-COL se requiere:
 
 <div class="seealso">
 <p class="admonition-title">TIP</p>
-<p>Se recomienda usar la versión v3.14.16 o superior. Para obtenerla diríjete a <a href="https://qgis.org/downloads/" target="_blank">la página de descargas de QGIS</a></p>
+<p>Con la versión actual del Asistente LADM-COL, se recomienda usar la versión v3.14.16 de QGIS. Para obtenerla diríjete a <a href="https://qgis.org/downloads/" target="_blank">la página de descargas de QGIS</a></p>
 </div>
 
 - El proceso puede ser observado gráficamete en el siguiente GIF:
