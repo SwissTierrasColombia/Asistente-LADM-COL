@@ -13,7 +13,9 @@ from asistente_ladm_col.config.general_config import WIZARD_UI, WIZARD_FEATURE_N
     WIZARD_QSETTINGS, WIZARD_QSETTINGS_LOAD_DATA_TYPE, WIZARD_HELP2, WIZARD_STRINGS
 from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.config.translation_strings import TranslatableConfigStrings
-from asistente_ladm_col.gui.wizards.wizard_pages.asistente_wizard_page import AsistenteWizardPage
+from asistente_ladm_col.gui.wizards.view.spatial_source_survey_view import SpatialSourceSurveyView
+from asistente_ladm_col.gui.wizards.view.view_enum import EnumTypeOfOption
+from asistente_ladm_col.gui.wizards.view.view_params import FeatureSelectedParams
 from asistente_ladm_col.gui.wizards.wizard_pages.create_manually import CreateManually
 from asistente_ladm_col.gui.wizards.wizard_pages.logic import Logic
 from asistente_ladm_col.gui.wizards.wizard_pages.select_features_by_expression_dialog_wrapper import \
@@ -21,9 +23,7 @@ from asistente_ladm_col.gui.wizards.wizard_pages.select_features_by_expression_d
 from asistente_ladm_col.gui.wizards.wizard_pages.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
 from asistente_ladm_col.gui.wizards.wizard_pages.select_source import SelectSource
 from asistente_ladm_col.utils.qt_utils import disable_next_wizard, enable_next_wizard
-from asistente_ladm_col.utils.select_map_tool import SelectMapTool
 from asistente_ladm_col.utils.utils import show_plugin_help
-from qgis.gui import QgsExpressionSelectionDialog
 
 
 class CreateSpatialSourceSurveyWizard(QWizard):
@@ -55,10 +55,15 @@ class CreateSpatialSourceSurveyWizard(QWizard):
 
         self.wizardPage1 = None
         self.wizardPage2 = None
-        self.init_gui()
+
 
         # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>>>>> map tool
         self.__init_new_items()
+
+        # TODO Change the name
+        self.__selectable_layers_by_type = None
+        self.__init_selectable_layer_by_type()
+        self.init_gui()
 
     def __init_new_items(self):
         self.__manual_feature_creator = CreateManually(self.iface, self.app, self.logger,
@@ -72,6 +77,16 @@ class CreateSpatialSourceSurveyWizard(QWizard):
 
         self.__feature_selector_by_expression = SelectFeatureByExpressionDialogWrapper(self.iface)
         self.__feature_selector_by_expression.register_observer(self)
+
+    # TODO Change the name
+    def __init_selectable_layer_by_type(self):
+        # TODO Change the name
+        self.__selectable_layers_by_type = dict()
+        self.__selectable_layers_by_type[EnumTypeOfOption.PLOT] = self._layers[self.names.LC_PLOT_T]
+        self.__selectable_layers_by_type[EnumTypeOfOption.BOUNDARY] = self._layers[self.names.LC_BOUNDARY_T]
+        self.__selectable_layers_by_type[EnumTypeOfOption.BOUNDARY_POINT] = self._layers[self.names.LC_BOUNDARY_POINT_T]
+        self.__selectable_layers_by_type[EnumTypeOfOption.SURVEY_POINT] = self._layers[self.names.LC_SURVEY_POINT_T]
+        self.__selectable_layers_by_type[EnumTypeOfOption.CONTROL_POINT] = self._layers[self.names.LC_CONTROL_POINT_T]
 
     def set_ready_only_field(self, read_only=True):
         if self._layers[self.EDITING_LAYER_NAME] is not None:
@@ -91,8 +106,11 @@ class CreateSpatialSourceSurveyWizard(QWizard):
         self.button(QWizard.HelpButton).clicked.connect(self.show_help)
         self.rejected.connect(self.close_wizard)
 
-        self.wizardPage2 = AsistenteWizardPage(self.wizard_config[WIZARD_UI])
+        self.__init_wizard_page()
         self.wizardPage1.controls_changed()
+
+        self.__set_feature_count()
+        self.__update_selected_feature_info(None)
 
         self.addPage(self.wizardPage1)
         self.addPage(self.wizardPage2)
@@ -122,7 +140,7 @@ class CreateSpatialSourceSurveyWizard(QWizard):
             finish_button_text = QCoreApplication.translate("WizardTranslations", "Create")
             self.wizardPage1.set_help_text(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP1])
 
-        self.wizardPage2.setButtonText(QWizard.FinishButton, finish_button_text)
+        self.setButtonText(QWizard.FinishButton, finish_button_text)
 
     # (absWizardFactory)
     def show_help(self):
@@ -153,8 +171,10 @@ class CreateSpatialSourceSurveyWizard(QWizard):
 
     # (wizardFactory)
     def disconnect_signals(self):
-        # if isinstance(self, SelectFeatureByExpressionDialogWrapper):
-        self.disconnect_signals_of_feature_selector_buttons()
+        self.wizardPage2.disconnect_signals()
+        self.__disconnect_signals_no_gui()
+
+    def __disconnect_signals_no_gui(self):
         self.__feature_selector_on_map.disconnect_signals()
         self.disconnect_signals_will_be_deleted()
 
@@ -172,25 +192,12 @@ class CreateSpatialSourceSurveyWizard(QWizard):
         self.close_wizard(message)
 
     def adjust_page_2_controls(self):
-        self.button(self.FinishButton).setDisabled(True)
-        self.wizardPage2.txt_help_page_2.setHtml(self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP2])
-        self.disconnect_signals()
+        self.__disconnect_signals_no_gui()
 
         # Load layers
         result = self.prepare_feature_creation_layers()
         if result is None:
             self.close_wizard(show_message=False)
-
-        # Check if a previous features are selected
-        self.check_selected_features()
-
-        # Register select features by expression
-        # if isinstance(self, SelectFeatureByExpressionDialogWrapper):
-        self.register_select_features_by_expression()
-
-        # Register select features on map
-        # if isinstance(self, SelectFeaturesOnMapWrapper):
-        self.register_select_feature_on_map()
 
     def prepare_feature_creation_layers(self):
         # if isinstance(self, SelectFeaturesOnMapWrapper):
@@ -278,74 +285,9 @@ class CreateSpatialSourceSurveyWizard(QWizard):
 
     # ------------------------------------------>>> THIS CLASS
     def check_selected_features(self):
-        # Check selected features in plot layer
-        self.wizardPage2.lb_plot.setText(QCoreApplication.translate("WizardTranslations", "<b>Plot(s)</b>: {count} Feature(s) Selected").format(count=self._layers[self.names.LC_PLOT_T].selectedFeatureCount()))
-        # Check selected features in boundary layer
-        self.wizardPage2.lb_boundary.setText(QCoreApplication.translate("WizardTranslations", "<b>Boundary(ies)</b>: {count} Feature(s) Selected").format(count=self._layers[self.names.LC_BOUNDARY_T].selectedFeatureCount()))
-        # Check selected features in boundary point layer
-        self.wizardPage2.lb_boundary_point.setText(QCoreApplication.translate("WizardTranslations", "<b>Boundary</b>: {count} Feature(s) Selected").format(count=self._layers[self.names.LC_BOUNDARY_POINT_T].selectedFeatureCount()))
-        # Check selected features in survey point layer
-        self.wizardPage2.lb_survey_point.setText(QCoreApplication.translate("WizardTranslations", "<b>Survey</b>: {count} Feature(s) Selected").format(count=self._layers[self.names.LC_SURVEY_POINT_T].selectedFeatureCount()))
-        # Check selected features in control point layer
-        self.wizardPage2.lb_control_point.setText(QCoreApplication.translate("WizardTranslations", "<b>Control</b>: {count} Feature(s) Selected").format(count=self._layers[self.names.LC_CONTROL_POINT_T].selectedFeatureCount()))
-
-        # Verifies that an feature has been selected
-        if self._layers[self.names.LC_PLOT_T].selectedFeatureCount() + self._layers[self.names.LC_BOUNDARY_T].selectedFeatureCount() + self._layers[self.names.LC_BOUNDARY_POINT_T].selectedFeatureCount() + self._layers[self.names.LC_SURVEY_POINT_T].selectedFeatureCount() + self._layers[self.names.LC_CONTROL_POINT_T].selectedFeatureCount() >= 1:
-            self.button(self.FinishButton).setDisabled(False)
-        else:
-            self.button(self.FinishButton).setDisabled(True)
-
-    def disconnect_signals_of_feature_selector_buttons(self):
-        signals = [self.wizardPage2.btn_plot_expression.clicked,
-                   self.wizardPage2.btn_boundary_expression.clicked,
-                   self.wizardPage2.btn_boundary_point_expression.clicked,
-                   self.wizardPage2.btn_survey_point_expression.clicked,
-                   self.wizardPage2.btn_control_point_expression.clicked,
-                   self.wizardPage2.btn_plot_map.clicked,
-                   self.wizardPage2.btn_boundary_map.clicked,
-                   self.wizardPage2.btn_boundary_point_map.clicked,
-                   self.wizardPage2.btn_survey_point_map.clicked,
-                   self.wizardPage2.btn_control_point_map.clicked]
-
-        for signal in signals:
-            try:
-                signal.disconnect()
-            except:
-                pass
-
-    def register_select_features_by_expression(self):
-        self.wizardPage2.btn_plot_expression.clicked.connect(partial(self.__feature_selector_by_expression.select_features_by_expression, self._layers[self.names.LC_PLOT_T]))
-        self.wizardPage2.btn_boundary_expression.clicked.connect(partial(self.__feature_selector_by_expression.select_features_by_expression, self._layers[self.names.LC_BOUNDARY_T]))
-        self.wizardPage2.btn_boundary_point_expression.clicked.connect(partial(self.__feature_selector_by_expression.select_features_by_expression, self._layers[self.names.LC_BOUNDARY_POINT_T]))
-        self.wizardPage2.btn_survey_point_expression.clicked.connect(partial(self.__feature_selector_by_expression.select_features_by_expression, self._layers[self.names.LC_SURVEY_POINT_T]))
-        self.wizardPage2.btn_control_point_expression.clicked.connect(partial(self.__feature_selector_by_expression.select_features_by_expression, self._layers[self.names.LC_CONTROL_POINT_T]))
-
-    def register_select_feature_on_map(self):
-        self.wizardPage2.btn_plot_map.clicked.connect(self.btn_plot_map_click)
-        self.wizardPage2.btn_boundary_map.clicked.connect(self.btn_boundary_map_click)
-        self.wizardPage2.btn_boundary_point_map.clicked.connect(self.btn_boundary_point_map_click)
-        self.wizardPage2.btn_survey_point_map.clicked.connect(self.btn_survey_point_map_click)
-        self.wizardPage2.btn_control_point_map.clicked.connect(self.btn_control_point_map_click)
-
-    def btn_plot_map_click(self):
-        self.setVisible(False)  # Make wizard disappear
-        self.__feature_selector_on_map.select_features_on_map(self._layers[self.names.LC_PLOT_T])
-
-    def btn_boundary_map_click(self):
-        self.setVisible(False)  # Make wizard disappear
-        self.__feature_selector_on_map.select_features_on_map(self._layers[self.names.LC_BOUNDARY_T])
-
-    def btn_boundary_point_map_click(self):
-        self.setVisible(False)  # Make wizard disappear
-        self.__feature_selector_on_map.select_features_on_map(self._layers[self.names.LC_BOUNDARY_POINT_T])
-
-    def btn_survey_point_map_click(self):
-        self.setVisible(False)
-        self.__feature_selector_on_map.select_features_on_map(self._layers[self.names.LC_SURVEY_POINT_T])
-
-    def btn_control_point_map_click(self):
-        self.setVisible(False)
-        self.__feature_selector_on_map.select_features_on_map(self._layers[self.names.LC_CONTROL_POINT_T])
+        self.__set_feature_count()
+        # TODO Change the name
+        self.__update_selected_feature_info(None)
 
     def post_save(self, features):
         message = QCoreApplication.translate("WizardTranslations",
@@ -457,3 +399,38 @@ class CreateSpatialSourceSurveyWizard(QWizard):
                                                    "The new spatial source (t_id={}) was successfully created and it wasn't associated with a spatial unit").format(spatial_source_id)
 
         return message
+
+    # wizardPage2
+    def feature_by_map_selected(self, feature_selected_params: FeatureSelectedParams):
+        layer = self.__selectable_layers_by_type[feature_selected_params.selected_type]
+        self.setVisible(False)  # Make wizard disappear
+        self.__feature_selector_on_map.select_features_on_map(layer)
+
+    def feature_by_expression_selected(self, feature_selected_params: FeatureSelectedParams):
+        layer = self.__selectable_layers_by_type[feature_selected_params.selected_type]
+        self.__feature_selector_by_expression.select_features_by_expression(layer)
+
+    def __init_wizard_page(self):
+        help_text = self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP2]
+        self.wizardPage2 = SpatialSourceSurveyView(self, help_text)
+
+    def __set_feature_count(self):
+        feature_count = dict()
+
+        for layer in self.__selectable_layers_by_type:
+            feature_count[layer] = self.__selectable_layers_by_type[layer].selectedFeatureCount()
+
+        self.wizardPage2.set_feature_count(feature_count)
+
+    def __update_selected_feature_info(self, selected_type):
+        is_finish_button_enabled = not self.__is_any_feature_selected()
+
+        self.wizardPage2.set_selected_item_style()
+
+        self.button(self.FinishButton).setDisabled(is_finish_button_enabled)
+
+    def __is_any_feature_selected(self):
+        for item_type in self.__selectable_layers_by_type:
+            if self.__selectable_layers_by_type[item_type].selectedFeatureCount():
+                return True
+        return False
