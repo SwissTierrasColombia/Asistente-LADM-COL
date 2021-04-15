@@ -83,7 +83,7 @@ class LineQualityRules:
                                  "There are no boundaries to check for overlaps!"), Qgis.Warning)
 
             else:
-                points_intersected = overlapping['native:extractbyexpression_2:Intersected_Points']
+                points_intersected = overlapping['ladm_col:copy_vector_layer_1:Intersected_Points']
                 lines_intersected = overlapping['native:extractbyexpression_3:Intersected_Lines']
 
                 if isinstance(points_intersected, QgsVectorLayer):

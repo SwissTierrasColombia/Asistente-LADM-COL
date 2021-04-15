@@ -1418,5 +1418,5 @@ class AppCoreInterface(QObject):
     def get_layer_copy(self, layer):
         res_copy = processing.run("ladm_col:copy_vector_layer",
                                   {'INPUT': layer,
-                                   'SINK': 'TEMPORARY_OUTPUT'})
+                                   'OUTPUT': 'TEMPORARY_OUTPUT'})
         return res_copy['OUTPUT']
