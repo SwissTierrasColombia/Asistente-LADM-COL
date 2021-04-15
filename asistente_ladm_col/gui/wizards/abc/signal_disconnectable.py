@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from qgis.PyQt.QtWidgets import QWizard
+from qgis.PyQt.QtWidgets import (QWizard, QWizardPage)
 
 
 class SignalDisconnectable(ABC):
@@ -9,4 +9,8 @@ class SignalDisconnectable(ABC):
 
 
 class SignalDisconnectableMetaWiz(type(SignalDisconnectable), type(QWizard)):
+    pass
+
+
+class SignalDisconnectableMetaWizPage(type(SignalDisconnectable), type(QWizardPage)):
     pass
