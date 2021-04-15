@@ -265,7 +265,7 @@ class GeometryUtils(QObject):
         dict_res = processing.run("model:Overlapping_Boundaries", {
                     'Boundary':line_layer,
                     'native:extractbyexpression_3:Intersected_Lines':'memory:',
-                    'native:extractbyexpression_2:Intersected_Points':'memory:'
+                    'ladm_col:copy_vector_layer_1:Intersected_Points':'memory:'
                 },
                 feedback=feedback)
 

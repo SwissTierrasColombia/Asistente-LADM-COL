@@ -19,7 +19,6 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsProcessing,
                        QgsProcessingAlgorithm,
                        QgsProcessingParameterVectorLayer,
-                       QgsProcessingOutputVectorLayer,
                        QgsProcessingParameterFeatureSink,
                        QgsFeatureSink)
 
@@ -30,7 +29,6 @@ class CopyVectorLayer(QgsProcessingAlgorithm):
     """
 
     INPUT = 'INPUT'
-    SINK = 'SINK'
     OUTPUT = 'OUTPUT'
 
     def __init__(self):
@@ -67,14 +65,8 @@ class CopyVectorLayer(QgsProcessingAlgorithm):
         )
         self.addParameter(
             QgsProcessingParameterFeatureSink(
-                self.SINK,
-                QCoreApplication.translate("CopyVectorLayer", "Copy of the vector layer")
-            )
-        )
-        self.addOutput(
-            QgsProcessingOutputVectorLayer(
                 self.OUTPUT,
-                QCoreApplication.translate("CopyVectorLayer", "Output layer")
+                QCoreApplication.translate("CopyVectorLayer", "Copy of the vector layer")
             )
         )
 
@@ -86,7 +78,7 @@ class CopyVectorLayer(QgsProcessingAlgorithm):
         )
         (sink, dest_id) = self.parameterAsSink(
             parameters,
-            self.SINK,
+            self.OUTPUT,
             context,
             source.fields(),
             source.wkbType(),
