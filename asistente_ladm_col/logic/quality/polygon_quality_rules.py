@@ -1045,6 +1045,7 @@ class PolygonQualityRules:
         dict_uuid_plots = get_uuid_dict(plot_layer, db.names, id_field)
         dict_uuid_boundary = get_uuid_dict(boundary_layer, db.names, id_field)
         plot_as_lines_layer = processing.run("ladm_col:polygonstolines", {'INPUT': plot_layer, 'OUTPUT': 'memory:'})['OUTPUT']
+        GeometryUtils.create_spatial_index(plot_as_lines_layer)
 
         # create dict with layer data
         id_field_idx = plot_as_lines_layer.fields().indexFromName(id_field)
@@ -1073,7 +1074,7 @@ class PolygonQualityRules:
                                             'SORT_ASCENDING': True,
                                             'SORT_NULLS_FIRST': False,
                                             'OUTPUT': 'memory:'})['OUTPUT']
-
+        GeometryUtils.create_spatial_index(inner_rings_layer)
 
         id_field_idx = inner_rings_layer.fields().indexFromName(id_field)
         auto_idx = inner_rings_layer.fields().indexFromName('AUTO')

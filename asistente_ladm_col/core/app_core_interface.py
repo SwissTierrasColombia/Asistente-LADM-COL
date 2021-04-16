@@ -1416,7 +1416,11 @@ class AppCoreInterface(QObject):
         return [m_k for m_k in RoleRegistry().get_active_role_supported_models() if db.model_parser.model_version_is_supported[m_k]]
 
     def get_layer_copy(self, layer):
-        res_copy = processing.run("ladm_col:copy_vector_layer",
+        output = processing.run("ladm_col:copy_vector_layer",
                                   {'INPUT': layer,
-                                   'OUTPUT': 'TEMPORARY_OUTPUT'})
-        return res_copy['OUTPUT']
+                                   'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
+
+        if output.isSpatial():
+            GeometryUtils.create_spatial_index(output)
+
+        return output
