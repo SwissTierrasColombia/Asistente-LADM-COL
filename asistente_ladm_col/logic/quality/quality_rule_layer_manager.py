@@ -32,6 +32,7 @@ from asistente_ladm_col.config.quality_rules_config import (QualityRuleConfig,
                                                             ADJUSTED_TOPOLOGICAL_POINTS,
                                                             FIX_ADJUSTED_LAYER,
                                                             HAS_ADJUSTED_LAYERS)
+from asistente_ladm_col.lib.geometry import GeometryUtils
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qt_utils import ProcessWithStatus
 from asistente_ladm_col.utils.utils import get_key_for_quality_rule_adjusted_layer
@@ -84,6 +85,10 @@ class QualityRuleLayerManager(QObject):
         if ladm_layers is None:  # If there are errors with get_layers, ladm_layers is None
             self.logger.critical(__name__, QCoreApplication.translate("QualityRuleLayerManager", "Couldn't finish preparing required layers!"))
             return False
+
+        for name, layer in ladm_layers.items():
+            if layer.isSpatial():
+                GeometryUtils.create_spatial_index(layer)  # To improve performance of quality rules
 
         # If tolerance > 0, prepare adjusted layers
         #   We create an adjusted_layers dict to override ladm_layers per rule.

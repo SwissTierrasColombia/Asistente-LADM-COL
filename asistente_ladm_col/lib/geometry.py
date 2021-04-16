@@ -38,7 +38,8 @@ from qgis.core import (QgsField,
                        QgsVectorLayerEditUtils,
                        QgsVectorLayerUtils,
                        QgsWkbTypes,
-                       edit)
+                       edit,
+                       QgsFeatureSource)
 
 import processing
 
@@ -1056,6 +1057,7 @@ class GeometryUtils(QObject):
             'INPUT': duplicate_nodes_layer,
             'FIELDS': [id_field, 'wkt_geom'],
             'OUTPUT': 'memory:'})['OUTPUT']
+        GeometryUtils.create_spatial_index(unique_nodes_layer)
 
         return unique_nodes_layer
 
@@ -1102,3 +1104,8 @@ class GeometryUtils(QObject):
         overlapping_point_ids = [item for sublist in overlapping_points for item in sublist]
 
         return (end_points, list(set(end_point_ids) - set(overlapping_point_ids)))
+
+    @staticmethod
+    def create_spatial_index(layer):
+        if layer.hasSpatialIndex() != QgsFeatureSource.SpatialIndexPresent:
+            processing.run("native:createspatialindex", {'INPUT': layer})

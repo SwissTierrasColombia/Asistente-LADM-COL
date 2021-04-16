@@ -340,6 +340,7 @@ class LineQualityRules:
                                                'SORT_ASCENDING': True,
                                                'SORT_NULLS_FIRST': False,
                                                'OUTPUT': 'memory:'})['OUTPUT']
+        GeometryUtils.create_spatial_index(boundary_nodes_layer)
 
         # Spatial Join between boundary_nodes and boundary_points
         spatial_join_layer = processing.run("qgis:joinattributesbylocation",
