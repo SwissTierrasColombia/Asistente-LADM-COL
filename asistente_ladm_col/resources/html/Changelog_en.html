@@ -4,18 +4,27 @@
     <meta charset="UTF-8">
 </head>
 <body>
-<p>Cambios en la version <b>3.1.4</b></p>
+<p>Cambios en la version <b>3.1.5</b></p>
 <ul>
-    <li> Ajustes:
+    <li> Ajustes en reglas de calidad:
         <ul>
-            <li>Soporte de ETLs de SNC/Cobol a submodelo de insumos para QGIS v3.16.x</li>
-            <li>Ajuste a caso extremo de las reglas de calidad '<i>Las construcciones deben estar dentro de su terreno correspondiente</i>', '<i>Las unidades de construcción deben estar dentro de su terreno correspondiente</i>' y '<i>Las unidades de construcción deben estar dentro de su construcción correspondiente</i>'. (Fix <a href="https://github.com/SwissTierrasColombia/Asistente-LADM-COL/issues/410">#410</a>)</li>
+            <li>Soporte de detección de autointersecciones tipo punto en regla 'los linderos no deben superponerse'.</li>
+            <li>Ajuste a regla de calidad 'los linderos no deben superponerse' para evitar bug de GEOS <= 3.8 con QGIS 3.16+.</li>
+			<li>Mejora en identificación de duplicados en Unidades de Construcción.</li>
+            <li>Soporte de tolerancia para reglas de calidad: 'Construcción debe estar dentro de terreno', 'Unidad de construcción debe estar dentro de construcción' y 'Unidad de construcción debe estar dentro de terreno'.</li>
+            <li>Mejora de rendimiento creando índices espaciales cuando se requiera.</li>
         </ul>
     </li>
-    <li> Documentación:
+    <li> Solución a otros issues:
         <ul>
-            <li>Mejoras en la organización y en la gestión de la documentación: automatización de publicación y de release.</li>
-            <li>Reestructuración y nuevas secciones en la documentación.</li>
+            <li>Issue #404 (errores con geometrías PolygonZ).</li>
+            <li>Issue #425 (error verificando permisos para instalar Java).</li>
+            <li>Issue #427 (remover valores automáticos para nombre de interesados).</li>
+        </ul>
+    </li>
+    <li> Otros:
+        <ul>
+            <li>Migración de Integración continua de Travis a GitHub actions.</li>
         </ul>
     </li>
 </ul>
