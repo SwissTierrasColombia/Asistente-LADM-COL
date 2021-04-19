@@ -1389,7 +1389,7 @@ class AppCoreInterface(QObject):
                                                                          "'{}' and '{}' layers could not be adjusted. Details: {}".format(
                                                                              input_layer_name,
                                                                              reference_layer.name(),
-                                                                             feedback.msg)))
+                                                                             feedback.msg if hasattr(feedback, 'msg') else e)))
             return None
 
         if fix:
