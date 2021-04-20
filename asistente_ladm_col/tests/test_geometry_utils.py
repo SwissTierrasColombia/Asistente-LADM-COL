@@ -127,7 +127,7 @@ class TestGeometryUtils(unittest.TestCase):
             self.assertEqual(len(unique_points), 1, 'The intersection failed, points are not equal')
             self.assertEqual(list(unique_points)[0], list(expected_overlaps.values())[0])
 
-    def _test_get_overlapping_lines(self):
+    def test_get_overlapping_lines(self):
         print('\nINFO: Validating overlaps in boundaries...')
         gpkg_path = get_test_copy_path('db/static/gpkg/geometry_utils.gpkg')
         self.db_gpkg = get_gpkg_conn('tests_geometry_util_gpkg')
@@ -138,69 +138,72 @@ class TestGeometryUtils(unittest.TestCase):
         boundary_overlap_layer = QgsVectorLayer(uri, 'test_overlapping_lines', 'ogr')
         self.assertEqual(boundary_overlap_layer.featureCount(), 15)
 
-        overlapping = self.geometry.get_overlapping_lines(boundary_overlap_layer)
-        self.assertNotEqual(overlapping, dict())
+        overlapping_lines = self.geometry.get_overlapping_lines(boundary_overlap_layer)
+        self.assertNotEqual(overlapping_lines, dict())
 
-        error_line_layer = overlapping['native:saveselectedfeatures_2:Intersected_Lines']
-        error_point_layer = overlapping['native:saveselectedfeatures_3:Intersected_Points']
+        error_line_layer = overlapping_lines['native:extractbyexpression_3:Intersected_Lines']
+        error_point_layer = overlapping_lines['native:deleteduplicategeometries_1:Intersected_Points']
 
-        self.assertEqual(error_point_layer.featureCount(), 13)
+        self.assertEqual(error_point_layer.featureCount(), 20)  # 20: len(expected_point_overlaps)
         self.assertEqual(error_line_layer.featureCount(), 5)
 
         point_features = error_point_layer.getFeatures()
         line_features = error_line_layer.getFeatures()
-        overlapping = dict()
 
+        # First, check point overlaps
+        # For point overlaps, we don't rely on t_id pairs, because duplicated geometries are removed randomly,
+        # therefore we are only interested in geometries (as WKTs).
+        expected_point_overlaps = ['Point (963384.55712854664307088 1077823.99900980317033827)',
+                                   'Point (963750.28136727144010365 1077824.19025488453917205)',
+                                   'Point (963662.21440408274065703 1077708.90435272408649325)',
+                                   'Point (963849.37875852338038385 1077949.20776149653829634)',
+                                   'Point (964211.2347710223402828 1077618.29701916221529245)',
+                                   'Point (963651.61653553508222103 1077966.0537187303416431)',
+                                   'Point (964079.46952913235872984 1077829.37777462997473776)',
+                                   'Point (964309.98692709254100919 1077617.49567248369567096)',
+                                   'Point (964144.41837483353447169 1077577.06614228105172515)',
+                                   'Point (963905.69162506482098252 1077713.75645868084393442)',
+                                   'Point (963850.90352329798042774 1077652.23999353917315602)',
+                                   'Point (964081.01700186752714217 1077722.2743631626944989)',
+                                   'Point (963880.39959512907080352 1077685.35838998109102249)',
+                                   'Point (963801.72997597197536379 1077798.46595053421333432)',
+                                   'Point (963255.32157539459876716 1077724.74916282831691206)',
+                                   'Point (964213.72614089539274573 1077962.10928706941194832)',
+                                   'Point (963759.37523004529066384 1078021.79097451153211296)',
+                                   'Point (963643.395574557245709 1077747.43814651435241103)',
+                                   'Point (963926.86899802810512483 1077925.5301883143838495)',
+                                   'Point (963980.77503829856868833 1077802.31638198206201196)']
+        for point in point_features:
+            self.assertIn(point.geometry().asWkt(), expected_point_overlaps)
+
+        # Now, check line overlaps
+        line_overlaps = dict()
         def insert_into_res(ids, geometry):
             """
             Local function to append a geometry into a list for each pair of ids
             """
             pair = "{}-{}".format(min(ids), max(ids))
-            if pair not in overlapping:
-                overlapping[pair] = [geometry]
+            if pair not in line_overlaps:
+                line_overlaps[pair] = [geometry]
             else: # Pair is in dict already
-                overlapping[pair].append(geometry)
-
-        for point in point_features:
-            insert_into_res([point[names.T_ID_F], point[names.T_ID_F+'_2']], point.geometry().asWkt())
+                line_overlaps[pair].append(geometry)
 
         for line in line_features:
             insert_into_res([line[names.T_ID_F], line[names.T_ID_F+'_2']], line.geometry().asWkt())
 
-        expected_overlaps = {
-            '7-15': [
-                     'MultiPoint ((963651.61653553508222103 1077966.0537187303416431))',
-                     'MultiLineString ((964213.72614089539274573 1077962.10928706941194832, 963759.37523004529066384 1078021.79097451153211296))'
-                    ],
-            '7-10': ['MultiPoint ((963750.28136727144010365 1077824.19025488453917205))'],
-            '9-335': ['MultiPoint ((963643.395574557245709 1077747.43814651435241103))'],
-            '9-337': ['MultiPoint ((963643.395574557245709 1077747.43814651435241103))'],
-            '9-334': ['MultiPoint ((963662.21440408274065703 1077708.90435272408649325))'],
-            '6-325': ['MultiPoint ((963849.37875852338038385 1077949.20776149653829634))'],
-            '4-7': ['MultiPoint ((963801.72997597197536379 1077798.46595053421333432))'],
-            '4-5': [
-                    'MultiPoint ((963850.90352329798042774 1077652.23999353917315602))',
-                    'MultiPoint ((963880.39959512907080352 1077685.35838998109102249))'
-                   ],
-            '5-336': ['MultiPoint ((964079.46952913235872984 1077829.37777462997473776))'],
-            '5-6': [
-                    'MultiPoint ((964081.01700186752714217 1077722.2743631626944989))',
-                    'MultiPoint ((964211.2347710223402828 1077618.29701916221529245))',
-                    'MultiLineString ((963926.86899802810512483 1077925.5301883143838495, 963980.77503829856868833 1077802.31638198206201196))'
-                   ],
-            '13-14': [
-                      'MultiPoint ((963384.55712854664307088 1077823.99900980317033827))',
-                      'MultiLineString ((963210.47528458514716476 1077644.75307651958428323, 963255.32157539459876716 1077724.74916282831691206))'
-                     ],
+        expected_line_overlaps = {
+            '7-15': ['MultiLineString ((964213.72614089539274573 1077962.10928706941194832, 963759.37523004529066384 1078021.79097451153211296))'],
+            '5-6': ['MultiLineString ((963926.86899802810512483 1077925.5301883143838495, 963980.77503829856868833 1077802.31638198206201196))'],
+            '13-14': ['MultiLineString ((963210.47528458514716476 1077644.75307651958428323, 963255.32157539459876716 1077724.74916282831691206))'],
             '5-7': ['MultiLineString ((964309.98692709254100919 1077617.49567248369567096, 964144.41837483353447169 1077577.06614228105172515),(964144.41837483353447169 1077577.06614228105172515, 963905.69162506482098252 1077713.75645868084393442))'],
             '335-337': ['MultiLineString ((963643.395574557245709 1077747.43814651435241103, 963543.5341855603037402 1077760.18016819190233946))']
         }
 
-        for pair, overlaps in overlapping.items():
+        for pair, overlaps in line_overlaps.items():
             print("Testing pair {}...".format(pair))
-            self.assertEqual(len(overlaps), len(expected_overlaps[pair]))
+            self.assertEqual(len(overlaps), len(expected_line_overlaps[pair]))
             for overlap in overlaps:
-                self.assertIn(overlap, expected_overlaps[pair])
+                self.assertIn(overlap, expected_line_overlaps[pair])
 
     def test_overlapping_polygons(self):
         print('\nINFO: Validating overlaps in polygons (plots)...')
