@@ -85,8 +85,8 @@ class LineQualityRules:
                 return (QCoreApplication.translate("LineQualityRules",
                                  "There was an error extracting overlapping boundaries! See the log for details."), Qgis.Warning, list())
             else:
-                points_intersected = overlapping['native:saveselectedfeatures_3:Intersected_Points']
-                lines_intersected = overlapping['native:saveselectedfeatures_2:Intersected_Lines']
+                points_intersected = overlapping['native:deleteduplicategeometries_1:Intersected_Points']
+                lines_intersected = overlapping['native:extractbyexpression_3:Intersected_Lines']
 
                 if isinstance(points_intersected, QgsVectorLayer):
                     point_features = list()

@@ -267,8 +267,8 @@ class GeometryUtils(QObject):
         try:
             dict_res = processing.run("model:Overlapping_Boundaries", {
                 'Boundary': line_layer,
-                'native:saveselectedfeatures_2:Intersected_Lines': 'TEMPORARY_OUTPUT',
-                'native:saveselectedfeatures_3:Intersected_Points': 'TEMPORARY_OUTPUT'
+                'native:extractbyexpression_3:Intersected_Lines': 'TEMPORARY_OUTPUT',
+                'native:deleteduplicategeometries_1:Intersected_Points': 'TEMPORARY_OUTPUT'
             }, feedback=feedback)
         except QgsProcessingException as e:
             self.logger.warning(__name__, QCoreApplication.translate("Geometry",
