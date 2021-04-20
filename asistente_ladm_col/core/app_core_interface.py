@@ -1417,8 +1417,9 @@ class AppCoreInterface(QObject):
 
     def get_layer_copy(self, layer):
         output = processing.run("ladm_col:copy_vector_layer",
-                                  {'INPUT': layer,
-                                   'SINK': 'TEMPORARY_OUTPUT'})['OUTPUT']
+                                {'INPUT': layer,
+                                 'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
         if output.isSpatial():
             GeometryUtils.create_spatial_index(output)
+
         return output
