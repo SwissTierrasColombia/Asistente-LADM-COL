@@ -26,6 +26,7 @@ from asistente_ladm_col.logic.quality.point_quality_rules import PointQualityRul
 from asistente_ladm_col.logic.quality.line_quality_rules import LineQualityRules
 from asistente_ladm_col.logic.quality.polygon_quality_rules import PolygonQualityRules
 from asistente_ladm_col.logic.quality.logic_quality_rules import LogicQualityRules
+from asistente_ladm_col.logic.quality.quality_rule_execution_result import QualityRuleExecutionResult
 
 
 class QualityRules:
@@ -149,7 +150,8 @@ class QualityRules:
         elif id_quality_rule == EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_ADMINISTRATIVE_SOURCE:
             msg, level, error_layers = self.__check_duplicate_records_in_table(db, db.names.LC_ADMINISTRATIVE_SOURCE_T, id_quality_rule)
 
-        return msg, level, error_layers
+        # TODO: All check functions should return a QualityRuleExecutionResult object
+        return QualityRuleExecutionResult(msg, level, error_layers)
 
     def __check_duplicate_records_in_table(self, db, table, rule_code):
         fields = LayerConfig.get_logic_consistency_tables(db.names).get(table)

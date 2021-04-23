@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 """
+from asistente_ladm_col.logic.quality.quality_rule_execution_result import QualityRulesExecutionResult
 from asistente_ladm_col.logic.quality.quality_rules import QualityRules
 
 from qgis.PyQt.QtCore import (QCoreApplication,
@@ -63,7 +64,7 @@ class QualityRuleEngine(QObject):
         self.quality_rule_logger.initialize(self.__tolerance)
 
     def validate_quality_rules(self):
-        res = dict()  # {rule_key: (msg, level, list_of_error_layers)}
+        res = dict()  # {rule_key: QualityRuleExecutionResult}
         if self.__rules:
             self.quality_rule_logger.set_count_topology_rules(len(self.__rules))
             self.logger.info(__name__,
@@ -85,7 +86,7 @@ class QualityRuleEngine(QObject):
         else:
             self.logger.warning(__name__, QCoreApplication.translate("QualityRuleEngine", "No rules to validate!"))
 
-        return res
+        return QualityRulesExecutionResult(res)
 
     @_log_quality_rule_validations
     def __validate_quality_rule(self, rule_key, layers, rule_name):
@@ -94,8 +95,7 @@ class QualityRuleEngine(QObject):
 
         :param rule_key: rule key
         :param rule_name: Rule name (needed for the logging decorator)
-        :return: triple (msg, level, list_of_error_layers), where level indicates whether the rule was successful
-                 (Qgis.Success), couldn't be validated (Qgis.Warning), or was not successful (Qgis.Critical)
+        :return: An instance of QualityRuleExecutionResult
         """
         return self.__quality_rules.validate_quality_rule(self.__db, rule_key, layers)
 

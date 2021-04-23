@@ -199,19 +199,19 @@ def _log_quality_rule_validations(func_to_decorate):
 
         start_time = time.time()
         with OverrideCursor(Qt.WaitCursor):
-            msg, level, error_layers = func_to_decorate(self, rule_key, layers, **args)
+            qr_result = func_to_decorate(self, rule_key, layers, **args)
         end_time = time.time()
 
-        if level == Qgis.Critical:
+        if qr_result.level == Qgis.Critical:
             prefix = LOG_QUALITY_LIST_ITEM_ERROR_OPEN
             suffix = LOG_QUALITY_LIST_ITEM_ERROR_CLOSE
-        elif level == Qgis.Success:
+        elif qr_result.level == Qgis.Success:
             prefix = LOG_QUALITY_LIST_ITEM_CORRECT_OPEN
             suffix = LOG_QUALITY_LIST_ITEM_CORRECT_CLOSE
         else:  # Qgis.Warning
             prefix = LOG_QUALITY_LIST_ITEM_OPEN
             suffix = LOG_QUALITY_LIST_ITEM_CLOSE
-        log_text_content += "{}{}{}".format(prefix, msg, suffix)
+        log_text_content += "{}{}{}".format(prefix, qr_result.msg, suffix)
 
         self.quality_rule_logger.log_total_time = self.quality_rule_logger.log_total_time + (end_time - start_time)
 
@@ -224,7 +224,7 @@ def _log_quality_rule_validations(func_to_decorate):
 
         self.quality_rule_logger.set_final_progress_emitted.emit(rule_name)
 
-        return msg, level, error_layers
+        return qr_result
 
     return add_format_to_text
 
