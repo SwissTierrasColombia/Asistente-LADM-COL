@@ -711,30 +711,30 @@ class TesQualityRules(unittest.TestCase):
         layer_manager = QualityRuleLayerManager(self.db_gpkg, rules, 0)
 
         # Points rules
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS, layer_manager.get_layers(EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS))[1], Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Point.OVERLAPS_IN_CONTROL_POINTS, layer_manager.get_layers(EnumQualityRule.Point.OVERLAPS_IN_CONTROL_POINTS))[1], Qgis.Warning)  # "There are no points in layer 'lc_puntocontrol' to check for overlaps!"
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES, layer_manager.get_layers(EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES))[1], Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_PLOT_NODES, layer_manager.get_layers(EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_PLOT_NODES))[1], Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS, layer_manager.get_layers(EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS)).level, Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Point.OVERLAPS_IN_CONTROL_POINTS, layer_manager.get_layers(EnumQualityRule.Point.OVERLAPS_IN_CONTROL_POINTS)).level, Qgis.Warning)  # "There are no points in layer 'lc_puntocontrol' to check for overlaps!"
+        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES, layer_manager.get_layers(EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES)).level, Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_PLOT_NODES, layer_manager.get_layers(EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_PLOT_NODES)).level, Qgis.Success)
 
         # Lines rules
         # TODO: Fix the OVERLAPS_IN_BOUNDARIES test!
         # self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Line.OVERLAPS_IN_BOUNDARIES)[1], Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Line.BOUNDARIES_ARE_NOT_SPLIT, layer_manager.get_layers(EnumQualityRule.Line.BOUNDARIES_ARE_NOT_SPLIT))[1], Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Line.BOUNDARIES_COVERED_BY_PLOTS, layer_manager.get_layers(EnumQualityRule.Line.BOUNDARIES_COVERED_BY_PLOTS))[1], Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Line.BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS, layer_manager.get_layers(EnumQualityRule.Line.BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS))[1], Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Line.DANGLES_IN_BOUNDARIES, layer_manager.get_layers(EnumQualityRule.Line.DANGLES_IN_BOUNDARIES))[1], Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Line.BOUNDARIES_ARE_NOT_SPLIT, layer_manager.get_layers(EnumQualityRule.Line.BOUNDARIES_ARE_NOT_SPLIT)).level, Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Line.BOUNDARIES_COVERED_BY_PLOTS, layer_manager.get_layers(EnumQualityRule.Line.BOUNDARIES_COVERED_BY_PLOTS)).level, Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Line.BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS, layer_manager.get_layers(EnumQualityRule.Line.BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS)).level, Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Line.DANGLES_IN_BOUNDARIES, layer_manager.get_layers(EnumQualityRule.Line.DANGLES_IN_BOUNDARIES)).level, Qgis.Success)
 
         # Polygons rules
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.OVERLAPS_IN_PLOTS, layer_manager.get_layers(EnumQualityRule.Polygon.OVERLAPS_IN_PLOTS))[1], Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.OVERLAPS_IN_BUILDINGS, layer_manager.get_layers(EnumQualityRule.Polygon.OVERLAPS_IN_BUILDINGS))[1], Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.OVERLAPS_IN_RIGHTS_OF_WAY, layer_manager.get_layers(EnumQualityRule.Polygon.OVERLAPS_IN_RIGHTS_OF_WAY))[1], Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.PLOTS_COVERED_BY_BOUNDARIES, layer_manager.get_layers(EnumQualityRule.Polygon.PLOTS_COVERED_BY_BOUNDARIES))[1], Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.RIGHT_OF_WAY_OVERLAPS_BUILDINGS, layer_manager.get_layers(EnumQualityRule.Polygon.RIGHT_OF_WAY_OVERLAPS_BUILDINGS))[1], Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.GAPS_IN_PLOTS, layer_manager.get_layers(EnumQualityRule.Polygon.GAPS_IN_PLOTS))[1], Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.MULTIPART_IN_RIGHT_OF_WAY, layer_manager.get_layers(EnumQualityRule.Polygon.MULTIPART_IN_RIGHT_OF_WAY))[1], Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.PLOT_NODES_COVERED_BY_BOUNDARY_POINTS, layer_manager.get_layers(EnumQualityRule.Polygon.PLOT_NODES_COVERED_BY_BOUNDARY_POINTS))[1], Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.BUILDINGS_SHOULD_BE_WITHIN_PLOTS, layer_manager.get_layers(EnumQualityRule.Polygon.BUILDINGS_SHOULD_BE_WITHIN_PLOTS))[1], Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_PLOTS, layer_manager.get_layers(EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_PLOTS))[1], Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.OVERLAPS_IN_PLOTS, layer_manager.get_layers(EnumQualityRule.Polygon.OVERLAPS_IN_PLOTS)).level, Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.OVERLAPS_IN_BUILDINGS, layer_manager.get_layers(EnumQualityRule.Polygon.OVERLAPS_IN_BUILDINGS)).level, Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.OVERLAPS_IN_RIGHTS_OF_WAY, layer_manager.get_layers(EnumQualityRule.Polygon.OVERLAPS_IN_RIGHTS_OF_WAY)).level, Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.PLOTS_COVERED_BY_BOUNDARIES, layer_manager.get_layers(EnumQualityRule.Polygon.PLOTS_COVERED_BY_BOUNDARIES)).level, Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.RIGHT_OF_WAY_OVERLAPS_BUILDINGS, layer_manager.get_layers(EnumQualityRule.Polygon.RIGHT_OF_WAY_OVERLAPS_BUILDINGS)).level, Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.GAPS_IN_PLOTS, layer_manager.get_layers(EnumQualityRule.Polygon.GAPS_IN_PLOTS)).level, Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.MULTIPART_IN_RIGHT_OF_WAY, layer_manager.get_layers(EnumQualityRule.Polygon.MULTIPART_IN_RIGHT_OF_WAY)).level, Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.PLOT_NODES_COVERED_BY_BOUNDARY_POINTS, layer_manager.get_layers(EnumQualityRule.Polygon.PLOT_NODES_COVERED_BY_BOUNDARY_POINTS)).level, Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.BUILDINGS_SHOULD_BE_WITHIN_PLOTS, layer_manager.get_layers(EnumQualityRule.Polygon.BUILDINGS_SHOULD_BE_WITHIN_PLOTS)).level, Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_PLOTS, layer_manager.get_layers(EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_PLOTS)).level, Qgis.Success)
 
         # Logic rules
         res, records = query_manager.get_parcels_with_no_right(self.db_gpkg)
@@ -854,10 +854,10 @@ class TesQualityRules(unittest.TestCase):
         quality_rule_engine = QualityRuleEngine(db_gpkg, dict_rules, 0, False)
         res = quality_rule_engine.validate_quality_rules()
 
-        self.assertEqual(res[rule_key][1], Qgis.Critical)
-        error_layers = res[rule_key][2]
-        self.assertEqual(error_layers[0].featureCount(), 27)
-        features = [f for f in error_layers[0].getFeatures("codigo_error = '{}'".format(QUALITY_RULE_ERROR_CODE_E300902))]
+        self.assertEqual(res.result(rule_key).level, Qgis.Critical)
+        error_layer = res.result(rule_key).error_layer
+        self.assertEqual(error_layer.featureCount(), 27)
+        features = [f for f in error_layer.getFeatures("codigo_error = '{}'".format(QUALITY_RULE_ERROR_CODE_E300902))]
         expected_t_ili_tids = ['e5e60bc6-132a-4428-9b32-9046278e0bd2',
                                '2e11e7f9-1209-4d8b-9bd2-84f268ac6faf',
                                '2d323bb9-19d7-41f7-8894-e9c62f80ceb5',
@@ -879,11 +879,11 @@ class TesQualityRules(unittest.TestCase):
         quality_rule_engine.initialize(db_gpkg, dict_rules, 1, False)
         res = quality_rule_engine.validate_quality_rules()
 
-        self.assertEqual(res[rule_key][1], Qgis.Critical)
-        error_layers = res[rule_key][2]
-        self.assertEqual(error_layers[0].featureCount(), 27)
+        self.assertEqual(res.result(rule_key).level, Qgis.Critical)
+        error_layer = res.result(rule_key).error_layer
+        self.assertEqual(error_layer.featureCount(), 27)
         features = [f for f in
-                    error_layers[0].getFeatures("codigo_error = '{}'".format(QUALITY_RULE_ERROR_CODE_E300902))]
+                    error_layer.getFeatures("codigo_error = '{}'".format(QUALITY_RULE_ERROR_CODE_E300902))]
         expected_t_ili_tids = ['117f44fd-5485-4560-9708-911e88e03c15',
                                'c8ef8b15-c776-42ef-a30c-822001be7460']
         self.assertEqual(len(features), len(expected_t_ili_tids))
@@ -894,10 +894,10 @@ class TesQualityRules(unittest.TestCase):
         quality_rule_engine.initialize(db_gpkg, dict_rules, 2, False)
         res = quality_rule_engine.validate_quality_rules()
 
-        self.assertEqual(res[rule_key][1], Qgis.Critical)
-        error_layers = res[rule_key][2]
-        self.assertEqual(error_layers[0].featureCount(), 27)
-        features = [f for f in error_layers[0].getFeatures("codigo_error = '{}'".format(QUALITY_RULE_ERROR_CODE_E300902))]
+        self.assertEqual(res.result(rule_key).level, Qgis.Critical)
+        error_layer = res.result(rule_key).error_layer
+        self.assertEqual(error_layer.featureCount(), 27)
+        features = [f for f in error_layer.getFeatures("codigo_error = '{}'".format(QUALITY_RULE_ERROR_CODE_E300902))]
         expected_t_ili_tids = ['117f44fd-5485-4560-9708-911e88e03c15']
         self.assertEqual(len(features), len(expected_t_ili_tids))
         self.assertEqual(expected_t_ili_tids, [f['id_construccion'] for f in features])
@@ -917,10 +917,10 @@ class TesQualityRules(unittest.TestCase):
         quality_rule_engine = QualityRuleEngine(db_gpkg, dict_rules, 0, False)
         res = quality_rule_engine.validate_quality_rules()
 
-        self.assertEqual(res[rule_key][1], Qgis.Critical)
-        error_layers = res[rule_key][2]
-        self.assertEqual(error_layers[0].featureCount(), 49)
-        features = [f for f in error_layers[0].getFeatures("codigo_error = '{}'".format(QUALITY_RULE_ERROR_CODE_E301002))]
+        self.assertEqual(res.result(rule_key).level, Qgis.Critical)
+        error_layer = res.result(rule_key).error_layer
+        self.assertEqual(error_layer.featureCount(), 49)
+        features = [f for f in error_layer.getFeatures("codigo_error = '{}'".format(QUALITY_RULE_ERROR_CODE_E301002))]
         expected_t_ili_tids = ['1dcfd30f-ea16-4afb-9050-f09199b08162',
                                '8e043e1f-ab9c-47fd-9702-bb2301863a17',
                                'df24bc58-84f0-4fb1-9e3f-5ee1f961e63b',
@@ -948,10 +948,10 @@ class TesQualityRules(unittest.TestCase):
         quality_rule_engine.initialize(db_gpkg, dict_rules, 1, False)
         res = quality_rule_engine.validate_quality_rules()
 
-        self.assertEqual(res[rule_key][1], Qgis.Critical)
-        error_layers = res[rule_key][2]
-        self.assertEqual(error_layers[0].featureCount(), 49)
-        features = [f for f in error_layers[0].getFeatures("codigo_error = '{}'".format(QUALITY_RULE_ERROR_CODE_E301002))]
+        self.assertEqual(res.result(rule_key).level, Qgis.Critical)
+        error_layer = res.result(rule_key).error_layer
+        self.assertEqual(error_layer.featureCount(), 49)
+        features = [f for f in error_layer.getFeatures("codigo_error = '{}'".format(QUALITY_RULE_ERROR_CODE_E301002))]
         expected_t_ili_tids = ['ebc11cf4-53a1-4f8a-80ff-c7fc271bad90',
                                'faafc505-6943-429c-8350-b5d4402199c4',
                                'e2002bad-c64c-4b47-a00a-d62a565ea339']
@@ -963,10 +963,10 @@ class TesQualityRules(unittest.TestCase):
         quality_rule_engine.initialize(db_gpkg, dict_rules, 2, False)
         res = quality_rule_engine.validate_quality_rules()
 
-        self.assertEqual(res[rule_key][1], Qgis.Critical)
-        error_layers = res[rule_key][2]
-        self.assertEqual(error_layers[0].featureCount(), 49)
-        features = [f for f in error_layers[0].getFeatures("codigo_error = '{}'".format(QUALITY_RULE_ERROR_CODE_E301002))]
+        self.assertEqual(res.result(rule_key).level, Qgis.Critical)
+        error_layer = res.result(rule_key).error_layer
+        self.assertEqual(error_layer.featureCount(), 49)
+        features = [f for f in error_layer.getFeatures("codigo_error = '{}'".format(QUALITY_RULE_ERROR_CODE_E301002))]
         expected_t_ili_tids = ['ebc11cf4-53a1-4f8a-80ff-c7fc271bad90']
         self.assertEqual(len(features), len(expected_t_ili_tids))
         self.assertEqual(expected_t_ili_tids, [f['id_unidad_construccion'] for f in features])
@@ -986,10 +986,10 @@ class TesQualityRules(unittest.TestCase):
         quality_rule_engine = QualityRuleEngine(db_gpkg, dict_rules, 0, False)
         res = quality_rule_engine.validate_quality_rules()
 
-        self.assertEqual(res[rule_key][1], Qgis.Critical)
-        error_layers = res[rule_key][2]
-        self.assertEqual(error_layers[0].featureCount(), 49)
-        features = [f for f in error_layers[0].getFeatures("codigo_error = '{}'".format(QUALITY_RULE_ERROR_CODE_E301102))]
+        self.assertEqual(res.result(rule_key).level, Qgis.Critical)
+        error_layer = res.result(rule_key).error_layer
+        self.assertEqual(error_layer.featureCount(), 49)
+        features = [f for f in error_layer.getFeatures("codigo_error = '{}'".format(QUALITY_RULE_ERROR_CODE_E301102))]
         expected_t_ili_tids = ['1dcfd30f-ea16-4afb-9050-f09199b08162',
                                '7504133f-9a00-40fa-9e8d-4ab64a3543aa',
                                '8e043e1f-ab9c-47fd-9702-bb2301863a17']
@@ -1001,10 +1001,10 @@ class TesQualityRules(unittest.TestCase):
         quality_rule_engine.initialize(db_gpkg, dict_rules, 1, False)
         res = quality_rule_engine.validate_quality_rules()
 
-        self.assertEqual(res[rule_key][1], Qgis.Critical)
-        error_layers = res[rule_key][2]
-        self.assertEqual(error_layers[0].featureCount(), 49)
-        features = [f for f in error_layers[0].getFeatures("codigo_error = '{}'".format(QUALITY_RULE_ERROR_CODE_E301102))]
+        self.assertEqual(res.result(rule_key).level, Qgis.Critical)
+        error_layer = res.result(rule_key).error_layer
+        self.assertEqual(error_layer.featureCount(), 49)
+        features = [f for f in error_layer.getFeatures("codigo_error = '{}'".format(QUALITY_RULE_ERROR_CODE_E301102))]
         expected_t_ili_tids = ['1dcfd30f-ea16-4afb-9050-f09199b08162',
                                '8e043e1f-ab9c-47fd-9702-bb2301863a17']
         self.assertEqual(len(features), len(expected_t_ili_tids))
@@ -1015,10 +1015,10 @@ class TesQualityRules(unittest.TestCase):
         quality_rule_engine.initialize(db_gpkg, dict_rules, 2, False)
         res = quality_rule_engine.validate_quality_rules()
 
-        self.assertEqual(res[rule_key][1], Qgis.Critical)
-        error_layers = res[rule_key][2]
-        self.assertEqual(error_layers[0].featureCount(), 49)
-        features = [f for f in error_layers[0].getFeatures("codigo_error = '{}'".format(QUALITY_RULE_ERROR_CODE_E301102))]
+        self.assertEqual(res.result(rule_key).level, Qgis.Critical)
+        error_layer = res.result(rule_key).error_layer
+        self.assertEqual(error_layer.featureCount(), 49)
+        features = [f for f in error_layer.getFeatures("codigo_error = '{}'".format(QUALITY_RULE_ERROR_CODE_E301102))]
         expected_t_ili_tids = ['8e043e1f-ab9c-47fd-9702-bb2301863a17']
         self.assertEqual(len(features), len(expected_t_ili_tids))
         self.assertEqual(expected_t_ili_tids, [f['id_unidad_construccion'] for f in features])
