@@ -1344,7 +1344,7 @@ class AsistenteLADMCOLPlugin(QObject):
         quality_dialog = QualityDialog(self.main_window)
         quality_dialog.exec_()
 
-        self.quality_rule_engine = QualityRuleEngine(self.get_db_connection(), quality_dialog.selected_rules)
+        self.quality_rule_engine = QualityRuleEngine(self.get_db_connection(), quality_dialog.selected_rules, self.app.settings.tolerance)
         self.quality_rule_engine.quality_rule_logger.show_message_emitted.connect(self.show_log_quality_message)
         self.quality_rule_engine.quality_rule_logger.show_button_emitted.connect(self.show_log_quality_button)
         self.quality_rule_engine.quality_rule_logger.set_initial_progress_emitted.connect(self.set_log_quality_initial_progress)

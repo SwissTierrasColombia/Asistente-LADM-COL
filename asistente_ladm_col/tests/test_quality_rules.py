@@ -845,15 +845,13 @@ class TesQualityRules(unittest.TestCase):
         db_gpkg = get_gpkg_conn('tests_quality_rules_tolerance_gpkg')
         db_gpkg.test_connection()  # To generate DBMappingRegistry object
         names = db_gpkg.names
-        quality_rule_engine = QualityRuleEngine(db_gpkg, {}, False)
 
         # Tolerance: 0mm
-        self.app.settings.tolerance = 0
         print("INFO: Testing with 0mm of tolerance...")
         rule_key = EnumQualityRule.Polygon.BUILDINGS_SHOULD_BE_WITHIN_PLOTS
         rule_name = "Buildings should be within Plots"
-        dict_rules = {rule_key: rule_name}  # QualityRuleManager().get_quality_rule()
-        quality_rule_engine.initialize(db_gpkg, dict_rules, False)
+        dict_rules = {rule_key: rule_name}
+        quality_rule_engine = QualityRuleEngine(db_gpkg, dict_rules, 0, False)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res[rule_key][1], Qgis.Critical)
@@ -877,9 +875,8 @@ class TesQualityRules(unittest.TestCase):
         self.assertEqual(sorted(expected_t_ili_tids), sorted([f['id_construccion'] for f in features]))
 
         # Tolerance: 1mm
-        self.app.settings.tolerance = 1
         print("INFO: Testing with 1mm of tolerance...")
-        quality_rule_engine.initialize(db_gpkg, dict_rules, False)  # Needed to account for the new tolerance
+        quality_rule_engine.initialize(db_gpkg, dict_rules, 1, False)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res[rule_key][1], Qgis.Critical)
@@ -893,9 +890,8 @@ class TesQualityRules(unittest.TestCase):
         self.assertEqual(sorted(expected_t_ili_tids), sorted([f['id_construccion'] for f in features]))
 
         # Tolerance: 2mm
-        self.app.settings.tolerance = 2
         print("INFO: Testing with 2mm of tolerance...")
-        quality_rule_engine.initialize(db_gpkg, dict_rules, False)  # Needed to account for the new tolerance
+        quality_rule_engine.initialize(db_gpkg, dict_rules, 2, False)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res[rule_key][1], Qgis.Critical)
@@ -912,15 +908,13 @@ class TesQualityRules(unittest.TestCase):
         db_gpkg = get_gpkg_conn('tests_quality_rules_tolerance_gpkg')
         db_gpkg.test_connection()  # To generate DBMappingRegistry object
         names = db_gpkg.names
-        quality_rule_engine = QualityRuleEngine(db_gpkg, {}, False)
 
         # Tolerance: 0mm
-        self.app.settings.tolerance = 0
         print("INFO: Testing with 0mm of tolerance...")
         rule_key = EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_PLOTS
         rule_name = "Buildings units should be within Plots"
         dict_rules = {rule_key: rule_name}  # QualityRuleManager().get_quality_rule()
-        quality_rule_engine.initialize(db_gpkg, dict_rules, False)
+        quality_rule_engine = QualityRuleEngine(db_gpkg, dict_rules, 0, False)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res[rule_key][1], Qgis.Critical)
@@ -950,9 +944,8 @@ class TesQualityRules(unittest.TestCase):
         self.assertEqual(sorted(expected_t_ili_tids), sorted([f['id_unidad_construccion'] for f in features]))
 
         # Tolerance: 1mm
-        self.app.settings.tolerance = 1
         print("INFO: Testing with 1mm of tolerance...")
-        quality_rule_engine.initialize(db_gpkg, dict_rules, False)  # Needed to account for the new tolerance
+        quality_rule_engine.initialize(db_gpkg, dict_rules, 1, False)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res[rule_key][1], Qgis.Critical)
@@ -966,9 +959,8 @@ class TesQualityRules(unittest.TestCase):
         self.assertEqual(sorted(expected_t_ili_tids), sorted([f['id_unidad_construccion'] for f in features]))
 
         # Tolerance: 2mm
-        self.app.settings.tolerance = 2
         print("INFO: Testing with 2mm of tolerance...")
-        quality_rule_engine.initialize(db_gpkg, dict_rules, False)  # Needed to account for the new tolerance
+        quality_rule_engine.initialize(db_gpkg, dict_rules, 2, False)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res[rule_key][1], Qgis.Critical)
@@ -985,15 +977,13 @@ class TesQualityRules(unittest.TestCase):
         db_gpkg = get_gpkg_conn('tests_quality_rules_tolerance_gpkg')
         db_gpkg.test_connection()  # To generate DBMappingRegistry object
         names = db_gpkg.names
-        quality_rule_engine = QualityRuleEngine(db_gpkg, {}, False)
 
         # Tolerance: 0mm
-        self.app.settings.tolerance = 0
         print("INFO: Testing with 0mm of tolerance...")
         rule_key = EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_BUILDINGS
         rule_name = "Buildings units should be within Buildings"
         dict_rules = {rule_key: rule_name}  # QualityRuleManager().get_quality_rule()
-        quality_rule_engine.initialize(db_gpkg, dict_rules, False)
+        quality_rule_engine = QualityRuleEngine(db_gpkg, dict_rules, 0, False)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res[rule_key][1], Qgis.Critical)
@@ -1007,9 +997,8 @@ class TesQualityRules(unittest.TestCase):
         self.assertEqual(sorted(expected_t_ili_tids), sorted([f['id_unidad_construccion'] for f in features]))
 
         # Tolerance: 1mm
-        self.app.settings.tolerance = 1
         print("INFO: Testing with 1mm of tolerance...")
-        quality_rule_engine.initialize(db_gpkg, dict_rules, False)  # Needed to account for the new tolerance
+        quality_rule_engine.initialize(db_gpkg, dict_rules, 1, False)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res[rule_key][1], Qgis.Critical)
@@ -1022,9 +1011,8 @@ class TesQualityRules(unittest.TestCase):
         self.assertEqual(sorted(expected_t_ili_tids), sorted([f['id_unidad_construccion'] for f in features]))
 
         # Tolerance: 2mm
-        self.app.settings.tolerance = 2
         print("INFO: Testing with 2mm of tolerance...")
-        quality_rule_engine.initialize(db_gpkg, dict_rules, False)  # Needed to account for the new tolerance
+        quality_rule_engine.initialize(db_gpkg, dict_rules, 2, False)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res[rule_key][1], Qgis.Critical)
@@ -1035,12 +1023,11 @@ class TesQualityRules(unittest.TestCase):
         self.assertEqual(len(features), len(expected_t_ili_tids))
         self.assertEqual(expected_t_ili_tids, [f['id_unidad_construccion'] for f in features])
 
-    def tearDown(self):
-        print("INFO: Resetting tolerance value to {}...".format(DEFAULT_TOLERANCE_VALUE))
-        self.app.settings.tolerance = DEFAULT_TOLERANCE_VALUE
-
     @classmethod
     def tearDownClass(cls):
+        print("INFO: Resetting tolerance value to {}...".format(DEFAULT_TOLERANCE_VALUE))
+        cls.app.settings.tolerance = DEFAULT_TOLERANCE_VALUE
+
         print("INFO: Unloading Model Baker...")
         unload_qgis_model_baker()
 

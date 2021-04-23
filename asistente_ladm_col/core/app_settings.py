@@ -94,4 +94,9 @@ class AppSettings:
 
     @tolerance.setter
     def tolerance(self, value):
-        self.settings.setValue(self.TOLERANCE_KEY, value if value <= TOLERANCE_MAX_VALUE else TOLERANCE_MAX_VALUE)
+        tolerance = DEFAULT_TOLERANCE_VALUE  # If value is invalid (less than 0), we'll set the default value
+        if value >= TOLERANCE_MAX_VALUE:
+            tolerance = TOLERANCE_MAX_VALUE
+        elif TOLERANCE_MAX_VALUE > value >= 0:
+            tolerance = value
+        self.settings.setValue(self.TOLERANCE_KEY, tolerance)

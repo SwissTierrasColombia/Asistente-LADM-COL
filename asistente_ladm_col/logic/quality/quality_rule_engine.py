@@ -32,14 +32,15 @@ class QualityRuleEngine(QObject):
     """
     Engine that executes Quality Rules
     """
-    def __init__(self, db, rules, with_gui=True):
+    def __init__(self, db, rules, tolerance, with_gui=True):
         QObject.__init__(self)
         self.logger = Logger()
         self.app = AppInterface()
 
         self.__with_gui = with_gui
 
-        self.__tolerance = self.app.settings.tolerance
+        self.app.settings.tolerance = tolerance  # Tolerance must be given, we don't want anything implicit about it
+        self.__tolerance = self.app.settings.tolerance  # Tolerance input might be altered (e.g., if it comes negative)
         self.__layer_manager = QualityRuleLayerManager(db, rules.keys(), self.__tolerance)
         self.__quality_rules = QualityRules()
         self.quality_rule_logger = QualityRuleLogger(self.__tolerance)
@@ -48,7 +49,7 @@ class QualityRuleEngine(QObject):
         self.__rules = rules
         self.__result_layers = list()
 
-    def initialize(self, db, rules, with_gui=True):
+    def initialize(self, db, rules, tolerance, with_gui=True):
         """
         Objects of this class are reusable calling initialize()
         """
@@ -56,7 +57,8 @@ class QualityRuleEngine(QObject):
         self.__db = db
         self.__rules = rules
         self.__with_gui = with_gui
-        self.__tolerance = self.app.settings.tolerance
+        self.app.settings.tolerance = tolerance
+        self.__tolerance = self.app.settings.tolerance  # Tolerance input might be altered (e.g., if it comes negative)
         self.__layer_manager.initialize(rules.keys(), self.__tolerance)
         self.quality_rule_logger.initialize(self.__tolerance)
 
