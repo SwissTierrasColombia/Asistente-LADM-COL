@@ -115,9 +115,6 @@ class AbsReportFactory(QDialog):
             return "file://{dirname}/{filename}".format(dirname=os.path.basename(report_data_dir), filename=file_name)
         return None
 
-    def update_db_connection(self, db):
-        self.db = db
-
     def get_layer_geojson(self, layer_name, plot_id):
         raise NotImplementedError
 

@@ -131,10 +131,8 @@ class ANTMapReport(AbsReportFactory):
             mode = True if layer_name in ('terreno', 'terreno_overview') else False
             overview = True if layer_name in ('terrenos_overview', 'terreno_overview') else False
             return self.db.get_ant_map_plot_data(plot_id, mode, overview)
-        elif layer_name == 'linderos':
-            return self.db.get_ant_map_boundaries(plot_id)
         elif layer_name == 'construcciones':
-            return self.db.get_annex17_building_data(plot_id)
+            return self.db.get_ant_building_data(plot_id)
         elif layer_name == 'punto_lindero':
             return self.db.get_annex17_point_data(plot_id)
         elif layer_name in ('vias', 'vias_overview'):
@@ -194,7 +192,6 @@ class ANTMapReport(AbsReportFactory):
 
         dx = (ceil(scale_bbox.xMaximum() / 10.0) * 10) - (floor(scale_bbox.xMinimum() / 10.0) * 10)
         dy = (ceil(scale_bbox.yMaximum() / 10.0) * 10) - (floor(scale_bbox.yMinimum() / 10.0) * 10)
-        print(dx, dy)
 
         if scale_bbox.width() >= scale_bbox.height():
             min_x = floor(scale_bbox.xMinimum() / 10.0) * 10
@@ -206,5 +203,13 @@ class ANTMapReport(AbsReportFactory):
             min_y = floor(scale_bbox.yMinimum() / 10.0) * 10
             max_x = ceil((((scale_bbox.xMinimum() + scale_bbox.xMaximum()) / 2) + dy / 2) / 10.0) * 10
             max_y = ceil(scale_bbox.yMaximum() / 10.0) * 10
+
+        # Adjustments bias movement by scale proximity
+        if max_x - min_x < max_y - min_y:
+            min_x -= 5
+            max_x += 5
+        elif max_y - min_y < max_x - min_x:
+            min_y -= 5
+            max_y += 5
 
         return [min_x, min_y, max_x, max_y]
