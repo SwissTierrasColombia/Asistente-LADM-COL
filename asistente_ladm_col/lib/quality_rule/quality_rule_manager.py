@@ -58,6 +58,16 @@ class QualityRuleManager(QObject, metaclass=SingletonQObject):
         """
         return self.__quality_rules.get(rule_key)
 
+    def get_quality_rule_name(self, rule_key):
+        """
+        Returns the QualityRule name corresponding to a rule code.
+
+        :param rule_key: rule key
+        :return: Name of the quality rule (string). None if the QR is not found.
+        """
+        rule = self.__quality_rules.get(rule_key)
+        return rule.rule_name if rule is not None else None
+
     def get_quality_rule_group_name(self, group_key):
         """
         Returns a quality rule group name.

@@ -15,40 +15,48 @@
  *                                                                         *
  ***************************************************************************/
 """
-from asistente_ladm_col.logic.quality.quality_rule_execution_result import QualityRulesExecutionResult
-from asistente_ladm_col.logic.quality.quality_rules import QualityRules
-
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QObject,
                               pyqtSignal,
                               QSettings)
+from qgis.core import Qgis
 
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.lib.quality_rule.quality_rule_manager import QualityRuleManager
 from asistente_ladm_col.logic.quality.quality_rule_layer_manager import QualityRuleLayerManager
+from asistente_ladm_col.logic.quality.quality_rule_execution_result import (QualityRulesExecutionResult,
+                                                                            QualityRuleExecutionResult)
+from asistente_ladm_col.logic.quality.quality_rules import QualityRules
 from asistente_ladm_col.utils.decorators import _log_quality_rule_validations
 
 
 class QualityRuleEngine(QObject):
     """
     Engine that executes Quality Rules
+
+    :param db: DBConnector object
+    :param rules: Either a dict {rule_key:rule_name} or a list [rule_key1, rule_key2]
+    :param tolerance: Tolerance to be used when running the QRs, in millimeters
+    :param with_gui:
     """
     def __init__(self, db, rules, tolerance, with_gui=True):
         QObject.__init__(self)
         self.logger = Logger()
         self.app = AppInterface()
 
+        self.__qr_manager = QualityRuleManager()
+
+        self.__db = db
+        self.__rules = self.__get_dict_rules(rules)
+        self.__result_layers = list()
         self.__with_gui = with_gui
 
         self.app.settings.tolerance = tolerance  # Tolerance must be given, we don't want anything implicit about it
         self.__tolerance = self.app.settings.tolerance  # Tolerance input might be altered (e.g., if it comes negative)
-        self.__layer_manager = QualityRuleLayerManager(db, rules.keys(), self.__tolerance)
+        self.__layer_manager = QualityRuleLayerManager(db, self.__rules.keys(), self.__tolerance)
         self.__quality_rules = QualityRules()
         self.quality_rule_logger = QualityRuleLogger(self.__tolerance)
-
-        self.__db = db
-        self.__rules = rules
-        self.__result_layers = list()
 
     def initialize(self, db, rules, tolerance, with_gui=True):
         """
@@ -56,12 +64,19 @@ class QualityRuleEngine(QObject):
         """
         self.__result_layers = list()
         self.__db = db
-        self.__rules = rules
+        self.__rules = self.__get_dict_rules(rules)
         self.__with_gui = with_gui
         self.app.settings.tolerance = tolerance
         self.__tolerance = self.app.settings.tolerance  # Tolerance input might be altered (e.g., if it comes negative)
-        self.__layer_manager.initialize(rules.keys(), self.__tolerance)
+        self.__layer_manager.initialize(self.__rules.keys(), self.__tolerance)
         self.quality_rule_logger.initialize(self.__tolerance)
+
+    def __get_dict_rules(self, rules):
+        if isinstance(rules, dict):
+            return rules  # We have everything ready
+
+        # If rules is a list, we need to retrieve the quality rule names from the QRManager
+        return {rule_key: self.__qr_manager.get_quality_rule_name(rule_key) for rule_key in rules}
 
     def validate_quality_rules(self):
         res = dict()  # {rule_key: QualityRuleExecutionResult}
@@ -72,14 +87,23 @@ class QualityRuleEngine(QObject):
                                 "Validating {} quality rules (tolerance: {}).").format(len(self.__rules), self.__tolerance))
 
             for rule_key, rule_name in self.__rules.items():
-                layers = self.__layer_manager.get_layers(rule_key)
-                if layers:
-                    res[rule_key] = self.__validate_quality_rule(rule_key, layers, rule_name=rule_name)
-                    if self.__with_gui:
-                        self.add_error_layers(res[rule_key][2])
+                if rule_name is not None:
+                    layers = self.__layer_manager.get_layers(rule_key)
+                    if layers:
+                        res[rule_key] = self.__validate_quality_rule(rule_key, layers, rule_name=rule_name)
+                        if self.__with_gui:
+                            self.add_error_layers(res[rule_key].error_layers)
+                    else:
+                        msg = QCoreApplication.translate("QualityRuleEngine",
+                                "Couldn't execute '{}' quality rule! Required layers are not available. Skipping...").format(rule_name)
+                        res[rule_key] = QualityRuleExecutionResult(msg, None, dict())  # TODO: should be Qgis.None when https://github.com/qgis/QGIS/issues/42996 is solved
+                        self.logger.warning(__name__, msg)
                 else:
-                    self.logger.warning(__name__, QCoreApplication.translate("QualityRuleEngine",
-                            "Couldn't execute '{}' quality rule! Required layers are not available. Skipping...").format(rule_name))
+                    msg = QCoreApplication.translate("QualityRuleEngine",
+                                                     "Quality rule with key '{}' does not exist! Skipping...").format(
+                        rule_key)
+                    res[rule_key] = QualityRuleExecutionResult(msg, None, dict())
+                    self.logger.warning(__name__, msg)
 
             self.quality_rule_logger.generate_log_button()
             self.__layer_manager.clean_temporary_layers()
@@ -101,7 +125,8 @@ class QualityRuleEngine(QObject):
 
     def add_error_layers(self, error_layers):
         for error_layer in error_layers:
-            self.app.gui.add_error_layer(None, error_layer)
+            if error_layer.featureCount():  # Only load error layers that have at least one feature
+                self.app.gui.add_error_layer(None, error_layer)
 
 
 class QualityRuleLogger(QObject):
