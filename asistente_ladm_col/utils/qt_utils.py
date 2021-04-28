@@ -168,6 +168,7 @@ class NetworkError(RuntimeError):
         self.msg = msg
         self.error_code = error_code
 
+
 def save_pdf_format(settings_path, title, text):
     settings = QSettings()
     new_filename, filter = QFileDialog.getSaveFileName(None,
@@ -177,22 +178,27 @@ def save_pdf_format(settings_path, title, text):
 
     if new_filename:
         settings.setValue(settings_path, os.path.dirname(new_filename))
-        new_filename = new_filename if new_filename.lower().endswith(".pdf") else "{}.pdf".format(new_filename)
-
-        txt_log = QTextEdit()
-        txt_log.setHtml("{}<br>{}".format(title, text))
-
-        printer = QPrinter()
-        printer.setPageSize(QPrinter.Letter)
-        printer.setOutputFormat(QPrinter.PdfFormat)
-        printer.setOutputFileName(new_filename)
-        txt_log.print(printer)
+        export_title_text_to_pdf(new_filename, title, text)
 
         msg = QCoreApplication.translate("Asistente-LADM-COL",
             "Report successfully generated in folder <a href='file:///{normalized_path}'>{path}</a>!").format(
             normalized_path=normalize_local_url(new_filename),
             path=new_filename)
         Logger().success_msg(__name__, msg)
+
+
+def export_title_text_to_pdf(filepath, title, text):
+    filepath = filepath if filepath.lower().endswith(".pdf") else "{}.pdf".format(filepath)
+
+    txt_log = QTextEdit()
+    txt_log.setHtml("{}<br>{}".format(title, text))
+
+    printer = QPrinter()
+    printer.setPageSize(QPrinter.Letter)
+    printer.setOutputFormat(QPrinter.PdfFormat)
+    printer.setOutputFileName(filepath)
+    txt_log.print(printer)
+
 
 class Validators(QObject):
     def validate_line_edits(self, *args, **kwargs):

@@ -15,11 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 """
+import time
+
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QObject,
                               pyqtSignal,
                               QSettings)
-from qgis.core import Qgis
 
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.lib.logger import Logger
@@ -29,6 +30,7 @@ from asistente_ladm_col.logic.quality.quality_rule_execution_result import (Qual
                                                                             QualityRuleExecutionResult)
 from asistente_ladm_col.logic.quality.quality_rules import QualityRules
 from asistente_ladm_col.utils.decorators import _log_quality_rule_validations
+from asistente_ladm_col.utils.utils import Utils
 
 
 class QualityRuleEngine(QObject):
@@ -56,7 +58,7 @@ class QualityRuleEngine(QObject):
         self.__tolerance = self.app.settings.tolerance  # Tolerance input might be altered (e.g., if it comes negative)
         self.__layer_manager = QualityRuleLayerManager(db, self.__rules.keys(), self.__tolerance)
         self.__quality_rules = QualityRules()
-        self.quality_rule_logger = QualityRuleLogger(self.__tolerance)
+        self.quality_rule_logger = QualityRuleLogger(self.__db, self.__tolerance)
 
     def initialize(self, db, rules, tolerance, with_gui=True):
         """
@@ -69,7 +71,7 @@ class QualityRuleEngine(QObject):
         self.app.settings.tolerance = tolerance
         self.__tolerance = self.app.settings.tolerance  # Tolerance input might be altered (e.g., if it comes negative)
         self.__layer_manager.initialize(self.__rules.keys(), self.__tolerance)
-        self.quality_rule_logger.initialize(self.__tolerance)
+        self.quality_rule_logger.initialize(self.__db, self.__tolerance)
 
     def __get_dict_rules(self, rules):
         if isinstance(rules, dict):
@@ -139,19 +141,21 @@ class QualityRuleLogger(QObject):
     set_initial_progress_emitted = pyqtSignal(str)
     set_final_progress_emitted = pyqtSignal(str)
 
-    def __init__(self, tolerance):
+    def __init__(self, db, tolerance):
         QObject.__init__(self)
         self.log_text = ""
         self.log_total_time = 0
         self.tolerance = tolerance
+        self.__db = db
 
-    def initialize(self, tolerance):
+    def initialize(self, db, tolerance):
         """
         Objects of this class are reusable calling initialize()
         """
         self.log_text = ""
         self.log_total_time = 0
         self.tolerance = tolerance
+        self.__db = db
 
     def set_count_topology_rules(self, count):
         self.show_message_emitted.emit(QCoreApplication.translate("QualityDialog", ""), count)
@@ -159,5 +163,24 @@ class QualityRuleLogger(QObject):
     def generate_log_button(self):
         self.show_button_emitted.emit()
 
-    def get_log_text(self):
-        return self.log_text, self.tolerance, self.log_total_time
+    def get_log_result(self):
+        return QualityRuleResultLog(self.__db, self.log_text, self.tolerance, self.log_total_time)
+
+
+class QualityRuleResultLog(QObject):
+    def __init__(self, db, log_text, tolerance, log_total_time):
+        QObject.__init__(self)
+        self.__db = db
+        self.text = log_text
+        self.tolerance = tolerance
+        self.log_total_time = log_total_time
+
+    @property
+    def title(self):
+        return QCoreApplication.translate(
+            "QualityRuleResultLog",
+            "<h2 align='center'>Quality Check Results</h2><div style='text-align:center;'>{}<br>Database: {}<br>Total execution time: {}<br>Tolerance {}mm.</div>").format(
+            time.strftime("%d/%m/%y %H:%M:%S"),
+            self.__db.get_description_conn_string(),
+            Utils.set_time_format(self.log_total_time),
+            self.tolerance)
