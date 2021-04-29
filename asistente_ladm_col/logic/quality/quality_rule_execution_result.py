@@ -29,6 +29,9 @@ class QualityRulesExecutionResult:
     def result(self, rule_key):
         return self.__res_dict.get(rule_key)
 
+    def all_error_layers(self):
+        return [layer for qr_res in self.__res_dict.values() for layer in qr_res.error_layers if layer.featureCount()]
+
 
 class QualityRuleExecutionResult:
     def __init__(self, msg, level, error_layers):
