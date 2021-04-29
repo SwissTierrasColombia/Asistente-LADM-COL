@@ -28,16 +28,14 @@ def get_ant_map_query(names, schema, where_id):
             SELECT distinct on ({MEMBERS_T_GROUP_PARTY_F}) {MEMBERS_T_GROUP_PARTY_F}
             ,predio_t_id
             ,(case when {LC_PARTY_T}.{T_ID_F} is not null then 'agrupacion' end) AS agrupacion_interesado
-            ,(coalesce({LC_PARTY_T}.{LC_PARTY_T_FIRST_NAME_1_F},'') || coalesce(' ' || {LC_PARTY_T}.{LC_PARTY_T_FIRST_NAME_2_F}, '') || coalesce(' ' || {LC_PARTY_T}.{LC_PARTY_T_SURNAME_1_F}, '') || coalesce(' ' || {LC_PARTY_T}.{LC_PARTY_T_SURNAME_2_F}, '')
-                    || coalesce({LC_PARTY_T}.{LC_PARTY_T_BUSINESS_NAME_F}, '') ) AS nombre
+            ,(coalesce({LC_PARTY_T}.{LC_PARTY_T_FIRST_NAME_1_F},'') || coalesce(' ' || {LC_PARTY_T}.{LC_PARTY_T_SURNAME_1_F}, '') || coalesce({LC_PARTY_T}.{LC_PARTY_T_BUSINESS_NAME_F}, '') ) AS nombre
             FROM derecho_agrupacion_interesados LEFT JOIN {schema}.{LC_PARTY_T} ON {LC_PARTY_T}.{T_ID_F} = derecho_agrupacion_interesados.{MEMBERS_T_PARTY_F} order by {MEMBERS_T_GROUP_PARTY_F}
         ),
         info_interesado AS (
             SELECT DISTINCT
             predio_t_id
             ,(case when {LC_PARTY_T}.{T_ID_F} is not null then 'interesado' end) AS agrupacion_interesado
-            ,(coalesce({LC_PARTY_T}.{LC_PARTY_T_FIRST_NAME_1_F},'') || coalesce(' ' || {LC_PARTY_T}.{LC_PARTY_T_FIRST_NAME_2_F}, '') || coalesce(' ' || {LC_PARTY_T}.{LC_PARTY_T_SURNAME_1_F}, '') || coalesce(' ' || {LC_PARTY_T}.{LC_PARTY_T_SURNAME_2_F}, '')
-                    || coalesce({LC_PARTY_T}.{LC_PARTY_T_BUSINESS_NAME_F}, '') ) AS nombre
+            ,(coalesce({LC_PARTY_T}.{LC_PARTY_T_FIRST_NAME_1_F},'') || coalesce(' ' || {LC_PARTY_T}.{LC_PARTY_T_SURNAME_1_F}, '') || coalesce({LC_PARTY_T}.{LC_PARTY_T_BUSINESS_NAME_F}, '') ) AS nombre
             FROM derecho_interesados LEFT JOIN {schema}.{LC_PARTY_T} ON {LC_PARTY_T}.{T_ID_F} = derecho_interesados.{COL_RRR_PARTY_T_LC_PARTY_F} 
         ),
         info_agrupacion AS (
@@ -50,6 +48,29 @@ def get_ant_map_query(names, schema, where_id):
             SELECT * FROM info_interesado
             UNION ALL
             SELECT * FROM info_agrupacion
+        ),
+        etiqueta_numero_predial AS (
+            select
+            case
+                when count(*) = 1 THEN 'COMPLETO'
+                when count(distinct sector) > 1 then 'SECTOR'
+                when count(distinct comuna) > 1 then 'COMUNA'
+                when count(distinct barrio) > 1 then 'BARRIO' 
+                else 'terreno'
+            end
+            from 
+            (
+                select
+                    substring(numero_predial, 1, 9) sector,
+                    substring(numero_predial, 1, 11) comuna,
+                    substring(numero_predial, 1, 13) barrio
+                from (
+                    SELECT numero_predial 
+                    FROM (SELECT * FROM {schema}.{LC_PLOT_T} where {T_ID_F} in (select ue_lc_terreno from terrenos_seleccionados)) AS terrenos
+                    LEFT JOIN {schema}.{COL_UE_BAUNIT_T} ON terrenos.{T_ID_F} = {COL_UE_BAUNIT_T}.{COL_UE_BAUNIT_T_LC_PLOT_F}
+                    LEFT JOIN info_predio ON {COL_UE_BAUNIT_T}.{COL_UE_BAUNIT_T_PARCEL_F} = info_predio.{T_ID_F}
+                ) as numero_predial
+            ) as numero_predial_discriminado
         )
         SELECT array_to_json(array_agg(features)) AS features
         FROM (
@@ -58,7 +79,20 @@ def get_ant_map_query(names, schema, where_id):
             SELECT 'Feature' AS type ,row_to_json((
                 SELECT l
                     FROM (
-                        SELECT (left(right(info_predio.numero_predial,15),6) ||
+                        SELECT (
+                                CASE
+                                    WHEN (SELECT * FROM etiqueta_numero_predial) LIKE 'COMPLETO' THEN
+                                        numero_predial
+                                    WHEN (SELECT * FROM etiqueta_numero_predial) LIKE 'SECTOR' THEN
+                                        substr(numero_predial,  8, 14)
+                                    WHEN (SELECT * FROM etiqueta_numero_predial) LIKE 'COMUNA' THEN
+                                        substr(numero_predial, 10, 12)
+                                    WHEN (SELECT * FROM etiqueta_numero_predial) LIKE 'BARRIO' THEN
+                                        substr(numero_predial, 12, 10)
+                                    ELSE
+                                        substr(numero_predial, 16,  6)
+                                END
+                                || '\n' ||
                         (CASE WHEN info_total_interesados.agrupacion_interesado = 'agrupacion'
                         THEN COALESCE(' ' || info_total_interesados.nombre || ' Y OTROS', ' INDETERMINADO')
                         ELSE COALESCE(' ' || info_total_interesados.nombre, ' INDETERMINADO') END)) AS predio
