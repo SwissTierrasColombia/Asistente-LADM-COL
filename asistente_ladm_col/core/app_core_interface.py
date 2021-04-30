@@ -1374,8 +1374,9 @@ class AppCoreInterface(QObject):
         tolerance /= 1000  # Tolerance comes in mm., we need it in m.
         input_layer_name = input_layer.name()
 
+        input_param = QgsProcessingFeatureSourceDefinition(input_layer.id(), input_only_selected) if input_only_selected else input_layer
         params = {
-            'INPUT': QgsProcessingFeatureSourceDefinition(input_layer.id(), input_only_selected),
+            'INPUT': input_param,
             'REFERENCE_LAYER': reference_layer,
             'TOLERANCE': tolerance,
             'BEHAVIOR': behavior,

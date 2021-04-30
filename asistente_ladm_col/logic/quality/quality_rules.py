@@ -56,7 +56,10 @@ class QualityRules:
         # Check that we have all required layers, otherwise, return and don't even call the quality rule
         for k,v in layers[QUALITY_RULE_LAYERS].items():
             if v is None:
-                return QCoreApplication.translate("", "Invalid input layer '{}'. Chances are, you're using a tolerance so high that it makes some geometries invalid.".format(k)), Qgis.Critical
+                return QualityRuleExecutionResult(
+                        QCoreApplication.translate("", "Invalid input layer '{}'. Chances are, you're using a tolerance so high that it makes some geometries invalid.".format(k)),
+                        Qgis.Critical,
+                        list())
 
         # POINT QUALITY RULES
         if id_quality_rule == EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS:
