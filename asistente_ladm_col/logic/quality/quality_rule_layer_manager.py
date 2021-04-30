@@ -101,7 +101,7 @@ class QualityRuleLayerManager(QObject):
         adjusted_layers = {rule_key:dict() for rule_key in self.__rule_keys}
 
         if self.__tolerance:
-            self.logger.debug(__name__, QCoreApplication.translate("QualityRuleLayerManager", "Tolerance > 0, adjusting layers..."))
+            self.logger.debug(__name__, QCoreApplication.translate("QualityRuleLayerManager", "Tolerance > 0 ({}mm), adjusting layers...").format(self.__tolerance))
             self.__adjusted_layers_cache = dict()  # adjusted_layers_key: layer
             count_rules = 0
             total_rules = len([rk for rk in self.__rule_keys if rk in self.__quality_rule_layers_config])
@@ -132,7 +132,6 @@ class QualityRuleLayerManager(QObject):
                                 adjusted_layers_key = get_key_for_quality_rule_adjusted_layer(input_name, reference_name, fix)
                                 if adjusted_layers_key not in self.__adjusted_layers_cache:
                                     self.__adjusted_layers_cache[adjusted_layers_key] = self.app.core.adjust_layer(input, reference, self.__tolerance, behavior, fix, add_topological_points)
-
                                 adjusted_layers[rule_key][layer_name] = self.__adjusted_layers_cache[adjusted_layers_key]
 
             self.logger.debug(__name__, QCoreApplication.translate("QualityRuleLayerManager", "Layers adjusted..."))

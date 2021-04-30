@@ -329,7 +329,7 @@ class OverrideCursor():
         QApplication.restoreOverrideCursor()
 
 
-class ProcessWithStatus():
+class ProcessWithStatus:
     def __init__(self, msg):
         self.msg = msg
 

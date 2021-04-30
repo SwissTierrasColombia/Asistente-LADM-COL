@@ -38,6 +38,7 @@ class AppSettings:
 
     def __init__(self):
         self.settings = QSettings()
+        self.__with_gui = True
 
     def get_setting(self, key):
         # Generic get_setting method
@@ -46,6 +47,14 @@ class AppSettings:
     def set_setting(self, key, value):
         # Generic set_setting method
         self.settings.setValue(key, value)
+
+    @property
+    def with_gui(self):
+        return self.__with_gui
+
+    @with_gui.setter
+    def with_gui(self, with_gui):
+        self.__with_gui = with_gui
 
     @property
     def active_role(self):

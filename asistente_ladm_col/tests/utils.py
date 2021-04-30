@@ -54,7 +54,7 @@ DB_NAME = "ladm_col"
 DB_USER = "usuario_ladm_col"
 DB_PASSWORD = "clave_ladm_col"
 iface = get_iface()
-asistente_ladm_col_plugin = AsistenteLADMCOLPlugin(iface, True)
+asistente_ladm_col_plugin = AsistenteLADMCOLPlugin(iface, False)
 asistente_ladm_col_plugin.initGui()
 refactor_fields = RefactorFieldsMappings()
 

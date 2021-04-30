@@ -156,10 +156,10 @@ from asistente_ladm_col.resources_rc import *  # Necessary to show icons
 class AsistenteLADMCOLPlugin(QObject):
     wiz_geometry_creation_finished = pyqtSignal()
 
-    def __init__(self, iface, unit_tests=False):
+    def __init__(self, iface, with_gui=True):
         QObject.__init__(self)
         self.iface = iface
-        self.unit_tests = unit_tests
+        self.__with_gui = with_gui
 
         # Register LADM-COL models
         self.model_registry = LADMColModelRegistry()
@@ -180,6 +180,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.conn_manager = ConnectionManager()
         self.logger = Logger()
         self.logger.set_mode(DEFAULT_LOG_MODE)
+        self.logger.set_with_gui(self.__with_gui)
         self.gui_builder = GUIBuilder(self.iface)
         self.session = STSession()
         self.wiz = None
@@ -219,6 +220,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.app = AppInterface()
         self.app.set_core_interface(AppCoreInterface())
         self.app.set_gui_interface(AppGUIInterface(self.iface))
+        self.app.settings.with_gui = self.__with_gui  # This makes it accessible in the whole plugin
 
         self.right_of_way = RightOfWay()
         self.toolbar = ToolBar(self.iface)
@@ -229,7 +231,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.register_dock_widgets()
         self.set_signal_slot_connections()
 
-        if not self.unit_tests:
+        if self.app.settings.with_gui:
             # Ask for role name before building the GUI, only the first time the plugin is run
             if self.gui_builder.show_welcome_screen():
                 dlg_welcome = WelcomeScreenDialog(self.main_window)
@@ -295,7 +297,7 @@ class AsistenteLADMCOLPlugin(QObject):
         # We need CTM12 projection in the QGIS SRS database
         res = self.app.core.initialize_ctm12()
         self.logger.info_warning(__name__, res, "CTM12 is in the QGIS SRS database? {}!!!".format(res))
-        if not res and not self.unit_tests:
+        if not res and self.app.settings.with_gui:
             folder, filename = os.path.split(QgsApplication.srsDatabaseFilePath())
             msg_box = QMessageBox(self.main_window)
             msg_box.setIcon(QMessageBox.Critical)

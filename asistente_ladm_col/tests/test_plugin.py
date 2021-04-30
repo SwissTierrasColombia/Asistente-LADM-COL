@@ -8,7 +8,7 @@ from asistente_ladm_col.tests.utils import (get_iface,
                                             import_qgis_model_baker,
                                             unload_qgis_model_baker)
 from asistente_ladm_col.asistente_ladm_col_plugin import AsistenteLADMCOLPlugin
-asistente_ladm_col = AsistenteLADMCOLPlugin(get_iface(), True)
+asistente_ladm_col = AsistenteLADMCOLPlugin(get_iface(), False)
 
 from asistente_ladm_col.utils.utils import is_plugin_version_valid
 from asistente_ladm_col.config.general_config import (QGIS_MODEL_BAKER_PLUGIN_NAME,

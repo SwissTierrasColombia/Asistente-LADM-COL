@@ -14,7 +14,7 @@ from asistente_ladm_col.config.general_config import (DEPENDENCY_CRYPTO_DIR,
 from asistente_ladm_col.core.encrypter_decrypter import EncrypterDecrypter
 from asistente_ladm_col.tests.utils import get_test_path
 
-asistente_ladm_col = AsistenteLADMCOLPlugin(get_iface(), True)
+asistente_ladm_col = AsistenteLADMCOLPlugin(get_iface(), False)
 
 start_app()
 

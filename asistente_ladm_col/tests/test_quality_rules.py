@@ -851,7 +851,7 @@ class TesQualityRules(unittest.TestCase):
         rule_key = EnumQualityRule.Polygon.BUILDINGS_SHOULD_BE_WITHIN_PLOTS
         rule_name = "Buildings should be within Plots"
         list_rules = [rule_key]  # We'll test that we can use a list of rule keys as parameter for the QREngine
-        quality_rule_engine = QualityRuleEngine(db_gpkg, list_rules, 0, False)
+        quality_rule_engine = QualityRuleEngine(db_gpkg, list_rules, 0)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res.result(rule_key).level, Qgis.Critical)
@@ -876,7 +876,7 @@ class TesQualityRules(unittest.TestCase):
 
         # Tolerance: 1mm
         print("INFO: Testing with 1mm of tolerance...")
-        quality_rule_engine.initialize(db_gpkg, list_rules, 1, False)
+        quality_rule_engine.initialize(db_gpkg, list_rules, 1)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res.result(rule_key).level, Qgis.Critical)
@@ -891,7 +891,7 @@ class TesQualityRules(unittest.TestCase):
 
         # Tolerance: 2mm
         print("INFO: Testing with 2mm of tolerance...")
-        quality_rule_engine.initialize(db_gpkg, list_rules, 2, False)
+        quality_rule_engine.initialize(db_gpkg, list_rules, 2)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res.result(rule_key).level, Qgis.Critical)
@@ -914,7 +914,7 @@ class TesQualityRules(unittest.TestCase):
         rule_key = EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_PLOTS
         rule_name = "Buildings units should be within Plots"
         dict_rules = {rule_key: rule_name}  # QualityRuleManager().get_quality_rule()
-        quality_rule_engine = QualityRuleEngine(db_gpkg, dict_rules, 0, False)
+        quality_rule_engine = QualityRuleEngine(db_gpkg, dict_rules, 0)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res.result(rule_key).level, Qgis.Critical)
@@ -945,7 +945,7 @@ class TesQualityRules(unittest.TestCase):
 
         # Tolerance: 1mm
         print("INFO: Testing with 1mm of tolerance...")
-        quality_rule_engine.initialize(db_gpkg, dict_rules, 1, False)
+        quality_rule_engine.initialize(db_gpkg, dict_rules, 1)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res.result(rule_key).level, Qgis.Critical)
@@ -960,7 +960,7 @@ class TesQualityRules(unittest.TestCase):
 
         # Tolerance: 2mm
         print("INFO: Testing with 2mm of tolerance...")
-        quality_rule_engine.initialize(db_gpkg, dict_rules, 2, False)
+        quality_rule_engine.initialize(db_gpkg, dict_rules, 2)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res.result(rule_key).level, Qgis.Critical)
@@ -983,7 +983,7 @@ class TesQualityRules(unittest.TestCase):
         rule_key = EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_BUILDINGS
         rule_name = "Buildings units should be within Buildings"
         dict_rules = {rule_key: rule_name}  # QualityRuleManager().get_quality_rule()
-        quality_rule_engine = QualityRuleEngine(db_gpkg, dict_rules, 0, False)
+        quality_rule_engine = QualityRuleEngine(db_gpkg, dict_rules, 0)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res.result(rule_key).level, Qgis.Critical)
@@ -998,7 +998,7 @@ class TesQualityRules(unittest.TestCase):
 
         # Tolerance: 1mm
         print("INFO: Testing with 1mm of tolerance...")
-        quality_rule_engine.initialize(db_gpkg, dict_rules, 1, False)
+        quality_rule_engine.initialize(db_gpkg, dict_rules, 1)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res.result(rule_key).level, Qgis.Critical)
@@ -1012,7 +1012,7 @@ class TesQualityRules(unittest.TestCase):
 
         # Tolerance: 2mm
         print("INFO: Testing with 2mm of tolerance...")
-        quality_rule_engine.initialize(db_gpkg, dict_rules, 2, False)
+        quality_rule_engine.initialize(db_gpkg, dict_rules, 2)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res.result(rule_key).level, Qgis.Critical)
@@ -1030,7 +1030,7 @@ class TesQualityRules(unittest.TestCase):
         db_gpkg.test_connection()  # To generate DBMappingRegistry object
 
         rule_key = 9999
-        quality_rule_engine = QualityRuleEngine(db_gpkg, [rule_key], 0, False)
+        quality_rule_engine = QualityRuleEngine(db_gpkg, [rule_key], 0)
         res = quality_rule_engine.validate_quality_rules()
         self.assertIsNone(res.result(rule_key).level)
 

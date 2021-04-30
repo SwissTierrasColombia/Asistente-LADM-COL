@@ -40,9 +40,8 @@ class QualityRuleEngine(QObject):
     :param db: DBConnector object
     :param rules: Either a dict {rule_key:rule_name} or a list [rule_key1, rule_key2]
     :param tolerance: Tolerance to be used when running the QRs, in millimeters
-    :param with_gui:
     """
-    def __init__(self, db, rules, tolerance, with_gui=True):
+    def __init__(self, db, rules, tolerance):
         QObject.__init__(self)
         self.logger = Logger()
         self.app = AppInterface()
@@ -52,7 +51,7 @@ class QualityRuleEngine(QObject):
         self.__db = db
         self.__rules = self.__get_dict_rules(rules)
         self.__result_layers = list()
-        self.__with_gui = with_gui
+        self.__with_gui = self.app.settings.with_gui
 
         self.app.settings.tolerance = tolerance  # Tolerance must be given, we don't want anything implicit about it
         self.__tolerance = self.app.settings.tolerance  # Tolerance input might be altered (e.g., if it comes negative)
@@ -60,14 +59,14 @@ class QualityRuleEngine(QObject):
         self.__quality_rules = QualityRules()
         self.quality_rule_logger = QualityRuleLogger(self.__db, self.__tolerance)
 
-    def initialize(self, db, rules, tolerance, with_gui=True):
+    def initialize(self, db, rules, tolerance):
         """
         Objects of this class are reusable calling initialize()
         """
         self.__result_layers = list()
         self.__db = db
         self.__rules = self.__get_dict_rules(rules)
-        self.__with_gui = with_gui
+        self.__with_gui = self.app.settings.with_gui
         self.app.settings.tolerance = tolerance
         self.__tolerance = self.app.settings.tolerance  # Tolerance input might be altered (e.g., if it comes negative)
         self.__layer_manager.initialize(self.__rules.keys(), self.__tolerance)

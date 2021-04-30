@@ -59,6 +59,7 @@ class Logger(QObject, metaclass=SingletonQObject):
     def __init__(self):
         QObject.__init__(self)
         self.mode = EnumLogMode.USER  # Default value
+        self.with_gui = True  # Default value
         self.log = QgsApplication.messageLog()
         self._file_log = ''
 
@@ -66,9 +67,11 @@ class Logger(QObject, metaclass=SingletonQObject):
         self.message_with_button_open_table_attributes_emitted.connect(self._log_open_table_attributes_emitted)
         self.message_with_buttons_change_detection_all_and_per_parcel_emitted.connect(self._log_change_detection_all_and_per_parcel_emitted)
 
-
     def set_mode(self, mode):
         self.mode = mode
+
+    def set_with_gui(self, with_gui):
+        self.with_gui = with_gui
 
     def enable_file_log(self, file_path):
         self._file_log = file_path
@@ -117,7 +120,8 @@ class Logger(QObject, metaclass=SingletonQObject):
             self.clear_status_bar_emitted.emit()
         else:
             self.log_message("status_bar", msg, Qgis.Info, EnumLogHandler.STATUS_BAR, 0)
-        QCoreApplication.processEvents()
+        if self.with_gui:
+            QCoreApplication.processEvents()
 
     def debug(self, module_name, msg, handler=EnumLogHandler.QGIS_LOG, duration=0, tab=TAB_NAME_FOR_LOGS):
         """
