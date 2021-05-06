@@ -20,6 +20,7 @@ STEP_TYPE = "STEP_TYPE"
 STEP_DESCRIPTION = "STEP_DESCRIPTION"
 STEP_ACTION = "STEP_ACTION"
 STEP_CUSTOM_ACTION_SLOT = "STEP_CUSTOM_ACTION_SLOT"
+STEP_OPTIONAL = "STEP_OPTIONAL"
 
 
 class TaskStepsConfig(QObject, metaclass=SingletonQObject):
@@ -81,10 +82,31 @@ class TaskStepsConfig(QObject, metaclass=SingletonQObject):
                  STEP_CUSTOM_ACTION_SLOT: {
                      SLOT_NAME: self._slot_caller.show_dlg_export_data,
                      SLOT_CONTEXT: TaskContext([SUPPLIES_DB_SOURCE]),
-                     SLOT_PARAMS: {}
-                 }
+                     SLOT_PARAMS: {}}
                  },
                 {STEP_NUMBER: 4,
+                 STEP_OPTIONAL: True,
+                 STEP_NAME: QCoreApplication.translate("TaskStepsConfig", "Generate report (COBOL)"),
+                 STEP_TYPE: EnumSTStepType.RUN_OMISSIONS_COMMISSIONS_REPORT_COBOL,
+                 STEP_DESCRIPTION: QCoreApplication.translate("TaskStepsConfig",
+                                                              "Generate omissions and commissions report (COBOL)."),
+                 STEP_CUSTOM_ACTION_SLOT: {
+                     SLOT_NAME: self._slot_caller.show_missing_cobol_supplies_dialog,
+                     SLOT_CONTEXT: TaskContext([SUPPLIES_DB_SOURCE]),
+                     SLOT_PARAMS: {}}
+                 },
+                {STEP_NUMBER: 5,
+                 STEP_OPTIONAL: True,
+                 STEP_NAME: QCoreApplication.translate("TaskStepsConfig", "Generate report (SNC)"),
+                 STEP_TYPE: EnumSTStepType.RUN_OMISSIONS_COMMISSIONS_REPORT_SNC,
+                 STEP_DESCRIPTION: QCoreApplication.translate("TaskStepsConfig",
+                                                              "Generate omissions and commissions report (SNC)."),
+                 STEP_CUSTOM_ACTION_SLOT: {
+                     SLOT_NAME: self._slot_caller.show_missing_snc_supplies_dialog,
+                     SLOT_CONTEXT: TaskContext([SUPPLIES_DB_SOURCE]),
+                     SLOT_PARAMS: {}}
+                 },
+                {STEP_NUMBER: 6,
                  STEP_NAME: QCoreApplication.translate("TaskStepsConfig", "Upload XTF"),
                  STEP_TYPE: EnumSTStepType.UPLOAD_FILE,
                  STEP_DESCRIPTION: QCoreApplication.translate("TaskStepsConfig", "Upload the XTF file to the Transitional System."),

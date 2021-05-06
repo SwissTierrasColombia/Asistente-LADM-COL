@@ -27,7 +27,8 @@ from asistente_ladm_col.config.task_steps_config import (TaskStepsConfig,
                                                          STEP_TYPE,
                                                          STEP_DESCRIPTION,
                                                          STEP_ACTION,
-                                                         STEP_CUSTOM_ACTION_SLOT)
+                                                         STEP_CUSTOM_ACTION_SLOT,
+                                                         STEP_OPTIONAL)
 from asistente_ladm_col.lib.logger import Logger
 
 
@@ -82,7 +83,7 @@ class STTaskSteps(QObject):
         :return: boolean --> Are all steps done?
         """
         for step in self.__steps:
-            if not step.get_status():
+            if not step.get_status() and not step.is_optional():
                 return False
 
         return True
@@ -149,6 +150,7 @@ class STTaskStep(QObject):
         self.__action_tag = ""
         self.__custom_action_slot = None
         self.__status = False
+        self.__optional = False
 
         self.__initialize_task_step(step_data)
 
@@ -159,6 +161,7 @@ class STTaskStep(QObject):
         self.__action_tag = step_data[STEP_ACTION] if STEP_ACTION in step_data else ""
         self.__description = step_data[STEP_DESCRIPTION] if STEP_DESCRIPTION in step_data else ""
         self.__custom_action_slot = step_data[STEP_CUSTOM_ACTION_SLOT] if STEP_CUSTOM_ACTION_SLOT in step_data else None
+        self.__optional = step_data[STEP_OPTIONAL] if STEP_OPTIONAL in step_data else False
 
     def is_valid(self):
         """
@@ -169,6 +172,9 @@ class STTaskStep(QObject):
         """
         return self.__id is not None and self.__name and self.__type and \
                (self.__action_tag or self.__custom_action_slot is not None)
+
+    def is_optional(self):
+        return self.__optional
 
     def get_id(self):
         return self.__id

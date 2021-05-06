@@ -33,7 +33,8 @@ from qgis.gui import QgsPanelWidget
 from asistente_ladm_col.config.enums import EnumSTTaskStatus
 from asistente_ladm_col.config.general_config import (CHECKED_COLOR,
                                                       UNCHECKED_COLOR,
-                                                      GRAY_COLOR)
+                                                      GRAY_COLOR,
+                                                      LIGHT_GRAY_COLOR)
 from asistente_ladm_col.config.task_steps_config import (SLOT_NAME,
                                                          SLOT_PARAMS,
                                                          SLOT_CONTEXT)
@@ -107,13 +108,19 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         for i, step in enumerate(steps):
             children = []
-            step_item = QTreeWidgetItem([QCoreApplication.translate("TaskPanelWidget", "Step {}").format(i + 1)])
+
+            optional_suffix = QCoreApplication.translate("TaskPanelWidget", " (optional)")
+            step_item = QTreeWidgetItem([QCoreApplication.translate("TaskPanelWidget", "Step {}{}").format(
+                i + 1,
+                optional_suffix if step.is_optional() else ""
+            )])
+            step_item.setData(0, Qt.UserRole, step)
             step_item.setData(0, Qt.BackgroundRole, QBrush(GRAY_COLOR))
             step_item.setToolTip(0, step.get_name())
             step_item.setCheckState(0, Qt.Checked if step.get_status() else Qt.Unchecked)
 
             action_item = QTreeWidgetItem([step.get_name()])
-            action_item.setData(0, Qt.UserRole, step.get_id())
+            action_item.setData(0, Qt.UserRole, step)
             action_item.setIcon(0, QIcon(":/Asistente-LADM-COL/resources/images/process.svg"))
             action_item.setToolTip(0, step.get_description())
             step_item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
@@ -136,20 +143,18 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
         """
         # Make sure we have a child item and only trigger if parent is not checked yet (i.e., step is not done yet)
         if not item.childCount() and item.parent().checkState(column) == Qt.Unchecked:
-            step_id = item.data(column, Qt.UserRole)
-            step = self._task.get_step(step_id)
-            if step:
-                slot = step.get_custom_action_slot()
-                if slot:  # Custom action call
-                    self.logger.info(__name__, "Executing step action with custom parameters...")
-                    if SLOT_CONTEXT in slot and slot[SLOT_CONTEXT]:
-                        slot[SLOT_CONTEXT].set_slot_on_result(partial(self.set_item_enabled, item.parent()))
-                        slot[SLOT_NAME](slot[SLOT_CONTEXT], **slot[SLOT_PARAMS])  # Call passing task context
-                    else:
-                        slot[SLOT_NAME](**slot[SLOT_PARAMS])
-                else:  # Default action call
-                    self.logger.info(__name__, "Executing default action...")
-                    self.trigger_action_emitted.emit(step.get_action_tag())
+            step = item.data(column, Qt.UserRole)
+            slot = step.get_custom_action_slot()
+            if slot:  # Custom action call
+                self.logger.info(__name__, "Executing step action with custom parameters...")
+                if SLOT_CONTEXT in slot and slot[SLOT_CONTEXT]:
+                    slot[SLOT_CONTEXT].set_slot_on_result(partial(self.set_item_enabled, item.parent()))
+                    slot[SLOT_NAME](slot[SLOT_CONTEXT], **slot[SLOT_PARAMS])  # Call passing task context
+                else:
+                    slot[SLOT_NAME](**slot[SLOT_PARAMS])
+            else:  # Default action call
+                self.logger.info(__name__, "Executing default action...")
+                self.trigger_action_emitted.emit(step.get_action_tag())
 
     def set_item_enabled(self, item, enable):
         """
@@ -161,7 +166,10 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
         item.setCheckState(0, Qt.Checked if enable else Qt.Unchecked)
 
     def set_item_style(self, item, column):
-        color = CHECKED_COLOR if item.checkState(column) == Qt.Checked else UNCHECKED_COLOR
+        step = item.data(column, Qt.UserRole)
+        unchecked = LIGHT_GRAY_COLOR if step.is_optional() else UNCHECKED_COLOR
+
+        color = CHECKED_COLOR if item.checkState(column) == Qt.Checked else unchecked
         item.setData(column, Qt.BackgroundRole, QBrush(color))
 
         for index in range(item.childCount()):

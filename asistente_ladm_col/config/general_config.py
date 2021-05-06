@@ -175,6 +175,7 @@ CSS_COLOR_INACTIVE_LABEL = "color:#646464"
 CHECKED_COLOR = QColor(166, 255, 152, 255)
 UNCHECKED_COLOR = QColor(255, 245, 152, 255)
 GRAY_COLOR = QColor(219, 219, 219, 255)
+LIGHT_GRAY_COLOR = QColor(239, 239, 239, 255)
 
 # Colors for non allocatet parcels in field data capture
 NOT_ALLOCATED_PARCEL_COLOR = QColor(255, 165, 0, 255)  # Orange

@@ -104,6 +104,8 @@ class EnumSTStepType(Enum):
     IMPORT_DATA = 4
     EXPORT_DATA = 5
     RUN_ETL_COBOL = 6
+    RUN_OMISSIONS_COMMISSIONS_REPORT_COBOL = 7
+    RUN_OMISSIONS_COMMISSIONS_REPORT_SNC = 8
 
 
 class EnumLayerRegistryType(Enum):
