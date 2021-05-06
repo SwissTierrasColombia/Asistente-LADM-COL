@@ -73,6 +73,7 @@ class MissingSncSuppliesDialog(MissingSuppliesBaseDialog):
     def accepted(self):
         self.bar.clearWidgets()
         self.save_settings(self.data_system)
+        etl_result = False
 
         self.folder_path = self.txt_file_path_folder_supplies.text()
         self.file_names = self.txt_file_names_supplies.text().strip()
@@ -124,6 +125,7 @@ class MissingSncSuppliesDialog(MissingSuppliesBaseDialog):
                                             path2=self.gpkg_path)
                                         self.logger.clear_status()
                                         self.logger.success_msg(__name__, msg)
+                                        etl_result = True
                                     else:
                                         self.initialize_feedback()  # Get ready for an eventual new execution
                                         self.progress_base = 0
@@ -151,6 +153,8 @@ class MissingSncSuppliesDialog(MissingSuppliesBaseDialog):
                     self.show_message(msg_csv, Qgis.Warning)
 
             self.set_gui_controls_enabled(True)
+
+        self.on_result.emit(etl_result)  # Inform other classes if the execution was successful
 
     def validate_files_in_folder(self):
         """
