@@ -107,9 +107,9 @@ class TaskStepsConfig(QObject, metaclass=SingletonQObject):
                      SLOT_PARAMS: {}}
                  },
                 {STEP_NUMBER: 6,
-                 STEP_NAME: QCoreApplication.translate("TaskStepsConfig", "Upload XTF"),
+                 STEP_NAME: QCoreApplication.translate("TaskStepsConfig", "Upload XTF (and optionally, report files)"),
                  STEP_TYPE: EnumSTStepType.UPLOAD_FILE,
-                 STEP_DESCRIPTION: QCoreApplication.translate("TaskStepsConfig", "Upload the XTF file to the Transitional System."),
+                 STEP_DESCRIPTION: QCoreApplication.translate("TaskStepsConfig", "Upload the XTF file (and optionally, report files) to the Transitional System."),
                  STEP_CUSTOM_ACTION_SLOT: {
                      SLOT_NAME: self._slot_caller.show_dlg_st_upload_file,
                      SLOT_CONTEXT: TaskContext([SUPPLIES_DB_SOURCE]),

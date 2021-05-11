@@ -16,29 +16,36 @@ class STUtils(QObject):
         self.st_session = STSession()
         self.st_config = TransitionalSystemConfig()
 
-    def upload_file(self, request_id, supply_type, file_path, comments):
+    def upload_files(self, request_id, supply_type, zip_xtf_file_path, zip_reports_file_path, comments):
         url = self.st_config.ST_UPLOAD_FILE_SERVICE_URL.format(request_id)
+
+        self.logger.debug(__name__, "Preparing PUT request ({}, {}, {}, {}, {})".format(request_id, supply_type,
+                                                                                        zip_xtf_file_path,
+                                                                                        zip_reports_file_path,
+                                                                                        comments))
 
         payload = {'typeSupplyId': supply_type,
                    'observations': comments}
-        files = [
-            ('files[]', open(file_path, 'rb'))
-        ]
+
+        files = [('files[]', open(zip_xtf_file_path, 'rb'))]
+        if zip_reports_file_path:  # Optional ZIP file
+            files.append(('extra', open(zip_reports_file_path, 'rb')))
+
         headers = {
             'Authorization': "Bearer {}".format(self.st_session.get_logged_st_user().get_token())
         }
 
         msg = ""
         try:
-            self.logger.debug(__name__, "Uploading file to transitional system...")
+            self.logger.debug(__name__, "Uploading files to transitional system...")
             response = requests.request("PUT", url, headers=headers, data=payload, files=files)
         except requests.ConnectionError as e:
             msg = self.st_config.ST_CONNECTION_ERROR_MSG.format(e)
             self.logger.warning(__name__, msg)
             return False, msg
 
-        status_OK = response.status_code == 200
-        if status_OK:
+        status_ok = response.status_code == 200
+        if status_ok:
             msg = QCoreApplication.translate("STUtils", "The file was successfully uploaded to the Transitional System!")
             self.logger.success(__name__, msg)
         else:
@@ -59,4 +66,4 @@ class STUtils(QObject):
                 msg = QCoreApplication.translate("STUtils", "Status code not handled: {}").format(response.status_code)
                 self.logger.warning(__name__, msg)
 
-        return status_OK, msg
+        return status_ok, msg

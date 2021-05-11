@@ -98,11 +98,12 @@ class Utils(QObject):
                                                                       "It wasn't possible to remove the dependency folder. You need to remove this folder yourself to generate reports: <a href='file:///{path}'>{path}</a>").format(path=normalize_local_url(base_path)))
 
     @staticmethod
-    def compress_file(file_path):
+    def compress_files(file_paths):
         zip_file_path = "{}.zip".format(tempfile.mktemp())
-        with ProcessWithStatus(QCoreApplication.translate("Utils", "Compressing file...")):
+        with ProcessWithStatus(QCoreApplication.translate("Utils", "Compressing files...")):
             with zipfile.ZipFile(zip_file_path, 'w', zipfile.ZIP_DEFLATED) as zip_file:
-                zip_file.write(file_path, os.path.basename(file_path))
+                for file_path in file_paths:
+                    zip_file.write(file_path, os.path.basename(file_path))
 
         return zip_file_path
 

@@ -128,7 +128,7 @@ from asistente_ladm_col.gui.queries.dockwidget_queries import DockWidgetQueries
 from asistente_ladm_col.gui.reports.reports import ReportGenerator
 from asistente_ladm_col.gui.right_of_way import RightOfWay
 from asistente_ladm_col.gui.toolbar import ToolBar
-from asistente_ladm_col.gui.transitional_system.dlg_upload_file import STUploadFileDialog
+from asistente_ladm_col.gui.supplies.dlg_upload_file import STUploadFileDialog
 from asistente_ladm_col.gui.wizards.survey.dlg_create_group_party_survey import CreateGroupPartySurvey
 from asistente_ladm_col.gui.wizards.survey.wiz_create_points_survey import CreatePointsSurveyWizard
 from asistente_ladm_col.lib.db.db_connection_manager import ConnectionManager
