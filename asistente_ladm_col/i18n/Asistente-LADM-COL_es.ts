@@ -286,8 +286,8 @@
         <translation>¡Se generó el reporte en la carpeta &lt;a href=&apos;file:///{normalized_path}&apos;&gt;{path}&lt;/a&gt;!</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="119"/>
-        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="119"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="120"/>
+        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="120"/>
         <source>Missing supplies report successfully generated in folder &lt;a href=&apos;file:///{normalized_path1}&apos;&gt;{path1}&lt;/a&gt;! The output Geopackage database can be found in &lt;a href=&apos;file:///{normalized_path2}&apos;&gt;{path2}&lt;/a&gt;</source>
         <translation>¡El reporte de Omisiones y Comisiones se generó exitósamente en la carpeta &lt;a href=&apos;file:///{normalized_path1}&apos;&gt;{path1}&lt;/a&gt;! La base de datos Geopackage con los resultados se encuentra en &lt;a href=&apos;file:///{normalized_path2}&apos;&gt;{path2}&lt;/a&gt;</translation>
     </message>
@@ -3621,7 +3621,7 @@ Do you want to replace it?</source>
         <translation>Ocurrió un error cuando se exportaban datos. Para más información revisa los detalles del log...</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="321"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="328"/>
         <source>Java {} could not be found. You can configure the JAVA_HOME environment variable manually, restart QGIS and try again.</source>
         <translation>No se pudo encontrar Java {}. Puedes configurar la variable de entorno JAVA_HOME manualmente, reiniciar QGIS e intentar de nuevo.</translation>
     </message>
@@ -3630,12 +3630,12 @@ Do you want to replace it?</source>
         <translation type="vanished">No se pudo encontrar Java. Puedes configurar la variable de entorno JAVA_HOME, reiniciar QGIS e intentarlo de nuevo.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="333"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="340"/>
         <source>Export of the data was successfully completed.</source>
         <translation>Se exportaron los datos exitósamente.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="418"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="425"/>
         <source>Finished ({})</source>
         <translation>Terminado ({})</translation>
     </message>
@@ -4592,37 +4592,30 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>DialogSTUploadFile</name>
     <message>
-        <location filename="../ui/transitional_system/dlg_upload_file.ui" line="14"/>
         <source>Upload file to Transitional System</source>
-        <translation>Enviar archivo al Sistema de Transición</translation>
+        <translation type="vanished">Enviar archivo al Sistema de Transición</translation>
     </message>
     <message>
-        <location filename="../ui/transitional_system/dlg_upload_file.ui" line="86"/>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="vanished">...</translation>
     </message>
     <message>
-        <location filename="../ui/transitional_system/dlg_upload_file.ui" line="102"/>
         <source>Up to 500 characters...</source>
-        <translation>Hasta 500 caracteres...</translation>
+        <translation type="vanished">Hasta 500 caracteres...</translation>
     </message>
     <message>
-        <location filename="../ui/transitional_system/dlg_upload_file.ui" line="144"/>
         <source>XTF path:</source>
-        <translation>Ruta al XTF:</translation>
+        <translation type="vanished">Ruta al XTF:</translation>
     </message>
     <message>
-        <location filename="../ui/transitional_system/dlg_upload_file.ui" line="151"/>
         <source>Comentarios:</source>
-        <translation>Comentarios:</translation>
+        <translation type="vanished">Comentarios:</translation>
     </message>
     <message>
-        <location filename="../ui/transitional_system/dlg_upload_file.ui" line="158"/>
         <source>Describa el archivo que va a subir.</source>
-        <translation>Describe el archivo que vas a enviar.</translation>
+        <translation type="vanished">Describe el archivo que vas a enviar.</translation>
     </message>
     <message>
-        <location filename="../ui/transitional_system/dlg_upload_file.ui" line="188"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -4630,7 +4623,7 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; color:#545454;&quot;&gt;Desde este diálogo puedes subir archivos al &lt;/span&gt;&lt;span style=&quot; font-style:italic; color:#545454;&quot;&gt;Sistema de Transición&lt;/span&gt;&lt;span style=&quot; color:#545454;&quot;&gt;. &lt;/span&gt;&lt;/p&gt;
 &lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; color:#545454;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; color:#545454;&quot;&gt;En la sección &lt;/span&gt;&lt;span style=&quot; font-style:italic; color:#545454;&quot;&gt;Comentarios&lt;/span&gt;&lt;span style=&quot; color:#545454;&quot;&gt; se agrega una descripción del archivo a subir.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation type="vanished">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
@@ -7374,44 +7367,44 @@ p, li { white-space: pre-wrap; }
         <translation>Encontrar insumos faltantes Cobol</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="161"/>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="172"/>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="183"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="165"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="176"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="187"/>
         <source>Warning</source>
         <translation>Advertencia</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="162"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="166"/>
         <source>The &lt;b&gt;xlsx&lt;/b&gt; and the &lt;b&gt;gpkg&lt;/b&gt; already exist in the folder.&lt;br/&gt;&lt;br/&gt;If you run the function, the data will be overwritten.&lt;br/&gt;&lt;br/&gt;Do you still want to continue?</source>
         <translation>Los archivos &lt;b&gt;xlsx&lt;/b&gt; y &lt;b&gt;gpkg&lt;/b&gt; ya existen en la carpeta elegida.&lt;br/&gt;&lt;br/&gt;¿Quieres sobreescribirlos?</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="173"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="177"/>
         <source>The &lt;b&gt;gpkg&lt;/b&gt; already exist in the folder.&lt;br/&gt;&lt;br/&gt;If you run the function, the data will be overwritten.&lt;br/&gt;&lt;br/&gt;Do you still want to continue?</source>
         <translation>El archivo &lt;b&gt;gpkg&lt;/b&gt; ya existe en la carpeta elegida.&lt;br/&gt;&lt;br/&gt;¿Quieres sobreescribirlo?</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="184"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="188"/>
         <source>The &lt;b&gt;xlsx&lt;/b&gt; already exist in the folder.&lt;br/&gt;&lt;br/&gt;If you run the function, the data will be overwritten.&lt;br/&gt;&lt;br/&gt;Do you still want to continue?</source>
         <translation>El archivo &lt;b&gt;xlsx&lt;/b&gt; ya existe en la carpeta elegida.&lt;br/&gt;&lt;br/&gt;¿Quieres sobreescribirlo?</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="229"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="233"/>
         <source>Errors in the &apos;ETL Omissions-Commissions&apos; model. See QGIS log for details.</source>
         <translation>Hubo errores en el modelo &apos;ETL Omisiones y Comisiones&apos;. Revisa el log de QGIS para más detalles.</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="259"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="263"/>
         <source>Errors in the &apos;Package layers&apos; algorithm. See QGIS log for details.</source>
         <translation>Hubo errores en el algoritmo de &apos;empaquetar capas&apos;. Revisa el log de QGIS para más detalles.</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="262"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="266"/>
         <source>Results missing supplies</source>
         <translation>Omisiones y Comisiones</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="268"/>
+        <location filename="../gui/supplies/dlg_missing_cobol_supplies.py" line="272"/>
         <source>There were troubles loading {} layer.</source>
         <translation>Hubo problemas cargando la capa {}.</translation>
     </message>
@@ -7424,7 +7417,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MissingSNCSuppliesDialog</name>
     <message>
-        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="228"/>
+        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="232"/>
         <source>Errors in the &apos;ETL Omissions-Commissions&apos; model. See QGIS log for details.</source>
         <translation>Hubo errores en el modelo &apos;ETL Omisiones y Comisiones&apos;. Revisa el log de QGIS para más detalles.</translation>
     </message>
@@ -7442,39 +7435,39 @@ p, li { white-space: pre-wrap; }
         <translation>Encontrar insumos faltantes SNC</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="161"/>
-        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="172"/>
-        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="183"/>
+        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="165"/>
+        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="176"/>
+        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="187"/>
         <source>Warning</source>
         <translation>Advertencia</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="162"/>
+        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="166"/>
         <source>The &lt;b&gt;xlsx&lt;/b&gt; and the &lt;b&gt;gpkg&lt;/b&gt; already exist in the folder.&lt;br/&gt;&lt;br/&gt;If you run the function, the data will be overwritten.&lt;br/&gt;&lt;br/&gt;Do you still want to continue?</source>
         <translation>Los archivos &lt;b&gt;xlsx&lt;/b&gt; y &lt;b&gt;gpkg&lt;/b&gt; ya existen en la carpeta elegida.&lt;br/&gt;&lt;br/&gt;¿Quieres sobreescribirlos?</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="173"/>
+        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="177"/>
         <source>The &lt;b&gt;gpkg&lt;/b&gt; already exist in the folder.&lt;br/&gt;&lt;br/&gt;If you run the function, the data will be overwritten.&lt;br/&gt;&lt;br/&gt;Do you still want to continue?</source>
         <translation>El archivo &lt;b&gt;gpkg&lt;/b&gt; ya existe en la carpeta elegida.&lt;br/&gt;&lt;br/&gt;¿Quieres sobreescribirlo?</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="184"/>
+        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="188"/>
         <source>The &lt;b&gt;xlsx&lt;/b&gt; already exist in the folder.&lt;br/&gt;&lt;br/&gt;If you run the function, the data will be overwritten.&lt;br/&gt;&lt;br/&gt;Do you still want to continue?</source>
         <translation>El archivo &lt;b&gt;xlsx&lt;/b&gt; ya existe en la carpeta elegida.&lt;br/&gt;&lt;br/&gt;¿Quieres sobreescribirlo?</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="258"/>
+        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="262"/>
         <source>Errors in the &apos;Package layers&apos; algorithm. See QGIS log for details.</source>
         <translation>Hubo errores en el algoritmo de &apos;empaquetar capas&apos;. Revisa el log de QGIS para más detalles.</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="261"/>
+        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="265"/>
         <source>Results missing supplies</source>
         <translation>Omisiones y Comisiones</translation>
     </message>
     <message>
-        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="267"/>
+        <location filename="../gui/supplies/dlg_missing_snc_supplies.py" line="271"/>
         <source>There were troubles loading {} layer.</source>
         <translation>Hubo problemas cargando la capa {}.</translation>
     </message>
@@ -9571,7 +9564,7 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
 <context>
     <name>STTaskSteps</name>
     <message>
-        <location filename="../lib/transitional_system/task_manager/task_steps.py" line="63"/>
+        <location filename="../lib/transitional_system/task_manager/task_steps.py" line="64"/>
         <source>The step &apos;{} ({})&apos; for the task &apos;{} ({})&apos; is invalid!</source>
         <translation>¡El paso &apos;{} ({})&apos; para la tarea &apos;{} ({})&apos; no es válido!</translation>
     </message>
@@ -9584,40 +9577,36 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation>Los comentarios son requeridos para cancelar una tarea.</translation>
     </message>
     <message>
-        <location filename="../gui/transitional_system/dlg_upload_file.py" line="57"/>
         <source>Select the file you want to upload to the transitional system</source>
-        <translation>Selecciona el archivo que quieres enviar al Sistema de Transición</translation>
+        <translation type="vanished">Selecciona el archivo que quieres enviar al Sistema de Transición</translation>
     </message>
     <message>
-        <location filename="../gui/transitional_system/dlg_upload_file.py" line="78"/>
         <source>File was not uploaded! Details: Comments are required.</source>
-        <translation>¡El archivo no pudo ser enviado! Detalles: Se requiere agregar comentarios.</translation>
+        <translation type="vanished">¡El archivo no pudo ser enviado! Detalles: Se requiere agregar comentarios.</translation>
     </message>
     <message>
-        <location filename="../gui/transitional_system/dlg_upload_file.py" line="81"/>
         <source>Uploading file to ST server...</source>
-        <translation>Enviando el archivo al servidor del Sistema de Transición...</translation>
+        <translation type="vanished">Enviando el archivo al servidor del Sistema de Transición...</translation>
     </message>
     <message>
-        <location filename="../gui/transitional_system/dlg_upload_file.py" line="85"/>
         <source>The file &apos;{}&apos; does not exist!</source>
-        <translation>¡El archivo &apos;{}&apos; no existe!</translation>
+        <translation type="vanished">¡El archivo &apos;{}&apos; no existe!</translation>
     </message>
 </context>
 <context>
     <name>STUtils</name>
     <message>
-        <location filename="../utils/st_utils.py" line="42"/>
+        <location filename="../utils/st_utils.py" line="49"/>
         <source>The file was successfully uploaded to the Transitional System!</source>
         <translation>¡El archivo fue enviado exitósamente al Sistema de Transición!</translation>
     </message>
     <message>
-        <location filename="../utils/st_utils.py" line="56"/>
+        <location filename="../utils/st_utils.py" line="63"/>
         <source>File was not uploaded! Details: {}</source>
         <translation>¡El archivo no pudo ser enviado! Detalles: {}</translation>
     </message>
     <message>
-        <location filename="../utils/st_utils.py" line="59"/>
+        <location filename="../utils/st_utils.py" line="66"/>
         <source>Status code not handled: {}</source>
         <translation>Código de estado no esperado: {}</translation>
     </message>
@@ -10015,56 +10004,61 @@ Si confirmas que quieres cambiar el rol, se cerrará tu sesión del Sistema de T
 <context>
     <name>TaskPanelWidget</name>
     <message>
-        <location filename="../gui/transitional_system/task_panel.py" line="62"/>
+        <location filename="../gui/transitional_system/task_panel.py" line="63"/>
         <source>Task details</source>
         <translation>Detalles de la tarea</translation>
     </message>
     <message>
-        <location filename="../gui/transitional_system/task_panel.py" line="86"/>
+        <location filename="../gui/transitional_system/task_panel.py" line="87"/>
         <location filename="../gui/transitional_system/tasks_widget.py" line="115"/>
         <source>Created at: {}</source>
         <translation>Creada el: {}</translation>
     </message>
     <message>
-        <location filename="../gui/transitional_system/task_panel.py" line="89"/>
+        <location filename="../gui/transitional_system/task_panel.py" line="90"/>
         <source>Started at: {}</source>
         <translation>Inició el: {}</translation>
     </message>
     <message>
-        <location filename="../gui/transitional_system/task_panel.py" line="92"/>
+        <location filename="../gui/transitional_system/task_panel.py" line="93"/>
         <location filename="../gui/transitional_system/tasks_widget.py" line="116"/>
         <source>Deadline: {}</source>
         <translation>Entrega hasta: {}</translation>
     </message>
     <message>
-        <location filename="../gui/transitional_system/task_panel.py" line="199"/>
+        <location filename="../gui/transitional_system/task_panel.py" line="112"/>
+        <source> (optional)</source>
+        <translation> (opcional)</translation>
+    </message>
+    <message>
+        <location filename="../gui/transitional_system/task_panel.py" line="207"/>
         <source>The task is not started yet, hence, it cannot be closed.</source>
         <translation>La tarea no se ha iniciado aún, por tanto no puede ser finalizada.</translation>
     </message>
     <message>
-        <location filename="../gui/transitional_system/task_panel.py" line="202"/>
+        <location filename="../gui/transitional_system/task_panel.py" line="210"/>
         <source>You should complete the steps before closing the task.</source>
         <translation>Deberías completar los pasos antes de cerrar la tarea.</translation>
     </message>
     <message>
-        <location filename="../gui/transitional_system/task_panel.py" line="226"/>
-        <location filename="../gui/transitional_system/task_panel.py" line="245"/>
+        <location filename="../gui/transitional_system/task_panel.py" line="234"/>
+        <location filename="../gui/transitional_system/task_panel.py" line="253"/>
         <location filename="../gui/transitional_system/tasks_widget.py" line="101"/>
         <source>Confirm</source>
         <translation>Confirmación</translation>
     </message>
     <message>
-        <location filename="../gui/transitional_system/task_panel.py" line="227"/>
+        <location filename="../gui/transitional_system/task_panel.py" line="235"/>
         <source>Are you sure you want to cancel the task &apos;{}&apos;?</source>
         <translation>¿Estás segura/o que quieres cancelar la tarea &apos;{}&apos;?</translation>
     </message>
     <message>
-        <location filename="../gui/transitional_system/task_panel.py" line="241"/>
+        <location filename="../gui/transitional_system/task_panel.py" line="249"/>
         <source>The task was not canceled.</source>
         <translation>La tarea no fue cancelada.</translation>
     </message>
     <message>
-        <location filename="../gui/transitional_system/task_panel.py" line="246"/>
+        <location filename="../gui/transitional_system/task_panel.py" line="254"/>
         <location filename="../gui/transitional_system/tasks_widget.py" line="102"/>
         <source>Are you sure you want to close the task &apos;{}&apos;?</source>
         <translation>¿Estás segura/o que quieres finalizar la tarea &apos;{}&apos;?</translation>
@@ -10073,17 +10067,17 @@ Si confirmas que quieres cambiar el rol, se cerrará tu sesión del Sistema de T
 <context>
     <name>TaskStepsConfig</name>
     <message>
-        <location filename="../config/task_steps_config.py" line="57"/>
+        <location filename="../config/task_steps_config.py" line="58"/>
         <source>Create supplies structure in DB</source>
         <translation>Crear estructura LADM-COL (Insumos)</translation>
     </message>
     <message>
-        <location filename="../config/task_steps_config.py" line="59"/>
+        <location filename="../config/task_steps_config.py" line="60"/>
         <source>Choose a DB connection to create there the Supplies model structure.</source>
         <translation>Selecciona una conexión de base de datos para crear allí la estructura del modelo de insumos.</translation>
     </message>
     <message>
-        <location filename="../config/task_steps_config.py" line="68"/>
+        <location filename="../config/task_steps_config.py" line="69"/>
         <source>Run supplies ETL</source>
         <translation>Ejecutar ETL de insumos</translation>
     </message>
@@ -10092,52 +10086,80 @@ Si confirmas que quieres cambiar el rol, se cerrará tu sesión del Sistema de T
         <translation type="vanished">Migrar datos de Cobol (archivos .lis) y su correspondiente GDB a LADM-COL (modelo de insumos).</translation>
     </message>
     <message>
-        <location filename="../config/task_steps_config.py" line="70"/>
+        <location filename="../config/task_steps_config.py" line="71"/>
         <source>Migrate SNC or Cobol data to the LADM-COL (supplies model).</source>
         <translation>Migrar datos del SNC o Cobol a LADM-COL (modelo de insumos).</translation>
     </message>
     <message>
-        <location filename="../config/task_steps_config.py" line="78"/>
+        <location filename="../config/task_steps_config.py" line="79"/>
         <source>Generate XTF</source>
         <translation>Generar XTF</translation>
     </message>
     <message>
-        <location filename="../config/task_steps_config.py" line="80"/>
+        <location filename="../config/task_steps_config.py" line="81"/>
         <source>Export the data from the DB to a transfer file (.xtf).</source>
         <translation>Exporta los datos de la base de datos a un archivo de transferencia (.xtf).</translation>
     </message>
     <message>
-        <location filename="../config/task_steps_config.py" line="88"/>
         <source>Upload XTF</source>
-        <translation>Enviar XTF al Sistema de Transición</translation>
+        <translation type="vanished">Enviar XTF al Sistema de Transición</translation>
     </message>
     <message>
-        <location filename="../config/task_steps_config.py" line="90"/>
         <source>Upload the XTF file to the Transitional System.</source>
-        <translation>Envía el archivo XTF al Sistema de Transición.</translation>
+        <translation type="vanished">Envía el archivo XTF al Sistema de Transición.</translation>
+    </message>
+    <message>
+        <location filename="../config/task_steps_config.py" line="89"/>
+        <source>Generate report (COBOL)</source>
+        <translation>Generar reporte (COBOL)</translation>
+    </message>
+    <message>
+        <location filename="../config/task_steps_config.py" line="91"/>
+        <source>Generate omissions and commissions report (COBOL).</source>
+        <translation>Generar reporte de Omisiones y Comisiones (COBOL).</translation>
+    </message>
+    <message>
+        <location filename="../config/task_steps_config.py" line="100"/>
+        <source>Generate report (SNC)</source>
+        <translation>Generar reporte (SNC)</translation>
     </message>
     <message>
         <location filename="../config/task_steps_config.py" line="102"/>
+        <source>Generate omissions and commissions report (SNC).</source>
+        <translation>Generar reporte de Omisiones y Comisiones (SNC).</translation>
+    </message>
+    <message>
+        <location filename="../config/task_steps_config.py" line="110"/>
+        <source>Upload XTF (and optionally, report files)</source>
+        <translation>Envíar el archivo XTF (y opcionalmente, archivos de reportes)</translation>
+    </message>
+    <message>
+        <location filename="../config/task_steps_config.py" line="112"/>
+        <source>Upload the XTF file (and optionally, report files) to the Transitional System.</source>
+        <translation>Envíar el archivo XTF (y opcionalmente, archivos de reportes) al Sistema de Transición.</translation>
+    </message>
+    <message>
+        <location filename="../config/task_steps_config.py" line="124"/>
         <source>Connect to remote DB</source>
         <translation>Conectar a base de datos remota</translation>
     </message>
     <message>
-        <location filename="../config/task_steps_config.py" line="104"/>
+        <location filename="../config/task_steps_config.py" line="126"/>
         <source>Establish and test the connection to a remote DB, which will be used to integrate data in an assisted manner.</source>
         <translation>Establece y prueba la conexión a una base de datos remota, la cual será usada para integrar datos de manera asistida.</translation>
     </message>
     <message>
-        <location filename="../config/task_steps_config.py" line="113"/>
+        <location filename="../config/task_steps_config.py" line="135"/>
         <source>Explore data from Cadastre and Land Registry</source>
         <translation>Explorar datos de Catastro y Registro</translation>
     </message>
     <message>
-        <location filename="../config/task_steps_config.py" line="116"/>
+        <location filename="../config/task_steps_config.py" line="138"/>
         <source>Load parcel data from cadastre and registry into QGIS.</source>
         <translation>Carga datos prediales de catastro y registro a QGIS.</translation>
     </message>
     <message>
-        <location filename="../config/task_steps_config.py" line="124"/>
+        <location filename="../config/task_steps_config.py" line="146"/>
         <source>Start assisted integration</source>
         <translation>Empezar integración asistida</translation>
     </message>
@@ -11407,17 +11429,21 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation>No fue posible borrar la carpeta de dependencias. Debes borrar esta carpeta para generar reportes: &lt;a href=&apos;file:///{path}&apos;&gt;{path}&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../utils/utils.py" line="103"/>
         <source>Compressing file...</source>
-        <translation>Comprimiendo archivo...</translation>
+        <translation type="vanished">Comprimiendo archivo...</translation>
     </message>
     <message>
-        <location filename="../utils/utils.py" line="222"/>
+        <location filename="../utils/utils.py" line="103"/>
+        <source>Compressing files...</source>
+        <translation>Comprimiendo archivos...</translation>
+    </message>
+    <message>
+        <location filename="../utils/utils.py" line="223"/>
         <source>The local help could not be found in &apos;{}&apos; and cannot be open.</source>
         <translation>No se encontró la ayuda local en &apos;{}&apos; y por lo tanto no se pudo abrir.</translation>
     </message>
     <message>
-        <location filename="../utils/utils.py" line="225"/>
+        <location filename="../utils/utils.py" line="226"/>
         <source>Is your computer connected to Internet? If so, go to &lt;a href=&quot;{}&quot;&gt;online help&lt;/a&gt;.</source>
         <translation>¿Está tu computador conectado a Internet? Si es así, ve a la&lt;a href=&quot;{}&quot;&gt;ayuda en línea&lt;/a&gt;.</translation>
     </message>
