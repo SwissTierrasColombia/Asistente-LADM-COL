@@ -142,7 +142,7 @@ class AppGUIInterface(QObject):
             group = group_clone
         return group
 
-    def add_indicators(self, node_name, node_type, payload):
+    def add_indicators(self, node_name, node_type, payload, names):
         """
         Adds all indicators for a node in layer tree. It searches for the proper node and its config.
 
@@ -150,6 +150,7 @@ class AppGUIInterface(QObject):
         :param node_type: QgsLayerTreeNode.NodeType
         :param payload: If the node is a LADM layer, we need the layer object, as the name is not enough to disambiguate
                         between layers from different connections
+        :param names: DBMappingRegistry instance to read layer names from
         """
         # First get the node
         node = None
@@ -169,12 +170,14 @@ class AppGUIInterface(QObject):
             return  # No node, no party
 
         # Then, get the config
-        indicators_config = LayerTreeIndicatorConfig().get_indicators_config(node_name, node_type)
+        indicators_config = LayerTreeIndicatorConfig().get_indicators_config(node_name, node_type, names)
         if not indicators_config:
             self.logger.warning(__name__, "Configuration for indicators not found for node '{}'!".format(node_name))
 
         # And finally...
         for config in indicators_config:
+            self.logger.debug(__name__, "Adding indicator for {} node '{}'...".format(
+                'group' if node_type == QgsLayerTreeNode.NodeGroup else 'layer', node_name))
             self.add_indicator(node, config)
 
     def add_indicator(self, node, config):

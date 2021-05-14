@@ -58,10 +58,11 @@ class AppInterface(QObject, metaclass=SingletonQObject):
             self.core.zoom_to_selected_requested.connect(self.gui.zoom_to_selected)
             self.core.set_node_visibility_requested.connect(self.gui.set_node_visibility)
 
-    def add_indicators(self, db, node_name, node_type):
+    def add_indicators(self, db, node_name, node_type, payload):
         """We need to deal with LADM layers in a different way, hence we need a payload to add more info in that case"""
-        payload = self._get_node_payload(db, node_name, node_type)
-        self.gui.add_indicators(node_name, node_type, payload)
+        if payload is None:  # We might get the payload already from the caller to avoid searching by ourselves
+            payload = self._get_node_payload(db, node_name, node_type)
+        self.gui.add_indicators(node_name, node_type, payload, db.names)
 
     def _get_node_payload(self, db, node_name, node_type):
         # If the layers is LADM, we need the layer object
@@ -74,6 +75,11 @@ class AppInterface(QObject, metaclass=SingletonQObject):
                 payload = ladm_layers[node_name]
 
         return payload
+
+    def show_informal_spatial_units(self, db, spatial_unit_layer_name):
+        # Clear cache to read informal parcels and spatial_units from the DB
+        self.core.clear_cached_informal_spatial_units(spatial_unit_layer_name)
+        self.core.set_informal_layer_style(db, spatial_unit_layer_name)
 
     def enable_topological_editing(self, db):
         # Enable Topological Editing

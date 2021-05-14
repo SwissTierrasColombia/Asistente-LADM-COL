@@ -288,60 +288,105 @@ class LADMData(QObject):
         :param uebaunit_table: UEBaunit QGIS table, in case it exists already in the caller
         :return: list of plot ids related to the parcel
         """
+        return self.__get_spatial_units_related_to_parcels(db, t_ids, field_name, db.names.LC_PLOT_T, plot_layer,
+                                                         uebaunit_table)
+
+    def get_buildings_related_to_parcels(self, db, t_ids, field_name, building_layer=None, uebaunit_table=None):
+        """
+        :param db: DB Connector object
+        :param t_ids: list of parcel t_ids
+        :param field_name: The field name to get from DB for the matching features, use None for the QGIS internal ID
+        :param building_layer: Building QGIS layer, in case it exists already in the caller
+        :param uebaunit_table: UEBaunit QGIS table, in case it exists already in the caller
+        :return: list of building ids related to the parcel
+        """
+        return self.__get_spatial_units_related_to_parcels(db, t_ids, field_name, db.names.LC_BUILDING_T, building_layer,
+                                                           uebaunit_table)
+
+    def get_building_units_related_to_parcels(self, db, t_ids, field_name, building_unit_layer=None, uebaunit_table=None):
+        """
+        :param db: DB Connector object
+        :param t_ids: list of parcel t_ids
+        :param field_name: The field name to get from DB for the matching features, use None for the QGIS internal ID
+        :param building_unit_layer: Building Unit QGIS layer, in case it exists already in the caller
+        :param uebaunit_table: UEBaunit QGIS table, in case it exists already in the caller
+        :return: list of building unit ids related to the parcel
+        """
+        return self.__get_spatial_units_related_to_parcels(db, t_ids, field_name, db.names.LC_BUILDING_UNIT_T,
+                                                           building_unit_layer, uebaunit_table)
+
+    def __get_spatial_units_related_to_parcels(self, db, t_ids, field_name, su_layer_name, su_layer=None,
+                                               uebaunit_table=None):
+        """
+        :param db: DB Connector object
+        :param t_ids: list of parcel t_ids
+        :param field_name: The field name to get from DB for the matching features, use None for the QGIS internal ID
+        :param su_layer_name: Name of the Spatial Unit layer (note this is not the layer alias, but the DB layer name)
+        :param su_layer: Spatial Unit QGIS layer, in case it exists already in the caller
+        :param uebaunit_table: UEBaunit QGIS table, in case it exists already in the caller
+        :return: list of Spatial Unit ids related to the parcel
+        """
         if not t_ids:
-            return []
+            return list()
 
         layers = {
-            db.names.LC_PLOT_T: None,
+            su_layer_name: None,
             db.names.COL_UE_BAUNIT_T: None
         }
 
-        if plot_layer is not None:
-            del layers[db.names.LC_PLOT_T]
+        if su_layer is not None:
+            del layers[su_layer_name]
         if uebaunit_table is not None:
             del layers[db.names.COL_UE_BAUNIT_T]
 
         if layers:
             self.app.core.get_layers(db, layers, load=True)
             if not layers:
-                return None
+                return list()
 
-            if db.names.LC_PLOT_T in layers:
-                plot_layer = layers[db.names.LC_PLOT_T]
+            if su_layer_name in layers:
+                su_layer = layers[su_layer_name]
 
             if db.names.COL_UE_BAUNIT_T in layers:
                 uebaunit_table = layers[db.names.COL_UE_BAUNIT_T]
 
+        ue_baunit_su_field_names = {
+            db.names.LC_PLOT_T: db.names.COL_UE_BAUNIT_T_LC_PLOT_F,
+            db.names.LC_BUILDING_T: db.names.COL_UE_BAUNIT_T_LC_BUILDING_F,
+            db.names.LC_BUILDING_UNIT_T: db.names.COL_UE_BAUNIT_T_LC_BUILDING_UNIT_F,
+        }
+
         expression = QgsExpression("{} IN ('{}') AND {} IS NOT NULL".format(
                                                     db.names.COL_UE_BAUNIT_T_PARCEL_F,
                                                     "','".join([str(t_id) for t_id in t_ids]),
-                                                    db.names.COL_UE_BAUNIT_T_LC_PLOT_F))
+                                                    ue_baunit_su_field_names[su_layer_name]))
         features = LADMData.get_features_by_expression(uebaunit_table, db.names.T_ID_F, expression, with_attributes=True)
 
-        plot_t_ids = list()
+        su_t_ids = list()
         for feature in features:
-            plot_t_ids.append(feature[db.names.COL_UE_BAUNIT_T_LC_PLOT_F])
+            su_t_ids.append(feature[ue_baunit_su_field_names[su_layer_name]])
 
         if field_name == db.names.T_ID_F:
-            return plot_t_ids
+            return su_t_ids
 
-        plot_ids = list()
-        expression = QgsExpression("{} IN ('{}')".format(db.names.T_ID_F, "','".join([str(id) for id in plot_t_ids])))
+        # We were asked a spatial unit field name that we can only get from the Spatial Unit layer itself, go for it!
+        su_ids = list()
+        expression = QgsExpression("{} IN ('{}')".format(db.names.T_ID_F, "','".join([str(id) for id in su_t_ids])))
 
-        if field_name is None:
-            features = LADMData.get_features_by_expression(plot_layer, db.names.T_ID_F, expression)
+        if field_name is None:  # QGIS internal ID
+            features = LADMData.get_features_by_expression(su_layer, db.names.T_ID_F, expression)
         else:
-            features = LADMData.get_features_by_expression(plot_layer, db.names.T_ID_F, expression, with_attributes=True)
+            features = LADMData.get_features_by_expression(su_layer, db.names.T_ID_F, expression, with_attributes=True)
 
         for feature in features:
-            if field_name is None: # We are only interested in the QGIS internal id, no need to get other fields
-                plot_ids.append(feature.id())
+            if field_name is None:  # We are only interested in the QGIS internal ID, no need to get other fields
+                su_ids.append(feature.id())
             else:
-                field_found = plot_layer.fields().indexOf(field_name) != -1
+                field_found = su_layer.fields().indexOf(field_name) != -1
                 if field_found:
-                    plot_ids.append(feature[field_name])
+                    su_ids.append(feature[field_name])
 
-        return plot_ids
+        return su_ids
 
     def get_parcels_related_to_plots(self, db, t_ids, field_name, parcel_table=None, uebaunit_table=None):
         """
@@ -842,6 +887,54 @@ class LADMData(QObject):
                 domain_table_name, db.names.ILICODE_F if value_is_ilicode else db.names.DISPLAY_NAME_F, code, res))
 
         return res
+
+    def get_informal_parcel_tids(self, db, right_layer):
+        # Go to rights table and get informal parcel tids
+        occupation = self.get_domain_code_from_value(db, db.names.LC_RIGHT_TYPE_D,
+                                                     LADMNames.LC_RIGHT_TYPE_D_ILICODE_F_OCCUPATION_V)
+        possession = self.get_domain_code_from_value(db, db.names.LC_RIGHT_TYPE_D,
+                                                     LADMNames.LC_RIGHT_TYPE_D_ILICODE_F_POSSESSION_V)
+        exp = "{type} = {ocu} or {type} = {pos}".format(type=db.names.LC_RIGHT_T_TYPE_F, ocu=occupation, pos=possession)
+        right_features = LADMData.get_features_by_expression(right_layer,
+                                                             db.names.COL_BAUNIT_RRR_T_UNIT_F, QgsExpression(exp))
+
+        return [f[db.names.COL_BAUNIT_RRR_T_UNIT_F] for f in right_features]
+
+    def get_informal_plot_tids(self, db):
+        return self.__get_informal_spatial_unit_tids(db, db.names.LC_PLOT_T)
+
+    def get_informal_building_tids(self, db):
+        return self.__get_informal_spatial_unit_tids(db, db.names.LC_BUILDING_T)
+
+    def get_informal_building_unit_tids(self, db):
+        return self.__get_informal_spatial_unit_tids(db, db.names.LC_BUILDING_UNIT_T)
+
+    def __get_informal_spatial_unit_tids(self, db, su_layer_name):
+        """
+        :param db: DB Connector object
+        :param su_layer_name: Name of the Spatial Unit layer (note this is not the layer alias, but the DB layer name)
+        :return: list of informal Spatial Unit t_ids
+        """
+        cached_value = self.app.core.get_cached_informal_spatial_units(su_layer_name)
+
+        if cached_value is not None:  # We are done!
+            return cached_value
+
+        layers = {su_layer_name: None,
+                  db.names.LC_RIGHT_T: None,
+                  db.names.COL_UE_BAUNIT_T: None}
+        AppInterface().core.get_layers(db, layers, load=True)
+        if not layers:
+            return list()
+
+        parcel_tids = self.get_informal_parcel_tids(db, layers[db.names.LC_RIGHT_T])
+
+        # Now get related Spatial Units' tids
+        su_tids = self.__get_spatial_units_related_to_parcels(db, parcel_tids, db.names.T_ID_F, su_layer_name,
+                                                              layers[su_layer_name], layers[db.names.COL_UE_BAUNIT_T])
+        self.app.core.cache_informal_spatial_units(su_layer_name, su_tids)
+
+        return su_tids
 
     """
     FIELD DATA CAPTURE Model

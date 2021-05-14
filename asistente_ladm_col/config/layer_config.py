@@ -671,3 +671,15 @@ class LayerConfig:
             #names.LC_PARCEL_T: [names.LC_PARCEL_T_DEPARTMENT_F,
             #                    names.LC_PARCEL_T_MUNICIPALITY_F]  # list of fields of the layer to block its edition
         }
+
+    @staticmethod
+    def get_spatial_unit_informal_layers(names, models):
+        layer_names = list()
+        for model_key in models:
+            if model_key == LADMNames.SURVEY_MODEL_KEY:
+                layer_names = [
+                    names.LC_PLOT_T,
+                    names.LC_BUILDING_T,
+                    names.LC_BUILDING_UNIT_T]
+
+        return layer_names

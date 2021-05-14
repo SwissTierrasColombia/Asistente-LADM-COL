@@ -280,6 +280,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.logger.message_with_buttons_change_detection_all_and_per_parcel_emitted.connect(
             self.show_message_with_buttons_change_detection_all_and_per_parcel)
 
+        self.app.core.add_indicators_requested.connect(self.add_indicators)
         self.app.gui.add_indicators_requested.connect(self.add_indicators)
         self.report_generator.enable_action_requested.connect(self.enable_action)
         self.session.login_status_changed.connect(self.set_login_controls_visibility)
@@ -1595,9 +1596,21 @@ class AsistenteLADMCOLPlugin(QObject):
             }
             self.app.core.get_layers(db, layers, load=True)
 
-    def add_indicators(self, node_name, node_type):
+    def add_indicators(self, node_name, node_type, payload=None):
         """Slot to inject the db object"""
-        self.app.add_indicators(self.get_db_connection(), node_name, node_type)
+        self.app.add_indicators(self.get_db_connection(), node_name, node_type, payload)
 
     def export_error_group(self):
         self.app.gui.export_error_group()
+
+    def show_informal_plots(self):
+        db = self.get_db_connection()
+        self.app.show_informal_spatial_units(db, db.names.LC_PLOT_T)
+
+    def show_informal_buildings(self):
+        db = self.get_db_connection()
+        self.app.show_informal_spatial_units(db, db.names.LC_BUILDING_T)
+
+    def show_informal_building_units(self):
+        db = self.get_db_connection()
+        self.app.show_informal_spatial_units(db, db.names.LC_BUILDING_UNIT_T)

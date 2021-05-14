@@ -69,6 +69,78 @@ def get_domain_value_from_code(domain_table, code, value_is_ilicode, validate_co
     return res
 
 
+@qgsfunction(args='auto', group='LADM-COL', referenced_columns=[])
+def get_informal_plots(feature, parent):
+    """
+    Get all plot t_ids whose associated parcels are informal
+    (i.e., have an occupation/possession right type)
+    """
+    debug = False
+    res = None
+
+    from qgis import utils
+    if not "asistente_ladm_col" in utils.plugins:
+        res = -1 if debug else None
+    else:
+        plugin = utils.plugins["asistente_ladm_col"]  # Dict of active plugins
+        db = plugin.get_db_connection()
+
+        if db.names.T_ID_F is None:
+            res = -2 if debug else None
+        else:
+            res = plugin.ladm_data.get_informal_plot_tids(db)
+
+    return res
+
+
+@qgsfunction(args='auto', group='LADM-COL', referenced_columns=[])
+def get_informal_buildings(feature, parent):
+    """
+    Get all building t_ids whose associated parcels are informal
+    (i.e., have an occupation/possession right type)
+    """
+    debug = False
+    res = None
+
+    from qgis import utils
+    if not "asistente_ladm_col" in utils.plugins:
+        res = -1 if debug else None
+    else:
+        plugin = utils.plugins["asistente_ladm_col"]  # Dict of active plugins
+        db = plugin.get_db_connection()
+
+        if db.names.T_ID_F is None:
+            res = -2 if debug else None
+        else:
+            res = plugin.ladm_data.get_informal_building_tids(db)
+
+    return res
+
+
+@qgsfunction(args='auto', group='LADM-COL', referenced_columns=[])
+def get_informal_building_units(feature, parent):
+    """
+    Get all building unit t_ids whose associated parcels are informal
+    (i.e., have an occupation/possession right type)
+    """
+    debug = False
+    res = None
+
+    from qgis import utils
+    if not "asistente_ladm_col" in utils.plugins:
+        res = -1 if debug else None
+    else:
+        plugin = utils.plugins["asistente_ladm_col"]  # Dict of active plugins
+        db = plugin.get_db_connection()
+
+        if db.names.T_ID_F is None:
+            res = -2 if debug else None
+        else:
+            res = plugin.ladm_data.get_informal_building_unit_tids(db)
+
+    return res
+
+
 @qgsfunction(args='auto', group='LADM-COL')
 def get_domain_description_from_code(value, table, feature, parent):
     """

@@ -61,6 +61,7 @@ from qgis.core import (Qgis,
 
 import processing
 
+from asistente_ladm_col.config.symbology import Symbology
 from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
 from asistente_ladm_col.lib.processing.custom_processing_feedback import CustomFeedbackWithErrors
 from asistente_ladm_col.logic.ladm_col.config.queries.qgis.ctm12_queries import (get_ctm12_exists_query,
@@ -107,6 +108,7 @@ class AppCoreInterface(QObject):
     zoom_to_active_layer_requested = pyqtSignal()
     zoom_to_selected_requested = pyqtSignal()
     set_node_visibility_requested = pyqtSignal(QgsLayerTreeNode, bool)
+    add_indicators_requested = pyqtSignal(str, QgsLayerTreeNode.NodeType, QgsMapLayer)  # node name, node type, payload
 
     def __init__(self):
         QObject.__init__(self)
@@ -121,6 +123,7 @@ class AppCoreInterface(QObject):
         self._layers = list()
         self._relations = list()
         self._bags_of_enum = dict()
+        self._informal_spatial_units = dict()
 
         self._source_handler = None
 
@@ -129,6 +132,9 @@ class AppCoreInterface(QObject):
 
     def get_cached_relations(self):
         return self._relations
+
+    def get_cached_informal_spatial_units(self, unit_type):
+        return self._informal_spatial_units.get(unit_type)  # Returns None if the cache is nonexistent
 
     def cache_layers_and_relations(self, db, ladm_col_db, db_source):
         self.logger.debug(__name__, "Cache layers and relations called (LADM-COL DB: {})".format(ladm_col_db))
@@ -140,15 +146,28 @@ class AppCoreInterface(QObject):
         else:
             self.clear_db_cache()
 
+    def cache_informal_spatial_units(self, unit_type, list_of_tids):
+        self._informal_spatial_units[unit_type] = list_of_tids
+        self.logger.debug(__name__, "Informal {} cached! {}".format(unit_type, list_of_tids))
+
     def clear_db_cache(self):
         self._layers = list()
         self._relations = list()
         self._bags_of_enum = dict()
+        self.clear_cached_informal_spatial_units()
+        self.logger.debug(__name__, "Cached layers, relations, bag_of_enum, and informal units cleared!")
+
+    def clear_cached_informal_spatial_units(self, unit_type=None):
+        if unit_type and unit_type in self._informal_spatial_units:
+            del self._informal_spatial_units[unit_type]
+            self.logger.debug(__name__, "Informal {} cache cleared!".format(unit_type))
+        else:
+            self._informal_spatial_units = dict()
+            self.logger.debug(__name__, "All informal spatial unit caches have been cleared!")
 
     def get_layer(self, db, layer_name, load=False, emit_map_freeze=True, layer_modifiers=dict()):
         """
-
-        :return: QgsVectorLayer
+        :return: QgsVectorLayer or None
         """
         # Handy function to get a single layer
         layer = {layer_name: None}
@@ -411,6 +430,8 @@ class AppCoreInterface(QObject):
                 visible = layer_modifiers[LayerConfig.VISIBLE_LAYER_MODIFIERS]
             self.set_layer_visibility(layer, visible)
 
+            self.set_layer_indicators(db, layer, layer_name, models)
+
     def configure_missing_relations(self, db, layer, layer_name):
         """
         Relations between newly loaded layers and already loaded layer cannot
@@ -531,6 +552,24 @@ class AppCoreInterface(QObject):
         :param layer_modifiers: dict with symbology_group property that modifies default layer properties
         """
         SymbologyUtils().set_layer_style_from_qml(db, layer, layer_modifiers=layer_modifiers, models=models)
+
+    def set_informal_layer_style(self, db, spatial_unit_layer_name):
+        qml_name = Symbology.get_style_informal_layers(db.names).get(spatial_unit_layer_name)
+
+        if qml_name:
+            spatial_unit_layer = self.get_layer(db, spatial_unit_layer_name, load=True)
+
+            if spatial_unit_layer:
+                SymbologyUtils.set_style_from_qml_name(spatial_unit_layer, qml_name, True)
+                self.logger.info_msg(__name__, QCoreApplication.translate("AppCoreInterface",
+                                                                          "Now you can see informal {} in the map (with red color).").format(
+                    LayerConfig.get_dict_plural(db.names).get(spatial_unit_layer_name,
+                                                              QCoreApplication.translate("AppCoreInterface",
+                                                                                         "polygons"))))
+
+    def set_layer_indicators(self, db, layer, layer_name, models):
+        if layer_name in LayerConfig.get_spatial_unit_informal_layers(db.names, models):
+            self.add_indicators_requested.emit(layer_name, QgsLayerTreeNode.NodeLayer, layer)
 
     def set_layer_visibility(self, layer, visible):
         """
