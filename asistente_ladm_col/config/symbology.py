@@ -70,3 +70,11 @@ class Symbology:
             quality_rules_data[EnumQualityRule.Point][QUALITY_RULES][EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES][QUALITY_RULE_TABLE_NAME]: 'style_boundary_points_should_be_covered_by_boundary_nodes',
             quality_rules_data[EnumQualityRule.Line][QUALITY_RULES][EnumQualityRule.Line.BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS][QUALITY_RULE_TABLE_NAME]: 'style_boundary_nodes_should_be_covered_by_boundary_points'
         }
+
+    @staticmethod
+    def get_style_informal_layers(names):
+        return {
+            names.LC_PLOT_T: 'style_informal_plots',
+            names.LC_BUILDING_T: 'style_informal_buildings',
+            names.LC_BUILDING_UNIT_T: 'style_informal_building_units'
+        }

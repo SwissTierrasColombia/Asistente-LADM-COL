@@ -34,8 +34,6 @@ from asistente_ladm_col.lib.logger import Logger
 
 
 class SymbologyUtils(QObject):
-    layer_symbology_changed = pyqtSignal(str) # layer id
-
     def __init__(self):
         QObject.__init__(self)
         self.logger = Logger()
@@ -71,23 +69,29 @@ class SymbologyUtils(QObject):
                 qml_name = Symbology().get_default_error_style_layer().get(layer.geometryType())
 
         if qml_name:
-            renderer, labeling = self.get_style_from_qml(qml_name)
-            if renderer:
-                layer.setRenderer(renderer)
-                if emit:
-                    self.layer_symbology_changed.emit(layer.id())
-            if labeling:
-                layer.setLabeling(labeling)
-                layer.setLabelsEnabled(True)
+            self.set_style_from_qml_name(layer, qml_name)
 
-    def get_style_from_qml(self, qml_name):
+    @staticmethod
+    def set_style_from_qml_name(layer, qml_name, force_repaint=False):
+        renderer, labeling = SymbologyUtils.get_style_from_qml(qml_name)
+        if renderer:
+            layer.setRenderer(renderer)
+        if labeling:
+            layer.setLabeling(labeling)
+            layer.setLabelsEnabled(True)
+
+        if force_repaint:
+            layer.triggerRepaint()
+
+    @staticmethod
+    def get_style_from_qml(qml_name):
         renderer = None
         labeling = None
 
         style_path = os.path.join(STYLES_DIR, qml_name + '.qml')
         file = QFile(style_path)
         if not file.open(QIODevice.ReadOnly | QIODevice.Text):
-            self.logger.warning(__name__, "Unable to read style file from {}".format(style_path))
+            Logger().warning(__name__, "Unable to read style file from {}".format(style_path))
 
         doc = QDomDocument()
         doc.setContent(file)
@@ -104,4 +108,4 @@ class SymbologyUtils(QObject):
             labeling_elem = nodes.at(0).toElement()
             labeling = QgsAbstractVectorLayerLabeling.create(labeling_elem, QgsReadWriteContext())
 
-        return (renderer, labeling)
+        return renderer, labeling
