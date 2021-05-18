@@ -1139,6 +1139,24 @@ class AsistenteLADMCOLPlugin(QObject):
     def get_db_connection(self, db_source=COLLECTED_DB_SOURCE):
         return self.conn_manager.get_db_connector_from_source(db_source)
 
+    def get_db_connection_with_names(self, db_source=COLLECTED_DB_SOURCE):
+        """
+        Returns the currently active DBConnector object and makes sure that names
+        (DBMappingRegistry instance) is already generated (by calling test_names if needed).
+
+        :param db_source: Whether COLLECTED or SUPPLIES
+        :return: DBConnector instance, test connection result
+        """
+        db = self.conn_manager.get_db_connector_from_source(db_source)
+        res = True
+        if getattr(db.names, "T_ID_F", None) is None or db.names.T_ID_F is None:
+            res, code, msg = db.test_connection()  # To generate DBMappingRegistry instance if needed
+            if not res:
+                self.logger.warning_msg(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                                             "The connection to the database could not be established! Details: {}".format(
+                                                                                 msg)))
+        return db, res
+
     @_update_context_to_current_role
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
@@ -1598,7 +1616,9 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def add_indicators(self, node_name, node_type, payload=None):
         """Slot to inject the db object"""
-        self.app.add_indicators(self.get_db_connection(), node_name, node_type, payload)
+        db, res = self.get_db_connection_with_names()
+        if res:
+            self.app.add_indicators(db, node_name, node_type, payload)
 
     def export_error_group(self):
         self.app.gui.export_error_group()
