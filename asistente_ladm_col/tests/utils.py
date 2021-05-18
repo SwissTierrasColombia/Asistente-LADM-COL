@@ -27,7 +27,8 @@ import pyodbc
 import qgis.utils
 from qgis.core import (QgsApplication,
                        QgsExpression,
-                       edit)
+                       edit,
+                       Qgis)
 from qgis.analysis import QgsNativeAlgorithms
 
 from asistente_ladm_col.config.change_detection_config import PLOT_GEOMETRY_KEY
@@ -200,7 +201,8 @@ def import_processing():
         import processing
         from processing.core.Processing import Processing
         Processing.initialize()
-        QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
+        if Qgis.QGIS_VERSION_INT < 31605:
+            QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
 
 def unload_qgis_model_baker():
     global iface

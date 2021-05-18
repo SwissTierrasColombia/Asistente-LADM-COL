@@ -118,7 +118,8 @@ except PermissionError as e:
 
 import sys
 from qgis.core import (QgsApplication, 
-                       QgsProcessingFeedback)
+                       QgsProcessingFeedback,
+                       Qgis)
 from qgis.analysis import QgsNativeAlgorithms
 from qgis.testing import (unittest,
                           start_app)
@@ -140,7 +141,8 @@ sys.path.append(QGIS_PROCESSING_PLUGIN_DIR)
 import processing
 from processing.core.Processing import Processing
 Processing.initialize()
-QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
+if Qgis.QGIS_VERSION_INT < 31605:
+    QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
 print("[INFO] Processing initialized!")
 
 
