@@ -32,6 +32,9 @@ class FDCAdminAllocationController(BaseFDCAllocationController):
     def area_layer(self):
         return self._layers[self._db.names.FDC_GENERAL_AREA_T]
 
+    def area_layer_user_field(self):
+        return self._db.names.FDC_GENERAL_AREA_T_USER_F
+
     def _get_parcel_field_referencing_receiver(self):
         return self._db.names.T_BASKET_F
 
