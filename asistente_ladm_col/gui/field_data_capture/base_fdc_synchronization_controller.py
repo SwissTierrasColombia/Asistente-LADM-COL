@@ -75,7 +75,8 @@ class BaseFDCSynchronizationController(QObject):
             self._db.names.FDC_RIGHT_T: None,
             self._db.names.FDC_LEGACY_PLOT_T: None,
             self._db.names.FDC_LEGACY_BUILDING_T: None,
-            self._db.names.FDC_LEGACY_BUILDING_UNIT_T: None
+            self._db.names.FDC_LEGACY_BUILDING_UNIT_T: None,
+            self._db.names.FDC_USER_T: None
         }
 
     def add_layers(self, force=False):

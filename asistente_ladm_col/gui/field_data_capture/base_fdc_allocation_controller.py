@@ -197,7 +197,7 @@ class BaseFDCAllocationController(QObject):
 
         :return: List of QgsVectorLayers
         """
-        return [self.area_layer(), self.boundary_point_layer(), self.survey_point_layer(), self.control_point_layer()]
+        return [self.boundary_point_layer(), self.survey_point_layer(), self.control_point_layer()]
 
     def area_layer(self):
         raise NotImplementedError
@@ -209,6 +209,9 @@ class BaseFDCAllocationController(QObject):
 
     def area_layer_identifier_fields(self):
         return [self._db.names.T_ID_F]
+
+    def area_layer_user_field(self):
+        raise NotImplementedError
 
     def document_types_table(self):
         return self._layers[self._db.names.FDC_PARTY_DOCUMENT_TYPE_D]
@@ -260,9 +263,11 @@ class BaseFDCAllocationController(QObject):
 
         # 1) Get receivers' t_basket that actually have at least one parcel assigned (basically, an INNER JOIN)
         # For that: Go to parcel layer and get uniques, then filter that list comparing it with receiver ids from users
+        # receivers_dict --> {t_basket: (name, t_id)}, we'll need the corresponding t_id later
         receivers_dict = self._ladm_data.get_fdc_receivers_data(names, self.user_layer(),
                                                                 self._get_receiver_referenced_field(),  # t_basket
-                                                                self.receiver_type, full_name=False)
+                                                                self.receiver_type, full_name=False,
+                                                                extra_attr_name=names.T_ID_F)
         receiver_field_idx = self.parcel_layer().fields().indexOf(self._get_parcel_field_referencing_receiver())
         receiver_ids_in_parcels = self.parcel_layer().uniqueValues(receiver_field_idx)
 
@@ -273,7 +278,8 @@ class BaseFDCAllocationController(QObject):
         #    basket_receiver_dict: {t_basket: {t_ili_tid: receiver_name}}
         basket_table = self._ladm_data.get_basket_table(self._db)
         basket_receiver_dict = {f[names.T_ID_F]: {'t_ili_tid': f[names.T_ILI_TID_F],
-                                                  'name': receivers_dict[f[names.T_ID_F]][0]}
+                                                  'name': receivers_dict[f[names.T_ID_F]][0],
+                                                  'receiver_t_id': receivers_dict[f[names.T_ID_F]][1]}
                                 for f in basket_table.getFeatures() if f[names.T_ID_F] in basket_t_ids}
 
         if not basket_receiver_dict:
@@ -321,10 +327,20 @@ class BaseFDCAllocationController(QObject):
             if not res:
                 return False, msg
 
+            # We allocate areas differently (they are not explicitly related to parcels), so, deal with them now
+            # setting the corresponding t_basket to each area, depending on the related receiver
+            res_area, msg = self._ladm_data.set_basket_for_areas_related_to_receiver_field_data_capture(self._db.names,
+                                                                                                        t_basket,
+                                                                                                        data['receiver_t_id'],
+                                                                                                        self.area_layer_user_field(),
+                                                                                                        self.area_layer())
+            if not res_area:
+                return False, msg
+
             # Now, export the current basket to XTF
             res_xtf, msg_xtf = basket_exporter.export_basket(data['t_ili_tid'], data['name'])
             if not res_xtf:
-                return res, msg_xtf
+                return res_xtf, msg_xtf
 
         return True, self._successful_export_message(len(basket_receiver_dict), export_dir)
 
@@ -406,6 +422,12 @@ class BaseFDCAllocationController(QObject):
                                                                                                   self.receiver_type,
                                                                                                   self.parcel_layer(),
                                                                                                   self.user_layer())
+
+    def get_count_of_not_allocated_areas(self):
+        return self._ladm_data.get_count_of_not_allocated_areas_to_receivers_field_data_capture(
+                    self.area_layer_user_field(),
+                    self.area_layer())
+
     def get_document_types(self):
         return self._ladm_data.get_document_types(self._db.names, self.document_types_table())
 

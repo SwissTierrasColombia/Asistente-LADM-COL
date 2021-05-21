@@ -78,12 +78,19 @@ class BaseSplitDataForReceiversPanelWidget(QgsPanelWidget, WIDGET_UI):
         v_spacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
         self.grb_summary.layout().addItem(v_spacer, row, 0)
 
-        # Show/hide warning depending on if there are not allocated parcels
+        # Show/hide warnings depending on if there are not allocated parcels/areas
         not_allocated_parcels = self._controller.get_count_of_not_allocated_parcels()
         self.lbl_warning.setVisible(not_allocated_parcels)
         self.lbl_not_allocated_parcels.setVisible(not_allocated_parcels)
         self.lbl_not_allocated_parcels.setText(QCoreApplication.translate("BaseSplitDataForReceiversPanelWidget",
                                                "{} parcels have not been yet allocated!").format(not_allocated_parcels))
+
+        not_allocated_areas = self._controller.get_count_of_not_allocated_areas()
+        self.lbl_warning_2.setVisible(not_allocated_areas)
+        self.lbl_not_allocated_areas.setVisible(not_allocated_areas)
+        self.lbl_not_allocated_areas.setText(QCoreApplication.translate("BaseSplitDataForReceiversPanelWidget",
+                                                                        "{} areas have not been yet allocated!").format(
+            not_allocated_areas))
 
     def fill_row(self, receiver_name, parcel_count, row):
         # First add a spacer between previoud data row (could be the title) and the next row data

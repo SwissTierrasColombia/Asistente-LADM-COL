@@ -440,9 +440,12 @@ DB_MAPPING_CONFIG = {
     },
     LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY: {
         "Captura_Geo.Captura_Geo.Area_Intervencion_general": {QueryNames.VARIABLE_NAME: "FDC_GENERAL_AREA_T", QueryNames.FIELDS_DICT: {
-            "Captura_Geo.Captura_Geo.Area_Intervencion_general.Identificador": "FDC_GENERAL_AREA_T_ID_F"
+            "Captura_Geo.Captura_Geo.Area_Intervencion_general.Identificador": "FDC_GENERAL_AREA_T_ID_F",
+            "Captura_Geo.Captura_Geo.usuarios_area_intervencion_general.Usuario..Captura_Geo.Captura_Geo.Usuarios": "FDC_GENERAL_AREA_T_USER_F"
         }},
-        "Captura_Geo.Captura_Geo.Area_Intervencion_especifica": {QueryNames.VARIABLE_NAME: "FDC_SPECIFIC_AREA_T", QueryNames.FIELDS_DICT: {}},
+        "Captura_Geo.Captura_Geo.Area_Intervencion_especifica": {QueryNames.VARIABLE_NAME: "FDC_SPECIFIC_AREA_T", QueryNames.FIELDS_DICT: {
+            "Captura_Geo.Captura_Geo.usuarios_area_intervencion_especifica.usuarios..Captura_Geo.Captura_Geo.Usuarios": "FDC_SPECIFIC_AREA_T_USER_F"
+        }},
         "Captura_Geo.Captura_Geo.CalificacionConvencional": {QueryNames.VARIABLE_NAME: "FDC_CONVENTIONAL_QUALIFICATION_T", QueryNames.FIELDS_DICT: {}},
         # Not there "Captura_Geo.Captura_Geo.CalificacionNoConvencional": {QueryNames.VARIABLE_NAME: "FDC_NON_CONVENTIONAL_QUALIFICATION_T", QueryNames.FIELDS_DICT: {}},
         "Captura_Geo.Captura_Geo.Construccion": {QueryNames.VARIABLE_NAME: "FDC_BUILDING_T", QueryNames.FIELDS_DICT: {

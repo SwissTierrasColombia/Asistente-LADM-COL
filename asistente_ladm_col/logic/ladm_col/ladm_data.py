@@ -1163,7 +1163,7 @@ class LADMData(QObject):
             return False, msg_l_plots + QCoreApplication.translate(" Receiver {}.").format(receiver_name)
 
         Logger().info(__name__,
-                      "--> Basket exported for receiver {}: {} parcels, {} plots, {} buildings, {} rights.".format(
+                      "--> Basket set for receiver {}: {} parcels, {} plots, {} buildings, {} rights.".format(
                           t_basket,
                           len(parcel_t_ids),
                           len_plots,
@@ -1433,6 +1433,16 @@ class LADMData(QObject):
         return True, len(plot_ids), 'Success!'
 
     @staticmethod
+    def set_basket_for_areas_related_to_receiver_field_data_capture(names, t_basket, receiver_t_id, user_field_name, area_layer):
+        res = LADMData.change_attribute_value(area_layer, names.T_BASKET_F, t_basket,
+                                              filter="{} = {}".format(user_field_name, receiver_t_id))
+        if not res:
+            return False, QCoreApplication.translate("LADMData",
+                                                     "Could not write basket id {} to area layer.".format(t_basket))
+
+        return True, 'Success!'
+
+    @staticmethod
     def change_attribute_value(layer, field_name, value, fids=list(), filter=''):
         """
         Change attribute values for a vector layer.
@@ -1444,9 +1454,10 @@ class LADMData(QObject):
         :param layer: QgsVectorLayer to modify
         :param field_name: Name of the field to be modified
         :param value: Value to be written in the corresponding field
-        :param fids: List of QGIS ids for features that will be modified
+        :param fids: List of QGIS ids for features that will be modified. If you don't have them, use 'filter' param
         :param filter: String expression to filter features that will be modified
-        :return: Whether the update was successful or not
+        :return: Whether the update was successful or not. Note that we return True if we had nothing to change (e.g,
+                 when the filter didn't match any feature)
         """
         idx = layer.fields().indexOf(field_name)
         if idx < 0:
@@ -1466,11 +1477,18 @@ class LADMData(QObject):
             features = layer.getFeatures(request)
             attr_map = {feature.id(): {idx: value} for feature in features}
 
-        Logger().debug(__name__, "Changing '{}'.'{}' to '{}' ({} features)".format(layer.name(),
-                                                                                   field_name,
-                                                                                   value,
-                                                                                   len(attr_map)))
-        return layer.dataProvider().changeAttributeValues(attr_map)
+        if attr_map:
+            Logger().debug(__name__, "Changing '{}'.'{}' to '{}' ({} features)".format(layer.name(),
+                                                                                       field_name,
+                                                                                       value,
+                                                                                       len(attr_map)))
+            return layer.dataProvider().changeAttributeValues(attr_map)
+
+        Logger().debug(__name__,
+                       "Nothing to change in '{}'.'{}' with filter '{}' (0 features modified)... ".format(layer.name(),
+                                                                                                          field_name,
+                                                                                                          filter))
+        return True
 
     @staticmethod
     def get_fdc_receivers_data(names, fdc_user_layer, id_field_name, receiver_type=None, full_name=True, extra_attr_name=''):
@@ -1605,6 +1623,12 @@ class LADMData(QObject):
         return int(fdc_parcel_layer.aggregate(QgsAggregateCalculator.Count,
                                               names.T_BASKET_F,
                                               params)[0])  # val (float), res (bool)
+
+    @staticmethod
+    def get_count_of_not_allocated_areas_to_receivers_field_data_capture(user_field_name, area_layer):
+        # We need to count areas that have no user associated
+        return int(area_layer.aggregate(QgsAggregateCalculator.CountMissing,  # i.e. 'usuarios' is NULL
+                                        user_field_name)[0])  # val (float), res (bool)
 
     @staticmethod
     def get_basket_table(db):

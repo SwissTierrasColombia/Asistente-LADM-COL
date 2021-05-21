@@ -51,10 +51,13 @@ class FDCAdminSynchronizationController(BaseFDCSynchronizationController):
                                                                  "Invalid database! User table not found in coordinator's database!")
 
         # Get {t_basket: (name, role), ...} for ALL receivers
+        # TODO: WHY for ALL receivers? Couldn't we get only the coordinator's one?
         receivers_source_db = self._ladm_data.get_fdc_receivers_data(db.names,
                                                                      fdc_user_layer,
                                                                      db.names.T_BASKET_F,
                                                                      None, True, db.names.FDC_USER_T_ROLE_F)
+
+        print(receivers_source_db)
 
         if len(receivers_source_db) == 0:
             return False, None, None, QCoreApplication.translate("FDCAdminSynchronizationController",

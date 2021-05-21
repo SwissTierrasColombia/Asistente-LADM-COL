@@ -145,7 +145,7 @@
        <property name="placeholderText">
         <string>Search by parcel code...</string>
        </property>
-       <property name="showSearchIcon">
+       <property name="showSearchIcon" stdset="0">
         <bool>true</bool>
        </property>
        <property name="qgisRelation" stdset="0">
@@ -215,7 +215,7 @@
      </item>
     </layout>
    </item>
-   <item row="4" column="0">
+   <item row="0" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <spacer name="horizontalSpacer_3">

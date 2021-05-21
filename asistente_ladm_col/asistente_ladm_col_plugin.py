@@ -1279,7 +1279,7 @@ class AsistenteLADMCOLPlugin(QObject):
         reply = QMessageBox.question(self.main_window,
                                      QCoreApplication.translate("AsistenteLADMCOLPlugin", "Warning"),
                                      QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                                "You are about to alter the coordinator's database losing the allocation information. This is nonetheless required for exporting the XTF and sending it to the Administrator.\n\nAre you sure you want to proceed?"),
+                                                                "You are about to alter the coordinator's database losing the allocation information. This is nonetheless required for exporting the XTF and sending it to the Administrator.\n\nAre you sure you want to proceed? If so, we recommend creating a backup before."),
                                      QMessageBox.Yes, QMessageBox.No)
 
         if reply == QMessageBox.Yes:
