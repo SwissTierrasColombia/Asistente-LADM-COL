@@ -96,7 +96,7 @@ from asistente_ladm_col.config.translation_strings import (TOOLBAR_FINALIZE_GEOM
                                                            TOOLBAR_FILL_MORE_BFS_LESS,
                                                            TOOLBAR_FILL_RIGHT_OF_WAY_RELATIONS,
                                                            TOOLBAR_IMPORT_FROM_INTERMEDIATE_STRUCTURE)
-from asistente_ladm_col.config.wizard_config import (WizardConfig)
+from asistente_ladm_col.config.wizard_config import WizardFactory
 from asistente_ladm_col.config.expression_functions import (get_domain_code_from_value,
                                                             get_domain_value_from_code,
                                                             get_domain_description_from_code)  # >> DON'T REMOVE << Registers it in QgsExpression
@@ -187,7 +187,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.session = STSession()
         self.wiz = None
         self.is_wizard_open = False  # Helps to make the plugin modules aware of open wizards
-        self.wizard_config = WizardConfig()
+        self.wizard_factory = WizardFactory()
 
         # Initialize some singleton object properties
         task_steps_config = TaskStepsConfig()
@@ -1469,24 +1469,11 @@ class AsistenteLADMCOLPlugin(QObject):
     @_qgis_model_baker_required
     def show_wizard(self, wizard_name, *args, **kwargs):
 
-        wiz_settings = self.wizard_config.get_wizard_config(self.get_db_connection().names, wizard_name)
-        if self.app.core.required_layers_are_available(self.get_db_connection(),
-                                                         wiz_settings[WIZARD_LAYERS],
-                                                         wiz_settings[WIZARD_TOOL_NAME]):
+        self.wiz = self.wizard_factory.get_wizard(self.iface, self.get_db_connection(), wizard_name, self)
 
-            self.wiz = wiz_settings[WIZARD_CLASS](self.iface, self.get_db_connection(), wiz_settings)
-
-            if wiz_settings[WIZARD_TYPE] & EnumWizardType.SPATIAL_WIZARD:
-                # Required signal for wizard geometry creating
-                self.wiz.set_finalize_geometry_creation_enabled_emitted.connect(self.set_enable_finalize_geometry_creation_action)
-                self.wiz_geometry_creation_finished.connect(self.wiz.save_created_geometry)
-
-            # Required signal that allow to know if there is a wizard opened
+        if self.wiz:
             self.is_wizard_open = True
-            self.wiz.update_wizard_is_open_flag.connect(self.set_wizard_is_open_flag)
-
-            if self.wiz:
-                self.wiz.exec_()
+            self.wiz.exec_()
 
     def close_wizard_if_opened(self):
         if self.wiz:

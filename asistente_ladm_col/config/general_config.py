@@ -239,7 +239,7 @@ WIZARD_READ_ONLY_FIELDS = "wizard_read_only_fields"
 WIZARD_STRINGS = "wizard_strings"
 WIZARD_SEL_SOURCE_TITLE = "wizard_sel_source_title",
 WIZARD_SEL_SOURCE_ENTERING_DATA_MANUALLY = "wizard_sel_source_entering_data_manually"
-
+WIZARD_SEL_FEATURES_TITLE = "wizard_sel_features_title"
 
 # Cadastral model
 WIZARD_CREATE_COL_PARTY_CADASTRAL = "wizard_create_col_party_cadastral"

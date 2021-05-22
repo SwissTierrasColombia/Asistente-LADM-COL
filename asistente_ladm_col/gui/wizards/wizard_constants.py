@@ -1,0 +1,4 @@
+WIZARD_REFACTOR_RECENT_MAPPING_OPTIONS = "wizard_refactor_recent_mapping_options"
+WIZARD_REFACTOR_LAYER_FILTERS = "wizard_refactor_layer_filters"
+WIZARD_SELECT_SOURCE_HELP = "wizard_select_source_help"
+WIZARD_FINISH_BUTTON_TEXT = "wizard_finish_button_text"
