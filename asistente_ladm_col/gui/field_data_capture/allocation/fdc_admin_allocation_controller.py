@@ -49,7 +49,7 @@ class FDCAdminAllocationController(BaseFDCAllocationController):
 
         return res, msg
 
-    def get_coordinator_basket_id_for_new_receiver(self):
+    def get_coordinator_t_ili_tid_for_new_receiver(self):
         return None, "Success!"  # Since we don't store admin info, we pass a None (NULL) here.
 
     def delete_receiver(self, receiver_id):

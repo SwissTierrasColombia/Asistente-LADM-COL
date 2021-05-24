@@ -51,15 +51,16 @@ class FDCCoordinatorAllocationController(BaseFDCAllocationController):
 
         return res, msg
 
-    def get_coordinator_basket_id_for_new_receiver(self):
+    def get_coordinator_t_ili_tid_for_new_receiver(self):
         # At this point, the user table should only have 1 coordinator (remember that we have a subset of admin's data),
-        # so we are safe getting the unique basket value for the role coordinator.
+        # so we are safe getting the unique t_ili_tid value for the role coordinator.
         coordinators_dict = self._ladm_data.get_fdc_receivers_data(self.db().names,
                                                                    self.user_layer(),
                                                                    self._db.names.T_BASKET_F,
-                                                                   self.coordinator_type)
+                                                                   self.coordinator_type,
+                                                                   extra_attr_names=[self._db.names.T_ILI_TID_F])
         basket_ids = list(coordinators_dict.keys())
-        basket_id = False  # We use False intentionally, as None might be a valid value for the coordinator's basket id!
+        t_ili_tid = False  # We use False intentionally, as None might be a valid value for the coordinator's t_ili_tid!
         msg = "Success!"
 
         if len(basket_ids) < 1:
@@ -69,9 +70,9 @@ class FDCCoordinatorAllocationController(BaseFDCAllocationController):
             msg = QCoreApplication.translate("FDCCoordinatorAllocationController",
                                              "The user table has more than one basket value, but only one is required! No surveyor can be created. (Hint: Is there more than one coordinator? It shouldn't!)")
         else:  # Eureka!
-            basket_id = basket_ids.pop()
+            t_ili_tid = coordinators_dict[basket_ids.pop()][self._db.names.T_ILI_TID_F]
 
-        return basket_id, msg
+        return t_ili_tid, msg
 
     def delete_receiver(self, receiver_id):
         return self._ladm_data.delete_surveyor(self.db().names, receiver_id, self.user_layer())

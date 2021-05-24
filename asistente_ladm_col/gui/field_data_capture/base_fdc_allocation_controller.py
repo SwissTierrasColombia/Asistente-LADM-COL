@@ -402,15 +402,15 @@ class BaseFDCAllocationController(QObject):
 
         return basket_t_id, "Success!"
 
-    def get_coordinator_basket_id_for_new_receiver(self):
+    def get_coordinator_t_ili_tid_for_new_receiver(self):
         """
-        Get the basket id of the new receiver's coordinator.
+        Get the t_ili_tid of the new receiver's coordinator.
 
-        For the admin-coord allocation, the coordinator basket id will always be NULL (we don't store the admin info).
-        For the coord-surveyor allocation, the basket id will be the coordinator's basket_id (role: coordinator).
+        For the admin-coord allocation, the 'coordinator' t_ili_tid will always be NULL (we don't store the admin info).
+        For the coord-surveyor allocation, the t_ili_tid will be the coordinator's t_ili_tid (role: coordinator).
 
-        :return: Tuple --> coordinator_basket_id, msg (useful in case of failure, e.g., because there are several
-                                                       coordinator in a coord-surveyor scenario)
+        :return: Tuple --> coordinator_t_ili_tid, msg (useful in case of failure, e.g., because there are several
+                                                       coordinators in a coord-surveyor scenario)
         """
         raise NotImplementedError
 
