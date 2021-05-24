@@ -131,7 +131,6 @@ class BaseFDCAllocationController(QObject):
 
         return True, ""
 
-
     def get_parcel_receiver_data(self):
         """
         Obtain parcel-receiver pairs (if no receiver is associated with the parcel, just return None in that field)
@@ -267,7 +266,7 @@ class BaseFDCAllocationController(QObject):
         receivers_dict = self._ladm_data.get_fdc_receivers_data(names, self.user_layer(),
                                                                 self._get_receiver_referenced_field(),  # t_basket
                                                                 self.receiver_type, full_name=False,
-                                                                extra_attr_name=names.T_ID_F)
+                                                                extra_attr_names=[names.T_ID_F])
         receiver_field_idx = self.parcel_layer().fields().indexOf(self._get_parcel_field_referencing_receiver())
         receiver_ids_in_parcels = self.parcel_layer().uniqueValues(receiver_field_idx)
 
@@ -277,10 +276,10 @@ class BaseFDCAllocationController(QObject):
         # 2) Get baskets info to export XTFs via ili2db (basically, an INNER JOIN)
         #    basket_receiver_dict: {t_basket: {t_ili_tid: receiver_name}}
         basket_table = self._ladm_data.get_basket_table(self._db)
-        basket_receiver_dict = {f[names.T_ID_F]: {'t_ili_tid': f[names.T_ILI_TID_F],
-                                                  'name': receivers_dict[f[names.T_ID_F]][0],
-                                                  'receiver_t_id': receivers_dict[f[names.T_ID_F]][1]}
-                                for f in basket_table.getFeatures() if f[names.T_ID_F] in basket_t_ids}
+        basket_receiver_dict = {b_f[names.T_ID_F]: {'t_ili_tid': b_f[names.T_ILI_TID_F],
+                                                    'name': receivers_dict[b_f[names.T_ID_F]]['name'],
+                                                    'receiver_t_id': receivers_dict[b_f[names.T_ID_F]][names.T_ID_F]}
+                                for b_f in basket_table.getFeatures() if b_f[names.T_ID_F] in basket_t_ids}
 
         if not basket_receiver_dict:
             return False, QCoreApplication.translate("BaseFDCAllocationController",
@@ -349,14 +348,20 @@ class BaseFDCAllocationController(QObject):
 
     def get_receivers_data(self, full_name=True):
         """
+        Get receiver data and reformat the value of each key-value pair so that it's ready for the GUI (which will
+        query using integer indexes and not field names like 'name' or 'FDC_USER_T_DOCUMENT_ID_F')
+
         :param full_name: Whether the full name should be retrieved or only an alias
+
         :return: {receiver_t_id: (receiver_name, receiver_doc_id)}
         """
-        return self._ladm_data.get_fdc_receivers_data(self.db().names,
-                                                      self.user_layer(),
-                                                      self._get_receiver_referenced_field(),
-                                                      self.receiver_type,
-                                                      full_name)
+        res = self._ladm_data.get_fdc_receivers_data(self.db().names,
+                                                     self.user_layer(),
+                                                     self._get_receiver_referenced_field(),
+                                                     self.receiver_type,
+                                                     full_name)
+
+        return {k: (v['name'], v[self._db.names.FDC_USER_T_DOCUMENT_ID_F]) for k, v in res.items()}
 
     def save_receiver(self, receiver_data):
         return self._ladm_data.save_receiver(receiver_data, self.user_layer())

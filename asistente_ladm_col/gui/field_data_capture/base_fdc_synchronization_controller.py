@@ -150,9 +150,9 @@ class BaseFDCSynchronizationController(QObject):
         receivers_source_db = self._ladm_data.get_fdc_receivers_data(source_db.names,
                                                                      fdc_source_user_layer,
                                                                      source_db.names.T_BASKET_F,
-                                                                     receiver_role, True, source_db.names.T_ILI_TID_F)
-        receiver_name = receivers_source_db[t_basket][0]
-        source_t_ili_tid = receivers_source_db[t_basket][1]
+                                                                     receiver_role, True, [source_db.names.T_ILI_TID_F])
+        receiver_name = receivers_source_db[t_basket]['name']
+        source_t_ili_tid = receivers_source_db[t_basket][source_db.names.T_ILI_TID_F]
 
         if source_t_ili_tid not in target_t_ili_tids:
             return False, QCoreApplication.translate("BaseFDCSynchronizationController",

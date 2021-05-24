@@ -50,18 +50,16 @@ class FDCAdminSynchronizationController(BaseFDCSynchronizationController):
             return False, None, None, QCoreApplication.translate("FDCAdminSynchronizationController",
                                                                  "Invalid database! User table not found in coordinator's database!")
 
-        # Get {t_basket: (name, role), ...} for ALL receivers
-        # TODO: WHY for ALL receivers? Couldn't we get only the coordinator's one?
+        # Get {t_id: {'name':'', T_BASKET_F: 123, FDC_USER_T_ROLE_F: 456}, ...} for ALL receivers
         receivers_source_db = self._ladm_data.get_fdc_receivers_data(db.names,
                                                                      fdc_user_layer,
-                                                                     db.names.T_BASKET_F,
-                                                                     None, True, db.names.FDC_USER_T_ROLE_F)
-
-        print(receivers_source_db)
+                                                                     db.names.T_ID_F,
+                                                                     None, True,
+                                                                     [db.names.T_BASKET_F, db.names.FDC_USER_T_ROLE_F])
 
         if len(receivers_source_db) == 0:
             return False, None, None, QCoreApplication.translate("FDCAdminSynchronizationController",
-                                                           "Invalid database! There are no users in the coordinator's database.")
+                                                                 "Invalid database! There are no users in the coordinator's database.")
 
         # Go for the coordinator role
         coordinator_count = 0
@@ -69,10 +67,10 @@ class FDCAdminSynchronizationController(BaseFDCSynchronizationController):
         coordinator_role = self._ladm_data.get_domain_code_from_value(db,
                                                                       db.names.FDC_ROLE_TYPE_D,
                                                                       self.receiver_ilicode)
-        for t_basket, data in receivers_source_db.items():
-            if data[1] == coordinator_role:  # data[1] is the user role
+        for t_id, data in receivers_source_db.items():
+            if data[db.names.FDC_USER_T_ROLE_F] == coordinator_role:
                 coordinator_count += 1
-                coordinator_t_basket = t_basket
+                coordinator_t_basket = data[db.names.T_BASKET_F]
 
         # Validate we have a single coordinator role
         if coordinator_count > 1:

@@ -983,67 +983,6 @@ class LADMData(QObject):
         return alias.lower() or '-'  # No names? Then avoid falsy value
 
     @staticmethod
-    def get_layer_expressions_per_receiver_field_data_capture(names, receiver_type, referencing_field, referenced_field, fdc_parcel_layer, fdc_plot_layer, fdc_user_layer):
-        """
-        LEGACY, could be removed!
-
-        Based on parcels that are allocated to receivers, get expressions to get related objects in the DB.
-        For surveyors we need the expressions to select features and export to offline projects, whereas
-        for Coordinators we need the expressions to know what objects belong to a given basket.
-
-        Note: Currently, this method is aimed at surveyors.
-
-        :param names: Table and Field names object from the DB connector
-        :param receiver_type: Type of receiver
-        :param referencing_field: Parcel layer field referencing receivers
-        :param referenced_field: Receivers layer field referenced by parcels
-        :param fdc_parcel_layer: Parcel QgsVectorLayer
-        :param fdc_plot_layer: Plot QgsVectorLayer
-        :param fdc_user_layer: User QgsVectorLayer
-        :return: {receiver_id: {parcel_layer_name: "expr_parcels", plot_layer_name: "expr_plots", ...}
-        """
-        layer_expressions_per_receiver = dict()
-        receiver_dict = LADMData.get_fdc_receivers_data(names, fdc_user_layer, referenced_field, receiver_type, False)
-
-        # Get receiver_ids that actually have at least one parcel assigned (basically, an INNER JOIN)
-        # For that: Go to parcel layer and get uniques, then filter that list comparing it with receiver ids from users
-        receiver_idx = fdc_parcel_layer.fields().indexOf(referencing_field)
-        receiver_ids = fdc_parcel_layer.uniqueValues(receiver_idx)
-
-        # Make sure the list contains only valid receivers
-        # First part of the conditional:
-        #   Specially useful when receiver id is a t_basket, because we might get baskets that don't belong to receivers
-        # Second part of the conditional:
-        #   When the receiver id is a t_id, chances are parcels are not allocated, and then NULL may come in that list
-        receiver_ids = [receiver_id for receiver_id in receiver_ids if receiver_id in receiver_dict and receiver_id is not NULL]
-
-        for receiver_id in receiver_ids:
-            # Get parcels per receiver id --> {parcel_id: parcel_t_id}
-            parcel_data = LADMData.get_parcels_for_receiver_field_data_capture(names.T_ID_F,  # We want parcel t_ids
-                                                                               receiver_id,
-                                                                               referencing_field,
-                                                                               fdc_parcel_layer)
-            parcel_t_ids = list(parcel_data.values())
-
-            # Get plots from parcels
-            plot_ids = LADMData.get_referencing_features(names,
-                                                         fdc_parcel_layer,
-                                                         fdc_plot_layer,
-                                                         names.FDC_PLOT_T_PARCEL_F,
-                                                         t_ids=parcel_t_ids)
-
-            # Warning: Use QGIS ids if you're sure it'll get always the same records.
-            # For some reason that does not happen with parcels, that's why we prefer t_ids.
-            layer_expressions_per_receiver[receiver_dict[receiver_id][0]] = {
-                names.FDC_PARCEL_T: LADMData.build_layer_expression(parcel_t_ids, names.T_ID_F),
-                names.FDC_PLOT_T: LADMData.build_layer_expression(plot_ids),
-                names.FDC_USER_T: LADMData.build_layer_expression([receiver_id], referenced_field)  # t_id or t_basket
-            }
-            # TODO: Do the same with other tables (rights, parties, etc.)
-
-        return layer_expressions_per_receiver
-
-    @staticmethod
     def build_layer_expression(values, field='$id'):
         """
         LEGACY, could be removed!
@@ -1491,7 +1430,7 @@ class LADMData(QObject):
         return True
 
     @staticmethod
-    def get_fdc_receivers_data(names, fdc_user_layer, id_field_name, receiver_type=None, full_name=True, extra_attr_name=''):
+    def get_fdc_receivers_data(names, fdc_user_layer, id_field_name, receiver_type=None, full_name=True, extra_attr_names=list()):
         """
         Get receiver's filtered data
 
@@ -1500,13 +1439,13 @@ class LADMData(QObject):
         :param id_field_name: Name of the field to be used as dictionary keys
         :param receiver_type: T_id of the role type we want to filter
         :param full_name: Whether to get the full name or just an alias for the user
-        :param extra_attr_name: Name of an extra field to append to the result
+        :param extra_attr_names: List of names of extra fields to append to the result
 
-        :return: Receiver's dictionary: {id: (name, extra_attribute)}
+        :return: Receiver's dictionary: {id: {'name':'', extra_attribute_1:value_1, extra_attribute_2:value_2}}
         """
         receivers_data = dict()
-        if not extra_attr_name:
-            extra_attr_name = names.FDC_USER_T_DOCUMENT_ID_F
+        if not extra_attr_names:
+            extra_attr_names = [names.FDC_USER_T_DOCUMENT_ID_F]
 
         if receiver_type:
             # Filter by role (note that receiver_type should be the t_id of the 'user type' domain value)
@@ -1515,21 +1454,11 @@ class LADMData(QObject):
             features = fdc_user_layer.getFeatures()
 
         for feature in features:
-            receivers_data[feature[id_field_name]] = (LADMData.get_fdc_user_name(names, feature, full_name),
-                                                      feature[extra_attr_name])
+            receivers_data[feature[id_field_name]] = {'name': LADMData.get_fdc_user_name(names, feature, full_name)}
+            for attr_name in extra_attr_names:
+                receivers_data[feature[id_field_name]][attr_name] = feature[attr_name]
 
         return receivers_data
-
-    def get_fdc_receivers_data_any_db(self, db):
-        res = dict()
-        fdc_user_layer = self.app.core.get_layer(db, db.names.FDC_USER_T, load=False)
-        if fdc_user_layer:
-            res = self.get_fdc_receivers_data(db.names,
-                                              fdc_user_layer,
-                                              db.names.T_BASKET_F,
-                                              None, True, db.names.FDC_USER_T_ROLE_F)
-
-        return res
 
     @staticmethod
     def save_receiver(receiver_data, fdc_user_layer):
@@ -1562,8 +1491,9 @@ class LADMData(QObject):
         msg = ''
 
         # Get dict of all users that are surveyors: {t_id_1: (name_1, t_basket_1), ...}
-        surveyors = LADMData.get_fdc_receivers_data(db.names, fdc_user_layer, db.names.T_ID_F, surveyor_type, extra_attr_name=db.names.T_BASKET_F)
-        coordinator_surveyors = [str(k) for k,v in surveyors.items() if v[1] == receiver_id]
+        surveyors = LADMData.get_fdc_receivers_data(db.names, fdc_user_layer, db.names.T_ID_F, surveyor_type,
+                                                    extra_attr_names=[db.names.T_BASKET_F])
+        coordinator_surveyors = [str(k) for k,v in surveyors.items() if v[db.names.T_BASKET_F] == receiver_id]
 
         if not coordinator_surveyors:
             self.logger.debug(__name__, "The coordinator (BID: {}) has no associated surveyors, so we can proceed deleting it.")
@@ -1594,9 +1524,10 @@ class LADMData(QObject):
         surveyors_data = LADMData.get_fdc_receivers_data(names, fdc_user_layer, referenced_field, receiver_type)
         surveyor_parcel_count = dict()  # {surveyor_name: parcel_count}
         params = QgsAggregateCalculator.AggregateParameters()
+
         for surveyor_id, surveyor_data in surveyors_data.items():
             params.filter = "{} = {}".format(referencing_field, surveyor_id)
-            surveyor_name = surveyors_data[surveyor_id][0]  # (name, doc_id)
+            surveyor_name = surveyor_data['name']  # {name:'', doc_id:123}
             surveyor_parcel_count[surveyor_name] = int(fdc_parcel_layer.aggregate(QgsAggregateCalculator.Count,
                                                                                   referencing_field,
                                                                                   params)[0])  # val (float), res (bool)

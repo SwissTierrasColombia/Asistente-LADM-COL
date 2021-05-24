@@ -49,21 +49,23 @@ class FDCCoordinatorSynchronizationController(BaseFDCSynchronizationController):
             return False, None, None, QCoreApplication.translate("FDCCoordinatorSynchronizationController",
                                                            "Invalid database! User table not found in surveyor's database!")
 
-        # Get {t_basket: (name, role), ...} for ALL receivers
+        # Get {t_id: {'name':'', T_BASKET_F: 123, FDC_USER_T_ROLE_F: 456}, ...} for ALL receivers
         receivers_source_db = self._ladm_data.get_fdc_receivers_data(db.names,
                                                                      fdc_user_layer,
-                                                                     db.names.T_BASKET_F,
-                                                                     None, True, db.names.FDC_USER_T_ROLE_F)
+                                                                     db.names.T_ID_F,
+                                                                     None, True,
+                                                                     [db.names.T_BASKET_F, db.names.FDC_USER_T_ROLE_F])
 
         if len(receivers_source_db) > 1:
             return False, None, None, QCoreApplication.translate("FDCCoordinatorSynchronizationController",
-                                                           "Invalid database! There are more users than we expect in the surveyor's database.")
+                                                                 "Invalid database! There are more users than we expect in the surveyor's database.")
         if len(receivers_source_db) == 0:
             return False, None, None, QCoreApplication.translate("FDCCoordinatorSynchronizationController",
-                                                           "Invalid database! There are no users in the surveyor's database.")
+                                                                 "Invalid database! There are no users in the surveyor's database.")
 
-        t_basket = list(receivers_source_db.keys())[0]
-        role = receivers_source_db[t_basket][1]
+        t_id = list(receivers_source_db.keys())[0]  # We have only one anyways...
+        t_basket = receivers_source_db[t_id][db.names.T_BASKET_F]
+        role = receivers_source_db[t_id][db.names.FDC_USER_T_ROLE_F]
 
         # Check that role is surveyor
         surveyor_role = self._ladm_data.get_domain_code_from_value(db,
@@ -71,7 +73,7 @@ class FDCCoordinatorSynchronizationController(BaseFDCSynchronizationController):
                                                                    self.receiver_ilicode)
         if role != surveyor_role:
             return False, None, None, QCoreApplication.translate("FDCCoordinatorSynchronizationController",
-                                                     "Invalid database! The only user in the database must be a surveyor, but it is not (it is {}).").format(role)
+                "Invalid database! The only user in the database must be a surveyor, but it is not (it is {}).").format(role)
 
         # Check that the surveyor (t_ili_tid) in the surveyor's DB is in the coordinator's DB.
         # Otherwise, it could be an attempt to import a DB from a surveyor of another coordinator.
