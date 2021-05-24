@@ -963,8 +963,11 @@ class LADMData(QObject):
     def get_fdc_user_name(names, feature, full_name=True):
         if full_name:
             name = feature[names.FDC_USER_T_NAME_F]
-        else:  # Just initial letters for each name part, except the last name (e.g., gacarrillor)
-            name = LADMData.get_name_alias(feature[names.FDC_USER_T_NAME_F])
+        else:
+            # Just initial letters for each name part, except the last name (e.g., gacarrillor).
+            # Append the docid to avoid duplicate aliases (they are used to name allocated files and folders).
+            name = "{}_{}".format(LADMData.get_name_alias(feature[names.FDC_USER_T_NAME_F]),
+                                  feature[names.FDC_USER_T_DOCUMENT_ID_F])
 
         return name.strip()
 
