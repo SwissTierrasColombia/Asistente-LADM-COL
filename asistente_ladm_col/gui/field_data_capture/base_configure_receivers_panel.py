@@ -104,8 +104,8 @@ class BaseConfigureReceiversPanelWidget(QgsPanelWidget, WIDGET_UI):
                 self.logger.warning_msg(__name__, msg)
                 return
 
-            coordinator_basket_t_id, msg = self._controller.get_coordinator_basket_id_for_new_receiver()
-            if coordinator_basket_t_id == False:  # We don't want to catch None value here, hence the explicit condition
+            coordinator_t_ili_tid, msg = self._controller.get_coordinator_t_ili_tid_for_new_receiver()
+            if coordinator_t_ili_tid == False:  # We don't want to catch None value here, hence the explicit condition
                 self.logger.warning_msg(__name__, msg)
                 return
 
@@ -114,7 +114,7 @@ class BaseConfigureReceiversPanelWidget(QgsPanelWidget, WIDGET_UI):
                              names.FDC_USER_T_DOCUMENT_ID_F: self.txt_document_id.text().strip(),
                              names.FDC_USER_T_NAME_F: self.txt_name.text().strip(),
                              names.FDC_USER_T_ROLE_F: self._controller.receiver_type,
-                             names.FDC_USER_T_COORDINATOR_F: coordinator_basket_t_id,
+                             names.FDC_USER_T_COORDINATOR_F: coordinator_t_ili_tid,
                              names.T_ILI_TID_F: str(uuid.uuid4()),
                              names.T_BASKET_F: basket_t_id}
             res = self._controller.save_receiver(receiver_data)

@@ -51,6 +51,7 @@ class FDCAdminSynchronizationController(BaseFDCSynchronizationController):
                                                                  "Invalid database! User table not found in coordinator's database!")
 
         # Get {t_id: {'name':'', T_BASKET_F: 123, FDC_USER_T_ROLE_F: 456}, ...} for ALL receivers
+        # Note: we use t_id as unique id because t_basket might come duplicated in coord and surveyors
         receivers_source_db = self._ladm_data.get_fdc_receivers_data(db.names,
                                                                      fdc_user_layer,
                                                                      db.names.T_ID_F,
