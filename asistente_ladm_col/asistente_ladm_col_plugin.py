@@ -1027,22 +1027,29 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     @_field_data_capture_model_required
     def load_template_project_field_data_capture(self, *args):
-        filename, matched_filter = QFileDialog.getOpenFileName(self.main_window,
-                                                               QCoreApplication.translate("AsistenteLADMCOLPlugin", "Select a template (.qgs) project to view/edit field data"),
-                                                               self.app.settings.fdc_project_template_path,
-                                                               QCoreApplication.translate("AsistenteLADMCOLPlugin", "QGIS template project (*.qgs)"))
-        if filename:
-            self.app.settings.fdc_project_template_path = filename
+        reply = QMessageBox.question(self.main_window,
+                                     QCoreApplication.translate("AsistenteLADMCOLPlugin", "Warning"),
+                                     QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                                "Depending on the data in your database and on the complexity of forms configured in the (.qgs) template, editing or visualizing your data using a template project for the field could take long or even temporarily block your QGIS.\n\nAre you sure you want to proceed?"),
+                                     QMessageBox.Yes, QMessageBox.No)
 
-            db = self.get_db_connection()
-            template_converter = TemplateConverterFieldDataCapture(db)
-            template_converter.convert_template_project(filename)
+        if reply == QMessageBox.Yes:
+            filename, matched_filter = QFileDialog.getOpenFileName(self.main_window,
+                                                                   QCoreApplication.translate("AsistenteLADMCOLPlugin", "Select a template (.qgs) project to view/edit field data"),
+                                                                   self.app.settings.fdc_project_template_path,
+                                                                   QCoreApplication.translate("AsistenteLADMCOLPlugin", "QGIS template project (*.qgs)"))
+            if filename:
+                self.app.settings.fdc_project_template_path = filename
 
-            # Now we need to make sure we have the 9999 basket in the DB, since field forms
-            # will use it and should already have default values for t_basket as 9999
-            self.ladm_data.get_or_create_default_ili2db_basket(db, FDC_WILD_CARD_BASKET_ID)
-        else:
-            self.logger.warning_msg(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin", "You haven't selected a template (.qgs) project."), 5)
+                db = self.get_db_connection()
+                template_converter = TemplateConverterFieldDataCapture(db)
+                template_converter.convert_template_project(filename)
+
+                # Now we need to make sure we have the 9999 basket in the DB, since field forms
+                # will use it and should already have default values for t_basket as 9999
+                self.ladm_data.get_or_create_default_ili2db_basket(db, FDC_WILD_CARD_BASKET_ID)
+            else:
+                self.logger.warning_msg(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin", "You haven't selected a template (.qgs) project."), 5)
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
