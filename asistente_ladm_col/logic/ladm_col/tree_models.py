@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 #############################################################################
 ##
+## Adapted by Germán Carrillo, (C) 2018, gcarrillo@linuxmail.org
+##
 ## Copyright (C) 2017 Riverbank Computing Limited.
 ## Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
 ## All rights reserved.
@@ -47,6 +49,7 @@ from qgis.PyQt.QtGui import QIcon, QBrush, QFont
 
 from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.config.general_config import DEFAULT_ENDPOINT_SOURCE_SERVICE
+
 
 class TreeItem(object):
     def __init__(self, data, parent=None):

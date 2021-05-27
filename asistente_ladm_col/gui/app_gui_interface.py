@@ -286,3 +286,6 @@ class AppGUIInterface(QObject):
             if dock_widgets:
                 self.logger.debug(__name__, "Tabifying dock widget {}...".format(dock_widget.windowTitle()))
                 self.iface.mainWindow().tabifyDockWidget(dock_widgets[0], dock_widget)  # No way to prefer one Dock Widget
+
+    def open_feature_form(self, layer, feature):
+        self.iface.openFeatureForm(layer, feature)

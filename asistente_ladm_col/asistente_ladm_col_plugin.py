@@ -44,6 +44,7 @@ from asistente_ladm_col.config.role_config import get_role_config
 from asistente_ladm_col.gui.field_data_capture.dockwidget_field_data_capture_admin_coordinator import DockWidgetFieldDataCaptureAdminCoordinator
 from asistente_ladm_col.gui.field_data_capture.dockwidget_field_data_capture_coordinator_surveyor import DockWidgetFieldDataCaptureCoordinatorSurveyor
 from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
+from asistente_ladm_col.gui.queries.ladm_query_controller import LADMQueryController
 from asistente_ladm_col.lib.ladm_col_models import (LADMColModelRegistry,
                                                     LADMColModel)
 from asistente_ladm_col.lib.dependency.plugin_dependency import PluginDependency
@@ -1128,12 +1129,12 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_queries(self, *args):
         self.gui_builder.close_dock_widgets([DOCK_WIDGET_QUERIES])
 
-        dock_widget_queries = DockWidgetQueries(self.iface,
-                                                self.get_db_connection(),
-                                                self.ladm_data)
+        controller = LADMQueryController(self.get_db_connection(), self.ladm_data)
+        controller.zoom_to_features_requested.connect(self.zoom_to_features)
+
+        dock_widget_queries = DockWidgetQueries(self.iface, controller)
         self.gui_builder.register_dock_widget(DOCK_WIDGET_QUERIES, dock_widget_queries)
-        self.conn_manager.db_connection_changed.connect(dock_widget_queries.update_db_connection)
-        dock_widget_queries.zoom_to_features_requested.connect(self.zoom_to_features)
+        self.conn_manager.db_connection_changed.connect(controller.update_db_connection)
         self.app.gui.add_tabified_dock_widget(Qt.RightDockWidgetArea, dock_widget_queries)
 
     def get_db_connection(self, db_source=COLLECTED_DB_SOURCE):
