@@ -686,14 +686,44 @@ class LADMData(QObject):
         return [feature for feature in layer.getFeatures(request)]
 
     @staticmethod
-    def get_features_from_t_ids(layer, t_id_name, t_ids, no_attributes=False, no_geometry=False):
+    def get_features_from_t_ids(layer, t_id_name, t_ids, no_attributes=False, no_geometry=False, only_attributes=list(), order_by=''):
+        """
+        Get a list of features from a key-value pair
+
+        :param layer: QgsVectorLayer
+        :param t_id_name: Name of the key field
+        :param t_ids: List of field values
+        :param no_attributes: Whether we should get all values or not (note that we at least return the key field)
+        :param no_geometry: Whether we should get the geometry or not
+        :param only_attributes: A list of attributes to include in the resulting features (this overwrites the list of
+                                attributes to retrieve, it doesn't matter if no_attributes is True or not).
+        :param order_by: Expression to add order by clause to retrieve features, pass it empty if order is not relevant
+
+        :return: List of features which may include:
+                 a) Single field (if no_attributes is True and only_attributes is an empty list)
+                 b) Several fields (if only_attributes is not an empty list)
+                 c) All fields (if no_attributes is False and only_attributes is an empty list).
+        """
         request = QgsFeatureRequest(QgsExpression("{} IN ('{}')".format(t_id_name, "','".join([str(t_id) for t_id in t_ids]))))
 
+        # Prepare attribute indices to filter the request
+        field_indices = [layer.fields().indexFromName(t_id_name)] # We always get at least the t_id
+        if only_attributes:
+            field_indices.extend([layer.fields().indexFromName(attr) for attr in only_attributes])
+
+        # Set the request
         if no_geometry:
             request.setFlags(QgsFeatureRequest.NoGeometry)
-        if no_attributes:
-            field_idx = layer.fields().indexFromName(t_id_name)
-            request.setSubsetOfAttributes([field_idx])  # Note: this adds a new flag
+
+        if no_attributes and not only_attributes:  # Single field case
+            request.setSubsetOfAttributes(field_indices)  # Note: this adds a new flag
+        elif only_attributes:  # Several fields case
+            request.setSubsetOfAttributes(field_indices)  # Note: this adds a new flag
+        else:  # All fields
+            pass  # We don't set any filter, which gets us all fields
+
+        if order_by:
+            request.addOrderBy(order_by)  # Always ascending, if want the reverse, just iterate the result backwards :)
 
         return [feature for feature in layer.getFeatures(request)]
 

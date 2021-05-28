@@ -18,7 +18,7 @@
 """
 from functools import partial
 
-from qgis.PyQt.QtCore import (QCoreApplication, 
+from qgis.PyQt.QtCore import (QCoreApplication,
                               Qt, 
                               pyqtSignal, 
                               QUrl, 
@@ -72,6 +72,9 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         self.btn_alphanumeric_query.clicked.connect(self._alphanumeric_query)
         self.cbo_parcel_fields.currentIndexChanged.connect(self._search_field_updated)
         self.btn_identify_plot.clicked.connect(self._btn_plot_toggled)
+        self.btn_query_informality.clicked.connect(self._query_informality)
+        self.btn_next_informal_parcel.clicked.connect(self._query_next_informal_parcel)
+        self.btn_previous_informal_parcel.clicked.connect(self._query_previous_informal_parcel)
 
         # Context menu
         self._set_context_menus()
@@ -80,6 +83,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         self.maptool_identify = QgsMapToolIdentifyFeature(self.canvas)
 
         self._initialize_field_values_line_edit()
+        self._update_informal_controls()
 
     def _search_field_updated(self, index=None):
         self._initialize_field_values_line_edit()
@@ -309,6 +313,45 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
 
         if context_menu.actions():
             context_menu.exec_(tree_view.mapToGlobal(point))
+
+    def _query_informality(self):
+        first_parcel_number, current, total = self._controller.query_informal_parcels()
+        self._search_data_by_component(parcel_number=first_parcel_number, zoom_and_select=True)
+        self._update_informal_controls(first_parcel_number, current, total)
+
+        if not total:
+            self.logger.info_msg(__name__,
+                                 QCoreApplication.translate("DockWidgetQueries",
+                                                            "There are no informal parcels in this database!"))
+
+    def _update_informal_controls(self, parcel_number='', current=0, total=0):
+        """
+        Update controls (reset labels, enable buttons if we have informality)
+        """
+        self._update_informal_labels(parcel_number, current, total)
+        self.btn_query_informality.setText(
+            QCoreApplication.translate("DockWidgetQueries", "Restart") if current else QCoreApplication.translate("DockWidgetQueries", "Start"))
+
+        enable = total > 1  # At least 2 to enable buttons that traverse the parcels
+        self.btn_next_informal_parcel.setEnabled(enable)
+        self.btn_previous_informal_parcel.setEnabled(enable)
+
+    def _update_informal_labels(self, parcel_number='', current=0, total=0):
+        self.lbl_informal_parcel_number.setText(parcel_number)
+        out_of = ''
+        if current and total:
+            out_of = QCoreApplication.translate("DockWidgetQueries", "{} out of {}").format(current, total)
+        self.lbl_informal_out_of_total.setText(out_of)
+
+    def _query_next_informal_parcel(self):
+        parcel_number, current, total = self._controller.get_next_informal_parcel()
+        self._search_data_by_component(parcel_number=parcel_number, zoom_and_select=True)
+        self._update_informal_controls(parcel_number, current, total)
+
+    def _query_previous_informal_parcel(self):
+        parcel_number, current, total = self._controller.get_previous_informal_parcel()
+        self._search_data_by_component(parcel_number=parcel_number, zoom_and_select=True)
+        self._update_informal_controls(parcel_number, current, total)
 
     def closeEvent(self, event):
         try:
