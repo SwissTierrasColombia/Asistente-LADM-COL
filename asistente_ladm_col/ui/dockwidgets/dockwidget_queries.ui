@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>365</width>
-    <height>543</height>
+    <width>428</width>
+    <height>554</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>365</width>
-    <height>543</height>
+    <width>428</width>
+    <height>554</height>
    </size>
   </property>
   <property name="floating">
@@ -190,6 +190,101 @@
                    </property>
                    <property name="text">
                     <string>Query</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="tab">
+              <attribute name="title">
+               <string>Informality</string>
+              </attribute>
+              <layout class="QGridLayout" name="gridLayout_12">
+               <item row="0" column="0">
+                <widget class="QLabel" name="lbl_informal_parcel_number">
+                 <property name="text">
+                  <string>1100112345678910111213</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QLabel" name="lbl_informal_out_of_total">
+                 <property name="font">
+                  <font>
+                   <italic>true</italic>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>8 out of 23</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="0">
+                <layout class="QHBoxLayout" name="horizontalLayout_5">
+                 <item>
+                  <widget class="QPushButton" name="btn_previous_informal_parcel">
+                   <property name="minimumSize">
+                    <size>
+                     <width>45</width>
+                     <height>45</height>
+                    </size>
+                   </property>
+                   <property name="toolTip">
+                    <string>Previous parcel</string>
+                   </property>
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="icon">
+                    <iconset>
+                     <normaloff>:/Asistente-LADM-COL/resources/images/deselect.png</normaloff>:/Asistente-LADM-COL/resources/images/deselect.png</iconset>
+                   </property>
+                   <property name="iconSize">
+                    <size>
+                     <width>24</width>
+                     <height>24</height>
+                    </size>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="btn_query_informality">
+                   <property name="text">
+                    <string>Start</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="btn_next_informal_parcel">
+                   <property name="minimumSize">
+                    <size>
+                     <width>45</width>
+                     <height>45</height>
+                    </size>
+                   </property>
+                   <property name="toolTip">
+                    <string>Next parcel</string>
+                   </property>
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="icon">
+                    <iconset>
+                     <normaloff>:/Asistente-LADM-COL/resources/images/select.png</normaloff>:/Asistente-LADM-COL/resources/images/select.png</iconset>
+                   </property>
+                   <property name="iconSize">
+                    <size>
+                     <width>24</width>
+                     <height>24</height>
+                    </size>
                    </property>
                   </widget>
                  </item>

@@ -67,6 +67,11 @@ class LADMQueryController(QObject):
         self._restart_dict_of_layers()
         self._add_layers()
 
+        # To cache informal parcels,
+        self._informal_parcels_info = tuple()  # ([parcel_t_id: parcel_number], [,], [,], ...)
+        self._informal_index = -1
+        self._informal_parcels_len = 0  # To avoid calculating this each time
+
     def _add_layers(self):
         self.app.core.get_layers(self._db, self._layers, load=True)
         if not self._layers:
@@ -84,7 +89,7 @@ class LADMQueryController(QObject):
         # Layer was found, listen to its removal so that we can update the variable properly
         try:
             self._layers[self._db.names.COL_UE_BAUNIT_T].willBeDeleted.disconnect(self._uebaunit_table_removed)
-        except TypeError as e:
+        except:
             pass
         self._layers[self._db.names.COL_UE_BAUNIT_T].willBeDeleted.connect(self._uebaunit_table_removed)
 
@@ -124,13 +129,13 @@ class LADMQueryController(QObject):
     def disconnect_plot_layer(self):
         try:
             self._layers[self._db.names.LC_PLOT_T].willBeDeleted.disconnect(self._plot_layer_removed)
-        except TypeError as e:
+        except:
             pass
 
     def disconnect_parcel_layer(self):
         try:
             self._layers[self._db.names.LC_PARCEL_T].willBeDeleted.disconnect(self._parcel_layer_removed)
-        except TypeError as e:
+        except:
             pass
 
     def parcel_layer_name(self):
@@ -254,3 +259,58 @@ class LADMQueryController(QObject):
     def search_data_economic_info(self, **kwargs):
         return self._ladm_queries.get_igac_economic_info(self._db, **kwargs)
 
+    def query_informal_parcels(self):
+        """
+        :return: Triple --> parcel_number, current, total
+        """
+        # We always go to the DB to get informality info
+        right_layer = self.app.core.get_layer(self._db, self._db.names.LC_RIGHT_T, True)
+        informal_parcel_t_ids = self._ladm_data.get_informal_parcel_tids(self._db, right_layer)
+
+        # Overwrite cache
+        self._informal_parcels_info = tuple()
+        self._informal_index = -1
+        self._informal_parcels_len = 0
+
+        if informal_parcel_t_ids:
+            # Get parcel info ordered by parcel number
+            parcels = self._ladm_data.get_features_from_t_ids(self.parcel_layer(),
+                                                              self._db.names.T_ID_F,
+                                                              informal_parcel_t_ids,
+                                                              no_attributes=False,
+                                                              no_geometry=False,
+                                                              only_attributes=[self._db.names.LC_PARCEL_T_PARCEL_NUMBER_F],
+                                                              order_by=self._db.names.LC_PARCEL_T_PARCEL_NUMBER_F)
+
+            # Create a tuple of lists ([t_id: parcel_number], ...)
+            self._informal_parcels_info = tuple([p[self._db.names.T_ID_F], p[self._db.names.LC_PARCEL_T_PARCEL_NUMBER_F]] for p in parcels)
+            self._informal_parcels_len = len(self._informal_parcels_info)
+
+        return self.get_next_informal_parcel()
+
+    def get_next_informal_parcel(self):
+        return self._traverse_informal_parcel_info()
+
+    def get_previous_informal_parcel(self):
+        return self._traverse_informal_parcel_info(False)
+
+    def _traverse_informal_parcel_info(self, next=True):
+        """
+        Get a triple corresponding to an informal parcel number, the current index and the total of parcels.
+        Note that if we get to the end and ask for the next parcel, we start over again. Similarly. if we are in the 1st
+        parcel and ask for the previous one, then we get the latest one.
+
+        :param next: Whether we need the next parcel's info or the previous one.
+        :return: Triple --> parcel_number, current_idx, total_parcels (the current_idx returned is for display purposes)
+        """
+        if not self._informal_parcels_len:
+            return '', 0, 0
+
+        index = self._informal_index  # Get current index
+
+        if next:  # Now set the current index
+            self._informal_index = index + 1 if index + 1 < self._informal_parcels_len else 0
+        else:  # Previous
+            self._informal_index = index - 1 if index >= 1 else self._informal_parcels_len - 1
+
+        return self._informal_parcels_info[self._informal_index][1], self._informal_index + 1, self._informal_parcels_len
