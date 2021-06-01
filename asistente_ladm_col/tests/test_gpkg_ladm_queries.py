@@ -8,7 +8,7 @@ from qgis.testing import (unittest,
 start_app() # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.tests.utils import (get_copy_gpkg_conn,
-                                            get_field_values_by_another_field,
+                                            get_field_values_by_key_values,
                                             standardize_query_results,
                                             import_asistente_ladm_col,
                                             import_qgis_model_baker,
@@ -54,10 +54,10 @@ class TestGPKGLADMQueries(unittest.TestCase):
             cls.db_gpkg.names.LC_PLOT_T: None
         }
         cls.plugin.app.core.get_layers(cls.db_gpkg, layers, load=True)
-        cls.test_plot_t_ids = get_field_values_by_another_field(layers[cls.db_gpkg.names.LC_PLOT_T],
-                                                                cls.db_gpkg.names.T_ILI_TID_F,
-                                                                ['fc68c492-fad5-4a7b-98a3-6104e84a4ec4'],
-                                                                cls.db_gpkg.names.T_ID_F)
+        cls.test_plot_t_ids = get_field_values_by_key_values(layers[cls.db_gpkg.names.LC_PLOT_T],
+                                                             cls.db_gpkg.names.T_ILI_TID_F,
+                                                             ['fc68c492-fad5-4a7b-98a3-6104e84a4ec4'],
+                                                             cls.db_gpkg.names.T_ID_F)
 
     def test_ladm_queries_igac_basic_query(self):
         print("\nINFO: Validating basic info query from IGAC...")

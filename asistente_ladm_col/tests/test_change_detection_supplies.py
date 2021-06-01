@@ -1,7 +1,5 @@
 import nose2
 
-from qgis.core import (QgsWkbTypes,
-                       NULL)
 from qgis.testing import (start_app,
                           unittest)
 
@@ -16,13 +14,13 @@ from asistente_ladm_col.tests.resources.expected_results.change_detections.suppl
 from asistente_ladm_col.tests.utils import (get_pg_conn,
                                             normalize_response,
                                             standardize_query_results,
-                                            get_field_values_by_another_field,
+                                            get_field_values_by_key_values,
                                             restore_schema,
                                             import_qgis_model_baker,
                                             unload_qgis_model_baker)
 
 
-class TestChangeDetectionsSupplies(unittest.TestCase):
+class TestChangeDetectionSupplies(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -46,24 +44,24 @@ class TestChangeDetectionsSupplies(unittest.TestCase):
 
         # The t_ili_tid field is used instead of t_id which does not change every time a backup is generated
         parcel_ids_tests = [list(),
-                            get_field_values_by_another_field(layers[self.db_pg.names.GC_PARCEL_T], self.db_pg.names.T_ILI_TID_F,
-                                                              ['93acf8d8-b486-45d3-a4a9-0b811328b360'],
-                                                              self.db_pg.names.T_ID_F),
-                            get_field_values_by_another_field(layers[self.db_pg.names.GC_PARCEL_T], self.db_pg.names.T_ILI_TID_F,
-                                                              ['93acf8d8-b486-45d3-a4a9-0b811328b360',
+                            get_field_values_by_key_values(layers[self.db_pg.names.GC_PARCEL_T], self.db_pg.names.T_ILI_TID_F,
+                                                           ['93acf8d8-b486-45d3-a4a9-0b811328b360'],
+                                                           self.db_pg.names.T_ID_F),
+                            get_field_values_by_key_values(layers[self.db_pg.names.GC_PARCEL_T], self.db_pg.names.T_ILI_TID_F,
+                                                           ['93acf8d8-b486-45d3-a4a9-0b811328b360',
                                                                '65cde01b-c4b5-456f-b4b5-40ab12012969',
                                                                '25dcb65f-6a22-4866-86ee-394ff24a15a6'],
-                                                              self.db_pg.names.T_ID_F)]
+                                                           self.db_pg.names.T_ID_F)]
 
         plot_ids_tests = [list(),
-                          get_field_values_by_another_field(layers[self.db_pg.names.GC_PLOT_T], self.db_pg.names.T_ILI_TID_F,
-                                                            ['445e7c92-028e-4e81-8956-686146f5d51a'],
-                                                            self.db_pg.names.T_ID_F),
-                          get_field_values_by_another_field(layers[self.db_pg.names.GC_PLOT_T], self.db_pg.names.T_ILI_TID_F,
-                                                            ['445e7c92-028e-4e81-8956-686146f5d51a',
+                          get_field_values_by_key_values(layers[self.db_pg.names.GC_PLOT_T], self.db_pg.names.T_ILI_TID_F,
+                                                         ['445e7c92-028e-4e81-8956-686146f5d51a'],
+                                                         self.db_pg.names.T_ID_F),
+                          get_field_values_by_key_values(layers[self.db_pg.names.GC_PLOT_T], self.db_pg.names.T_ILI_TID_F,
+                                                         ['445e7c92-028e-4e81-8956-686146f5d51a',
                                                              '275aa114-122f-4a90-8be8-4b895703c9e7',
                                                              'd4e1b500-9d59-4d51-96a5-d612a563fd99'],
-                                                            self.db_pg.names.T_ID_F)]
+                                                         self.db_pg.names.T_ID_F)]
         return plot_ids_tests, parcel_ids_tests
 
     def test_get_plots_related_to_parcels_supplies(self):
@@ -171,7 +169,7 @@ class TestChangeDetectionsSupplies(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        print("INFO: Closing open connections to databases")
+        print("\nINFO: Closing open connections to databases")
         cls.db_pg.conn.close()
         unload_qgis_model_baker()
 

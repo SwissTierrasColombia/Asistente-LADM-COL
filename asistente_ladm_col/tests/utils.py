@@ -350,9 +350,11 @@ def reproject_to_ctm12(layer):
     return layer
 
 
-def get_field_values_by_another_field(layer, field, field_values, expected_field):
+def get_field_values_by_key_values(layer, field, field_values, expected_field):
     """
     Returns the fields associated with a field based on another field.
+    Same order coming in field_values must be preserved in the returned array.
+
     :param layer: QgsMapLayer
     :param field: Field name, it must be a unique field in the table
     :param field_values: List of values to use for filtering the layer by field name
@@ -361,11 +363,4 @@ def get_field_values_by_another_field(layer, field, field_values, expected_field
     """
     features = LADMData.get_features_from_t_ids(layer, field, field_values, only_attributes=[expected_field])
 
-    expected_field_values = []
-    # Same order coming in field_values must be preserved in the returned array
-    for field_value in field_values:
-        for feature in features:
-            if feature[field] == field_value:
-                expected_field_values.append(feature[expected_field])
-                break
-    return expected_field_values
+    return [f[expected_field] for f in features]
