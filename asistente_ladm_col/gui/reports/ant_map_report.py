@@ -128,8 +128,6 @@ class ANTMapReport(AbsReportFactory):
         json_data['attributes']['observationsReport'] = self.txt_observations_report.toPlainText()
         json_data['attributes']['datasetName'] = self.db.schema
 
-        # a custom bbox is assigned for the map grid to have closed coordinates
-        json_data['attributes']['map']['bbox'] = self.get_bbox_ant_report(plot_feature)
         layers = json_data['attributes']['map']['layers']
         for layer in layers:
             if 'geoJson' in layer:
@@ -217,38 +215,3 @@ class ANTMapReport(AbsReportFactory):
 
         observations_report = QSettings().value("Asistente-LADM-COL/reports/{}/observations_report".format(self.report_name), "")
         self.txt_observations_report.setPlainText(observations_report)
-
-    @staticmethod
-    def get_bbox_ant_report(feature):
-        """
-        calculates a symmetric bbox
-        :param feature: plot feature to calculate bbox
-        :return:
-        """
-        scale_factor = 1.5
-        bbox = feature.geometry().boundingBox()
-        scale_bbox = bbox.scaled(scale_factor, bbox.center())
-
-        dx = (ceil(scale_bbox.xMaximum() / 10.0) * 10) - (floor(scale_bbox.xMinimum() / 10.0) * 10)
-        dy = (ceil(scale_bbox.yMaximum() / 10.0) * 10) - (floor(scale_bbox.yMinimum() / 10.0) * 10)
-
-        if scale_bbox.width() >= scale_bbox.height():
-            min_x = floor(scale_bbox.xMinimum() / 10.0) * 10
-            min_y = floor((((scale_bbox.yMinimum() + scale_bbox.yMaximum()) / 2) - dx / 2) / 10.0) * 10
-            max_x = ceil(scale_bbox.xMaximum() / 10.0) * 10
-            max_y = ceil((((scale_bbox.yMinimum() + scale_bbox.yMaximum()) / 2) + dx / 2) / 10.0) * 10
-        else:
-            min_x = floor((((scale_bbox.xMinimum() + scale_bbox.xMaximum()) / 2) - dy / 2) / 10.0) * 10
-            min_y = floor(scale_bbox.yMinimum() / 10.0) * 10
-            max_x = ceil((((scale_bbox.xMinimum() + scale_bbox.xMaximum()) / 2) + dy / 2) / 10.0) * 10
-            max_y = ceil(scale_bbox.yMaximum() / 10.0) * 10
-
-        # Adjustments bias movement by scale proximity
-        if max_x - min_x < max_y - min_y:
-            min_x -= 5
-            max_x += 5
-        elif max_y - min_y < max_x - min_x:
-            min_y -= 5
-            max_y += 5
-
-        return [min_x, min_y, max_x, max_y]
