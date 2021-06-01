@@ -349,6 +349,7 @@ def reproject_to_ctm12(layer):
 
     return layer
 
+
 def get_field_values_by_another_field(layer, field, field_values, expected_field):
     """
     Returns the fields associated with a field based on another field.
