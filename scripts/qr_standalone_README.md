@@ -25,9 +25,11 @@ Para Windows, basta con abrir la terminal de comandos OSGeo4W Shell y ejecutar e
 
 Por ejemplo:
 
-    C:\\OSGeo4W\\apps\\qgis\\bin\\python-qgis-ltr.bat
+    C:\\Program Files\\QGIS 3.16\\bin\\python-qgis-ltr.bat
 
-Al ejecutar este archivo `.bat`, tu terminal de comandos de OSGeo4W quedará configurada y lista para ejecutar el script `qr_standalone.py`. Pero antes de eso... debes definir tu configuración para el script, que se explica a continuación.
+Al ejecutar este archivo `.bat` desde tu terminal de comandos de OSGeo4W, esta quedará configurada para ejecutar el script `qr_standalone.py`. Asegúrate de salir de la sesión de Python (el script .bat puede haber abierto una) ejecutando `exit()`.
+
+Antes de ejecutar el script `qr_standalone.py` debes definir tu configuración para el script, lo cual se explica a continuación.
 
 ##### 3.2 Configuración del script
 
@@ -36,23 +38,23 @@ En la sección `SET PARAMETERS` del script `qr_standalone.py`, se deben especifi
 3.2.1 **QGIS_PREFIX_PATH**: Es la ruta donde QGIS encuentra recursos como proveedores de datos y la base de datos de sistemas de referencia. Para Windows, generalmente está en:
 
 ```bash
-C:\\OSGeo4W\\apps\\qgis\\
+C:\\Program Files\\QGIS 3.16\\apps\\qgis-ltr\\
 ```
 
-Pero debes revisarla, ya que dependiendo de tu instalación, esa última carpeta podría variar. Más detalles en [GIS.SE](https://gis.stackexchange.com/a/155852/4972).
+Pero debes revisarla, ya que dependiendo de tu instalación, la carpeta podría variar. Más detalles en [GIS.SE](https://gis.stackexchange.com/a/155852/4972).
 
 3.2.2 **QGIS_PROCESSING_PLUGIN_DIR**: Es la ruta donde QGIS encuentra al plugin Processing. Para Windows, generalmente está en:
 
 ```bash
-C:\\OSGeo4W\\apps\\qgis\\
+C:\\Program Files\\QGIS 3.16\\apps\\qgis-ltr\\python\\plugins\\
 ```
 
-Pero debes revisarla, ya que dependiendo de tu instalación, esa última carpeta podría variar.
+Pero debes revisarla, ya que dependiendo de tu instalación, la carpeta podría variar.
 
-3.2.3 **QGIS_PROCESSING_PLUGIN_DIR**: Es la ruta donde QGIS encuentra los plugins `Asistente LADM-COL` y `QGIS Model Baker`. Para Windows, generalmente está en:
+3.2.3 **QGIS_PLUGINS_DIR**: Es la ruta donde QGIS encuentra los plugins `Asistente LADM-COL` y `QGIS Model Baker`. Para Windows, generalmente está en:
 
 ```bash
-C:\\Users\\USER\\AppData\\Roaming\\QGIS\\QGIS3\\profiles\\default\\python\\plugins
+C:\\Users\\USER\\AppData\\Roaming\\QGIS\\QGIS3\\profiles\\default\\python\\plugins\\
 ```
 
 En esa ruta, debes cambiar `USER` por tu propio usuario y tener en cuenta que `default` podría cambiar si has configurado otro perfil dentro de QGIS. Más detalles en [GIS.SE](https://gis.stackexchange.com/a/274312/4972).
@@ -129,7 +131,15 @@ Para la ejecución del script se requiere un entorno configurado, en el cual las
 
 Pero debes revisarla, ya que dependerá de tu instalación. Más detalles en [GIS.SE](https://gis.stackexchange.com/a/155852/4972).
 
-4.2.3 **QGIS_PROCESSING_PLUGIN_DIR**: Es la ruta donde QGIS encuentra los plugins `Asistente LADM-COL` y `QGIS Model Baker`. Para GNU/Linux, generalmente está en:
+4.2.2 **QGIS_PROCESSING_PLUGIN_DIR**: Es la ruta donde QGIS encuentra al plugin Processing. Para GNU/Linux, generalmente está en:
+
+```bash
+/usr/share/qgis/python/plugins
+```
+
+Pero debes revisarla, ya que dependiendo de tu instalación, la carpeta podría variar.
+
+4.2.3 **QGIS_PLUGINS_DIR**: Es la ruta donde QGIS encuentra los plugins `Asistente LADM-COL` y `QGIS Model Baker`. Para GNU/Linux, generalmente está en:
 
 ```bash
 /home/USER/.local/share/QGIS/QGIS3/profiles/default/python/plugins
