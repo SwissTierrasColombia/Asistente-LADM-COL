@@ -49,7 +49,7 @@ If you're adding a decorator to a method, make sure the call to the method compl
 required parameters of the decorator. For instance, if I add a decorator @_db_connection_required
 to my_method(), I need to be sure that ALL calls to my_method() are like this:
 
-   my_action.connect(partial(my_method, context_collected)
+   my_action.connect(partial(my_method, context_collected))
 
 If you don't do that, Python errors are likely to appear when the decorator @_db_connection_required
 for my_method() is called.
@@ -528,6 +528,25 @@ def _with_override_cursor(func_to_decorate):
     def decorated_function(*args, **kwargs):
 
         with OverrideCursor(Qt.WaitCursor):
+            func_to_decorate(*args, **kwargs)
+
+    return decorated_function
+
+
+def _qgis_gui_only(func_to_decorate):
+
+    @wraps(func_to_decorate)
+    def decorated_function(*args, **kwargs):
+        """
+        Avoid executing the decorated function if we are not in GUI mode.
+
+        To be used on functions that are to be run only in QGIS GUI.
+
+        Note: inst should be plugin's instance or at least have access to app member.
+        """
+        inst = args[0]
+
+        if inst.app.settings.with_gui:
             func_to_decorate(*args, **kwargs)
 
     return decorated_function
