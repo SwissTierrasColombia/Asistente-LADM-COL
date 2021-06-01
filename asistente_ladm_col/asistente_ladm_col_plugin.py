@@ -147,7 +147,8 @@ from asistente_ladm_col.utils.decorators import (_db_connection_required,
                                                  _survey_model_required,
                                                  _cadastral_cartography_model_required,
                                                  _field_data_capture_model_required,
-                                                 _update_context_to_current_role)
+                                                 _update_context_to_current_role,
+                                                 _qgis_gui_only)
 from asistente_ladm_col.utils.utils import show_plugin_help
 from asistente_ladm_col.utils.qt_utils import (ProcessWithStatus, 
                                                normalize_local_url)
@@ -1615,6 +1616,7 @@ class AsistenteLADMCOLPlugin(QObject):
             }
             self.app.core.get_layers(db, layers, load=True)
 
+    @_qgis_gui_only
     def add_indicators(self, node_name, node_type, payload=None):
         """Slot to inject the db object"""
         db, res = self.get_db_connection_with_names()
