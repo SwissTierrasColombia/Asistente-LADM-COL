@@ -10,7 +10,7 @@ start_app() # need to start before asistente_ladm_col.tests.utils
 from asistente_ladm_col.app_interface import AppInterface
 
 from asistente_ladm_col.tests.utils import (get_pg_conn,
-                                            get_field_values_by_another_field,
+                                            get_field_values_by_key_values,
                                             standardize_query_results,
                                             import_asistente_ladm_col,
                                             import_processing,
@@ -58,10 +58,10 @@ class TestPGLADMQueries(unittest.TestCase):
             cls.db_pg.names.LC_PLOT_T: None
         }
         cls.plugin.app.core.get_layers(cls.db_pg, layers, load=True)
-        cls.test_plot_t_ids = get_field_values_by_another_field(layers[cls.db_pg.names.LC_PLOT_T],
-                                                                cls.db_pg.names.T_ILI_TID_F,
-                                                                ['fc68c492-fad5-4a7b-98a3-6104e84a4ec4'],
-                                                                cls.db_pg.names.T_ID_F)
+        cls.test_plot_t_ids = get_field_values_by_key_values(layers[cls.db_pg.names.LC_PLOT_T],
+                                                             cls.db_pg.names.T_ILI_TID_F,
+                                                             ['fc68c492-fad5-4a7b-98a3-6104e84a4ec4'],
+                                                             cls.db_pg.names.T_ID_F)
 
     def test_igac_basic_info_query(self):
         print("\nINFO: Validating basic info query from IGAC...")
