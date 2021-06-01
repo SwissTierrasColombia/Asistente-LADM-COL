@@ -359,11 +359,10 @@ def get_field_values_by_another_field(layer, field, field_values, expected_field
     :param expected_field: name of the field from which the values are expected
     :return: List of values associated with the expected field. Order is preserved
     """
-    expression = QgsExpression('"{field}" in ({field_values})'.format(field=field, field_values=', '.join("'{}'".format(v) for v in field_values)))
-    features = LADMData.get_features_by_expression(layer, expected_field, expression=expression, with_attributes=False)
+    features = LADMData.get_features_from_t_ids(layer, field, field_values, only_attributes=[expected_field])
 
     expected_field_values = []
-    # Same order must be preserved in the returned array
+    # Same order coming in field_values must be preserved in the returned array
     for field_value in field_values:
         for feature in features:
             if feature[field] == field_value:
