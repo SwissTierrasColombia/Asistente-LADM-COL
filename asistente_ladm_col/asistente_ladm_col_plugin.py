@@ -135,7 +135,7 @@ from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.processing.ladm_col_provider import LADMCOLAlgorithmProvider
 from asistente_ladm_col.logic.quality.quality_rule_engine import QualityRuleEngine
 from asistente_ladm_col.utils.decorators import (_db_connection_required,
-                                                 _grass7_required,
+                                                 _grass_required,
                                                  _validate_if_wizard_is_open,
                                                  _qgis_model_baker_required,
                                                  _activate_processing_plugin,
@@ -1000,7 +1000,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_qgis_model_baker_required
     @_db_connection_required
     @_survey_model_required
-    @_grass7_required
+    @_grass_required
     def call_explode_boundaries(self, *args):
         self.toolbar.build_boundary(self.get_db_connection())
 

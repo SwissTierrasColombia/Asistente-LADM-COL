@@ -31,9 +31,10 @@ from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.geometry import GeometryUtils
 from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
-from asistente_ladm_col.utils.qt_utils import OverrideCursor
+from asistente_ladm_col.utils.qt_utils import ProcessWithStatus
 
 import processing
+
 
 class ToolBar(QObject):
 
@@ -48,7 +49,7 @@ class ToolBar(QObject):
         QgsProject.instance().setAutoTransaction(False)
         use_selection = True
 
-        with OverrideCursor(Qt.WaitCursor):
+        with ProcessWithStatus(QCoreApplication.translate("ToolBar", "Building boundaries...")):
             layers = {
                 db.names.LC_BOUNDARY_T: None,
                 db.names.POINT_BFS_T: None,
@@ -58,7 +59,6 @@ class ToolBar(QObject):
             self.app.core.get_layers(db, layers, load=True)
 
             if layers[db.names.LC_BOUNDARY_T].selectedFeatureCount() == 0:
-
                 reply = QMessageBox.question(None,
                                              QCoreApplication.translate("ToolBar", "Continue?"),
                                              QCoreApplication.translate("ToolBar",
@@ -68,15 +68,14 @@ class ToolBar(QObject):
                 if reply == QMessageBox.Yes:
                     use_selection = False
                 elif reply == QMessageBox.Cancel:
-                    self.logger.warning_msg(__name__, QCoreApplication.translate("ToolBar", "First select at least one boundary!"))
                     return
 
             boundary_t_ids = list()
             if use_selection:
-                boundary_t_ids = [f[db.names.T_ID_F] for f in layers[db.names.LC_BOUNDARY_T].selectedFeatures()]
+                boundary_t_ids = QgsVectorLayerUtils.getValues(layers[db.names.LC_BOUNDARY_T], db.names.T_ID_F, selectedOnly=True)[0]
                 num_boundaries = layers[db.names.LC_BOUNDARY_T].selectedFeatureCount()
             else:
-                boundary_t_ids = [f[db.names.T_ID_F] for f in layers[db.names.LC_BOUNDARY_T].getFeatures()]
+                boundary_t_ids = QgsVectorLayerUtils.getValues(layers[db.names.LC_BOUNDARY_T], db.names.T_ID_F)[0]
                 layers[db.names.LC_BOUNDARY_T].selectAll()
                 num_boundaries = layers[db.names.LC_BOUNDARY_T].featureCount()
 
@@ -87,30 +86,38 @@ class ToolBar(QObject):
                     db.names.LESS_BFS_T: db.names.LESS_BFS_T_LC_BOUNDARY_F
                 }
 
-                topology_affected_features = {
+                related_topology_features = {
                     db.names.POINT_BFS_T: 0,
                     db.names.MORE_BFS_T: 0,
                     db.names.LESS_BFS_T: 0
                 }
 
                 for topology_table_name, topology_boundary_field in boundary_topology_relation.items():
-                    expression = QgsExpression('"{field}" in ({field_values})'.format(field=topology_boundary_field, field_values=', '.join("'{}'".format(v) for v in boundary_t_ids)))
-                    features = LADMData.get_features_by_expression(layers[topology_table_name], db.names.T_ID_F, expression=expression)
-                    select_ids_topology_table = [f.id() for f in features]
+                    select_ids_topology_table = LADMData.get_fids_from_key_values(layers[topology_table_name],
+                                                                                  topology_boundary_field,
+                                                                                  boundary_t_ids)
 
-                    # Number of records affected in each of the topology tables
-                    topology_affected_features[topology_table_name] = len(select_ids_topology_table)
+                    # Number of related records in each of the topology tables
+                    related_topology_features[topology_table_name] = len(select_ids_topology_table)
 
                     if select_ids_topology_table:
                         with edit(layers[topology_table_name]):
+                            # Delete related features in topology tables, because we'll also remove boundaries.
+                            # After the whole process is done, we'll recalculate those relationships again.
                             layers[topology_table_name].deleteFeatures(select_ids_topology_table)
+                            self.logger.info(__name__, QCoreApplication.translate("ToolBar",
+                                                                                  "{} features deleted from table {}!".format(
+                                                                                      len(select_ids_topology_table),
+                                                                                      topology_table_name)))
 
                 selected_boundaries_layer = processing.run("native:saveselectedfeatures", {'INPUT': layers[db.names.LC_BOUNDARY_T], 'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
                 build_boundaries_layer = self.geometry.build_boundaries(selected_boundaries_layer)
 
                 with edit(layers[db.names.LC_BOUNDARY_T]):
+                    # Delete selected features as they will be imported again from a newly created layer after processed
                     layers[db.names.LC_BOUNDARY_T].deleteSelectedFeatures()
 
+                # Bring back the features we deleted before, but this time, with the boundaries fixed
                 self.app.core.run_etl_model_in_backgroud_mode(db, build_boundaries_layer, db.names.LC_BOUNDARY_T)
 
                 self.logger.info_msg(__name__, QCoreApplication.translate("ToolBar",
@@ -118,11 +125,11 @@ class ToolBar(QObject):
                 self.iface.mapCanvas().refresh()
 
                 # topology tables are recalculated with the new boundaries
-                if topology_affected_features[db.names.POINT_BFS_T]:
+                if related_topology_features[db.names.POINT_BFS_T]:
                     # it is not possible to use the features selected by the user because they have been removed
                     self.fill_topology_table_pointbfs(db, False)
 
-                if topology_affected_features[db.names.MORE_BFS_T] + topology_affected_features[db.names.LESS_BFS_T] > 0:
+                if related_topology_features[db.names.MORE_BFS_T] + related_topology_features[db.names.LESS_BFS_T]:
                     # it is not possible to use the features selected by the user because they have been removed
                     self.fill_topology_tables_morebfs_less(db, False)
 
