@@ -34,6 +34,15 @@ class SpacialSourceFinishFeatureCreationArgs(FinishFeatureCreationArgs):
         self.associated_features_amount = associated_features_amount
 
 
+class ParcelFinishFeatureCreationArgs(FinishFeatureCreationArgs):
+    def __init__(self, is_valid=None, feature_tid=None, added_features_amount=None,
+                 associated_features_amount=None, valid_constraints=False):
+        super().__init__(is_valid, feature_tid)
+        self.added_features_amount = added_features_amount
+        self.associated_features_amount = associated_features_amount
+        self.valid_constraints = valid_constraints
+
+
 class UnexpectedFeaturesDigitizedArgs:
     def __init__(self, layer: QgsVectorLayer, status: EnumDigitizedFeatureStatus, features_count: int):
         self.layer = layer

@@ -1,10 +1,19 @@
+from enum import Enum
+
 from qgis.core import NULL
 
-from asistente_ladm_col.config.general_config import PLUGINS_DIR
 from asistente_ladm_col.config.ladm_names import LADMNames
-from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
 from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 
+
+class EnumRelationshipType(Enum):
+    # Operations:
+    # 1 = One and only one feature must be selected
+    # + = One or more features must be selected
+    # * = Optional, i.e., zero or more features could be selected
+    ONE = 1,
+    MANY = 2,
+    ONE_OR_MANY = 3
 
 class LayerConfig:
     SUPPLIES_DB_PREFIX = None
@@ -314,64 +323,62 @@ class LayerConfig:
     @staticmethod
     def get_constraint_types_of_parcels(names):
         # Operations:
-        # 1 = One and only one feature must be selected
-        # + = One or more features must be selected
-        # * = Optional, i.e., zero or more features could be selected
+        # EnumRelationshipType: 'one', 'many' or 'one or many'
         # None = Won't be stored as a related feature (selected features will be ignored)
         return {
             LADMNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY: {
-                names.LC_PLOT_T: 1,
-                names.LC_BUILDING_T: '*',
-                names.LC_BUILDING_UNIT_T: '*'
+                names.LC_PLOT_T: EnumRelationshipType.ONE,
+                names.LC_BUILDING_T: EnumRelationshipType.MANY,
+                names.LC_BUILDING_UNIT_T: EnumRelationshipType.MANY
             },
             LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT: {
-                names.LC_PLOT_T: 1,
-                names.LC_BUILDING_T: '*',
+                names.LC_PLOT_T: EnumRelationshipType.ONE,
+                names.LC_BUILDING_T: EnumRelationshipType.MANY,
                 names.LC_BUILDING_UNIT_T: None
             },
             LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT: {
                 names.LC_PLOT_T: None,
                 names.LC_BUILDING_T: None,
-                names.LC_BUILDING_UNIT_T: '+'
+                names.LC_BUILDING_UNIT_T: EnumRelationshipType.ONE_OR_MANY
             },
             LADMNames.PARCEL_TYPE_CONDOMINIUM_PARENT: {
-                names.LC_PLOT_T: 1,
-                names.LC_BUILDING_T: '*',
+                names.LC_PLOT_T: EnumRelationshipType.ONE,
+                names.LC_BUILDING_T: EnumRelationshipType.MANY,
                 names.LC_BUILDING_UNIT_T: None
             },
             LADMNames.PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT: {
-                names.LC_PLOT_T: 1,
-                names.LC_BUILDING_T: '*',
+                names.LC_PLOT_T: EnumRelationshipType.ONE,
+                names.LC_BUILDING_T: EnumRelationshipType.MANY,
                 names.LC_BUILDING_UNIT_T: None
             },
             LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_MEJORA: {
                 names.LC_PLOT_T: None,
-                names.LC_BUILDING_T: '*',
-                names.LC_BUILDING_UNIT_T: '+'
+                names.LC_BUILDING_T: EnumRelationshipType.MANY,
+                names.LC_BUILDING_UNIT_T: EnumRelationshipType.ONE_OR_MANY
             },
             LADMNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY_MEJORA: {
                 names.LC_PLOT_T: None,
-                names.LC_BUILDING_T: '*',
-                names.LC_BUILDING_UNIT_T: '+'
+                names.LC_BUILDING_T: EnumRelationshipType.MANY,
+                names.LC_BUILDING_UNIT_T: EnumRelationshipType.ONE_OR_MANY
             },
             LADMNames.PARCEL_TYPE_CEMETERY_PARENT: {
-                names.LC_PLOT_T: 1,
-                names.LC_BUILDING_T: '*',
+                names.LC_PLOT_T: EnumRelationshipType.ONE,
+                names.LC_BUILDING_T: EnumRelationshipType.MANY,
                 names.LC_BUILDING_UNIT_T: None
             },
             LADMNames.PARCEL_TYPE_CEMETERY_PARCEL_UNIT: {
-                names.LC_PLOT_T: 1,
+                names.LC_PLOT_T: EnumRelationshipType.ONE,
                 names.LC_BUILDING_T: None,
                 names.LC_BUILDING_UNIT_T: None
             },
             LADMNames.PARCEL_TYPE_ROAD: {
-                names.LC_PLOT_T: 1,
+                names.LC_PLOT_T: EnumRelationshipType.ONE,
                 names.LC_BUILDING_T: None,
                 names.LC_BUILDING_UNIT_T: None
             },
             LADMNames.PARCEL_TYPE_PUBLIC_USE: {
-                names.LC_PLOT_T: 1,
-                names.LC_BUILDING_T: '*',
+                names.LC_PLOT_T: EnumRelationshipType.ONE,
+                names.LC_BUILDING_T: EnumRelationshipType.MANY,
                 names.LC_BUILDING_UNIT_T: None
             }
         }

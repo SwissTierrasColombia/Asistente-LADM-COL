@@ -30,7 +30,9 @@ from asistente_ladm_col.config.general_config import (WIZARD_HELP_PAGES,
                                                       WIZARD_STRINGS,
                                                       WIZARD_SEL_FEATURES_TITLE,
                                                       CSS_COLOR_INACTIVE_LABEL,
-                                                      CSS_COLOR_OKAY_LABEL)
+                                                      CSS_COLOR_OKAY_LABEL,
+                                                      CSS_COLOR_ERROR_LABEL)
+from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.gui.wizards.view.common.enum_feature_selection_type import EnumFeatureSelectionType
 from asistente_ladm_col.gui.wizards.view.common.view_enum import EnumOptionType
 from asistente_ladm_col.gui.wizards.view.common.view_args import (PickFeaturesSelectedArgs,
@@ -200,13 +202,16 @@ class ParcelSelectorView(FeaturesSelectorView):
         self.__controller = controller
         self.__help_text = help_text
 
-        self.__qwizard_page.txt_help_page_2.setHtml(self.__help_text)
-
     def _create_qwizard_page(self) -> QWizardPage:
         self.__qwizard_page = QWizardPage()
         ui_path = 'wizards/wizard_pages/survey/wiz_create_parcel_survey.ui'
         load_ui(ui_path, self.__qwizard_page)
         return self.__qwizard_page
+
+    def load_parcel_types(self, parcel_types: dict):
+        self.__qwizard_page.cb_parcel_type.clear()
+        for key in parcel_types:
+            self.__qwizard_page.cb_parcel_type.addItem(parcel_types[key], key)
 
     def _create_dict_controls_by_type(self):
         self.__controls_by_type = dict()
@@ -236,6 +241,42 @@ class ParcelSelectorView(FeaturesSelectorView):
             }}
 
         return self.__controls_by_type
+
+    # specific parcel
+    def connect_signals(self):
+        super().connect_signals()
+        self.__qwizard_page.cb_parcel_type.currentIndexChanged.connect(self.__option_changed)
+
+    def __option_changed(self, index):
+        parcel_type_ili_code = self.__qwizard_page.cb_parcel_type.itemData(index)
+
+        self.__controller.parcel_type_changed(parcel_type_ili_code)
+
+        self.__update_help_message(parcel_type_ili_code)
+
+    def __update_help_message(self, parcel_type):
+        help_strings = HelpStrings()
+        msg_parcel_type = help_strings.get_message_parcel_type(parcel_type)
+        msg_parcel_type = msg_parcel_type.replace(parcel_type, self.__qwizard_page.cb_parcel_type.currentText())
+
+        msg_help = self.__help_text.format(msg_parcel_type=msg_parcel_type)
+        self.__qwizard_page.txt_help_page_2.setHtml(msg_help)
+
+    def set_spatial_units_options_status(self, spatial_units_status: dict):
+        for item_type in self.__controls_by_type:
+            style = CSS_COLOR_INACTIVE_LABEL
+            will_active_button = False
+            if item_type in spatial_units_status:
+                style = CSS_COLOR_OKAY_LABEL if spatial_units_status[item_type] else CSS_COLOR_ERROR_LABEL
+                will_active_button = True
+
+            item = self.__controls_by_type[item_type]
+
+            item["lbl"].setStyleSheet(style)
+            item["lbl_count"].setStyleSheet(style)
+
+            for button_index in item["buttons"]:
+                item["buttons"][button_index].setEnabled(will_active_button)
 
 
 class ExtAddressSelectorView(FeaturesSelectorView):
