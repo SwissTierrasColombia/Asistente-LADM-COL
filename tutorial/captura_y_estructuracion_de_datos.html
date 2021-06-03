@@ -110,38 +110,44 @@
 <li class="toctree-l1"><a class="reference internal" href="introduccion.html">Introducción</a></li>
 <li class="toctree-l1"><a class="reference internal" href="crear_estructura_ladm_col.html">Crear Estructura LADM-COL</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Captura y Estructuración de Datos</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#preprocesamiento-de-insumos">Preprocesamiento de insumos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#alistamiento-de-insumos">Alistamiento de insumos</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#paso-1-conexion-a-la-base-de-datos">Paso 1: Conexión a la base de datos</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#consulta-de-dominios">Consulta de dominios</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#paso-1-tabla-de-atributos">Paso 1: Tabla de atributos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#paso-2-identificacion-del-t-id">Paso 2: Identificación del T_Id</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#paquete-de-topografia-y-representacion">Paquete de topografía y representación</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#puntos-de-lindero">Puntos de lindero</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#puntos-de-levantamiento">Puntos de levantamiento</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#puntos-de-control">Puntos de Control</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#linderos">Linderos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#construccion-de-linderos">Construcción De Linderos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#relacion-entre-puntos-y-linderos">Relación Entre Puntos y Linderos</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#puntos-de-levantamiento">Puntos de levantamiento</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#puntos-de-control">Puntos de control</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#creacion-de-linderos-y-sus-relaciones">Creación de linderos y sus relaciones</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#construccion-de-linderos">Construcción de linderos</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#relacion-entre-puntos-y-linderos">Relación entre puntos y linderos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#unidad-espacial">Unidad Espacial</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#creacion-de-terrenos-y-sus-relaciones">Creación De Terrenos y Sus Relaciones</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#creacion-de-relacion-entre-los-linderos-y-los-terrenos">Creación De Relación Entre Los Linderos y Los Terrenos</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#unidades-espaciales">Unidades Espaciales</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#creacion-de-terrenos-y-sus-relaciones">Creación de terrenos y sus relaciones</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#creacion-de-relacion-entre-los-linderos-y-los-terrenos">Creación de relacion entre los linderos y los terrenos</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#creacion-de-construcciones">Creación de construcciones</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#creacion-de-unidades-de-construccion">Creación de unidades de construcción</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#creacion-de-construcciones">Creación De Construcciones</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#creacion-de-unidades-de-construccion">Creación De Unidades De Construcción</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#unidad-basica-administrativa">Unidad Básica Administrativa</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#crear-predio">Crear predio</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#crear-predio">Crear Predio</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#interesados">Interesados</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#crear-agrupacion-de-interesados">Crear agrupación de interesados</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#crear-agrupacion-de-interesados">Crear Agrupación De Interesados</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#fuentes">Fuentes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#rrr">RRR</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#crear-derecho">Crear derecho</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#crear-derecho">Crear Derecho</a></li>
 </ul>
 </li>
 </ul>
@@ -216,55 +222,88 @@
             
   <div class="section" id="captura-y-estructuracion-de-datos">
 <h1>Captura y Estructuración de Datos<a class="headerlink" href="#captura-y-estructuracion-de-datos" title="Enlazar permanentemente con este título">¶</a></h1>
-<div class="section" id="preprocesamiento-de-insumos">
-<h2>Preprocesamiento de insumos<a class="headerlink" href="#preprocesamiento-de-insumos" title="Enlazar permanentemente con este título">¶</a></h2>
+<div class="section" id="alistamiento-de-insumos">
+<h2>Alistamiento de insumos<a class="headerlink" href="#alistamiento-de-insumos" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>La primera parte de tutorial corresponde a la descarga e importación de datos en QGIS.  Para llevar a cabo cada uno de los pasos, es necesario que descargues el <a class="reference external" href="http://nas-swissphoto.quickconnect.to/d/f/620702901595062139">material de práctica</a> y sigas las instrucciones del tutorial.</p>
+<div class="seealso">
+<p class="admonition-title">TIP</p>
+<p> Si deseas agregar otras fuentes de información como referencia a la información proporcionada, puedes hacerlo haciendo uso de QGIS y sus diferentes funcionalidades. </p>
+</div><div class="section" id="paso-1-conexion-a-la-base-de-datos">
+<h3>Paso 1: Conexión a la base de datos<a class="headerlink" href="#paso-1-conexion-a-la-base-de-datos" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>Para empezar, se debe definir la conexión a la base de datos. Para realizar este proceso, dirígete al panel «<strong>Navegador</strong>» ubicado a la izquierda de la interfaz de QGIS, en el árbol que se despliega ubica la sección <strong>Geopackage</strong>, haz clic derecho sobre esta sección y selecciona la opción de <strong>Conexión nueva</strong>. Una vez se despliega el panel de navegación, deberás ubicar la base de datos <strong>taller_asistente.gpkg</strong> (disponible en los datos del tutorial) y dar clic en el botón <strong>Abrir</strong> para configurar la conexión a la base de datos.</p>
+<div class="note">
+<p class="admonition-title">IMPORTANTE</p>
+<p> Como resultado de este proceso se tendrá conexión a una base de datos que posee diversa información, de la cual se hará uso a medida que se avance en las secciones de este tutorial. </p>
+</div><p><a class="" data-lightbox="Paso 1: Conexión a la base de datos" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos1.gif" title=" Paso 1: Conexión a la base de datos " data-title=" Paso 1: Conexión a la base de datos "><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos1.gif" class="align-center" width="800px" alt=" Paso 1: Conexión a la base de datos "/></a></p>
+<div class="seealso">
+<p class="admonition-title">TIP</p>
+<p> Con el fin de tener una mejor referencia de la zona de trabajo, se recomienda instalar el complemento <b>QuickMapServices</b>, que proporciona un conjunto de servicios Web que pueden ser utilizados como mapas base. Por ejemplo, algunos permiten desplegar imágenes satelitales sobre el mapa. </p>
+</div><p><a class="" data-lightbox="Paso 1: QuickMapService" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos2.gif" title="Paso 1: QuickMapService" data-title="Paso 1: QuickMapService"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos2.gif" class="align-center" width="800px" alt="Paso 1: QuickMapService"/></a></p>
+</div>
+</div>
+<div class="section" id="consulta-de-dominios">
+<h2>Consulta de dominios<a class="headerlink" href="#consulta-de-dominios" title="Enlazar permanentemente con este título">¶</a></h2>
+<div class="section" id="paso-1-tabla-de-atributos">
+<h3>Paso 1: Tabla de atributos<a class="headerlink" href="#paso-1-tabla-de-atributos" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>Para proceder a la consulta de dominios debes dirigirte al grupo «<strong>domains</strong>» ubicado en el panel de capas de QGIS, abrir el grupo y buscar el dominio de interés. Sobre éste debes dar clic derecho y seleccionar la opción <strong>Abrir tabla de atributos</strong> en el menú de contexto que se despliega.</p>
+<p>El ejemplo que se muestra a continuación se desarrolla con la capa <strong>lc_puntotipo</strong>.</p>
+<p><a class="" data-lightbox="Paso 1: Tabla de atributos" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos9.png" title="Paso 1: Tabla de atributos" data-title="Paso 1: Tabla de atributos"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos9.png" class="align-center" width="400px" alt="Paso 1: Tabla de atributos"/></a></p>
+<div class="seealso">
+<p class="admonition-title">TIP</p>
+<p>Puedes acceder a la tabla de atributos de la capa de interés, ubicándote sobre la misma en el panel de capas y tecleando <b>F6</b>.</p>
+</div></div>
+<div class="section" id="paso-2-identificacion-del-t-id">
+<h3>Paso 2: Identificación del T_Id<a class="headerlink" href="#paso-2-identificacion-del-t-id" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>Se desplegará un diálogo con el listado de los valores del dominio seleccionado. De esta manera es posible identificar el número correspondiente al campo de descripción del elemento requerido, ubicado en la columna <strong>t_id</strong>.</p>
+<p><a class="" data-lightbox="Paso 2: Identificación del T_Id" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos10.png" title="Paso 2: Identificación del T_Id" data-title="Paso 2: Identificación del T_Id"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos10.png" class="align-center" width="1200px" alt="Paso 2: Identificación del T_Id"/></a></p>
+</div>
 </div>
 <div class="section" id="paquete-de-topografia-y-representacion">
 <h2>Paquete de topografía y representación<a class="headerlink" href="#paquete-de-topografia-y-representacion" title="Enlazar permanentemente con este título">¶</a></h2>
 <div class="section" id="puntos-de-lindero">
 <h3>Puntos de lindero<a class="headerlink" href="#puntos-de-lindero" title="Enlazar permanentemente con este título">¶</a></h3>
 </div>
-</div>
 <div class="section" id="puntos-de-levantamiento">
-<h2>Puntos de levantamiento<a class="headerlink" href="#puntos-de-levantamiento" title="Enlazar permanentemente con este título">¶</a></h2>
+<h3>Puntos de levantamiento<a class="headerlink" href="#puntos-de-levantamiento" title="Enlazar permanentemente con este título">¶</a></h3>
 </div>
 <div class="section" id="puntos-de-control">
-<h2>Puntos de control<a class="headerlink" href="#puntos-de-control" title="Enlazar permanentemente con este título">¶</a></h2>
+<h3>Puntos de Control<a class="headerlink" href="#puntos-de-control" title="Enlazar permanentemente con este título">¶</a></h3>
 </div>
-<div class="section" id="creacion-de-linderos-y-sus-relaciones">
-<h2>Creación de linderos y sus relaciones<a class="headerlink" href="#creacion-de-linderos-y-sus-relaciones" title="Enlazar permanentemente con este título">¶</a></h2>
+<div class="section" id="linderos">
+<h3>Linderos<a class="headerlink" href="#linderos" title="Enlazar permanentemente con este título">¶</a></h3>
+</div>
 <div class="section" id="construccion-de-linderos">
-<h3>Construcción de linderos<a class="headerlink" href="#construccion-de-linderos" title="Enlazar permanentemente con este título">¶</a></h3>
+<h3>Construcción De Linderos<a class="headerlink" href="#construccion-de-linderos" title="Enlazar permanentemente con este título">¶</a></h3>
 </div>
 <div class="section" id="relacion-entre-puntos-y-linderos">
-<h3>Relación entre puntos y linderos<a class="headerlink" href="#relacion-entre-puntos-y-linderos" title="Enlazar permanentemente con este título">¶</a></h3>
+<h3>Relación Entre Puntos y Linderos<a class="headerlink" href="#relacion-entre-puntos-y-linderos" title="Enlazar permanentemente con este título">¶</a></h3>
 </div>
 </div>
-<div class="section" id="unidades-espaciales">
-<h2>Unidades Espaciales<a class="headerlink" href="#unidades-espaciales" title="Enlazar permanentemente con este título">¶</a></h2>
+<div class="section" id="unidad-espacial">
+<h2>Unidad Espacial<a class="headerlink" href="#unidad-espacial" title="Enlazar permanentemente con este título">¶</a></h2>
 <div class="section" id="creacion-de-terrenos-y-sus-relaciones">
-<h3>Creación de terrenos y sus relaciones<a class="headerlink" href="#creacion-de-terrenos-y-sus-relaciones" title="Enlazar permanentemente con este título">¶</a></h3>
+<h3>Creación De Terrenos y Sus Relaciones<a class="headerlink" href="#creacion-de-terrenos-y-sus-relaciones" title="Enlazar permanentemente con este título">¶</a></h3>
 <div class="section" id="creacion-de-relacion-entre-los-linderos-y-los-terrenos">
-<h4>Creación de relacion entre los linderos y los terrenos<a class="headerlink" href="#creacion-de-relacion-entre-los-linderos-y-los-terrenos" title="Enlazar permanentemente con este título">¶</a></h4>
+<h4>Creación De Relación Entre Los Linderos y Los Terrenos<a class="headerlink" href="#creacion-de-relacion-entre-los-linderos-y-los-terrenos" title="Enlazar permanentemente con este título">¶</a></h4>
 </div>
 </div>
 <div class="section" id="creacion-de-construcciones">
-<h3>Creación de construcciones<a class="headerlink" href="#creacion-de-construcciones" title="Enlazar permanentemente con este título">¶</a></h3>
+<h3>Creación De Construcciones<a class="headerlink" href="#creacion-de-construcciones" title="Enlazar permanentemente con este título">¶</a></h3>
 </div>
 <div class="section" id="creacion-de-unidades-de-construccion">
-<h3>Creación de unidades de construcción<a class="headerlink" href="#creacion-de-unidades-de-construccion" title="Enlazar permanentemente con este título">¶</a></h3>
+<h3>Creación De Unidades De Construcción<a class="headerlink" href="#creacion-de-unidades-de-construccion" title="Enlazar permanentemente con este título">¶</a></h3>
 </div>
 </div>
 <div class="section" id="unidad-basica-administrativa">
 <h2>Unidad Básica Administrativa<a class="headerlink" href="#unidad-basica-administrativa" title="Enlazar permanentemente con este título">¶</a></h2>
 <div class="section" id="crear-predio">
-<h3>Crear predio<a class="headerlink" href="#crear-predio" title="Enlazar permanentemente con este título">¶</a></h3>
+<h3>Crear Predio<a class="headerlink" href="#crear-predio" title="Enlazar permanentemente con este título">¶</a></h3>
 </div>
 </div>
 <div class="section" id="interesados">
 <h2>Interesados<a class="headerlink" href="#interesados" title="Enlazar permanentemente con este título">¶</a></h2>
 <div class="section" id="crear-agrupacion-de-interesados">
-<h3>Crear agrupación de interesados<a class="headerlink" href="#crear-agrupacion-de-interesados" title="Enlazar permanentemente con este título">¶</a></h3>
+<h3>Crear Agrupación De Interesados<a class="headerlink" href="#crear-agrupacion-de-interesados" title="Enlazar permanentemente con este título">¶</a></h3>
 </div>
 </div>
 <div class="section" id="fuentes">
@@ -273,7 +312,7 @@
 <div class="section" id="rrr">
 <h2>RRR<a class="headerlink" href="#rrr" title="Enlazar permanentemente con este título">¶</a></h2>
 <div class="section" id="crear-derecho">
-<h3>Crear derecho<a class="headerlink" href="#crear-derecho" title="Enlazar permanentemente con este título">¶</a></h3>
+<h3>Crear Derecho<a class="headerlink" href="#crear-derecho" title="Enlazar permanentemente con este título">¶</a></h3>
 </div>
 </div>
 </div>
