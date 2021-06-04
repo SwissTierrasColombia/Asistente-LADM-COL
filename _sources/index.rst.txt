@@ -30,3 +30,15 @@ Documentación del Asistente LADM-COL
    tutorial/consulta_de_informacion.md
    tutorial/exportar_importar_datos.md
    tutorial/gestion_de_insumos.md
+
+
+----
+
+.. image:: _static/cc-by-sa-4-0.png
+    :align: center
+    :width: 88
+    :height: 31
+    :alt: Licencia Creative Commons Atribución-CompartirIgual 4.0 Internacional.
+    :title: Licencia Creative Commons Atribución-CompartirIgual 4.0 Internacional.
+    
+Autor: SwissTierras Colombia (2017-hoy).

@@ -14,3 +14,18 @@ table{
   margin-right: auto;
   margin-left: auto;
 }
+
+/* replace the copyright */
+div[role=contentinfo] {
+	visibility: hidden;
+	position: relative;
+}
+
+div[role=contentinfo]:after {
+	visibility: visible;
+	position: absolute;
+	top: 0;
+	left: 0;
+	content: "Licencia Creative Commons Atribución-CompartirIgual 4.0 Internacional (CC BY-SA 4.0).";
+}
+
