@@ -276,8 +276,8 @@ def get_extent_for_processing(layer, scale=1.5):
     # Example: '4843772.266000000,4844770.188000000,2143021.638000000,2144006.634000000 [EPSG:9377]'
     # See https://github.com/qgis/QGIS/blob/ccc34c76e714e5f6f87d2a329ca048896eb4c87f/src/gui/qgsextentwidget.cpp#L211
 
-    # layer.updateExtents(True)  # Required by GeoPackage, probably until EPSG:9377 is officially included in QGIS
-    # extent = layer.extent()
+    layer.updateExtents(True)  # Required by GeoPackage, probably until EPSG:9377 is officially included in QGIS
+    extent = layer.extent()
 
     extent_layer = processing.run("native:polygonfromlayerextent", {
         'INPUT': layer,
