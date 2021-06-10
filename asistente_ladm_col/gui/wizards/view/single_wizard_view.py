@@ -26,7 +26,8 @@ from asistente_ladm_col.gui.wizards.controller.controller_args import CreateFeat
 from asistente_ladm_col.gui.wizards.wizard_constants import (WIZARD_REFACTOR_RECENT_MAPPING_OPTIONS,
                                                              WIZARD_REFACTOR_LAYER_FILTERS,
                                                              WIZARD_FINISH_BUTTON_TEXT,
-                                                             WIZARD_SELECT_SOURCE_HELP)
+                                                             WIZARD_SELECT_SOURCE_HELP,
+                                                             WIZARD_CREATION_MODE_KEY)
 from asistente_ladm_col.gui.wizards.view.common.view_enum import EnumLayerCreationMode
 from asistente_ladm_col.utils.utils import show_plugin_help
 
@@ -80,11 +81,12 @@ class SingleWizardView:
     def _show_help(self):
         show_plugin_help(self.__view_config[WIZARD_HELP])
 
-    def restore_settings(self, settings: EnumLayerCreationMode):
-        self.__wp_select_source.layer_creation_mode = settings
+    def restore_settings(self, settings: dict):
+        self.__wp_select_source.layer_creation_mode = settings[WIZARD_CREATION_MODE_KEY]
 
     def get_settings(self):
-        return self.__wp_select_source.layer_creation_mode
+        result = {WIZARD_CREATION_MODE_KEY: self.__wp_select_source.layer_creation_mode}
+        return result
 
     def get_selected_layer_refactor(self):
         return self.__wp_select_source.selected_layer

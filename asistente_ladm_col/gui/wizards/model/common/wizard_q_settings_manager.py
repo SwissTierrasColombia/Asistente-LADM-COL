@@ -16,39 +16,88 @@
  *                                                                         *
  ***************************************************************************/
  """
-from qgis.PyQt.QtCore import QSettings
+from enum import Enum
+import importlib
 
-from asistente_ladm_col.gui.wizards.view.common.view_enum import EnumLayerCreationMode
+from qgis.PyQt.QtCore import QSettings
 
 
 class WizardQSettingsManager:
+    __ENUM_VALUE_INDEX = 0
+    __ENUM_MODULE_INDEX = 1
+    __ENUM_TYPE_INDEX = 2
 
-    def __init__(self, q_settings_key: str):
-        self.__q_settings_key = q_settings_key
+    __ENUM_SEPARATOR = ":::"
+    __ENUM_PART_COUNT = 3  # enum value, enum module, enum type name
 
-    def get_settings(self) -> EnumLayerCreationMode:
+    __PLUGIN_ROOT_PATH = "Asistente-LADM-COL"
+
+    def __init__(self, __q_settings_path_key: str):
+        self.__q_settings_path_key = WizardQSettingsManager.__PLUGIN_ROOT_PATH + "/" + __q_settings_path_key
+
+    def get_settings(self) -> dict:
+        result = dict()
         settings = QSettings()
-        result = None
-        load_data_type = settings.value(self.__q_settings_key) or 'create_manually'
+        settings.beginGroup(self.__q_settings_path_key)
 
-        if load_data_type == 'refactor':
-            result = EnumLayerCreationMode.REFACTOR
-        elif load_data_type == 'create_manually':
-            result = EnumLayerCreationMode.MANUALLY
-        elif load_data_type == 'digitizing_line':
-            result = EnumLayerCreationMode.DIGITIZING_LINE
+        keys = settings.childKeys()
+
+        for key in keys:
+            q_settings_value = settings.value(key)
+
+            if WizardQSettingsManager.__is_q_settings_value_a_enum(q_settings_value):
+                result[key] = self.__get_enum_value(q_settings_value)
+            else:
+                result[key] = q_settings_value
 
         return result
 
-    def save_settings(self, value: EnumLayerCreationMode):
+    def save_settings(self, values: dict):
         settings = QSettings()
-        setting_value = None
+        settings.beginGroup(self.__q_settings_path_key)
 
-        if value == EnumLayerCreationMode.REFACTOR:
-            setting_value = 'refactor'
-        elif value == EnumLayerCreationMode.MANUALLY:
-            setting_value = 'create_manually'
-        elif value == EnumLayerCreationMode.DIGITIZING_LINE:
-            setting_value = 'digitizing_line'
+        for index in values:
+            # is value type a Enum?
+            if isinstance(values[index], Enum):
+                setting_value = WizardQSettingsManager.__get_enum_value_string(values[index])
+            else:
+                setting_value = values[index]
 
-        settings.setValue(self.__q_settings_key, setting_value)
+            settings.setValue(index, setting_value)
+
+    @staticmethod
+    def __is_q_settings_value_a_enum(q_settings_value):
+        # is value a string and does it contain the enum separator?
+        separator_count = WizardQSettingsManager.__ENUM_PART_COUNT - 1
+        return isinstance(q_settings_value, str) and \
+            q_settings_value.count(WizardQSettingsManager.__ENUM_SEPARATOR) == separator_count
+
+    @staticmethod
+    def __get_enum_value(q_settings_value):
+        result = None
+
+        try:
+            value_parts = q_settings_value.split(WizardQSettingsManager.__ENUM_SEPARATOR)
+            module = importlib.import_module(value_parts[WizardQSettingsManager.__ENUM_MODULE_INDEX])
+            class_ = getattr(module, value_parts[WizardQSettingsManager.__ENUM_TYPE_INDEX])
+            # enumeration value from string is got from '[]' operator
+            result = class_[value_parts[WizardQSettingsManager.__ENUM_VALUE_INDEX]]
+        except ModuleNotFoundError as e:
+            # TODO is better to launch a specific exception?
+            pass
+
+        return result
+
+    @staticmethod
+    def __get_enum_value_string(enum_value: Enum):
+        value_parts = []
+        enum_type = type(enum_value)
+        
+        # __ENUM_VALUE_INDEX
+        value_parts.append(enum_value.name)
+        # __ENUM_TYPE_INDEX
+        value_parts.append(enum_type.__name__)
+        # __ENUM_MODULE_INDEX
+        value_parts.append(enum_type.__module__)
+
+        return WizardQSettingsManager.__ENUM_SEPARATOR.join(value_parts)

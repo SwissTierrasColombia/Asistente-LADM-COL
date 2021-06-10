@@ -31,11 +31,11 @@ from asistente_ladm_col.config.general_config import (WIZARD_STRINGS,
                                                       WIZARD_HELP,
                                                       WIZARD_HELP1,
                                                       WIZARD_QSETTINGS,
-                                                      WIZARD_QSETTINGS_LOAD_DATA_TYPE,
                                                       WIZARD_LAYERS,
                                                       WIZARD_EDITING_LAYER_NAME,
                                                       WIZARD_TOOL_NAME,
-                                                      WIZARD_HELP2)
+                                                      WIZARD_HELP2,
+                                                      WIZARD_QSETTINGS_PATH)
 from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.gui.wizards.controller.controller_args import CreateFeatureArgs
 from asistente_ladm_col.gui.wizards.model.common.wizard_q_settings_manager import WizardQSettingsManager
@@ -47,7 +47,8 @@ from asistente_ladm_col.gui.wizards.view.spatial_source_view import SpatialSourc
 from asistente_ladm_col.gui.wizards.wizard_constants import (WIZARD_REFACTOR_RECENT_MAPPING_OPTIONS,
                                                              WIZARD_FINISH_BUTTON_TEXT,
                                                              WIZARD_SELECT_SOURCE_HELP,
-                                                             WIZARD_REFACTOR_LAYER_FILTERS)
+                                                             WIZARD_REFACTOR_LAYER_FILTERS,
+                                                             WIZARD_CREATION_MODE_KEY)
 from asistente_ladm_col.gui.wizards.view.common.view_enum import EnumLayerCreationMode
 from asistente_ladm_col.gui.wizards.view.common.view_args import PickFeaturesSelectedArgs
 
@@ -75,8 +76,7 @@ class CreatePlotController(QObject):
         self.__view = self._create_view()
 
         # QSetings
-        self.__settings_manager = WizardQSettingsManager(
-            self.wizard_config[WIZARD_QSETTINGS][WIZARD_QSETTINGS_LOAD_DATA_TYPE])
+        self.__settings_manager = WizardQSettingsManager(self.wizard_config[WIZARD_QSETTINGS][WIZARD_QSETTINGS_PATH])
 
     def _create_view(self):
         wizard_page2 = PlotSelectorView(self, self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP2])
@@ -84,7 +84,7 @@ class CreatePlotController(QObject):
         return self.__view
 
     def exec_(self):
-        self.__restore_settings()
+        self._restore_settings()
         self.__view.exec_()
 
     #  view
@@ -110,8 +110,12 @@ class CreatePlotController(QObject):
         }
 
     # QSettings
-    def __restore_settings(self):
+    def _restore_settings(self):
         settings = self.__settings_manager.get_settings()
+
+        if WIZARD_CREATION_MODE_KEY not in settings or settings[WIZARD_CREATION_MODE_KEY] is None:
+            settings[WIZARD_CREATION_MODE_KEY] = EnumLayerCreationMode.MANUALLY
+
         self.__view.restore_settings(settings)
 
     def __save_settings(self):

@@ -40,7 +40,9 @@ from asistente_ladm_col.gui.wizards.view.pages.features_selector_view import Par
 from asistente_ladm_col.gui.wizards.wizard_constants import (WIZARD_REFACTOR_RECENT_MAPPING_OPTIONS,
                                                              WIZARD_REFACTOR_LAYER_FILTERS,
                                                              WIZARD_FINISH_BUTTON_TEXT,
-                                                             WIZARD_SELECT_SOURCE_HELP)
+                                                             WIZARD_SELECT_SOURCE_HELP,
+                                                             WIZARD_SELECTED_TYPE_KEY,
+                                                             WIZARD_CREATION_MODE_KEY)
 from asistente_ladm_col.utils.qt_utils import (disable_next_wizard,
                                                enable_next_wizard)
 from asistente_ladm_col.utils.utils import show_plugin_help
@@ -133,11 +135,14 @@ class ParcelView:
     def _show_help(self):
         show_plugin_help(self.__view_config[WIZARD_HELP])
 
-    def restore_settings(self, settings: EnumLayerCreationMode):
-        self.__wp_select_source.layer_creation_mode = settings
+    def restore_settings(self, settings: dict):
+        self.__wp_select_source.layer_creation_mode = settings[WIZARD_CREATION_MODE_KEY]
+        self.__wp_associated_features_selector.current_parcel_type = settings[WIZARD_SELECTED_TYPE_KEY]
 
     def get_settings(self):
-        return self.__wp_select_source.layer_creation_mode
+        result = {WIZARD_CREATION_MODE_KEY: self.__wp_select_source.layer_creation_mode,
+                  WIZARD_SELECTED_TYPE_KEY: self.__wp_associated_features_selector.current_parcel_type}
+        return result
 
     # wizard page 2
     def show_number_of_selected_features(self, feature_count: dict):

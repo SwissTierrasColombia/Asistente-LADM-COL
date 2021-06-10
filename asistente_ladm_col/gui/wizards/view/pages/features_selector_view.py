@@ -242,6 +242,16 @@ class ParcelSelectorView(FeaturesSelectorView):
 
         return self.__controls_by_type
 
+    @property
+    def current_parcel_type(self):
+        return self.__qwizard_page.cb_parcel_type.currentData()
+
+    @current_parcel_type.setter
+    def current_parcel_type(self, value):
+        index = self.__qwizard_page.cb_parcel_type.findData(value)
+        if index != -1:
+            self.__qwizard_page.cb_parcel_type.setCurrentIndex(index)
+
     # specific parcel
     def connect_signals(self):
         super().connect_signals()

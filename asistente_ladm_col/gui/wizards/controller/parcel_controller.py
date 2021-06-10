@@ -26,11 +26,15 @@
  *                                                                         *
  ***************************************************************************/
  """
+from asistente_ladm_col.config.general_config import WIZARD_QSETTINGS, WIZARD_QSETTINGS_PATH
 from asistente_ladm_col.gui.wizards.controller.single_wizard_controller import SingleWizardController
+from asistente_ladm_col.gui.wizards.model.common.wizard_q_settings_manager import WizardQSettingsManager
 from asistente_ladm_col.gui.wizards.model.parcel_creator_model import ParcelCreatorModel
 from asistente_ladm_col.gui.wizards.view.common.enum_feature_selection_type import EnumFeatureSelectionType
 from asistente_ladm_col.gui.wizards.view.common.view_args import PickFeaturesSelectedArgs
+from asistente_ladm_col.gui.wizards.view.common.view_enum import EnumLayerCreationMode
 from asistente_ladm_col.gui.wizards.view.parcel_view import ParcelView
+from asistente_ladm_col.gui.wizards.wizard_constants import WIZARD_CREATION_MODE_KEY, WIZARD_SELECTED_TYPE_KEY
 
 
 class ParcelController(SingleWizardController):
@@ -41,6 +45,19 @@ class ParcelController(SingleWizardController):
 
         self.__model.register_feature_selection_by_expression_observer(self)
         self.__model.register_features_on_map_observer(self)
+        # QSetings
+        self.__settings_manager = WizardQSettingsManager(self.wizard_config[WIZARD_QSETTINGS][WIZARD_QSETTINGS_PATH])
+
+    def _restore_settings(self):
+        settings = self.__settings_manager.get_settings()
+
+        if WIZARD_CREATION_MODE_KEY not in settings or settings[WIZARD_CREATION_MODE_KEY] is None:
+            settings[WIZARD_CREATION_MODE_KEY] = EnumLayerCreationMode.MANUALLY
+
+        if WIZARD_SELECTED_TYPE_KEY not in settings:
+            settings[WIZARD_SELECTED_TYPE_KEY] = None
+
+        self.__view.restore_settings(settings)
 
     def _create_view(self):
         self.__view = ParcelView(self, self._get_view_config())

@@ -6,8 +6,6 @@ from asistente_ladm_col.config.general_config import (WIZARD_FEATURE_NAME,
                                                       WIZARD_HELP,
                                                       WIZARD_HELP_PAGES,
                                                       WIZARD_QSETTINGS,
-                                                      WIZARD_QSETTINGS_LOAD_DATA_TYPE,
-                                                      WIZARD_QSETTINGS_TYPE_PARCEL_SELECTED,
                                                       WIZARD_TOOL_NAME,
                                                       WIZARD_HELP1,
                                                       WIZARD_HELP2,
@@ -30,7 +28,8 @@ from asistente_ladm_col.config.general_config import (WIZARD_FEATURE_NAME,
                                                       WIZARD_CREATE_RIGHT_OF_WAY_SURVEY,
                                                       WIZARD_STRINGS, WIZARD_SEL_SOURCE_TITLE,
                                                       WIZARD_SEL_SOURCE_ENTERING_DATA_MANUALLY,
-                                                      WIZARD_SEL_FEATURES_TITLE)
+                                                      WIZARD_SEL_FEATURES_TITLE,
+                                                      WIZARD_QSETTINGS_PATH)
 
 from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.gui.wizards.controller.create_plot_controller import CreatePlotController
@@ -137,7 +136,7 @@ class WizardConfigFactory:
                 WIZARD_READ_ONLY_FIELDS: [names.COL_PARTY_T_NAME_F],
                 # VIEW / CONTROLLER?
                 WIZARD_QSETTINGS: {
-                    WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM-COL/wizards/col_party_load_data_type"
+                    WIZARD_QSETTINGS_PATH: "wizards/col_party"
                 },
                 WIZARD_TOOL_NAME: QCoreApplication.translate("CreateColPartySurveyWizard", "Create party"),
                 # VIEW
@@ -164,7 +163,7 @@ class WizardConfigFactory:
                 WIZARD_READ_ONLY_FIELDS: [],
                 # VIEW / CONTROLLER?
                 WIZARD_QSETTINGS: {
-                    WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM-COL/wizards/administrative_source_load_data_type"
+                    WIZARD_QSETTINGS_PATH: "wizards/administrative_source"
                 },
                 # VIEW
                 WIZARD_TOOL_NAME: QCoreApplication.translate("CreateAdministrativeSourceSurveyWizard",
@@ -191,7 +190,7 @@ class WizardConfigFactory:
                 WIZARD_READ_ONLY_FIELDS: [],
                 # VIEW / CONTROLLER?
                 WIZARD_QSETTINGS: {
-                    WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM-COL/wizards/boundary_load_data_type"
+                    WIZARD_QSETTINGS_PATH: "wizards/boundary"
                 },
                 WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.LineLayer,
                 # VIEW
@@ -218,7 +217,7 @@ class WizardConfigFactory:
                 WIZARD_READ_ONLY_FIELDS: [],
                 # VIEW / CONTROLLER?
                 WIZARD_QSETTINGS: {
-                    WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM-COL/wizards/building_load_data_type"
+                    WIZARD_QSETTINGS_PATH: "wizards/building"
                 },
                 WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.PolygonLayer,
                 # VIEW
@@ -246,7 +245,7 @@ class WizardConfigFactory:
                 WIZARD_READ_ONLY_FIELDS: [],
                 # VIEW / CONTROLLER?
                 WIZARD_QSETTINGS: {
-                    WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM-COL/wizards/building_unit_load_data_type"
+                    WIZARD_QSETTINGS_PATH: "wizards/building_unit"
                 },
                 WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.PolygonLayer,
                 # VIEW
@@ -274,7 +273,7 @@ class WizardConfigFactory:
                 WIZARD_READ_ONLY_FIELDS: [],
                 # VIEW / CONTROLLER?
                 WIZARD_QSETTINGS: {
-                    WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM-COL/wizards/right_of_way_load_data_type"
+                    WIZARD_QSETTINGS_PATH: "wizards/right_of_way"
                 },
                 WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.PolygonLayer,
                 # VIEW
@@ -309,7 +308,7 @@ class WizardConfigFactory:
                 WIZARD_READ_ONLY_FIELDS: [],
                 # VIEW / CONTROLLER?
                 WIZARD_QSETTINGS: {
-                    WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM-COL/wizards/spatial_source_load_data_type"
+                    WIZARD_QSETTINGS_PATH: "wizards/spatial_source"
                 },
                 WIZARD_TOOL_NAME: QCoreApplication.translate("CreateSpatialSourceSurveyWizard", "Create spatial source"),
                 # VIEW
@@ -336,7 +335,7 @@ class WizardConfigFactory:
                 WIZARD_READ_ONLY_FIELDS: [],
                 # VIEW / CONTROLLER?
                 WIZARD_QSETTINGS: {
-                    WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM-COL/wizards/right_load_data_type"
+                    WIZARD_QSETTINGS_PATH: "wizards/right"
                 },
                 WIZARD_TOOL_NAME: QCoreApplication.translate("CreateRightSurveyWizard", "Create right"),
                 # VIEW
@@ -364,7 +363,7 @@ class WizardConfigFactory:
                 WIZARD_READ_ONLY_FIELDS: [],
                 # VIEW / CONTROLLER?
                 WIZARD_QSETTINGS: {
-                    WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM-COL/wizards/restriction_load_data_type"
+                    WIZARD_QSETTINGS_PATH: "wizards/restriction"
                 },
                 WIZARD_TOOL_NAME: QCoreApplication.translate("CreateRestrictionSurveyWizard", "Create restriction"),
                 # VIEW
@@ -393,7 +392,7 @@ class WizardConfigFactory:
                 WIZARD_READ_ONLY_FIELDS: [],
                 # VIEW / CONTROLLER?
                 WIZARD_QSETTINGS: {
-                    WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM-COL/wizards/ext_address_load_data_type"
+                    WIZARD_QSETTINGS_PATH: "wizards/ext_address"
                 },
                 WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.PointLayer,
                 # VIEW
@@ -421,7 +420,7 @@ class WizardConfigFactory:
                 WIZARD_READ_ONLY_FIELDS: [],
                 # VIEW / CONTROLLER?
                 WIZARD_QSETTINGS: {
-                    WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM-COL/wizards/plot_load_data_type"
+                    WIZARD_QSETTINGS_PATH: "wizards/plot"
                 },
                 WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.PolygonLayer,
                 # VIEW
@@ -454,8 +453,7 @@ class WizardConfigFactory:
                 WIZARD_READ_ONLY_FIELDS: [names.LC_PARCEL_T_PARCEL_TYPE_F],
                 # VIEW / CONTROLLER?
                 WIZARD_QSETTINGS: {
-                    WIZARD_QSETTINGS_LOAD_DATA_TYPE: "Asistente-LADM-COL/wizards/parcel_load_data_type",
-                    WIZARD_QSETTINGS_TYPE_PARCEL_SELECTED: "Asistente-LADM-COL/wizards/type_of_parcel_selected"
+                    WIZARD_QSETTINGS_PATH: "wizards/parcel"
                 },
                 WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry,
                 # VIEW
