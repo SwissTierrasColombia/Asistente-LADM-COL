@@ -147,16 +147,16 @@ class PGConnector(ClientServerDB):
             except (psycopg2.OperationalError, psycopg2.ProgrammingError) as e:
                 return False, QCoreApplication.translate("PGConnector", "Could not open connection! Details: {}".format(e))
 
-            self.logger.info(__name__, "Connection was open! {}".format(self.conn))
+            self.logger.info(__name__, "Connection was open! ({})".format(self.get_description_conn_string()))
         else:
-            self.logger.info(__name__, "Connection is already open! {}".format(self.conn))
+            self.logger.info(__name__, "Connection is already open! ({})".format(self.get_description_conn_string()))
 
         return True, QCoreApplication.translate("PGConnector", "Connection is open!")
 
     def close_connection(self):
         if self.conn:
             self.conn.close()
-            self.logger.info(__name__, "Connection was closed ({}) !".format(self.conn.closed))
+            self.logger.info(__name__, "Connection was closed ({}) !".format(self.get_description_conn_string()))
             self.conn = None
 
     def _get_table_and_field_names(self):

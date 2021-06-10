@@ -221,8 +221,12 @@ class GPKGConnector(FileDB):
 
     def open_connection(self):
         if os.path.exists(self._uri) and os.path.isfile(self._uri):
+            if self.conn:
+                self.close_connection()
+
             self.conn = qgis.utils.spatialite_connect(self._uri)
             self.conn.row_factory = sqlite3.Row
+            self.logger.info(__name__, "Connection was open! ({})".format(self._uri))
             return (True, QCoreApplication.translate("GPKGConnector", "Connection is open!"))
         elif not os.path.exists(self._uri):
             return (False, QCoreApplication.translate("GPKGConnector",
@@ -235,7 +239,7 @@ class GPKGConnector(FileDB):
     def close_connection(self):
         if self.conn:
             self.conn.close()
-            self.logger.info(__name__, "Connection was closed!")
+            self.logger.info(__name__, "Connection was closed! ({})".format(self._uri))
             self.conn = None
 
     def get_ili2db_version(self):
@@ -278,6 +282,9 @@ class GPKGConnector(FileDB):
             "Connection to server was successful.")
 
     def _test_connection_to_db(self):
+        if self.conn:
+            self.close_connection()
+
         res, msg = self.open_connection()
         if res:
             return True, EnumTestConnectionMsg.CONNECTION_TO_DB_SUCCESSFUL, QCoreApplication.translate(
