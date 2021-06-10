@@ -1105,11 +1105,11 @@ class LADMData(QObject):
             return False, msg_l_plots + QCoreApplication.translate(" Receiver {}.").format(receiver_name)
 
         Logger().info(__name__,
-                      "--> Basket set for receiver {}: {} parcels, {} plots, {} buildings, {} rights.".format(
+                      "--> Basket set for receiver '{}' (t_basket: {}): {} parcels, {} legacy plots, {} rights.".format(
+                          receiver_name,
                           t_basket,
                           len(parcel_t_ids),
-                          len_plots,
-                          len_buildings,
+                          len_l_plots,
                           len_rights))
 
         return True, "Success!"

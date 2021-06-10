@@ -49,7 +49,6 @@ class FieldDataCaptureDataExporter(QObject):
 
     def __init__(self, db, total_steps, export_dir, with_offline_project=False, template_project_path='', raster_layer=None):
         QObject.__init__(self)
-        self._db = db
         self._export_dir = export_dir
 
         self.app = AppInterface()
@@ -64,8 +63,8 @@ class FieldDataCaptureDataExporter(QObject):
         self._ili2db = Ili2DB()
 
         # Configure command environment
-        self.db_factory = self._ili2db.dbs_supported.get_db_factory(self._db.engine)
-        self.configuration = self._ili2db.get_export_configuration(self.db_factory, self._db, '')
+        self.db_factory = self._ili2db.dbs_supported.get_db_factory(db.engine)
+        self.configuration = self._ili2db.get_export_configuration(self.db_factory, db, '')
         self.exporter = iliexporter.Exporter()
         self.exporter.tool = self.db_factory.get_model_baker_db_ili_mode()
         self.exporter.process_started.connect(self.on_process_started)
@@ -198,6 +197,8 @@ class FieldDataCaptureDataExporter(QObject):
                 except:
                     pass
             update_progress(5)
+
+        db.close_connection()  # Because we are already done with the DB
 
         # Copy template project
         project_path = os.path.join(offline_dir, '_qfield.qgs')
