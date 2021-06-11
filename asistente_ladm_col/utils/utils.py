@@ -292,3 +292,18 @@ def get_extent_for_processing(layer, scale=1.5):
                                      extent.yMaximum(),
                                      layer.crs().userFriendlyIdentifier(
                                          QgsCoordinateReferenceSystem.ShortString))
+
+
+def get_copy_gpkg_connector(original_gpkg_connector):
+    """
+    Copies the GPKG DB in a tmp folder and returns a connector to it.
+
+    :param original_gpkg_connector: Original GPKGConnector.
+    :return: New GPKGConnector pointing to a copy of the original GPKG DB.
+    """
+    dbpath = original_gpkg_connector.dict_conn_params['dbfile']
+    tmpFile = tempfile.mktemp() + '.gpkg'
+    shutil.copyfile(dbpath, tmpFile)
+
+    from asistente_ladm_col.lib.db.gpkg_connector import GPKGConnector
+    return GPKGConnector(tmpFile)

@@ -563,3 +563,6 @@ class ClientServerDB(DBConnector):
     def get_qgis_layer_uri(self, table_name):
         # Beware, this should be used only for geometryless layers. It was created to access ili2db metadata tables.
         raise NotImplementedError
+
+    def vacuum(self):
+        pass  # Up to now, only needed for GPKG

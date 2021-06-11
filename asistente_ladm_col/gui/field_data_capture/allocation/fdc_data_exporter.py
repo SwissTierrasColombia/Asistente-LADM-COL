@@ -63,10 +63,9 @@ class FieldDataCaptureDataExporter(QObject):
         self._ili2db = Ili2DB()
 
         # Configure command environment
-        self.db_factory = self._ili2db.dbs_supported.get_db_factory(db.engine)
-        self.configuration = self._ili2db.get_export_configuration(self.db_factory, db, '')
+        self.configuration = None
         self.exporter = iliexporter.Exporter()
-        self.exporter.tool = self.db_factory.get_model_baker_db_ili_mode()
+        self.__set_db_info(db)
         self.exporter.process_started.connect(self.on_process_started)
         self.exporter.stderr.connect(self.on_stderr)
 
@@ -74,6 +73,18 @@ class FieldDataCaptureDataExporter(QObject):
         self.log = ''
         self.count = 0
         self.current_progress = 0  # Range 0-100
+
+    def __set_db_info(self, db):
+        db_factory = self._ili2db.dbs_supported.get_db_factory(db.engine)
+        self.configuration = self._ili2db.get_export_configuration(db_factory, db, '')
+        self.exporter.tool = db_factory.get_model_baker_db_ili_mode()
+
+    def replace_main_db(self, db):
+        """
+        To reuse the instance while allowing devs to change the main DB connector.
+        :param db: New DBConnector
+        """
+        self.__set_db_info(db)
 
     def export_basket(self, basket, name):
         """

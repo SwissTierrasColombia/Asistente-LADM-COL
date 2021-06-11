@@ -28,6 +28,7 @@ from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.gui.field_data_capture.allocation.fdc_data_exporter import FieldDataCaptureDataExporter
 from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
+from asistente_ladm_col.utils.utils import get_copy_gpkg_connector
 
 
 class BaseFDCAllocationController(QObject):
@@ -336,7 +337,11 @@ class BaseFDCAllocationController(QObject):
             if not res_area:
                 return False, msg
 
-            # Now, export the current basket to XTF
+            if self._db.engine == 'gpkg':
+                self._db.vacuum()  # Sanitize the GPKG DB since there were lots of changes recently (for t_baskets)
+                basket_exporter.replace_main_db(get_copy_gpkg_connector(self._db))  # ili2db will hit a copy of our DB
+
+            # Now, export the current basket to XTF (and to offline if self._with_offline_project is True)
             res_xtf, msg_xtf = basket_exporter.export_basket(data['t_ili_tid'], data['name'])
             if not res_xtf:
                 return res_xtf, msg_xtf
