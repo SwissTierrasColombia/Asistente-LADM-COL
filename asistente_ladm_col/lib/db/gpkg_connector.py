@@ -352,3 +352,14 @@ class GPKGConnector(FileDB):
             table=table_name
         )
         return data_source_uri
+
+    def vacuum(self):
+        """
+        'Sanitize' the DB. See https://www.sqlite.org/lang_vacuum.html
+        """
+        # See http://bugs.python.org/issue28518
+        self.conn.isolation_level = None
+        cursor = self.conn.cursor()
+        cursor.execute('VACUUM')
+        cursor.close()
+        self.conn.isolation_level = ''
