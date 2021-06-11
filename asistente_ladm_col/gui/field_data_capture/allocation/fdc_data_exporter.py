@@ -82,14 +82,14 @@ class FieldDataCaptureDataExporter(QObject):
         :return: Tuple res (bool), msg (string)
         """
         if self._with_offline_project and not self._template_project_path:
-            return {None: (False, QCoreApplication.translate("FieldDataCaptureDataExporter",
-                    "No template project was passed, but it is required for generating offline projects!"))}
+            return False, QCoreApplication.translate("FieldDataCaptureDataExporter",
+                                                     "No template project was passed, but it is required for generating offline projects!")
 
         # Check prerequisite
         if not self._ili2db.get_full_java_exe_path():
             res_java, msg_java = self._ili2db.configure_java()
             if not res_java:
-                return {None: (res_java, msg_java)}
+                return res_java, msg_java
 
         res, msg = False, ''
 
