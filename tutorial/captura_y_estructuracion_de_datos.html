@@ -120,12 +120,42 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#paquete-de-topografia-y-representacion">Paquete de topografía y representación</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#puntos-de-lindero">Puntos de lindero</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#puntos-de-levantamiento">Puntos de levantamiento</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#puntos-de-control">Puntos de Control</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#linderos">Linderos</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#construccion-de-linderos">Construcción De Linderos</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#relacion-entre-puntos-y-linderos">Relación Entre Puntos y Linderos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#puntos-de-lindero">Puntos de lindero</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#paso-1-creacion-de-punto-lindero">Paso 1: Creación de punto lindero</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#paso-2-seleccion-del-tipo-de-punto">Paso 2: Selección del tipo de punto</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#paso-3-seleccion-de-los-datos-punto-lindero">Paso 3: Selección de los datos punto lindero</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#paso-4-dialogo-del-mapeo-de-campos-para-punto-lindero">Paso 4: Diálogo del mapeo de campos para punto lindero</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#paso-5-definicion-del-mapeo-de-campos-para-punto-lindero">Paso 5: Definición del mapeo de campos para punto lindero</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#paso-6-resultado-de-la-ejecucion-punto-lindero">Paso 6: Resultado de la ejecución punto lindero</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#puntos-de-levantamiento">Puntos de levantamiento</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#paso-1-cargue-de-insumos">Paso 1: Cargue de insumos</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#paso-2-creacion-de-punto-levantamiento">Paso 2: Creación de punto levantamiento</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#paso-3-seleccion-de-los-datos-punto-levantamiento">Paso 3: Selección de los datos punto levantamiento</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#paso-4-mapeo-de-campos-punto-levantamiento">Paso 4: Mapeo de campos punto levantamiento</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#puntos-de-control">Puntos de Control</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#paso-1-importacion-del-csv-puntos-de-control">Paso 1: Importación del CSV puntos de control</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#paso-2-definicion-de-la-geometria">Paso 2: Definición de la geometría</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#paso-3-creacion-de-punto-control">Paso 3: Creación de punto control</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#paso-4-seleccion-de-los-datos-punto-control">Paso 4: Selección de los datos punto control</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#paso-5-mapeo-de-campos-punto-control">Paso 5: Mapeo de campos punto control</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#linderos">Linderos</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#paso-1-cargue-capa-topo-lindero">Paso 1: Cargue capa topo_lindero</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#paso-2-creacion-de-linderos">Paso 2: Creación de linderos</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#paso-3-mapeo-de-campos-lindero">Paso 3: Mapeo de campos lindero</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#paso-4-construccion-de-linderos">Paso 4: Construcción de Linderos</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#relacion-entre-puntos-de-lindero-y-linderos">Relación entre Puntos de Lindero y Linderos</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#paso-1-creacion-de-la-relacion">Paso 1: Creación de la relación</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#paso-2-verificacion-de-la-relacion">Paso 2: Verificación de la relación</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#unidad-espacial">Unidad Espacial</a><ul>
@@ -262,21 +292,313 @@
 <h2>Paquete de topografía y representación<a class="headerlink" href="#paquete-de-topografia-y-representacion" title="Enlazar permanentemente con este título">¶</a></h2>
 <div class="section" id="puntos-de-lindero">
 <h3>Puntos de lindero<a class="headerlink" href="#puntos-de-lindero" title="Enlazar permanentemente con este título">¶</a></h3>
+<div class="section" id="paso-1-creacion-de-punto-lindero">
+<h4>Paso 1: Creación de punto lindero<a class="headerlink" href="#paso-1-creacion-de-punto-lindero" title="Enlazar permanentemente con este título">¶</a></h4>
+<p>Entiéndase <em>“Puntos de lindero”</em> como aquellos puntos que definen los vértices de un lindero.</p>
+<p>Para crear puntos de lindero debes seguir la ruta <strong>LADM-COL -&gt; Captura y estructuración de datos -&gt; Levantamiento Catastral -&gt; Topografía y Representación -&gt; Crear Punto</strong>.</p>
+<p><a class="" data-lightbox="Paso 1: Creación de punto lindero" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos3.png" title="Paso 1: Creación de punto lindero" data-title="Paso 1: Creación de punto lindero"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos3.png" class="align-center" width="800px" alt="Paso 1: Creación de punto lindero"/></a></p>
+</div>
+<div class="section" id="paso-2-seleccion-del-tipo-de-punto">
+<h4>Paso 2: Selección del tipo de punto<a class="headerlink" href="#paso-2-seleccion-del-tipo-de-punto" title="Enlazar permanentemente con este título">¶</a></h4>
+<p>La acción anterior desplegará un cuadro de diálogo con la opción para seleccionar la clase de punto que se desea importar. En este caso, selecciona <strong>Punto Lindero</strong> y luego haz clic en <strong>Siguiente</strong>.</p>
+<p><a class="" data-lightbox="Paso 2: Selección del tipo de punto" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos4.png" title="Paso 2: Selección del tipo de punto" data-title="Paso 2: Selección del tipo de punto"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos4.png" class="align-center" width="600px" alt="Paso 2: Selección del tipo de punto"/></a></p>
+</div>
+<div class="section" id="paso-3-seleccion-de-los-datos-punto-lindero">
+<h4>Paso 3: Selección de los datos punto lindero<a class="headerlink" href="#paso-3-seleccion-de-los-datos-punto-lindero" title="Enlazar permanentemente con este título">¶</a></h4>
+<p>Ahora debes seleccionar el conjunto de datos a importar. La fuente de estos puede ser un archivo separado por comas (CSV) o una capa vectorial.</p>
+<p>Para este caso, elige el conjunto de datos que ya está cargado en la interfaz de QGIS, <strong>topo_punto_lindero</strong>, y procede a dar clic en el botón <code class="docutils literal notranslate"><span class="pre">Importar</span></code>.</p>
+<p><a class="" data-lightbox="Paso 3: Selección de los datos punto lindero" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos5.png" title="Paso 3: Selección de los datos punto lindero" data-title="Paso 3: Selección de los datos punto lindero"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos5.png" class="align-center" width="600px" alt="Paso 3: Selección de los datos punto lindero"/></a></p>
+</div>
+<div class="section" id="paso-4-dialogo-del-mapeo-de-campos-para-punto-lindero">
+<h4>Paso 4: Diálogo del mapeo de campos para punto lindero<a class="headerlink" href="#paso-4-dialogo-del-mapeo-de-campos-para-punto-lindero" title="Enlazar permanentemente con este título">¶</a></h4>
+<p>Tan pronto realices el paso anterior, se abre un cuadro de diálogo en el cual se encuentra el mapeo de la información levantada en campo comparada con la información que requiere el modelo.</p>
+<p><a class="" data-lightbox="Paso 4: Diálogo del mapeo de campos para punto lindero" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos6.png" title="Paso 4: Diálogo del mapeo de campos para punto lindero" data-title="Paso 4: Diálogo del mapeo de campos para punto lindero"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos6.png" class="align-center" width="600px" alt="Paso 4: Diálogo del mapeo de campos para punto lindero"/></a></p>
+<div class="warning">
+<p class="admonition-title">ADVERTENCIA</p>
+<p>Resulta de gran importancia esta sección ya que es la base de la importación de información restante.</p>
+</div></div>
+<div class="section" id="paso-5-definicion-del-mapeo-de-campos-para-punto-lindero">
+<h4>Paso 5: Definición del mapeo de campos para punto lindero<a class="headerlink" href="#paso-5-definicion-del-mapeo-de-campos-para-punto-lindero" title="Enlazar permanentemente con este título">¶</a></h4>
+<p>La capa <strong>lc_punto_lindero</strong> cuenta con cinco atributos obligatorios, estos son:</p>
+<table border="1" class="docutils">
+<thead>
+<tr>
+<th><strong>Item</strong></th>
+<th><strong>Entidad</strong></th>
+<th><strong>Atributo</strong></th>
+<th><strong>Contenido</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>LC_PuntoLindero</td>
+<td>ID_Punto_Lindero</td>
+<td>Cadena de texto</td>
+</tr>
+<tr>
+<td>2</td>
+<td>LC_PuntoLindero</td>
+<td>Punto Tipo</td>
+<td><strong>LC_PuntoTipo</strong></td>
+</tr>
+<tr>
+<td>3</td>
+<td>LC_PuntoLindero</td>
+<td>Acuerdo</td>
+<td><strong>LC_AcuerdoTipo</strong></td>
+</tr>
+<tr>
+<td>4</td>
+<td>LC_PuntoLindero</td>
+<td>Exactitud Horizontal</td>
+<td>Numérico</td>
+</tr>
+<tr>
+<td>5</td>
+<td>COL_Punto</td>
+<td>Metodo Producción</td>
+<td><strong>Col_MetodoProduccionTipo</strong></td>
+</tr>
+</tbody>
+</table><p>Considerando esto, en el cuadro de diálogo del mapeo de campos (imagen anterior) procede a dar clic en el botón <strong>«Generar expresión»</strong> <img alt="Botón generar expresion" src="../_images/ICOdialogodeexpressiones.png" /> para los atributos obligatorios mencionados en la tabla anterior.</p>
+<p>Para asignar códigos (<strong>t_id</strong>) de un dominio con base en sus valores, se hace uso de la siguiente función:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">get_domain_code_from_value</span><span class="p">(</span><span class="s1">&#39;Nombre de la tabla del dominio&#39;</span> <span class="p">(</span><span class="n">Texto</span><span class="p">),</span> 
+                           <span class="n">valor</span> <span class="n">del</span> <span class="n">dominio</span> <span class="n">a</span> <span class="n">buscar</span> <span class="p">(</span><span class="n">Texto</span><span class="p">),</span>
+                           <span class="n">Indica</span> <span class="n">si</span> <span class="n">el</span> <span class="n">valor</span> <span class="n">es</span> <span class="n">iliCode</span> <span class="n">o</span> <span class="k">no</span> <span class="p">(</span><span class="n">Booleano</span><span class="p">),</span>
+                           <span class="n">Indica</span> <span class="n">si</span> <span class="n">validar</span> <span class="n">conexión</span> <span class="n">o</span> <span class="k">no</span> <span class="p">(</span><span class="n">Booleano</span><span class="p">),)</span>
+</pre></div>
+</div>
+<p><a class="" data-lightbox="Paso 5a: Definición del mapeo de campos para punto lindero" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos12.png" title="Paso 5a: Definición del mapeo de campos para punto lindero" data-title="Paso 5a: Definición del mapeo de campos para punto lindero"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos12.png" class="align-center" width="800px" alt="Paso 5a: Definición del mapeo de campos para punto lindero"/></a></p>
+<p>Para el caso del mapeo de atributos obligatorios para Punto Lindero, debes asignar las siguientes expresiones:</p>
+<table border="1" class="docutils">
+<thead>
+<tr>
+<th>Atributo</th>
+<th>Expresión</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id_punto_lindero</td>
+<td>id_punto</td>
+</tr>
+<tr>
+<td>puntotipo</td>
+<td>get_domain_code_from_value('lc_puntotipo', punto_tipo, True, False)</td>
+</tr>
+<tr>
+<td>acuerdo</td>
+<td>get_domain_code_from_value('lc_acuerdotipo', acuerdo, True, False)</td>
+</tr>
+<tr>
+<td>exactitud_horizontal</td>
+<td>1</td>
+</tr>
+<tr>
+<td>metodoproduccion</td>
+<td>get_domain_code_from_value('col_metodoproducciontipo', 'Metodo_Directo', True, False)</td>
+</tr>
+</tbody>
+</table><div class="warning">
+<p class="admonition-title">ADVERTENCIA</p>
+<p>Para el caso del campo <b>metodoproduccion</b>, se utiliza el texto 'Metodo_Directo' ya que los datos iniciales no cuentan con información para este campo.</p>
+</div><p>Una vez que se diligencian cada uno de los atributos al interior del formulario, se obtiene el siguiente resultado:</p>
+<p><a class="" data-lightbox="Paso 5b: Definición del mapeo de campos para punto lindero" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos13.png" title="Paso 5b: Definición del mapeo de campos para punto lindero" data-title="Paso 5b: Definición del mapeo de campos para punto lindero"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos13.png" class="align-center" width="800px" alt="Paso 5b: Definición del mapeo de campos para punto lindero"/></a></p>
+</div>
+<div class="section" id="paso-6-resultado-de-la-ejecucion-punto-lindero">
+<h4>Paso 6: Resultado de la ejecución punto lindero<a class="headerlink" href="#paso-6-resultado-de-la-ejecucion-punto-lindero" title="Enlazar permanentemente con este título">¶</a></h4>
+<p>Una vez terminado el mapeo de campos, debes dar clic en <strong>Ejecutar</strong> y al terminar el proceso podrás visualizar el siguiente mensaje de validación. Puedes leer su contenido (por ejemplo, «146 features copiados») para verificar que la ejecución haya sido exitosa y cerrar el cuadro de diálogo.</p>
+<p><a class="" data-lightbox="Paso 6 Resultado de la ejecución punto lindero" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos15.png" title="Paso 6 Resultado de la ejecución punto lindero" data-title="Paso 6 Resultado de la ejecución punto lindero"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos15.png" class="align-center" width="800px" alt="Paso 6 Resultado de la ejecución punto lindero"/></a></p>
+</div>
 </div>
 <div class="section" id="puntos-de-levantamiento">
 <h3>Puntos de levantamiento<a class="headerlink" href="#puntos-de-levantamiento" title="Enlazar permanentemente con este título">¶</a></h3>
+<div class="section" id="paso-1-cargue-de-insumos">
+<h4>Paso 1: Cargue de insumos<a class="headerlink" href="#paso-1-cargue-de-insumos" title="Enlazar permanentemente con este título">¶</a></h4>
+<p>Inicialmente, se arrastra la capa de insumo llamada <strong>topo_puntos_levantamiento</strong> al menú de capas de QGIS.</p>
+<p><a class="" data-lightbox="Paso 1: Cargue de insumos punto levantamiento" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos16.gif" title="Paso 1: Cargue de insumos punto levantamiento" data-title="Paso 1: Cargue de insumos punto levantamiento"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos16.gif" class="align-center" width="800px" alt="Paso 1: Cargue de insumos punto levantamiento"/></a></p>
+</div>
+<div class="section" id="paso-2-creacion-de-punto-levantamiento">
+<h4>Paso 2: Creación de punto levantamiento<a class="headerlink" href="#paso-2-creacion-de-punto-levantamiento" title="Enlazar permanentemente con este título">¶</a></h4>
+<p>Para iniciar con el proceso de importación debes dirigirte a la barra de herramientas del plugin y dar clic en <strong>Crear objetos de levantamiento -&gt; Crear punto</strong>.</p>
+<p><a class="" data-lightbox="Paso 2: Creación de punto levantamiento" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos16.png" title="Paso 2: Creación de punto levantamiento" data-title="Paso 2: Creación de punto levantamiento"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos16.png" class="align-center" width="400px" alt="Paso 2: Creación de punto levantamiento"/></a></p>
+</div>
+<div class="section" id="paso-3-seleccion-de-los-datos-punto-levantamiento">
+<h4>Paso 3: Selección de los datos punto levantamiento<a class="headerlink" href="#paso-3-seleccion-de-los-datos-punto-levantamiento" title="Enlazar permanentemente con este título">¶</a></h4>
+<p>Al realizar el paso 2 se desplegará un cuadro de diálogo donde se deberá seleccionar el tipo de punto a insertar, en este caso: <strong>Punto Levantamiento</strong>. Confirma por medio del botón <code class="docutils literal notranslate"><span class="pre">Siguiente</span></code> , y escoge el conjunto de datos fuente para el procesamiento, que para este caso corresponde a la capa <strong>topo_punto_levantamiento</strong>. Finalmente presiona el botón <code class="docutils literal notranslate"><span class="pre">Importar</span></code>.</p>
+<p><a class="" data-lightbox="Paso 3: Selección de los datos punto levantamiento" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos17.gif" title="Paso 3: Selección de los datos punto levantamiento" data-title="Paso 3: Selección de los datos punto levantamiento"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos17.gif" class="align-center" width="800px" alt="Paso 3: Selección de los datos punto levantamiento"/></a></p>
+</div>
+<div class="section" id="paso-4-mapeo-de-campos-punto-levantamiento">
+<h4>Paso 4: Mapeo de campos punto levantamiento<a class="headerlink" href="#paso-4-mapeo-de-campos-punto-levantamiento" title="Enlazar permanentemente con este título">¶</a></h4>
+<p>Se desplegará un cuadro de diálogo para el mapeo de campos de la información. Se recomienda tener en cuenta el <a class="reference external" href="#paso-4-dialogo-del-mapeo-de-campos-para-punto-lindero">paso 4</a> de la sección de punto de lindero. Para este caso, debemos asignar los valores de la siguiente manera:</p>
+<table border="1" class="docutils">
+<thead>
+<tr>
+<th>Atributo</th>
+<th>Expresión</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id_punto_levantamiento</td>
+<td>id</td>
+</tr>
+<tr>
+<td>puntotipo</td>
+<td>get_domain_code_from_value('lc_puntotipo', punto_tipo, True, False)</td>
+</tr>
+<tr>
+<td>tipo_punto_levantamiento</td>
+<td>get_domain_code_from_value('lc_puntolevtipo', 'Construccion', True, False)</td>
+</tr>
+<tr>
+<td>exactitud_horizontal</td>
+<td>1</td>
+</tr>
+<tr>
+<td>metodoproduccion</td>
+<td>get_domain_code_from_value('col_metodoproducciontipo', 'Metodo_Directo', True, False)</td>
+</tr>
+</tbody>
+</table><div class="warning">
+<p class="admonition-title">ADVERTENCIA</p>
+<p>Para el caso del campo <b>metodoproduccion</b>, se utiliza el texto 'Metodo_Directo' ya que los datos iniciales no cuentan con información para este campo.</p>
+<p>Para el caso del campo <b>tipo_punto_levantamiento</b>, se utiliza el texto 'Construccion' ya que los datos iniciales no cuentan con información para este campo.</p>
+</div><p><a class="" data-lightbox="Paso 4: Mapeo de campos punto levantamiento" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos18.png" title="Paso 4: Mapeo de campos punto levantamiento" data-title="Paso 4: Mapeo de campos punto levantamiento"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos18.png" class="align-center" width="800px" alt="Paso 4: Mapeo de campos punto levantamiento"/></a></p>
+<p>Después, debes ejecutar el proceso de importación de datos dando clic al botón <code class="docutils literal notranslate"><span class="pre">Ejecutar</span></code>, obteniendo el siguiente resultado:</p>
+<p><a class="" data-lightbox="Resultado punto levantamiento" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos19.png" title="Resultado punto levantamiento" data-title="Resultado punto levantamiento"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos19.png" class="align-center" width="800px" alt="Resultado punto levantamiento"/></a></p>
+</div>
 </div>
 <div class="section" id="puntos-de-control">
 <h3>Puntos de Control<a class="headerlink" href="#puntos-de-control" title="Enlazar permanentemente con este título">¶</a></h3>
+<div class="section" id="paso-1-importacion-del-csv-puntos-de-control">
+<h4>Paso 1: Importación del CSV puntos de control<a class="headerlink" href="#paso-1-importacion-del-csv-puntos-de-control" title="Enlazar permanentemente con este título">¶</a></h4>
+<p>Los <em>“Puntos de Control”</em> se importarán a través de un archivo con extensión *.csv. Para ello debes abrir el <strong>Administrador de fuentes de datos</strong> de QGIS, el cual despliega una interfaz en donde se debe seleccionar la opción <strong>Texto delimitado</strong>. Luego es necesario seleccionar la opción <strong>CSV (valores separados por coma)</strong> y posteriormente en la casilla del nombre del archivo presionas el botón de los puntos suspensivos para ubicar el archivo <strong>topo_punto_control.csv</strong>, que se encuentra en los insumos suministrados.</p>
+<p><a class="" data-lightbox="Paso 1: Importación del csv puntos de control" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos22.gif" title="Paso 1: Importación del csv puntos de control" data-title="Paso 1: Importación del csv puntos de control"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos22.gif" class="align-center" width="800px" alt="Paso 1: Importación del csv puntos de control"/></a></p>
+</div>
+<div class="section" id="paso-2-definicion-de-la-geometria">
+<h4>Paso 2: Definición de la geometría<a class="headerlink" href="#paso-2-definicion-de-la-geometria" title="Enlazar permanentemente con este título">¶</a></h4>
+<p>En la misma interfaz debes dirigirte a desplegar las opciones de <strong>definición de la geometría</strong>. Verifica que en el <strong>campo X</strong> se encuentre el atributo <strong>lon</strong>, que en el <strong>campo Y</strong> esté el atributo <strong>lat</strong> y por último, que en el <strong>SRC de la geometría</strong> se relacione la proyección <strong>9377 - MAGNA-SIRGAS / Origen-Nacional</strong>.</p>
+<p>Una vez que se cumpla con estos requisitos, se debe dar clic en el botón <code class="docutils literal notranslate"><span class="pre">Añadir</span></code>.</p>
+<p><a class="" data-lightbox="Paso 2: Definición de la geometría punto control" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos21.gif" title="Paso 2: Definición de la geometría punto control" data-title="Paso 2: Definición de la geometría punto control"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos21.gif" class="align-center" width="800px" alt="Paso 2: Definición de la geometría punto control"/></a></p>
+</div>
+<div class="section" id="paso-3-creacion-de-punto-control">
+<h4>Paso 3: Creación de punto control<a class="headerlink" href="#paso-3-creacion-de-punto-control" title="Enlazar permanentemente con este título">¶</a></h4>
+<p>Para iniciar con el proceso de importación debes dirigirte a la barra de herramientas del plugin y hacer clic en <strong>Crear objetos de levantamiento -&gt; Crear punto</strong>.</p>
+<p><a class="" data-lightbox="Paso 3: Creación de punto control" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos16.png" title="Paso 3: Creación de punto control" data-title="Paso 3: Creación de punto control"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos16.png" class="align-center" width="400px" alt="Paso 3: Creación de punto control"/></a></p>
+</div>
+<div class="section" id="paso-4-seleccion-de-los-datos-punto-control">
+<h4>Paso 4: Selección de los datos punto control<a class="headerlink" href="#paso-4-seleccion-de-los-datos-punto-control" title="Enlazar permanentemente con este título">¶</a></h4>
+<p>Al realizar el paso 2 se desplegará un cuadro de diálogo donde se deberá seleccionar el tipo de punto a insertar, en este caso: <strong>Punto Control</strong>. Confirma por medio del botón <code class="docutils literal notranslate"><span class="pre">Siguiente</span></code>, y escoge el conjunto de datos fuente para el procesamiento, que para este caso corresponde a la capa <strong>topo_punto_control</strong>. Finalmente presiona el botón <code class="docutils literal notranslate"><span class="pre">Importar</span></code>.</p>
+<p><a class="" data-lightbox="Paso 4: Selección de los datos punto levantamiento" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos23.gif" title="Paso 4: Selección de los datos punto levantamiento" data-title="Paso 4: Selección de los datos punto levantamiento"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos23.gif" class="align-center" width="800px" alt="Paso 4: Selección de los datos punto levantamiento"/></a></p>
+</div>
+<div class="section" id="paso-5-mapeo-de-campos-punto-control">
+<h4>Paso 5: Mapeo de campos punto control<a class="headerlink" href="#paso-5-mapeo-de-campos-punto-control" title="Enlazar permanentemente con este título">¶</a></h4>
+<p>Se desplegará un cuadro de diálogo para el mapeo de campos de la información. Se recomienda tener en cuenta el <a class="reference external" href="#paso-4-dialogo-del-mapeo-de-campos-para-punto-lindero">paso 4</a> de la sección de punto de lindero. Para este caso, debes asignar las siguientes expresiones:</p>
+<table border="1" class="docutils">
+<thead>
+<tr>
+<th>Atributo</th>
+<th>Expresión</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id_punto_levantamiento</td>
+<td>nombre</td>
+</tr>
+<tr>
+<td>puntotipo</td>
+<td>get_domain_code_from_value('lc_puntotipo', punto_tipo, True, False)</td>
+</tr>
+<tr>
+<td>tipo_punto_control</td>
+<td>get_domain_code_from_value('lc_puntocontroltipo', 'Control', True, False)</td>
+</tr>
+<tr>
+<td>exactitud_horizontal</td>
+<td>1</td>
+</tr>
+<tr>
+<td>exactitud_vertical</td>
+<td>1</td>
+</tr>
+<tr>
+<td>metodoproduccion</td>
+<td>get_domain_code_from_value('col_metodoproducciontipo', 'Metodo_Directo', True, False)</td>
+</tr>
+</tbody>
+</table><div class="warning">
+<p class="admonition-title">ADVERTENCIA</p>
+<p>Para el caso del campo <b>metodoproduccion</b>, se utiliza el texto 'Metodo_Directo' ya que los datos iniciales no cuentan con información para este campo.</p>
+<p>Para el caso del campo <b>tipo_punto_control</b>, se utiliza el texto 'Control' ya que los datos iniciales no cuentan con información para este campo.</p>
+</div><p><a class="" data-lightbox="Paso 5: Mapeo de campos punto control" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos24.png" title="Paso 5: Mapeo de campos punto control" data-title="Paso 5: Mapeo de campos punto control"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos24.png" class="align-center" width="800px" alt="Paso 5: Mapeo de campos punto control"/></a></p>
+<p>Después, debes ejecutar el proceso de importación de datos dando clic al botón <code class="docutils literal notranslate"><span class="pre">Ejecutar</span></code>, obteniendo el siguiente resultado:</p>
+<p><a class="" data-lightbox="Resultado punto control" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos25.png" title="Resultado punto control" data-title="Resultado punto control"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos25.png" class="align-center" width="800px" alt="Resultado punto control"/></a></p>
+</div>
 </div>
 <div class="section" id="linderos">
 <h3>Linderos<a class="headerlink" href="#linderos" title="Enlazar permanentemente con este título">¶</a></h3>
+<div class="section" id="paso-1-cargue-capa-topo-lindero">
+<h4>Paso 1: Cargue capa topo_lindero<a class="headerlink" href="#paso-1-cargue-capa-topo-lindero" title="Enlazar permanentemente con este título">¶</a></h4>
+<p>El proceso de creación de linderos es muy similar a la creación de puntos. Se inicia con la carga de la capa suministrada llamada <strong>topo_lindero</strong>, de la siguiente manera:</p>
+<p><a class="" data-lightbox="Paso 1: Cargue capa topo lindero" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos27.gif" title="Paso 1: Cargue capa topo lindero" data-title="Paso 1: Cargue capa topo lindero"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos27.gif" class="align-center" width="800px" alt="Paso 1: Cargue capa topo lindero"/></a></p>
 </div>
-<div class="section" id="construccion-de-linderos">
-<h3>Construcción De Linderos<a class="headerlink" href="#construccion-de-linderos" title="Enlazar permanentemente con este título">¶</a></h3>
+<div class="section" id="paso-2-creacion-de-linderos">
+<h4>Paso 2: Creación de linderos<a class="headerlink" href="#paso-2-creacion-de-linderos" title="Enlazar permanentemente con este título">¶</a></h4>
+<p>En la barra de herramientas del Asistente LADM-COL, presiona el botón <code class="docutils literal notranslate"><span class="pre">Crear</span> <span class="pre">objetos</span> <span class="pre">de</span> <span class="pre">levantamiento</span></code> y selecciona la opción <strong>Crear lindero</strong>. Esto despliega un nuevo cuadro de diálogo en el cual debes elegir la opción <strong>Desde otra capa de QGIS</strong> y seleccionar la capa recién cargada, llamada <strong>topo_lindero</strong>. Posteriormente, haz clic en el botón <code class="docutils literal notranslate"><span class="pre">Importar</span></code>.</p>
+<p><a class="" data-lightbox="Paso 2: Creación de linderos" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos28.gif" title="Paso 2: Creación de linderos" data-title="Paso 2: Creación de linderos"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos28.gif" class="align-center" width="800px" alt="Paso 2: Creación de linderos"/></a></p>
 </div>
-<div class="section" id="relacion-entre-puntos-y-linderos">
-<h3>Relación Entre Puntos y Linderos<a class="headerlink" href="#relacion-entre-puntos-y-linderos" title="Enlazar permanentemente con este título">¶</a></h3>
+<div class="section" id="paso-3-mapeo-de-campos-lindero">
+<h4>Paso 3: Mapeo de campos lindero<a class="headerlink" href="#paso-3-mapeo-de-campos-lindero" title="Enlazar permanentemente con este título">¶</a></h4>
+<p>Se desplegará un cuadro de diálogo para el mapeo de campos de la información. Se recomienda tener en cuenta los pasos desarrollados en el <a class="reference external" href="#paso-4-dialogo-del-mapeo-de-campos-para-punto-lindero">paso 4</a> de la sección de punto de lindero. Para este caso, debemos asignar la siguiente expresión:</p>
+<table border="1" class="docutils">
+<thead>
+<tr>
+<th>Atributo</th>
+<th>Expresión</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>longitud</td>
+<td>$length</td>
+</tr>
+</tbody>
+</table><div class="warning">
+<p class="admonition-title">ADVERTENCIA</p>
+<p>Para el caso del campo <b>longitud</b>, se utiliza la expresión <i>$length</i> ya que los datos iniciales no cuentan con información para este campo.</p>
+</div><p><a class="" data-lightbox="Paso 3: Mapeo de campos lindero" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos24.png" title="Paso 3: Mapeo de campos lindero" data-title="Paso 3: Mapeo de campos lindero"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos24.png" class="align-center" width="800px" alt="Paso 3: Mapeo de campos lindero"/></a></p>
+<p>Después, debes ejecutar el proceso de importación de datos dando clic al botón <code class="docutils literal notranslate"><span class="pre">Ejecutar</span></code>, obteniendo el siguiente resultado:</p>
+<p><a class="" data-lightbox="Resultado linderos" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos25.png" title="Resultado linderos" data-title="Resultado linderos"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos25.png" class="align-center" width="800px" alt="Resultado linderos"/></a></p>
+</div>
+<div class="section" id="paso-4-construccion-de-linderos">
+<h4>Paso 4: Construcción de Linderos<a class="headerlink" href="#paso-4-construccion-de-linderos" title="Enlazar permanentemente con este título">¶</a></h4>
+<p>En el paso anterior se generó un conjunto de segmentos de línea a partir de la capa <strong>topo_punto_lindero</strong>. Con el objetivo de crear los linderos correctamente, es necesario que uses la herramienta <code class="docutils literal notranslate"><span class="pre">Construir</span> <span class="pre">linderos</span></code>.</p>
+<div class="seealso">
+<p class="admonition-title">TIP</p>
+<p>Un lindero está bien construido topológicamente si cada uno de sus nodos finales conecta con más de un lindero. En otras palabras, un lindero no puede tener un nodo final que conecte con un solo lindero. Temáticamente, los nodos finales de un lindero marcan un cambio de colindancia.</p>
+</div><p>Para acceder a esta herramienta, debes dirigirte a la barra de herramientas y dar clic en el botón <code class="docutils literal notranslate"><span class="pre">Construir</span> <span class="pre">linderos</span></code>. Se habilita un cuadro de diálogo en donde se pregunta: <em>¿Deseas utilizar todos los linderos de la base de datos?</em>. Debes dar clic en <em>Sí</em> y cuando termine el proceso, click en <code class="docutils literal notranslate"><span class="pre">Conmutar</span> <span class="pre">edición</span></code> y guardar los cambios.</p>
+<p><a class="" data-lightbox="Paso 4: Construcción de Linderos" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos31.gif" title="Paso 4: Construcción de Linderos" data-title="Paso 4: Construcción de Linderos"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos31.gif" class="align-center" width="800px" alt="Paso 4: Construcción de Linderos"/></a></p>
+</div>
+</div>
+<div class="section" id="relacion-entre-puntos-de-lindero-y-linderos">
+<h3>Relación entre Puntos de Lindero y Linderos<a class="headerlink" href="#relacion-entre-puntos-de-lindero-y-linderos" title="Enlazar permanentemente con este título">¶</a></h3>
+<div class="section" id="paso-1-creacion-de-la-relacion">
+<h4>Paso 1: Creación de la relación<a class="headerlink" href="#paso-1-creacion-de-la-relacion" title="Enlazar permanentemente con este título">¶</a></h4>
+<div class="note">
+<p class="admonition-title">IMPORTANTE</p>
+<p>Los puntos de lindero y los linderos tienen una relación topológica, puesto que los vértices de un lindero corresponden a puntos de lindero y viceversa. Dicha relación se debe almacenar de forma explícita en el modelo LADM-COL, en la tabla <b>col_puntoccl</b>.</p>
+</div><p>Para llenar la tabla <code class="docutils literal notranslate"><span class="pre">col_puntoccl</span></code> con la relación entre los puntos de lindero y los linderos, se debe dar clic en el botón <code class="docutils literal notranslate"><span class="pre">Llenar</span> <span class="pre">PuntosCCL</span></code> ubicado en la barra de herramientas. Al hacerlo, se despliega un cuadro de diálogo en donde se pregunta <em>¿Quieres llenar la tabla “col_puntoccl” para todos los linderos de la base de datos?</em> Para este caso debes dar clic en el botón <code class="docutils literal notranslate"><span class="pre">Si</span></code>.</p>
+<p><a class="" data-lightbox="Paso 1: Creación de la relación" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos34.gif" title="Paso 1: Creación de la relación" data-title="Paso 1: Creación de la relación"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos34.gif" class="align-center" width="800px" alt="Paso 1: Creación de la relación"/></a></p>
+</div>
+<div class="section" id="paso-2-verificacion-de-la-relacion">
+<h4>Paso 2: Verificación de la relación<a class="headerlink" href="#paso-2-verificacion-de-la-relacion" title="Enlazar permanentemente con este título">¶</a></h4>
+<p>Para validar la ejecución exitosa de la herramienta, se puede abrir la tabla de atributos de la capa <strong>col_puntoccl</strong>, la cual se encuentra en el panel de capas dentro del grupo llamado <em>tables</em>.</p>
+<p>Una vez que te ubiques sobre la capa <strong>col_puntoccl</strong>, debes dar clic en el botón <code class="docutils literal notranslate"><span class="pre">Abrir</span> <span class="pre">tabla</span> <span class="pre">de</span> <span class="pre">atributos</span></code> y se visualizará la información registrada.</p>
+<p><a class="" data-lightbox="Paso 2: Verificación de la relación" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos35.gif" title="Paso 2: Verificación de la relación" data-title="Paso 2: Verificación de la relación"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos35.gif" class="align-center" width="800px" alt="Paso 2: Verificación de la relación"/></a></p>
+</div>
 </div>
 </div>
 <div class="section" id="unidad-espacial">
