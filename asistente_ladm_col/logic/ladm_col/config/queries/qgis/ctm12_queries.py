@@ -1,5 +1,5 @@
 def get_ctm12_exists_query():
-    return "SELECT count(srid) FROM tbl_srs WHERE srid=9377 and auth_name='EPSG'"
+    return "SELECT count(srid) FROM tbl_srs WHERE auth_id=9377 and auth_name='EPSG'"
 
 
 def get_insert_ctm12_query():
