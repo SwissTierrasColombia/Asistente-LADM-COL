@@ -6,9 +6,7 @@
         begin                : 2018-10-17
         git sha              : :%H$
         copyright            : (C) 2018 by Germán Carrillo (BSF Swissphoto)
-                             : (C) 2021 by Leonardo Cardona (BSF Swissphoto)
         email                : gcarrillo@linuxmail.org
-                             : leo dot cardona dot p at gmail dot com
  ***************************************************************************/
 /***************************************************************************
  *                                                                         *
@@ -32,29 +30,27 @@ from qgis.PyQt.QtCore import (Qt,
                               QProcess,
                               QEventLoop,
                               pyqtSignal)
-from qgis.PyQt.QtWidgets import (QDialog,
-                                 QProgressBar)
+from qgis.PyQt.QtWidgets import QProgressBar
 from qgis.core import QgsDataSourceUri
 
 from asistente_ladm_col.config.general_config import (URL_REPORTS_LIBRARIES,
                                                       DEPENDENCY_REPORTS_DIR_NAME)
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 from asistente_ladm_col.utils.qt_utils import (normalize_local_url,
                                                OverrideCursor)
 from asistente_ladm_col.lib.dependency.report_dependency import ReportDependency
 from asistente_ladm_col.lib.dependency.java_dependency import JavaDependency
 
 
-class AbsReportFactory(QDialog):
+class AbsReportFactory(QObject):
     LOG_TAB = 'LADM-COL Reports'
     enable_action_requested = pyqtSignal(str, bool)
 
-    def __init__(self, db):
+    def __init__(self, db, ladm_data):
         QObject.__init__(self)
         self.db = db
-        self.ladm_data = LADMData()
+        self.ladm_data = ladm_data
         self.logger = Logger()
         self.app = AppInterface()
         self.java_dependency = JavaDependency()
@@ -63,7 +59,6 @@ class AbsReportFactory(QDialog):
         self.report_dependency = ReportDependency()
         self.report_dependency.download_dependency_completed.connect(self.download_report_complete)
         self.report_name = None
-        self.report_ui = None
 
         self.encoding = locale.getlocale()[1]
         # This might be unset
@@ -71,9 +66,6 @@ class AbsReportFactory(QDialog):
             self.encoding = 'UTF8'
 
         self._downloading = False
-
-    def init_gui(self):
-        raise NotImplementedError
 
     def stderr_ready(self, proc):
         text = bytes(proc.readAllStandardError()).decode(self.encoding)
@@ -150,7 +142,7 @@ class AbsReportFactory(QDialog):
         report_data_dir = os.path.join(DEPENDENCY_REPORTS_DIR_NAME, self.report_name, 'data')
         for dirpath, dirnames, filenames in os.walk(report_data_dir):
             for filename in filenames:
-                os.unlink(os.path.join(dirpath, filename))
+                os.remove(os.path.join(dirpath, filename))
 
     def get_report_data_dir(self):
         report_data_dir = os.path.join(DEPENDENCY_REPORTS_DIR_NAME, self.report_name, 'data')
@@ -184,7 +176,7 @@ class AbsReportFactory(QDialog):
             return False
         return True
 
-    def generate_report(self, plot_layer, selected_plots, save_into_folder):
+    def generate_report(self, plot_layer, selected_plot_features, save_into_folder):
         if not self.check_report_dependency():
             self.close()
 
@@ -211,7 +203,7 @@ class AbsReportFactory(QDialog):
         yaml_config_path = self.update_yaml_config(config_path)
         self.logger.debug(__name__, "Config file for reports: {}".format(yaml_config_path))
 
-        total = len(selected_plots)
+        total = len(selected_plot_features)
         step = 0
         count = 0
         tmp_dir = self.get_tmp_dir()
@@ -230,10 +222,10 @@ class AbsReportFactory(QDialog):
         polygons_with_holes = []
 
         with OverrideCursor(Qt.WaitCursor):
-            for selected_plot in selected_plots:
-                plot_id = selected_plot[self.db.names.T_ID_F]
+            for selected_plot_feature in selected_plot_features:
+                plot_id = selected_plot_feature[self.db.names.T_ID_F]
 
-                geometry = selected_plot.geometry()
+                geometry = selected_plot_feature.geometry()
                 abstract_geometry = geometry.get()
                 if abstract_geometry.ringCount() > 1:
                     polygons_with_holes.append(str(plot_id))
@@ -242,7 +234,7 @@ class AbsReportFactory(QDialog):
                     continue
 
                 # Generate data file
-                json_file = self.update_json_data(json_spec_file, selected_plot, tmp_dir)
+                json_file = self.update_json_data(json_spec_file, selected_plot_feature, tmp_dir)
                 self.logger.debug(__name__, "JSON file for reports: {}".format(json_file))
 
                 # Run sh/bat passing config and data files
