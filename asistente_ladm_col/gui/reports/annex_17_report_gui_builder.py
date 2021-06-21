@@ -1,44 +1,25 @@
-# -*- coding: utf-8 -*-
-"""
-/***************************************************************************
-                              Asistente LADM_COL
-                             --------------------
-        begin                : 2021-03-18
-        git sha              : :%H$
-        copyright            : (C) 2021 by Leonardo Cardona (BSF Swissphoto)
-        email                : leo dot cardona dot p at gmail dot com
- ***************************************************************************/
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License v3.0 as          *
- *   published by the Free Software Foundation.                            *
- *                                                                         *
- ***************************************************************************/
-"""
 from qgis.PyQt.QtCore import (pyqtSignal,
                               QSettings,
                               QCoreApplication)
 from qgis.PyQt.QtGui import QValidator
-from qgis.PyQt.QtWidgets import QDialogButtonBox
+from qgis.PyQt.QtWidgets import (QDialog,
+                                 QDialogButtonBox)
 
-from asistente_ladm_col.config.general_config import ANNEX_17_REPORT
-from asistente_ladm_col.gui.reports.abs_report_factory import AbsReportFactory
 from asistente_ladm_col.utils.qt_utils import (make_folder_selector,
                                                DirValidator,
                                                Validators)
-from asistente_ladm_col.utils.ui import load_ui
+from asistente_ladm_col.utils import get_ui_class
+
+DIALOG_ANNEX_17_REPORT_UI = get_ui_class('reports/annex_17_map_report_dialog.ui')
 
 
-class Annex17MapReport(AbsReportFactory):
-    enable_action_requested = pyqtSignal(str, bool)
-
-    def __init__(self, db):
-        super(Annex17MapReport, self).__init__(db)
+class Annex17ReportGUIBuilder(QDialog, DIALOG_ANNEX_17_REPORT_UI):
+    def __init__(self, report_generator):
+        QDialog.__init__(self)
+        self.setupUi(self)
         self.validators = Validators()
-        self.report_name = ANNEX_17_REPORT
-        self.report_ui = "reports/annex_17_map_report_dialog.ui"
-        load_ui(self.report_ui, self)
+        self.report_generator = report_generator
+        self.report_name = self.report_generator.report_name
         self.init_gui()
 
     def init_gui(self):
@@ -59,25 +40,21 @@ class Annex17MapReport(AbsReportFactory):
 
     def validate_inputs(self):
         folder_path = self.txt_file_path_folder_report.validator().validate(self.txt_file_path_folder_report.text().strip(), 0)[0]
-
-        if folder_path == QValidator.Acceptable:
-            return True
-        else:
-            return False
+        return folder_path == QValidator.Acceptable
 
     def input_data_changed(self):
         self.set_generate_report_button_enabled(self.validate_inputs())
 
     def accepted(self):
-        plot_layer = self.app.core.get_layer(self.db, self.db.names.LC_PLOT_T, load=True)
+        plot_layer = self.report_generator.app.core.get_layer(self.report_generator.db, self.report_generator.db.names.LC_PLOT_T, load=True)
         selected_plots = plot_layer.selectedFeatures()
         if not selected_plots:
             self.logger.warning_msg(__name__, QCoreApplication.translate("ReportGenerator",
                                                                          "To generate reports, first select at least a plot!"))
         save_into_folder = self.txt_file_path_folder_report.text().strip()
         self.save_settings()
-        self.close()  # TODO: Close the dialog because canvas show the progress bar. Dialog should control the progress bar
-        self.generate_report(plot_layer, selected_plots, save_into_folder)
+        self.close()  # TODO: Close the dialog because canvas shows the progress bar. Dialog should control the progress bar
+        self.report_generator.generate_report(plot_layer, selected_plots, save_into_folder)
 
     def get_layer_geojson(self, layer_name, plot_id):
         if layer_name in ('terreno', 'terreno_overview', 'terrenos', 'terrenos_overview'):
