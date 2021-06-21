@@ -125,8 +125,8 @@ from asistente_ladm_col.gui.dialogs.dlg_quality import QualityDialog
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
 from asistente_ladm_col.gui.dialogs.dlg_welcome_screen import WelcomeScreenDialog
 from asistente_ladm_col.gui.queries.dockwidget_queries import DockWidgetQueries
-from asistente_ladm_col.gui.reports.ant_map_report import ANTMapReport
-from asistente_ladm_col.gui.reports.annex_17_map_report import Annex17MapReport
+from asistente_ladm_col.gui.reports.ant_report_generator import ANTReportGenerator
+from asistente_ladm_col.gui.reports.annex_17_report_generator import Annex17ReportGenerator
 from asistente_ladm_col.gui.right_of_way import RightOfWay
 from asistente_ladm_col.gui.toolbar import ToolBar
 from asistente_ladm_col.gui.supplies.dlg_upload_file import STUploadFileDialog
@@ -1039,11 +1039,11 @@ class AsistenteLADMCOLPlugin(QObject):
     @_cadastral_cartography_model_required
     @_survey_model_required
     def call_ant_map_report_generation(self, *args):
-        ant_map_report = ANTMapReport(self.get_db_connection())
-        ant_map_report.enable_action_requested.connect(self.enable_action)
-        ant_map_report.exec_()
-        ant_map_report.enable_action_requested.disconnect(self.enable_action)
-        del ant_map_report
+        ant_report_generator = ANTReportGenerator(self.get_db_connection(), self.ladm_data)
+        ant_report_generator.enable_action_requested.connect(self.enable_action)
+        ant_report_generator.run()
+        ant_report_generator.enable_action_requested.disconnect(self.enable_action)
+        del ant_report_generator
 
     @_validate_if_plot_is_selected
     @_validate_if_wizard_is_open
@@ -1051,11 +1051,11 @@ class AsistenteLADMCOLPlugin(QObject):
     @_db_connection_required
     @_survey_model_required
     def call_annex_17_report_generation(self, *args):
-        annex_17_map_report = Annex17MapReport(self.get_db_connection())
-        annex_17_map_report.enable_action_requested.connect(self.enable_action)
-        annex_17_map_report.exec_()
-        annex_17_map_report.enable_action_requested.disconnect(self.enable_action)
-        del annex_17_map_report
+        annex_17_report_generator = Annex17ReportGenerator(self.get_db_connection(), self.ladm_data)
+        annex_17_report_generator.enable_action_requested.connect(self.enable_action)
+        annex_17_report_generator.run()
+        annex_17_report_generator.enable_action_requested.disconnect(self.enable_action)
+        del annex_17_report_generator
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
