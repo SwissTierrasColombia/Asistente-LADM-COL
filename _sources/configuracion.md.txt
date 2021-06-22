@@ -143,6 +143,44 @@ La configuración de estos servicios es opcional, pues solo se requiere cuando s
 
 ## Avanzado
 
-En esta sección se define cuál es el rol activo para el Asistente LADM-COL. Ver la sección de [Introducción](introduccion.html#dialogo-de-bienvenida) para más detalles.
+En esta sección se selecciona cuál es el rol activo para el Asistente LADM-COL. Ver la sección de [Introducción](introduccion.html#dialogo-de-bienvenida) para más detalles.
 
 <a class="" data-lightbox="Configuración del rol activo" href="_static/configuracion/roles.png" title="Configuración del rol activo" data-title="Configuración del rol activo"><img src="_static/configuracion/roles.png" class="align-center" alt="Configuración del rol activo"/></a>
+
+### Funcionalidades por rol
+
+Los roles agrupan funcionalidades disponibles en el Asistente LADM-COL. La interfaz del plugin varía dependiendo el rol activo, esto es, cada rol tiene un listado de funcionalidades propias, así como un menú principal y una barra de herramientas (*toolbar*), que corresponden a las tareas que el rol realiza. 
+
+La siguiente tabla resume los roles disponibles, así como las funcionalidades que les corresponden.
+
+|Rol|Descripción|Funcionalidades disponibles|
+|--------|:-------|----------|
+|    Básico    |    Perfil de exploración de la herramienta    |Administración y estructuración de datos en modelo Lev. Catastral<br>Cargar capas<br/>Validaciones de calidad<br/>Consulta predial|
+| Proveedor de Insumos | (Gestor) Perfil encargado de generar insumos para el Levantamiento Catastral que realizan los Operadores |Administración de datos en modelo de Insumos<br/>Cargar capas<br/>Ejecutar ETL COBOL y SNC<br/>Reporte Omisiones y Comisiones COBOL y SNC<br/>Acceso al Sistema de Transición|
+|    Coordinador General (campo)    |    (Operador) Perfil encargado de asignar a los coordinadores de campo la captura y gestión de los datos provenientes del Levantamiento Catastral    |Administración de datos en modelo de Captura en Campo<br/>Cargar capas<br/>Asignar predios a Coordinadores de Campo<br/>Sincronizar datos<br/>Validaciones de Calidad|
+| Coordinador de Campo | (Operador) Perfil encargado de gestionar la la captura de datos de campo provenientes del Levantamiento Catastral |Administración de datos en modelo de Captura en Campo<br/>Cargar capas<br/>Asignar predios a reconocedores de campo<br/>Sincronizar datos<br/>Validaciones de Calidad<br/>Generar proyectos offline|
+| Operador | Perfil encargado de desarrollar labores operativas que sirven de insumo para adelantar los procesos de formación, actualización y conservación catastral. Recibe insumos y realiza la captura y estructuración de datos provenientes del Levantamiento Catastral. |Administración y estructuración de datos en modelo Lev. Catastral<br/>Cargar capas<br/>Validaciones de calidad<br/>Consulta predial<br/>Identificación de novedades<br/>Acceso al Sistema de Transición|
+| Gestor | Perfil encargado de adelantar la formación, actualización, conservación y difusión catastral. Entrega los insumos al Operador y revisa y aprueba los datos provenientes de campo en el modelo de aplicación de Levantamiento Catastral. |Administración y estructuración de datos en modelo Lev. Catastral<br/>Cargar capas<br/>Validaciones de calidad<br/>Consulta predial<br/>Generación de reportes<br/>Identificación de novedades<br/>Acceso al Sistema de Transición|
+| Avanzado | Perfil con todas las funcionalidades de la herramienta disponibles |Todas las funcionalidades disponibles|
+
+A continuación, se muestran los elementos de interfaz gráfica (menú principal y barra de herramientas o *toolbar*) disponibles para cada rol:
+
+- Rol básico
+
+<a class="" data-lightbox="Funcionalidades y toolbar (rol básico)" href="_static/configuracion/toolbar_rol_basico.png" title="Funcionalidades y toolbar (rol básico)" data-title="Funcionalidades y toolbar (rol básico)"><img src="_static/configuracion/toolbar_rol_basico.png" class="align-center" width="800px" alt="Funcionalidades y toolbar (rol básico)"/></a>
+
+- Rol proveedor de insumos
+
+<a class="" data-lightbox="Funcionalidades y toolbar (rol proveedor de insumos)" href="_static/configuracion/toolbar_rol_proveedor.png" title="Funcionalidades y toolbar (rol proveedor de insumos)" data-title="Funcionalidades y toolbar (rol proveedor de insumos)"><img src="_static/configuracion/toolbar_rol_proveedor.png" class="align-center" width="800px" alt="Funcionalidades y toolbar (rol proveedor de insumos)"/></a>
+
+- Rol operador
+
+<a class="" data-lightbox="Funcionalidades y toolbar (rol operador)" href="_static/configuracion/toolbar_rol_operador.png" title="Funcionalidades y toolbar (rol operador)" data-title="Funcionalidades y toolbar (rol operador)"><img src="_static/configuracion/toolbar_rol_operador.png" class="align-center" width="800px" alt="Funcionalidades y toolbar (rol operador)"/></a>
+
+- Rol gestor
+
+<a class="" data-lightbox="Funcionalidades y toolbar (rol gestor)" href="_static/configuracion/toolbar_rol_gestor.png" title="Funcionalidades y toolbar (rol gestor)" data-title="Funcionalidades y toolbar (rol gestor)"><img src="_static/configuracion/toolbar_rol_gestor.png" class="align-center" width="800px" alt="Funcionalidades y toolbar (rol gestor)"/></a>
+
+- Rol avanzado
+
+<a class="" data-lightbox="Funcionalidades y toolbar (rol avanzado)" href="_static/configuracion/toolbar_rol_avanzado.png" title="Funcionalidades y toolbar (rol avanzado)" data-title="Funcionalidades y toolbar (rol avanzado)"><img src="_static/configuracion/toolbar_rol_avanzado.png" class="align-center" width="800px" alt="Funcionalidades y toolbar (rol avanzado)"/></a>
