@@ -54,8 +54,8 @@ class TestGeometryUtils(unittest.TestCase):
         for case in test_results:
             uri = gpkg_path + '|layername={}'.format(case)
             boundary_layer = QgsVectorLayer(uri, '{}'.format(case), 'ogr')
-            params = {'boundaries': boundary_layer, 'native:multiparttosingleparts_1:built_boundaries': 'TEMPORARY_OUTPUT'}
-            built_boundaries_layer = processing.run("model:Build_Boundaries", params)['native:multiparttosingleparts_1:built_boundaries']
+            params = {'boundaries': boundary_layer, 'native:refactorfields_2:built_boundaries': 'TEMPORARY_OUTPUT'}
+            built_boundaries_layer = processing.run("model:Build_Boundaries", params)['native:refactorfields_2:built_boundaries']
             boundaries_geom = [f.geometry() for f in built_boundaries_layer.getFeatures()]
 
             self.assertEqual(built_boundaries_layer.featureCount(), len(test_results[case]), 'Invalid number of features: case {}'.format(case))
@@ -68,7 +68,7 @@ class TestGeometryUtils(unittest.TestCase):
                     if boundary_geom.symDifference(geom).isEmpty():
                         found = True
                         break
-                self.assertTrue(found,'The geometries are invalid: case {case}. Geometry in WKT: {geometry}'.format(case=case, geometry=boundary_geom.asWkt()))
+                self.assertTrue(found, 'The geometries are invalid: case {case}. Geometry in WKT: {geometry}'.format(case=case, geometry=boundary_geom.asWkt()))
 
     def test_overlapping_points(self):
         print('\nINFO: Validating overlaps in points...')

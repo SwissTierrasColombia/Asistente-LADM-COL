@@ -54,5 +54,6 @@ TEST_SCHEMAS_MAPPING = {
     'no_interlis_gpkg': 'static/gpkg/no_interlis.gpkg',
     'test_logic_quality_rules_gpkg': 'ladm/gpkg/test_logic_quality_rules_v1_1.gpkg',
     'test_valid_quality_rules_gpkg': 'ladm/gpkg/test_valid_quality_rules_v1_1.gpkg',
+    'test_toolbar_gpkg': 'ladm/gpkg/test_toolbar_v1_1.gpkg',
     'interlis_no_ladm_col_models_gpkg': 'static/gpkg/interlis_no_ladm_col_models.gpkg'
 }

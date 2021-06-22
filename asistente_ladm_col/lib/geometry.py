@@ -720,8 +720,8 @@ class GeometryUtils(QObject):
         """
         :return: QgsVectorLayer
         """
-        params = {'boundaries': boundary_layer, 'native:multiparttosingleparts_1:built_boundaries': 'TEMPORARY_OUTPUT'}
-        return processing.run("model:Build_Boundaries", params)['native:multiparttosingleparts_1:built_boundaries']
+        params = {'boundaries': boundary_layer, 'native:refactorfields_2:built_boundaries': 'TEMPORARY_OUTPUT'}
+        return processing.run("model:Build_Boundaries", params)['native:refactorfields_2:built_boundaries']
 
     @staticmethod
     def get_relationships_among_polygons(input_layer, intersect_layer, key=None, attrs=list(), get_geometry=False):
