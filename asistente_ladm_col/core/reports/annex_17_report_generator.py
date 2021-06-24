@@ -16,19 +16,20 @@
  *                                                                         *
  ***************************************************************************/
 """
+from qgis.PyQt.QtWidgets import QDialog
+
 from asistente_ladm_col.config.general_config import ANNEX_17_REPORT
-from asistente_ladm_col.gui.reports.abs_report_factory import AbsReportFactory
-from asistente_ladm_col.gui.reports.annex_17_report_gui_builder import Annex17ReportGUIBuilder
+from asistente_ladm_col.core.reports.base_report_generator import BaseReportGenerator
+from asistente_ladm_col.gui.reports.annex_17_report_dialog import Annex17ReportDialog
 
 
-class Annex17ReportGenerator(AbsReportFactory):
+class Annex17ReportGenerator(BaseReportGenerator):
 
     def __init__(self, db, ladm_data):
         super(Annex17ReportGenerator, self).__init__(db, ladm_data)
         self.report_name = ANNEX_17_REPORT
-        self.gui_builder = Annex17ReportGUIBuilder(self)
 
-    def get_layer_geojson(self, layer_name, plot_id):
+    def get_geojson_layer(self, layer_name, plot_id):
         if layer_name in ('terreno', 'terreno_overview', 'terrenos', 'terrenos_overview'):
             # True if you want the selected plot and False if you want the plots surrounding the selected plot
             mode = True if layer_name in ('terreno', 'terreno_overview') else False
@@ -40,4 +41,9 @@ class Annex17ReportGenerator(AbsReportFactory):
             return self.db.get_annex17_point_data(plot_id)
 
     def run(self):
-        self.gui_builder.exec_()
+        dlg = Annex17ReportDialog(self.report_name)
+        res = dlg.exec_()
+        if res == QDialog.Accepted:
+            # We have validated
+            self.generate_report(dlg.output_folder)
+

@@ -125,8 +125,8 @@ from asistente_ladm_col.gui.dialogs.dlg_quality import QualityDialog
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
 from asistente_ladm_col.gui.dialogs.dlg_welcome_screen import WelcomeScreenDialog
 from asistente_ladm_col.gui.queries.dockwidget_queries import DockWidgetQueries
-from asistente_ladm_col.gui.reports.ant_report_generator import ANTReportGenerator
-from asistente_ladm_col.gui.reports.annex_17_report_generator import Annex17ReportGenerator
+from asistente_ladm_col.core.reports.ant_report_generator import ANTReportGenerator
+from asistente_ladm_col.core.reports.annex_17_report_generator import Annex17ReportGenerator
 from asistente_ladm_col.gui.right_of_way import RightOfWay
 from asistente_ladm_col.gui.toolbar import ToolBar
 from asistente_ladm_col.gui.transitional_system.dlg_upload_file import STUploadFileDialog
@@ -137,7 +137,6 @@ from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.processing.ladm_col_provider import LADMCOLAlgorithmProvider
 from asistente_ladm_col.logic.quality.quality_rule_engine import QualityRuleEngine
 from asistente_ladm_col.utils.decorators import (_db_connection_required,
-                                                 _validate_if_plot_is_selected,
                                                  _validate_if_wizard_is_open,
                                                  _qgis_model_baker_required,
                                                  _activate_processing_plugin,
@@ -1032,7 +1031,6 @@ class AsistenteLADMCOLPlugin(QObject):
     def call_fill_right_of_way_relations(self, *args):
         self.right_of_way.fill_right_of_way_relations(self.get_db_connection())
 
-    @_validate_if_plot_is_selected
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
@@ -1045,7 +1043,6 @@ class AsistenteLADMCOLPlugin(QObject):
         ant_report_generator.enable_action_requested.disconnect(self.enable_action)
         del ant_report_generator
 
-    @_validate_if_plot_is_selected
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
     @_db_connection_required
