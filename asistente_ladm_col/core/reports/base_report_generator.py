@@ -43,7 +43,7 @@ from asistente_ladm_col.lib.dependency.report_dependency import ReportDependency
 from asistente_ladm_col.lib.dependency.java_dependency import JavaDependency
 
 
-class AbsReportFactory(QObject):
+class BaseReportGenerator(QObject):
     LOG_TAB = 'LADM-COL Reports'
     enable_action_requested = pyqtSignal(str, bool)
 
@@ -107,7 +107,7 @@ class AbsReportFactory(QObject):
             return "file://{dirname}/{filename}".format(dirname=os.path.basename(report_data_dir), filename=file_name)
         return None
 
-    def get_layer_geojson(self, layer_name, plot_id):
+    def get_geojson_layer(self, layer_name, plot_id):
         raise NotImplementedError
 
     def update_json_data(self, json_spec_file, plot_feature, tmp_dir):
@@ -121,14 +121,14 @@ class AbsReportFactory(QObject):
         layers = json_data['attributes']['map']['layers']
         for layer in layers:
             if 'geoJson' in layer:
-                result, data = self.get_layer_geojson(layer['name'], plot_id)
+                result, data = self.get_geojson_layer(layer['name'], plot_id)
                 if result:
                     layer['geoJson'] = self.create_geojson_file(data)
 
         overview_layers = json_data['attributes']['overviewMap']['layers']
         for layer in overview_layers:
             if 'geoJson' in layer:
-                result, data = self.get_layer_geojson(layer['name'], plot_id)
+                result, data = self.get_geojson_layer(layer['name'], plot_id)
                 if result:
                     layer['geoJson'] = self.create_geojson_file(data)
 
@@ -176,12 +176,22 @@ class AbsReportFactory(QObject):
             return False
         return True
 
-    def generate_report(self, plot_layer, selected_plot_features, save_into_folder):
+    def generate_report(self, output_folder):
         if not self.check_report_dependency():
-            self.close()
+            return
 
         if not self.check_java_dependency():
-            self.close()
+            return
+
+        plot_layer = self.app.core.get_layer(self.db, self.db.names.LC_PLOT_T, load=True)
+        if not plot_layer:
+            return
+
+        selected_plot_features = plot_layer.selectedFeatures()
+        if not selected_plot_features:
+            self.logger.warning_msg(__name__, QCoreApplication.translate("ReportGenerator",
+                                                                         "To generate reports, first select at least one plot!"))
+            return
 
         config_path = os.path.join(DEPENDENCY_REPORTS_DIR_NAME, self.report_name)
         json_spec_file = os.path.join(config_path, 'spec_json_file.json')
@@ -230,7 +240,7 @@ class AbsReportFactory(QObject):
                 if abstract_geometry.ringCount() > 1:
                     polygons_with_holes.append(str(plot_id))
                     self.logger.warning(__name__, QCoreApplication.translate("ReportGenerator",
-                        "Skipping Annex 17 for plot with {}={} because it has holes. The reporter module does not support such polygons.").format(self.db.names.T_ID_F, plot_id))
+                        "Skipping report for plot with {}={} because it has holes. The reporter module does not support such polygons yet.").format(self.db.names.T_ID_F, plot_id))
                     continue
 
                 # Generate data file
@@ -248,7 +258,7 @@ class AbsReportFactory(QObject):
                 self.app.gui.activate_layer(plot_layer)  # Previous function changed the selected layer, so, select again plot layer
                 file_name = '{}_{}_{}.pdf'.format(self.report_name, plot_id, parcel_number[0])
 
-                current_report_path = os.path.join(save_into_folder, file_name)
+                current_report_path = os.path.join(output_folder, file_name)
                 proc.start(script_path, ['-config', yaml_config_path, '-spec', json_file, '-output', current_report_path])
 
                 if not proc.waitForStarted():
@@ -282,9 +292,9 @@ class AbsReportFactory(QObject):
 
         if total == count:
             if total == 1:
-                msg = QCoreApplication.translate("ReportGenerator", "The report <a href='file:///{}'>{}</a> was successfully generated!").format(normalize_local_url(save_into_folder), file_name)
+                msg = QCoreApplication.translate("ReportGenerator", "The report <a href='file:///{}'>{}</a> was successfully generated!").format(normalize_local_url(output_folder), file_name)
             else:
-                msg = QCoreApplication.translate("ReportGenerator", "All reports were successfully generated in folder <a href='file:///{path}'>{path}</a>!").format(path=normalize_local_url(save_into_folder))
+                msg = QCoreApplication.translate("ReportGenerator", "All reports were successfully generated in folder <a href='file:///{npath}'>{path}</a>!").format(npath=normalize_local_url(output_folder), path=output_folder)
 
             self.logger.success_msg(__name__, msg)
         else:
@@ -300,7 +310,7 @@ class AbsReportFactory(QObject):
                 if count == 0:
                     msg = QCoreApplication.translate("ReportGenerator", "No report could be generated!{} See QGIS log (tab '{}') for details.").format(details_msg, self.LOG_TAB)
                 else:
-                    msg = QCoreApplication.translate("ReportGenerator", "At least one report couldn't be generated!{details_msg} See QGIS log (tab '{log_tab}') for details. Go to <a href='file:///{path}'>{path}</a> to see the reports that were generated.").format(details_msg=details_msg, path=normalize_local_url(save_into_folder), log_tab=self.LOG_TAB)
+                    msg = QCoreApplication.translate("ReportGenerator", "At least one report couldn't be generated!{details_msg} See QGIS log (tab '{log_tab}') for details. Go to <a href='file:///{npath}'>{path}</a> to see the reports that were generated.").format(details_msg=details_msg, npath=normalize_local_url(output_folder), path=output_folder, log_tab=self.LOG_TAB)
 
             self.logger.warning_msg(__name__, msg)
 
