@@ -1038,9 +1038,10 @@ class AsistenteLADMCOLPlugin(QObject):
     @_survey_model_required
     def call_ant_map_report_generation(self, *args):
         ant_report_generator = ANTReportGenerator(self.get_db_connection(), self.ladm_data)
-        ant_report_generator.enable_action_requested.connect(self.enable_action)
-        ant_report_generator.run()
-        ant_report_generator.enable_action_requested.disconnect(self.enable_action)
+        if ant_report_generator.validate_dependencies():
+            ant_report_generator.enable_action_requested.connect(self.enable_action)
+            ant_report_generator.run()
+
         del ant_report_generator
 
     @_validate_if_wizard_is_open
@@ -1049,9 +1050,10 @@ class AsistenteLADMCOLPlugin(QObject):
     @_survey_model_required
     def call_annex_17_report_generation(self, *args):
         annex_17_report_generator = Annex17ReportGenerator(self.get_db_connection(), self.ladm_data)
-        annex_17_report_generator.enable_action_requested.connect(self.enable_action)
-        annex_17_report_generator.run()
-        annex_17_report_generator.enable_action_requested.disconnect(self.enable_action)
+        if annex_17_report_generator.validate_dependencies():
+            annex_17_report_generator.enable_action_requested.connect(self.enable_action)
+            annex_17_report_generator.run()
+
         del annex_17_report_generator
 
     @_validate_if_wizard_is_open

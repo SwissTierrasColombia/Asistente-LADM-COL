@@ -70,7 +70,7 @@ class ReportDependency(Dependency):
                         "Dependencies to generate reports couldn't be installed. Check if it is possible to write into this folder: <a href='file:///{path}'>{path}</a>").format(path=normalize_local_url(DEPENDENCY_REPORTS_DIR_NAME)))
                 else:
                     self.logger.clear_message_bar()
-                    self.logger.info_msg(__name__, QCoreApplication.translate("ReportGenerator", "The dependency to generate reports is properly installed! Select plots and click again the button in the toolbar to generate reports."))
+                    self.logger.info_msg(__name__, QCoreApplication.translate("ReportGenerator", "The dependency to generate reports is properly installed! Select plots and click again the button to generate reports."))
             else:
                 self.logger.warning_msg(__name__, QCoreApplication.translate("ReportGenerator",
                                                                              "There was an error with the download. The downloaded file is invalid."))
