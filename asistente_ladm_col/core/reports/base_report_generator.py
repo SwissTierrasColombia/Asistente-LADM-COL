@@ -66,6 +66,7 @@ class BaseReportGenerator(QObject):
             self.encoding = 'UTF8'
 
         self._downloading = False
+        self.__plot_layer = None
 
     def stderr_ready(self, proc):
         text = bytes(proc.readAllStandardError()).decode(self.encoding)
@@ -176,22 +177,36 @@ class BaseReportGenerator(QObject):
             return False
         return True
 
-    def generate_report(self, output_folder):
+    def validate_dependencies(self):
+        # Note that messages are handled by almost all of those methods, so
+        # in validate_dependencies we just let them communicate with the user.
         if not self.check_report_dependency():
-            return
+            return False
 
         if not self.check_java_dependency():
-            return
+            return False
 
-        plot_layer = self.app.core.get_layer(self.db, self.db.names.LC_PLOT_T, load=True)
-        if not plot_layer:
-            return
+        if not self.__plot_layer:
+            # We should call get_layer only once in the report generator lifetime
+            self.__plot_layer = self.app.core.get_layer(self.db, self.db.names.LC_PLOT_T, load=True)
+            if not self.__plot_layer:
+                return False
 
-        selected_plot_features = plot_layer.selectedFeatures()
-        if not selected_plot_features:
+        if not self.__plot_layer.selectedFeatureCount():
             self.logger.warning_msg(__name__, QCoreApplication.translate("ReportGenerator",
                                                                          "To generate reports, first select at least one plot!"))
+            return False
+
+        return True
+
+    def generate_report(self, output_folder):
+        if not self.validate_dependencies():
+            # Currently, the subclasses block QGIS canvas interaction, so feature selection shouldn't be removed,
+            # but that's not something all subclasses necessarily will deal with, so here we make sure all dependencies
+            # are met just before generating the report.
             return
+
+        selected_plot_features = self.__plot_layer.selectedFeatures()
 
         config_path = os.path.join(DEPENDENCY_REPORTS_DIR_NAME, self.report_name)
         json_spec_file = os.path.join(config_path, 'spec_json_file.json')
@@ -255,7 +270,7 @@ class BaseReportGenerator(QObject):
                     functools.partial(self.stdout_ready, proc=proc))
 
                 parcel_number = self.ladm_data.get_parcels_related_to_plots(self.db, [plot_id], self.db.names.LC_PARCEL_T_PARCEL_NUMBER_F) or ['']
-                self.app.gui.activate_layer(plot_layer)  # Previous function changed the selected layer, so, select again plot layer
+                self.app.gui.activate_layer(self.__plot_layer)  # Previous function changed the selected layer, so, select again plot layer
                 file_name = '{}_{}_{}.pdf'.format(self.report_name, plot_id, parcel_number[0])
 
                 current_report_path = os.path.join(output_folder, file_name)
@@ -331,3 +346,6 @@ class BaseReportGenerator(QObject):
         else:
             self.logger.warning_msg(__name__, QCoreApplication.translate("ReportGenerator",
                                                                          "You have just canceled the report dependency download."), 5)
+
+    def run(self):
+        raise NotImplementedError
