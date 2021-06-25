@@ -321,12 +321,12 @@
         <translation>Interesado</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="496"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="495"/>
         <source>Create Party</source>
         <translation>Crear Interesado</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="500"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="499"/>
         <source>Create Group Party</source>
         <translation>Crear Agrupación de Interesados</translation>
     </message>
@@ -398,7 +398,7 @@
         <translation type="vanished">Crear objetos de Operación</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="470"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="469"/>
         <source>Create Plot</source>
         <translation>Crear Terreno</translation>
     </message>
@@ -407,7 +407,7 @@
         <translation type="vanished">Pre-procesamiento</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="634"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="633"/>
         <source>Queries</source>
         <translation>Consultar datos</translation>
     </message>
@@ -425,59 +425,59 @@
         <translation>Topografía y Representación</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="320"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="319"/>
         <source>&apos;Origen Nacional&apos; projection could not be configured. Therefore you cannot use this version of the LADM-COL Assistant.</source>
         <translation>No se pudo configurar la proyeccion &apos;Origen Nacional&apos;. Por lo tanto no puedes utilizar esta versión del Asistente LADM-COL.</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="419"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="418"/>
         <source>Run supplies ETL</source>
         <translation>Ejecutar ETL de insumos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="424"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="423"/>
         <source>Omissions and Commissions Report - COBOL</source>
         <translation>Reporte Omisiones y Comisiones - COBOL</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="429"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="428"/>
         <source>Omissions and Commissions Report - SNC</source>
         <translation>Reporte Omisiones y Comisiones - SNC</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="444"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="443"/>
         <source>Allocate parcels</source>
         <translation>Asignar predios</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="449"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="448"/>
         <source>Synchronize field data</source>
         <translation>Sincronizar datos de campo</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="462"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="461"/>
         <source>Create Point</source>
         <translation>Crear Punto</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="466"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="465"/>
         <source>Create Boundary</source>
         <translation>Crear Lindero</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="474"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="473"/>
         <source>Create Building</source>
         <translation>Crear Construcción</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="478"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="589"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="477"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="588"/>
         <source>Create Building Unit</source>
         <translation>Crear Unidad de Construcción</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="491"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="585"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="490"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="584"/>
         <source>Create Parcel</source>
         <translation>Crear Predio</translation>
     </message>
@@ -490,17 +490,17 @@
         <translation type="vanished">Crear Interesado Jurídico</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="512"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="511"/>
         <source>Upload Pending Source Files</source>
         <translation>Subir Archivos Fuente Pendientes</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="518"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="517"/>
         <source>Create Right</source>
         <translation>Crear Derecho</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="522"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="521"/>
         <source>Create Restriction</source>
         <translation>Crear Restricción</translation>
     </message>
@@ -513,17 +513,17 @@
         <translation type="vanished">Revisar Reglas de Calidad</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="505"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="504"/>
         <source>Create Administrative Source</source>
         <translation>Crear Fuente Administrativa</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="509"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="508"/>
         <source>Create Spatial Source</source>
         <translation>Crear Fuente Espacial</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="527"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="526"/>
         <source>Quality</source>
         <translation>Calidad</translation>
     </message>
@@ -560,12 +560,12 @@
         <translation type="vanished">Revisar todo</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="632"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="631"/>
         <source>Load layers</source>
         <translation>Cargar capas</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="654"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="653"/>
         <location filename="../utils/decorators.py" line="87"/>
         <location filename="../utils/decorators.py" line="247"/>
         <location filename="../utils/decorators.py" line="282"/>
@@ -576,12 +576,12 @@
         <translation>Configuración</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="657"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="656"/>
         <source>Help</source>
         <translation>Ayuda</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="659"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="658"/>
         <source>About</source>
         <translation>Acerca de</translation>
     </message>
@@ -634,17 +634,17 @@
         <translation type="vanished">Administración de datos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="645"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="644"/>
         <source>Create LADM-COL structure</source>
         <translation>Crear estructura LADM-COL</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="648"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="647"/>
         <source>Import data</source>
         <translation>Importar datos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="651"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="650"/>
         <source>Export data</source>
         <translation>Exportar datos</translation>
     </message>
@@ -656,22 +656,22 @@
         <translation>Reportes</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="637"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="636"/>
         <source>Annex 17</source>
         <translation>Anexo 17</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="641"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="640"/>
         <source>ANT Map</source>
         <translation>Plano ANT</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="482"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="481"/>
         <source>Create Right of Way</source>
         <translation>Crear Servidumbre de Paso</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="303"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="302"/>
         <source>LADM-COL Assistant - Warning</source>
         <translation>Asistente LADM-COL - Advertencia</translation>
     </message>
@@ -680,17 +680,17 @@
         <translation type="vanished">No se pudo configurar la proyección CTM12. Por tanto, no se puede usar esta versión del Asistente LADM-COL.</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="348"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="347"/>
         <source>Refreshing GUI for the LADM-COL Assistant...</source>
         <translation>Refrescando la interfaz del Asistente LADM-COL...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="401"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="400"/>
         <source>Login...</source>
         <translation>Autenticarse...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="405"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="404"/>
         <source>Logout</source>
         <translation>Salir</translation>
     </message>
@@ -703,22 +703,22 @@
         <translation type="vanished">Omisiones y Comisiones</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="486"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="485"/>
         <source>Associate Address</source>
         <translation>Relacionar Dirección</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="532"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="531"/>
         <source>Fix LADM-COL relations</source>
         <translation>Arreglar relaciones LADM-COL</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="618"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="617"/>
         <source>Change detection settings</source>
         <translation>Configurar identificación de novedades</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1571"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1580"/>
         <source>Connecting to remote db...</source>
         <translation>Conectándose a base de datos remota...</translation>
     </message>
@@ -739,22 +739,22 @@
         <translation type="vanished">Exportar datos (Insumos)</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1389"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1398"/>
         <source>Opening Query Changes per Parcel panel...</source>
         <translation>Abriendo panel de novedades por predio...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1400"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1409"/>
         <source>Opening Query Changes for All Parcels panel...</source>
         <translation>Abriendo panel de novedades masivas...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1508"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1517"/>
         <source>Continue?</source>
         <translation>¿Continuar?</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1509"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1518"/>
         <source>Are you sure you want to log out from the Transitional System?</source>
         <translation>¿Estás segura/o que quieres salir del Sistema de Transición?</translation>
     </message>
@@ -763,7 +763,7 @@
         <translation type="vanished">Ficha predial</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="576"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="575"/>
         <source>Create Property Record Card</source>
         <translation>Crear Ficha Predial</translation>
     </message>
@@ -788,17 +788,17 @@
         <translation type="vanished">Crear Equipamiento Comunal</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="593"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="592"/>
         <source>Create Building Unit Qualification</source>
         <translation>Crear Calificación de Unidad de Construcción</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="597"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="596"/>
         <source>Create Geoeconomic Zone</source>
         <translation>Crear Zona Homogénea Geoeconómica</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="601"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="600"/>
         <source>Create Physical Zone</source>
         <translation>Crear Zona Homogénea Física</translation>
     </message>
@@ -808,14 +808,14 @@
         <translation>Identificación de novedades</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="614"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="813"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="613"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="812"/>
         <source>Query per parcel</source>
         <translation>Consulta por predio</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="616"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="818"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="615"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="817"/>
         <source>Query all parcels</source>
         <translation>Consulta masiva</translation>
     </message>
@@ -824,7 +824,7 @@
         <translation type="vanished">Configuración de datos oficiales</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="802"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="801"/>
         <source>Open About Dialog</source>
         <translation>Abrir diálogo Acerca de</translation>
     </message>
@@ -2046,12 +2046,12 @@
 <context>
     <name>CreateGroupPartySurvey</name>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1295"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1304"/>
         <source>First enable automatic values for namespace, local_id and t_ili_tid fields before creating group parties. Click the button to open the settings dialog.</source>
         <translation>Primero habilita los valores automáticos para los campos &apos;espacio de nombres&apos;, &apos;local_id&apos; y &apos;t_ili_tid&apos; antes de crear agrupaciones de interesados. Haz clic en el botón para abrir el diálogo de configuración.</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1297"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1306"/>
         <source>Open Settings</source>
         <translation>Abrir Configuración</translation>
     </message>
@@ -6109,12 +6109,12 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
 <context>
     <name>ImportFromExcelDialog</name>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="913"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="912"/>
         <source>Some errors were found while importing from the intermediate Excel file into LADM-COL!</source>
         <translation>¡Se encontraron errores importando desde la estructura intermedia de Excel a LADM-COL!</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="917"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="916"/>
         <source>Show errors found</source>
         <translation>Mostrar errores encontrados</translation>
     </message>
@@ -6915,17 +6915,17 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
 <context>
     <name>LogQualityDialog</name>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="880"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="879"/>
         <source>Show Results</source>
         <translation>Mostrar Resultados</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="888"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="887"/>
         <source>Checking {} out of {}: &apos;{}&apos;</source>
         <translation>Revisando {} de {}: &apos;{}&apos;</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="900"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="899"/>
         <source>All the {} quality rules were checked! Click the button at the right-hand side to see a report.</source>
         <translation>¡Se terminaron de revisar las {} reglas de calidad! Haz clic en el botón de la derecha para ver un reporte.</translation>
     </message>
@@ -7588,7 +7588,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">¡La base de datos actual no tiene PostGIS instalado! Instálalo antes de continuar.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="666"/>
+        <location filename="../lib/db/pg_connector.py" line="667"/>
         <source>The schema &apos;{}&apos; does not exist in the database!</source>
         <translation>¡El esquema {} no existe en la base de datos!</translation>
     </message>
@@ -7605,7 +7605,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">El usuario &apos;{}&apos; no tiene suficientes permisos sobre el esquema &apos;{}&apos;. Detalles: {}</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="672"/>
+        <location filename="../lib/db/pg_connector.py" line="673"/>
         <source>User &apos;{}&apos; has not enough permissions over the schema &apos;{}&apos;.</source>
         <translation>El usuario &apos;{}&apos; no tiene suficientes permisos sobre el esquema &apos;{}&apos;.</translation>
     </message>
@@ -7614,57 +7614,57 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">¡Conexión exitosa a base de datos de PostGIS!</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="626"/>
+        <location filename="../lib/db/pg_connector.py" line="627"/>
         <source>Connection to server was successful.</source>
         <translation>La conexión al servidor fue exitosa.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="634"/>
+        <location filename="../lib/db/pg_connector.py" line="635"/>
         <source>You should first select a database.</source>
         <translation>Primero debes seleccionar una base de datos.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="657"/>
+        <location filename="../lib/db/pg_connector.py" line="658"/>
         <source>Connection to the database was successful.</source>
         <translation>La conexión a la base de datos fue exitosa.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="662"/>
+        <location filename="../lib/db/pg_connector.py" line="663"/>
         <source>You should first select a schema.</source>
         <translation>Primero debes seleccionar un esquema.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="677"/>
+        <location filename="../lib/db/pg_connector.py" line="678"/>
         <source>Connection to the database schema was successful.</source>
         <translation>La conexión al esquema de base de datos fue exitosa.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="682"/>
+        <location filename="../lib/db/pg_connector.py" line="683"/>
         <source>The schema &apos;{}&apos; is not a valid LADM-COL schema. That is, the schema doesn&apos;t have the structure of the LADM-COL model.</source>
         <translation>El esquema &apos;{}&apos; no tiene una estructura válida de LADM_COL. Esto es, el esquema no es conforme con el modelo LADM_COL.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="687"/>
+        <location filename="../lib/db/pg_connector.py" line="688"/>
         <source>The DB schema &apos;{}&apos; was created with an old version of ili2db (v3), which is no longer supported. You need to migrate it to ili2db4.</source>
         <translation>El esquema de base de datos &apos;{}&apos; fue creado con una versión antigua de ili2db (v3), la cual ya no está soportada. Necesitas migrarla a ili2db4.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="701"/>
+        <location filename="../lib/db/pg_connector.py" line="702"/>
         <source>Basket column not found, but it is required by model &apos;{}&apos;!.</source>
         <translation>¡No se encontró la columna para baskets, pero es requerida por el modelo &apos;{}&apos;!˛</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="555"/>
+        <location filename="../lib/db/pg_connector.py" line="556"/>
         <source>The user has both Create and Usage privileges over the schema.</source>
         <translation>El usuario tiene permisos de usar y crear objetos en el esquema.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="558"/>
+        <location filename="../lib/db/pg_connector.py" line="559"/>
         <source>The user has Usage privileges over the schema.</source>
         <translation>El usuario tiene permisos de usar el esquema.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="561"/>
+        <location filename="../lib/db/pg_connector.py" line="562"/>
         <source>The user has not enough privileges over the schema.</source>
         <translation>El usuario no tiene suficientes permisos sobre el esquema.</translation>
     </message>
@@ -7674,12 +7674,12 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../lib/db/gpkg_connector.py" line="320"/>
-        <location filename="../lib/db/pg_connector.py" line="709"/>
+        <location filename="../lib/db/pg_connector.py" line="710"/>
         <source>Table/field names from the DB are not correct. Details: {}.</source>
         <translation>Los nombres de tablas/campos de la base de datos no son correctos. Detalles: {}.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="713"/>
+        <location filename="../lib/db/pg_connector.py" line="714"/>
         <source>The schema &apos;{}&apos; has a valid LADM-COL structure!</source>
         <translation>¡El esquema &apos;{}&apos; tiene una estructura conforme con el modelo LADM_COL!</translation>
     </message>
@@ -7700,7 +7700,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Por lo menos un modelo LADM-COL debe existir! Los modelos soportados son &apos;{}&apos; pero usted tiene &apos;{}&apos;.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="153"/>
+        <location filename="../lib/db/pg_connector.py" line="154"/>
         <source>Connection is open!</source>
         <translation>¡La conexión está abierta!</translation>
     </message>
@@ -7709,22 +7709,22 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">No se encontró la capa &apos;{}&apos; en la base de datos (esquema: {}).</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="504"/>
+        <location filename="../lib/db/pg_connector.py" line="505"/>
         <source>There was an error when obtaining the list of existing databases. : {}</source>
         <translation>Hubo un error obteniendo el listado de bases de datos existentes.: {}</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="525"/>
+        <location filename="../lib/db/pg_connector.py" line="526"/>
         <source>There was an error when obtaining the list of existing schemas: {}</source>
         <translation>Hubo un error obteniendo el listado de esquemas existentes.: {}</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="546"/>
+        <location filename="../lib/db/pg_connector.py" line="547"/>
         <source>No information for schema &apos;{}&apos;.</source>
         <translation>No hay información para el esquema &apos;{}&apos;.</translation>
     </message>
     <message>
-        <location filename="../lib/db/pg_connector.py" line="550"/>
+        <location filename="../lib/db/pg_connector.py" line="551"/>
         <source>There was an error when obtaining privileges for schema &apos;{}&apos;. Details: {}</source>
         <translation>Hubo un error obteniendo los permisos para el esquema &apos;{}&apos;. Detalles: {}</translation>
     </message>
@@ -9280,34 +9280,40 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">¡No se encontró la capa &apos;Terreno&apos; en la base de datos! {}</translation>
     </message>
     <message>
-        <location filename="../gui/reports/reports.py" line="177"/>
+        <location filename="../core/reports/base_report_generator.py" line="175"/>
         <source>Java is a prerequisite. Since it was not found, it is being configured...</source>
         <translation>Java está siendo configurando...</translation>
     </message>
     <message>
-        <location filename="../gui/reports/reports.py" line="187"/>
+        <location filename="../core/reports/base_report_generator.py" line="196"/>
+        <source>To generate reports, first select at least one plot!</source>
+        <translation>¡Primero selecciona por lo menos un terreno para generar reportes!</translation>
+    </message>
+    <message>
+        <location filename="../core/reports/base_report_generator.py" line="257"/>
+        <source>Skipping report for plot with {}={} because it has holes. The reporter module does not support such polygons yet.</source>
+        <translation>Omitiendo reporte para el terreno con {}={} porque tiene agujeros. El módulo de reportes no soporta dichos polígonos todavía.</translation>
+    </message>
+    <message>
         <source>To generate reports, first select at least a plot!</source>
-        <translation>¡Primero selecciona por lo menos un predio para generar reportes!</translation>
+        <translation type="vanished">¡Primero selecciona por lo menos un predio para generar reportes!</translation>
     </message>
     <message>
-        <location filename="../gui/reports/reports.py" line="195"/>
         <source>Select a folder to save the reports to be generated</source>
-        <translation>Selecciona una carpeta para almacenar los reportes que serán generados</translation>
+        <translation type="vanished">Selecciona una carpeta para almacenar los reportes que serán generados</translation>
     </message>
     <message>
-        <location filename="../gui/reports/reports.py" line="198"/>
         <source>You need to select a folder where to save the reports before continuing.</source>
-        <translation>Necesitas seleccionar una carpeta para almacenar los reportes antes de continuar.</translation>
+        <translation type="vanished">Necesitas seleccionar una carpeta para almacenar los reportes antes de continuar.</translation>
     </message>
     <message>
-        <location filename="../gui/reports/reports.py" line="236"/>
+        <location filename="../core/reports/base_report_generator.py" line="244"/>
         <source>Generating {} report{}...</source>
         <translation>Generando {} reporte{}...</translation>
     </message>
     <message>
-        <location filename="../gui/reports/reports.py" line="249"/>
         <source>Skipping Annex 17 for plot with {}={} because it has holes. The reporter module does not support such polygons.</source>
-        <translation>Omitiendo Anexo 17 para el terreno con {}={} porque tiene agujeros. El módulo de reportes no soporta dichos polígonos.</translation>
+        <translation type="vanished">Omitiendo Anexo 17 para el terreno con {}={} porque tiene agujeros. El módulo de reportes no soporta dichos polígonos.</translation>
     </message>
     <message>
         <source>Skipping Annex 17 for plot with {}={} because it is a multi-polygon. The reporter module does not support such polygons.</source>
@@ -9351,6 +9357,11 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation>No se pudieron instalar las dependencias para generar reportes. Revisa si es posible escribir en esta carpeta: &lt;a href=&apos;file:///{path}&apos;&gt;{path}&lt;/a&gt;</translation>
     </message>
     <message>
+        <location filename="../lib/dependency/report_dependency.py" line="73"/>
+        <source>The dependency to generate reports is properly installed! Select plots and click again the button to generate reports.</source>
+        <translation>¡Las dependencias para generar reportes han sido instaladas! Selecciona terrenos y haz clic en el botón para generar reportes.</translation>
+    </message>
+    <message>
         <source>It wasn&apos;t possible to remove the dependency folder. You need to remove this folder yourself to generate reports: &lt;a href=&apos;file:///{path}&apos;&gt;{path}&lt;/a&gt;</source>
         <translation type="vanished">No fue posible borrar la carpeta de dependencias. Debes borrar esta carpeta para generar reportes: &lt;a href=&apos;file:///{path}&apos;&gt;{path}&lt;/a&gt;</translation>
     </message>
@@ -9385,9 +9396,8 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">No se pudieron instalar las dependencias para generar reportes. Revisa si es posible escribir en esta carpeta: &lt;a href=&apos;file://{path}&apos;&gt;{path}&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../lib/dependency/report_dependency.py" line="73"/>
         <source>The dependency to generate reports is properly installed! Select plots and click again the button in the toolbar to generate reports.</source>
-        <translation>¡Las dependencias para generar reportes han sido instaladas! Selecciona terrenos y dale clic al botón en la barra de herramientas para generar reportes.</translation>
+        <translation type="vanished">¡Las dependencias para generar reportes han sido instaladas! Selecciona terrenos y dale clic al botón en la barra de herramientas para generar reportes.</translation>
     </message>
     <message>
         <source>There was a problem connecting to Internet.</source>
@@ -11897,6 +11907,61 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
     </message>
 </context>
 <context>
+    <name>ant_map_report_dialog</name>
+    <message>
+        <location filename="../ui/reports/ant_map_report_dialog.ui" line="14"/>
+        <source>ANT Map Report</source>
+        <translation>Reportes Plano ANT</translation>
+    </message>
+    <message>
+        <location filename="../ui/reports/ant_map_report_dialog.ui" line="20"/>
+        <source>Zone</source>
+        <translation>Zona</translation>
+    </message>
+    <message>
+        <location filename="../ui/reports/ant_map_report_dialog.ui" line="27"/>
+        <source>Observations</source>
+        <translation>Observaciones</translation>
+    </message>
+    <message>
+        <location filename="../ui/reports/ant_map_report_dialog.ui" line="34"/>
+        <source>Revised</source>
+        <translation>Revisó</translation>
+    </message>
+    <message>
+        <location filename="../ui/reports/ant_map_report_dialog.ui" line="40"/>
+        <location filename="../ui/reports/ant_map_report_dialog.ui" line="105"/>
+        <source>Name</source>
+        <translation>Nombre</translation>
+    </message>
+    <message>
+        <location filename="../ui/reports/ant_map_report_dialog.ui" line="50"/>
+        <location filename="../ui/reports/ant_map_report_dialog.ui" line="115"/>
+        <source>License</source>
+        <translation>Matrícula</translation>
+    </message>
+    <message>
+        <location filename="../ui/reports/ant_map_report_dialog.ui" line="69"/>
+        <source>Select a folder to save the reports to be generated</source>
+        <translation>Selecciona una carpeta para almacenar los reportes</translation>
+    </message>
+    <message>
+        <location filename="../ui/reports/ant_map_report_dialog.ui" line="90"/>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+    <message>
+        <location filename="../ui/reports/ant_map_report_dialog.ui" line="99"/>
+        <source>Elaborated</source>
+        <translation>Elaboró</translation>
+    </message>
+    <message>
+        <location filename="../ui/reports/ant_map_report_dialog.ui" line="138"/>
+        <source>Basemap</source>
+        <translation>Mapa base</translation>
+    </message>
+</context>
+<context>
     <name>create_building_unit_qualification_valuation_wizard</name>
     <message>
         <source>Import</source>
@@ -11913,6 +11978,24 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
     <message>
         <source>Building unit qualification table couldn&apos;t be found... {}</source>
         <translation type="vanished">No se encontró la capa Calificación de Unidad de Construcción... {}</translation>
+    </message>
+</context>
+<context>
+    <name>default_map_report_dialog</name>
+    <message>
+        <location filename="../ui/reports/annex_17_map_report_dialog.ui" line="14"/>
+        <source>Annex 17 Map Report</source>
+        <translation>Reportes Anexo 17</translation>
+    </message>
+    <message>
+        <location filename="../ui/reports/annex_17_map_report_dialog.ui" line="34"/>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+    <message>
+        <location filename="../ui/reports/annex_17_map_report_dialog.ui" line="43"/>
+        <source>Select a folder to save the reports to be generated</source>
+        <translation>Selecciona una carpeta para almacenar los reportes</translation>
     </message>
 </context>
 <context>

@@ -28,6 +28,8 @@ FORMS = ../ui/change_detection/changes_all_parcels_panel_widget.ui \
         ../ui/qgis_model_baker/dlg_import_schema.ui \
         ../ui/qgis_model_baker/dlg_import_data.ui \
         ../ui/qgis_model_baker/dlg_export_data.ui \
+        ../ui/reports/annex_17_map_report_dialog.ui \
+        ../ui/reports/ant_map_report_dialog.ui \
         ../ui/supplies/cobol_data_source_widget.ui \
         ../ui/supplies/dlg_missing_supplies.ui \
         ../ui/supplies/snc_data_source_widget.ui \
@@ -78,6 +80,10 @@ SOURCES = ../__init__.py \
           ../config/translation_strings.py \
           ../config/wizard_config.py \
           ../core/app_core_interface.py \
+          ../core/model_parser.py \
+          ../core/reports/annex_17_report_generator.py \
+          ../core/reports/ant_report_generator.py \
+          ../core/reports/base_report_generator.py \
           ../gui/app_gui_interface.py \
           ../gui/change_detection/changes_all_parcels_panel.py \
           ../gui/change_detection/changes_parties_panel.py \
