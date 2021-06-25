@@ -70,7 +70,7 @@ To use the LADM-COL Assistant you need:
 
 ## Functionalities
 
-The current version ([3.1.5](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/3.1.5)) of the LADM-COL Assistant depends on [QGIS Model Baker v6.1.1.5](https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.4/QgisModelBaker_6115.zip) and allows users to:
+The current version ([3.1.6](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/3.1.6)) of the LADM-COL Assistant depends on [QGIS Model Baker v6.1.1.5](https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.4/QgisModelBaker_6115.zip) and allows users to:
 
  - Integration with the Transitional System:
    - Authentication
@@ -181,7 +181,6 @@ The current version ([3.1.5](https://github.com/SwissTierrasColombia/Asistente-L
  - Generate reports of missing supplies.
  - Detect parcel changes:
    - Compare a collected database versus the supplies database and show differences by batch or per parcel.
- - Import data from [intermediate structure in Excel](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/blob/master/asistente_ladm_col/resources/excel/datos_estructura_excel.xlsx).
  - Configure automatic values for `namespace` and `local_id` attributes.
  - Load styles for newly added layers from preconfigured QML files.
  - Online/offline help.

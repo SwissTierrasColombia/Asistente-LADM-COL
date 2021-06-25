@@ -18,7 +18,7 @@ Un proyecto de: [SwissTierras Colombia](https://swisstierrascolombia.com/) ([BSF
 
 ## Soporte de funcionalidades por motor de base de datos
 
-La versión actual ([3.1.5](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/3.1.5)) del Asistente LADM-COL depende del plugin [QGIS Model Baker v6.1.1.5](https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.5/QgisModelBaker_6115.zip) y soporta los motores de Base de Datos PostgreSQL/PostGIS, GeoPackage y SQL Server.
+La versión actual ([3.1.6](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/3.1.6)) del Asistente LADM-COL depende del plugin [QGIS Model Baker v6.1.1.5](https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.5/QgisModelBaker_6115.zip) y soporta los motores de Base de Datos PostgreSQL/PostGIS, GeoPackage y SQL Server.
 
 Este es el soporte funcional para cada motor: 
 
@@ -154,7 +154,6 @@ Para usar el Asistente LADM-COL se requiere:
    - Usando formularios preconfigurados (relacionando el nuevo objeto a `Fuentes Administrativas` previamente seleccionadas).
    - Desde otra tabla con cualquier estructura, definiendo un mapeo de campos.
    
-  - Importar datos alfanuméricos desde [estructura intermedia en Excel](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/blob/master/asistente_ladm_col/resources/excel/datos_estructura_excel.xlsx).
   - Configurar valores automáticos para campos `t_ili_tid`, `espacio_de_nombres` y `local_id`.
   - Usar estilos preconfigurados en archivos QML para asignarlos a las capas cargadas.
 

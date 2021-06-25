@@ -4,29 +4,12 @@
     <meta charset="UTF-8">
 </head>
 <body>
-<p>Cambios en la version <b>3.1.5</b></p>
+<p>Cambios en la version <b>3.1.6</b></p>
 <ul>
-    <li> Ajustes en reglas de calidad:
-        <ul>
-            <li>Soporte de detección de autointersecciones tipo punto en regla 'los linderos no deben superponerse'.</li>
-            <li>Ajuste a regla de calidad 'los linderos no deben superponerse' para evitar bug de GEOS <= 3.8 con QGIS 3.16+.</li>
-			<li>Mejora en identificación de duplicados en Unidades de Construcción.</li>
-            <li>Soporte de tolerancia para reglas de calidad: 'Construcción debe estar dentro de terreno', 'Unidad de construcción debe estar dentro de construcción' y 'Unidad de construcción debe estar dentro de terreno'.</li>
-            <li>Mejora de rendimiento creando índices espaciales cuando se requiera.</li>
-        </ul>
-    </li>
-    <li> Solución a otros issues:
-        <ul>
-            <li>Issue #404 (errores con geometrías PolygonZ).</li>
-            <li>Issue #425 (error verificando permisos para instalar Java).</li>
-            <li>Issue #427 (remover valores automáticos para nombre de interesados).</li>
-        </ul>
-    </li>
-    <li> Otros:
-        <ul>
-            <li>Migración de Integración continua de Travis a GitHub actions.</li>
-        </ul>
-    </li>
+    <li>Remover XTF temporales si la operación de exportar a XTF no es exitosa.</li>
+	<li>Mejoras en la generación de reportes ANT. Actualización de dependencia de reportes a v1.1.</li>
+    <li>Mejoras en tarea 'Generar insumos catastrales' del Sistema de Transición: Ahora soporta el envío de reportes de Omisiones y Comisiones (opcional).</li>
+    <li>Fix de issue identificando el EPSG:9377 con PROJ 8.</li>
 </ul>
 </body>
 </html>
