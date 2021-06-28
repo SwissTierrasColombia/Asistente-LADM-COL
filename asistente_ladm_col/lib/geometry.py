@@ -539,13 +539,6 @@ class GeometryUtils(QObject):
 
         return difference_features
 
-    def clone_layer(self, layer):
-        layer.selectAll()
-        clone_layer = processing.run("native:saveselectedfeatures", {'INPUT': layer, 'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
-        layer.removeSelection()
-
-        return clone_layer if type(clone_layer) == QgsVectorLayer else False
-
     def extract_geoms_by_type(self, geometry_collection, geometry_types):
         """
         Get a list of geometries with type in geometry_types from a geometry

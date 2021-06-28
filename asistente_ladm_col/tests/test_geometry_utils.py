@@ -253,14 +253,14 @@ class TestGeometryUtils(unittest.TestCase):
             lines_layer = QgsVectorLayer(uri_lines, 'lines_layer_{}'.format(i+1), 'ogr')
 
             # We don't want to overwrite the original layer
-            clone_polygons = self.geometry.clone_layer(polygon_layer)
+            polygon_copy = self.app.core.get_layer_copy(polygon_layer)
 
-            geom_polygon = clone_polygons.getFeature(1).geometry()
+            geom_polygon = polygon_copy.getFeature(1).geometry()
             init_vertex_geom = [vertex for vertex in geom_polygon.vertices()]
 
-            self.geometry.add_topological_vertices(clone_polygons, lines_layer)
+            self.geometry.add_topological_vertices(polygon_copy, lines_layer)
 
-            geom_polygon = clone_polygons.getFeature(1).geometry()
+            geom_polygon = polygon_copy.getFeature(1).geometry()
             adjusted_vertex_geom = [vertex for vertex in geom_polygon.vertices()]
 
             num_vertices_added = len(adjusted_vertex_geom) - len(init_vertex_geom)
