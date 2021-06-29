@@ -52,40 +52,46 @@ Se desplegará un diálogo con el listado de los valores del dominio seleccionad
 
 ### Puntos de lindero
 
-#### Paso 1: Creación de punto lindero
+#### Paso 1: Cargue de insumos Punto lindero
+
+Inicialmente, se arrastra la capa de insumo llamada **topo_puntos_lindero** al mapa de QGIS.
+
+<a class="" data-lightbox="Paso 1: Cargue de insumos Punto lindero" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos9.gif" title="Paso 1: Cargue de insumos Punto lindero" data-title="Paso 1: Cargue de insumos Punto lindero"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos9.gif" class="align-center" width="800px" alt="Paso 1: Cargue de insumos Punto lindero"/></a>
+
+#### Paso 2: Creación de punto lindero
 
 Entiéndase *'Puntos de lindero'* como aquellos puntos que definen los vértices de un lindero.
 
 Para crear puntos de lindero debes seguir la ruta **LADM-COL -> Captura y estructuración de datos -> Levantamiento Catastral -> Topografía y Representación -> Crear Punto**.
 
-<a class="" data-lightbox="Paso 1: Creación de punto lindero" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos3.png" title="Paso 1: Creación de punto lindero" data-title="Paso 1: Creación de punto lindero"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos3.png" class="align-center" width="800px" alt="Paso 1: Creación de punto lindero"/></a>
+<a class="" data-lightbox="Paso 2: Creación de punto lindero" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos3.png" title="Paso 2: Creación de punto lindero" data-title="Paso 2: Creación de punto lindero"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos3.png" class="align-center" width="800px" alt="Paso 2: Creación de punto lindero"/></a>
 
-#### Paso 2: Selección del tipo de punto
+#### Paso 3: Selección del tipo de punto
 
 La acción anterior desplegará un cuadro de diálogo con la opción para seleccionar la clase de punto que se desea importar. En este caso, selecciona **Punto Lindero** y luego haz clic en **Siguiente**.
 
-<a class="" data-lightbox="Paso 2: Selección del tipo de punto" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos4.png" title="Paso 2: Selección del tipo de punto" data-title="Paso 2: Selección del tipo de punto"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos4.png" class="align-center" width="600px" alt="Paso 2: Selección del tipo de punto"/></a>
+<a class="" data-lightbox="Paso 3: Selección del tipo de punto" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos4.png" title="Paso 3: Selección del tipo de punto" data-title="Paso 3: Selección del tipo de punto"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos4.png" class="align-center" width="600px" alt="Paso 3: Selección del tipo de punto"/></a>
 
-#### Paso 3: Selección de los datos punto lindero
+#### Paso 4: Selección de los datos punto lindero
 
 Ahora debes seleccionar el conjunto de datos a importar. La fuente de estos puede ser un archivo separado por comas (CSV) o una capa vectorial.
 
 Para este caso, elige el conjunto de datos que ya está cargado en la interfaz de QGIS, **topo_punto_lindero**, y procede a dar clic en el botón `Importar`.
 
-<a class="" data-lightbox="Paso 3: Selección de los datos punto lindero" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos5.png" title="Paso 3: Selección de los datos punto lindero" data-title="Paso 3: Selección de los datos punto lindero"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos5.png" class="align-center" width="600px" alt="Paso 3: Selección de los datos punto lindero"/></a>
+<a class="" data-lightbox="Paso 4: Selección de los datos punto lindero" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos5.png" title="Paso 4: Selección de los datos punto lindero" data-title="Paso 4: Selección de los datos punto lindero"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos5.png" class="align-center" width="600px" alt="Paso 4: Selección de los datos punto lindero"/></a>
 
-#### Paso 4: Diálogo del mapeo de campos para punto lindero
+#### Paso 5: Diálogo del mapeo de campos para punto lindero
 
 Tan pronto realices el paso anterior, se abre un cuadro de diálogo en el cual se encuentra el mapeo de la información levantada en campo comparada con la información que requiere el modelo.
 
- <a class="" data-lightbox="Paso 4: Diálogo del mapeo de campos para punto lindero" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos6.png" title="Paso 4: Diálogo del mapeo de campos para punto lindero" data-title="Paso 4: Diálogo del mapeo de campos para punto lindero"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos6.png" class="align-center" width="600px" alt="Paso 4: Diálogo del mapeo de campos para punto lindero"/></a>
+ <a class="" data-lightbox="Paso 5: Diálogo del mapeo de campos para punto lindero" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos6.png" title="Paso 5: Diálogo del mapeo de campos para punto lindero" data-title="Paso 5: Diálogo del mapeo de campos para punto lindero"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos6.png" class="align-center" width="600px" alt="Paso 5: Diálogo del mapeo de campos para punto lindero"/></a>
 
 <div class="warning">
 <p class="admonition-title">ADVERTENCIA</p>
 <p>Resulta de gran importancia esta sección ya que es la base de la importación de información restante.</p>
 </div>
 
-#### Paso 5: Definición del mapeo de campos para punto lindero
+#### Paso 6: Definición del mapeo de campos para punto lindero
 
 La capa **lc\_punto\_lindero** cuenta con cinco atributos obligatorios, estos son:
 
@@ -108,7 +114,7 @@ get_domain_code_from_value('Nombre de la tabla del dominio' (Texto),
                            Indica si validar conexión o no (Booleano),)
 ```
 
-<a class="" data-lightbox="Paso 5a: Definición del mapeo de campos para punto lindero" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos12.png" title="Paso 5a: Definición del mapeo de campos para punto lindero" data-title="Paso 5a: Definición del mapeo de campos para punto lindero"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos12.png" class="align-center" width="800px" alt="Paso 5a: Definición del mapeo de campos para punto lindero"/></a>
+<a class="" data-lightbox="Paso 6a: Definición del mapeo de campos para punto lindero" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos12.png" title="Paso 6a: Definición del mapeo de campos para punto lindero" data-title="Paso 6a: Definición del mapeo de campos para punto lindero"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos12.png" class="align-center" width="800px" alt="Paso 6a: Definición del mapeo de campos para punto lindero"/></a>
 
 Para el caso del mapeo de atributos obligatorios para Punto Lindero, debes asignar las siguientes expresiones:
 
@@ -128,17 +134,17 @@ Para el caso del mapeo de atributos obligatorios para Punto Lindero, debes asign
 
 Una vez que se diligencian cada uno de los atributos al interior del formulario, se obtiene el siguiente resultado:
 
-<a class="" data-lightbox="Paso 5b: Definición del mapeo de campos para punto lindero" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos13.png" title="Paso 5b: Definición del mapeo de campos para punto lindero" data-title="Paso 5b: Definición del mapeo de campos para punto lindero"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos13.png" class="align-center" width="800px" alt="Paso 5b: Definición del mapeo de campos para punto lindero"/></a>
+<a class="" data-lightbox="Paso 6b: Definición del mapeo de campos para punto lindero" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos13.png" title="Paso 6b: Definición del mapeo de campos para punto lindero" data-title="Paso 6b: Definición del mapeo de campos para punto lindero"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos13.png" class="align-center" width="800px" alt="Paso 6b: Definición del mapeo de campos para punto lindero"/></a>
 
-#### Paso 6: Resultado de la ejecución punto lindero
+#### Paso 7: Resultado de la ejecución punto lindero
 
 Una vez terminado el mapeo de campos, debes dar clic en **Ejecutar** y al terminar el proceso podrás visualizar el siguiente mensaje de validación. Puedes leer su contenido (por ejemplo, "146 features copiados") para verificar que la ejecución haya sido exitosa y cerrar el cuadro de diálogo.
 
-<a class="" data-lightbox="Paso 6 Resultado de la ejecución punto lindero" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos15.png" title="Paso 6 Resultado de la ejecución punto lindero" data-title="Paso 6 Resultado de la ejecución punto lindero"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos15.png" class="align-center" width="800px" alt="Paso 6 Resultado de la ejecución punto lindero"/></a>
+<a class="" data-lightbox="Paso 7 Resultado de la ejecución punto lindero" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos15.png" title="Paso 7 Resultado de la ejecución punto lindero" data-title="Paso 7 Resultado de la ejecución punto lindero"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos15.png" class="align-center" width="800px" alt="Paso 7 Resultado de la ejecución punto lindero"/></a>
 
 ### Puntos de levantamiento
 
-#### Paso 1: Cargue de insumos
+#### Paso 1: Cargue de insumos punto levantamiento
 
 Inicialmente, se arrastra la capa de insumo llamada **topo_puntos_levantamiento** al menú de capas de QGIS.
 
