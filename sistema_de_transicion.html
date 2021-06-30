@@ -105,8 +105,14 @@
 <li class="toctree-l1"><a class="reference internal" href="identificacion_de_novedades.html">Identificación de novedades</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Sistema de transición</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#autenticacion">Autenticación</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ver-tareas">Ver tareas</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#subir-archivo">Subir archivo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ver-tareas">Ver tareas</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#paso-1-crear-estructura-submodelo-de-insumos">Paso 1: Crear estructura submodelo de insumos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#paso-2-ejecutar-etl-de-insumos">Paso 2: Ejecutar ETL de insumos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#paso-3-generar-archivo-xtf">Paso 3: Generar archivo XTF</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pasos-4-y-5-generar-informe-omisiones-y-comisiones-paso-opcional">Pasos 4 y 5: Generar informe omisiones y comisiones <em>(paso opcional)</em></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pasos-6-y-7-subir-archivo-xtf-y-reporte-y-terminar-tarea">Pasos 6 y 7: Subir archivo XTF (y reporte) y terminar tarea</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#cancelar-tarea">Cancelar tarea</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#salir">Salir</a></li>
 </ul>
@@ -187,22 +193,68 @@
             
   <div class="section" id="sistema-de-transicion">
 <h1>Sistema de transición<a class="headerlink" href="#sistema-de-transicion" title="Enlazar permanentemente con este título">¶</a></h1>
-<p><a class="" data-lightbox="Sistema de transición" href="_static/sistema_de_transicion/transitional_system.gif" title="Sistema de transición" data-title="Sistema de transición"><img src="_static/sistema_de_transicion/transitional_system.gif" class="align-center" width="800px" alt="Sistema de transición"/>
-</a></p>
-<div class="section" id="autenticacion">
+<p>El <a href="https://swisstierrascolombia.github.io/st-docs/index.html" target="_blank">Sistema de Transición</a>  es una herramienta en ambiente Web que permite apoyar la gestión de información necesaria para realizar las tareas del barrido predial en campo por parte de las entidades y actores involucrados en el proceso de Levantamiento Catastral en Colombia (Gestores y Operadores Catastrales).</p>
+<p>Una vez el Sistema de Transición recibe la solicitud de generación y entrega del insumo “Datos catastrales en modelo de insumos”, crea una tarea con sus respectivas credenciales para que un usuario con perfil técnico, asociado al área de trabajo Catastral del Proveedor IGAC, pueda autenticarse desde el <strong>Asistente LADM-COL</strong> e inicie la ejecución de la tarea.</p>
+<div class="note">
+<p class="admonition-title">IMPORTANTE</p>
+<p>Para poder utilizar esta funcionalidad desde el Asistente LADM-COL, se debe contar con las credenciales necesarias (usuario y contraseña), pues se requiere autenticación con el Sistema de Transición.</p>
+</div><div class="section" id="autenticacion">
 <h2>Autenticación<a class="headerlink" href="#autenticacion" title="Enlazar permanentemente con este título">¶</a></h2>
+<p><a class="" data-lightbox="Autenticación en el Sistema de transición" href="_static/sistema_de_transicion/Autenticacion.gif" title="Autenticación en el Sistema de transición" data-title="Autenticación en el Sistema de transición"><img src="_static/sistema_de_transicion/Autenticacion.gif" class="align-center" width="800px" alt="Autenticación en el Sistema de transición"/></a></p>
+<p>Se tienen dos opciones:</p>
+<ul class="simple">
+<li><p>Opción uno: En el menú desplegable del Asistente LADM-COL, hay un submenú llamado «Sistema de Transición». Se debe desplegar este submenú y dar clic en la opción «Autenticarse», la cual abrirá una ventana emergente. Al llenar el formulario con un usuario y contraseña, el Sistema de Transición valida los privilegios del usuario y permite el acceso o lo denega. En caso de ser aceptado, el Asistente LADM-COL carga un panel en la parte derecha de la interfaz donde se muestran las tareas asignadas al usuario autenticado.</p></li>
+<li><p>Opción dos: Dar clic en la barra de herramientas (menú «Sistema de Transición») y seguir las instrucciones descritas en el párrafo anterior.</p></li>
+</ul>
 </div>
 <div class="section" id="ver-tareas">
 <h2>Ver tareas<a class="headerlink" href="#ver-tareas" title="Enlazar permanentemente con este título">¶</a></h2>
+<p><a class="" data-lightbox="Ver tareas disponibles" href="_static/sistema_de_transicion/Ver_tareas.gif" title="Ver tareas disponibles" data-title="Ver tareas disponibles"><img src="_static/sistema_de_transicion/Ver_tareas.gif" class="align-center" width="800px" alt="Ver tareas disponibles"/></a></p>
+<p>Después de haber realizado la autenticación en el Sistema de Transición, en el panel derecho de la interfaz de QGIS dar clic en “Ver tareas”. Si el usuario tiene tareas asignadas, estas aparecerán listadas.</p>
+<p>Al dar clic a una de las tareas llamadas “Generar insumo catastral” del municipio asignado y al dar clic en “Iniciar tarea» aparecerán los pasos de la tarea.</p>
+<p><a class="" data-lightbox="Panel de pasos de tarea iniciada" href="_static/sistema_de_transicion/Ver_pasos_tarea.png" title="Panel de pasos de tarea iniciada" data-title="Panel de pasos de tarea iniciada"><img src="_static/sistema_de_transicion/Ver_pasos_tarea.png" class="align-center" width="400px" alt="Panel de pasos de tarea iniciada"/></a></p>
+<div class="seealso">
+<p class="admonition-title">TIP</p>
+    <p>Los pasos se ejecutan dando doble clic sobre cada paso. Una vez ejecutado un paso, cambiará su color a verde y su casilla de chequeo aparecerá marcada. Es posible marcar un paso como realizado sin haberlo ejecutado, para ello debe darse clic directamente en el <i>checkbox</i>. El boton "Cerrar Tarea" solo se activa para dar clic si todos pasos <b>obligatorios</b> estan chequeados.</p>
+</div><div class="section" id="paso-1-crear-estructura-submodelo-de-insumos">
+<h3>Paso 1: Crear estructura submodelo de insumos<a class="headerlink" href="#paso-1-crear-estructura-submodelo-de-insumos" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>En la lista de pasos del panel derecho dar doble clic en el <em>paso 1</em> «Crear estructura LADM-COL» y en la caja de dialogo que aparece, seleccionar la base de datos y el esquema en donde se importaran los datos. Luego, dar clic en el botón “Crear estructura”.</p>
+<p><a class="" data-lightbox="Paso 1: Crear estructura submodelo de insumos" href="_static/sistema_de_transicion/Crear_estructura_paso1.gif" title="Paso 1: Crear estructura submodelo de insumos" data-title="Paso 1: Crear estructura submodelo de insumos"><img src="_static/sistema_de_transicion/Crear_estructura_paso1.gif" class="align-center" width="800px" alt="Paso 1: Crear estructura submodelo de insumos"/></a></p>
 </div>
-<div class="section" id="subir-archivo">
-<h2>Subir archivo<a class="headerlink" href="#subir-archivo" title="Enlazar permanentemente con este título">¶</a></h2>
+<div class="section" id="paso-2-ejecutar-etl-de-insumos">
+<h3>Paso 2: Ejecutar ETL de insumos<a class="headerlink" href="#paso-2-ejecutar-etl-de-insumos" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>En la lista de pasos dar doble clic en el <em>paso 2</em> “Ejecutar ETL de insumos” y en la ventana que aparece, seleccionar el sistema de proveniencia de los datos (COBOL o SNC). Posteriormente, cargar los archivos correspondientes en cada campo de acuerdo con su tipo (ver GIF). Los archivos a elegir dependen del sistema de origen elegido. Dar clic en el botón “Importar” y esperar a que se ejecute la ETL con éxito y se carguen las capas resultantes al panel de capas de QGIS.</p>
+<p><a class="" data-lightbox="Paso 2: Ejecutar ETL de insumos" href="_static/sistema_de_transicion/Correr_ETL_insumos_paso2.gif" title="Paso 2: Ejecutar ETL de insumos" data-title="Paso 2: Ejecutar ETL de insumos"><img src="_static/sistema_de_transicion/Correr_ETL_insumos_paso2.gif" class="align-center" width="800px" alt="Paso 2: Ejecutar ETL de insumos"/></a></p>
+</div>
+<div class="section" id="paso-3-generar-archivo-xtf">
+<h3>Paso 3: Generar archivo XTF<a class="headerlink" href="#paso-3-generar-archivo-xtf" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>En la lista de pasos dar doble clic en el <em>paso 3</em> “Generar XTF” para abrir una ventana en donde se debe seleccionar la ubicación de la carpeta donde se desea almacenar el archivo XTF. Luego se da clic en el botón “Exportar datos” y una vez terminado el proceso, dar clic en el botón “Cerrar”.</p>
+<p><a class="" data-lightbox="Paso 3: Generar archivo XTF" href="_static/sistema_de_transicion/Generar_XTF_paso3.gif" title="Paso 3: Generar archivo XTF" data-title="Paso 3: Generar archivo XTF"><img src="_static/sistema_de_transicion/Generar_XTF_paso3.gif" class="align-center" width="800px" alt="Paso 3: Generar archivo XTF"/></a></p>
+</div>
+<div class="section" id="pasos-4-y-5-generar-informe-omisiones-y-comisiones-paso-opcional">
+<h3>Pasos 4 y 5: Generar informe omisiones y comisiones <em>(paso opcional)</em><a class="headerlink" href="#pasos-4-y-5-generar-informe-omisiones-y-comisiones-paso-opcional" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>Dependiendo el sistema que se haya elegido en el <em>paso 2</em>, en la lista de pasos dar doble clic sobre el <em>paso 4</em> “Generar reporte (COBOL)” o sobre el <em>paso 5</em> «Generar reporte (SNC)» y en la ventana que aparece, escoger la ubicación de la carpeta dentro del equipo donde se deseen almacenar los archivos del reporte de omisiones y comisiones. Dar clic en el botón «Generar informe» para iniciar la ejecución del proceso.</p>
+<p><a class="" data-lightbox="Paso 4: Generar informe omisiones y comisiones" href="_static/sistema_de_transicion/Generar_infoOC_paso4.gif" title="Paso 4: Generar informe omisiones y comisiones" data-title="Paso 4: Generar informe omisiones y comisiones"><img src="_static/sistema_de_transicion/Generar_infoOC_paso4.gif" class="align-center" width="800px" alt="Paso 4: Generar informe omisiones y comisiones"/></a></p>
+<div class="seealso">
+<p class="admonition-title">TIP</p>
+<p>El reporte de Omisiones y Comisiones es útil para gestores y operadores catastrales, pues a través de él pueden conocer el estado de los datos entregados en el submodelo de insumos (archivo XTF).</p>
+</div></div>
+<div class="section" id="pasos-6-y-7-subir-archivo-xtf-y-reporte-y-terminar-tarea">
+<h3>Pasos 6 y 7: Subir archivo XTF (y reporte) y terminar tarea<a class="headerlink" href="#pasos-6-y-7-subir-archivo-xtf-y-reporte-y-terminar-tarea" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>En la lista de pasos dar doble clic en el <em>paso 6</em> “Subir XTF” para abrir una ventana en donde se elige la carpeta en donde se almacenaron tanto el archivo XTF como el reporte de Omisiones y Comisiones (este último es opcional). Se debe agregar una observación en el campo “Comentario” que se enviará al Sistema de Transición y al dar clic en el botón “OK” se inicia el proceso de envío. Al terminar, dar clic en el botón “Cerrar”.</p>
+<p>Finalmente, dar clic en el botón «Finalizar tarea» para terminar. El Sistema de Transición toma unos minutos en validar los archivos enviados y en aceptarlos. Mientras ello sucede, no será posible finalizar la tarea. Si se requiere, es posible salir del Sistema de Transición para realizar otros procesos y, una vez que se ingrese de nuevo, el estado de la tarea se conservará en el Asistente LADM-COL.</p>
+<p><a class="" data-lightbox="Paso 5: Subir archivo XTF" href="_static/sistema_de_transicion/Subir_archivo.gif" title="Paso 5: Subir archivo XTF" data-title="Paso 5: Subir archivo XTF"><img src="_static/sistema_de_transicion/Subir_archivo.gif" class="align-center" width="800px" alt="Paso 5: Subir archivo XTF"/></a></p>
+</div>
 </div>
 <div class="section" id="cancelar-tarea">
 <h2>Cancelar tarea<a class="headerlink" href="#cancelar-tarea" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>En el panel lateral donde se listan los pasos, se dispone de la opción «Cancelar tarea», la cual se utiliza en caso de no querer continuar con una tarea asignada y ya iniciada. Esta acción envía un mensaje al Sistema de Transición indicando que se cancela la tarea y que debe ser asignada de nuevo, posiblemente a otro usuario. Al cancelar una tarea, esta deja de listarse en las tareas asignadas.</p>
+<p><a class="" data-lightbox="Cancelar tarea iniciada" href="_static/sistema_de_transicion/Cancelar_tarea.gif" title="Cancelar tarea iniciada" data-title="Cancelar tarea iniciada"><img src="_static/sistema_de_transicion/Cancelar_tarea.gif" class="align-center" width="800px" alt="Cancelar tarea iniciada"/></a></p>
 </div>
 <div class="section" id="salir">
 <h2>Salir<a class="headerlink" href="#salir" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Para salir del Sistema de Transición se da clic en el botón “Salir” y luego clic en el botón “Si” de la ventana de confirmación.</p>
+<p><a class="" data-lightbox="Salir del  Sistema de transición" href="_static/sistema_de_transicion/Salir.gif" title="Salir del  Sistema de transición" data-title="Salir del  Sistema de transición"><img src="_static/sistema_de_transicion/Salir.gif" class="align-center" width="800px" alt="Salir del  Sistema de transición"/></a></p>
 </div>
 </div>
 
