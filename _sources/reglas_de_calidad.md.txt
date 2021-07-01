@@ -55,10 +55,6 @@ A continuación algunos ejemplos de reglas de calidad para polígonos.
 
 <a class="" data-lightbox="Los Terrenos no deben superponerse" href="_static/reglas_de_calidad/plots_should_not_overlap.gif" title="Los Terrenos no deben superponerse" data-title="Los Terrenos no deben superponerse"><img src="_static/reglas_de_calidad/plots_should_not_overlap.gif" class="align-center" width="800px" alt="Los Terrenos no deben superponerse"/></a>
 
-### Los nodos de Construcción deben estar cubiertos por Puntos de Levantamiento
-
-<a class="" data-lightbox="Los nodos de Construcción deben estar cubiertos por Puntos de Levantamiento" href="_static/reglas_de_calidad/buildings_nodes_should_be_coverd_by_survey_point.gif" title="Los nodos de Construcción deben estar cubiertos por Puntos de Levantamiento" data-title="Los nodos de Construcción deben estar cubiertos por Puntos de Levantamiento"><img src="_static/reglas_de_calidad/buildings_nodes_should_be_coverd_by_survey_point.gif" class="align-center" width="800px" alt="Los nodos de Construcción deben estar cubiertos por Puntos de Levantamiento"/></a>
-
 ### Las Servidumbres no se deben superponer con Construcciones
 
 <a class="" data-lightbox="Las Servidumbres no se deben superponer con Construcciones" href="_static/reglas_de_calidad/right_of_way_should_not_overlap_buildings.gif" title="Las Servidumbres no se deben superponer con Construcciones" data-title="Las Servidumbres no se deben superponer con Construcciones"><img src="_static/reglas_de_calidad/right_of_way_should_not_overlap_buildings.gif" class="align-center" width="800px" alt="Las Servidumbres no se deben superponer con Construcciones"/></a>
