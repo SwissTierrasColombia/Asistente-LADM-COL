@@ -100,14 +100,14 @@
 <li class="toctree-l1"><a class="reference internal" href="gestion_de_insumos.html">Gestión de insumos</a></li>
 <li class="toctree-l1"><a class="reference internal" href="captura_de_datos_en_campo.html">Captura de datos en campo</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Reglas de calidad</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#reglas-para-puntos">Reglas para puntos</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#los-puntos-de-linderos-no-deben-superponerse">Los Puntos de Linderos no deben superponerse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#reglas-para-puntos">Reglas para Puntos</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#los-puntos-de-lindero-no-deben-superponerse">Los Puntos de Lindero no deben superponerse</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#los-puntos-de-control-no-deben-superponerse">Los Puntos de Control no deben superponerse</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#reglas-para-lineas">Reglas para Líneas</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#los-linderos-no-deben-superponerse">Los Linderos no deben superponerse</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#los-nodos-de-linderos-deben-estar-cubiertos-por-putos-de-lindero">Los nodos de Linderos deben estar cubiertos por Putos de Lindero</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#los-nodos-de-lindero-deben-estar-cubiertos-por-puntos-de-lindero">Los nodos de Lindero deben estar cubiertos por Puntos de Lindero</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#los-linderos-no-deben-tener-nodos-sin-conectar">Los Linderos no deben tener nodos sin conectar</a></li>
 </ul>
 </li>
@@ -118,6 +118,10 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#reglas-de-consistencia-logica">Reglas de consistencia lógica</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#interpretacion-de-resultados">Interpretación de resultados</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#generar-reporte-validacion-de-reglas-y-base-de-datos-geopackage">Generar reporte validación de reglas y base de datos GeoPackage</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="consulta_de_datos.html">Consulta de datos</a></li>
@@ -200,41 +204,90 @@
             
   <div class="section" id="reglas-de-calidad">
 <h1>Reglas de calidad<a class="headerlink" href="#reglas-de-calidad" title="Enlazar permanentemente con este título">¶</a></h1>
-<img src="_static/reglas_de_calidad/quality_rules.gif" alt="Reglas de calidad" style="height:500px;width:800px" /><div class="section" id="reglas-para-puntos">
-<h2>Reglas para puntos<a class="headerlink" href="#reglas-para-puntos" title="Enlazar permanentemente con este título">¶</a></h2>
-<div class="section" id="los-puntos-de-linderos-no-deben-superponerse">
-<h3>Los Puntos de Linderos no deben superponerse<a class="headerlink" href="#los-puntos-de-linderos-no-deben-superponerse" title="Enlazar permanentemente con este título">¶</a></h3>
-<img src="_static/reglas_de_calidad/boundary_points_should_not_overlap.gif" alt="Los Puntos de Linderos no deben superponerse" style="height:500px;width:800px" /></div>
+<p>El Asistente LADM-COL incluye un conjunto de reglas para hacer un control de calidad a datos estructurados en el modelo LADM-COL. Estas reglas de calidad permiten revisar datos y detectar inconsistencias espaciales y alfanuméricas. Para acceder a esta herramienta se debe dar clic en el menú del Asistente LADM-COL y seleccionar “Calidad” como se muestra en el siguiente GIF.</p>
+<p><a class="" data-lightbox="Reglas de calidad" href="_static/reglas_de_calidad/quality_rules.gif" title="Reglas de calidad" data-title="Reglas de calidad"><img src="_static/reglas_de_calidad/quality_rules.gif" class="align-center" width="800px" alt="Reglas de calidad"/></a></p>
+<p>El conjunto de reglas disponibles incluye:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="#reglas-para-puntos">Reglas para Puntos.</a></p></li>
+<li><p><a class="reference external" href="#reglas-para-lineas">Reglas para Líneas.</a></p></li>
+<li><p><a class="reference external" href="#reglas-para-poligonos">Reglas para Polígonos.</a></p></li>
+<li><p><a class="reference external" href="#reglas-de-consistencia-logica">Reglas de Consistencia Lógica.</a></p></li>
+</ul>
+<p><a class="" data-lightbox="Conjunto de reglas disponibles" href="_static/reglas_de_calidad/rules_list.PNG" title="Conjunto de reglas disponibles" data-title="Conjunto de reglas disponibles"><img src="_static/reglas_de_calidad/rules_list.PNG" class="align-center" width="600px" alt="Conjunto de reglas disponibles"/></a></p>
+<p>Las reglas de calidad se pueden ejecutar sin haber cargado capas en el mapa o habiendo cargado previamente las capas a validar (como se mostró en la sección <a class="reference external" href="cargar_capas.html">Cargar Capas</a>). Asimismo, las reglas de calidad se pueden ejecutar una a una, por grupos, o seleccionándolas todas al tiempo. Para este último caso se da clic en el botón “Seleccionar Todas” y luego se da clic en el botón “Aceptar”.</p>
+<p>A continuación se realiza una breve descripción de las reglas de calidad por grupos.</p>
+<div class="section" id="reglas-para-puntos">
+<h2>Reglas para Puntos<a class="headerlink" href="#reglas-para-puntos" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Este grupo de reglas ayuda a validar que los puntos provenientes de un levantamiento predial no se superpongan, que estén cubiertos por los nodos de un lindero y los nodos de un terreno, entre otras. En los siguientes GIFs se muestra cómo se ejecutan dos de estas reglas y sus resultados desplegados en el mapa.</p>
+<div class="section" id="los-puntos-de-lindero-no-deben-superponerse">
+<h3>Los Puntos de Lindero no deben superponerse<a class="headerlink" href="#los-puntos-de-lindero-no-deben-superponerse" title="Enlazar permanentemente con este título">¶</a></h3>
+<p><a class="" data-lightbox="Los Puntos de Lindero no deben superponerse" href="_static/reglas_de_calidad/boundary_points_should_not_overlap.gif" title="Los Puntos de Lindero no deben superponerse" data-title="Los Puntos de Lindero no deben superponerse"><img src="_static/reglas_de_calidad/boundary_points_should_not_overlap.gif" class="align-center" width="600px" alt="Los Puntos de Lindero no deben superponerse"/></a></p>
+</div>
 <div class="section" id="los-puntos-de-control-no-deben-superponerse">
 <h3>Los Puntos de Control no deben superponerse<a class="headerlink" href="#los-puntos-de-control-no-deben-superponerse" title="Enlazar permanentemente con este título">¶</a></h3>
-<img src="_static/reglas_de_calidad/control_points_should_not_overlap.gif" alt="Los Puntos de Control no deben superponerse" style="height:500px;width:800px" /></div>
+<p><a class="" data-lightbox="Los Puntos de Control no deben superponerse" href="_static/reglas_de_calidad/control_points_should_not_overlap.gif" title="Los Puntos de Control no deben superponerse" data-title="Los Puntos de Control no deben superponerse"><img src="_static/reglas_de_calidad/control_points_should_not_overlap.gif" class="align-center" width="600px" alt="Los Puntos de Control no deben superponerse"/></a></p>
+</div>
 </div>
 <div class="section" id="reglas-para-lineas">
 <h2>Reglas para Líneas<a class="headerlink" href="#reglas-para-lineas" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Este grupo de reglas ayuda a validar algunas características que pueden presentar los linderos de un predio; como que estos no se superpongan, que los linderos estén cubiertos por los límites de uno o varios terrenos, que los linderos deben terminar en cambio de colindancia, entre otras. En los siguientes GIFs se observan los resultados al ejecutar estas reglas.</p>
 <div class="section" id="los-linderos-no-deben-superponerse">
 <h3>Los Linderos no deben superponerse<a class="headerlink" href="#los-linderos-no-deben-superponerse" title="Enlazar permanentemente con este título">¶</a></h3>
-<img src="_static/reglas_de_calidad/boundary_should_not_overlap.gif" alt="Los Linderos no deben superponerse" style="height:500px;width:800px" /></div>
-<div class="section" id="los-nodos-de-linderos-deben-estar-cubiertos-por-putos-de-lindero">
-<h3>Los nodos de Linderos deben estar cubiertos por Putos de Lindero<a class="headerlink" href="#los-nodos-de-linderos-deben-estar-cubiertos-por-putos-de-lindero" title="Enlazar permanentemente con este título">¶</a></h3>
-<img src="_static/reglas_de_calidad/boundary_nodes_should_be_covered_by_boundary_point.gif" alt="Los nodos de Linderos deben estar cubiertos por Putos de Lindero" style="height:500px;width:800px" /></div>
+<p><a class="" data-lightbox="Los Linderos no deben superponerse" href="_static/reglas_de_calidad/boundary_should_not_overlap.gif" title="Los Linderos no deben superponerse" data-title="Los Linderos no deben superponerse"><img src="_static/reglas_de_calidad/boundary_should_not_overlap.gif" class="align-center" width="600px" alt="Los Linderos no deben superponerse"/></a></p>
+</div>
+<div class="section" id="los-nodos-de-lindero-deben-estar-cubiertos-por-puntos-de-lindero">
+<h3>Los nodos de Lindero deben estar cubiertos por Puntos de Lindero<a class="headerlink" href="#los-nodos-de-lindero-deben-estar-cubiertos-por-puntos-de-lindero" title="Enlazar permanentemente con este título">¶</a></h3>
+<p><a class="" data-lightbox="Los nodos de Lindero deben estar cubiertos por Puntos de Lindero" href="_static/reglas_de_calidad/boundary_nodes_should_be_covered_by_boundary_point.gif" title="Los nodos de Lindero deben estar cubiertos por Puntos de Lindero" data-title="Los nodos de Lindero deben estar cubiertos por Puntos de Lindero"><img src="_static/reglas_de_calidad/boundary_nodes_should_be_covered_by_boundary_point.gif" class="align-center" width="600px" alt="Los nodos de Lindero deben estar cubiertos por Puntos de Lindero"/></a></p>
+</div>
 <div class="section" id="los-linderos-no-deben-tener-nodos-sin-conectar">
 <h3>Los Linderos no deben tener nodos sin conectar<a class="headerlink" href="#los-linderos-no-deben-tener-nodos-sin-conectar" title="Enlazar permanentemente con este título">¶</a></h3>
-<img src="_static/reglas_de_calidad/boundary_should_not_have_dangles.gif" alt="Los Linderos no deben tener nodos sin conectar" style="height:500px;width:800px" /></div>
+<p><a class="" data-lightbox="Los Linderos no deben tener nodos sin conectar" href="_static/reglas_de_calidad/boundary_should_not_have_dangles.gif" title="Los Linderos no deben tener nodos sin conectar" data-title="Los Linderos no deben tener nodos sin conectar"><img src="_static/reglas_de_calidad/boundary_should_not_have_dangles.gif" class="align-center" width="600px" alt="Los Linderos no deben tener nodos sin conectar"/></a></p>
+</div>
 </div>
 <div class="section" id="reglas-para-poligonos">
 <h2>Reglas para Polígonos<a class="headerlink" href="#reglas-para-poligonos" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Este grupo de reglas ayuda a validar diferentes características que deben cumplir los elementos con geometría polígono como son los terrenos, construcciones, servidumbres y unidades de construcción. Al ejecutarlas se pueden identificar errores topológicos de la misma capa o de relaciones con otras capas. Por ejemplo, hay una regla de calidad para validar que una construcción esté contenida dentro de un polígono de terreno.</p>
+<p>A continuación algunos ejemplos de reglas de calidad para polígonos.</p>
 <div class="section" id="los-terrenos-no-deben-superponerse">
 <h3>Los Terrenos no deben superponerse<a class="headerlink" href="#los-terrenos-no-deben-superponerse" title="Enlazar permanentemente con este título">¶</a></h3>
-<img src="_static/reglas_de_calidad/plots_should_not_overlap.gif" alt="Los Terrenos no deben superponerse" style="height:500px;width:800px" /></div>
+<p><a class="" data-lightbox="Los Terrenos no deben superponerse" href="_static/reglas_de_calidad/plots_should_not_overlap.gif" title="Los Terrenos no deben superponerse" data-title="Los Terrenos no deben superponerse"><img src="_static/reglas_de_calidad/plots_should_not_overlap.gif" class="align-center" width="800px" alt="Los Terrenos no deben superponerse"/></a></p>
+</div>
 <div class="section" id="los-nodos-de-construccion-deben-estar-cubiertos-por-puntos-de-levantamiento">
 <h3>Los nodos de Construcción deben estar cubiertos por Puntos de Levantamiento<a class="headerlink" href="#los-nodos-de-construccion-deben-estar-cubiertos-por-puntos-de-levantamiento" title="Enlazar permanentemente con este título">¶</a></h3>
-<img src="_static/reglas_de_calidad/buildings_nodes_should_be_coverd_by_survey_point.gif" alt="Los nodos de Construcción deben estar cubiertos por Puntos de Levantamiento" style="height:500px;width:800px" /></div>
+<p><a class="" data-lightbox="Los nodos de Construcción deben estar cubiertos por Puntos de Levantamiento" href="_static/reglas_de_calidad/buildings_nodes_should_be_coverd_by_survey_point.gif" title="Los nodos de Construcción deben estar cubiertos por Puntos de Levantamiento" data-title="Los nodos de Construcción deben estar cubiertos por Puntos de Levantamiento"><img src="_static/reglas_de_calidad/buildings_nodes_should_be_coverd_by_survey_point.gif" class="align-center" width="800px" alt="Los nodos de Construcción deben estar cubiertos por Puntos de Levantamiento"/></a></p>
+</div>
 <div class="section" id="las-servidumbres-no-se-deben-superponer-con-construcciones">
 <h3>Las Servidumbres no se deben superponer con Construcciones<a class="headerlink" href="#las-servidumbres-no-se-deben-superponer-con-construcciones" title="Enlazar permanentemente con este título">¶</a></h3>
-<img src="_static/reglas_de_calidad/right_of_way_should_not_overlap_buildings.gif" alt="Las Servidumbres no se deben superponer con Construcciones" style="height:500px;width:800px" /></div>
+<p><a class="" data-lightbox="Las Servidumbres no se deben superponer con Construcciones" href="_static/reglas_de_calidad/right_of_way_should_not_overlap_buildings.gif" title="Las Servidumbres no se deben superponer con Construcciones" data-title="Las Servidumbres no se deben superponer con Construcciones"><img src="_static/reglas_de_calidad/right_of_way_should_not_overlap_buildings.gif" class="align-center" width="800px" alt="Las Servidumbres no se deben superponer con Construcciones"/></a></p>
+</div>
 </div>
 <div class="section" id="reglas-de-consistencia-logica">
 <h2>Reglas de consistencia lógica<a class="headerlink" href="#reglas-de-consistencia-logica" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Este conjunto de reglas permite hacer validaciones sobre “reglas de negocio” definidas por la autoridad catastral o los gestores catastrales. Estas reglas de consistencia lógica pueden involucrar una o varias tablas del modelo, así:</p>
+<ul class="simple">
+<li><p>Relaciones entre elementos geográficos y elementos alfanuméricos: Por ejemplo, validar que las unidades espaciales relacionadas con un predio, correspondan al tipo de predio.</p></li>
+<li><p>Relaciones entre elementos alfanuméricos de una tabla con elementos alfanuméricos de otra tabla: Por ejemplo,  validar que los predios tienen asociado un (y un solo) derecho.</p></li>
+<li><p>Una sola tabla geográfica: Por ejemplo, validar que no hayan puntos de lindero duplicados.</p></li>
+<li><p>Una sola tabla alfanumérica: Por ejemplo, validar una posición específica del número predial en la tabla predio.</p></li>
+</ul>
+<p>A continuación un ejemplo de la ejecución de reglas de consistencia lógica.</p>
+<p><a class="" data-lightbox="Reglas de Consistencia Lógica" href="_static/reglas_de_calidad/Logical_consistency_rules.gif" title="Reglas de Consistencia Lógica" data-title="Reglas de Consistencia Lógica"><img src="_static/reglas_de_calidad/Logical_consistency_rules.gif" class="align-center" width="800px" alt="Reglas de Consistencia Lógica"/></a></p>
+</div>
+<div class="section" id="interpretacion-de-resultados">
+<h2>Interpretación de resultados<a class="headerlink" href="#interpretacion-de-resultados" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>En caso de encontrar algún error, el módulo de reglas de calidad generará por lo menos una capa que será cargada al panel de capas de QGIS, dentro del grupo «Errores de validación». La capa generada puede ser alfanumérica o geográfica. En el caso de las capas geográficas, los registros de la capa permitirán ubicar el error en el mapa, dependiendo de la geometría del error encontrado.</p>
+<p>Las tablas de atributos de las capas de errores de reglas de calidad, contienen información útil que permite conocer detalles del error encontrado. Concretamente, estas capas de errores suelen incluir un identificador del registro o los registros que tienen errores (tomado del campo <code class="docutils literal notranslate"><span class="pre">t_ili_tid</span></code>, de tipo UUID), así como el código y la descripción del error, como se aprecia en el siguiente GIF.</p>
+<p><a class="" data-lightbox="Interpretación de resultados" href="_static/reglas_de_calidad/Interpretacion_resultados.gif" title="Interpretación de resultados" data-title="Interpretación de resultados"><img src="_static/reglas_de_calidad/Interpretacion_resultados.gif" class="align-center" width="800px" alt="Interpretación de resultados"/></a></p>
+<div class="section" id="generar-reporte-validacion-de-reglas-y-base-de-datos-geopackage">
+<h3>Generar reporte validación de reglas y base de datos GeoPackage<a class="headerlink" href="#generar-reporte-validacion-de-reglas-y-base-de-datos-geopackage" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>Una vez se haya ejecutado un conjunto de reglas de calidad sobre datos estructurados en el modelo LADM-COL se generan dos tipos de resultados:</p>
+<ul class="simple">
+<li><p>Reporte de la validación (puede ser exportado a PDF).</p></li>
+<li><p>(Opcional) Grupo de capas con errores encontrados (puede ser exportado a una base de datos GeoPackage). En caso de no encontrar errores, no se generarán capas para exportar a una base de datos GeoPackage.</p></li>
+</ul>
+<p>La manera de exportar tanto el reporte de la validación como las capas que contienen los errores detectados se puede apreciar en el siguiente GIF.</p>
+<p><a class="" data-lightbox="Exportación de resultados de reglas de calidad" href="_static/reglas_de_calidad/reporte_gpkg.gif" title="Exportación de resultados de reglas de calidad" data-title="Exportación de resultados de reglas de calidad"><img src="_static/reglas_de_calidad/reporte_gpkg.gif" class="align-center" width="800px" alt="Exportación de resultados de reglas de calidad"/></a></p>
+</div>
 </div>
 </div>
 
