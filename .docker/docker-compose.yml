@@ -14,7 +14,7 @@ services:
       # Add extensions you need to be enabled by default in the DB. Default are the specified below
       - POSTGRES_MULTIPLE_EXTENSIONS=postgis
   mssql:
-    image: microsoft/mssql-server-linux:2017-latest
+    image: mcr.microsoft.com/mssql/server:2017-latest
     environment:
       ACCEPT_EULA: Y
       SA_PASSWORD: <YourStrong!Passw0rd>
