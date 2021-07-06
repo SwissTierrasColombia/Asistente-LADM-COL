@@ -245,6 +245,9 @@ class GeometryUtils(QObject):
 
         request = QgsFeatureRequest().setSubsetOfAttributes([])
         for feature in point_layer.getFeatures(request):
+            if feature.geometry().isEmpty():
+                continue  # Skip NULL or EMPTY geometries
+                
             if not feature.id() in set_points:
                 ids = index.intersects(feature.geometry().boundingBox())
 
