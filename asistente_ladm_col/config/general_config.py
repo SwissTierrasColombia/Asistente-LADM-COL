@@ -134,7 +134,7 @@ DICT_JAVA_DIR_NAME = {
 
 # Configure QGIS Model Baker Dependency
 QGIS_MODEL_BAKER_PLUGIN_NAME = "QgisModelBaker"
-QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION = "6.3.1"
+QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION = "6.3.2"
 
 # If Asistente LADM-COL depends on a specific version of QGIS Model Baker
 #  (and only on that one), set to True
