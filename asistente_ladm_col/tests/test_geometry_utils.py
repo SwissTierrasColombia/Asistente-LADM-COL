@@ -252,15 +252,13 @@ class TestGeometryUtils(unittest.TestCase):
             polygon_layer = QgsVectorLayer(uri_polygon, 'polygon_layer_{}'.format(i+1), 'ogr')
             lines_layer = QgsVectorLayer(uri_lines, 'lines_layer_{}'.format(i+1), 'ogr')
 
-            # We don't want to overwrite the original layer
-            polygon_copy = self.app.core.get_layer_copy(polygon_layer)
-
-            geom_polygon = polygon_copy.getFeature(1).geometry()
+            geom_polygon = polygon_layer.getFeature(1).geometry()
             init_vertex_geom = [vertex for vertex in geom_polygon.vertices()]
 
-            self.geometry.add_topological_vertices(polygon_copy, lines_layer)
+            # We don't overwrite the original layer, changes are made on a copy
+            mod_polygon_layer = self.geometry.add_topological_vertices(polygon_layer, lines_layer)
 
-            geom_polygon = polygon_copy.getFeature(1).geometry()
+            geom_polygon = mod_polygon_layer.getFeature(1).geometry()
             adjusted_vertex_geom = [vertex for vertex in geom_polygon.vertices()]
 
             num_vertices_added = len(adjusted_vertex_geom) - len(init_vertex_geom)
@@ -291,7 +289,7 @@ class TestGeometryUtils(unittest.TestCase):
             lines_layer = QgsVectorLayer(uri_lines, 'lines_layer_{}'.format(i+1), 'ogr')
 
             polygon_as_lines_layer = processing.run("ladm_col:polygonstolines", {'INPUT': polygon_layer, 'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
-            diff_plot_boundary = self.geometry.difference_plot_boundary(names, polygon_as_lines_layer, lines_layer, 'fid')
+            diff_plot_boundary = self.geometry.difference_plot_boundary(polygon_as_lines_layer, lines_layer, 'fid')
 
             if diff_plot_boundary is not None:
                 if len(diff_plot_boundary) > 0:
@@ -323,7 +321,7 @@ class TestGeometryUtils(unittest.TestCase):
             lines_layer = QgsVectorLayer(uri_lines, 'lines_layer_{}'.format(i+1), 'ogr')
 
             polygon_as_lines_layer = processing.run("ladm_col:polygonstolines", {'INPUT': polygon_layer, 'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
-            diff_boundary_plot = self.geometry.difference_boundary_plot(names, lines_layer, polygon_as_lines_layer, 'fid')
+            diff_boundary_plot = self.geometry.difference_boundary_plot(lines_layer, polygon_as_lines_layer, 'fid')
 
             if diff_boundary_plot is not None:
                 if len(diff_boundary_plot) > 0:
@@ -344,6 +342,27 @@ class TestGeometryUtils(unittest.TestCase):
         polygon_intersection = self.geometry.get_intersection_polygons(polygons_intersection_layer, polygon_id, overlapping_id)
         self.assertEqual(polygon_intersection.asWkt(), test_overlapping_polygon)
 
+    def test_pair_boundary_plot(self):
+        print('\nValidating pairs boundary-plot')
+        gpkg_path = get_test_copy_path('db/static/gpkg/quality_validations.gpkg')
+        self.db_gpkg = get_gpkg_conn('tests_quality_validations_gpkg')
+        self.names = self.db_gpkg.names
+        self.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
+
+        uri = gpkg_path + '|layername={layername}'.format(layername='topology_boundaries')
+        boundary_layer = QgsVectorLayer(uri, 'topology_boundaries', 'ogr')
+
+        uri = gpkg_path + '|layername={layername}'.format(layername='topology_plots')
+        plot_layer = QgsVectorLayer(uri, 'topology_plots', 'ogr')
+
+        result1, result2 = GeometryUtils().get_pair_boundary_plot(boundary_layer,
+                                                                           plot_layer,
+                                                                           self.names.T_ID_F,
+                                                                           use_selection=False)
+
+        self.assertEqual(result1, [(1, 3), (3, 3)])
+
+        self.assertEqual(result2, [(1, 4)])
 
     @classmethod
     def tearDownClass(cls):

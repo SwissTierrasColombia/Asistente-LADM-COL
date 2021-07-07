@@ -512,7 +512,7 @@ class LineQualityRules:
         # and inner_rings and boundary. If the geometry fails, there is no need to check further topological rules for
         # plots
 
-        errors_boundary_plot_diffs = self.geometry.difference_boundary_plot(db.names, boundary_layer, plot_as_lines_layer, db.names.T_ID_F)
+        errors_boundary_plot_diffs = self.geometry.difference_boundary_plot(boundary_layer, plot_as_lines_layer, db.names.T_ID_F)
         for error_diff in errors_boundary_plot_diffs:
             boundary_id = error_diff['id']
             # All boundaries with geometric errors are eliminated. It is not necessary check more

@@ -390,9 +390,8 @@ class PolygonQualityRules:
 
         # Sometimes, nodes of the building that lie on plot boundaries but do not match a plot vertex, might break
         # the contains function, so we make sure to have those building nodes on the plots to guarantee the contains
-        # works as expected. Of course, we don't touch the original plots layer, so we make a copy first.
-        topological_plots = self.app.core.get_layer_copy(layers[names.LC_PLOT_T])
-        self.geometry.add_topological_vertices(topological_plots, layers[names.LC_BUILDING_T])
+        # works as expected. Of course, we don't touch the original plots layer, changes are made on a copy.
+        topological_plots = self.geometry.add_topological_vertices(layers[names.LC_PLOT_T], layers[names.LC_BUILDING_T])
 
         # Now that we have a copy of the plot layer, we register it in the project, so that Processing can find it
         self.app.core.register_layers_to_project([topological_plots])
@@ -610,9 +609,8 @@ class PolygonQualityRules:
 
         # Sometimes, nodes of the b. unit that lie on plot boundaries but do not match a plot vertex, might break
         # the contains function, so we make sure to have those b. unit nodes on the plots to guarantee the contains
-        # works as expected. Of course, we don't touch the original plots layer, so we make a copy first.
-        topological_plots = self.app.core.get_layer_copy(layers[names.LC_PLOT_T])
-        self.geometry.add_topological_vertices(topological_plots, layers[names.LC_BUILDING_UNIT_T])
+        # works as expected. Of course, we don't touch the original plots layer, changes are made on a copy.
+        topological_plots = self.geometry.add_topological_vertices(layers[names.LC_PLOT_T], layers[names.LC_BUILDING_UNIT_T])
 
         # Now that we have a copy of the plot layer, we register it in the project, so that Processing can find it
         self.app.core.register_layers_to_project([topological_plots])
@@ -733,9 +731,8 @@ class PolygonQualityRules:
 
         # Sometimes, nodes of the b. unit that lie on building boundaries but do not match a building vertex, might
         # break the contains function, so we make sure to have those b. unit nodes on the buildings to guarantee the
-        # contains works as expected. Of course, we don't touch the original building layer, so we make a copy first.
-        topological_buildings = self.app.core.get_layer_copy(layers[names.LC_BUILDING_T])
-        self.geometry.add_topological_vertices(topological_buildings, layers[names.LC_BUILDING_UNIT_T])
+        # contains works as expected. Of course, we don't touch the original building layer, changes are made on a copy.
+        topological_buildings = self.geometry.add_topological_vertices(layers[names.LC_BUILDING_T], layers[names.LC_BUILDING_UNIT_T])
 
         # Now that we have a copy of the building layer, we register it in the project, so that Processing can find it
         self.app.core.register_layers_to_project([topological_buildings])
@@ -1107,7 +1104,7 @@ class PolygonQualityRules:
         # Identify plots with geometry problems and remove coincidence in spatial join between plot as line and boundary
         # and inner_rings and boundary. No need to check further topological rules for plots
 
-        errors_plot_boundary_diffs = self.geometry.difference_plot_boundary(db.names, plot_as_lines_layer, boundary_layer, db.names.T_ID_F)
+        errors_plot_boundary_diffs = self.geometry.difference_plot_boundary(plot_as_lines_layer, boundary_layer, db.names.T_ID_F)
         for error_diff in errors_plot_boundary_diffs:
             plot_id = error_diff['id']
             # All plots with geometric errors are eliminated. It is not necessary check more
