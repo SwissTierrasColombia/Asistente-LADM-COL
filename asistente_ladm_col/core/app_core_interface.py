@@ -1441,7 +1441,7 @@ class AppCoreInterface(QObject):
         if add_topological_points:
             self.logger.debug(__name__,
                               "Adding topological points to the adjusted layer ({})...".format(input_layer_name))
-            GeometryUtils().add_topological_vertices(res, res)  # Note: Topological points against the same result layer
+            res = GeometryUtils().add_topological_vertices(res, res, tolerance)  # Note: Topological points against the same result layer
 
         return res
 
