@@ -19,12 +19,12 @@ class TestToolbar(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         import_processing()
-        import_asistente_ladm_col()  # Import plugin
         import_qgis_model_baker()
+        import_asistente_ladm_col()  # Import plugin
         cls.app = AppInterface()
         cls.toolbar = ToolBar(get_iface())
 
-    def test_build_boundaries(self):
+    def _test_build_boundaries(self):
         print('\nINFO: Validating build boundaries...')
         self.db_gpkg = get_copy_gpkg_conn('test_toolbar_gpkg')
         res, code, msg = self.db_gpkg.test_connection()
@@ -57,8 +57,8 @@ class TestToolbar(unittest.TestCase):
                         '9a009adf-6e87-4b04-aeb6-5d0830a848a7', '25509907-7cbc-4c7d-ab76-153898205f80',
                         '1ef74b53-46fa-4dc5-9d85-c25db94f3dcd', '5b7194f2-54d8-4352-a47d-fac7f270a4a1']
 
-        exp = "{} in ({})".format(self.db_gpkg.names.T_ILI_TID_F,
-                                  ', '.join("'{}'".format(boundary_id) for boundary_id in boundary_ids))
+        exp = "{} in ('{}')".format(self.db_gpkg.names.T_ILI_TID_F,
+                                    "', '".join(boundary_ids))
         layers[self.db_gpkg.names.LC_BOUNDARY_T].selectByExpression(exp)
 
         self.toolbar.build_boundary(self.db_gpkg)
