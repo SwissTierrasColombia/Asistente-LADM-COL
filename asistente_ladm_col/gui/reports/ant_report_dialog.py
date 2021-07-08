@@ -81,10 +81,13 @@ class ANTReportDialog(QDialog, DIALOG_ANT_REPORT_UI):
                 basemap = dict()
                 basemap[self.WMS_NAME] = layer.name()
                 basemap[self.WMS_SUBLAYERS] = layer.subLayers()
-                for param in layer.source().split('&'):
-                    if param.startswith('url'):
-                        basemap[self.WMS_URL] = param.split('=')[1]
-                self.__wms_basemaps[layer.id()] = basemap
+
+                # xyz services are not supported
+                if 'type=xyz' not in layer.source():
+                    for param in layer.source().split('&'):
+                        if param.startswith('url'):
+                            basemap[self.WMS_URL] = param.split('=')[1]
+                    self.__wms_basemaps[layer.id()] = basemap
 
     def set_generate_report_button_enabled(self, enable):
         self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(enable)

@@ -292,6 +292,8 @@ class BaseReportGenerator(QObject):
                     self.logger.debug(__name__, "{}:{}".format(plot_id, proc.exitCode()))
                     if proc.exitCode() == 0:
                         count += 1
+                    else:
+                        os.remove(current_report_path)  # Deletes the report when it could not be generated correctly
 
                     step += 1
                     try:
