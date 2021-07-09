@@ -118,7 +118,7 @@ class ToolBar(QObject):
                     layers[db.names.LC_BOUNDARY_T].deleteSelectedFeatures()
 
                 # Bring back the features we deleted before, but this time, with the boundaries fixed
-                self.app.core.run_etl_model_in_backgroud_mode(db, build_boundaries_layer, db.names.LC_BOUNDARY_T)
+                self.app.core.run_etl_model_in_backgroud_mode(db, build_boundaries_layer, db.names.LC_BOUNDARY_T, False)
 
                 self.logger.info_msg(__name__, QCoreApplication.translate("ToolBar",
                                                                           "{} feature(s) was(were) analyzed generating {} boundary(ies)!").format(num_boundaries, build_boundaries_layer.featureCount()))

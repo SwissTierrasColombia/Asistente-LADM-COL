@@ -1151,7 +1151,7 @@ class AppCoreInterface(QObject):
         return True
 
     @_activate_processing_plugin
-    def run_etl_model_in_backgroud_mode(self, db, input_layer, ladm_col_layer_name):
+    def run_etl_model_in_backgroud_mode(self, db, input_layer, ladm_col_layer_name, force_reprojection=True):
         output_layer = self.get_layer(db, ladm_col_layer_name, load=True)
         start_feature_count = output_layer.featureCount()
 
@@ -1165,9 +1165,10 @@ class AppCoreInterface(QObject):
             return False
 
         model_name = ETL_MODEL_NAME
-        if get_crs_authid(input_layer.crs()) != DEFAULT_SRS_AUTHID and output_layer.isSpatial():
-            model_name = ETL_MODEL_WITH_REPROJECTION_NAME  # We need to reproject the layer first (transparently)
-            self.logger.info(__name__, "Using ETL model with reprojection since source layer's CRS is not {}!".format(DEFAULT_SRS_AUTHID))
+        if force_reprojection:
+            if get_crs_authid(input_layer.crs()) != DEFAULT_SRS_AUTHID and output_layer.isSpatial():
+                model_name = ETL_MODEL_WITH_REPROJECTION_NAME  # We need to reproject the layer first (transparently)
+                self.logger.info(__name__, "Using ETL model with reprojection since source layer's CRS is not {}!".format(DEFAULT_SRS_AUTHID))
 
         model = QgsApplication.processingRegistry().algorithmById(model_name)
         if model:

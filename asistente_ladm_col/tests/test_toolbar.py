@@ -24,7 +24,7 @@ class TestToolbar(unittest.TestCase):
         cls.app = AppInterface()
         cls.toolbar = ToolBar(get_iface())
 
-    def _test_build_boundaries(self):
+    def test_build_boundaries(self):
         print('\nINFO: Validating build boundaries...')
         self.db_gpkg = get_copy_gpkg_conn('test_toolbar_gpkg')
         res, code, msg = self.db_gpkg.test_connection()
