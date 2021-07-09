@@ -184,10 +184,10 @@
             
   <div class="section" id="reportes">
 <h1>Reportes<a class="headerlink" href="#reportes" title="Enlazar permanentemente con este título">¶</a></h1>
-<p>El Asistente LADM-COL dispone de una funcionalidad que permite generar reportes a partir de los datos que se encuentran en la base de datos producto de un levantamiento predial, en el menú desplegable se puede escoger el reporte a generar:</p>
+<p>El Asistente LADM-COL permite generar reportes de forma masiva y de forma automatizada a partir de los datos que fueron recolectados del levantamiento catastral. Para tener acceso a esta funcionalidad debes ir al menú LADM-COL y seleccionar la opción reportes, para la cual se desplegarán dos opciones de reportes:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="#anexo-17">Anexo 17</a>: Es un reporte basado en la información y esquema del anexo #17 del documento “Conceptualización y especificaciones para la operación del Catastro Multipropósito” generado por el Instituto Geográfico Agustín Codazzi, IGAC.</p></li>
-<li><p><a class="reference external" href="#plano-ant">Plano ANT</a>: Plano definido por la Agencia Nacional de Tierras -ANT que se utiliza para mostrar la información producto de la definición de cabida y linderos de los predios objeto del barrido predial.</p></li>
+<li><p><a class="reference external" href="#plano-ant">Plano ANT</a>: Plano definido por la Agencia Nacional de Tierras, ANT que se utiliza para mostrar la información producto de la definición de cabida y linderos de los predios objeto del levantamiento catastral.</p></li>
 </ul>
 <p><a class="" data-lightbox="Menu reportes" href="_static/reportes/menu_reports.png" title="Menu reportes" data-title="Menu reportes"><img src="_static/reportes/menu_reports.png" class="align-center" width="500px" alt="Menu reportes"/></a></p>
 <div class="warning">
@@ -202,26 +202,40 @@
 <li><p>Selecciona el o los terrenos a los cuales se les generará el reporte.</p></li>
 <li><p>Ir  a <code class="docutils literal notranslate"><span class="pre">LADM-COL</span> <span class="pre">--&gt;</span> <span class="pre">Reportes</span></code> y dar clic en el botón <code class="docutils literal notranslate"><span class="pre">Anexo</span> <span class="pre">17</span></code>.</p></li>
 <li><p>Descargar dependencias (automático). Este paso se realiza una sola vez, puede tardar algunos minutos y necesita una conexión a internet activa.</p></li>
-<li><p>Indicar el directorio donde se desean almacenar los reportes generados y dar clic en Aceptar.</p></li>
+<li><p>Se desplegara una ventana emergente en la cual se debe indicar el directorio donde se desean almacenar los reportes generados y dar clic en Aceptar.</p></li>
 <li><p>Al terminar la generación de reportes se obtiene un enlace a la ruta donde se encuentran los archivos PDF.</p></li>
 <li><p>Ir al directorio que se seleccionó en el paso 4 para verificar el resultado, que luce como en la siguiente imagen:</p></li>
 </ol>
-<p><a class="" data-lightbox="Generar reporte anexo 17" href="_static/reportes/annex_17_2.gif" title="Generar reporte anexo 17" data-title="Generar reporte anexo 17"><img src="_static/reportes/annex_17_2.gif" class="align-center" width="800px" alt="Generar reporte anexo 17"/></a></p>
+<p><a class="" data-lightbox="Generar reporte anexo 17" href="_static/reportes/report_annex17.gif" title="Generar reporte anexo 17" data-title="Generar reporte anexo 17"><img src="_static/reportes/report_annex17.gif" class="align-center" width="800px" alt="Generar reporte anexo 17"/></a></p>
 </div>
 <div class="section" id="plano-ant">
 <h2>Plano ANT<a class="headerlink" href="#plano-ant" title="Enlazar permanentemente con este título">¶</a></h2>
 <p>El plano ANT muestra la información producto de la definición de cabida y linderos de los predios a los que se les ha realizado un levantamiento predial.</p>
 <p>Para generar el informe del plano ANT, sigue estos pasos:</p>
-<ol class="simple">
+<ol>
 <li><p>Selecciona el o los terrenos a los cuales se les generará el reporte.</p></li>
 <li><p>Ir  a <code class="docutils literal notranslate"><span class="pre">LADM-COL</span> <span class="pre">--&gt;</span> <span class="pre">Reportes</span></code> y dar clic en el botón <code class="docutils literal notranslate"><span class="pre">Plano</span> <span class="pre">ANT</span></code>.</p></li>
 <li><p>Descargar dependencias (automático). Este paso se realiza una sola vez, puede tardar algunos minutos y necesita una conexión a internet activa.</p></li>
-<li><p>Indicar el directorio donde se desean almacenar los reportes generados y dar clic en Aceptar.</p></li>
+<li><p>Se despliega una ventana de dialogo en la cual se deben diligenciar los campos solicitados y luego dar clic en el botón Generar.</p>
+<ul>
+<li><p><strong>Zona</strong>: Permite seleccionar la zona donde estan ubicados los datos. De acuerdo el apartado 7.3 de la resolución 388 de 2020 del IGAC, el área para predios en el suelo urbano se expresa en metros cuadrados (m<sup>2</sup>) con aproximación al decímetro cuadrado, en el suelo rural se expresa en hectáreas (ha) y fracción en metros cuadrados (m<sup>2</sup>) sin aproximación.</p></li>
+<li><p><strong>Elaboró</strong>: Permite diligenciar el nombre completo y matrícula profesional de la persona que elaboró el reporte.</p></li>
+<li><p><strong>Revisó</strong>: Permite diligenciar el nombre completo y matrícula profesional de la persona que revisó el reporte.</p></li>
+<li><p><strong>Mapa base</strong>: Permite seleccionar un mapa WMS, el cual servirá como mapa base en la localización general del reporte.</p></li>
+<li><p><strong>Observaciones</strong>: Permite registrar una observación acerca del reporte generado.</p></li>
+<li><p><strong>Carpeta para almacenar los reportes</strong>: Corresponde al directorio en el cual se almacenarán los reportes generados.</p>
+<p><a class="" data-lightbox="Reporte plano ANT" href="_static/reportes/ant_report_dialog.png" title="Reporte plano ANT" data-title="Reporte plano ANT"><img src="_static/reportes/ant_report_dialog.png" class="align-center" width="400px" alt="Reporte plano ANT"/></a></p>
+</li>
+</ul>
+</li>
 <li><p>Al terminar la generación de reportes se obtiene un enlace a la ruta donde se encuentran los archivos PDF.</p></li>
 <li><p>Ir al directorio que se seleccionó en el paso 4 para verificar el resultado, que luce como en la siguiente imagen:</p></li>
 </ol>
 <p><a class="" data-lightbox="Reporte plano ANT" href="_static/reportes/report_ant.gif" title="Reporte plano ANT" data-title="Reporte plano ANT"><img src="_static/reportes/report_ant.gif" class="align-center" width="800px" alt="Reporte plano ANT"/></a></p>
-</div>
+<div class="note">
+<p class="admonition-title">IMPORTANTE</p>
+<p>Para poder generar el reporte Plano ANT la base de datos debe tener implementado el Modelo de aplicación de Levantamiento Catastral v1.0 y el Submodelo de Cartografía Catastral v1.0.</p>
+</div></div>
 </div>
 
 
