@@ -57,6 +57,8 @@ DB_PASSWORD = "clave_ladm_col"
 iface = get_iface()
 asistente_ladm_col_plugin = AsistenteLADMCOLPlugin(iface, False)
 asistente_ladm_col_plugin.initGui()
+asistente_ladm_col_plugin.app.core.initialize_ctm12()  # We need to initialize CTM12
+
 refactor_fields = RefactorFieldsMappings()
 
 MODELS_PATH = '../../resources/models/'

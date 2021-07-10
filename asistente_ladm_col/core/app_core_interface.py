@@ -1151,7 +1151,7 @@ class AppCoreInterface(QObject):
         return True
 
     @_activate_processing_plugin
-    def run_etl_model_in_backgroud_mode(self, db, input_layer, ladm_col_layer_name, force_reprojection=True):
+    def run_etl_model_in_backgroud_mode(self, db, input_layer, ladm_col_layer_name):
         output_layer = self.get_layer(db, ladm_col_layer_name, load=True)
         start_feature_count = output_layer.featureCount()
 
@@ -1165,10 +1165,9 @@ class AppCoreInterface(QObject):
             return False
 
         model_name = ETL_MODEL_NAME
-        if force_reprojection:
-            if get_crs_authid(input_layer.crs()) != DEFAULT_SRS_AUTHID and output_layer.isSpatial():
-                model_name = ETL_MODEL_WITH_REPROJECTION_NAME  # We need to reproject the layer first (transparently)
-                self.logger.info(__name__, "Using ETL model with reprojection since source layer's CRS is not {}!".format(DEFAULT_SRS_AUTHID))
+        if get_crs_authid(input_layer.crs()) != DEFAULT_SRS_AUTHID and output_layer.isSpatial():
+            model_name = ETL_MODEL_WITH_REPROJECTION_NAME  # We need to reproject the layer first (transparently)
+            self.logger.info(__name__, "Using ETL model with reprojection since source layer's CRS is not {}!".format(DEFAULT_SRS_AUTHID))
 
         model = QgsApplication.processingRegistry().algorithmById(model_name)
         if model:
@@ -1185,7 +1184,7 @@ class AppCoreInterface(QObject):
 
             if not finish_feature_count:
                 self.logger.warning(__name__, QCoreApplication.translate("AppCoreInterface",
-                                                                         "The output of the ETL-model has no features! Most likely, the CSV does not have the required structure."))
+                                                                         "The output of the ETL-model has no features! Most likely, the layer does not have the required structure."))
             return finish_feature_count > start_feature_count
         else:
             self.logger.info_msg(__name__, QCoreApplication.translate("AppCoreInterface",

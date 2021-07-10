@@ -45,7 +45,14 @@ class ToolBar(QObject):
         self.app = AppInterface()
         self.geometry = GeometryUtils()
 
-    def build_boundary(self, db):
+    def build_boundaries(self, db, skip_selection=False):
+        """
+        Builds the boundaries correctly and update boundary layer
+
+        :param db: db connection instance
+        :param skip_selection: Boolean True if we omit the boundaries selected by the user, False if we validate the user's selection.
+        :return:
+        """
         QgsProject.instance().setAutoTransaction(False)
         use_selection = True
 
@@ -57,6 +64,9 @@ class ToolBar(QObject):
                 db.names.LESS_BFS_T: None
             }
             self.app.core.get_layers(db, layers, load=True)
+
+            if skip_selection:
+                layers[db.names.LC_BOUNDARY_T].selectAll()
 
             if layers[db.names.LC_BOUNDARY_T].selectedFeatureCount() == 0:
                 reply = QMessageBox.question(None,
@@ -72,12 +82,16 @@ class ToolBar(QObject):
 
             boundary_t_ids = list()
             if use_selection:
+                copy_boundary_layer = processing.run("native:saveselectedfeatures",{'INPUT': layers[db.names.LC_BOUNDARY_T], 'OUTPUT': 'memory:'})['OUTPUT']
                 boundary_t_ids = QgsVectorLayerUtils.getValues(layers[db.names.LC_BOUNDARY_T], db.names.T_ID_F, selectedOnly=True)[0]
-                num_boundaries = layers[db.names.LC_BOUNDARY_T].selectedFeatureCount()
             else:
+                copy_boundary_layer = self.app.core.get_layer_copy(layers[db.names.LC_BOUNDARY_T])
                 boundary_t_ids = QgsVectorLayerUtils.getValues(layers[db.names.LC_BOUNDARY_T], db.names.T_ID_F)[0]
                 layers[db.names.LC_BOUNDARY_T].selectAll()
-                num_boundaries = layers[db.names.LC_BOUNDARY_T].featureCount()
+
+            boundaries_count = layers[db.names.LC_BOUNDARY_T].featureCount()
+            selected_boundaries_count = layers[db.names.LC_BOUNDARY_T].selectedFeatureCount()
+            boundary_t_ili_tids = QgsVectorLayerUtils.getValues(layers[db.names.LC_BOUNDARY_T], db.names.T_ILI_TID_F)[0]
 
             if boundary_t_ids:
                 boundary_topology_relation = {
@@ -113,15 +127,41 @@ class ToolBar(QObject):
                 selected_boundaries_layer = processing.run("native:saveselectedfeatures", {'INPUT': layers[db.names.LC_BOUNDARY_T], 'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
                 build_boundaries_layer = self.geometry.build_boundaries(selected_boundaries_layer)
 
-                with edit(layers[db.names.LC_BOUNDARY_T]):
-                    # Delete selected features as they will be imported again from a newly created layer after processed
-                    layers[db.names.LC_BOUNDARY_T].deleteSelectedFeatures()
+                build_boundaries_count = build_boundaries_layer.featureCount()
+                expected_boundaries_count = boundaries_count - selected_boundaries_count + build_boundaries_count
 
-                # Bring back the features we deleted before, but this time, with the boundaries fixed
-                self.app.core.run_etl_model_in_backgroud_mode(db, build_boundaries_layer, db.names.LC_BOUNDARY_T, False)
+                # Build boundaries should have generated at least one boundary.
+                if build_boundaries_count > 0:
+                    with edit(layers[db.names.LC_BOUNDARY_T]):
+                        # Delete selected features as they will be imported again from a newly created layer after processed
+                        layers[db.names.LC_BOUNDARY_T].deleteSelectedFeatures()
 
-                self.logger.info_msg(__name__, QCoreApplication.translate("ToolBar",
-                                                                          "{} feature(s) was(were) analyzed generating {} boundary(ies)!").format(num_boundaries, build_boundaries_layer.featureCount()))
+                    # Bring back the features we deleted before, but this time, with the boundaries fixed
+                    self.app.core.run_etl_model_in_backgroud_mode(db, build_boundaries_layer, db.names.LC_BOUNDARY_T)
+
+                    # check if features were inserted successfully
+                    if layers[db.names.LC_BOUNDARY_T].featureCount() == expected_boundaries_count:
+                        self.logger.info_msg(__name__, QCoreApplication.translate("ToolBar",
+                                                                                  "{} feature(s) was(were) analyzed generating {} boundary(ies)!").format(selected_boundaries_count, build_boundaries_layer.featureCount()))
+
+                    else:
+                        if layers[db.names.LC_BOUNDARY_T].featureCount() != boundaries_count - selected_boundaries_count:
+                            # Clean layer because wrong data could have been inserted previously
+                            expr = "{} NOT IN ('{}')".format(db.names.T_ILI_TID_F, "','".join([t_ili_tid for t_ili_tid in boundary_t_ili_tids]))
+                            layers[db.names.LC_BOUNDARY_T].selectByExpression(expr)
+
+                            with edit(layers[db.names.LC_BOUNDARY_T]):
+                                layers[db.names.LC_BOUNDARY_T].deleteSelectedFeatures()
+
+                        # the previously deleted boundaries are restored because an error occurred when trying to insert the building boundaries
+                        self.app.core.run_etl_model_in_backgroud_mode(db, copy_boundary_layer, db.names.LC_BOUNDARY_T)
+
+                        self.logger.warning_msg(__name__, QCoreApplication.translate("ToolBar",
+                                                                                     "An error occurred when trying to build the boundary(ies). No changes are made!"))
+                else:
+                    self.logger.warning_msg(__name__, QCoreApplication.translate("ToolBar",
+                                                                                 "An error occurred when trying to build the boundary(ies). No changes are made!"))
+
                 self.iface.mapCanvas().refresh()
 
                 # topology tables are recalculated with the new boundaries

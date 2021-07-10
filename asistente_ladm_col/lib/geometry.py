@@ -720,8 +720,19 @@ class GeometryUtils(QObject):
         """
         :return: QgsVectorLayer
         """
-        params = {'boundaries': boundary_layer, 'native:refactorfields_2:built_boundaries': 'TEMPORARY_OUTPUT'}
-        return processing.run("model:Build_Boundaries", params)['native:refactorfields_2:built_boundaries']
+        feedback = CustomFeedbackWithErrors()
+        try:
+            params = {'boundaries': boundary_layer, 'native:refactorfields_2:built_boundaries': 'TEMPORARY_OUTPUT'}
+            build_boundary_layer = processing.run("model:Build_Boundaries", params, feedback=feedback)['native:refactorfields_2:built_boundaries']
+        except QgsProcessingException as e:
+            self.logger.warning(__name__, QCoreApplication.translate("Geometry",
+                                                                     "Error running the model to build boundaries. Details: {}".format(feedback.msg)))
+            build_boundary_layer = QgsVectorLayer("LineString?crs={}".format(get_crs_authid(boundary_layer.sourceCrs())), "build_boundaries", "memory")
+
+        # For CTM12 the output layer remains without projection. The projection of the input layer is assigned
+        if not build_boundary_layer.crs().authid():
+            build_boundary_layer.setCrs(boundary_layer.crs())
+        return build_boundary_layer
 
     @staticmethod
     def get_relationships_among_polygons(input_layer, intersect_layer, key=None, attrs=list(), get_geometry=False):

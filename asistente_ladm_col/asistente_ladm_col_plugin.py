@@ -1002,7 +1002,7 @@ class AsistenteLADMCOLPlugin(QObject):
     @_survey_model_required
     @_grass_required
     def call_explode_boundaries(self, *args):
-        self.toolbar.build_boundary(self.get_db_connection())
+        self.toolbar.build_boundaries(self.get_db_connection())
 
     @_validate_if_wizard_is_open
     @_qgis_model_baker_required
