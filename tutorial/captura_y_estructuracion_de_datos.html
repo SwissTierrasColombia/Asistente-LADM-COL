@@ -251,7 +251,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="captura-y-estructuracion-de-datos">
+  <div class="tex2jax_ignore mathjax_ignore section" id="captura-y-estructuracion-de-datos">
 <h1>Captura y Estructuración de Datos<a class="headerlink" href="#captura-y-estructuracion-de-datos" title="Enlazar permanentemente con este título">¶</a></h1>
 <div class="section" id="alistamiento-de-insumos">
 <h2>Alistamiento de insumos<a class="headerlink" href="#alistamiento-de-insumos" title="Enlazar permanentemente con este título">¶</a></h2>
@@ -259,17 +259,20 @@
 <div class="seealso">
 <p class="admonition-title">TIP</p>
 <p> Si deseas agregar otras fuentes de información como referencia a la información proporcionada, puedes hacerlo haciendo uso de QGIS y sus diferentes funcionalidades. </p>
-</div><div class="section" id="paso-1-conexion-a-la-base-de-datos">
+</div>
+<div class="section" id="paso-1-conexion-a-la-base-de-datos">
 <h3>Paso 1: Conexión a la base de datos<a class="headerlink" href="#paso-1-conexion-a-la-base-de-datos" title="Enlazar permanentemente con este título">¶</a></h3>
 <p>Para empezar, se debe definir la conexión a la base de datos. Para realizar este proceso, dirígete al panel «<strong>Navegador</strong>» ubicado a la izquierda de la interfaz de QGIS, en el árbol que se despliega ubica la sección <strong>Geopackage</strong>, haz clic derecho sobre esta sección y selecciona la opción de <strong>Conexión nueva</strong>. Una vez se despliega el panel de navegación, deberás ubicar la base de datos <strong>taller_asistente.gpkg</strong> (disponible en los datos del tutorial) y dar clic en el botón <strong>Abrir</strong> para configurar la conexión a la base de datos.</p>
 <div class="note">
 <p class="admonition-title">IMPORTANTE</p>
 <p> Como resultado de este proceso se tendrá conexión a una base de datos que posee diversa información, de la cual se hará uso a medida que se avance en las secciones de este tutorial. </p>
-</div><p><a class="" data-lightbox="Paso 1: Conexión a la base de datos" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos1.gif" title=" Paso 1: Conexión a la base de datos " data-title=" Paso 1: Conexión a la base de datos "><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos1.gif" class="align-center" width="800px" alt=" Paso 1: Conexión a la base de datos "/></a></p>
+</div>
+<p><a class="" data-lightbox="Paso 1: Conexión a la base de datos" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos1.gif" title=" Paso 1: Conexión a la base de datos " data-title=" Paso 1: Conexión a la base de datos "><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos1.gif" class="align-center" width="800px" alt=" Paso 1: Conexión a la base de datos "/></a></p>
 <div class="seealso">
 <p class="admonition-title">TIP</p>
 <p> Con el fin de tener una mejor referencia de la zona de trabajo, se recomienda instalar el complemento <b>QuickMapServices</b>, que proporciona un conjunto de servicios Web que pueden ser utilizados como mapas base. Por ejemplo, algunos permiten desplegar imágenes satelitales sobre el mapa. </p>
-</div><p><a class="" data-lightbox="Paso 1: QuickMapService" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos2.gif" title="Paso 1: QuickMapService" data-title="Paso 1: QuickMapService"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos2.gif" class="align-center" width="800px" alt="Paso 1: QuickMapService"/></a></p>
+</div>
+<p><a class="" data-lightbox="Paso 1: QuickMapService" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos2.gif" title="Paso 1: QuickMapService" data-title="Paso 1: QuickMapService"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos2.gif" class="align-center" width="800px" alt="Paso 1: QuickMapService"/></a></p>
 </div>
 </div>
 <div class="section" id="consulta-de-dominios">
@@ -282,7 +285,8 @@
 <div class="seealso">
 <p class="admonition-title">TIP</p>
 <p>Puedes acceder a la tabla de atributos de la capa de interés, ubicándote sobre la misma en el panel de capas y tecleando <b>F6</b>.</p>
-</div></div>
+</div>
+</div>
 <div class="section" id="paso-2-identificacion-del-t-id">
 <h3>Paso 2: Identificación del T_Id<a class="headerlink" href="#paso-2-identificacion-del-t-id" title="Enlazar permanentemente con este título">¶</a></h3>
 <p>Se desplegará un diálogo con el listado de los valores del dominio seleccionado. De esta manera es posible identificar el número correspondiente al campo de descripción del elemento requerido, ubicado en la columna <strong>t_id</strong>.</p>
@@ -322,52 +326,48 @@
 <div class="warning">
 <p class="admonition-title">ADVERTENCIA</p>
 <p>Resulta de gran importancia esta sección ya que es la base de la importación de información restante.</p>
-</div></div>
+</div>
+</div>
 <div class="section" id="paso-6-definicion-del-mapeo-de-campos-para-punto-lindero">
 <h4>Paso 6: Definición del mapeo de campos para punto lindero<a class="headerlink" href="#paso-6-definicion-del-mapeo-de-campos-para-punto-lindero" title="Enlazar permanentemente con este título">¶</a></h4>
 <p>La capa <strong>lc_punto_lindero</strong> cuenta con cinco atributos obligatorios, estos son:</p>
-<table border="1" class="docutils">
+<table class="colwidths-auto docutils align-default">
 <thead>
-<tr>
-<th><strong>Item</strong></th>
-<th><strong>Entidad</strong></th>
-<th><strong>Atributo</strong></th>
-<th><strong>Contenido</strong></th>
+<tr class="row-odd"><th class="head"><p><strong>Item</strong></p></th>
+<th class="head"><p><strong>Entidad</strong></p></th>
+<th class="head"><p><strong>Atributo</strong></p></th>
+<th class="head"><p><strong>Contenido</strong></p></th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td>1</td>
-<td>LC_PuntoLindero</td>
-<td>ID_Punto_Lindero</td>
-<td>Cadena de texto</td>
+<tr class="row-even"><td><p>1</p></td>
+<td><p>LC_PuntoLindero</p></td>
+<td><p>ID_Punto_Lindero</p></td>
+<td><p>Cadena de texto</p></td>
 </tr>
-<tr>
-<td>2</td>
-<td>LC_PuntoLindero</td>
-<td>Punto Tipo</td>
-<td><strong>LC_PuntoTipo</strong></td>
+<tr class="row-odd"><td><p>2</p></td>
+<td><p>LC_PuntoLindero</p></td>
+<td><p>Punto Tipo</p></td>
+<td><p><strong>LC_PuntoTipo</strong></p></td>
 </tr>
-<tr>
-<td>3</td>
-<td>LC_PuntoLindero</td>
-<td>Acuerdo</td>
-<td><strong>LC_AcuerdoTipo</strong></td>
+<tr class="row-even"><td><p>3</p></td>
+<td><p>LC_PuntoLindero</p></td>
+<td><p>Acuerdo</p></td>
+<td><p><strong>LC_AcuerdoTipo</strong></p></td>
 </tr>
-<tr>
-<td>4</td>
-<td>LC_PuntoLindero</td>
-<td>Exactitud Horizontal</td>
-<td>Numérico</td>
+<tr class="row-odd"><td><p>4</p></td>
+<td><p>LC_PuntoLindero</p></td>
+<td><p>Exactitud Horizontal</p></td>
+<td><p>Numérico</p></td>
 </tr>
-<tr>
-<td>5</td>
-<td>COL_Punto</td>
-<td>Metodo Producción</td>
-<td><strong>Col_MetodoProduccionTipo</strong></td>
+<tr class="row-even"><td><p>5</p></td>
+<td><p>COL_Punto</p></td>
+<td><p>Metodo Producción</p></td>
+<td><p><strong>Col_MetodoProduccionTipo</strong></p></td>
 </tr>
 </tbody>
-</table><p>Considerando esto, en el cuadro de diálogo del mapeo de campos (imagen anterior) procede a dar clic en el botón <strong>«Generar expresión»</strong> <img alt="Botón generar expresion" src="../_images/ICOdialogodeexpressiones.png" /> para los atributos obligatorios mencionados en la tabla anterior.</p>
+</table>
+<p>Considerando esto, en el cuadro de diálogo del mapeo de campos (imagen anterior) procede a dar clic en el botón <strong>«Generar expresión»</strong> <img alt="Botón generar expresion" src="../_images/ICOdialogodeexpressiones.png" /> para los atributos obligatorios mencionados en la tabla anterior.</p>
 <p>Para asignar códigos (<strong>t_id</strong>) de un dominio con base en sus valores, se hace uso de la siguiente función:</p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">get_domain_code_from_value</span><span class="p">(</span><span class="s1">&#39;Nombre de la tabla del dominio&#39;</span> <span class="p">(</span><span class="n">Texto</span><span class="p">),</span> 
                            <span class="n">valor</span> <span class="n">del</span> <span class="n">dominio</span> <span class="n">a</span> <span class="n">buscar</span> <span class="p">(</span><span class="n">Texto</span><span class="p">),</span>
@@ -377,39 +377,35 @@
 </div>
 <p><a class="" data-lightbox="Paso 6a: Definición del mapeo de campos para punto lindero" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos12.png" title="Paso 6a: Definición del mapeo de campos para punto lindero" data-title="Paso 6a: Definición del mapeo de campos para punto lindero"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos12.png" class="align-center" width="800px" alt="Paso 6a: Definición del mapeo de campos para punto lindero"/></a></p>
 <p>Para el caso del mapeo de atributos obligatorios para Punto Lindero, debes asignar las siguientes expresiones:</p>
-<table border="1" class="docutils">
+<table class="colwidths-auto docutils align-default">
 <thead>
-<tr>
-<th>Atributo</th>
-<th>Expresión</th>
+<tr class="row-odd"><th class="head"><p>Atributo</p></th>
+<th class="head"><p>Expresión</p></th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td>id_punto_lindero</td>
-<td>id_punto</td>
+<tr class="row-even"><td><p>id_punto_lindero</p></td>
+<td><p>id_punto</p></td>
 </tr>
-<tr>
-<td>puntotipo</td>
-<td>get_domain_code_from_value('lc_puntotipo', punto_tipo, True, False)</td>
+<tr class="row-odd"><td><p>puntotipo</p></td>
+<td><p>get_domain_code_from_value(“lc_puntotipo”, punto_tipo, True, False)</p></td>
 </tr>
-<tr>
-<td>acuerdo</td>
-<td>get_domain_code_from_value('lc_acuerdotipo', acuerdo, True, False)</td>
+<tr class="row-even"><td><p>acuerdo</p></td>
+<td><p>get_domain_code_from_value(“lc_acuerdotipo”, acuerdo, True, False)</p></td>
 </tr>
-<tr>
-<td>exactitud_horizontal</td>
-<td>1</td>
+<tr class="row-odd"><td><p>exactitud_horizontal</p></td>
+<td><p>1</p></td>
 </tr>
-<tr>
-<td>metodoproduccion</td>
-<td>get_domain_code_from_value('col_metodoproducciontipo', 'Metodo_Directo', True, False)</td>
+<tr class="row-even"><td><p>metodoproduccion</p></td>
+<td><p>get_domain_code_from_value(“col_metodoproducciontipo”, “Metodo_Directo”, True, False)</p></td>
 </tr>
 </tbody>
-</table><div class="warning">
+</table>
+<div class="warning">
 <p class="admonition-title">ADVERTENCIA</p>
 <p>Para el caso del campo <b>metodoproduccion</b>, se utiliza el texto 'Metodo_Directo' ya que los datos iniciales no cuentan con información para este campo.</p>
-</div><p>Una vez que se diligencian cada uno de los atributos al interior del formulario, se obtiene el siguiente resultado:</p>
+</div>
+<p>Una vez que se diligencian cada uno de los atributos al interior del formulario, se obtiene el siguiente resultado:</p>
 <p><a class="" data-lightbox="Paso 6b: Definición del mapeo de campos para punto lindero" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos13.png" title="Paso 6b: Definición del mapeo de campos para punto lindero" data-title="Paso 6b: Definición del mapeo de campos para punto lindero"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos13.png" class="align-center" width="800px" alt="Paso 6b: Definición del mapeo de campos para punto lindero"/></a></p>
 </div>
 <div class="section" id="paso-7-resultado-de-la-ejecucion-punto-lindero">
@@ -438,40 +434,36 @@
 <div class="section" id="paso-4-mapeo-de-campos-punto-levantamiento">
 <h4>Paso 4: Mapeo de campos punto levantamiento<a class="headerlink" href="#paso-4-mapeo-de-campos-punto-levantamiento" title="Enlazar permanentemente con este título">¶</a></h4>
 <p>Se desplegará un cuadro de diálogo para el mapeo de campos de la información. Se recomienda tener en cuenta el <a class="reference external" href="#paso-4-dialogo-del-mapeo-de-campos-para-punto-lindero">paso 4</a> de la sección de punto de lindero. Para este caso, debemos asignar los valores de la siguiente manera:</p>
-<table border="1" class="docutils">
+<table class="colwidths-auto docutils align-default">
 <thead>
-<tr>
-<th>Atributo</th>
-<th>Expresión</th>
+<tr class="row-odd"><th class="head"><p>Atributo</p></th>
+<th class="head"><p>Expresión</p></th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td>id_punto_levantamiento</td>
-<td>id</td>
+<tr class="row-even"><td><p>id_punto_levantamiento</p></td>
+<td><p>id</p></td>
 </tr>
-<tr>
-<td>puntotipo</td>
-<td>get_domain_code_from_value('lc_puntotipo', punto_tipo, True, False)</td>
+<tr class="row-odd"><td><p>puntotipo</p></td>
+<td><p>get_domain_code_from_value(“lc_puntotipo”, punto_tipo, True, False)</p></td>
 </tr>
-<tr>
-<td>tipo_punto_levantamiento</td>
-<td>get_domain_code_from_value('lc_puntolevtipo', 'Construccion', True, False)</td>
+<tr class="row-even"><td><p>tipo_punto_levantamiento</p></td>
+<td><p>get_domain_code_from_value(“lc_puntolevtipo”, “Construccion”, True, False)</p></td>
 </tr>
-<tr>
-<td>exactitud_horizontal</td>
-<td>1</td>
+<tr class="row-odd"><td><p>exactitud_horizontal</p></td>
+<td><p>1</p></td>
 </tr>
-<tr>
-<td>metodoproduccion</td>
-<td>get_domain_code_from_value('col_metodoproducciontipo', 'Metodo_Directo', True, False)</td>
+<tr class="row-even"><td><p>metodoproduccion</p></td>
+<td><p>get_domain_code_from_value(“col_metodoproducciontipo”, “Metodo_Directo”, True, False)</p></td>
 </tr>
 </tbody>
-</table><div class="warning">
+</table>
+<div class="warning">
 <p class="admonition-title">ADVERTENCIA</p>
 <p>Para el caso del campo <b>metodoproduccion</b>, se utiliza el texto 'Metodo_Directo' ya que los datos iniciales no cuentan con información para este campo.</p>
 <p>Para el caso del campo <b>tipo_punto_levantamiento</b>, se utiliza el texto 'Construccion' ya que los datos iniciales no cuentan con información para este campo.</p>
-</div><p><a class="" data-lightbox="Paso 4: Mapeo de campos punto levantamiento" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos18.png" title="Paso 4: Mapeo de campos punto levantamiento" data-title="Paso 4: Mapeo de campos punto levantamiento"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos18.png" class="align-center" width="800px" alt="Paso 4: Mapeo de campos punto levantamiento"/></a></p>
+</div>
+<p><a class="" data-lightbox="Paso 4: Mapeo de campos punto levantamiento" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos18.png" title="Paso 4: Mapeo de campos punto levantamiento" data-title="Paso 4: Mapeo de campos punto levantamiento"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos18.png" class="align-center" width="800px" alt="Paso 4: Mapeo de campos punto levantamiento"/></a></p>
 <p>Después, debes ejecutar el proceso de importación de datos dando clic al botón <code class="docutils literal notranslate"><span class="pre">Ejecutar</span></code>, obteniendo el siguiente resultado:</p>
 <p><a class="" data-lightbox="Resultado punto levantamiento" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos19.png" title="Resultado punto levantamiento" data-title="Resultado punto levantamiento"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos19.png" class="align-center" width="800px" alt="Resultado punto levantamiento"/></a></p>
 </div>
@@ -502,44 +494,39 @@
 <div class="section" id="paso-5-mapeo-de-campos-punto-control">
 <h4>Paso 5: Mapeo de campos punto control<a class="headerlink" href="#paso-5-mapeo-de-campos-punto-control" title="Enlazar permanentemente con este título">¶</a></h4>
 <p>Se desplegará un cuadro de diálogo para el mapeo de campos de la información. Se recomienda tener en cuenta el <a class="reference external" href="#paso-4-dialogo-del-mapeo-de-campos-para-punto-lindero">paso 4</a> de la sección de punto de lindero. Para este caso, debes asignar las siguientes expresiones:</p>
-<table border="1" class="docutils">
+<table class="colwidths-auto docutils align-default">
 <thead>
-<tr>
-<th>Atributo</th>
-<th>Expresión</th>
+<tr class="row-odd"><th class="head"><p>Atributo</p></th>
+<th class="head"><p>Expresión</p></th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td>id_punto_levantamiento</td>
-<td>nombre</td>
+<tr class="row-even"><td><p>id_punto_levantamiento</p></td>
+<td><p>nombre</p></td>
 </tr>
-<tr>
-<td>puntotipo</td>
-<td>get_domain_code_from_value('lc_puntotipo', punto_tipo, True, False)</td>
+<tr class="row-odd"><td><p>puntotipo</p></td>
+<td><p>get_domain_code_from_value(“lc_puntotipo”, punto_tipo, True, False)</p></td>
 </tr>
-<tr>
-<td>tipo_punto_control</td>
-<td>get_domain_code_from_value('lc_puntocontroltipo', 'Control', True, False)</td>
+<tr class="row-even"><td><p>tipo_punto_control</p></td>
+<td><p>get_domain_code_from_value(“lc_puntocontroltipo”, “Control”, True, False)</p></td>
 </tr>
-<tr>
-<td>exactitud_horizontal</td>
-<td>1</td>
+<tr class="row-odd"><td><p>exactitud_horizontal</p></td>
+<td><p>1</p></td>
 </tr>
-<tr>
-<td>exactitud_vertical</td>
-<td>1</td>
+<tr class="row-even"><td><p>exactitud_vertical</p></td>
+<td><p>1</p></td>
 </tr>
-<tr>
-<td>metodoproduccion</td>
-<td>get_domain_code_from_value('col_metodoproducciontipo', 'Metodo_Directo', True, False)</td>
+<tr class="row-odd"><td><p>metodoproduccion</p></td>
+<td><p>get_domain_code_from_value(“col_metodoproducciontipo”, “Metodo_Directo”, True, False)</p></td>
 </tr>
 </tbody>
-</table><div class="warning">
+</table>
+<div class="warning">
 <p class="admonition-title">ADVERTENCIA</p>
 <p>Para el caso del campo <b>metodoproduccion</b>, se utiliza el texto 'Metodo_Directo' ya que los datos iniciales no cuentan con información para este campo.</p>
 <p>Para el caso del campo <b>tipo_punto_control</b>, se utiliza el texto 'Control' ya que los datos iniciales no cuentan con información para este campo.</p>
-</div><p><a class="" data-lightbox="Paso 5: Mapeo de campos punto control" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos24.png" title="Paso 5: Mapeo de campos punto control" data-title="Paso 5: Mapeo de campos punto control"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos24.png" class="align-center" width="800px" alt="Paso 5: Mapeo de campos punto control"/></a></p>
+</div>
+<p><a class="" data-lightbox="Paso 5: Mapeo de campos punto control" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos24.png" title="Paso 5: Mapeo de campos punto control" data-title="Paso 5: Mapeo de campos punto control"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos24.png" class="align-center" width="800px" alt="Paso 5: Mapeo de campos punto control"/></a></p>
 <p>Después, debes ejecutar el proceso de importación de datos dando clic al botón <code class="docutils literal notranslate"><span class="pre">Ejecutar</span></code>, obteniendo el siguiente resultado:</p>
 <p><a class="" data-lightbox="Resultado punto control" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos25.png" title="Resultado punto control" data-title="Resultado punto control"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos25.png" class="align-center" width="800px" alt="Resultado punto control"/></a></p>
 </div>
@@ -559,23 +546,23 @@
 <div class="section" id="paso-3-mapeo-de-campos-lindero">
 <h4>Paso 3: Mapeo de campos lindero<a class="headerlink" href="#paso-3-mapeo-de-campos-lindero" title="Enlazar permanentemente con este título">¶</a></h4>
 <p>Se desplegará un cuadro de diálogo para el mapeo de campos de la información. Se recomienda tener en cuenta los pasos desarrollados en el <a class="reference external" href="#paso-4-dialogo-del-mapeo-de-campos-para-punto-lindero">paso 4</a> de la sección de punto de lindero. Para este caso, debemos asignar la siguiente expresión:</p>
-<table border="1" class="docutils">
+<table class="colwidths-auto docutils align-default">
 <thead>
-<tr>
-<th>Atributo</th>
-<th>Expresión</th>
+<tr class="row-odd"><th class="head"><p>Atributo</p></th>
+<th class="head"><p>Expresión</p></th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td>longitud</td>
-<td>$length</td>
+<tr class="row-even"><td><p>longitud</p></td>
+<td><p>$length</p></td>
 </tr>
 </tbody>
-</table><div class="warning">
+</table>
+<div class="warning">
 <p class="admonition-title">ADVERTENCIA</p>
 <p>Para el caso del campo <b>longitud</b>, se utiliza la expresión <i>$length</i> ya que los datos iniciales no cuentan con información para este campo.</p>
-</div><p><a class="" data-lightbox="Paso 3: Mapeo de campos lindero" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos24.png" title="Paso 3: Mapeo de campos lindero" data-title="Paso 3: Mapeo de campos lindero"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos24.png" class="align-center" width="800px" alt="Paso 3: Mapeo de campos lindero"/></a></p>
+</div>
+<p><a class="" data-lightbox="Paso 3: Mapeo de campos lindero" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos24.png" title="Paso 3: Mapeo de campos lindero" data-title="Paso 3: Mapeo de campos lindero"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos24.png" class="align-center" width="800px" alt="Paso 3: Mapeo de campos lindero"/></a></p>
 <p>Después, debes ejecutar el proceso de importación de datos dando clic al botón <code class="docutils literal notranslate"><span class="pre">Ejecutar</span></code>, obteniendo el siguiente resultado:</p>
 <p><a class="" data-lightbox="Resultado linderos" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos25.png" title="Resultado linderos" data-title="Resultado linderos"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos25.png" class="align-center" width="800px" alt="Resultado linderos"/></a></p>
 </div>
@@ -585,7 +572,8 @@
 <div class="seealso">
 <p class="admonition-title">TIP</p>
 <p>Un lindero está bien construido topológicamente si cada uno de sus nodos finales conecta con más de un lindero. En otras palabras, un lindero no puede tener un nodo final que conecte con un solo lindero. Temáticamente, los nodos finales de un lindero marcan un cambio de colindancia.</p>
-</div><p>Para acceder a esta herramienta, debes dirigirte a la barra de herramientas y dar clic en el botón <code class="docutils literal notranslate"><span class="pre">Construir</span> <span class="pre">linderos</span></code>. Se habilita un cuadro de diálogo en donde se pregunta: <em>¿Deseas utilizar todos los linderos de la base de datos?</em>. Debes dar clic en <em>Sí</em> y cuando termine el proceso, click en <code class="docutils literal notranslate"><span class="pre">Conmutar</span> <span class="pre">edición</span></code> y guardar los cambios.</p>
+</div>
+<p>Para acceder a esta herramienta, debes dirigirte a la barra de herramientas y dar clic en el botón <code class="docutils literal notranslate"><span class="pre">Construir</span> <span class="pre">linderos</span></code>. Se habilita un cuadro de diálogo en donde se pregunta: <em>¿Deseas utilizar todos los linderos de la base de datos?</em>. Debes dar clic en <em>Sí</em> y cuando termine el proceso, click en <code class="docutils literal notranslate"><span class="pre">Conmutar</span> <span class="pre">edición</span></code> y guardar los cambios.</p>
 <p><a class="" data-lightbox="Paso 4: Construcción de Linderos" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos31.gif" title="Paso 4: Construcción de Linderos" data-title="Paso 4: Construcción de Linderos"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos31.gif" class="align-center" width="800px" alt="Paso 4: Construcción de Linderos"/></a></p>
 </div>
 </div>
@@ -596,7 +584,8 @@
 <div class="note">
 <p class="admonition-title">IMPORTANTE</p>
 <p>Los puntos de lindero y los linderos tienen una relación topológica, puesto que los vértices de un lindero corresponden a puntos de lindero y viceversa. Dicha relación se debe almacenar de forma explícita en el modelo LADM-COL, en la tabla <b>col_puntoccl</b>.</p>
-</div><p>Para llenar la tabla <code class="docutils literal notranslate"><span class="pre">col_puntoccl</span></code> con la relación entre los puntos de lindero y los linderos, se debe dar clic en el botón <code class="docutils literal notranslate"><span class="pre">Llenar</span> <span class="pre">PuntosCCL</span></code> ubicado en la barra de herramientas. Al hacerlo, se despliega un cuadro de diálogo en donde se pregunta <em>¿Quieres llenar la tabla “col_puntoccl” para todos los linderos de la base de datos?</em> Para este caso debes dar clic en el botón <code class="docutils literal notranslate"><span class="pre">Si</span></code>.</p>
+</div>
+<p>Para llenar la tabla <code class="docutils literal notranslate"><span class="pre">col_puntoccl</span></code> con la relación entre los puntos de lindero y los linderos, se debe dar clic en el botón <code class="docutils literal notranslate"><span class="pre">Llenar</span> <span class="pre">PuntosCCL</span></code> ubicado en la barra de herramientas. Al hacerlo, se despliega un cuadro de diálogo en donde se pregunta <em>¿Quieres llenar la tabla “col_puntoccl” para todos los linderos de la base de datos?</em> Para este caso debes dar clic en el botón <code class="docutils literal notranslate"><span class="pre">Si</span></code>.</p>
 <p><a class="" data-lightbox="Paso 1: Creación de la relación" href="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos34.gif" title="Paso 1: Creación de la relación" data-title="Paso 1: Creación de la relación"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap4preinsumos34.gif" class="align-center" width="800px" alt="Paso 1: Creación de la relación"/></a></p>
 </div>
 <div class="section" id="paso-2-verificacion-de-la-relacion">

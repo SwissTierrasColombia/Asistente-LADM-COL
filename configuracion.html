@@ -199,7 +199,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="configuracion">
+  <div class="tex2jax_ignore mathjax_ignore section" id="configuracion">
 <h1>Configuración<a class="headerlink" href="#configuracion" title="Enlazar permanentemente con este título">¶</a></h1>
 <p>El diálogo de configuración permite definir configuraciones generales para el funcionamiento del Asistente LADM-COL. Se compone de las siguientes secciones:</p>
 <ul class="simple">
@@ -224,7 +224,8 @@
 <div class="seealso">
 <p class="admonition-title">TIP</p>
 <p>Revisa el soporte de funcionalidades por motor de base de datos en la sección de <a href="introduccion.html#soporte-de-funcionalidades-por-motor-de-base-de-datos">Introducción</a>.</p>
-</div><div class="section" id="conexion-a-postgresql-postgis">
+</div>
+<div class="section" id="conexion-a-postgresql-postgis">
 <h3>Conexión a PostgreSQL/PostGIS<a class="headerlink" href="#conexion-a-postgresql-postgis" title="Enlazar permanentemente con este título">¶</a></h3>
 <ul class="simple">
 <li><p><strong>Host</strong>: Dirección IP para acceder a la base de datos. Si la base de datos es local, puede usarse <code class="docutils literal notranslate"><span class="pre">localhost</span></code> como valor del parámetro <code class="docutils literal notranslate"><span class="pre">Host</span></code>.</p></li>
@@ -244,10 +245,12 @@
 <div class="note">
 <p class="admonition-title">IMPORTANTE</p>
 <p>Revisa las versiones soportadas de PostgreSQL/PostGIS en la sección de <a href="introduccion.html#requerimientos-minimos">Introducción</a>.</p>
-</div><div class="seealso">
+</div>
+<div class="seealso">
 <p class="admonition-title">TIP</p>
 <p>Es posible configurar la conexión a la base de datos utilizando un usuario que tenga permisos de creación (`CREATE`) o de uso (`USAGE`) sobre el esquema de trabajo. El permiso de uso (`USAGE`) es más limitado, pero es útil cuando se quiere restringir la creación/modificación/borrado de objetos del esquema, como tablas y relaciones, y a la vez permitir la edición de datos espaciales y alfanuméricos. Ver <a href="https://github.com/SwissTierrasColombia/Asistente-LADM-COL/issues/384#issuecomment-716250604" target="_blank">ejemplo de configuración de permisos limitados para un usuario del Asistente LADM-COL</a>.</p>
-</div></div>
+</div>
+</div>
 <div class="section" id="conexion-a-geopackage">
 <h3>Conexión a GeoPackage<a class="headerlink" href="#conexion-a-geopackage" title="Enlazar permanentemente con este título">¶</a></h3>
 <ul class="simple">
@@ -264,12 +267,13 @@
 </div>
 <div class="section" id="modelos">
 <h2>Modelos<a class="headerlink" href="#modelos" title="Enlazar permanentemente con este título">¶</a></h2>
-<p>En esta pestaña se puede seleccionar el repositorio de modelos locales a utilizar, así como definir si se quieren deshabilitar las validaciones (por ejemplo, validaciones de estructura y de relaciones) sobre las operaciones de importar y exportar archivos XTF (ver sección <a class="reference external" href="administracion_de_datos.html">Administración de datos</a>).</p>
+<p>En esta pestaña se puede seleccionar el repositorio de modelos locales a utilizar, así como definir si se quieren deshabilitar las validaciones (por ejemplo, validaciones de estructura y de relaciones) sobre las operaciones de importar y exportar archivos XTF (ver sección <span class="xref myst">Administración de datos</span>).</p>
 <p><a class="" data-lightbox="Configuración de acceso a modelos" href="_static/configuracion/modelos.png" title="Configuración de acceso a modelos" data-title="Configuración de acceso a modelos"><img src="_static/configuracion/modelos.png" class="align-center" alt="Configuración de acceso a modelos"/></a></p>
 <div class="seealso">
 <p class="admonition-title">TIP</p>
 <p>La versión instalada del Asistente LADM-COL incluye una carpeta con los modelos soportados por esa versión. De manera predeterminada, los modelos a los que accede el Asistente LADM-COL se encuentran en dicha carpeta.</p>
-</div></div>
+</div>
+</div>
 <div class="section" id="calidad">
 <h2>Calidad<a class="headerlink" href="#calidad" title="Enlazar permanentemente con este título">¶</a></h2>
 <p>En esta pestaña se definen parámetros generales para validaciones de calidad.</p>
@@ -290,7 +294,8 @@
 <div class="note">
 <p class="admonition-title">IMPORTANTE</p>
 <p>Al desmarcar esta opción, los valores automáticos solamente estarán deshabilitados durante el proceso de importación masiva. En el resto de operaciones, como la edición manual, los valores automáticos configurados seguirán activos.</p>
-</div></div>
+</div>
+</div>
 <div class="section" id="calcular-t-ili-tid-automaticamente">
 <h3>Calcular t_ili_tid automáticamente<a class="headerlink" href="#calcular-t-ili-tid-automaticamente" title="Enlazar permanentemente con este título">¶</a></h3>
 <p>Esta opción te permite obtener valores automáticos para la columna obligatoria <code class="docutils literal notranslate"><span class="pre">t_ili_tid</span></code> en el momento de crear registros en la base de datos.</p>
@@ -298,10 +303,12 @@
 <div class="seealso">
 <p class="admonition-title">TIP</p>
 <p>Si en alguna operación (por ejemplo, importando datos manualmente) necesitas definir una expresión de QGIS para obtener valores de tipo UUID para este campo, puedes usar la siguiente: <code class="docutils literal notranslate"><span class="pre">substr(uuid(), 2, 36)</span></code></p>
-</div><div class="warning">
+</div>
+<div class="warning">
 <p class="admonition-title">ADVERTENCIA</p>
 <p>Los valores del campo t_ili_tid no pueden repetirse en tu base de datos. Afortunadamente, al generarlos de manera automática hay una probabilidad (casi) nula de obtener dos valores iguales.</p>
-</div></div>
+</div>
+</div>
 <div class="section" id="espacio-de-nombres-y-local-id">
 <h3>Espacio de nombres y local id<a class="headerlink" href="#espacio-de-nombres-y-local-id" title="Enlazar permanentemente con este título">¶</a></h3>
 <p>La mayoría de las clases en LADM-COL tiene dos atributos que combinados deben ser únicos en todo el <code class="docutils literal notranslate"><span class="pre">esquema/base</span> <span class="pre">de</span> <span class="pre">datos</span></code>. Se denominan <code class="docutils literal notranslate"><span class="pre">espacio_de_nombres</span></code> y <code class="docutils literal notranslate"><span class="pre">local_id</span></code>. Para hacer más fácil el llenado de estos atributos, el asistente LADM-COL puede configurarse con valores automáticos para ellos.</p>
@@ -312,7 +319,7 @@
 </div>
 <div class="section" id="servicios">
 <h2>Servicios<a class="headerlink" href="#servicios" title="Enlazar permanentemente con este título">¶</a></h2>
-<p>En esta sección se configuran un par de servicios web que el Asistente LADM-COL puede emplear para conectarse al <a class="reference external" href="sistema_de_transicion.html">Sistema de Transición</a> y para subir archivos de fuentes administrativas y espaciales.</p>
+<p>En esta sección se configuran un par de servicios web que el Asistente LADM-COL puede emplear para conectarse al <span class="xref myst">Sistema de Transición</span> y para subir archivos de fuentes administrativas y espaciales.</p>
 <p>La configuración de estos servicios es opcional, pues solo se requiere cuando se utilizará alguna de las dos funcionalidades mencionadas, pero no interfiere en el uso normal del complemento.</p>
 <p><a class="" data-lightbox="Parámetros de conexión a servicios" href="_static/configuracion/servicios.png" title="Parámetros de conexión a servicios" data-title="Parámetros de conexión a servicios"><img src="_static/configuracion/servicios.png" class="align-center" alt="Parámetros de conexión a servicios"/></a></p>
 </div>
@@ -324,52 +331,45 @@
 <h3>Funcionalidades por rol<a class="headerlink" href="#funcionalidades-por-rol" title="Enlazar permanentemente con este título">¶</a></h3>
 <p>Los roles agrupan funcionalidades disponibles en el Asistente LADM-COL. La interfaz del plugin varía dependiendo el rol activo, esto es, cada rol tiene un listado de funcionalidades propias, así como un menú principal y una barra de herramientas (<em>toolbar</em>), que corresponden a las tareas que el rol realiza.</p>
 <p>La siguiente tabla resume los roles disponibles, así como las funcionalidades que les corresponden.</p>
-<table border="1" class="docutils">
+<table class="colwidths-auto docutils align-default">
 <thead>
-<tr>
-<th>Rol</th>
-<th align="left">Descripción</th>
-<th>Funcionalidades disponibles</th>
+<tr class="row-odd"><th class="head"><p>Rol</p></th>
+<th class="text-align:left head"><p>Descripción</p></th>
+<th class="head"><p>Funcionalidades disponibles</p></th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td>Básico</td>
-<td align="left">Perfil de exploración de la herramienta</td>
-<td>Administración y estructuración de datos en modelo Lev. Catastral<br>Cargar capas<br/>Validaciones de calidad<br/>Consulta predial</td>
+<tr class="row-even"><td><p>Básico</p></td>
+<td class="text-align:left"><p>Perfil de exploración de la herramienta</p></td>
+<td><p>Administración y estructuración de datos en modelo Lev. Catastral<br>Cargar capas<br/>Validaciones de calidad<br/>Consulta predial</p></td>
 </tr>
-<tr>
-<td>Proveedor de Insumos</td>
-<td align="left">(Gestor) Perfil encargado de generar insumos para el Levantamiento Catastral que realizan los Operadores</td>
-<td>Administración de datos en modelo de Insumos<br/>Cargar capas<br/>Ejecutar ETL COBOL y SNC<br/>Reporte Omisiones y Comisiones COBOL y SNC<br/>Acceso al Sistema de Transición</td>
+<tr class="row-odd"><td><p>Proveedor de Insumos</p></td>
+<td class="text-align:left"><p>(Gestor) Perfil encargado de generar insumos para el Levantamiento Catastral que realizan los Operadores</p></td>
+<td><p>Administración de datos en modelo de Insumos<br/>Cargar capas<br/>Ejecutar ETL COBOL y SNC<br/>Reporte Omisiones y Comisiones COBOL y SNC<br/>Acceso al Sistema de Transición</p></td>
 </tr>
-<tr>
-<td>Coordinador General (campo)</td>
-<td align="left">(Operador) Perfil encargado de asignar a los coordinadores de campo la captura y gestión de los datos provenientes del Levantamiento Catastral</td>
-<td>Administración de datos en modelo de Captura en Campo<br/>Cargar capas<br/>Asignar predios a Coordinadores de Campo<br/>Sincronizar datos<br/>Validaciones de Calidad</td>
+<tr class="row-even"><td><p>Coordinador General (campo)</p></td>
+<td class="text-align:left"><p>(Operador) Perfil encargado de asignar a los coordinadores de campo la captura y gestión de los datos provenientes del Levantamiento Catastral</p></td>
+<td><p>Administración de datos en modelo de Captura en Campo<br/>Cargar capas<br/>Asignar predios a Coordinadores de Campo<br/>Sincronizar datos<br/>Validaciones de Calidad</p></td>
 </tr>
-<tr>
-<td>Coordinador de Campo</td>
-<td align="left">(Operador) Perfil encargado de gestionar la la captura de datos de campo provenientes del Levantamiento Catastral</td>
-<td>Administración de datos en modelo de Captura en Campo<br/>Cargar capas<br/>Asignar predios a reconocedores de campo<br/>Sincronizar datos<br/>Validaciones de Calidad<br/>Generar proyectos offline</td>
+<tr class="row-odd"><td><p>Coordinador de Campo</p></td>
+<td class="text-align:left"><p>(Operador) Perfil encargado de gestionar la la captura de datos de campo provenientes del Levantamiento Catastral</p></td>
+<td><p>Administración de datos en modelo de Captura en Campo<br/>Cargar capas<br/>Asignar predios a reconocedores de campo<br/>Sincronizar datos<br/>Validaciones de Calidad<br/>Generar proyectos offline</p></td>
 </tr>
-<tr>
-<td>Operador</td>
-<td align="left">Perfil encargado de desarrollar labores operativas que sirven de insumo para adelantar los procesos de formación, actualización y conservación catastral. Recibe insumos y realiza la captura y estructuración de datos provenientes del Levantamiento Catastral.</td>
-<td>Administración y estructuración de datos en modelo Lev. Catastral<br/>Cargar capas<br/>Validaciones de calidad<br/>Consulta predial<br/>Identificación de novedades<br/>Acceso al Sistema de Transición</td>
+<tr class="row-even"><td><p>Operador</p></td>
+<td class="text-align:left"><p>Perfil encargado de desarrollar labores operativas que sirven de insumo para adelantar los procesos de formación, actualización y conservación catastral. Recibe insumos y realiza la captura y estructuración de datos provenientes del Levantamiento Catastral.</p></td>
+<td><p>Administración y estructuración de datos en modelo Lev. Catastral<br/>Cargar capas<br/>Validaciones de calidad<br/>Consulta predial<br/>Identificación de novedades<br/>Acceso al Sistema de Transición</p></td>
 </tr>
-<tr>
-<td>Gestor</td>
-<td align="left">Perfil encargado de adelantar la formación, actualización, conservación y difusión catastral. Entrega los insumos al Operador y revisa y aprueba los datos provenientes de campo en el modelo de aplicación de Levantamiento Catastral.</td>
-<td>Administración y estructuración de datos en modelo Lev. Catastral<br/>Cargar capas<br/>Validaciones de calidad<br/>Consulta predial<br/>Generación de reportes<br/>Identificación de novedades<br/>Acceso al Sistema de Transición</td>
+<tr class="row-odd"><td><p>Gestor</p></td>
+<td class="text-align:left"><p>Perfil encargado de adelantar la formación, actualización, conservación y difusión catastral. Entrega los insumos al Operador y revisa y aprueba los datos provenientes de campo en el modelo de aplicación de Levantamiento Catastral.</p></td>
+<td><p>Administración y estructuración de datos en modelo Lev. Catastral<br/>Cargar capas<br/>Validaciones de calidad<br/>Consulta predial<br/>Generación de reportes<br/>Identificación de novedades<br/>Acceso al Sistema de Transición</p></td>
 </tr>
-<tr>
-<td>Avanzado</td>
-<td align="left">Perfil con todas las funcionalidades de la herramienta disponibles</td>
-<td>Todas las funcionalidades disponibles</td>
+<tr class="row-even"><td><p>Avanzado</p></td>
+<td class="text-align:left"><p>Perfil con todas las funcionalidades de la herramienta disponibles</p></td>
+<td><p>Todas las funcionalidades disponibles</p></td>
 </tr>
 </tbody>
-</table><p>A continuación, se muestran los elementos de interfaz gráfica (menú principal y barra de herramientas o <em>toolbar</em>) disponibles para cada rol:</p>
+</table>
+<p>A continuación, se muestran los elementos de interfaz gráfica (menú principal y barra de herramientas o <em>toolbar</em>) disponibles para cada rol:</p>
 <ul class="simple">
 <li><p>Rol básico</p></li>
 </ul>

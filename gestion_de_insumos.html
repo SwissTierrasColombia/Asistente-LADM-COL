@@ -190,7 +190,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="gestion-de-insumos">
+  <div class="tex2jax_ignore mathjax_ignore section" id="gestion-de-insumos">
 <h1>Gestión de insumos<a class="headerlink" href="#gestion-de-insumos" title="Enlazar permanentemente con este título">¶</a></h1>
 <div class="section" id="ejecutar-etl-de-insumos">
 <h2>Ejecutar ETL de Insumos<a class="headerlink" href="#ejecutar-etl-de-insumos" title="Enlazar permanentemente con este título">¶</a></h2>
@@ -198,99 +198,95 @@
 <div class="seealso">
 <p class="admonition-title">TIP</p>
 <p>Se recomienda ejecutar la ETL que lleva los datos desde COBOL o SNC al submodelo de insumos desde el perfil de <b>Proveedor de Insumos</b> del Asistente LADM-COL.</p>
-</div><div class="note">
+</div>
+<div class="note">
 <p class="admonition-title">IMPORTANTE</p>
 <p>Antes de ejecutar la ETL de COBOL o SNC al submodelo de insumos, <a href="https://swisstierrascolombia.github.io/Asistente-LADM-COL/administracion_de_datos.html#crear-estructura-ladm-col">crea la estructura de base de datos</a> desde Administración de datos --> Crear estructura</p>
-</div><div class="section" id="etl-snc-al-submodelo-de-insumos">
+</div>
+<div class="section" id="etl-snc-al-submodelo-de-insumos">
 <h3>ETL SNC al Submodelo de insumos<a class="headerlink" href="#etl-snc-al-submodelo-de-insumos" title="Enlazar permanentemente con este título">¶</a></h3>
 <p>Para Ejecutar la ETL SNC es necesario que del sistema SNC se extraigan los siguientes archivos para la zona de trabajo de interés:</p>
-<table border="1" class="docutils">
+<table class="colwidths-auto docutils align-default">
 <thead>
-<tr>
-<th></th>
-<th><strong>Alfanuméricos</strong></th>
-<th></th>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p><strong>Alfanuméricos</strong></p></th>
+<th class="head"><p></p></th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td>predio_bloqueo.csv</td>
-<td>persona_predio.csv *</td>
-<td>unidad_construccion_comp.csv *</td>
+<tr class="row-even"><td><p>predio_bloqueo.csv</p></td>
+<td><p>persona_predio.csv *</p></td>
+<td><p>unidad_construccion_comp.csv *</p></td>
 </tr>
-<tr>
-<td>persona.csv *</td>
-<td>direccion.csv *</td>
-<td>ficha_matriz.csv</td>
+<tr class="row-odd"><td><p>persona.csv *</p></td>
+<td><p>direccion.csv *</p></td>
+<td><p>ficha_matriz.csv</p></td>
 </tr>
-<tr>
-<td>predio.csv *</td>
-<td>unidad_construccion.csv *</td>
-<td>ficha_matriz_predio.csv</td>
+<tr class="row-even"><td><p>predio.csv *</p></td>
+<td><p>unidad_construccion.csv *</p></td>
+<td><p>ficha_matriz_predio.csv</p></td>
 </tr>
-<tr>
-<td>ficha_matriz_torre.csv</td>
-<td></td>
-<td></td>
+<tr class="row-odd"><td><p>ficha_matriz_torre.csv</p></td>
+<td><p></p></td>
+<td><p></p></td>
 </tr>
 </tbody>
-</table><table border="1" class="docutils">
+</table>
+<table class="colwidths-auto docutils align-default">
 <thead>
-<tr>
-<th><strong>Geográficos</strong></th>
+<tr class="row-odd"><th class="head"><p><strong>Geográficos</strong></p></th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td>GDB (Geodatabase) *</td>
+<tr class="row-even"><td><p>GDB (Geodatabase) *</p></td>
 </tr>
 </tbody>
-</table><p>* <em>Archivo obligatorio para ejecutar el ETL.</em></p>
+</table>
+<p>* <em>Archivo obligatorio para ejecutar el ETL.</em></p>
 <div class="warning">
 <p class="admonition-title">ADVERTENCIA</p>
 <p>Antes de ejecutar el ETL de SNC, se debe verificar la configuración de la conexión a la base de datos destino para evitar sobreescribir datos a una estructura incorrecta.</p>
-</div><p><a class="" data-lightbox="ETL SNC" href="_static/gestion_de_insumos/etl_snc.gif" title="ETL SNC" data-title="ETL SNC"><img src="_static/gestion_de_insumos/etl_snc.gif" class="align-center" width="800px" height="500px" alt="ETL SNC">
+</div>
+<p><a class="" data-lightbox="ETL SNC" href="_static/gestion_de_insumos/etl_snc.gif" title="ETL SNC" data-title="ETL SNC"><img src="_static/gestion_de_insumos/etl_snc.gif" class="align-center" width="800px" height="500px" alt="ETL SNC">
 </a></p>
 </div>
 <div class="section" id="etl-cobol-a-submodelo-de-insumos">
 <h3>ETL COBOL a submodelo de insumos<a class="headerlink" href="#etl-cobol-a-submodelo-de-insumos" title="Enlazar permanentemente con este título">¶</a></h3>
 <p>Para Ejecutar la ETL COBOL es necesario que del sistema COBOL se extraigan los siguiente archivos para la zona de trabajo de interés:</p>
-<table border="1" class="docutils">
+<table class="colwidths-auto docutils align-default">
 <thead>
-<tr>
-<th></th>
-<th align="center"><strong>Alfanuméricos</strong></th>
-<th></th>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="text-align:center head"><p><strong>Alfanuméricos</strong></p></th>
+<th class="head"><p></p></th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td>blo.lis</td>
-<td align="center">uni.lis *</td>
-<td>ter.lis *</td>
+<tr class="row-even"><td><p>blo.lis</p></td>
+<td class="text-align:center"><p>uni.lis *</p></td>
+<td><p>ter.lis *</p></td>
 </tr>
-<tr>
-<td>pro.lis *</td>
-<td align="center"></td>
-<td></td>
+<tr class="row-odd"><td><p>pro.lis *</p></td>
+<td class="text-align:center"><p></p></td>
+<td><p></p></td>
 </tr>
 </tbody>
-</table><table border="1" class="docutils">
+</table>
+<table class="colwidths-auto docutils align-default">
 <thead>
-<tr>
-<th><strong>Geográficos</strong></th>
+<tr class="row-odd"><th class="head"><p><strong>Geográficos</strong></p></th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td>GDB (Geodatabase) *</td>
+<tr class="row-even"><td><p>GDB (Geodatabase) *</p></td>
 </tr>
 </tbody>
-</table><p>* <em>Archivo obligatorio para ejecutar el ETL.</em></p>
+</table>
+<p>* <em>Archivo obligatorio para ejecutar el ETL.</em></p>
 <div class="warning">
 <p class="admonition-title">ADVERTENCIA</p>
 <p>Antes de ejecutar la ETL de COBOL, se debe verificar la configuración de la conexión a la base de datos destino para evitar sobreescribir datos a una estructura incorrecta.</p>
-</div><p><a class="" data-lightbox="ETL Cobol" href="_static/gestion_de_insumos/etl_cobol.gif" title="ETL Cobol" data-title="ETL Cobol"><img src="_static/gestion_de_insumos/etl_cobol.gif" class="align-center" width="800px" height="500px" alt="ETL Cobol">
+</div>
+<p><a class="" data-lightbox="ETL Cobol" href="_static/gestion_de_insumos/etl_cobol.gif" title="ETL Cobol" data-title="ETL Cobol"><img src="_static/gestion_de_insumos/etl_cobol.gif" class="align-center" width="800px" height="500px" alt="ETL Cobol">
 </a></p>
 </div>
 </div>
