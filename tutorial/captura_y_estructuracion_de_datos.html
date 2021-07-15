@@ -160,12 +160,36 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#unidad-espacial">Unidad Espacial</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#creacion-de-terrenos-y-sus-relaciones">Creación De Terrenos y Sus Relaciones</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#creacion-de-relacion-entre-los-linderos-y-los-terrenos">Creación De Relación Entre Los Linderos y Los Terrenos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#terrenos">Terrenos</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#paso-1-creacion-de-terreno">Paso 1: Creación de terreno</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#paso-2-seleccion-de-linderos">Paso 2: Selección de linderos</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#paso-3-calculo-del-area-del-terreno">Paso 3: Cálculo del área del terreno</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#creacion-de-construcciones">Creación De Construcciones</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#creacion-de-unidades-de-construccion">Creación De Unidades De Construcción</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#relacion-entre-linderos-y-terrenos">Relación entre Linderos y Terrenos</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">Paso 1: Creación de la relación</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">Paso 2: Verificación de la relación</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#construcciones">Construcciones</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#paso-1-cargar-insumo-construccion">Paso 1: Cargar insumo construcción</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#paso-2-creacion-de-las-construcciones">Paso 2: Creación de las construcciones</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#paso-3-mapeo-de-campos">Paso 3: Mapeo de campos</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#unidades-de-construccion">Unidades de Construcción</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#paso-1-identificacion-de-la-construccion">Paso 1: Identificación de la construcción</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#paso-2-creacion-de-unidades-de-construccion">Paso 2: Creación de unidades de construcción</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#paso-3-formulario-de-la-unidad-de-construccion">Paso 3: Formulario de la unidad de construcción</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#paso-4-resultado-de-la-unidad-de-construccion">Paso 4: Resultado de la unidad de construcción</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#servidumbre-de-transito">Servidumbre de tránsito</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#paso-1-creacion-de-servidumbre-de-transito">Paso 1: Creación de Servidumbre de tránsito</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#paso-2-formulario-de-la-servidumbre-de-transito">Paso 2: Formulario de la Servidumbre de tránsito</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#paso-3-resultado-de-la-servidumbre-de-transito">Paso 3: Resultado de la Servidumbre de tránsito</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#unidad-basica-administrativa">Unidad Básica Administrativa</a><ul>
@@ -262,7 +286,7 @@
 </div>
 <div class="section" id="paso-1-conexion-a-la-base-de-datos">
 <h3>Paso 1: Conexión a la base de datos<a class="headerlink" href="#paso-1-conexion-a-la-base-de-datos" title="Enlazar permanentemente con este título">¶</a></h3>
-<p>Para empezar, se debe definir la conexión a la base de datos. Para realizar este proceso, dirígete al panel «<strong>Navegador</strong>» ubicado a la izquierda de la interfaz de QGIS, en el árbol que se despliega ubica la sección <strong>Geopackage</strong>, haz clic derecho sobre esta sección y selecciona la opción de <strong>Conexión nueva</strong>. Una vez se despliega el panel de navegación, deberás ubicar la base de datos <strong>taller_asistente.gpkg</strong> (disponible en los datos del tutorial) y dar clic en el botón <strong>Abrir</strong> para configurar la conexión a la base de datos.</p>
+<p>Para empezar, se debe definir la conexión a la base de datos. Para realizar este proceso, dirígete al panel «<strong>Navegador</strong>» ubicado a la izquierda de la interfaz de QGIS, en el árbol que se despliega ubica la sección <strong>GeoPackage</strong>, haz clic derecho sobre esta sección y selecciona la opción de <strong>Conexión nueva</strong>. Una vez se despliega el panel de navegación, deberás ubicar la base de datos <strong>taller_asistente.gpkg</strong> (disponible en los datos del tutorial) y dar clic en el botón <strong>Abrir</strong> para configurar la conexión a la base de datos.</p>
 <div class="note">
 <p class="admonition-title">IMPORTANTE</p>
 <p> Como resultado de este proceso se tendrá conexión a una base de datos que posee diversa información, de la cual se hará uso a medida que se avance en las secciones de este tutorial. </p>
@@ -433,7 +457,7 @@
 </div>
 <div class="section" id="paso-4-mapeo-de-campos-punto-levantamiento">
 <h4>Paso 4: Mapeo de campos punto levantamiento<a class="headerlink" href="#paso-4-mapeo-de-campos-punto-levantamiento" title="Enlazar permanentemente con este título">¶</a></h4>
-<p>Se desplegará un cuadro de diálogo para el mapeo de campos de la información. Se recomienda tener en cuenta el <a class="reference external" href="#paso-4-dialogo-del-mapeo-de-campos-para-punto-lindero">paso 4</a> de la sección de punto de lindero. Para este caso, debemos asignar los valores de la siguiente manera:</p>
+<p>Se recomienda tener en cuenta el <a class="reference external" href="#paso-5-definicion-del-mapeo-de-campos-para-punto-lindero">paso 5</a> de la sección de punto de lindero. Para este caso, debemos asignar los valores de la siguiente manera:</p>
 <table class="colwidths-auto docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Atributo</p></th>
@@ -493,7 +517,7 @@
 </div>
 <div class="section" id="paso-5-mapeo-de-campos-punto-control">
 <h4>Paso 5: Mapeo de campos punto control<a class="headerlink" href="#paso-5-mapeo-de-campos-punto-control" title="Enlazar permanentemente con este título">¶</a></h4>
-<p>Se desplegará un cuadro de diálogo para el mapeo de campos de la información. Se recomienda tener en cuenta el <a class="reference external" href="#paso-4-dialogo-del-mapeo-de-campos-para-punto-lindero">paso 4</a> de la sección de punto de lindero. Para este caso, debes asignar las siguientes expresiones:</p>
+<p>Se recomienda tener en cuenta el <a class="reference external" href="#paso-5-definicion-del-mapeo-de-campos-para-punto-lindero">paso 5</a> de la sección de punto de lindero. Para este caso, debemos asignar los valores de la siguiente manera:</p>
 <table class="colwidths-auto docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Atributo</p></th>
@@ -545,7 +569,7 @@
 </div>
 <div class="section" id="paso-3-mapeo-de-campos-lindero">
 <h4>Paso 3: Mapeo de campos lindero<a class="headerlink" href="#paso-3-mapeo-de-campos-lindero" title="Enlazar permanentemente con este título">¶</a></h4>
-<p>Se desplegará un cuadro de diálogo para el mapeo de campos de la información. Se recomienda tener en cuenta los pasos desarrollados en el <a class="reference external" href="#paso-4-dialogo-del-mapeo-de-campos-para-punto-lindero">paso 4</a> de la sección de punto de lindero. Para este caso, debemos asignar la siguiente expresión:</p>
+<p>Se recomienda tener en cuenta el <a class="reference external" href="#paso-5-definicion-del-mapeo-de-campos-para-punto-lindero">paso 5</a> de la sección de punto de lindero. Para este caso, debemos asignar los valores de la siguiente manera:</p>
 <table class="colwidths-auto docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Atributo</p></th>
@@ -598,17 +622,133 @@
 </div>
 <div class="section" id="unidad-espacial">
 <h2>Unidad Espacial<a class="headerlink" href="#unidad-espacial" title="Enlazar permanentemente con este título">¶</a></h2>
-<div class="section" id="creacion-de-terrenos-y-sus-relaciones">
-<h3>Creación De Terrenos y Sus Relaciones<a class="headerlink" href="#creacion-de-terrenos-y-sus-relaciones" title="Enlazar permanentemente con este título">¶</a></h3>
-<div class="section" id="creacion-de-relacion-entre-los-linderos-y-los-terrenos">
-<h4>Creación De Relación Entre Los Linderos y Los Terrenos<a class="headerlink" href="#creacion-de-relacion-entre-los-linderos-y-los-terrenos" title="Enlazar permanentemente con este título">¶</a></h4>
+<div class="section" id="terrenos">
+<h3>Terrenos<a class="headerlink" href="#terrenos" title="Enlazar permanentemente con este título">¶</a></h3>
+<div class="section" id="paso-1-creacion-de-terreno">
+<h4>Paso 1: Creación de terreno<a class="headerlink" href="#paso-1-creacion-de-terreno" title="Enlazar permanentemente con este título">¶</a></h4>
+<p>Dirígete al botón <code class="docutils literal notranslate"><span class="pre">Crear</span> <span class="pre">objetos</span> <span class="pre">de</span> <span class="pre">Levantamiento</span></code> (ubicado en la barra de herramientas) y selecciona la opción <strong>Crear Terreno</strong>:</p>
+<p><a class="" data-lightbox="Paso 1: Creación de terreno" href="../_static/tutorial/captura_y_estructura_de_datos/cap5undespaciales1.png" title="Paso 1: Creación de terreno" data-title="Paso 1: Creación de terreno"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap5undespaciales1.png" class="align-center" width="400px" alt="Paso 1: Creación de terreno"/></a></p>
+</div>
+<div class="section" id="paso-2-seleccion-de-linderos">
+<h4>Paso 2: Selección de linderos<a class="headerlink" href="#paso-2-seleccion-de-linderos" title="Enlazar permanentemente con este título">¶</a></h4>
+<p>Se desplegará una ventana en la cual se te consulta <em>¿Cómo te gustaría crear terrenos?</em>, allí cuentas con dos opciones: <em>Seleccionando linderos existentes</em> ó <em>Desde otra capa de QGIS (definiendo un mapeo de campos)</em>.</p>
+<p>En este caso, se procede a elegir la opción <strong>Seleccionando linderos existentes</strong> y luego das clic en el botón <strong>Siguiente</strong>. En el cuadro de diálogo que se despliega, encuentras tres opciones que corresponden con:</p>
+<ol class="simple">
+<li><p>Seleccionar lindero(s) en el mapa.</p></li>
+<li><p>Seleccionar lindero(s) con base en una expresión.</p></li>
+<li><p>Seleccionar todos los linderos.</p></li>
+</ol>
+<p>Posteriormente, das clic en el botón <code class="docutils literal notranslate"><span class="pre">Seleccionar</span> <span class="pre">todos</span> <span class="pre">los</span> <span class="pre">linderos</span></code> y luego en el botón <code class="docutils literal notranslate"><span class="pre">Finalizar</span></code>.</p>
+<p><a class="" data-lightbox="Paso 2: Selección de linderos" href="../_static/tutorial/captura_y_estructura_de_datos/cap5undespaciales2.gif" title="Paso 2: Selección de linderos" data-title="Paso 2: Selección de linderos"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap5undespaciales2.gif" class="align-center" width="800px" alt="Paso 2: Selección de linderos"/></a></p>
+</div>
+<div class="section" id="paso-3-calculo-del-area-del-terreno">
+<h4>Paso 3: Cálculo del área del terreno<a class="headerlink" href="#paso-3-calculo-del-area-del-terreno" title="Enlazar permanentemente con este título">¶</a></h4>
+<p>Una vez que los terrenos han sido creados, es necesario calcular o en su defecto actualizar el área del terreno. Para ello, debes dar clic en el botón <code class="docutils literal notranslate"><span class="pre">Abrir</span> <span class="pre">tabla</span> <span class="pre">de</span> <span class="pre">atributos</span></code> ubicado en la barra de herramientas. Posteriormente, elijes en el menú desplegable del lado izquierdo el atributo <strong>Área de terreno [m2]</strong> y das clic en el botón <em>Generar expresión</em> <img alt="Botón generar expresion" src="../_images/ICOdialogodeexpressiones.png" />, de esta forma se despliega la ventana de <em>«Diálogo de expresiones»</em>, en la cual debes emplear la función <em>area($geometry)</em>. Luego, basta con dar clic en el botón <code class="docutils literal notranslate"><span class="pre">Aceptar</span></code>.</p>
+<p>Finalmente, al cerrar la ventana emergente debes dar clic en el botón <strong>Actualizar todo</strong>, de inmediato podrás ver que en la columna <strong>Área de terreno</strong> se asignaron los valores de área correspondientes. Para guardar dichos cambios presiona el botón <em>Guardar edición</em> <img alt="Botón guardar edición" src="../_images/ICOguardarcambios.png" />, luego, puedes cerrar la ventana.</p>
+<p><a class="" data-lightbox="Paso 3: Cálculo del área del terreno" href="../_static/tutorial/captura_y_estructura_de_datos/cap5undespaciales3.gif" title="Paso 3: Cálculo del área del terreno" data-title="Paso 3: Cálculo del área del terreno"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap5undespaciales3.gif" class="align-center" width="800px" alt="Paso 3: Cálculo del área del terreno"/></a></p>
 </div>
 </div>
-<div class="section" id="creacion-de-construcciones">
-<h3>Creación De Construcciones<a class="headerlink" href="#creacion-de-construcciones" title="Enlazar permanentemente con este título">¶</a></h3>
+<div class="section" id="relacion-entre-linderos-y-terrenos">
+<h3>Relación entre Linderos y Terrenos<a class="headerlink" href="#relacion-entre-linderos-y-terrenos" title="Enlazar permanentemente con este título">¶</a></h3>
+<div class="section" id="id1">
+<h4>Paso 1: Creación de la relación<a class="headerlink" href="#id1" title="Enlazar permanentemente con este título">¶</a></h4>
+<p>El diligenciamiento de esta relación se realiza con la herramienta <code class="docutils literal notranslate"><span class="pre">Llenar</span> <span class="pre">más</span> <span class="pre">CCL</span> <span class="pre">y</span> <span class="pre">menos</span></code> ubicada en la barra de herramientas. Al hacer clic en este botón, emergerá un cuadro de diálogo en el que se te pregunta si deseas ejecutar esta acción para todos los terrenos identificados en la base de datos. En este caso, se procede a dar clic en el botón <code class="docutils literal notranslate"><span class="pre">Sí</span></code>.</p>
+<p><a class="" data-lightbox="Paso 1: Creación de la relación" href="../_static/tutorial/captura_y_estructura_de_datos/cap5undespaciales8.gif" title="Paso 1: Creación de la relación" data-title="Paso 1: Creación de la relación"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap5undespaciales8.gif" class="align-center" width="800px" alt="Paso 1: Creación de la relación"/></a></p>
 </div>
-<div class="section" id="creacion-de-unidades-de-construccion">
-<h3>Creación De Unidades De Construcción<a class="headerlink" href="#creacion-de-unidades-de-construccion" title="Enlazar permanentemente con este título">¶</a></h3>
+<div class="section" id="id2">
+<h4>Paso 2: Verificación de la relación<a class="headerlink" href="#id2" title="Enlazar permanentemente con este título">¶</a></h4>
+<p>Para verificar el estado de las relaciones creadas previamente, basta con abrir la tabla de atributos de la tabla <strong>col_masccl</strong>, y en la columna <em>ccl_mas</em> corroborar si los campos están diligenciados correctamente.</p>
+<p><a class="" data-lightbox="Resultado de la relación entre linderos y terrenos" href="../_static/tutorial/captura_y_estructura_de_datos/cap5undespaciales10.gif" title="Resultado de la relación entre linderos y terrenos" data-title="Resultado de la relación entre linderos y terrenos"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap5undespaciales10.gif" class="align-center" width="800px" alt="Resultado de la relación entre linderos y terrenos"/></a></p>
+</div>
+</div>
+<div class="section" id="construcciones">
+<h3>Construcciones<a class="headerlink" href="#construcciones" title="Enlazar permanentemente con este título">¶</a></h3>
+<div class="section" id="paso-1-cargar-insumo-construccion">
+<h4>Paso 1: Cargar insumo construcción<a class="headerlink" href="#paso-1-cargar-insumo-construccion" title="Enlazar permanentemente con este título">¶</a></h4>
+<p>En primera medida, debes cargar a tu espacio de trabajo la capa <strong>topo_construcciones</strong>, para esto, debes dirigirte al <strong>Navegador</strong>, seleccionar <strong>GeoPackage -&gt; taller_asistente.gpkg</strong> y arrastrar la capa <strong>topo_construcciones</strong> al mapa, para que ésta sea cargada.</p>
+<p><a class="" data-lightbox="Paso 1: Cargar insumo construcción" href="../_static/tutorial/captura_y_estructura_de_datos/cap5undespaciales11a.gif  " title="Paso 1: Cargar insumo construcción" data-title="Paso 1: Cargar insumo construcción"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap5undespaciales11a.gif" class="align-center" width="800px" alt="Paso 1: Cargar insumo construcción"/></a></p>
+</div>
+<div class="section" id="paso-2-creacion-de-las-construcciones">
+<h4>Paso 2: Creación de las construcciones<a class="headerlink" href="#paso-2-creacion-de-las-construcciones" title="Enlazar permanentemente con este título">¶</a></h4>
+<p>Al desplegar el menú del botón <code class="docutils literal notranslate"><span class="pre">Crear</span> <span class="pre">objetos</span> <span class="pre">de</span> <span class="pre">Levantamiento</span></code> (ubicado en la barra de herramientas) debes seleccionar la opción <strong>Crear Construcción</strong>. Esta acción abrirá una ventana en la cual se te consulta <em>¿Cómo te gustaría crear construcciones?</em>, para este caso selecciona la opción <em>Desde otra capa de QGIS (definiendo un mapeo de campos)</em>.</p>
+<p>En este caso, harás uso de la información registrada en la capa <strong>topo_construcciones</strong>. De manera que luego de definir la fuente mencionada, debes dar clic en el botón <code class="docutils literal notranslate"><span class="pre">Importar</span></code>.</p>
+<p><a class="" data-lightbox="Paso 2: Creación de las construcciones" href="../_static/tutorial/captura_y_estructura_de_datos/cap5undespaciales11b.gif  " title="Paso 2: Creación de las construcciones" data-title="Paso 2: Creación de las construcciones"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap5undespaciales11b.gif" class="align-center" width="800px" alt="Paso 2: Creación de las construcciones"/></a></p>
+</div>
+<div class="section" id="paso-3-mapeo-de-campos">
+<h4>Paso 3: Mapeo de campos<a class="headerlink" href="#paso-3-mapeo-de-campos" title="Enlazar permanentemente con este título">¶</a></h4>
+<p>De inmediato, se desplegará la ventana de mapeo de campos, en la cual debes realizar las modificaciones correspondientes hasta obtener un mapeo de campos como el de la siguiente imagen:</p>
+<p><a class="" data-lightbox="Paso 3: Mapeo de campos" href="../_static/tutorial/captura_y_estructura_de_datos/cap5undespaciales13.png" title="Paso 3: Mapeo de campos" data-title="Paso 3: Mapeo de campos"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap5undespaciales13.png" class="align-center" width="800px" alt="Paso 3: Mapeo de campos"/></a></p>
+<p>Se recomienda tener en cuenta el <a class="reference external" href="#paso-5-definicion-del-mapeo-de-campos-para-punto-lindero">paso 5</a> de la sección de punto de lindero. Para este caso, debemos asignar los valores de la siguiente manera:</p>
+<table class="colwidths-auto docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Atributo</p></th>
+<th class="head"><p>Expresión</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>identificador</p></td>
+<td><p>$id</p></td>
+</tr>
+<tr class="row-odd"><td><p>numero_pisos</p></td>
+<td><p>num_pisos</p></td>
+</tr>
+<tr class="row-even"><td><p>area_construccion</p></td>
+<td><p>area($geometry)</p></td>
+</tr>
+</tbody>
+</table>
+<div class="warning">
+<p class="admonition-title">ADVERTENCIA</p>
+<p>Para el caso de <b>identificador</b>, se utiliza la expresión <i>$id</i> ya que los datos iniciales no cuentan con información para este campo.</p>
+<p>Para el caso de <b>area_construccion</b>, se utiliza la expresión <i>area($geometry)</i> ya que los datos iniciales no cuentan con información para este campo.</p>
+</div>
+<p>Después de completar dichas modificaciones, haz clic en el botón <code class="docutils literal notranslate"><span class="pre">Ejecutar</span></code>. Cuando el proceso termine, puedes verificar los mensajes de la pestaña <strong>Registro</strong> y posteriormente cerrar la ventana.</p>
+</div>
+</div>
+<div class="section" id="unidades-de-construccion">
+<h3>Unidades de Construcción<a class="headerlink" href="#unidades-de-construccion" title="Enlazar permanentemente con este título">¶</a></h3>
+<div class="section" id="paso-1-identificacion-de-la-construccion">
+<h4>Paso 1: Identificación de la construcción<a class="headerlink" href="#paso-1-identificacion-de-la-construccion" title="Enlazar permanentemente con este título">¶</a></h4>
+<p>Para iniciar con el proceso de crear las unidades de construcción se debe emplear la herramienta <strong>Identificar</strong>, ubicada en la barra de herramientas de QGIS. Esto se realiza con el propósito de extraer el valor <em>t_id</em> asignado al polígono que representa la construcción de interés.</p>
+<p><a class="" data-lightbox="Paso 1: Identificación de la construcción" href="../_static/tutorial/captura_y_estructura_de_datos/cap5undespaciales15.gif" title="Paso 1: Identificación de la construcción" data-title="Paso 1: Identificación de la construcción"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap5undespaciales15.gif" class="align-center" width="800px" alt="Paso 1: Identificación de la construcción"/></a></p>
+</div>
+<div class="section" id="paso-2-creacion-de-unidades-de-construccion">
+<h4>Paso 2: Creación de unidades de construcción<a class="headerlink" href="#paso-2-creacion-de-unidades-de-construccion" title="Enlazar permanentemente con este título">¶</a></h4>
+<p>Después de identificar el <em>t_id</em> de la construcción, se procede a crear las unidades de construcción. Para ello debes dirigirte a <strong>LADM-COL –&gt; Captura Y Estructuración De Datos –&gt; Levantamiento Catastral –&gt; Unidad Espacial –&gt; Crear Unidad De Construcción</strong></p>
+<p>De inmediato se desplegará un cuadro de diálogo, en el cual se te consulta como generar la unidad de construcción, puedes elegir entre cargar una capa vectorial o digitalizar el contenido. En este caso, se empleará la opción de digitalización, posteriormente das clic en el botón <code class="docutils literal notranslate"><span class="pre">Crear</span></code>.</p>
+<p><a class="" data-lightbox="Paso 2: Creación de unidades de construcción" href="../_static/tutorial/captura_y_estructura_de_datos/cap5undespaciales17.gif" title="Paso 2: Creación de unidades de construcción" data-title="Paso 2: Creación de unidades de construcción"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap5undespaciales17.gif" class="align-center" width="800px" alt="Paso 2: Creación de unidades de construcción"/></a></p>
+</div>
+<div class="section" id="paso-3-formulario-de-la-unidad-de-construccion">
+<h4>Paso 3: Formulario de la unidad de construcción<a class="headerlink" href="#paso-3-formulario-de-la-unidad-de-construccion" title="Enlazar permanentemente con este título">¶</a></h4>
+<p>Al cerrarse la ventana se activará la herramienta de <em>Autoensamblado</em>, la cual ayudará con el proceso de digitalización, apoyándose de los <em>Puntos levantamiento</em> para definir la unidad de construcción. Digitaliza el polígono correspondiente. Tan pronto termines, debes dar clic derecho para finalizar este proceso.</p>
+<p>Esta acción desplegará un formulario, el cual tiene casillas resaltadas, las cuales indican que es obligatorio diligenciar dichos campos. En la sección <strong>lc_construccion</strong> diligencia el <strong>t_id</strong> de la construcción consultada previamente.</p>
+<p><a class="" data-lightbox="Paso 3: Formulario de la unidad de construcción" href="../_static/tutorial/captura_y_estructura_de_datos/cap5undespaciales18.gif" title="Paso 3: Formulario de la unidad de construcción" data-title="Paso 3: Formulario de la unidad de construcción"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap5undespaciales18.gif" class="align-center" width="800px" alt="Paso 3: Formulario de la unidad de construcción"/></a></p>
+</div>
+<div class="section" id="paso-4-resultado-de-la-unidad-de-construccion">
+<h4>Paso 4: Resultado de la unidad de construcción<a class="headerlink" href="#paso-4-resultado-de-la-unidad-de-construccion" title="Enlazar permanentemente con este título">¶</a></h4>
+<p>Finalmente, al cerrar el cuadro de diálogo, podrás visualizar un sólido en 2.5D que representa la unidad de construcción:</p>
+<p><a class="" data-lightbox="Paso 4: Resultado de la unidad de construcción" href="../_static/tutorial/captura_y_estructura_de_datos/cap5undespaciales22.png" title="Paso 4: Resultado de la unidad de construcción" data-title="Paso 4: Resultado de la unidad de construcción"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap5undespaciales22.png" class="align-center" width="800px" alt="Paso 4: Resultado de la unidad de construcción"/></a></p>
+</div>
+</div>
+<div class="section" id="servidumbre-de-transito">
+<h3>Servidumbre de tránsito<a class="headerlink" href="#servidumbre-de-transito" title="Enlazar permanentemente con este título">¶</a></h3>
+<div class="section" id="paso-1-creacion-de-servidumbre-de-transito">
+<h4>Paso 1: Creación de Servidumbre de tránsito<a class="headerlink" href="#paso-1-creacion-de-servidumbre-de-transito" title="Enlazar permanentemente con este título">¶</a></h4>
+<p>Para crear una <em>Servidumbre de tránsito</em>, debes dirigirte a la opción <strong>Crear objetos de levantamiento –&gt; Crear Servidumbre de tránsito</strong> en la barra de herramientas.</p>
+<p>De inmediato, se desplegará un cuadro de diálogo que habilitará tres (3) opciones: <em>Digitalizando el eje</em>, <em>Digitalizando polígono</em> y <em>Desde otra capa de QGIS</em>. Para este caso, selecciona la segunda opción, posteriormente das clic en el botón <code class="docutils literal notranslate"><span class="pre">Crear</span></code>.</p>
+<p><a class="" data-lightbox="Paso 1: Creación de Servidumbre de tránsito" href="../_static/tutorial/captura_y_estructura_de_datos/cap5undespaciales23.gif" title="Paso 1: Creación de Servidumbre de tránsito" data-title="Paso 1: Creación de Servidumbre de tránsito"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap5undespaciales23.gif" class="align-center" width="800px" alt="Paso 1: Creación de Servidumbre de tránsito"/></a></p>
+</div>
+<div class="section" id="paso-2-formulario-de-la-servidumbre-de-transito">
+<h4>Paso 2: Formulario de la Servidumbre de tránsito<a class="headerlink" href="#paso-2-formulario-de-la-servidumbre-de-transito" title="Enlazar permanentemente con este título">¶</a></h4>
+<p>Al cerrar la ventana anterior, se habilitará la opción para digitalizar la <em>Servidumbre de tránsito</em> junto con la herramienta de <em>Autoensamblado</em>. Grafica el polígono de tu interés y da clic derecho al finalizar la digitalización.</p>
+<p>Una vez que termines la digitalización del polígono, se desplegará un formulario que tiene algunas casillas resaltadas, las cuales deben diligenciarse de forma obligatoria.</p>
+<p><a class="" data-lightbox="Paso 2: Formulario de la Servidumbre de tránsito" href="../_static/tutorial/captura_y_estructura_de_datos/cap5undespaciales24.gif" title="Paso 2: Formulario de la Servidumbre de tránsito" data-title="Paso 2: Formulario de la Servidumbre de tránsito"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap5undespaciales24.gif" class="align-center" width="800px" alt="Paso 2: Formulario de la Servidumbre de tránsito"/></a></p>
+</div>
+<div class="section" id="paso-3-resultado-de-la-servidumbre-de-transito">
+<h4>Paso 3: Resultado de la Servidumbre de tránsito<a class="headerlink" href="#paso-3-resultado-de-la-servidumbre-de-transito" title="Enlazar permanentemente con este título">¶</a></h4>
+<p>Finalmente, al cerrar el cuadro de diálogo podrás visualizar un polígono que representa la Servidumbre de tránsito.</p>
+<p><a class="" data-lightbox="Paso 3: Resultado de la Servidumbre de tránsito" href="../_static/tutorial/captura_y_estructura_de_datos/cap5undespaciales25.png" title="Paso 3: Resultado de la Servidumbre de tránsito" data-title="Paso 3: Resultado de la Servidumbre de tránsito"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap5undespaciales25.png" class="align-center" width="800px" alt="Paso 3: Resultado de la Servidumbre de tránsito"/></a></p>
+</div>
 </div>
 </div>
 <div class="section" id="unidad-basica-administrativa">
