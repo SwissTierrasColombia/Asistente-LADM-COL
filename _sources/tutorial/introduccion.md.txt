@@ -4,17 +4,19 @@ Este tutorial te permite hacer uso de las funcionalidades del *plugin* “Asiste
 
 Para ello, el tutorial utiliza un conjunto de datos de prueba y comprende las siguientes secciones:
 
-- [Crear Estructura LADM-COL](crear_estructura_ladm_col.html)
+- [Crear Estructura LADM-COL](crear_estructura_ladm_col.html#crear-estructura-ladm-col)
 
-- [Captura y Estructuración de Datos](crear_estructura_ladm_col.html)
+- [Captura y Estructuración de Datos](captura_y_estructuracion_de_datos.html#captura-y-estructuracion-de-datos)
 
-- [Reglas de Calidad](reglas_de_calidad.html)
+- [Reglas de Calidad](reglas_de_calidad.html#reglas-de-calidad)
 
-- [Consulta de Información](consulta_de_informacion.html)
+- [Consulta de Información](consulta_de_informacion.html#consulta-de-informacion)
 
-- [Exportar e Importar Datos](exportar_importar_datos.html)
+- [Generación de Reportes](generacion_de_reportes.html#generacion-de-reportes)
 
-- [Gestión de Insumos](gestion_de_insumos.html)
+- [Exportar e Importar Datos](exportar_importar_datos.html#exportar-e-importar-datos)
+
+- [Gestión de Insumos](gestion_de_insumos.html#gestion-de-insumos)
 
 ## ¿Que se necesita para empezar?
 
