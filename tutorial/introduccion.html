@@ -107,7 +107,10 @@
 </ul>
 <p class="caption"><span class="caption-text">TUTORIAL</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Introducción</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Introducción</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#que-se-necesita-para-empezar">¿Que se necesita para empezar?</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="crear_estructura_ladm_col.html">Crear Estructura LADM-COL</a></li>
 <li class="toctree-l1"><a class="reference internal" href="captura_y_estructuracion_de_datos.html">Captura y Estructuración de Datos</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reglas_de_calidad.html">Reglas de Calidad</a></li>
@@ -180,7 +183,33 @@
             
   <div class="tex2jax_ignore mathjax_ignore section" id="introduccion">
 <h1>Introducción<a class="headerlink" href="#introduccion" title="Enlazar permanentemente con este título">¶</a></h1>
-<p><em>En construcción…</em></p>
+<p>Este tutorial te permite hacer uso de las funcionalidades del <em>plugin</em> “Asistente LADM-COL”, incluyendo herramientas para apoyar los procesos captura, revisión, validación y consolidación de datos resultado del barrido predial masivo (levantamiento catastral) en el marco de la política pública de catastro multipropósito en Colombia.</p>
+<p>Para ello, el tutorial utiliza un conjunto de datos de prueba y comprende las siguientes secciones:</p>
+<ul class="simple">
+<li><p><span class="xref myst">Crear Estructura LADM-COL</span></p></li>
+<li><p><span class="xref myst">Captura y Estructuración de Datos</span></p></li>
+<li><p><span class="xref myst">Reglas de Calidad</span></p></li>
+<li><p><span class="xref myst">Consulta de Información</span></p></li>
+<li><p><span class="xref myst">Exportar e Importar Datos</span></p></li>
+<li><p><span class="xref myst">Gestión de Insumos</span></p></li>
+</ul>
+<div class="section" id="que-se-necesita-para-empezar">
+<h2>¿Que se necesita para empezar?<a class="headerlink" href="#que-se-necesita-para-empezar" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Para desarrollar el tutorial se requieren los siguientes insumos:</p>
+<p><strong>Software</strong></p>
+<p>Software <strong>QGIS versión 3.14.x</strong> o superior, instalado en el equipo de trabajo. QGIS es software libre y se puede descargar desde <a class="reference external" href="https://qgis.org/en/site/forusers/download.html">este enlace</a>.</p>
+<p>Complemento <strong>Asistente LADM-COL</strong>, que se descarga y se activa dentro del software QGIS en el menú “Complementos”, opción “Administrar e instalar complementos”. Una vez allí, se busca por términos clave en el campo de búsquedas y se instala dando clic en el botón <code class="docutils literal notranslate"><span class="pre">Instalar</span> <span class="pre">complemento</span></code>.</p>
+<p><strong>Datos</strong></p>
+<p><em>Repositorio de datos</em></p>
+<p>Se debe contar con una base de datos configurada en el software PostgreSQL 9.5 o superior en la cual se tengan permisos de creación de esquemas. Durante la sección <span class="xref myst">Administración de datos</span> del tutorial, se creará un esquema con la estructura del modelo LADM-COL.</p>
+<p><em>Conjunto de datos de ejemplo</em></p>
+<p>En la siguiente <a class="reference external" href="http://nas-swissphoto.quickconnect.to/d/f/620702901595062139">URL</a> se puede descargar un archivo comprimido en formato ZIP con el nombre “Datos”.</p>
+<p>Este archivo contiene lo siguiente:</p>
+<p><strong>Insumos_cobol.zip:</strong> Datos en formato COBOL utilizados para importación de insumos en el Asistente LADM-COL.</p>
+<p><strong>Soportes:</strong> Soportes para las fuentes administrativas. Esta carpeta contiene las escrituras públicas que soportan los derechos de dominio descritos durante el tutorial.</p>
+<p><strong>taller_asistente.gpkg:</strong> Archivo de base de datos en formato GeoPackage que tiene la información entregada por un topógrafo al realizar un barrido predial masivo.</p>
+<p><strong>topo_punto_control.csv:</strong> Archivo CSV que tiene la información asociada a los puntos de control utilizados por el topógrafo durante el levantamiento predial masivo.</p>
+</div>
 </div>
 
 
