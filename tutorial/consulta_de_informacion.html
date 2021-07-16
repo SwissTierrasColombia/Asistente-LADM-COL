@@ -111,7 +111,19 @@
 <li class="toctree-l1"><a class="reference internal" href="crear_estructura_ladm_col.html">Crear Estructura LADM-COL</a></li>
 <li class="toctree-l1"><a class="reference internal" href="captura_y_estructuracion_de_datos.html">Captura y Estructuración de Datos</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reglas_de_calidad.html">Reglas de Calidad</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Consulta de Información</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Consulta de Información</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#paso-1-activar-el-modulo-de-consultas">Paso 1: Activar el módulo de consultas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#paso-2-consulta-de-datos">Paso 2: Consulta de datos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#paso-3-abrir-formulario">Paso 3: Abrir formulario</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#paso-4-validacion-de-formulario">Paso 4: Validación de formulario</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#generacion-de-reportes">Generación de Reportes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#paso-1-seleccion-de-reportes">Paso 1: Selección de reportes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#paso-2-seleccionar-la-carpeta">Paso 2: Seleccionar la carpeta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#paso-3-consulta-del-reporte-generado">Paso 3: Consulta del reporte generado</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="exportar_importar_datos.html">Exportar e Importar Datos</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gestion_de_insumos.html">Gestión de Insumos</a></li>
 </ul>
@@ -180,6 +192,58 @@
             
   <div class="tex2jax_ignore mathjax_ignore section" id="consulta-de-informacion">
 <h1>Consulta de Información<a class="headerlink" href="#consulta-de-informacion" title="Enlazar permanentemente con este título">¶</a></h1>
+<p>El módulo de <strong>Consultas</strong> del Asistente LADM-COL ofrece un conjunto de consultas definidas por la autoridad catastral (IGAC), que permiten realizar una validación temática de los datos almacenados en el modelo LADM-COL. Las consultas están clasificadas por componente: básico, jurídico, ficha predial, físico y económico.</p>
+<div class="section" id="paso-1-activar-el-modulo-de-consultas">
+<h2>Paso 1: Activar el módulo de consultas<a class="headerlink" href="#paso-1-activar-el-modulo-de-consultas" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>En el menú LADM-COL, selecciona la opción <code class="docutils literal notranslate"><span class="pre">Consultar</span> <span class="pre">datos</span></code>.</p>
+<p><a class="" data-lightbox="Paso 1" href="../_static/tutorial/consulta_de_informacion/cap10calidad5.gif" title="Paso1" data-title="Paso 1"><img src="../_static/tutorial/consulta_de_informacion/cap10calidad5.gif" class="align-center" width="800px" alt="Paso 1"/></a></p>
+</div>
+<div class="section" id="paso-2-consulta-de-datos">
+<h2>Paso 2: Consulta de datos<a class="headerlink" href="#paso-2-consulta-de-datos" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>En el panel de <em>Consultar datos</em> (ubicado en el lado derecho de la interfaz) presiona el botón <code class="docutils literal notranslate"><span class="pre">Identificar</span></code>. Procede a seleccionar el terreno que deseas consultar. Esta acción despliega información en la pestaña <strong>Básica</strong> del panel de <strong>Resultados</strong>. En el mismo panel, despliega la sección de <em>Construcciones</em> y selecciona el primer <em>t_id</em>, haz clic derecho sobre este y elige la opción <em>Zoom a la lc_construccion con t_id</em>=…</p>
+<p><a class="" data-lightbox="Paso 2: Consulta de datos" href="../_static/tutorial/consulta_de_informacion/cap10calidad6.gif" title="Paso 2: Consulta de datos" data-title="Paso 2: Consulta de datos"><img src="../_static/tutorial/consulta_de_informacion/cap10calidad6.gif" class="align-center" width="800px" alt="Paso 2: Consulta de datos"/></a></p>
+</div>
+<div class="section" id="paso-3-abrir-formulario">
+<h2>Paso 3: Abrir formulario<a class="headerlink" href="#paso-3-abrir-formulario" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Adicionalmente, si das clic derecho sobre el atributo <em>t_id</em> de la construcción de tu interés podrás seleccionar la opción <em>Abrir formulario para lc_construccion con t_id=…</em></p>
+<p><a class="" data-lightbox="Paso 3: Abrir formulario" href="../_static/tutorial/consulta_de_informacion/cap10calidad7.gif" title="Paso 3: Abrir formulario" data-title="Paso 3: Abrir formulario"><img src="../_static/tutorial/consulta_de_informacion/cap10calidad7.gif" class="align-center" width="800px" alt="Paso 3: Abrir formulario"/></a></p>
+</div>
+<div class="section" id="paso-4-validacion-de-formulario">
+<h2>Paso 4: Validación de formulario<a class="headerlink" href="#paso-4-validacion-de-formulario" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Se desplegará una ventana con los atributos del objeto espacial <em>Construcción</em>, en la cual puedes visualizar y/o editar los datos almacenados en la base de datos.</p>
+<div class="seealso">
+<p class="admonition-title">TIP</p>
+<p>Para poder editar datos en el formulario que se despliega, es necesario que habilites la opción de <i>Conmutar edición</i> en la barra de herramientas de QGIS.</p>
+</div>
+<a class="" data-lightbox="Paso 4: Validación de formulario" href="../_static/tutorial/consulta_de_informacion/cap10calidad8.gif" title="Paso 4: Validación de formulario" data-title="Paso 4: Validación de formulario"><img src="../_static/tutorial/consulta_de_informacion/cap10calidad8.gif" class="align-center" width="800px" alt="Paso 4: Validación de formulario"/></a>
+</div>
+</div>
+<div class="tex2jax_ignore mathjax_ignore section" id="generacion-de-reportes">
+<h1>Generación de Reportes<a class="headerlink" href="#generacion-de-reportes" title="Enlazar permanentemente con este título">¶</a></h1>
+<p>El Asistente LADM-COL permite generar diversos tipos de reportes de forma individual o masiva, como se muestra a continuación.</p>
+<div class="section" id="paso-1-seleccion-de-reportes">
+<h2>Paso 1: Selección de reportes<a class="headerlink" href="#paso-1-seleccion-de-reportes" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>En el menú <strong>LADM-COL</strong> selecciona la opción <strong>Reportes -&gt; Anexo 17</strong>. Este reporte corresponde a un informe de colindancia para el terreno seleccionado en el mapa.</p>
+<div class="seealso">
+<p class="admonition-title">TIP</p>
+<p>Los reportes son generados con base en una selección de terrenos en el mapa. Elige un terreno si quieres un solo reporte, o varios terrenos si buscas generar reportes de forma masiva.</p>
+</div> 
+<p><a class="" data-lightbox="Paso 1: Selección de reportes" href="../_static/tutorial/consulta_de_informacion/cap11reportes01.gif" title="Paso 1: Selección de reportes" data-title="Paso 1: Selección de reportes"><img src="../_static/tutorial/consulta_de_informacion/cap11reportes01.gif" class="align-center" width="800px" alt="Paso 1: Selección de reportes"/></a></p>
+</div>
+<div class="section" id="paso-2-seleccionar-la-carpeta">
+<h2>Paso 2: Seleccionar la carpeta<a class="headerlink" href="#paso-2-seleccionar-la-carpeta" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>La acción anterior desplegará un cuadro de diálogo para definir la ruta en la cual se guardará el reporte. Una vez seleccionada la ruta, debes dar clic en el botón <code class="docutils literal notranslate"><span class="pre">Seleccionar</span> <span class="pre">carpeta</span></code> y luego en <code class="docutils literal notranslate"><span class="pre">Generar</span></code>. El Asistente LADM-COL iniciará la generación del reporte.</p>
+<div class="seealso">
+<p class="admonition-title">TIP</p>
+<p>En caso de no encontrar las dependencias requeridas para la generación de reportes, el Asistente LADM-COL las descargará de forma automática. Cuando el proceso de descarga finalice, debes volver al Paso 1 (Selección de reportes).</p>
+</div> 
+<p><a class="" data-lightbox="Paso 2: Seleccionar la carpeta" href="../_static/tutorial/consulta_de_informacion/cap11reportes02.gif" title="Paso 2: Seleccionar la carpeta" data-title="Paso 2: Seleccionar la carpeta"><img src="../_static/tutorial/consulta_de_informacion/cap11reportes02.gif" class="align-center" width="800px" alt="Paso 2: Seleccionar la carpeta"/></a></p>
+</div>
+<div class="section" id="paso-3-consulta-del-reporte-generado">
+<h2>Paso 3: Consulta del reporte generado<a class="headerlink" href="#paso-3-consulta-del-reporte-generado" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Para consultar el reporte generado basta con que te dirijas a la ruta que definiste y abras el archivo PDF generado.</p>
+<p><a class="" data-lightbox="Paso 3: Consulta del reporte generado" href="../_static/tutorial/consulta_de_informacion/cap11reportes03.gif" title="Paso 3: Consulta del reporte generado" data-title="Paso 3: Consulta del reporte generado"><img src="../_static/tutorial/consulta_de_informacion/cap11reportes03.gif" class="align-center" width="800px" alt="Paso 3: Consulta del reporte generado"/></a></p>
+</div>
 </div>
 
 
