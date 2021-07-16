@@ -110,7 +110,12 @@
 <li class="toctree-l1"><a class="reference internal" href="introduccion.html">Introducción</a></li>
 <li class="toctree-l1"><a class="reference internal" href="crear_estructura_ladm_col.html">Crear Estructura LADM-COL</a></li>
 <li class="toctree-l1"><a class="reference internal" href="captura_y_estructuracion_de_datos.html">Captura y Estructuración de Datos</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Reglas de Calidad</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Reglas de Calidad</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#paso-1-menu-de-control-de-calidad">Paso 1: Menú de control de calidad.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#paso-2-ejecucion-de-las-reglas-de-calidad">Paso 2: Ejecución de las reglas de calidad.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#paso-3-resultados-del-control-de-calidad">Paso 3: Resultados del control de calidad.</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="consulta_de_informacion.html">Consulta de Información</a></li>
 <li class="toctree-l1"><a class="reference internal" href="generacion_de_reportes.html">Generación de Reportes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exportar_importar_datos.html">Exportar e Importar Datos</a></li>
@@ -181,6 +186,44 @@
             
   <div class="tex2jax_ignore mathjax_ignore section" id="reglas-de-calidad">
 <h1>Reglas de Calidad<a class="headerlink" href="#reglas-de-calidad" title="Enlazar permanentemente con este título">¶</a></h1>
+<p>El Asistente LADM-COL cuenta con un conjunto de reglas de calidad que permiten comprobar temática y topológicamente el estado de los datos.</p>
+<p>Estas reglas de calidad se clasifican en 4 grupos:</p>
+<ul class="simple">
+<li><p>Reglas de calidad para puntos.</p></li>
+<li><p>Reglas de calidad para lineas.</p></li>
+<li><p>Reglas de calidad para polígonos.</p></li>
+<li><p>Reglas de calidad de consistencia lógica.</p></li>
+</ul>
+<div class="section" id="paso-1-menu-de-control-de-calidad">
+<h2>Paso 1: Menú de control de calidad.<a class="headerlink" href="#paso-1-menu-de-control-de-calidad" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Dirígete al menú <strong>LADM-COL</strong> y haz clic en la opción <strong>Calidad</strong>.</p>
+<p><a class="" data-lightbox="Paso 1: Menú de control de calidad." href="../_static/tutorial/reglas_de_calidad/cap10calidad1.png" title="Paso 1: Menú de control de calidad." data-title="Paso 1: Menú de control de calidad."><img src="../_static/tutorial/reglas_de_calidad/cap10calidad1.png" class="align-center" width="400px" alt="Paso 1: Menú de control de calidad."/></a></p>
+</div>
+<div class="section" id="paso-2-ejecucion-de-las-reglas-de-calidad">
+<h2>Paso 2: Ejecución de las reglas de calidad.<a class="headerlink" href="#paso-2-ejecucion-de-las-reglas-de-calidad" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Se desplegará una ventana con cada una de las reglas de validación existentes. Haz clic en el botón <code class="docutils literal notranslate"><span class="pre">Seleccionar</span> <span class="pre">Todas</span></code> y luego en el botón <code class="docutils literal notranslate"><span class="pre">Aceptar</span></code>, para proceder a ejecutar todas las reglas de calidad.</p>
+<p><a class="" data-lightbox="Paso 2: Ejecución de las reglas de calidad." href="../_static/tutorial/reglas_de_calidad/cap10calidad2.gif" title="Paso 2: Ejecución de las reglas de calidad." data-title="Paso 2: Ejecución de las reglas de calidad."><img src="../_static/tutorial/reglas_de_calidad/cap10calidad2.gif" class="align-center" width="800px" alt="Paso 2: Ejecución de las reglas de calidad."/></a></p>
+</div>
+<div class="section" id="paso-3-resultados-del-control-de-calidad">
+<h2>Paso 3: Resultados del control de calidad.<a class="headerlink" href="#paso-3-resultados-del-control-de-calidad" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Una vez terminan de ejecutarse las reglas de calidad, se habilita el botón <code class="docutils literal notranslate"><span class="pre">Mostrar</span> <span class="pre">resultados</span> </code> en la barra de mensajes de QGIS (parte superior del mapa). Al dar clic en dicho botón, es posible desplegar un informe en el que se identifican las reglas que se validaron y el estado de la validación por regla:</p>
+<ul class="simple">
+<li><p>Color verde: reglas de calidad sin errores de validación.</p></li>
+<li><p>Color naranja: reglas de calidad que no se pueden validad por falta de datos.</p></li>
+<li><p>Color rojo: reglas de calidad que tienen errores de validación.</p></li>
+</ul>
+<p>Adicionalmente, se generan capas temporales con todos los errores de validación obtenidos, bien sean alfanuméricos o espaciales. Éstas capas se encuentran en el panel de <em>Capas</em> en el grupo <em>Errores de validación</em>.</p>
+<div class="seealso">
+<p class="admonition-title">TIP</p>
+<p>Es posible exportar los resultados obtenidos de las reglas de validación. Para ello debes dar clic en el botón <i>Mostrar resultados -> Exportar PDF.</i></p>
+</div>
+<a class="" data-lightbox="Paso 3a: Exportar resultado de reglas de calidad a PDF." href="../_static/tutorial/reglas_de_calidad/cap10calidad3.gif" title="Paso 3a: Exportar resultado de reglas de calidad a PDF." data-title="Paso 3a: Exportar resultado de reglas de calidad a PDF."><img src="../_static/tutorial/reglas_de_calidad/cap10calidad3.gif" class="align-center" width="800px" alt="Paso 3a: Exportar resultado de reglas de calidad a PDF."/></a>
+<div class="seealso">
+<p class="admonition-title">TIP</p>
+<p>También es posible exportar las capas geográficas y/o alfanuméricas con errores hacia una base de datos GeoPackage. Para ello debes dar clic en el botón guardar, que se encuentra al lado del grupo <i>Errores de validación</i>, dentro del panel de Capas.</p>
+</div>
+<p><a class="" data-lightbox="Paso 3b: Exportar resultado de reglas de calidad a GeoPackage." href="../_static/tutorial/reglas_de_calidad/cap10calidad4.gif" title="Paso 3b: Exportar resultado de reglas de calidad a GeoPackage." data-title="Paso 3b: Exportar resultado de reglas de calidad a GeoPackage."><img src="../_static/tutorial/reglas_de_calidad/cap10calidad4.gif" class="align-center" width="800px" alt="Paso 3b: Exportar resultado de reglas de calidad a GeoPackage."/></a></p>
+</div>
 </div>
 
 
