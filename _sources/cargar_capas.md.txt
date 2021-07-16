@@ -9,7 +9,7 @@ Esta herramienta permite acceder a un listado completo de capas de la base de da
 <p>La herramienta "Cargar Capas" del Asistente LADM-COL, realiza de forma automática la configuración de dominios,  relaciones, formularios de edición y simbología para las capas de una base de datos LADM-COL.</p>
 </div>
 
-Después de haber creado la [estructura LADM-COL](administracion_de_datos.html#crear-estructura-ladm-col) en la base de datos donde se guardarán los datos, y luego de haber realizado bien sea la importación de estos a partir del archivo XTF del conjunto de datos (como se describe en la sección [Importar datos](administracion_de_datos.html#importar-datos)), o la generación manual de datos (como se explica en [Captura y estructuración de datos](captura_y_estructura_de_datos.html)), se procede a cargar capas a QGIS con el fin de explorar los datos, como se ilustra en la siguiente animación.
+Después de haber creado la [estructura LADM-COL](administracion_de_datos.html#crear-estructura-ladm-col) en la base de datos donde se guardarán los datos, y luego de haber realizado bien sea la importación de estos a partir del archivo XTF del conjunto de datos (como se describe en la sección [Importar datos](administracion_de_datos.html#importar-datos)), o la generación manual de datos (como se explica en [Captura y estructuración de datos](captura_y_estructura_de_datos.html#captura-y-estructuracion-de-datos)), se procede a cargar capas a QGIS con el fin de explorar los datos, como se ilustra en la siguiente animación.
 
 <a class="" data-lightbox="Cargar capas" href="_static/cargar_capas/load_layers.gif" title="Cargar capas" data-title="Cargar capas"><img src="_static/cargar_capas/load_layers.gif" class="align-center" width="800px" alt="Cargar capas"/></a>
 
