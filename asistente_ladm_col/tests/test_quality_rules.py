@@ -700,7 +700,7 @@ class TesQualityRules(unittest.TestCase):
             self.assertIn(item, result,
                           'Error in: Plot node {} is not covered by boundary point'.format(item['id']))
 
-    def ___test_no_error_quality_rule(self):
+    def test_no_error_quality_rule(self):
         print('\nINFO: Validating no errors in quality rules...')
         gpkg_path = get_test_copy_path('db/ladm/gpkg/test_valid_quality_rules_v1_1.gpkg')
         self.db_gpkg = get_gpkg_conn_from_path(gpkg_path)
