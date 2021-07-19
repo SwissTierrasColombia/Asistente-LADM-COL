@@ -200,9 +200,20 @@
 <li class="toctree-l3"><a class="reference internal" href="#crear-agrupacion-de-interesados">Crear Agrupación De Interesados</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#fuentes">Fuentes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fuentes">Fuentes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#tabla-fuentes-administrativas">Tabla fuentes administrativas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#paso-1-crear-fuente-administrativa">Paso 1: Crear fuente administrativa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#paso-2-seleccion-metodo-de-creacion-de-la-fuente-administrativa">Paso 2: Selección método de creación de la fuente administrativa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#paso-3-diligenciamiento-de-formulario-fuente-administrativa">Paso 3: Diligenciamiento de formulario fuente administrativa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#paso-4-adjuntar-archivos-en-fuente-administrativa">Paso 4: Adjuntar archivos en Fuente administrativa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#paso-5-resultado-formulario-fuente-administrativa">Paso 5: Resultado formulario Fuente administrativa</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#rrr">RRR</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#crear-derecho">Crear Derecho</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#paso-1-seleccionar-la-fuente-administrativa">Paso 1: Seleccionar la fuente administrativa.</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#paso-2-crear-derecho">Paso 2: Crear Derecho</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#paso-3-seleccion-metodo-de-creacion-del-derecho">Paso 3: Selección método de creación del Derecho</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#paso-4-diligenciamiento-de-formulario-derecho">Paso 4: Diligenciamiento de formulario Derecho</a></li>
 </ul>
 </li>
 </ul>
@@ -766,11 +777,100 @@
 </div>
 <div class="section" id="fuentes">
 <h2>Fuentes<a class="headerlink" href="#fuentes" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Para continuar con el desarrollo del tutorial, es necesario tener en cuenta los datos de prueba registrados a continuación:</p>
+<div class="section" id="tabla-fuentes-administrativas">
+<h3>Tabla fuentes administrativas<a class="headerlink" href="#tabla-fuentes-administrativas" title="Enlazar permanentemente con este título">¶</a></h3>
+<table class="colwidths-auto docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Variables</p></th>
+<th class="head"><p>Fuente 1</p></th>
+<th class="head"><p>Fuente 2</p></th>
+<th class="head"><p>Fuente 3</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Tipo</strong></p></td>
+<td><p>Escritura pública</p></td>
+<td><p>Escritura pública</p></td>
+<td><p>Escritura pública</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Estado <br />disponibilidad</strong></p></td>
+<td><p>Disponible</p></td>
+<td><p>Disponible</p></td>
+<td><p>Disponible</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Nombre<br /> archivo</strong></p></td>
+<td><p>escritura_01.jpg</p></td>
+<td><p>escritura_02.jpg</p></td>
+<td><p>escritura_03.jpg</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Observación</strong></p></td>
+<td><p>Soporte Predio<br />251750000000000<br />000000500000001</p></td>
+<td><p>Soporte Predio<br />251750000000000<br />000000500000002</p></td>
+<td><p>Soporte Predio<br />251750000000000<br />000000500000003</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="paso-1-crear-fuente-administrativa">
+<h3>Paso 1: Crear fuente administrativa<a class="headerlink" href="#paso-1-crear-fuente-administrativa" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>En el botón <code class="docutils literal notranslate"><span class="pre">Crear</span> <span class="pre">objetos</span> <span class="pre">de</span> <span class="pre">Levantamiento</span></code> selecciona la opción <strong>Crear Fuente Administrativa</strong>.</p>
+<p><a class="" data-lightbox="Paso 1: Crear Fuente administrativa" href="../_static/tutorial/captura_y_estructura_de_datos/cap8fuentes1.gif" title="Paso 1: Crear Fuente administrativa" data-title="Paso 1: Crear Fuente administrativa"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap8fuentes1.gif" class="align-center" width="800px" alt="Paso 1: Crear Fuente administrativa"/></a></p>
+</div>
+<div class="section" id="paso-2-seleccion-metodo-de-creacion-de-la-fuente-administrativa">
+<h3>Paso 2: Selección método de creación de la fuente administrativa<a class="headerlink" href="#paso-2-seleccion-metodo-de-creacion-de-la-fuente-administrativa" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>Se desplegará un cuadro de diálogo con dos opciones para crear una fuente administrativa: <em>Ingresando datos manualmente en un formulario</em> ó <em>Desde otra capa de QGIS</em>. Para este caso, selecciona la primera opción y presiona el botón <code class="docutils literal notranslate"><span class="pre">Crear</span></code>.</p>
+<p><a class="" data-lightbox="Paso 2: Selección método de creación de la Fuente administrativa" href="../_static/tutorial/captura_y_estructura_de_datos/cap8fuentes2.gif" title="Paso 2: Selección método de creación de la Fuente administrativa" data-title="Paso 2: Selección método de creación de la Fuente administrativa"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap8fuentes2.gif" class="align-center" width="800px" alt="Paso 2: Selección método de creación de la Fuente administrativa"/></a></p>
+</div>
+<div class="section" id="paso-3-diligenciamiento-de-formulario-fuente-administrativa">
+<h3>Paso 3: Diligenciamiento de formulario fuente administrativa<a class="headerlink" href="#paso-3-diligenciamiento-de-formulario-fuente-administrativa" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>Se despliega un formulario que debe ser diligenciado con los datos proporcionados en la <a class="reference external" href="#tabla-fuentes-administrativas">tabla</a> que se encuentra al inicio de esta sección.</p>
+<p><a class="" data-lightbox="Paso 3: Diligenciamiento de formulario Fuente administrativa" href="../_static/tutorial/captura_y_estructura_de_datos/cap8fuentes3.gif" title="Paso 3: Diligenciamiento de formulario Fuente administrativa" data-title="Paso 3: Diligenciamiento de formulario Fuente administrativa"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap8fuentes3.gif" class="align-center" width="800px" alt="Paso 3: Diligenciamiento de formulario Fuente administrativa"/></a></p>
+</div>
+<div class="section" id="paso-4-adjuntar-archivos-en-fuente-administrativa">
+<h3>Paso 4: Adjuntar archivos en Fuente administrativa<a class="headerlink" href="#paso-4-adjuntar-archivos-en-fuente-administrativa" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>Debes dirigirte a la pestaña <em>extarchivo</em> y agregar el archivo correspondiente a cada fuente administrativa.</p>
+<div class="seealso">
+<p class="admonition-title">TIP</p>
+<p>Los archivos los encuentras en la carpeta compartida al inicio del tutorial <i>Datos -> Soportes</i>.</p>
+</div>
+<p><a class="" data-lightbox="Paso 4: Adjuntar archivos en Fuente administrativa" href="../_static/tutorial/captura_y_estructura_de_datos/cap8fuentes4.gif" title="Paso 4: Adjuntar archivos en Fuente administrativa" data-title="Paso 4: Adjuntar archivos en Fuente administrativa"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap8fuentes4.gif" class="align-center" width="800px" alt="Paso 4: Adjuntar archivos en Fuente administrativa"/></a></p>
+<p>Una vez que se ha cargado el archivo, debes dar clic en <code class="docutils literal notranslate"><span class="pre">Aceptar</span></code>.</p>
+</div>
+<div class="section" id="paso-5-resultado-formulario-fuente-administrativa">
+<h3>Paso 5: Resultado formulario Fuente administrativa<a class="headerlink" href="#paso-5-resultado-formulario-fuente-administrativa" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>Repite el paso 4 para los tres (3) archivos relacionados a fuentes administrativas. Al terminar la creación de cada fuente aparecerá un mensaje azul en la barra de mensajes indicando la operación exitosa.</p>
+<p><a class="" data-lightbox="Paso 5: Resultado formulario Fuente administrativa" href="../_static/tutorial/captura_y_estructura_de_datos/cap8fuentes5.gif" title="Paso 5: Resultado formulario Fuente administrativa" data-title="Paso 5: Resultado formulario Fuente administrativa"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap8fuentes5.gif" class="align-center" width="800px" alt="Paso 5: Resultado formulario Fuente administrativa"/></a></p>
+</div>
 </div>
 <div class="section" id="rrr">
 <h2>RRR<a class="headerlink" href="#rrr" title="Enlazar permanentemente con este título">¶</a></h2>
-<div class="section" id="crear-derecho">
-<h3>Crear Derecho<a class="headerlink" href="#crear-derecho" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>Luego de haber creado interesados y fuentes administrativas, es necesario crear las relaciones entre estos. Para ello se deben <strong>Derechos</strong>, considerando la siguiente información:</p>
+<p><a class="" data-lightbox="Información RRR" href="../_static/tutorial/captura_y_estructura_de_datos/cap9derechos1.png" title="Información RRR" data-title="Información RRR"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap9derechos1.png" class="align-center" width="800px" alt="Información RRR"/></a></p>
+<div class="section" id="paso-1-seleccionar-la-fuente-administrativa">
+<h3>Paso 1: Seleccionar la fuente administrativa.<a class="headerlink" href="#paso-1-seleccionar-la-fuente-administrativa" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>Debes dirigirte a la tabla de atributos de la fuente administrativa, y seleccionar la fila correspondiente a la información de la fuente administrativa que vas a asignar:</p>
+<p><a class="" data-lightbox="Paso 1: Seleccionar la fuente administrativa." href="../_static/tutorial/captura_y_estructura_de_datos/cap9derechos2.gif" title="Paso 1: Seleccionar la fuente administrativa." data-title="Paso 1: Seleccionar la fuente administrativa."><img src="../_static/tutorial/captura_y_estructura_de_datos/cap9derechos2.gif" class="align-center" width="800px" alt="Paso 1: Seleccionar la fuente administrativa."/></a></p>
+</div>
+<div class="section" id="paso-2-crear-derecho">
+<h3>Paso 2: Crear Derecho<a class="headerlink" href="#paso-2-crear-derecho" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>En el botón <code class="docutils literal notranslate"><span class="pre">Crear</span> <span class="pre">objetos</span> <span class="pre">de</span> <span class="pre">Levantamiento</span></code> selecciona la opción <strong>Crear Derecho</strong>.</p>
+<p><a class="" data-lightbox="Paso 2: Crear Derecho" href="../_static/tutorial/captura_y_estructura_de_datos/cap9derechos3.gif" title="Paso 2: Crear Derecho" data-title="Paso 2: Crear Derecho"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap9derechos3.gif" class="align-center" width="800px" alt="Paso 2: Crear Derecho"/></a></p>
+</div>
+<div class="section" id="paso-3-seleccion-metodo-de-creacion-del-derecho">
+<h3>Paso 3: Selección método de creación del Derecho<a class="headerlink" href="#paso-3-seleccion-metodo-de-creacion-del-derecho" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>Se desplegará un cuadro de diálogo con dos opciones para crear predios: <em>Ingresando datos manualmente en un formulario</em> o <em>Desde otra capa de QGIS</em>. Para este caso, selecciona la primera opción y presiona el botón <code class="docutils literal notranslate"><span class="pre">Siguiente</span></code>. En la ventana que se despliega, verifica que la fuente administrativa se encuentre seleccionada y posteriormente das clic en <code class="docutils literal notranslate"><span class="pre">Crear</span></code>.</p>
+<div class="seealso">
+<p class="admonition-title">TIP</p>
+<p>También puedes seleccionar fuente(s) administrativa(s) desde la ventana de creación del derecho. Sin embargo, de ser así, tendrás que hacerlo construyendo una expresión.</p>
+</div>
+<p><a class="" data-lightbox="Paso 3: Selección método de creación del Derecho" href="../_static/tutorial/captura_y_estructura_de_datos/cap9derechos4.gif" title="Paso 3: Selección método de creación del Derecho" data-title="Paso 3: Selección método de creación del Derecho"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap9derechos4.gif" class="align-center" width="800px" alt="Paso 3: Selección método de creación del Derecho"/></a></p>
+</div>
+<div class="section" id="paso-4-diligenciamiento-de-formulario-derecho">
+<h3>Paso 4: Diligenciamiento de formulario Derecho<a class="headerlink" href="#paso-4-diligenciamiento-de-formulario-derecho" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>Esta acción despliega un formulario que debe ser diligenciado con la información proporcionada en la <a class="reference external" href="#rrr">imagen</a> anterior.</p>
+<p><a class="" data-lightbox="Paso 4: Diligenciamiento de formulario Derecho" href="../_static/tutorial/captura_y_estructura_de_datos/cap9derechos5.gif" title="Paso 4: Diligenciamiento de formulario Derecho" data-title="Paso 4: Diligenciamiento de formulario Derecho"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap9derechos5.gif" class="align-center" width="800px" alt="Paso 4: Diligenciamiento de formulario Derecho"/></a></p>
+<p>Repite este proceso para los tres (3) <strong>Derechos</strong> mencionados en la <a class="reference external" href="#rrr">imagen</a> y considerando lo descrito en la <a class="reference external" href="#tabla-fuentes-administrativas">tabla</a>.</p>
 </div>
 </div>
 </div>
