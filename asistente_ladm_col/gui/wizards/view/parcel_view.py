@@ -37,6 +37,7 @@ from asistente_ladm_col.gui.wizards.view.common.select_source import SelectSourc
 from asistente_ladm_col.gui.wizards.view.common.view_args import PickFeaturesSelectedArgs
 from asistente_ladm_col.gui.wizards.view.common.view_enum import EnumLayerCreationMode
 from asistente_ladm_col.gui.wizards.view.pages.features_selector_view import ParcelSelectorView
+from asistente_ladm_col.gui.wizards.view.single_wizard_view import SingleWizardView
 from asistente_ladm_col.gui.wizards.wizard_constants import (WIZARD_REFACTOR_RECENT_MAPPING_OPTIONS,
                                                              WIZARD_REFACTOR_LAYER_FILTERS,
                                                              WIZARD_FINISH_BUTTON_TEXT,
@@ -48,7 +49,7 @@ from asistente_ladm_col.utils.qt_utils import (disable_next_wizard,
 from asistente_ladm_col.utils.utils import show_plugin_help
 
 
-class ParcelView:
+class ParcelView(SingleWizardView):
 
     def __init__(self, controller, view_config):
         self.__wizard = QWizard()
@@ -59,7 +60,7 @@ class ParcelView:
 
         self.__wp_associated_features_selector = ParcelSelectorView(controller, self.__view_config[WIZARD_HELP_PAGES][WIZARD_HELP2])
         # -||
-
+        super().__init__(controller, view_config)
         self.__init_gui()
 
     def _create_select_source(self) -> SelectSource:
