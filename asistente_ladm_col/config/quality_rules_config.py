@@ -133,7 +133,7 @@ class QualityRuleConfig:
                         QUALITY_RULE_NAME: translated_strings[EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS],
                         QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "punto_lindero_superposicion"),
                         QUALITY_RULE_TABLE_FIELDS: [
-                            QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_punto_lindero"), QVariant.String),
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_punto_lindero"), QVariant.String, 'string'),
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "conteo"), QVariant.Int)
                         ],
                         QUALITY_RULE_DOMAIN_ERROR_CODES: [
@@ -145,7 +145,7 @@ class QualityRuleConfig:
                         QUALITY_RULE_NAME: translated_strings[EnumQualityRule.Point.OVERLAPS_IN_CONTROL_POINTS],
                         QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "punto_control_superposicion"),
                         QUALITY_RULE_TABLE_FIELDS: [
-                            QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_punto_control"), QVariant.String),
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_punto_control"), QVariant.String, 'string'),
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "conteo"), QVariant.Int)
                         ],
                         QUALITY_RULE_DOMAIN_ERROR_CODES: [
@@ -413,7 +413,7 @@ class QualityRuleConfig:
                         QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "participaciones_agrupacion_no_suman_1"),
                         QUALITY_RULE_TABLE_FIELDS: [
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "id_agrupacion"), QVariant.String),
-                            QgsField(QCoreApplication.translate("QualityRulesConfig", "miembros"), QVariant.String),
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "miembros"), QVariant.String, 'string'),
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "suma_participaciones"), QVariant.String)
                         ],
                         QUALITY_RULE_DOMAIN_ERROR_CODES: [
@@ -539,7 +539,7 @@ class QualityRuleConfig:
                         QUALITY_RULE_NAME: translated_strings[EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_BOUNDARY_POINT],
                         QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "punto_lindero_con_registro_repetido"),
                         QUALITY_RULE_TABLE_FIELDS: [
-                            QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_duplicados"), QVariant.String),
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_duplicados"), QVariant.String, 'string'),
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "conteo"), QVariant.Int)
                         ],
                         QUALITY_RULE_DOMAIN_ERROR_CODES: [
@@ -551,7 +551,7 @@ class QualityRuleConfig:
                         QUALITY_RULE_NAME: translated_strings[EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_SURVEY_POINT],
                         QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "punto_levantamiento_con_registro_repetido"),
                         QUALITY_RULE_TABLE_FIELDS: [
-                            QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_duplicados"), QVariant.String),
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_duplicados"), QVariant.String, 'string'),
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "conteo"), QVariant.Int)
                         ],
                         QUALITY_RULE_DOMAIN_ERROR_CODES: [
@@ -563,7 +563,7 @@ class QualityRuleConfig:
                         QUALITY_RULE_NAME: translated_strings[EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_CONTROL_POINT],
                         QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "punto_control_con_registro_repetido"),
                         QUALITY_RULE_TABLE_FIELDS: [
-                            QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_duplicados"), QVariant.String),
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_duplicados"), QVariant.String, 'string'),
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "conteo"), QVariant.Int)
                         ],
                         QUALITY_RULE_DOMAIN_ERROR_CODES: [
@@ -575,7 +575,7 @@ class QualityRuleConfig:
                         QUALITY_RULE_NAME: translated_strings[EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_BOUNDARY],
                         QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "lindero_con_registro_repetido"),
                         QUALITY_RULE_TABLE_FIELDS: [
-                            QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_duplicados"), QVariant.String),
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_duplicados"), QVariant.String, 'string'),
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "conteo"), QVariant.Int)
                         ],
                         QUALITY_RULE_DOMAIN_ERROR_CODES: [
@@ -587,7 +587,7 @@ class QualityRuleConfig:
                         QUALITY_RULE_NAME: translated_strings[EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_PLOT],
                         QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "terreno_con_registro_repetido"),
                         QUALITY_RULE_TABLE_FIELDS: [
-                            QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_duplicados"), QVariant.String),
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_duplicados"), QVariant.String, 'string'),
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "conteo"), QVariant.Int)
                         ],
                         QUALITY_RULE_DOMAIN_ERROR_CODES: [
@@ -599,7 +599,7 @@ class QualityRuleConfig:
                         QUALITY_RULE_NAME: translated_strings[EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_BUILDING],
                         QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "construccion_con_registro_repetido"),
                         QUALITY_RULE_TABLE_FIELDS: [
-                            QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_duplicados"), QVariant.String),
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_duplicados"), QVariant.String, 'string'),
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "conteo"), QVariant.Int)
                         ],
                         QUALITY_RULE_DOMAIN_ERROR_CODES: [
@@ -611,7 +611,7 @@ class QualityRuleConfig:
                         QUALITY_RULE_NAME: translated_strings[EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_BUILDING_UNIT],
                         QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "unidad_construccion_con_registro_repetido"),
                         QUALITY_RULE_TABLE_FIELDS: [
-                            QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_duplicados"), QVariant.String),
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_duplicados"), QVariant.String, 'string'),
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "conteo"), QVariant.Int)
                         ],
                         QUALITY_RULE_DOMAIN_ERROR_CODES: [
@@ -623,7 +623,7 @@ class QualityRuleConfig:
                         QUALITY_RULE_NAME: translated_strings[EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_PARCEL],
                         QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "predio_con_registro_repetido"),
                         QUALITY_RULE_TABLE_FIELDS: [
-                            QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_duplicados"), QVariant.String),
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_duplicados"), QVariant.String, 'string'),
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "conteo"), QVariant.Int)
                         ],
                         QUALITY_RULE_DOMAIN_ERROR_CODES: [
@@ -635,7 +635,7 @@ class QualityRuleConfig:
                         QUALITY_RULE_NAME: translated_strings[EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_PARTY],
                         QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "interesado_con_registro_repetido"),
                         QUALITY_RULE_TABLE_FIELDS: [
-                            QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_duplicados"), QVariant.String),
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_duplicados"), QVariant.String, 'string'),
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "conteo"), QVariant.Int)
                         ],
                         QUALITY_RULE_DOMAIN_ERROR_CODES: [
@@ -647,7 +647,7 @@ class QualityRuleConfig:
                         QUALITY_RULE_NAME: translated_strings[EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_RIGHT],
                         QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "derecho_con_registro_repetido"),
                         QUALITY_RULE_TABLE_FIELDS: [
-                            QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_duplicados"), QVariant.String),
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_duplicados"), QVariant.String, 'string'),
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "conteo"), QVariant.Int)
                         ],
                         QUALITY_RULE_DOMAIN_ERROR_CODES: [
@@ -659,7 +659,7 @@ class QualityRuleConfig:
                         QUALITY_RULE_NAME: translated_strings[EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_RESTRICTION],
                         QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "restriccion_con_registro_repetido"),
                         QUALITY_RULE_TABLE_FIELDS: [
-                            QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_duplicados"), QVariant.String),
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_duplicados"), QVariant.String, 'string'),
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "conteo"), QVariant.Int)
                         ],
                         QUALITY_RULE_DOMAIN_ERROR_CODES: [
@@ -671,7 +671,7 @@ class QualityRuleConfig:
                         QUALITY_RULE_NAME: translated_strings[EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_ADMINISTRATIVE_SOURCE],
                         QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "fuente_administrativa_con_registro_repetido"),
                         QUALITY_RULE_TABLE_FIELDS: [
-                            QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_duplicados"), QVariant.String),
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_duplicados"), QVariant.String, 'string'),
                             QgsField(QCoreApplication.translate("QualityRulesConfig", "conteo"), QVariant.Int)
                         ],
                         QUALITY_RULE_DOMAIN_ERROR_CODES: [
