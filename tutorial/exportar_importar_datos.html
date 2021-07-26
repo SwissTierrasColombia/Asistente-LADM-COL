@@ -114,8 +114,19 @@
 <li class="toctree-l1"><a class="reference internal" href="consulta_de_informacion.html">Consulta de Información</a></li>
 <li class="toctree-l1"><a class="reference internal" href="generacion_de_reportes.html">Generación de Reportes</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Exportar e Importar Datos</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#exportar-datos">Exportar datos</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#importar-datos">Importar datos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#exportar-datos">Exportar datos</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#paso-1-menu-de-exportar-datos">Paso 1: Menú de Exportar Datos.</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#paso-2-seleccion-de-la-fuente">Paso 2: Selección de la Fuente.</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#paso-3-exportar-xtf">Paso 3: Exportar XTF.</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#paso-4-verificacion-de-la-creacion-del-xtf">Paso 4: Verificación de la creación del XTF.</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#importar-datos">Importar datos</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#paso-1-menu-de-importar-datos">Paso 1: Menú de Importar Datos.</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Paso 2: Selección de la Fuente.</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#paso-3-importar-xtf">Paso 3: Importar XTF.</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="gestion_de_insumos.html">Gestión de Insumos</a></li>
@@ -185,11 +196,65 @@
             
   <div class="tex2jax_ignore mathjax_ignore section" id="exportar-e-importar-datos">
 <h1>Exportar e Importar Datos<a class="headerlink" href="#exportar-e-importar-datos" title="Enlazar permanentemente con este título">¶</a></h1>
+<p>En esta sección se describe el procedimiento que se debe seguir para exportar e importar la información que se ha generado en el modelo de levantamiento catastral a lo largo de este tutorial.</p>
 <div class="section" id="exportar-datos">
 <h2>Exportar datos<a class="headerlink" href="#exportar-datos" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>El objetivo de exportar datos es el de compartir o transferir los mismos con otra persona o suministrárselos a una entidad.</p>
+<div class="section" id="paso-1-menu-de-exportar-datos">
+<h3>Paso 1: Menú de Exportar Datos.<a class="headerlink" href="#paso-1-menu-de-exportar-datos" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>Para iniciar el proceso se debe seguir la ruta <strong>Administración de Datos -&gt; Exportar Datos</strong>. Esta acción despliega un cuadro de diálogo dividido en tres (3) secciones:</p>
+<ul class="simple">
+<li><p>Fuente</p></li>
+<li><p>Destino</p></li>
+<li><p>Mostrar detalles</p></li>
+</ul>
+<p><a class="" data-lightbox="Paso 1: Menú de Exportar Datos" href="../_static/tutorial/exportar_importar_datos/cap12importexport1.gif" title="Paso 1: Menú de Exportar Datos" data-title="Paso 1: Menú de Exportar Datos"><img src="../_static/tutorial/exportar_importar_datos/cap12importexport1.gif" class="align-center" width="800px" alt="Paso 1: Menú de Exportar Datos"/></a></p>
+</div>
+<div class="section" id="paso-2-seleccion-de-la-fuente">
+<h3>Paso 2: Selección de la Fuente.<a class="headerlink" href="#paso-2-seleccion-de-la-fuente" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>En primera medida, se debe validar que la base de datos a la cual se hace referencia corresponde al archivo que se desea exportar al formato de intercambio <strong>.xtf</strong>.</p>
+<p>En caso de que ésta no sea correcta, puedes cambiar la conexión dando clic en <code class="docutils literal notranslate"><span class="pre">Configurar</span> <span class="pre">conexión</span></code>.</p>
+<div class="seealso">
+<p class="admonition-title">TIP</p>
+<p>En la interfaz que se despliega al dar clic en <code class="docutils literal notranslate">Configurar conexión</code>, es posible deshabilitar las validaciones ingresando a la pestaña <b>Modelos</b> y quitando la selección de la casilla de verificación llamada <i>Validar datos cuando se importa o exporta un archivo XTF</i>. Deshabilitar las validaciones es útil cuando se quieren compartir datos que aún están en proceso de estructuración.</p>
+</div>
+<p><a class="" data-lightbox="Paso 2: Selección de la Fuente" href="../_static/tutorial/exportar_importar_datos/cap12importexport2.gif" title="Paso 2: Selección de la Fuente" data-title="Paso 2: Selección de la Fuente"><img src="../_static/tutorial/exportar_importar_datos/cap12importexport2.gif" class="align-center" width="800px" alt="Paso 2: Selección de la Fuente"/></a></p>
+</div>
+<div class="section" id="paso-3-exportar-xtf">
+<h3>Paso 3: Exportar XTF.<a class="headerlink" href="#paso-3-exportar-xtf" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>En la sección <em>Destino</em>, en el campo de <em>Archivo XTF</em> debes dar clic en el botón <code class="docutils literal notranslate"><span class="pre">...</span></code>, con esta acción procedes a definir la carpeta y el nombre del archivo <em>.xtf</em> a exportar, luego das clic en <code class="docutils literal notranslate"><span class="pre">Guardar</span></code> y finalmente en el botón <code class="docutils literal notranslate"><span class="pre">Exportar</span> <span class="pre">datos</span></code>.</p>
+<p><a class="" data-lightbox="Paso 3: Exportar XTF" href="../_static/tutorial/exportar_importar_datos/cap12importexport3.gif" title="Paso 3: Exportar XTF" data-title="Paso 3: Exportar XTF"><img src="../_static/tutorial/exportar_importar_datos/cap12importexport3.gif" class="align-center" width="800px" alt="Paso 3: Exportar XTF"/></a></p>
+</div>
+<div class="section" id="paso-4-verificacion-de-la-creacion-del-xtf">
+<h3>Paso 4: Verificación de la creación del XTF.<a class="headerlink" href="#paso-4-verificacion-de-la-creacion-del-xtf" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>Una vez que termine el proceso de <em>Exportar Datos</em>, das clic en el botón <code class="docutils literal notranslate"><span class="pre">Cerrar</span></code> y verificas que el XTF se encuentre en la carpeta especificada.</p>
+</div>
 </div>
 <div class="section" id="importar-datos">
 <h2>Importar datos<a class="headerlink" href="#importar-datos" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>El objetivo de importar datos es el de llevar datos de un archivo de transferencia (<em>.xtf</em>) a una base de datos sobre la que se tenga permiso de acceso y creación de objetos.</p>
+<p>Los datos <em>.xtf</em>  recibidos, pueden ser importados a cualquiera de las <a class="reference external" href="../configuracion.html#conexion-a-base-de-datos">bases de datos soportadas por el Asistente LADM-COL</a>, sin importar cuál fue el motor de base de datos en el cual estos fueron generados. Por ejemplo, es posible generar los datos en PostgreSQL/PostGIS, exportarlos, compartirlos a otra persona o entidad, y luego importarlos a una base de datos GeoPackage.</p>
+<div class="section" id="paso-1-menu-de-importar-datos">
+<h3>Paso 1: Menú de Importar Datos.<a class="headerlink" href="#paso-1-menu-de-importar-datos" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>Para iniciar el proceso se debe seguir la ruta <strong>Administración de Datos -&gt; Importar Datos</strong>. Esta acción despliega un cuadro de diálogo dividido en tres (3) secciones:</p>
+<ul class="simple">
+<li><p>Fuente</p></li>
+<li><p>Destino</p></li>
+<li><p>Mostrar detalles</p></li>
+</ul>
+<p><a class="" data-lightbox="Paso 1: Menú de Importar Datos" href="../_static/tutorial/exportar_importar_datos/cap12importexport5.gif" title="Paso 1: Menú de Importar Datos" data-title="Paso 1: Menú de Importar Datos"><img src="../_static/tutorial/exportar_importar_datos/cap12importexport5.gif" class="align-center" width="800px" alt="Paso 1: Menú de Importar Datos"/></a></p>
+</div>
+<div class="section" id="id1">
+<h3>Paso 2: Selección de la Fuente.<a class="headerlink" href="#id1" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>En primera medida debes validar que el <em>Archivo XTF</em> que se va a importar sea el de tu interés. En caso de que desees modificarlo basta con cambiar la ruta del archivo <em>.xtf</em> dando clic en <code class="docutils literal notranslate"><span class="pre">...</span></code>.</p>
+<p><a class="" data-lightbox="Paso 2: Selección de la Fuente" href="../_static/tutorial/exportar_importar_datos/cap12importexport6.gif" title="Paso 2: Selección de la Fuente" data-title="Paso 2: Selección de la Fuente"><img src="../_static/tutorial/exportar_importar_datos/cap12importexport6.gif" class="align-center" width="800px" alt="Paso 2: Selección de la Fuente"/></a></p>
+</div>
+<div class="section" id="paso-3-importar-xtf">
+<h3>Paso 3: Importar XTF.<a class="headerlink" href="#paso-3-importar-xtf" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>En la sección de <em>Destino</em> debes verificar que la base de datos sobre la cual se va a importar la información del archivo <em>.xtf</em> (seleccionado previamente) sea correcta. En caso contrario, debes modificar la conexión dando clic en el botón <code class="docutils literal notranslate"><span class="pre">Configurar</span> <span class="pre">conexión</span></code> y seleccionar la base de datos a la cual se desea importar la información. Una vez que termines de configurar la conexión debes dar clic en el botón <code class="docutils literal notranslate"><span class="pre">Importar</span> <span class="pre">datos</span></code>.</p>
+<p><a class="" data-lightbox="Paso 3: Importar XTF" href="../_static/tutorial/exportar_importar_datos/cap12importexport7.gif" title="Paso 3: Importar XTF" data-title="Paso 3: Importar XTF"><img src="../_static/tutorial/exportar_importar_datos/cap12importexport7.gif" class="align-center" width="800px" alt="Paso 3: Importar XTF"/></a></p>
+<p>Al finalizar la importación aparecerá un aviso de confirmación en la ventana de <em>Importar Datos</em>, luego de su validación podrás dar clic en el botón <code class="docutils literal notranslate"><span class="pre">Cerrar</span></code>.</p>
+</div>
 </div>
 </div>
 
