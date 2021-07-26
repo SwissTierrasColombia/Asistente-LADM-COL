@@ -17,15 +17,15 @@
  ***************************************************************************/
  """
 from asistente_ladm_col.gui.wizards.view.pages.features_selector_view import EnumFeatureSelectionType
-from asistente_ladm_col.gui.wizards.view.common.view_enum import EnumOptionType
+from asistente_ladm_col.gui.wizards.view.common.view_enum import EnumRelatableLayers
 
 
 class OptionChangedArgs:
-    def __init__(self, selected_type: EnumOptionType):
+    def __init__(self, selected_type: EnumRelatableLayers):
         self.selected_type = selected_type
 
 
 class PickFeaturesSelectedArgs:
-    def __init__(self, selected_type: EnumOptionType, feature_selection_type: EnumFeatureSelectionType):
+    def __init__(self, selected_type: EnumRelatableLayers, feature_selection_type: EnumFeatureSelectionType):
         self.selected_type = selected_type
         self.feature_selection_type = feature_selection_type

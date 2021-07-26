@@ -31,7 +31,7 @@ from asistente_ladm_col.config.general_config import (CSS_COLOR_OKAY_LABEL,
 from asistente_ladm_col.gui.wizards.controller.single_spatial_wizard_controller import SingleSpatialWizardController
 from asistente_ladm_col.gui.wizards.model.ext_address_model import ExtAddressModel
 from asistente_ladm_col.gui.wizards.view.common.enum_feature_selection_type import EnumFeatureSelectionType
-from asistente_ladm_col.gui.wizards.view.common.view_enum import EnumOptionType
+from asistente_ladm_col.gui.wizards.view.common.view_enum import EnumRelatableLayers
 from asistente_ladm_col.gui.wizards.view.common.view_args import (PickFeaturesSelectedArgs,
                                                                   OptionChangedArgs)
 from asistente_ladm_col.gui.wizards.view.ext_address_view import ExtAddressView
@@ -76,7 +76,7 @@ class ExtAddressController(SingleSpatialWizardController):
             return
 
         # By default current_layer will be plot layer
-        self.__select_layer_in_view_and_model(EnumOptionType.PLOT)
+        self.__select_layer_in_view_and_model(EnumRelatableLayers.PLOT)
 
     def __select_option_base_on_active_layer(self):
         active_layer_type = self.__model.get_active_layer_type()
@@ -87,7 +87,7 @@ class ExtAddressController(SingleSpatialWizardController):
 
         return is_option_selected
 
-    def __select_layer_in_view_and_model(self, item_type: EnumOptionType):
+    def __select_layer_in_view_and_model(self, item_type: EnumRelatableLayers):
         self.__view.selected_type = item_type
         self.__model.type_of_selected_layer_to_associate = item_type
 

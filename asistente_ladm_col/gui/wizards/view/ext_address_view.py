@@ -43,7 +43,7 @@ from asistente_ladm_col.gui.wizards.wizard_constants import (WIZARD_REFACTOR_FIE
                                                              WIZARD_SELECT_SOURCE_HELP,
                                                              WIZARD_CREATION_MODE_KEY)
 from asistente_ladm_col.gui.wizards.view.common.view_enum import (EnumLayerCreationMode,
-                                                                  EnumOptionType)
+                                                                  EnumRelatableLayers)
 from asistente_ladm_col.gui.wizards.view.common.view_args import PickFeaturesSelectedArgs
 from asistente_ladm_col.utils.qt_utils import (disable_next_wizard,
                                                enable_next_wizard)
@@ -60,9 +60,9 @@ class ExtAddressView:
         self.__wp_select_source = self._create_select_source()
 
         help_texts = dict()
-        help_texts[EnumOptionType.PLOT] = self.__view_config[WIZARD_HELP_PAGES][WIZARD_HELP1]
-        help_texts[EnumOptionType.BUILDING] = self.__view_config[WIZARD_HELP_PAGES][WIZARD_HELP2]
-        help_texts[EnumOptionType.BUILDING_UNIT] = self.__view_config[WIZARD_HELP_PAGES][WIZARD_HELP3]
+        help_texts[EnumRelatableLayers.PLOT] = self.__view_config[WIZARD_HELP_PAGES][WIZARD_HELP1]
+        help_texts[EnumRelatableLayers.BUILDING] = self.__view_config[WIZARD_HELP_PAGES][WIZARD_HELP2]
+        help_texts[EnumRelatableLayers.BUILDING_UNIT] = self.__view_config[WIZARD_HELP_PAGES][WIZARD_HELP3]
         self.__wp_associated_features_selector = ExtAddressSelectorView(controller, help_texts)
         # -||
 
@@ -163,5 +163,5 @@ class ExtAddressView:
         return self.__wp_associated_features_selector.selected_type
 
     @selected_type.setter
-    def selected_type(self, value: EnumOptionType):
+    def selected_type(self, value: EnumRelatableLayers):
         self.__wp_associated_features_selector.selected_type = value

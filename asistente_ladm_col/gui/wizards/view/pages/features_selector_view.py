@@ -34,7 +34,7 @@ from asistente_ladm_col.config.general_config import (WIZARD_HELP_PAGES,
                                                       CSS_COLOR_ERROR_LABEL)
 from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.gui.wizards.view.common.enum_feature_selection_type import EnumFeatureSelectionType
-from asistente_ladm_col.gui.wizards.view.common.view_enum import EnumOptionType
+from asistente_ladm_col.gui.wizards.view.common.view_enum import EnumRelatableLayers
 from asistente_ladm_col.gui.wizards.view.common.view_args import (PickFeaturesSelectedArgs,
                                                                   OptionChangedArgs)
 from asistente_ladm_col.utils.ui import load_ui
@@ -68,7 +68,7 @@ class FeaturesSelectorView(ABC):
                 QCoreApplication.translate("WizardTranslations", "{count} Feature(s) Selected").format(
                     count=feature_count[layer_type]))
 
-    def __btn_pick_features_click(self, option_type: EnumOptionType, selection_type: EnumFeatureSelectionType):
+    def __btn_pick_features_click(self, option_type: EnumRelatableLayers, selection_type: EnumFeatureSelectionType):
         feature_selected_args = PickFeaturesSelectedArgs(option_type, selection_type)
         self.__controller.pick_features_selected(feature_selected_args)
 
@@ -100,7 +100,7 @@ class PlotSelectorView(FeaturesSelectorView):
     def _create_dict_controls_by_type(self):
         self.__controls_by_type = dict()
 
-        self.__controls_by_type[EnumOptionType.BOUNDARY] = {
+        self.__controls_by_type[EnumRelatableLayers.BOUNDARY] = {
             "lbl": self.__qwizard_page.lbl_boundary,
             "lbl_count": self.__qwizard_page.lbl_boundary_count,
             "buttons": {
@@ -128,7 +128,7 @@ class RrrSelectorView(FeaturesSelectorView):
     def _create_dict_controls_by_type(self):
         self.__controls_by_type = dict()
 
-        self.__controls_by_type[EnumOptionType.ADMINISTRATIVE_SOURCE] = {
+        self.__controls_by_type[EnumRelatableLayers.ADMINISTRATIVE_SOURCE] = {
             "lbl": self.__qwizard_page.lbl_admin_source,
             "lbl_count": self.__qwizard_page.lbl_admin_source_count,
             "buttons": {
@@ -154,7 +154,7 @@ class SpatialSourceFeaturesSelectorView(FeaturesSelectorView):
     def _create_dict_controls_by_type(self):
         self.__controls_by_type = dict()
 
-        self.__controls_by_type[EnumOptionType.PLOT] = {
+        self.__controls_by_type[EnumRelatableLayers.PLOT] = {
             "lbl": self.__qwizard_page.lbl_plot,
             "lbl_count": self.__qwizard_page.lbl_plot_count,
             "buttons": {
@@ -162,7 +162,7 @@ class SpatialSourceFeaturesSelectorView(FeaturesSelectorView):
                 EnumFeatureSelectionType.SELECTION_BY_EXPRESSION: self.__qwizard_page.btn_plot_expression
             }}
 
-        self.__controls_by_type[EnumOptionType.BOUNDARY] = {
+        self.__controls_by_type[EnumRelatableLayers.BOUNDARY] = {
             "lbl": self.__qwizard_page.lbl_boundary,
             "lbl_count": self.__qwizard_page.lbl_boundary_count,
             "buttons": {
@@ -170,7 +170,7 @@ class SpatialSourceFeaturesSelectorView(FeaturesSelectorView):
                 EnumFeatureSelectionType.SELECTION_BY_EXPRESSION: self.__qwizard_page.btn_boundary_expression
             }}
 
-        self.__controls_by_type[EnumOptionType.BOUNDARY_POINT] = {
+        self.__controls_by_type[EnumRelatableLayers.BOUNDARY_POINT] = {
             "lbl": self.__qwizard_page.lbl_boundary_point,
             "lbl_count": self.__qwizard_page.lbl_boundary_point_count,
             "buttons": {
@@ -178,7 +178,7 @@ class SpatialSourceFeaturesSelectorView(FeaturesSelectorView):
                 EnumFeatureSelectionType.SELECTION_BY_EXPRESSION: self.__qwizard_page.btn_boundary_point_expression
             }}
 
-        self.__controls_by_type[EnumOptionType.SURVEY_POINT] = {
+        self.__controls_by_type[EnumRelatableLayers.SURVEY_POINT] = {
             "lbl": self.__qwizard_page.lbl_survey_point,
             "lbl_count": self.__qwizard_page.lbl_survey_point_count,
             "buttons": {
@@ -186,7 +186,7 @@ class SpatialSourceFeaturesSelectorView(FeaturesSelectorView):
                 EnumFeatureSelectionType.SELECTION_BY_EXPRESSION: self.__qwizard_page.btn_survey_point_expression
             }}
 
-        self.__controls_by_type[EnumOptionType.CONTROL_POINT] = {
+        self.__controls_by_type[EnumRelatableLayers.CONTROL_POINT] = {
             "lbl": self.__qwizard_page.lbl_control_point,
             "lbl_count": self.__qwizard_page.lbl_control_point_count,
             "buttons": {
@@ -216,7 +216,7 @@ class ParcelSelectorView(FeaturesSelectorView):
     def _create_dict_controls_by_type(self):
         self.__controls_by_type = dict()
 
-        self.__controls_by_type[EnumOptionType.PLOT] = {
+        self.__controls_by_type[EnumRelatableLayers.PLOT] = {
             "lbl": self.__qwizard_page.lbl_plot,
             "lbl_count": self.__qwizard_page.lbl_plot_count,
             "buttons": {
@@ -224,7 +224,7 @@ class ParcelSelectorView(FeaturesSelectorView):
                 EnumFeatureSelectionType.SELECTION_BY_EXPRESSION: self.__qwizard_page.btn_plot_expression
             }}
 
-        self.__controls_by_type[EnumOptionType.BUILDING] = {
+        self.__controls_by_type[EnumRelatableLayers.BUILDING] = {
             "lbl": self.__qwizard_page.lbl_building,
             "lbl_count": self.__qwizard_page.lbl_building_count,
             "buttons": {
@@ -232,7 +232,7 @@ class ParcelSelectorView(FeaturesSelectorView):
                 EnumFeatureSelectionType.SELECTION_BY_EXPRESSION: self.__qwizard_page.btn_building_expression
             }}
 
-        self.__controls_by_type[EnumOptionType.BUILDING_UNIT] = {
+        self.__controls_by_type[EnumRelatableLayers.BUILDING_UNIT] = {
             "lbl": self.__qwizard_page.lbl_building_unit,
             "lbl_count": self.__qwizard_page.lbl_building_unit_count,
             "buttons": {
@@ -304,7 +304,7 @@ class ExtAddressSelectorView(FeaturesSelectorView):
     def _create_dict_controls_by_type(self):
         self.__controls_by_type = dict()
 
-        self.__controls_by_type[EnumOptionType.PLOT] = {
+        self.__controls_by_type[EnumRelatableLayers.PLOT] = {
             "radio": self.__qwizard_page.rad_to_plot,
             "lbl_count": self.__qwizard_page.lbl_plot_count,
             "buttons": {
@@ -312,7 +312,7 @@ class ExtAddressSelectorView(FeaturesSelectorView):
                 EnumFeatureSelectionType.SELECTION_BY_EXPRESSION: self.__qwizard_page.btn_plot_expression
             }}
 
-        self.__controls_by_type[EnumOptionType.BUILDING] = {
+        self.__controls_by_type[EnumRelatableLayers.BUILDING] = {
             "radio": self.__qwizard_page.rad_to_building,
             "lbl_count": self.__qwizard_page.lbl_building_count,
             "buttons": {
@@ -320,7 +320,7 @@ class ExtAddressSelectorView(FeaturesSelectorView):
                 EnumFeatureSelectionType.SELECTION_BY_EXPRESSION: self.__qwizard_page.btn_building_expression
             }}
 
-        self.__controls_by_type[EnumOptionType.BUILDING_UNIT] = {
+        self.__controls_by_type[EnumRelatableLayers.BUILDING_UNIT] = {
             "radio": self.__qwizard_page.rad_to_building_unit,
             "lbl_count": self.__qwizard_page.lbl_building_unit_count,
             "buttons": {
@@ -348,7 +348,7 @@ class ExtAddressSelectorView(FeaturesSelectorView):
                 return item_type
 
     @selected_type.setter
-    def selected_type(self, value: EnumOptionType):
+    def selected_type(self, value: EnumRelatableLayers):
         self.__controls_by_type[value]["radio"].setChecked(True)
 
     def __toggle_radio(self, check):

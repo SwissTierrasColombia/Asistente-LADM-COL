@@ -33,7 +33,7 @@ from asistente_ladm_col.gui.wizards.model.common.create_manually import (Feature
 from asistente_ladm_col.gui.wizards.model.common.select_features_by_expression_dialog_wrapper import \
     SelectFeatureByExpressionDialogWrapper
 from asistente_ladm_col.gui.wizards.model.creator_model import CreatorModel
-from asistente_ladm_col.gui.wizards.view.common.view_enum import EnumOptionType
+from asistente_ladm_col.gui.wizards.view.common.view_enum import EnumRelatableLayers
 
 
 class RrrModel(CreatorModel):
@@ -53,11 +53,11 @@ class RrrModel(CreatorModel):
         self.__feature_selector_by_expression = SelectFeatureByExpressionDialogWrapper(self.__iface)
         self.__feature_selector_by_expression.register_observer(self)
 
-        self.__selectable_layers_by_type = dict()
+        self.__relatable_layers = dict()
         self.__init_selectable_layer_by_type()
 
     def __init_selectable_layer_by_type(self):
-        self.__selectable_layers_by_type[EnumOptionType.ADMINISTRATIVE_SOURCE] = \
+        self.__relatable_layers[EnumRelatableLayers.ADMINISTRATIVE_SOURCE] = \
             self._layers[self.names.LC_ADMINISTRATIVE_SOURCE_T]
 
     def finish_feature_creation(self, layerId, features):
@@ -106,16 +106,16 @@ class RrrModel(CreatorModel):
         return AlphaFeatureCreator(self._iface, self.app, self._logger,
                                 self._editing_layer, self._wizard_config[WIZARD_FEATURE_NAME])
 
-    def select_features_by_expression(self, option_type: EnumOptionType):
+    def select_features_by_expression(self, option_type: EnumRelatableLayers):
         # TODO Check if LAYER exists in self._layers
-        layer = self.__selectable_layers_by_type[option_type]
+        layer = self.__relatable_layers[option_type]
         self.__feature_selector_by_expression.select_features_by_expression(layer)
 
     def get_number_of_selected_features(self):
         feature_count = dict()
 
-        for layer in self.__selectable_layers_by_type:
-            feature_count[layer] = self.__selectable_layers_by_type[layer].selectedFeatureCount()
+        for layer in self.__relatable_layers:
+            feature_count[layer] = self.__relatable_layers[layer].selectedFeatureCount()
 
         return feature_count
 

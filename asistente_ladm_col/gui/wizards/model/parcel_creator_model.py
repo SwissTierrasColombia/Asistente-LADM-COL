@@ -37,7 +37,7 @@ from asistente_ladm_col.gui.wizards.model.common.create_manually import (Feature
                                                                          AlphaFeatureCreator)
 from asistente_ladm_col.gui.wizards.model.common.feature_selector_manager import FeatureSelectorManager
 from asistente_ladm_col.gui.wizards.model.creator_model import CreatorModel
-from asistente_ladm_col.gui.wizards.view.common.view_enum import EnumOptionType
+from asistente_ladm_col.gui.wizards.view.common.view_enum import EnumRelatableLayers
 
 
 class ParcelCreatorModel(CreatorModel, FeatureSelectorManager):
@@ -48,20 +48,20 @@ class ParcelCreatorModel(CreatorModel, FeatureSelectorManager):
         self.db = db
         self._layers = wiz_config[WIZARD_LAYERS]
 
-        self.__selectable_layers_by_type = dict()
+        self.__relatable_layers = dict()
         self.__init_selectable_layer_by_type()
 
         # parent constructor
-        FeatureSelectorManager.__init__(self, self.__selectable_layers_by_type, iface, self._logger)
+        FeatureSelectorManager.__init__(self, self.__relatable_layers, iface, self._logger)
 
         self.parcel_type_ili_code = None
         self.__constraint_types_of_parcels = LayerConfig.get_constraint_types_of_parcels(self.db.names)
 
     def __init_selectable_layer_by_type(self):
         # TODO Change the name
-        self.__selectable_layers_by_type[EnumOptionType.PLOT] = self._layers[self._db.names.LC_PLOT_T]
-        self.__selectable_layers_by_type[EnumOptionType.BUILDING] = self._layers[self._db.names.LC_BUILDING_T]
-        self.__selectable_layers_by_type[EnumOptionType.BUILDING_UNIT] = self._layers[self._db.names.LC_BUILDING_UNIT_T]
+        self.__relatable_layers[EnumRelatableLayers.PLOT] = self._layers[self._db.names.LC_PLOT_T]
+        self.__relatable_layers[EnumRelatableLayers.BUILDING] = self._layers[self._db.names.LC_BUILDING_T]
+        self.__relatable_layers[EnumRelatableLayers.BUILDING_UNIT] = self._layers[self._db.names.LC_BUILDING_UNIT_T]
 
     def _create_feature_creator(self) -> FeatureCreator:
         return AlphaFeatureCreator(self._iface, self.app, self._logger,
@@ -176,16 +176,16 @@ class ParcelCreatorModel(CreatorModel, FeatureSelectorManager):
     def get_layer_status(self):
         result = dict()
 
-        for spatial_unit in self.__selectable_layers_by_type:
+        for spatial_unit in self.__relatable_layers:
             is_layer_valid = self.__is_layer_valid(spatial_unit)
             if is_layer_valid is not None:
                 result[spatial_unit] = is_layer_valid
 
         return result
 
-    def __is_layer_valid(self, spatial_unit_enum: EnumOptionType):
+    def __is_layer_valid(self, spatial_unit_enum: EnumRelatableLayers):
         constraint = self.__constraint_types_of_parcels[self.parcel_type_ili_code][spatial_unit_enum.get_db_name(self.db.names)]
-        layer = self.__selectable_layers_by_type[spatial_unit_enum]
+        layer = self.__relatable_layers[spatial_unit_enum]
         is_valid = None
         if constraint == EnumRelationshipType.ONE:
             is_valid = layer.selectedFeatureCount() == 1

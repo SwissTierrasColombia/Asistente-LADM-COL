@@ -23,7 +23,7 @@ from asistente_ladm_col.gui.wizards.model.common.select_features_on_map_wrapper 
 
 class FeatureSelectorManager:
 
-    def __init__(self, selectable_layers_by_type, iface, logger):
+    def __init__(self, relatable_layers, iface, logger):
         self.__iface = iface
         self.__logger = logger
         self.__features_on_map_observer_list = list()
@@ -35,18 +35,18 @@ class FeatureSelectorManager:
         self.__feature_selector_by_expression = SelectFeatureByExpressionDialogWrapper(self.__iface)
         self.__feature_selector_by_expression.register_observer(self)
 
-        self.__selectable_layers_by_type = selectable_layers_by_type
+        self.__relatable_layers = relatable_layers
 
         self.type_of_selected_layer_to_associate = None
 
     def select_features_on_map(self):
         # TODO Exception if layer does not exist
-        layer = self.__selectable_layers_by_type[self.type_of_selected_layer_to_associate]
+        layer = self.__relatable_layers[self.type_of_selected_layer_to_associate]
         self.__feature_selector_on_map.select_features_on_map(layer)
 
     def select_features_by_expression(self):
         # TODO Check if layer exists in self._layers
-        layer = self.__selectable_layers_by_type[self.type_of_selected_layer_to_associate]
+        layer = self.__relatable_layers[self.type_of_selected_layer_to_associate]
         self.__feature_selector_by_expression.select_features_by_expression(layer)
 
     def map_tool_changed(self):
@@ -65,8 +65,8 @@ class FeatureSelectorManager:
     def get_number_of_selected_features(self):
         feature_count = dict()
 
-        for layer in self.__selectable_layers_by_type:
-            feature_count[layer] = self.__selectable_layers_by_type[layer].selectedFeatureCount()
+        for layer in self.__relatable_layers:
+            feature_count[layer] = self.__relatable_layers[layer].selectedFeatureCount()
 
         return feature_count
 

@@ -33,7 +33,7 @@ from asistente_ladm_col.gui.wizards.model.common.select_features_by_expression_d
     SelectFeatureByExpressionDialogWrapper
 from asistente_ladm_col.gui.wizards.model.common.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
 from asistente_ladm_col.gui.wizards.model.single_spatial_wizard_model import SingleSpatialWizardModel
-from asistente_ladm_col.gui.wizards.view.common.view_enum import EnumOptionType
+from asistente_ladm_col.gui.wizards.view.common.view_enum import EnumRelatableLayers
 
 
 class ExtAddressModel(SingleSpatialWizardModel):
@@ -46,7 +46,7 @@ class ExtAddressModel(SingleSpatialWizardModel):
 
         self.__association_failed_observers = list()
 
-        self.__selectable_layers_by_type = dict()
+        self.__relatable_layers = dict()
 
         self._layers = wiz_config[WIZARD_LAYERS]
         self.__iface = iface
@@ -64,13 +64,13 @@ class ExtAddressModel(SingleSpatialWizardModel):
 
     def __init_selectable_layer_by_type(self):
         # TODO Change the name
-        self.__selectable_layers_by_type[EnumOptionType.PLOT] = self._layers[self._db.names.LC_PLOT_T]
-        self.__selectable_layers_by_type[EnumOptionType.BUILDING] = self._layers[self._db.names.LC_BUILDING_T]
-        self.__selectable_layers_by_type[EnumOptionType.BUILDING_UNIT] = self._layers[self._db.names.LC_BUILDING_UNIT_T]
+        self.__relatable_layers[EnumRelatableLayers.PLOT] = self._layers[self._db.names.LC_PLOT_T]
+        self.__relatable_layers[EnumRelatableLayers.BUILDING] = self._layers[self._db.names.LC_BUILDING_T]
+        self.__relatable_layers[EnumRelatableLayers.BUILDING_UNIT] = self._layers[self._db.names.LC_BUILDING_UNIT_T]
 
     def get_active_layer_type(self):
-        for item_type in self.__selectable_layers_by_type:
-            if self.__selectable_layers_by_type[item_type] == self.__iface.activeLayer():
+        for item_type in self.__relatable_layers:
+            if self.__relatable_layers[item_type] == self.__iface.activeLayer():
                 return item_type
 
         return None
@@ -79,12 +79,12 @@ class ExtAddressModel(SingleSpatialWizardModel):
         # TODO is this execution right?
         self.__layer_remove_manager.reconnect_signals()
         # TODO Exception if layer does not exist
-        layer = self.__selectable_layers_by_type[self.type_of_selected_layer_to_associate]
+        layer = self.__relatable_layers[self.type_of_selected_layer_to_associate]
         self.__feature_selector_on_map.select_features_on_map(layer)
 
     def select_features_by_expression(self):
         # TODO Check if layer exists in self._layers
-        layer = self.__selectable_layers_by_type[self.type_of_selected_layer_to_associate]
+        layer = self.__relatable_layers[self.type_of_selected_layer_to_associate]
         self.__feature_selector_by_expression.select_features_by_expression(layer)
 
     def map_tool_changed(self):
@@ -114,16 +114,16 @@ class ExtAddressModel(SingleSpatialWizardModel):
             # Get t_id of spatial unit to associate
 
             selected_layer_to_pick_features =\
-                self.__selectable_layers_by_type[self.type_of_selected_layer_to_associate]
+                self.__relatable_layers[self.type_of_selected_layer_to_associate]
 
             feature_id = selected_layer_to_pick_features.selectedFeatures()[0][self._db.names.T_ID_F]
             fid = feature.id()
 
-            if self.type_of_selected_layer_to_associate == EnumOptionType.PLOT:
+            if self.type_of_selected_layer_to_associate == EnumRelatableLayers.PLOT:
                 spatial_unit_field_idx = layer.getFeature(fid).fieldNameIndex(self._db.names.EXT_ADDRESS_S_LC_PLOT_F)
-            elif self.type_of_selected_layer_to_associate == EnumOptionType.BUILDING:
+            elif self.type_of_selected_layer_to_associate == EnumRelatableLayers.BUILDING:
                 spatial_unit_field_idx = layer.getFeature(fid).fieldNameIndex(self._db.names.EXT_ADDRESS_S_LC_BUILDING_F)
-            elif self.type_of_selected_layer_to_associate == EnumOptionType.BUILDING_UNIT:
+            elif self.type_of_selected_layer_to_associate == EnumRelatableLayers.BUILDING_UNIT:
                 spatial_unit_field_idx = layer.getFeature(fid).fieldNameIndex(self._db.names.EXT_ADDRESS_S_LC_BUILDING_UNIT_F)
 
         if spatial_unit_field_idx:
@@ -138,8 +138,8 @@ class ExtAddressModel(SingleSpatialWizardModel):
     def get_number_of_selected_features(self):
         feature_count = dict()
 
-        for layer in self.__selectable_layers_by_type:
-            feature_count[layer] = self.__selectable_layers_by_type[layer].selectedFeatureCount()
+        for layer in self.__relatable_layers:
+            feature_count[layer] = self.__relatable_layers[layer].selectedFeatureCount()
 
         return feature_count
 

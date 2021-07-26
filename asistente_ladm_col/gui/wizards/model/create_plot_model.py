@@ -36,7 +36,7 @@ from asistente_ladm_col.gui.wizards.model.common.common_operations import Common
 from asistente_ladm_col.gui.wizards.model.common.create_from_refactor import CreateFromRefactor
 from asistente_ladm_col.gui.wizards.model.common.feature_selector_manager import FeatureSelectorManager
 from asistente_ladm_col.gui.wizards.model.common.layer_remove_signals_manager import LayerRemovedSignalsManager
-from asistente_ladm_col.gui.wizards.view.common.view_enum import EnumOptionType
+from asistente_ladm_col.gui.wizards.view.common.view_enum import EnumRelatableLayers
 
 
 class EnumPlotCreationResult(Enum):
@@ -61,12 +61,12 @@ class CreatePlot(FeatureSelectorManager):
 
         self.__feature_creator_from_refactor = CreateFromRefactor(self.app, db)
 
-        self.__selectable_layers_by_type = dict()
+        self.__relatable_layers = dict()
         self.__init_selectable_layer_by_type()
 
         # parent constructor
-        FeatureSelectorManager.__init__(self, self.__selectable_layers_by_type, self.iface,  self._logger)
-        self.type_of_selected_layer_to_associate = EnumOptionType.BOUNDARY
+        FeatureSelectorManager.__init__(self, self.__relatable_layers, self.iface, self._logger)
+        self.type_of_selected_layer_to_associate = EnumRelatableLayers.BOUNDARY
 
         self.__layer_remove_manager = LayerRemovedSignalsManager(self._layers, self)
 
@@ -77,10 +77,10 @@ class CreatePlot(FeatureSelectorManager):
         self.refactor_field_mapping = self.__common_operations.get_field_mappings_file_names()
 
     def __init_selectable_layer_by_type(self):
-        self.__selectable_layers_by_type[EnumOptionType.BOUNDARY] = self._layers[self.names.LC_BOUNDARY_T]
+        self.__relatable_layers[EnumRelatableLayers.BOUNDARY] = self._layers[self.names.LC_BOUNDARY_T]
 
     def select_all_features(self):
-        layer = self.__selectable_layers_by_type[EnumOptionType.BOUNDARY]
+        layer = self.__relatable_layers[EnumRelatableLayers.BOUNDARY]
         layer.selectAll()
 
     def create_feature_from_refactor(self, selected_layer, field_mapping):

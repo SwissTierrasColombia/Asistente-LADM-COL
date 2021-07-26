@@ -26,7 +26,7 @@ from asistente_ladm_col.gui.wizards.model.common.select_features_by_expression_d
     SelectFeatureByExpressionDialogWrapper
 from asistente_ladm_col.gui.wizards.model.common.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
 from asistente_ladm_col.gui.wizards.model.single_wizard_model import SingleWizardModel
-from asistente_ladm_col.gui.wizards.view.common.view_enum import EnumOptionType
+from asistente_ladm_col.gui.wizards.view.common.view_enum import EnumRelatableLayers
 
 
 class SpatialSourceModel(SingleWizardModel):
@@ -49,29 +49,29 @@ class SpatialSourceModel(SingleWizardModel):
         self.__feature_selector_by_expression = SelectFeatureByExpressionDialogWrapper(self.__iface)
         self.__feature_selector_by_expression.register_observer(self)
 
-        self.__selectable_layers_by_type = dict()
+        self.__relatable_layers = dict()
         self.__init_selectable_layer_by_type()
 
         self.__layer_remove_manager = LayerRemovedSignalsManager(self._layers, self)
 
     def __init_selectable_layer_by_type(self):
         # TODO Change the name
-        self.__selectable_layers_by_type[EnumOptionType.PLOT] = self._layers[self.names.LC_PLOT_T]
-        self.__selectable_layers_by_type[EnumOptionType.BOUNDARY] = self._layers[self.names.LC_BOUNDARY_T]
-        self.__selectable_layers_by_type[EnumOptionType.BOUNDARY_POINT] = self._layers[self.names.LC_BOUNDARY_POINT_T]
-        self.__selectable_layers_by_type[EnumOptionType.SURVEY_POINT] = self._layers[self.names.LC_SURVEY_POINT_T]
-        self.__selectable_layers_by_type[EnumOptionType.CONTROL_POINT] = self._layers[self.names.LC_CONTROL_POINT_T]
+        self.__relatable_layers[EnumRelatableLayers.PLOT] = self._layers[self.names.LC_PLOT_T]
+        self.__relatable_layers[EnumRelatableLayers.BOUNDARY] = self._layers[self.names.LC_BOUNDARY_T]
+        self.__relatable_layers[EnumRelatableLayers.BOUNDARY_POINT] = self._layers[self.names.LC_BOUNDARY_POINT_T]
+        self.__relatable_layers[EnumRelatableLayers.SURVEY_POINT] = self._layers[self.names.LC_SURVEY_POINT_T]
+        self.__relatable_layers[EnumRelatableLayers.CONTROL_POINT] = self._layers[self.names.LC_CONTROL_POINT_T]
 
-    def select_features_on_map(self, option_type: EnumOptionType):
+    def select_features_on_map(self, option_type: EnumRelatableLayers):
         # TODO is this execution right?
         self.__layer_remove_manager.reconnect_signals()
         # TODO Exception if layer does not exist
-        layer = self.__selectable_layers_by_type[option_type]
+        layer = self.__relatable_layers[option_type]
         self.__feature_selector_on_map.select_features_on_map(layer)
 
-    def select_features_by_expression(self, option_type: EnumOptionType):
+    def select_features_by_expression(self, option_type: EnumRelatableLayers):
         # TODO Check if layer exists in self._layers
-        layer = self.__selectable_layers_by_type[option_type]
+        layer = self.__relatable_layers[option_type]
         self.__feature_selector_by_expression.select_features_by_expression(layer)
 
     def map_tool_changed(self):
@@ -151,8 +151,8 @@ class SpatialSourceModel(SingleWizardModel):
     def get_number_of_selected_features(self):
         feature_count = dict()
 
-        for layer in self.__selectable_layers_by_type:
-            feature_count[layer] = self.__selectable_layers_by_type[layer].selectedFeatureCount()
+        for layer in self.__relatable_layers:
+            feature_count[layer] = self.__relatable_layers[layer].selectedFeatureCount()
 
         return feature_count
 
