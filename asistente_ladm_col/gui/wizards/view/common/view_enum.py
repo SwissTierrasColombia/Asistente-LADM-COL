@@ -62,5 +62,5 @@ class EnumOptionType(Enum):
 
 class EnumLayerCreationMode(Enum):
     MANUALLY = 1,
-    REFACTOR = 2,
+    REFACTOR_FIELDS = 2,
     DIGITIZING_LINE = 3

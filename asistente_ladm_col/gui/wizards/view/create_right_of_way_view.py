@@ -30,8 +30,8 @@ from asistente_ladm_col.config.general_config import WIZARD_STRINGS
 from asistente_ladm_col.gui.wizards.view.common.select_source import (SelectSource,
                                                                       SelectSourceExt)
 from asistente_ladm_col.gui.wizards.view.single_wizard_view import SingleWizardView
-from asistente_ladm_col.gui.wizards.wizard_constants import (WIZARD_REFACTOR_RECENT_MAPPING_OPTIONS,
-                                                             WIZARD_REFACTOR_LAYER_FILTERS)
+from asistente_ladm_col.gui.wizards.wizard_constants import (WIZARD_REFACTOR_FIELDS_RECENT_MAPPING_OPTIONS,
+                                                             WIZARD_REFACTOR_FIELDS_LAYER_FILTERS)
 
 
 class CreateRightOfWayView(SingleWizardView):
@@ -41,8 +41,8 @@ class CreateRightOfWayView(SingleWizardView):
         super().__init__(controller, view_config)
 
     def _create_select_source(self) -> SelectSource:
-        self.__wp_select_source = SelectSourceExt(self.__view_config[WIZARD_REFACTOR_RECENT_MAPPING_OPTIONS],
-                                                  self.__view_config[WIZARD_REFACTOR_LAYER_FILTERS],
+        self.__wp_select_source = SelectSourceExt(self.__view_config[WIZARD_REFACTOR_FIELDS_RECENT_MAPPING_OPTIONS],
+                                                  self.__view_config[WIZARD_REFACTOR_FIELDS_LAYER_FILTERS],
                                                   self.__view_config[WIZARD_STRINGS])
 
         return self.__wp_select_source

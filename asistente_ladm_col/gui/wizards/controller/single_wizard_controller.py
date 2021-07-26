@@ -48,10 +48,10 @@ from asistente_ladm_col.gui.wizards.model.common.wizard_q_settings_manager impor
 from asistente_ladm_col.gui.wizards.controller.controller_args import CreateFeatureArgs
 from asistente_ladm_col.gui.wizards.model.single_wizard_model import SingleWizardModel
 from asistente_ladm_col.gui.wizards.view.single_wizard_view import SingleWizardView
-from asistente_ladm_col.gui.wizards.wizard_constants import (WIZARD_REFACTOR_RECENT_MAPPING_OPTIONS,
+from asistente_ladm_col.gui.wizards.wizard_constants import (WIZARD_REFACTOR_FIELDS_RECENT_MAPPING_OPTIONS,
                                                              WIZARD_FINISH_BUTTON_TEXT,
                                                              WIZARD_SELECT_SOURCE_HELP,
-                                                             WIZARD_REFACTOR_LAYER_FILTERS,
+                                                             WIZARD_REFACTOR_FIELDS_LAYER_FILTERS,
                                                              WIZARD_CREATION_MODE_KEY)
 from asistente_ladm_col.gui.wizards.view.common.view_enum import EnumLayerCreationMode
 
@@ -99,16 +99,16 @@ class SingleWizardController(QObject, metaclass=SingleWizardControllerMeta):
         help_strings = HelpStrings()
         return {
             WIZARD_STRINGS: self.wizard_config[WIZARD_STRINGS],
-            WIZARD_REFACTOR_RECENT_MAPPING_OPTIONS: self.__model.refactor_field_mapping,
-            WIZARD_REFACTOR_LAYER_FILTERS: QgsMapLayerProxyModel.Filter(QgsMapLayerProxyModel.NoGeometry),
+            WIZARD_REFACTOR_FIELDS_RECENT_MAPPING_OPTIONS: self.__model.refactor_field_mapping,
+            WIZARD_REFACTOR_FIELDS_LAYER_FILTERS: QgsMapLayerProxyModel.Filter(QgsMapLayerProxyModel.NoGeometry),
             WIZARD_HELP_PAGES: self.wizard_config[WIZARD_HELP_PAGES],
             WIZARD_HELP: self.wizard_config[WIZARD_HELP],
             WIZARD_FINISH_BUTTON_TEXT: {
-                EnumLayerCreationMode.REFACTOR: QCoreApplication.translate("WizardTranslations", "Import"),
+                EnumLayerCreationMode.REFACTOR_FIELDS: QCoreApplication.translate("WizardTranslations", "Import"),
                 EnumLayerCreationMode.MANUALLY: QCoreApplication.translate("WizardTranslations", "Create")
             },
             WIZARD_SELECT_SOURCE_HELP: {
-                EnumLayerCreationMode.REFACTOR:
+                EnumLayerCreationMode.REFACTOR_FIELDS:
                     help_strings.get_refactor_help_string(self.__db, self.__layers[self.EDITING_LAYER_NAME]),
                 EnumLayerCreationMode.MANUALLY:
                     self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP1]
@@ -140,7 +140,7 @@ class SingleWizardController(QObject, metaclass=SingleWizardControllerMeta):
 
     def create_feature(self, args: CreateFeatureArgs):
         self.__save_settings()
-        if args.layer_creation_mode == EnumLayerCreationMode.REFACTOR:
+        if args.layer_creation_mode == EnumLayerCreationMode.REFACTOR_FIELDS:
             self.__feature_from_refactor()
         else:
             self.__feature_manual()

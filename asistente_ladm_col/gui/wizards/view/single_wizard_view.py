@@ -23,8 +23,8 @@ from qgis.PyQt.QtWidgets import QWizard
 from asistente_ladm_col.config.general_config import WIZARD_STRINGS, WIZARD_HELP
 from asistente_ladm_col.gui.wizards.view.common.select_source import SelectSource
 from asistente_ladm_col.gui.wizards.controller.controller_args import CreateFeatureArgs
-from asistente_ladm_col.gui.wizards.wizard_constants import (WIZARD_REFACTOR_RECENT_MAPPING_OPTIONS,
-                                                             WIZARD_REFACTOR_LAYER_FILTERS,
+from asistente_ladm_col.gui.wizards.wizard_constants import (WIZARD_REFACTOR_FIELDS_RECENT_MAPPING_OPTIONS,
+                                                             WIZARD_REFACTOR_FIELDS_LAYER_FILTERS,
                                                              WIZARD_FINISH_BUTTON_TEXT,
                                                              WIZARD_SELECT_SOURCE_HELP,
                                                              WIZARD_CREATION_MODE_KEY)
@@ -44,8 +44,8 @@ class SingleWizardView:
 
     def _create_select_source(self) -> SelectSource:
         return SelectSource(
-            self.__view_config[WIZARD_REFACTOR_RECENT_MAPPING_OPTIONS],
-            self.__view_config[WIZARD_REFACTOR_LAYER_FILTERS],
+            self.__view_config[WIZARD_REFACTOR_FIELDS_RECENT_MAPPING_OPTIONS],
+            self.__view_config[WIZARD_REFACTOR_FIELDS_LAYER_FILTERS],
             self.__view_config[WIZARD_STRINGS])
 
     def close(self):

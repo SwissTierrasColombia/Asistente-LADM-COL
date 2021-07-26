@@ -90,13 +90,13 @@ class SelectSource(QObject):
         if self.__qwizard_page.rad_create_manually.isChecked():
             result = EnumLayerCreationMode.MANUALLY
         elif self.__qwizard_page.rad_refactor.isChecked():
-            result = EnumLayerCreationMode.REFACTOR
+            result = EnumLayerCreationMode.REFACTOR_FIELDS
 
         return result
 
     @layer_creation_mode.setter
     def layer_creation_mode(self, value: EnumLayerCreationMode):
-        if value == EnumLayerCreationMode.REFACTOR:
+        if value == EnumLayerCreationMode.REFACTOR_FIELDS:
             self.__qwizard_page.rad_refactor.setChecked(True)
         elif value == EnumLayerCreationMode.MANUALLY:
             self.__qwizard_page.rad_create_manually.setChecked(True)

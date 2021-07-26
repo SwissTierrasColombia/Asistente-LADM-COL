@@ -24,8 +24,8 @@ from asistente_ladm_col.config.general_config import WIZARD_STRINGS, WIZARD_HELP
 from asistente_ladm_col.gui.wizards.view.common.select_source import SelectSource
 from asistente_ladm_col.gui.wizards.controller.controller_args import CreateFeatureArgs
 from asistente_ladm_col.gui.wizards.view.pages.features_selector_view import FeaturesSelectorView
-from asistente_ladm_col.gui.wizards.wizard_constants import (WIZARD_REFACTOR_RECENT_MAPPING_OPTIONS,
-                                                             WIZARD_REFACTOR_LAYER_FILTERS,
+from asistente_ladm_col.gui.wizards.wizard_constants import (WIZARD_REFACTOR_FIELDS_RECENT_MAPPING_OPTIONS,
+                                                             WIZARD_REFACTOR_FIELDS_LAYER_FILTERS,
                                                              WIZARD_FINISH_BUTTON_TEXT,
                                                              WIZARD_SELECT_SOURCE_HELP,
                                                              WIZARD_CREATION_MODE_KEY)
@@ -53,8 +53,8 @@ class SpatialSourceView:
 
     def _create_select_source(self) -> SelectSource:
         return SelectSource(
-            self.__view_config[WIZARD_REFACTOR_RECENT_MAPPING_OPTIONS],
-            self.__view_config[WIZARD_REFACTOR_LAYER_FILTERS],
+            self.__view_config[WIZARD_REFACTOR_FIELDS_RECENT_MAPPING_OPTIONS],
+            self.__view_config[WIZARD_REFACTOR_FIELDS_LAYER_FILTERS],
             self.__view_config[WIZARD_STRINGS])
 
     def close(self):
@@ -100,8 +100,8 @@ class SpatialSourceView:
         self.__wizard.setButtonText(QWizard.FinishButton, finish_button_text)
 
         # new
-        self.__wp_select_source.get_wizard_page().setFinalPage(e == EnumLayerCreationMode.REFACTOR)
-        if e == EnumLayerCreationMode.REFACTOR:
+        self.__wp_select_source.get_wizard_page().setFinalPage(e == EnumLayerCreationMode.REFACTOR_FIELDS)
+        if e == EnumLayerCreationMode.REFACTOR_FIELDS:
             disable_next_wizard(self.__wizard)
         else:
             enable_next_wizard(self.__wizard)
