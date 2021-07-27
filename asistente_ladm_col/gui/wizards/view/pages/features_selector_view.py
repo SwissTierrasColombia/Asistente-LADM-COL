@@ -93,7 +93,7 @@ class PlotSelectorView(FeaturesSelectorView):
 
     def _create_qwizard_page(self) -> QWizardPage:
         self.__qwizard_page = QWizardPage()
-        ui_path = 'wizards/wizard_pages/survey/wiz_create_plot_survey.ui'
+        ui_path = 'wizards/survey/wiz_create_plot_survey.ui'
         load_ui(ui_path, self.__qwizard_page)
         return self.__qwizard_page
 
@@ -121,7 +121,7 @@ class RrrSelectorView(FeaturesSelectorView):
 
     def _create_qwizard_page(self) -> QWizardPage:
         self.__qwizard_page = QWizardPage()
-        ui_path = 'wizards/wizard_pages/survey/wiz_create_restriction_survey.ui'
+        ui_path = 'wizards/survey/wiz_create_restriction_survey.ui'
         load_ui(ui_path, self.__qwizard_page)
         return self.__qwizard_page
 
@@ -147,7 +147,7 @@ class SpatialSourceFeaturesSelectorView(FeaturesSelectorView):
 
     def _create_qwizard_page(self) -> QWizardPage:
         self.__qwizard_page = QWizardPage()
-        ui_path = 'wizards/wizard_pages/survey/wiz_create_spatial_source_survey.ui'
+        ui_path = 'wizards/survey/wiz_create_spatial_source_survey.ui'
         load_ui(ui_path, self.__qwizard_page)
         return self.__qwizard_page
 
@@ -204,7 +204,7 @@ class ParcelSelectorView(FeaturesSelectorView):
 
     def _create_qwizard_page(self) -> QWizardPage:
         self.__qwizard_page = QWizardPage()
-        ui_path = 'wizards/wizard_pages/survey/wiz_create_parcel_survey.ui'
+        ui_path = 'wizards/survey/wiz_create_parcel_survey.ui'
         load_ui(ui_path, self.__qwizard_page)
         return self.__qwizard_page
 
@@ -297,7 +297,7 @@ class ExtAddressSelectorView(FeaturesSelectorView):
 
     def _create_qwizard_page(self) -> QWizardPage:
         self.__qwizard_page = QWizardPage()
-        ui_path = 'wizards/wizard_pages/survey/wiz_associate_extaddress_survey.ui'
+        ui_path = 'wizards/survey/wiz_associate_extaddress_survey.ui'
         load_ui(ui_path, self.__qwizard_page)
         return self.__qwizard_page
 

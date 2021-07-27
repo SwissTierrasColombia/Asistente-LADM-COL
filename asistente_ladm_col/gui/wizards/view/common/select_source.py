@@ -57,7 +57,7 @@ class SelectSource(QObject):
 
     def _init_qwizard_page(self) -> QWizardPage:
         qwizard_page = QWizardPage()
-        ui_path = 'wizards/wizard_pages/select_source.ui'
+        ui_path = 'wizards/select_source.ui'
         load_ui(ui_path, qwizard_page)
         return qwizard_page
 
@@ -139,7 +139,7 @@ class SelectSourceExt(SelectSource):
 
     def _init_qwizard_page(self) -> QWizardPage:
         qwizard_page = QWizardPage()
-        ui_path = 'wizards/wizard_pages/survey/wiz_create_right_of_way_survey.ui'
+        ui_path = 'wizards/survey/wiz_create_right_of_way_survey.ui'
         load_ui(ui_path, qwizard_page)
         return qwizard_page
 
