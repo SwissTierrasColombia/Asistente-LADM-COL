@@ -16,7 +16,7 @@
  *                                                                         *
  ***************************************************************************/
  """
-from asistente_ladm_col.gui.wizards.view.common.view_enum import EnumLayerCreationMode
+from asistente_ladm_col.config.enums import EnumLayerCreationMode
 
 
 class CreateFeatureArgs:

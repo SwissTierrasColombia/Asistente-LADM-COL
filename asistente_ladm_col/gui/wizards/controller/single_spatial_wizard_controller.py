@@ -32,6 +32,7 @@ from qgis.PyQt.QtCore import (QObject,
 from qgis.core import QgsMapLayerProxyModel
 
 from asistente_ladm_col import Logger
+from asistente_ladm_col.config.enums import EnumLayerCreationMode
 from asistente_ladm_col.config.general_config import (WIZARD_STRINGS,
                                                       WIZARD_HELP_PAGES,
                                                       WIZARD_HELP,
@@ -47,7 +48,7 @@ from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.gui.wizards.model.common.args.model_args import (FinishFeatureCreationArgs,
                                                                          ValidFeaturesDigitizedArgs,
                                                                          UnexpectedFeaturesDigitizedArgs)
-from asistente_ladm_col.gui.wizards.model.common.args.model_enums import EnumDigitizedFeatureStatus
+from asistente_ladm_col.config.enums import EnumDigitizedFeatureStatus
 from asistente_ladm_col.gui.wizards.model.common.wizard_q_settings_manager import WizardQSettingsManager
 from asistente_ladm_col.gui.wizards.controller.controller_args import CreateFeatureArgs
 from asistente_ladm_col.gui.wizards.model.single_spatial_wizard_model import SingleSpatialWizardModel
@@ -59,7 +60,6 @@ from asistente_ladm_col.config.wizard_constants import (WIZARD_REFACTOR_FIELDS_R
                                                         WIZARD_FINISH_BUTTON_TEXT,
                                                         WIZARD_SELECT_SOURCE_HELP,
                                                         WIZARD_CREATION_MODE_KEY)
-from asistente_ladm_col.gui.wizards.view.common.view_enum import EnumLayerCreationMode
 
 
 class SingleSpatialWizardController(QObject):

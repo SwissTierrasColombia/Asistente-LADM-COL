@@ -27,13 +27,13 @@
  ***************************************************************************/
  """
 from asistente_ladm_col import Logger
+from asistente_ladm_col.config.enums import EnumRelatableLayers
 from asistente_ladm_col.config.general_config import WIZARD_LAYERS
 from asistente_ladm_col.gui.wizards.model.common.args.model_args import ExecFormAdvancedArgs
 from asistente_ladm_col.gui.wizards.model.common.select_features_by_expression_dialog_wrapper import \
     SelectFeatureByExpressionDialogWrapper
 from asistente_ladm_col.gui.wizards.model.common.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
 from asistente_ladm_col.gui.wizards.model.single_spatial_wizard_model import SingleSpatialWizardModel
-from asistente_ladm_col.gui.wizards.view.common.view_enum import EnumRelatableLayers
 
 
 class ExtAddressModel(SingleSpatialWizardModel):

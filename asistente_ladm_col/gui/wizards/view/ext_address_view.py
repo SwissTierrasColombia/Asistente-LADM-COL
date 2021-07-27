@@ -28,6 +28,8 @@
  """
 from qgis.PyQt.QtWidgets import QWizard
 
+from asistente_ladm_col.config.enums import (EnumLayerCreationMode,
+                                             EnumRelatableLayers)
 from asistente_ladm_col.config.general_config import (WIZARD_STRINGS,
                                                       WIZARD_HELP,
                                                       WIZARD_HELP_PAGES,
@@ -42,8 +44,6 @@ from asistente_ladm_col.config.wizard_constants import (WIZARD_REFACTOR_FIELDS_R
                                                         WIZARD_FINISH_BUTTON_TEXT,
                                                         WIZARD_SELECT_SOURCE_HELP,
                                                         WIZARD_CREATION_MODE_KEY)
-from asistente_ladm_col.gui.wizards.view.common.view_enum import (EnumLayerCreationMode,
-                                                                  EnumRelatableLayers)
 from asistente_ladm_col.gui.wizards.view.common.view_args import PickFeaturesSelectedArgs
 from asistente_ladm_col.utils.qt_utils import (disable_next_wizard,
                                                enable_next_wizard)

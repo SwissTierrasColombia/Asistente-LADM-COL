@@ -22,6 +22,8 @@
  *                                                                         *
  ***************************************************************************/
  """
+from asistente_ladm_col.config.enums import EnumRelatableLayers
+
 from asistente_ladm_col.config.general_config import (WIZARD_LAYERS,
                                                       WIZARD_EDITING_LAYER_NAME,
                                                       WIZARD_FEATURE_NAME)
@@ -33,7 +35,6 @@ from asistente_ladm_col.gui.wizards.model.common.create_manually import (Feature
 from asistente_ladm_col.gui.wizards.model.common.select_features_by_expression_dialog_wrapper import \
     SelectFeatureByExpressionDialogWrapper
 from asistente_ladm_col.gui.wizards.model.creator_model import CreatorModel
-from asistente_ladm_col.gui.wizards.view.common.view_enum import EnumRelatableLayers
 
 
 class RrrModel(CreatorModel):

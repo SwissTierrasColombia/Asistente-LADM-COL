@@ -30,9 +30,9 @@ from qgis.PyQt.QtWidgets import QWizardPage
 from qgis.PyQt.QtCore import (pyqtSignal,
                               QObject)
 
+from asistente_ladm_col.config.enums import EnumLayerCreationMode
 from asistente_ladm_col.config.general_config import (WIZARD_SEL_SOURCE_TITLE,
                                                       WIZARD_SEL_SOURCE_ENTERING_DATA_MANUALLY)
-from asistente_ladm_col.gui.wizards.view.common.view_enum import EnumLayerCreationMode
 from asistente_ladm_col.utils.ui import load_ui
 
 

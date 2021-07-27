@@ -32,6 +32,7 @@ from qgis.PyQt.QtCore import (QObject,
 from qgis.core import QgsMapLayerProxyModel
 
 from asistente_ladm_col import Logger
+from asistente_ladm_col.config.enums import EnumLayerCreationMode
 from asistente_ladm_col.config.general_config import (WIZARD_STRINGS,
                                                       WIZARD_HELP_PAGES,
                                                       WIZARD_HELP,
@@ -53,7 +54,6 @@ from asistente_ladm_col.config.wizard_constants import (WIZARD_REFACTOR_FIELDS_R
                                                         WIZARD_SELECT_SOURCE_HELP,
                                                         WIZARD_REFACTOR_FIELDS_LAYER_FILTERS,
                                                         WIZARD_CREATION_MODE_KEY)
-from asistente_ladm_col.gui.wizards.view.common.view_enum import EnumLayerCreationMode
 
 
 class SingleWizardControllerMeta(type(FinishFeatureCreationObserver), type(QObject)):

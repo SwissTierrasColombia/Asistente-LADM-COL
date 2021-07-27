@@ -26,6 +26,7 @@
  *                                                                         *
  ***************************************************************************/
  """
+from asistente_ladm_col.config.enums import EnumRelatableLayers
 from asistente_ladm_col.config.general_config import (WIZARD_FEATURE_NAME,
                                                       WIZARD_LAYERS)
 from asistente_ladm_col.config.layer_config import (LayerConfig,
@@ -37,7 +38,6 @@ from asistente_ladm_col.gui.wizards.model.common.create_manually import (Feature
                                                                          AlphaFeatureCreator)
 from asistente_ladm_col.gui.wizards.model.common.feature_selector_manager import FeatureSelectorManager
 from asistente_ladm_col.gui.wizards.model.creator_model import CreatorModel
-from asistente_ladm_col.gui.wizards.view.common.view_enum import EnumRelatableLayers
 
 
 class ParcelCreatorModel(CreatorModel, FeatureSelectorManager):

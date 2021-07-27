@@ -26,12 +26,11 @@
  *                                                                         *
  ***************************************************************************/
  """
+from asistente_ladm_col.config.enums import EnumRelatableLayers, EnumFeatureSelectionType
 from asistente_ladm_col.config.general_config import (CSS_COLOR_OKAY_LABEL,
                                                       CSS_COLOR_ERROR_LABEL)
 from asistente_ladm_col.gui.wizards.controller.single_spatial_wizard_controller import SingleSpatialWizardController
 from asistente_ladm_col.gui.wizards.model.ext_address_model import ExtAddressModel
-from asistente_ladm_col.gui.wizards.view.common.enum_feature_selection_type import EnumFeatureSelectionType
-from asistente_ladm_col.gui.wizards.view.common.view_enum import EnumRelatableLayers
 from asistente_ladm_col.gui.wizards.view.common.view_args import (PickFeaturesSelectedArgs,
                                                                   OptionChangedArgs)
 from asistente_ladm_col.gui.wizards.view.ext_address_view import ExtAddressView

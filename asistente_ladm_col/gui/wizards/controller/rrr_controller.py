@@ -24,9 +24,9 @@
  """
 from qgis.PyQt.QtCore import QCoreApplication
 
+from asistente_ladm_col.config.enums import EnumFeatureSelectionType
 from asistente_ladm_col.gui.wizards.controller.single_wizard_controller import SingleWizardController
 from asistente_ladm_col.gui.wizards.model.rrr_model import RrrModel
-from asistente_ladm_col.gui.wizards.view.common.enum_feature_selection_type import EnumFeatureSelectionType
 from asistente_ladm_col.gui.wizards.view.common.view_args import PickFeaturesSelectedArgs
 from asistente_ladm_col.gui.wizards.view.pages.features_selector_view import RrrSelectorView
 from asistente_ladm_col.gui.wizards.view.spatial_source_view import SpatialSourceView

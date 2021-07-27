@@ -16,8 +16,8 @@
  *                                                                         *
  ***************************************************************************/
  """
+from asistente_ladm_col.config.enums import EnumRelatableLayers
 from asistente_ladm_col.gui.wizards.view.pages.features_selector_view import EnumFeatureSelectionType
-from asistente_ladm_col.gui.wizards.view.common.view_enum import EnumRelatableLayers
 
 
 class OptionChangedArgs:

@@ -26,6 +26,7 @@
  *                                                                         *
  ***************************************************************************/
 """
+from asistente_ladm_col.config.enums import EnumLayerCreationMode
 from asistente_ladm_col.config.general_config import (WIZARD_HELP_PAGES,
                                                       WIZARD_HELP2)
 from asistente_ladm_col.gui.wizards.controller.controller_args import CreateFeatureArgs
@@ -34,7 +35,6 @@ from asistente_ladm_col.gui.wizards.model.create_right_of_way_model import Creat
 from asistente_ladm_col.gui.wizards.view.create_right_of_way_view import CreateRightOfWayView
 from asistente_ladm_col.config.wizard_constants import (WIZARD_FINISH_BUTTON_TEXT,
                                                         WIZARD_SELECT_SOURCE_HELP)
-from asistente_ladm_col.gui.wizards.view.common.view_enum import EnumLayerCreationMode
 
 
 class CreateRightOfWayController(SingleSpatialWizardController):

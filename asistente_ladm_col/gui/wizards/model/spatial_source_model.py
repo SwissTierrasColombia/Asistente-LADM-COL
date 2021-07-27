@@ -18,6 +18,7 @@
  *                                                                         *
  ***************************************************************************/
  """
+from asistente_ladm_col.config.enums import EnumRelatableLayers
 from asistente_ladm_col.config.general_config import WIZARD_LAYERS
 from asistente_ladm_col.gui.wizards.model.common.args.model_args import SpacialSourceFinishFeatureCreationArgs
 from asistente_ladm_col.gui.wizards.model.common.association_utils import AssociationUtils
@@ -26,7 +27,6 @@ from asistente_ladm_col.gui.wizards.model.common.select_features_by_expression_d
     SelectFeatureByExpressionDialogWrapper
 from asistente_ladm_col.gui.wizards.model.common.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
 from asistente_ladm_col.gui.wizards.model.single_wizard_model import SingleWizardModel
-from asistente_ladm_col.gui.wizards.view.common.view_enum import EnumRelatableLayers
 
 
 class SpatialSourceModel(SingleWizardModel):

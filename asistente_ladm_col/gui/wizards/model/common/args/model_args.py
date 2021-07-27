@@ -18,7 +18,7 @@
  """
 from qgis.core import QgsVectorLayer
 
-from asistente_ladm_col.gui.wizards.model.common.args.model_enums import EnumDigitizedFeatureStatus
+from asistente_ladm_col.config.enums import EnumDigitizedFeatureStatus
 
 
 class FinishFeatureCreationArgs:

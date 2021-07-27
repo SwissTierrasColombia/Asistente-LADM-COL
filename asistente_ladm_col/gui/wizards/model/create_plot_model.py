@@ -29,6 +29,7 @@ from qgis.core import (QgsVectorLayerUtils,
 
 from asistente_ladm_col import Logger
 from asistente_ladm_col.app_interface import AppInterface
+from asistente_ladm_col.config.enums import EnumRelatableLayers, EnumPlotCreationResult
 from asistente_ladm_col.config.general_config import (WIZARD_EDITING_LAYER_NAME,
                                                       WIZARD_LAYERS,
                                                       WIZARD_READ_ONLY_FIELDS)
@@ -36,13 +37,6 @@ from asistente_ladm_col.gui.wizards.model.common.common_operations import Common
 from asistente_ladm_col.gui.wizards.model.common.create_from_refactor import CreateFromRefactor
 from asistente_ladm_col.gui.wizards.model.common.feature_selector_manager import FeatureSelectorManager
 from asistente_ladm_col.gui.wizards.model.common.layer_remove_signals_manager import LayerRemovedSignalsManager
-from asistente_ladm_col.gui.wizards.view.common.view_enum import EnumRelatableLayers
-
-
-class EnumPlotCreationResult(Enum):
-    CREATED = 1,
-    NO_BOUNDARIES_SELECTED = 2,
-    NO_PLOTS_CREATED = 3
 
 
 class CreatePlot(FeatureSelectorManager):

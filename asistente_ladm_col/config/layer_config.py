@@ -2,18 +2,10 @@ from enum import Enum
 
 from qgis.core import NULL
 
+from asistente_ladm_col.config.enums import EnumRelationshipType
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 
-
-class EnumRelationshipType(Enum):
-    # Operations:
-    # 1 = One and only one feature must be selected
-    # + = One or more features must be selected
-    # * = Optional, i.e., zero or more features could be selected
-    ONE = 1,
-    MANY = 2,
-    ONE_OR_MANY = 3
 
 class LayerConfig:
     SUPPLIES_DB_PREFIX = None

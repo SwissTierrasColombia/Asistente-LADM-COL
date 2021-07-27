@@ -25,6 +25,8 @@ from functools import partial
 from qgis.PyQt.QtWidgets import QWizardPage
 from qgis.PyQt.QtCore import QCoreApplication
 
+from asistente_ladm_col.config.enums import (EnumRelatableLayers,
+                                             EnumFeatureSelectionType)
 from asistente_ladm_col.config.general_config import (WIZARD_HELP_PAGES,
                                                       WIZARD_HELP2,
                                                       WIZARD_STRINGS,
@@ -33,8 +35,6 @@ from asistente_ladm_col.config.general_config import (WIZARD_HELP_PAGES,
                                                       CSS_COLOR_OKAY_LABEL,
                                                       CSS_COLOR_ERROR_LABEL)
 from asistente_ladm_col.config.help_strings import HelpStrings
-from asistente_ladm_col.gui.wizards.view.common.enum_feature_selection_type import EnumFeatureSelectionType
-from asistente_ladm_col.gui.wizards.view.common.view_enum import EnumRelatableLayers
 from asistente_ladm_col.gui.wizards.view.common.view_args import (PickFeaturesSelectedArgs,
                                                                   OptionChangedArgs)
 from asistente_ladm_col.utils.ui import load_ui
