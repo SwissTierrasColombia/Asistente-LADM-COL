@@ -38,12 +38,12 @@ from asistente_ladm_col.gui.wizards.view.common.view_args import PickFeaturesSel
 from asistente_ladm_col.gui.wizards.view.common.view_enum import EnumLayerCreationMode
 from asistente_ladm_col.gui.wizards.view.pages.features_selector_view import ParcelSelectorView
 from asistente_ladm_col.gui.wizards.view.single_wizard_view import SingleWizardView
-from asistente_ladm_col.gui.wizards.wizard_constants import (WIZARD_REFACTOR_FIELDS_RECENT_MAPPING_OPTIONS,
-                                                             WIZARD_REFACTOR_FIELDS_LAYER_FILTERS,
-                                                             WIZARD_FINISH_BUTTON_TEXT,
-                                                             WIZARD_SELECT_SOURCE_HELP,
-                                                             WIZARD_SELECTED_TYPE_KEY,
-                                                             WIZARD_CREATION_MODE_KEY)
+from asistente_ladm_col.config.wizard_constants import (WIZARD_REFACTOR_FIELDS_RECENT_MAPPING_OPTIONS,
+                                                        WIZARD_REFACTOR_FIELDS_LAYER_FILTERS,
+                                                        WIZARD_FINISH_BUTTON_TEXT,
+                                                        WIZARD_SELECT_SOURCE_HELP,
+                                                        WIZARD_SELECTED_TYPE_KEY,
+                                                        WIZARD_CREATION_MODE_KEY)
 from asistente_ladm_col.utils.qt_utils import (disable_next_wizard,
                                                enable_next_wizard)
 from asistente_ladm_col.utils.utils import show_plugin_help

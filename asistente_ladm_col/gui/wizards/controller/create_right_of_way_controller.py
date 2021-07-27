@@ -32,8 +32,8 @@ from asistente_ladm_col.gui.wizards.controller.controller_args import CreateFeat
 from asistente_ladm_col.gui.wizards.controller.single_spatial_wizard_controller import SingleSpatialWizardController
 from asistente_ladm_col.gui.wizards.model.create_right_of_way_model import CreateRightOfWayModel
 from asistente_ladm_col.gui.wizards.view.create_right_of_way_view import CreateRightOfWayView
-from asistente_ladm_col.gui.wizards.wizard_constants import (WIZARD_FINISH_BUTTON_TEXT,
-                                                             WIZARD_SELECT_SOURCE_HELP)
+from asistente_ladm_col.config.wizard_constants import (WIZARD_FINISH_BUTTON_TEXT,
+                                                        WIZARD_SELECT_SOURCE_HELP)
 from asistente_ladm_col.gui.wizards.view.common.view_enum import EnumLayerCreationMode
 
 

@@ -34,7 +34,7 @@ from asistente_ladm_col.gui.wizards.view.common.enum_feature_selection_type impo
 from asistente_ladm_col.gui.wizards.view.common.view_args import PickFeaturesSelectedArgs
 from asistente_ladm_col.gui.wizards.view.common.view_enum import EnumLayerCreationMode
 from asistente_ladm_col.gui.wizards.view.parcel_view import ParcelView
-from asistente_ladm_col.gui.wizards.wizard_constants import WIZARD_CREATION_MODE_KEY, WIZARD_SELECTED_TYPE_KEY
+from asistente_ladm_col.config.wizard_constants import WIZARD_CREATION_MODE_KEY, WIZARD_SELECTED_TYPE_KEY
 
 
 class ParcelController(SingleWizardController):

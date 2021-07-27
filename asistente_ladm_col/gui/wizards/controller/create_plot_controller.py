@@ -44,11 +44,11 @@ from asistente_ladm_col.gui.wizards.model.create_plot_model import (CreatePlot,
 from asistente_ladm_col.gui.wizards.view.common.enum_feature_selection_type import EnumFeatureSelectionType
 from asistente_ladm_col.gui.wizards.view.pages.features_selector_view import PlotSelectorView
 from asistente_ladm_col.gui.wizards.view.spatial_source_view import SpatialSourceView
-from asistente_ladm_col.gui.wizards.wizard_constants import (WIZARD_REFACTOR_FIELDS_RECENT_MAPPING_OPTIONS,
-                                                             WIZARD_FINISH_BUTTON_TEXT,
-                                                             WIZARD_SELECT_SOURCE_HELP,
-                                                             WIZARD_REFACTOR_FIELDS_LAYER_FILTERS,
-                                                             WIZARD_CREATION_MODE_KEY)
+from asistente_ladm_col.config.wizard_constants import (WIZARD_REFACTOR_FIELDS_RECENT_MAPPING_OPTIONS,
+                                                        WIZARD_FINISH_BUTTON_TEXT,
+                                                        WIZARD_SELECT_SOURCE_HELP,
+                                                        WIZARD_REFACTOR_FIELDS_LAYER_FILTERS,
+                                                        WIZARD_CREATION_MODE_KEY)
 from asistente_ladm_col.gui.wizards.view.common.view_enum import EnumLayerCreationMode
 from asistente_ladm_col.gui.wizards.view.common.view_args import PickFeaturesSelectedArgs
 

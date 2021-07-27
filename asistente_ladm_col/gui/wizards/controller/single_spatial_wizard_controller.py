@@ -54,11 +54,11 @@ from asistente_ladm_col.gui.wizards.model.single_spatial_wizard_model import Sin
 from asistente_ladm_col.gui.wizards.view.common.view_utils import ViewUtils
 
 from asistente_ladm_col.gui.wizards.view.single_wizard_view import SingleWizardView
-from asistente_ladm_col.gui.wizards.wizard_constants import (WIZARD_REFACTOR_FIELDS_RECENT_MAPPING_OPTIONS,
-                                                             WIZARD_REFACTOR_FIELDS_LAYER_FILTERS,
-                                                             WIZARD_FINISH_BUTTON_TEXT,
-                                                             WIZARD_SELECT_SOURCE_HELP,
-                                                             WIZARD_CREATION_MODE_KEY)
+from asistente_ladm_col.config.wizard_constants import (WIZARD_REFACTOR_FIELDS_RECENT_MAPPING_OPTIONS,
+                                                        WIZARD_REFACTOR_FIELDS_LAYER_FILTERS,
+                                                        WIZARD_FINISH_BUTTON_TEXT,
+                                                        WIZARD_SELECT_SOURCE_HELP,
+                                                        WIZARD_CREATION_MODE_KEY)
 from asistente_ladm_col.gui.wizards.view.common.view_enum import EnumLayerCreationMode
 
 
