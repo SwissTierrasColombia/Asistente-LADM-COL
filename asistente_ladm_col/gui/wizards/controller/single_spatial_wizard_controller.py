@@ -43,7 +43,12 @@ from asistente_ladm_col.config.general_config import (WIZARD_STRINGS,
                                                       WIZARD_FEATURE_NAME,
                                                       WIZARD_MAP_LAYER_PROXY_MODEL,
                                                       WIZARD_HELP1,
-                                                      WIZARD_QSETTINGS_PATH)
+                                                      WIZARD_QSETTINGS_PATH,
+                                                      WIZARD_REFACTOR_FIELDS_RECENT_MAPPING_OPTIONS,
+                                                      WIZARD_REFACTOR_FIELDS_LAYER_FILTERS,
+                                                      WIZARD_FINISH_BUTTON_TEXT,
+                                                      WIZARD_SELECT_SOURCE_HELP,
+                                                      WIZARD_CREATION_MODE_KEY)
 from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.gui.wizards.model.common.args.model_args import (FinishFeatureCreationArgs,
                                                                          ValidFeaturesDigitizedArgs,
@@ -55,11 +60,6 @@ from asistente_ladm_col.gui.wizards.model.single_spatial_wizard_model import Sin
 from asistente_ladm_col.gui.wizards.view.common.view_utils import ViewUtils
 
 from asistente_ladm_col.gui.wizards.view.single_wizard_view import SingleWizardView
-from asistente_ladm_col.config.wizard_constants import (WIZARD_REFACTOR_FIELDS_RECENT_MAPPING_OPTIONS,
-                                                        WIZARD_REFACTOR_FIELDS_LAYER_FILTERS,
-                                                        WIZARD_FINISH_BUTTON_TEXT,
-                                                        WIZARD_SELECT_SOURCE_HELP,
-                                                        WIZARD_CREATION_MODE_KEY)
 
 
 class SingleSpatialWizardController(QObject):

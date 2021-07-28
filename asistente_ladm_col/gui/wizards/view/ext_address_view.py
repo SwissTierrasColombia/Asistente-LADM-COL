@@ -35,15 +35,15 @@ from asistente_ladm_col.config.general_config import (WIZARD_STRINGS,
                                                       WIZARD_HELP_PAGES,
                                                       WIZARD_HELP2,
                                                       WIZARD_HELP3,
-                                                      WIZARD_HELP1)
+                                                      WIZARD_HELP1,
+                                                      WIZARD_REFACTOR_FIELDS_RECENT_MAPPING_OPTIONS,
+                                                      WIZARD_REFACTOR_FIELDS_LAYER_FILTERS,
+                                                      WIZARD_CREATION_MODE_KEY,
+                                                      WIZARD_FINISH_BUTTON_TEXT,
+                                                      WIZARD_SELECT_SOURCE_HELP)
 from asistente_ladm_col.gui.wizards.view.common.select_source import SelectSource
 from asistente_ladm_col.gui.wizards.controller.controller_args import CreateFeatureArgs
 from asistente_ladm_col.gui.wizards.view.pages.features_selector_view import ExtAddressSelectorView
-from asistente_ladm_col.config.wizard_constants import (WIZARD_REFACTOR_FIELDS_RECENT_MAPPING_OPTIONS,
-                                                        WIZARD_REFACTOR_FIELDS_LAYER_FILTERS,
-                                                        WIZARD_FINISH_BUTTON_TEXT,
-                                                        WIZARD_SELECT_SOURCE_HELP,
-                                                        WIZARD_CREATION_MODE_KEY)
 from asistente_ladm_col.gui.wizards.view.common.view_args import PickFeaturesSelectedArgs
 from asistente_ladm_col.utils.qt_utils import (disable_next_wizard,
                                                enable_next_wizard)

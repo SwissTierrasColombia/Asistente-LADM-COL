@@ -239,6 +239,14 @@ WIZARD_SEL_SOURCE_TITLE = "wizard_sel_source_title",
 WIZARD_SEL_SOURCE_ENTERING_DATA_MANUALLY = "wizard_sel_source_entering_data_manually"
 WIZARD_SEL_FEATURES_TITLE = "wizard_sel_features_title"
 
+WIZARD_REFACTOR_FIELDS_RECENT_MAPPING_OPTIONS = "wizard_refactor_recent_mapping_options"
+WIZARD_REFACTOR_FIELDS_LAYER_FILTERS = "wizard_refactor_layer_filters"
+WIZARD_SELECT_SOURCE_HELP = "wizard_select_source_help"
+WIZARD_FINISH_BUTTON_TEXT = "wizard_finish_button_text"
+
+WIZARD_CREATION_MODE_KEY = "creation_mode"
+WIZARD_SELECTED_TYPE_KEY = "selected_type"
+
 # Cadastral model
 WIZARD_CREATE_COL_PARTY_CADASTRAL = "wizard_create_col_party_cadastral"
 WIZARD_CREATE_ADMINISTRATIVE_SOURCE_SURVEY = "wizard_create_administrative_source_survey"

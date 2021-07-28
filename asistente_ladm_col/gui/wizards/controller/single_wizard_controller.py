@@ -41,7 +41,12 @@ from asistente_ladm_col.config.general_config import (WIZARD_STRINGS,
                                                       WIZARD_QSETTINGS_PATH,
                                                       WIZARD_TOOL_NAME,
                                                       WIZARD_FEATURE_NAME,
-                                                      WIZARD_HELP1)
+                                                      WIZARD_HELP1,
+                                                      WIZARD_REFACTOR_FIELDS_RECENT_MAPPING_OPTIONS,
+                                                      WIZARD_REFACTOR_FIELDS_LAYER_FILTERS,
+                                                      WIZARD_FINISH_BUTTON_TEXT,
+                                                      WIZARD_SELECT_SOURCE_HELP,
+                                                      WIZARD_CREATION_MODE_KEY)
 from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.gui.wizards.model.common.args.model_args import FinishFeatureCreationArgs
 from asistente_ladm_col.gui.wizards.model.common.observers import FinishFeatureCreationObserver
@@ -49,11 +54,6 @@ from asistente_ladm_col.gui.wizards.model.common.wizard_q_settings_manager impor
 from asistente_ladm_col.gui.wizards.controller.controller_args import CreateFeatureArgs
 from asistente_ladm_col.gui.wizards.model.single_wizard_model import SingleWizardModel
 from asistente_ladm_col.gui.wizards.view.single_wizard_view import SingleWizardView
-from asistente_ladm_col.config.wizard_constants import (WIZARD_REFACTOR_FIELDS_RECENT_MAPPING_OPTIONS,
-                                                        WIZARD_FINISH_BUTTON_TEXT,
-                                                        WIZARD_SELECT_SOURCE_HELP,
-                                                        WIZARD_REFACTOR_FIELDS_LAYER_FILTERS,
-                                                        WIZARD_CREATION_MODE_KEY)
 
 
 class SingleWizardControllerMeta(type(FinishFeatureCreationObserver), type(QObject)):

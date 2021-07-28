@@ -27,13 +27,15 @@
  ***************************************************************************/
  """
 from asistente_ladm_col.config.enums import EnumLayerCreationMode, EnumFeatureSelectionType
-from asistente_ladm_col.config.general_config import WIZARD_QSETTINGS, WIZARD_QSETTINGS_PATH
+from asistente_ladm_col.config.general_config import (WIZARD_QSETTINGS,
+                                                      WIZARD_QSETTINGS_PATH,
+                                                      WIZARD_CREATION_MODE_KEY,
+                                                      WIZARD_SELECTED_TYPE_KEY)
 from asistente_ladm_col.gui.wizards.controller.single_wizard_controller import SingleWizardController
 from asistente_ladm_col.gui.wizards.model.common.wizard_q_settings_manager import WizardQSettingsManager
 from asistente_ladm_col.gui.wizards.model.parcel_creator_model import ParcelCreatorModel
 from asistente_ladm_col.gui.wizards.view.common.view_args import PickFeaturesSelectedArgs
 from asistente_ladm_col.gui.wizards.view.parcel_view import ParcelView
-from asistente_ladm_col.config.wizard_constants import WIZARD_CREATION_MODE_KEY, WIZARD_SELECTED_TYPE_KEY
 
 
 class ParcelController(SingleWizardController):
