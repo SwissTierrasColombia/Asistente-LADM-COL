@@ -20,12 +20,12 @@
  """
 
 
-class CreateFromRefactor:
+class RefactorFieldsFeatureCreator:
     def __init__(self, app, db):
         self.__app = app
         self.__db = db
 
-    def create_from_refactor(self, selected_layer, editing_layer_name, field_mapping):
+    def create(self, selected_layer, editing_layer_name, field_mapping):
         res_etl_model = self.__app.core.show_etl_model(self.__db,
                                                        selected_layer,
                                                        editing_layer_name,

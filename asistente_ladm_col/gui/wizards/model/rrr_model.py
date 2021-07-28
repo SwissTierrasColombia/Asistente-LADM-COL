@@ -30,8 +30,8 @@ from asistente_ladm_col.config.general_config import (WIZARD_LAYERS,
 from asistente_ladm_col.gui.wizards.model.common.args.model_args import (SpacialSourceFinishFeatureCreationArgs,
                                                                          ExecFormAdvancedArgs)
 from asistente_ladm_col.gui.wizards.model.common.association_utils import AssociationUtils
-from asistente_ladm_col.gui.wizards.model.common.create_manually import (FeatureCreator,
-                                                                         AlphaFeatureCreator)
+from asistente_ladm_col.gui.wizards.model.common.muanual_feature_creator import (ManualFeatureCreator,
+                                                                                 AlphaFeatureCreator)
 from asistente_ladm_col.gui.wizards.model.common.select_features_by_expression_dialog_wrapper import \
     SelectFeatureByExpressionDialogWrapper
 from asistente_ladm_col.gui.wizards.model.creator_model import CreatorModel
@@ -103,9 +103,9 @@ class RrrModel(CreatorModel):
     def exec_form_advanced(self, args: ExecFormAdvancedArgs):
         pass
 
-    def _create_feature_creator(self) -> FeatureCreator:
+    def _create_feature_creator(self) -> ManualFeatureCreator:
         return AlphaFeatureCreator(self._iface, self.app, self._logger,
-                                self._editing_layer, self._wizard_config[WIZARD_FEATURE_NAME])
+                                   self._editing_layer, self._wizard_config[WIZARD_FEATURE_NAME])
 
     def select_features_by_expression(self, option_type: EnumRelatableLayers):
         # TODO Check if LAYER exists in self._layers

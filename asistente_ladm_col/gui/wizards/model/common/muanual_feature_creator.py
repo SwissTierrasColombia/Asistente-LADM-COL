@@ -30,7 +30,7 @@ from asistente_ladm_col.gui.wizards.model.common.args.model_args import (ValidFe
 from asistente_ladm_col.config.enums import EnumDigitizedFeatureStatus
 
 
-class CreateFeatureManuallyObserver(ABC):
+class ManualFeatureCreatorObserver(ABC):
     @abstractmethod
     def finish_feature_creation(self, layerId, features):
         pass
@@ -44,9 +44,9 @@ class CreateFeatureManuallyObserver(ABC):
         pass
 
 
-class FeatureCreator(ABC):
+class ManualFeatureCreator(ABC):
     def __init__(self, iface, app, logger, layer, feature_name):
-        super(FeatureCreator, self).__init__()
+        super(ManualFeatureCreator, self).__init__()
         self._iface = iface
         self._app = app
         self._layer = layer
@@ -56,10 +56,10 @@ class FeatureCreator(ABC):
 
         self.__observer = None
 
-    def register_observer(self, observer: CreateFeatureManuallyObserver):
+    def register_observer(self, observer: ManualFeatureCreatorObserver):
         self.__observer = observer
 
-    def create_manually(self):
+    def create(self):
         layer = self._get_editing_layer()
         self.__prepare_layer(layer)
 
@@ -135,7 +135,7 @@ class FeatureCreator(ABC):
             self._layer.committedFeaturesAdded.connect(self.__observer.finish_feature_creation)
 
 
-class AlphaFeatureCreator(FeatureCreator):
+class AlphaFeatureCreator(ManualFeatureCreator):
 
     def __init__(self, iface, app, logger, layer, feature_name):
         super(AlphaFeatureCreator, self).__init__(iface, app, logger, layer, feature_name)
@@ -148,7 +148,7 @@ class AlphaFeatureCreator(FeatureCreator):
         return self._layer
 
 
-class SpatialFeatureCreator(FeatureCreator):
+class SpatialFeatureCreator(ManualFeatureCreator):
 
     def __init__(self, iface, app, logger, layer, feature_name, tolerance=None):
         super(SpatialFeatureCreator, self).__init__(iface, app, logger, layer, feature_name)

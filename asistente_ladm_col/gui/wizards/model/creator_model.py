@@ -26,8 +26,8 @@ from asistente_ladm_col.config.general_config import (WIZARD_LAYERS,
                                                       WIZARD_READ_ONLY_FIELDS)
 from asistente_ladm_col.gui.wizards.model.common.args.model_args import (FinishFeatureCreationArgs,
                                                                          ExecFormAdvancedArgs)
-from asistente_ladm_col.gui.wizards.model.common.create_manually import FeatureCreator
-from asistente_ladm_col.gui.wizards.model.common.create_from_refactor import CreateFromRefactor
+from asistente_ladm_col.gui.wizards.model.common.muanual_feature_creator import ManualFeatureCreator
+from asistente_ladm_col.gui.wizards.model.common.refactor_fields_feature_creator import RefactorFieldsFeatureCreator
 from asistente_ladm_col.gui.wizards.model.common.common_operations import CommonOperationsModel
 from asistente_ladm_col.gui.wizards.model.common.layer_remove_signals_manager import LayerRemovedSignalsManager
 from asistente_ladm_col.gui.wizards.model.common.observers import (FinishFeatureCreationObserver,
@@ -56,7 +56,7 @@ class CreatorModel(ABC):
 
         self.__manual_feature_creator.register_observer(self)
 
-        self.__feature_creator_from_refactor = CreateFromRefactor(self.app, db)
+        self.__feature_creator_from_refactor = RefactorFieldsFeatureCreator(self.app, db)
 
         self.__common_operations = \
             CommonOperationsModel(self._wizard_config[WIZARD_LAYERS], self._editing_layer_name, self.app,
@@ -81,7 +81,7 @@ class CreatorModel(ABC):
         self._notify_finish_feature_creation(args)
 
     @abstractmethod
-    def _create_feature_creator(self) -> FeatureCreator:
+    def _create_feature_creator(self) -> ManualFeatureCreator:
         pass
 
     @abstractmethod
@@ -92,11 +92,11 @@ class CreatorModel(ABC):
         self.__common_operations.set_ready_only_field(read_only)
 
     def create_feature_from_refactor(self, selected_layer, field_mapping):
-        self.__feature_creator_from_refactor.create_from_refactor(selected_layer, self._editing_layer_name, field_mapping)
+        self.__feature_creator_from_refactor.create(selected_layer, self._editing_layer_name, field_mapping)
 
     def create_feature_manually(self):
         self.__layer_remove_manager.reconnect_signals()
-        self.__manual_feature_creator.create_manually()
+        self.__manual_feature_creator.create()
 
     def form_rejected(self):
         self._notify_form_rejected()

@@ -34,7 +34,7 @@ from asistente_ladm_col.config.general_config import (WIZARD_EDITING_LAYER_NAME,
                                                       WIZARD_LAYERS,
                                                       WIZARD_READ_ONLY_FIELDS)
 from asistente_ladm_col.gui.wizards.model.common.common_operations import CommonOperationsModel
-from asistente_ladm_col.gui.wizards.model.common.create_from_refactor import CreateFromRefactor
+from asistente_ladm_col.gui.wizards.model.common.refactor_fields_feature_creator import RefactorFieldsFeatureCreator
 from asistente_ladm_col.gui.wizards.model.common.feature_selector_manager import FeatureSelectorManager
 from asistente_ladm_col.gui.wizards.model.common.layer_remove_signals_manager import LayerRemovedSignalsManager
 
@@ -53,7 +53,7 @@ class CreatePlot(FeatureSelectorManager):
         self._editing_layer_name = self._wizard_config[WIZARD_EDITING_LAYER_NAME]
         self._editing_layer = self._wizard_config[WIZARD_LAYERS][self._editing_layer_name]
 
-        self.__feature_creator_from_refactor = CreateFromRefactor(self.app, db)
+        self.__feature_creator_from_refactor = RefactorFieldsFeatureCreator(self.app, db)
 
         self.__relatable_layers = dict()
         self.__init_selectable_layer_by_type()
@@ -78,7 +78,7 @@ class CreatePlot(FeatureSelectorManager):
         layer.selectAll()
 
     def create_feature_from_refactor(self, selected_layer, field_mapping):
-        self.__feature_creator_from_refactor.create_from_refactor(selected_layer, self._editing_layer_name, field_mapping)
+        self.__feature_creator_from_refactor.create(selected_layer, self._editing_layer_name, field_mapping)
 
     def set_ready_only_fields(self, read_only):
         self.__common_operations.set_ready_only_field(read_only)

@@ -34,8 +34,8 @@ from asistente_ladm_col.config.layer_config import (LayerConfig,
 from asistente_ladm_col.gui.wizards.model.common.args.model_args import (ExecFormAdvancedArgs,
                                                                          ParcelFinishFeatureCreationArgs)
 from asistente_ladm_col.gui.wizards.model.common.association_utils import AssociationUtils
-from asistente_ladm_col.gui.wizards.model.common.create_manually import (FeatureCreator,
-                                                                         AlphaFeatureCreator)
+from asistente_ladm_col.gui.wizards.model.common.muanual_feature_creator import (ManualFeatureCreator,
+                                                                                 AlphaFeatureCreator)
 from asistente_ladm_col.gui.wizards.model.common.feature_selector_manager import FeatureSelectorManager
 from asistente_ladm_col.gui.wizards.model.creator_model import CreatorModel
 
@@ -63,7 +63,7 @@ class ParcelCreatorModel(CreatorModel, FeatureSelectorManager):
         self.__relatable_layers[EnumRelatableLayers.BUILDING] = self._layers[self._db.names.LC_BUILDING_T]
         self.__relatable_layers[EnumRelatableLayers.BUILDING_UNIT] = self._layers[self._db.names.LC_BUILDING_UNIT_T]
 
-    def _create_feature_creator(self) -> FeatureCreator:
+    def _create_feature_creator(self) -> ManualFeatureCreator:
         return AlphaFeatureCreator(self._iface, self.app, self._logger,
                                    self._editing_layer, self._wizard_config[WIZARD_FEATURE_NAME])
 

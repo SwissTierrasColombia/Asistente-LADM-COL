@@ -28,8 +28,8 @@
  """
 from asistente_ladm_col.config.general_config import WIZARD_FEATURE_NAME
 from asistente_ladm_col.gui.wizards.model.common.args.model_args import ExecFormAdvancedArgs
-from asistente_ladm_col.gui.wizards.model.common.create_manually import (AlphaFeatureCreator,
-                                                                         FeatureCreator)
+from asistente_ladm_col.gui.wizards.model.common.muanual_feature_creator import (AlphaFeatureCreator,
+                                                                                 ManualFeatureCreator)
 from asistente_ladm_col.gui.wizards.model.creator_model import CreatorModel
 
 
@@ -41,6 +41,6 @@ class SingleWizardModel(CreatorModel):
     def exec_form_advanced(self, args: ExecFormAdvancedArgs):
         pass
 
-    def _create_feature_creator(self) -> FeatureCreator:
+    def _create_feature_creator(self) -> ManualFeatureCreator:
         return AlphaFeatureCreator(self._iface, self.app, self._logger,
                                    self._editing_layer, self._wizard_config[WIZARD_FEATURE_NAME])
