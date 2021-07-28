@@ -39,7 +39,7 @@ from asistente_ladm_col.gui.wizards.model.common.feature_selector_manager import
 from asistente_ladm_col.gui.wizards.model.common.layer_remove_signals_manager import LayerRemovedSignalsManager
 
 
-class CreatePlot(FeatureSelectorManager):
+class PlotModel(FeatureSelectorManager):
 
     def __init__(self, iface, db, wiz_config):
         self.app = AppInterface()

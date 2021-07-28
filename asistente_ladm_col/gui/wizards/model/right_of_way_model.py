@@ -42,7 +42,7 @@ from asistente_ladm_col.gui.wizards.model.single_spatial_wizard_model import Sin
 from asistente_ladm_col.utils.crs_utils import get_crs_authid
 
 
-class CreateRightOfWayModel(SingleSpatialWizardModel):
+class RightOfWayModel(SingleSpatialWizardModel):
 
     def __init__(self, iface, db, wiz_config):
         super().__init__(iface, db, wiz_config)

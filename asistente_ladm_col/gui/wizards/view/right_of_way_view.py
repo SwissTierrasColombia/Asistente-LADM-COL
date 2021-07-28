@@ -34,7 +34,7 @@ from asistente_ladm_col.gui.wizards.view.common.select_source import (SelectSour
 from asistente_ladm_col.gui.wizards.view.single_wizard_view import SingleWizardView
 
 
-class CreateRightOfWayView(SingleWizardView):
+class RightOfWayView(SingleWizardView):
 
     def __init__(self, controller, view_config):
         self.__view_config = view_config

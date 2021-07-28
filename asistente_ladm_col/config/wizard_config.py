@@ -32,16 +32,16 @@ from asistente_ladm_col.config.general_config import (WIZARD_FEATURE_NAME,
                                                       WIZARD_QSETTINGS_PATH)
 
 from asistente_ladm_col.config.help_strings import HelpStrings
-from asistente_ladm_col.gui.wizards.controller.create_plot_controller import CreatePlotController
-from asistente_ladm_col.gui.wizards.controller.create_right_of_way_controller import CreateRightOfWayController
+from asistente_ladm_col.gui.wizards.controller.plot_controller import PlotController
+from asistente_ladm_col.gui.wizards.controller.right_of_way_controller import RightOfWayController
 from asistente_ladm_col.gui.wizards.controller.ext_address_controller import ExtAddressController
 from asistente_ladm_col.gui.wizards.controller.parcel_controller import ParcelController
 from asistente_ladm_col.gui.wizards.controller.rrr_controller import RrrController
 from asistente_ladm_col.gui.wizards.controller.single_spatial_wizard_controller import SingleSpatialWizardController
 from asistente_ladm_col.gui.wizards.controller.single_wizard_controller import SingleWizardController
 from asistente_ladm_col.gui.wizards.controller.spatial_source_controller import SpatialSourceController
-from asistente_ladm_col.gui.wizards.model.create_plot_model import CreatePlot
-from asistente_ladm_col.gui.wizards.model.create_right_of_way_model import CreateRightOfWayModel
+from asistente_ladm_col.gui.wizards.model.plot_model import PlotModel
+from asistente_ladm_col.gui.wizards.model.right_of_way_model import RightOfWayModel
 from asistente_ladm_col.gui.wizards.model.ext_address_model import ExtAddressModel
 from asistente_ladm_col.gui.wizards.model.parcel_creator_model import ParcelCreatorModel
 from asistente_ladm_col.gui.wizards.model.rrr_model import RrrModel
@@ -76,8 +76,8 @@ class WizardFactory:
             self.__connect_spatial_signals(wizard_result, model, observer)
 
         elif wizard_name == WIZARD_CREATE_RIGHT_OF_WAY_SURVEY:
-            model = CreateRightOfWayModel(iface, db, wizard_config)
-            wizard_result = CreateRightOfWayController(model, iface, db, wizard_config)
+            model = RightOfWayModel(iface, db, wizard_config)
+            wizard_result = RightOfWayController(model, iface, db, wizard_config)
             self.__connect_spatial_signals(wizard_result, model, observer)
 
         elif wizard_name == WIZARD_CREATE_SPATIAL_SOURCE_SURVEY:
@@ -94,8 +94,8 @@ class WizardFactory:
             self.__connect_spatial_signals(wizard_result, model, observer)
 
         elif wizard_name == WIZARD_CREATE_PLOT_SURVEY:
-            model = CreatePlot(iface, db, wizard_config)
-            wizard_result = CreatePlotController(model, db, wizard_config)
+            model = PlotModel(iface, db, wizard_config)
+            wizard_result = PlotController(model, db, wizard_config)
 
         elif wizard_name == WIZARD_CREATE_PARCEL_SURVEY:
             model = ParcelCreatorModel(iface, db, wizard_config)

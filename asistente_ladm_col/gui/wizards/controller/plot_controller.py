@@ -45,17 +45,17 @@ from asistente_ladm_col.config.enums import EnumLayerCreationMode, EnumFeatureSe
 from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.gui.wizards.controller.controller_args import CreateFeatureArgs
 from asistente_ladm_col.gui.wizards.model.common.wizard_q_settings_manager import WizardQSettingsManager
-from asistente_ladm_col.gui.wizards.model.create_plot_model import (CreatePlot,
-                                                                    EnumPlotCreationResult)
+from asistente_ladm_col.gui.wizards.model.plot_model import (PlotModel,
+                                                             EnumPlotCreationResult)
 from asistente_ladm_col.gui.wizards.view.pages.features_selector_view import PlotSelectorView
 from asistente_ladm_col.gui.wizards.view.spatial_source_view import SpatialSourceView
 from asistente_ladm_col.gui.wizards.view.common.view_args import PickFeaturesSelectedArgs
 
 
-class CreatePlotController(QObject):
+class PlotController(QObject):
     update_wizard_is_open_flag = pyqtSignal(bool)
 
-    def __init__(self, model: CreatePlot, db, wizard_settings):
+    def __init__(self, model: PlotModel, db, wizard_settings):
         QObject.__init__(self)
 
         self.wizard_config = wizard_settings

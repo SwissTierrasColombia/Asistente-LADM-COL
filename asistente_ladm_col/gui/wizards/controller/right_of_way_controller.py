@@ -33,18 +33,18 @@ from asistente_ladm_col.config.general_config import (WIZARD_HELP_PAGES,
                                                       WIZARD_SELECT_SOURCE_HELP)
 from asistente_ladm_col.gui.wizards.controller.controller_args import CreateFeatureArgs
 from asistente_ladm_col.gui.wizards.controller.single_spatial_wizard_controller import SingleSpatialWizardController
-from asistente_ladm_col.gui.wizards.model.create_right_of_way_model import CreateRightOfWayModel
-from asistente_ladm_col.gui.wizards.view.create_right_of_way_view import CreateRightOfWayView
+from asistente_ladm_col.gui.wizards.model.right_of_way_model import RightOfWayModel
+from asistente_ladm_col.gui.wizards.view.right_of_way_view import RightOfWayView
 
 
-class CreateRightOfWayController(SingleSpatialWizardController):
+class RightOfWayController(SingleSpatialWizardController):
 
-    def __init__(self, model: CreateRightOfWayModel, iface, db, wizard_settings):
+    def __init__(self, model: RightOfWayModel, iface, db, wizard_settings):
         super().__init__(model, iface, db, wizard_settings)
         self.__model = model
 
     def _create_view(self):
-        self.__view = CreateRightOfWayView(self, self._get_view_config())
+        self.__view = RightOfWayView(self, self._get_view_config())
         return self.__view
 
     def create_feature(self, args: CreateFeatureArgs):
