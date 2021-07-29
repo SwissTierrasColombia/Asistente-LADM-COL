@@ -28,7 +28,7 @@ from asistente_ladm_col.config.general_config import (WIZARD_STRINGS,
                                                       WIZARD_SELECT_SOURCE_HELP,
                                                       WIZARD_FINISH_BUTTON_TEXT,
                                                       WIZARD_CREATION_MODE_KEY)
-from asistente_ladm_col.gui.wizards.view.common.select_source import SelectSource
+from asistente_ladm_col.gui.wizards.view.common.source_selector import SourceSelector
 from asistente_ladm_col.gui.wizards.controller.controller_args import CreateFeatureArgs
 from asistente_ladm_col.utils.utils import show_plugin_help
 
@@ -43,8 +43,8 @@ class SingleWizardView:
 
         self.__init_gui()
 
-    def _create_select_source(self) -> SelectSource:
-        return SelectSource(
+    def _create_select_source(self) -> SourceSelector:
+        return SourceSelector(
             self.__view_config[WIZARD_REFACTOR_FIELDS_RECENT_MAPPING_OPTIONS],
             self.__view_config[WIZARD_REFACTOR_FIELDS_LAYER_FILTERS],
             self.__view_config[WIZARD_STRINGS])

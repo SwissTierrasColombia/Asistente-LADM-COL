@@ -36,7 +36,7 @@ from asistente_ladm_col.config.general_config import (WIZARD_SEL_SOURCE_TITLE,
 from asistente_ladm_col.utils.ui import load_ui
 
 
-class SelectSource(QObject):
+class SourceSelector(QObject):
     option_changed = pyqtSignal(EnumLayerCreationMode)
     layer_changed = pyqtSignal(QgsMapLayer)
 
@@ -57,7 +57,7 @@ class SelectSource(QObject):
 
     def _init_qwizard_page(self) -> QWizardPage:
         qwizard_page = QWizardPage()
-        ui_path = 'wizards/select_source.ui'
+        ui_path = 'wizards/source_selector.ui'
         load_ui(ui_path, qwizard_page)
         return qwizard_page
 
@@ -131,7 +131,7 @@ class SelectSource(QObject):
         return self.__qwizard_page
 
 
-class SelectSourceExt(SelectSource):
+class SourceSelectorExt(SourceSelector):
 
     def __init__(self, items=None, layer_filters=None, wizard_texts=None):
         super().__init__(items, layer_filters, wizard_texts)
@@ -157,7 +157,7 @@ class SelectSourceExt(SelectSource):
         if value == EnumLayerCreationMode.DIGITIZING_LINE:
             self.__qwizard_page.rad_digitizing_line.setChecked(True)
         else:
-            SelectSource.layer_creation_mode.fset(self, value)
+            SourceSelector.layer_creation_mode.fset(self, value)
 
     def connect_signals(self):
         super().connect_signals()
