@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 from qgis.PyQt.QtCore import *
 
 from asistente_ladm_col.config.general_config import (FDC_DATASET_NAME,
@@ -130,7 +132,7 @@ field_coordinator_role_gui[TOOLBAR] = [{  # Overwrite list of toolbars
     ]
 }]
 
-operator_role_gui = {}  # Let the gui builder use the template GUI config.
+operator_role_gui = GUI_Config().get_gui_dict(TEMPLATE_GUI)  # Just use the template GUI config.
 
 manager_role_gui = GUI_Config().get_gui_dict(TEMPLATE_GUI)
 manager_role_gui[TOOLBAR] = [{  # Overwrite list of toolbars
@@ -260,7 +262,7 @@ advanced_role_models[ROLE_CHECKED_MODELS] = COMMON_CHECKED_MODELS
 
 
 def get_role_config():
-    return {
+    return deepcopy({
         BASIC_ROLE: {
             ROLE_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Basic"),
             ROLE_DESCRIPTION: QCoreApplication.translate("AsistenteLADMCOLPlugin",
@@ -426,4 +428,4 @@ def get_role_config():
             ROLE_QUALITY_RULES: COMMON_QUALITY_RULES,
             ROLE_GUI_CONFIG: advanced_role_gui
         }
-    }
+    })

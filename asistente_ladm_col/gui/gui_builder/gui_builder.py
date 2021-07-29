@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 /***************************************************************************
                               Asistente LADM_COL
@@ -65,6 +64,23 @@ class GUIBuilder(QObject):
                            DEFAULT_ACTION_STATUS: v.isEnabled()}
 
         self._registered_actions.update(new_dict)
+        del new_dict
+
+    def unregister_actions(self, list_keys):
+        """
+        Mainly for plugins that add functionalities as add-ons
+        :param list_keys: List of action keys
+        """
+        b_any_change = False
+        for action_key in list_keys:
+            if action_key in self._registered_actions:
+                b_any_change = True
+                self.logger.info(__name__, "Unregistering action '{}'...".format(action_key))
+                # del self._registered_actions[action_key][ACTION]  # Leave this to the add-on
+                del self._registered_actions[action_key]
+
+        if b_any_change:
+            self.build_gui()  # Refresh the GUI, since removing actions might leave some menus unnecessary
 
     def get_action(self, action_key):
         return self._get_and_configure_action(action_key)
@@ -219,21 +235,12 @@ class GUIBuilder(QObject):
         :param role_key: Active role key to whom we will ask for its GUI config. Normally, it should be the active one.
         :return: Dictionary in the form of a gui_config dict (still unfiltered).
         """
-        gui_type = DEFAULT_GUI  # If test_connection is False, we use a default gui config
-
         if self._test_conn_result:
-            gui_config = RoleRegistry().get_role_gui_config(role_key)
-            if gui_config:
-                self.logger.info(__name__, "Using gui_config from the role.")
-                return gui_config
-            else:
-                self.logger.info(__name__, "Using gui_config from the template.")
-                gui_type = TEMPLATE_GUI
-
-        if gui_type == DEFAULT_GUI:
+            self.logger.info(__name__, "Using gui_config from the role.")
+            return RoleRegistry().get_role_gui_config(role_key)
+        else:
             self.logger.info(__name__, "Using gui_config from the default GUI (minimal).")
-
-        return GUI_Config().get_gui_dict(gui_type)
+            return GUI_Config().get_gui_dict(DEFAULT_GUI)  # If test_connection is False, we use a default gui config)
 
     def _get_role_actions(self, role_key):
         """
@@ -370,7 +377,7 @@ class GUIBuilder(QObject):
         Get and configure actions. Configuration means to enable/disable them, and set text and tooltip, among others.
 
         :param action_key:
-        :return:
+        :return: Configured QAction
         """
         action = self._registered_actions[action_key][ACTION] if action_key in self._registered_actions else None
         if action is None:
@@ -394,3 +401,12 @@ class GUIBuilder(QObject):
 
     def show_welcome_screen(self):
         return not RoleRegistry().active_role_already_set()
+
+    def add_actions_to_db_engine(self, action_key_list):
+        """
+        For add-ons to add a set of actions to current DB engine.
+        After a call to this method, it is expected a build_gui to refresh the GUI.
+
+        :param action_key_list: List of action keys that should be added to current db engine
+        """
+        self._db_engine_actions = list(set(self._db_engine_actions + action_key_list))

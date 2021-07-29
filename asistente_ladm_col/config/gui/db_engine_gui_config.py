@@ -2,13 +2,20 @@ from qgis.PyQt.QtCore import (QCoreApplication,
                               QObject)
 
 from asistente_ladm_col.config.gui.common_keys import *
+from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.utils.singleton import SingletonQObject
 
 
-class DBEngineGUIConfig(QObject):
+class DBEngineGUIConfig(QObject, metaclass=SingletonQObject):
     """
     Action configuration for each DB engine.
+
+    These lists might be modified by add-ons. We expect add-ons to add action
+    keys to the lists and don't expect them to remove elements from the lists.
+    Action keys might live in these lists even if an add-on is uninstalled.
+    The add-on should unregister all its actions in gui_builder and that's enough.
     """
-    COMMON_ACTIONS = [ACTION_SETTINGS,
+    __COMMON_ACTIONS = [ACTION_SETTINGS,
                       ACTION_HELP,
                       ACTION_ABOUT,
                       ACTION_DOWNLOAD_GUIDE,
@@ -52,17 +59,36 @@ class DBEngineGUIConfig(QObject):
                       ACTION_ALLOCATE_PARCELS_FIELD_DATA_CAPTURE,
                       ACTION_SYNCHRONIZE_FIELD_DATA]
 
-    GPKG_ACTIONS = COMMON_ACTIONS + [ACTION_RUN_ETL_SUPPLIES,
-                                     ACTION_FIND_MISSING_COBOL_SUPPLIES,
-                                     ACTION_FIND_MISSING_SNC_SUPPLIES,
-                                     ACTION_INTEGRATE_SUPPLIES]
+    __GPKG_ACTIONS = __COMMON_ACTIONS + [ACTION_RUN_ETL_SUPPLIES,
+                                         ACTION_FIND_MISSING_COBOL_SUPPLIES,
+                                         ACTION_FIND_MISSING_SNC_SUPPLIES,
+                                         ACTION_INTEGRATE_SUPPLIES]
 
-    PG_ACTIONS = [ALL_ACTIONS]
+    __PG_ACTIONS = [ALL_ACTIONS]
 
-    MSSQL_ACTIONS = COMMON_ACTIONS
+    __MSSQL_ACTIONS = __COMMON_ACTIONS
 
     def __init__(self):
         QObject.__init__(self)
+        self.logger = Logger()
+
+    def add_actions_to_db_engines(self, action_key_list, db_engine_key_list):
+        """
+        For add-ons that want to modify actions of supported DB engines.
+        If a supported DB engine is missing in the list, the actions will
+        be disabled for DB connections that correspond to such engine.
+
+        Note: All actions should support at least PostgreSQL.
+
+        :param action_key_list: List of action keys to add.
+        :param db_engine_key_list: List of DB engines in which the action should work. Possible values: 'pg', 'gpkg',
+                                   'myssql'.
+        """
+        for engine in db_engine_key_list:
+            engine_actions = getattr(self, "_DBEngineGUIConfig__{}_ACTIONS".format(engine.upper()), None)
+            if engine_actions:
+                setattr(self, "_DBEngineGUIConfig__{}_ACTIONS".format(engine.upper()), list(set(engine_actions + action_key_list)))
+                self.logger.debug(__name__, "{} actions added to DB engine '{}'!".format(len(action_key_list), engine))
 
     def get_db_engine_actions(self, engine):
         """
@@ -71,4 +97,4 @@ class DBEngineGUIConfig(QObject):
         :param name: Either TEMPLATE_GUI or DEFAULT_GUI (or more if GUI_Congif() has more dict keys)
         :return: A deep copy (i.e., it's safe to alter it) of the GUI config dictionary
         """
-        return getattr(self, "{}_ACTIONS".format(engine.upper()), self.COMMON_ACTIONS)
+        return getattr(self, "_DBEngineGUIConfig__{}_ACTIONS".format(engine.upper()), self.__COMMON_ACTIONS)
