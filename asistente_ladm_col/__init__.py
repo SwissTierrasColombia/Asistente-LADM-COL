@@ -70,6 +70,7 @@ def classFactory(iface):
         from mock import Mock
         return Mock()
 
+
 def open_log(iface):
     iface.messageBar().clearWidgets()
     iface.openMessageLog()

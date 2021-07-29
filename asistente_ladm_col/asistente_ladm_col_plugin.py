@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 """
 /***************************************************************************
-                              Asistente LADM_COL
+                              Asistente LADM-COL
                              --------------------
         begin                : 2017-10-31
         git sha              : :%H$
@@ -39,6 +38,7 @@ from qgis.core import (Qgis,
 from processing.modeler.ModelerUtils import ModelerUtils
 from processing.script import ScriptUtils
 
+from asistente_ladm_col.config.gui.db_engine_gui_config import DBEngineGUIConfig
 from asistente_ladm_col.config.ladm_names import MODEL_CONFIG
 from asistente_ladm_col.config.role_config import get_role_config
 from asistente_ladm_col.gui.field_data_capture.dockwidget_field_data_capture_admin_coordinator import DockWidgetFieldDataCaptureAdminCoordinator
@@ -156,6 +156,7 @@ from asistente_ladm_col.resources_rc import *  # Necessary to show icons
 
 
 class AsistenteLADMCOLPlugin(QObject):
+    plugin_unloaded = pyqtSignal()  # To inform add-ons they will live alone from now on
     wiz_geometry_creation_finished = pyqtSignal()
 
     def __init__(self, iface, with_gui=True):
@@ -1068,6 +1069,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.app.core.fix_ladm_col_relations(self.get_db_connection())  # Always for COLLECTED db
 
     def unload(self):
+        self.plugin_unloaded.emit()
         self.session_logout(False, False)  # Do not show message when deactivating plugin, closing QGIS, etc.)
         self.uninstall_custom_expression_functions()
 
@@ -1637,3 +1639,28 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_informal_building_units(self):
         db = self.get_db_connection()
         self.app.show_informal_spatial_units(db, db.names.LC_BUILDING_UNIT_T)
+
+    def add_actions_to_db_engines(self, action_key_list, db_engine_key_list=None):
+        """
+        For add-ons that want to modify actions of supported DB engines.
+        If a supported DB engine is missing in the list, the actions will
+        be disabled for DB connections that correspond to such engine.
+
+        Note: All actions should support at least PostgreSQL.
+
+        :param action_key_list: List of action keys to add.
+        :param db_engine_key_list: List of DB engines in which the action should work. Possible values: 'pg', 'gpkg',
+                                   'myssql'.
+        """
+        if not db_engine_key_list:
+            db_engine_key_list = ['pg', 'gpkg', 'mssql']  # We should get this list from somewhere (ConfigDBsSupported)
+
+        # First check if the current DB engine is in the list.
+        # If so, notify the gui_builder. We'd expect that after
+        # that, the add-on re-builds the GUI to reflect changes.
+        if self.get_db_connection().engine in db_engine_key_list:
+            self.gui_builder.add_actions_to_db_engine(action_key_list)
+
+        # Finally, modify the DBEngineGUIConfig instance, so that the
+        # change remains during the current session
+        DBEngineGUIConfig().add_actions_to_db_engines(action_key_list, db_engine_key_list)

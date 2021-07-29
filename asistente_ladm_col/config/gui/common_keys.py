@@ -19,6 +19,7 @@ SEPARATOR = 'separator'
 NO_MENU = 'no_menu'
 OPERATION_MENU = 'operation_menu'
 SUPPLIES_MENU = 'supplies_menu'
+LADM_COL_ADD_ON_MENU = 'ladm_col_add_on_menu'
 
 ROLE_ACTIONS = 'role_actions'
 ROLE_NAME = 'role_name'
@@ -176,6 +177,7 @@ PARTY_ICON = ":/Asistente-LADM-COL/resources/images/party.png"
 SOURCE_ICON = ":/Asistente-LADM-COL/resources/images/source.png"
 REPORTS_ICON = ":/Asistente-LADM-COL/resources/images/reports.svg"
 CHANGE_DETECTION_ICON = ":/Asistente-LADM-COL/resources/images/change_detection.svg"
+ADD_ON_ICON = ":/Asistente-LADM-COL/resources/images/add_on.png"
 
 # MENU OBJECTNAMES
 MENU_SURVEY_OBJECTNAME = "ladm_col_survey_menu"

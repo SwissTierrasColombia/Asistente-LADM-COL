@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 """
 /***************************************************************************
-                              Asistente LADM_COL
+                              Asistente LADM-COL
                              --------------------
         begin                : 2019-11-07
         copyright            : (C) 2019 by Germán Carrillo (BSF Swissphoto)
@@ -15,7 +14,6 @@
  *                                                                         *
  ***************************************************************************/
 """
-
 from copy import deepcopy
 
 from qgis.PyQt.QtCore import (QObject,
@@ -58,19 +56,26 @@ class RoleRegistry(QObject, metaclass=SingletonQObject):
         Register roles for the LADM-COL assistant. Roles have access only to certain GUI controls, to
         certain LADM-COL models and to certain quality rules.
 
+        Warning: this class will modify the role_dict, so better pass a deepcopy of the configuration dict.
+
         :param role_key: Role unique identifier
         :param role_dict: Dictionary with the following information:
                 ROLE_NAME: Name of the role
                 ROLE_DESCRIPTION: Explains what this role is about
                 ROLE_ACTIONS: List of actions a role has access to
                 ROLE_MODELS: List of models and their configuration for the current role
+                ROLE_GUI_CONFIG: Dict with the GUI config (menus and toolbars)
         :return: Whether the role was successfully registered or not.
         """
         valid = False
         if ROLE_NAME in role_dict and ROLE_DESCRIPTION in role_dict and ROLE_ACTIONS in role_dict and \
                 ROLE_GUI_CONFIG in role_dict and ROLE_MODELS in role_dict:
-            self._registered_roles[role_key] = deepcopy(role_dict)
-            valid = True
+            if role_dict[ROLE_GUI_CONFIG]:  # It's mandatory to provide a GUI config for the role
+                self._registered_roles[role_key] = role_dict
+                valid = True
+            else:
+                self.logger.error(__name__,
+                                  "Role '{}' has no GUI config and could not be registered!".format(role_key))
         else:
             self.logger.error(__name__, "Role '{}' is not defined correctly and could not be registered! Check the role_dict parameter.".format(role_key))
 
@@ -147,7 +152,8 @@ class RoleRegistry(QObject, metaclass=SingletonQObject):
             self.logger.error(__name__, "Role '{}' was not found, returning default role's GUI configuration.".format(role_key))
             role_key = self._default_role
 
-        return self._registered_roles[role_key][ROLE_GUI_CONFIG]
+        # Return a deepcopy, since we don't want external classes to modify a role's GUI config
+        return deepcopy(self._registered_roles[role_key][ROLE_GUI_CONFIG])
 
     def get_role_models(self, role_key):
         """
@@ -176,4 +182,44 @@ class RoleRegistry(QObject, metaclass=SingletonQObject):
             self.logger.error(__name__, "Role '{}' was not found, returning default role's db source.".format(role_key))
             role_key = self._default_role
 
-        return self._registered_roles[role_key][ROLE_DB_SOURCE] if ROLE_DB_SOURCE in self._registered_roles[role_key] else None
+        return self._registered_roles[role_key].get(ROLE_DB_SOURCE, None)
+
+    def add_actions_to_roles(self, action_keys, role_keys=None):
+        """
+        For add-ons that want to modify actions of already registered roles.
+
+        This first adds each action_key to allowed role actions, and then it
+        adds each action key to the menu Add-ons that is empty by default in
+        the template GUI Config.
+
+        After calling this method, it is necessary to call gui_builder.build_gui()
+        to refresh the GUI with these changes. Otherwise, the user won't see
+        changes until build_gui() is called from the Asistente LADM-COL.
+
+        :param action_keys: List of action keys.
+        :param role_keys: List of role keys. This param is optional. If it's not passed, we'll use all registered roles.
+        """
+        if not role_keys:
+            role_keys = list(self._registered_roles.keys())
+
+        for role_key in role_keys:
+            if role_key in self._registered_roles:
+                self.__add_actions_to_allowed_role_actions(action_keys, role_key)
+                self.__add_actions_to_role_add_on_menu(action_keys, role_key)
+                self.logger.debug(__name__, "{} actions added to role '{}'!".format(len(action_keys), role_key))
+
+    def __add_actions_to_allowed_role_actions(self, action_keys, role_key):
+        # Add action keys to the list of allowed actions for a given role
+        role_actions = self._registered_roles[role_key][ROLE_ACTIONS]
+        self._registered_roles[role_key][ROLE_ACTIONS] = list(set(role_actions + action_keys))
+        del role_actions
+
+    def __add_actions_to_role_add_on_menu(self, action_keys, role_key):
+        # Go for the Menu with object_name LADM_COL_ADD_ON_MENU and add the action keys
+        gui_config = self._registered_roles[role_key][ROLE_GUI_CONFIG]
+        for main_menu in gui_config.get(MAIN_MENU, dict()):  # Since MAIN_MENU is a list of menus
+            for action in main_menu.get(ACTIONS, list()):
+                if isinstance(action, dict):  # We know this is a menu
+                    if action.get(OBJECT_NAME, "") == LADM_COL_ADD_ON_MENU:  # This is the Add-ons menu
+                        action[ACTIONS] = list(set(action[ACTIONS] + action_keys))  # Add actions and avoid dup.
+                        break  # Go to other menus, because in this one we are done!

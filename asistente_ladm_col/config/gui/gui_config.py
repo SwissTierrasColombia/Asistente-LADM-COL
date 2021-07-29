@@ -11,10 +11,10 @@ class GUI_Config(QObject):
     Holds common GUI dict definitions. These are independent of roles.
 
     Each dict found here can be used as a GUI (both toolbar and menus) configuration. The GUI Builder takes such
-    configuration is taken as the basis to start showing or hiding actions depending on the active role, actions
-    supported  by the active DB engine,
+    configuration as the basis to start showing or hiding actions depending on the active role and on actions
+    supported by the active DB engine.
     """
-    DEFAULT_GUI_CONFIG_DICT = {
+    DEFAULT_GUI_CONFIG_DICT = {  # For DB connections that don't pass a test_connection
         MAIN_MENU: [{  # List of main menus
             WIDGET_TYPE: MENU,
             WIDGET_NAME: "LAD&M-COL",
@@ -55,6 +55,7 @@ class GUI_Config(QObject):
         }]
     }
 
+    # Roles can use the template to adjust their own GUI configuration.
     TEMPLATE_GUI_CONFIG_DICT = {
         MAIN_MENU: [{  # List of main menus
             WIDGET_TYPE: MENU,
@@ -213,6 +214,13 @@ class GUI_Config(QObject):
                     ICON: ST_ICON,
                     ACTIONS: [ACTION_ST_LOGIN,
                               ACTION_ST_LOGOUT]
+                },
+                SEPARATOR,
+                {
+                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Add-ons"),
+                    OBJECT_NAME: LADM_COL_ADD_ON_MENU,
+                    ICON: ADD_ON_ICON,
+                    ACTIONS: []  # This should be changed using RoleRegistry.add_actions_to_roles()
                 },
                 SEPARATOR,
                 ACTION_SETTINGS,
