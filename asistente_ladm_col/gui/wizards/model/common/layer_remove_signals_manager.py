@@ -25,6 +25,7 @@ class LayerRemovedSignalsManager:
 
     def __init__(self, layers: dict, layer_removed_behavior):
         self.__layers = layers
+        self.__connected_function_list = []
         self.__layer_removed_behavior = layer_removed_behavior
 
     # MapInteractionExpansion / SelectFeaturesOnMapWrapper
@@ -32,15 +33,21 @@ class LayerRemovedSignalsManager:
         for layer_name in self.__layers:
             if not self.__layers[layer_name]:
                 continue
-            self.__layers[layer_name].willBeDeleted.connect(partial(self.__layer_removed, layer_name))
+            connected_function = partial(self.__layer_removed, layer_name)
+            self.__connected_function_list.append(connected_function)
+            self.__layers[layer_name].willBeDeleted.connect(connected_function)
 
     def disconnect_signals(self):
-        for layer_name in self.__layers:
+        disconnected_functions = []
+
+        for layer_name in self.__connected_function_list:
             if not self.__layers[layer_name]:
                 continue
             # Layer was found, listen to its removal so that we can update the variable properly
             try:
-                self.__layers[layer_name].willBeDeleted.disconnect()
+                self.__layers[layer_name].willBeDeleted.disconnect(self.__connected_function_list)
+                disconnected_functions.append(layer_name)
+
             except RuntimeError as err:
                 if len(err.args) > 0 and err.args[0] == "wrapped C/C++ object of type QgsVectorLayer has been deleted":
                     self.__layers[layer_name] = None
@@ -52,6 +59,9 @@ class LayerRemovedSignalsManager:
                     pass
                 else:
                     raise err
+
+        for layer_name in disconnected_functions:
+            self.__connected_function_list.pop(layer_name)
 
     def reconnect_signals(self):
         self.disconnect_signals()
