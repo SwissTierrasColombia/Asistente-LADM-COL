@@ -193,7 +193,13 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#unidad-basica-administrativa">Unidad Básica Administrativa</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#crear-predio">Crear Predio</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#crear-predio">Crear Predio</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#paso-1-crear-predio">Paso 1: Crear predio</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#paso-2-seleccion-metodo-de-creacion-del-predio">Paso 2: Selección método de creación del Predio</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#paso-3-seleccion-de-terrenos">Paso 3: Selección de terrenos</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#paso-4-diligenciamiento-de-formulario">Paso 4: Diligenciamiento de formulario</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#interesados">Interesados</a><ul>
@@ -765,8 +771,62 @@
 </div>
 <div class="section" id="unidad-basica-administrativa">
 <h2>Unidad Básica Administrativa<a class="headerlink" href="#unidad-basica-administrativa" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Para continuar con el desarrollo del tutorial, es necesario tener en cuenta los datos de prueba registrados a continuación:</p>
+<p><a class="" data-lightbox="Información - Unidad Básica Administrativa" href="../_static/tutorial/captura_y_estructura_de_datos/cap6UBA1.png" title="Información - Unidad Básica Administrativa" data-title="Información - Unidad Básica Administrativa"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap6UBA1.png" class="align-center" width="800px" alt="Información - Unidad Básica Administrativa"/></a></p>
+<table class="colwidths-auto docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Predio 1</p></th>
+<th class="head"><p>Predio 2</p></th>
+<th class="head"><p>Predio 3</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Condición: No Propiedad Horizontal</p></td>
+<td><p>Condición: No Propiedad Horizontal</p></td>
+<td><p>Condición: No Propiedad Horizontal</p></td>
+</tr>
+<tr class="row-odd"><td><p>Número predial: <br /> 251750000000000000000500000001</p></td>
+<td><p>Número predial: <br /> 251750000000000000000500000002</p></td>
+<td><p>Número predial: <br /> 251750000000000000000500000003</p></td>
+</tr>
+<tr class="row-even"><td><p>Tipo: Privado</p></td>
+<td><p>Tipo: Privado</p></td>
+<td><p>Tipo: Público</p></td>
+</tr>
+<tr class="row-odd"><td><p>Dirección: AV 3 22 d 15</p></td>
+<td><p>Dirección: AV 3 22 d 1</p></td>
+<td><p>Dirección: AV 3 22 d 97</p></td>
+</tr>
+</tbody>
+</table>
 <div class="section" id="crear-predio">
 <h3>Crear Predio<a class="headerlink" href="#crear-predio" title="Enlazar permanentemente con este título">¶</a></h3>
+<div class="section" id="paso-1-crear-predio">
+<h4>Paso 1: Crear predio<a class="headerlink" href="#paso-1-crear-predio" title="Enlazar permanentemente con este título">¶</a></h4>
+<p>En el botón <code class="docutils literal notranslate"><span class="pre">Crear</span> <span class="pre">objetos</span> <span class="pre">de</span> <span class="pre">Levantamiento</span></code> de la barra de herramientas del Asistente LADM-COL (para los <a class="reference external" href="../configuracion.html#funcionalidades-por-rol">roles básico, operador y avanzado</a>), selecciona la opción <strong>Crear Predio</strong>.</p>
+<p><a class="" data-lightbox="Paso 1: Crear predio" href="../_static/tutorial/captura_y_estructura_de_datos/cap6UBA2.gif" title="Paso 1: Crear predio" data-title="Paso 1: Crear predio"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap6UBA2.gif" class="align-center" width="800px" alt="Paso 1: Crear predio"/></a></p>
+</div>
+<div class="section" id="paso-2-seleccion-metodo-de-creacion-del-predio">
+<h4>Paso 2: Selección método de creación del Predio<a class="headerlink" href="#paso-2-seleccion-metodo-de-creacion-del-predio" title="Enlazar permanentemente con este título">¶</a></h4>
+<p>Se desplegará un cuadro de diálogo con dos opciones para crear predios: <em>Ingresando datos manualmente en un formulario</em> o <em>Desde otra capa de QGIS</em>. Para este caso, selecciona la primera opción y presiona el botón <code class="docutils literal notranslate"><span class="pre">Siguiente</span></code>. Esta acción despliega una interfaz en la cual se debe elegir el tipo de predio a crear, para eso se recomienda tener en cuenta lo descrito en la <a class="reference external" href="#unidad-basica-administrativa">imagen</a> anterior. El predio a crear es un NPH (No Propiedad Horizontal).</p>
+<p>Como se puede observar en la siguiente animación, por tratarse de un predio NPH, se solicita información del terreno asociado. Para seleccionar el terreno asociado, debes dar clic al botón <em>Seleccionar objetos por Área</em>, correspondiente a Terrenos. <img alt="Botón Selección" src="../_images/ICOSeleccion.png" /></p>
+<p><a class="" data-lightbox="Paso 2: Selección metodo de creación del Predio" href="../_static/tutorial/captura_y_estructura_de_datos/cap6UBA3.gif" title="Paso 2: Selección metodo de creación del Predio" data-title="Paso 2: Selección metodo de creación del Predio"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap6UBA3.gif" class="align-center" width="800px" alt="Paso 2: Selección metodo de creación del Predio"/></a></p>
+</div>
+<div class="section" id="paso-3-seleccion-de-terrenos">
+<h4>Paso 3: Selección de terrenos<a class="headerlink" href="#paso-3-seleccion-de-terrenos" title="Enlazar permanentemente con este título">¶</a></h4>
+<p>Se cerrará el cuadro de diálogo actual y el puntero cambiará a una cruz, lo cual indica que ya está listo para seleccionar el terreno sobre el mapa. Debes dar clic sobre el terreno que relacionarás con el predio a crear. Finalmente, debes dar clic derecho para terminar la selección y volver al diálogo de creación del predio.</p>
+<p><a class="" data-lightbox="Paso 3: Selección de terrenos" href="../_static/tutorial/captura_y_estructura_de_datos/cap6UBA4.gif" title="Paso 3: Selección de terrenos" data-title="Paso 3: Selección de terrenos"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap6UBA4.gif" class="align-center" width="800px" alt="Paso 3: Selección de terrenos"/></a></p>
+</div>
+<div class="section" id="paso-4-diligenciamiento-de-formulario">
+<h4>Paso 4: Diligenciamiento de formulario<a class="headerlink" href="#paso-4-diligenciamiento-de-formulario" title="Enlazar permanentemente con este título">¶</a></h4>
+<p>Reaparecerá un cuadro de diálogo, en donde debes dar clic al botón <code class="docutils literal notranslate"><span class="pre">Crear</span></code>. Esta acción despliega un formulario que debe ser diligenciado con la información correspondiente al predio, de acuerdo a los datos de referencia proporcionados en la <a class="reference external" href="#unidad-basica-administrativa">imagen</a> que se encuentra al inicio de esta sección.</p>
+<p><a class="" data-lightbox="Paso 4: Diligenciamiento de formulario" href="../_static/tutorial/captura_y_estructura_de_datos/cap6UBA5.gif" title="Paso 4: Diligenciamiento de formulario" data-title="Paso 4: Diligenciamiento de formulario"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap6UBA5.gif" class="align-center" width="800px" alt="Paso 4: Diligenciamiento de formulario"/></a></p>
+<div class="note">
+<p class="admonition-title">IMPORTANTE</p>
+<p>Realiza la misma operación para los 3 terrenos resaltados en color <b>rojo</b> en la siguiente imagen. Esto es importante para continuar con el tutorial.</p>
+</div>
+<p><a class="" data-lightbox="Importante - diligenciamiento de formulario" href="../_static/tutorial/captura_y_estructura_de_datos/cap6UBA6.png" title="Importante - diligenciamiento de formulario" data-title="Importante - diligenciamiento de formulario"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap6UBA6.png" class="align-center" width="400px" alt="Importante - diligenciamiento de formulario"/></a></p>
+</div>
 </div>
 </div>
 <div class="section" id="interesados">
