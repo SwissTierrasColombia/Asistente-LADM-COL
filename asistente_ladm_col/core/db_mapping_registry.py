@@ -155,7 +155,7 @@ class DBMappingRegistry:
 
         names_not_found = list()
         for required_name in required_names:
-            if getattr(self, required_name) is None:
+            if getattr(self, required_name, None) is None:
                 names_not_found.append(required_name)
 
         self.logger.debug(__name__, "Variable names not properly set: {}".format(names_not_found))
