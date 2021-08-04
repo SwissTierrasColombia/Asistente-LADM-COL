@@ -51,9 +51,6 @@ class LADMColModelRegistry(metaclass=Singleton):
     def supported_models(self):
         return [model for model in self.__models.values() if model.is_supported()]
 
-    def hidden_models(self):
-        return [model.full_name() for model in self.__models.values() if model.hidden()]
-
     def model(self, model_key):
         return self.__models.get(model_key, LADMColModel("foo", dict()))  # To avoid exceptions
 
@@ -66,6 +63,9 @@ class LADMColModelRegistry(metaclass=Singleton):
 
     def model_ids(self):
         return list(self.__models.keys())
+
+    def hidden_models(self):
+        return [model for model in self.__models.values() if model.hidden()]
 
     def refresh_models_for_role(self):
         role_key = RoleRegistry().get_active_role()

@@ -26,6 +26,11 @@ from asistente_ladm_col.utils.utils import is_version_valid
 
 
 class ModelParser(QObject):
+    """
+    Assembles both Role supported models (known as registered models) and
+    models found in the DB to answer questions about the existence of a
+    registered model in the DB.
+    """
     def __init__(self, db):
         QObject.__init__(self)
         self.logger = Logger()
@@ -38,7 +43,7 @@ class ModelParser(QObject):
 
         # Fill versions for each model found
         for current_model_name in self._get_models():
-            for model_key,v in self.current_model_version.items():
+            for model_key, v in self.current_model_version.items():
                 if current_model_name.startswith(model_key):
                     parts = current_model_name.split(model_key)
                     if len(parts) > 1:
@@ -81,7 +86,21 @@ class ModelParser(QObject):
         return self.model_version_is_supported[model_prefix] if model_prefix in self.model_version_is_supported else False
 
     def at_least_one_ladm_col_model_exists(self):
-        return True in self.model_version_is_supported.values()
+        """
+        Check that all hidden models are supported (hidden models are supposed to be the building blocks of extended
+        ones) and that there is at least one non-hidden model that is supported.
+        """
+        hidden_model_ids = [model.id() for model in LADMColModelRegistry().hidden_models()]
+        hidden_models_supported = list()
+        non_hidden_models_supported = list()
+
+        for model_id, supported in self.model_version_is_supported.items():
+            if model_id in hidden_model_ids:
+                hidden_models_supported.append(supported)
+            else:
+                non_hidden_models_supported.append(supported)
+
+        return not (False in hidden_models_supported) and any(non_hidden_models_supported)
 
     def _get_models(self):
         return self._db.get_models()
