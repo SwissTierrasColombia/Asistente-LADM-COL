@@ -397,8 +397,10 @@ class DBConnector(QObject):
             if not res:
                 code = EnumTestConnectionMsg.NO_LADM_MODELS_FOUND_IN_SUPPORTED_VERSION
                 msg = QCoreApplication.translate("DBConnector",
-                            "At least one LADM-COL model should exist in the required version! Supported models are: '{}', but you have '{}'").format(
-                                ', '.join([m.full_alias() for m in self.__ladmcol_models.supported_models()]), ', '.join(self.get_models()))
+                                                 "At least one LADM-COL model should exist in the required version (besides the basic ones: '{}')! Supported models are: '{}', but your DB has '{}'").format(
+                    ', '.join([m.full_name() for m in self.__ladmcol_models.hidden_models()]),
+                    ', '.join([m.full_name() for m in self.__ladmcol_models.supported_models()]),
+                    ', '.join(self.get_models()))
 
         return res, code, msg
 
