@@ -401,7 +401,7 @@ class PolygonQualityRules:
         # the contains function, so we make sure to have those building nodes on the plots to guarantee the contains
         # works as expected. Of course, we don't touch the original plots layer, so we make a copy first.
         topological_plots = self.app.core.get_layer_copy(layers[names.LC_PLOT_T])
-        self.geometry.add_topological_vertices(topological_plots, layers[names.LC_BUILDING_T])
+        topological_plots = self.geometry.add_topological_vertices(topological_plots, layers[names.LC_BUILDING_T])
 
         # Now that we have a copy of the plot layer, we register it in the project, so that Processing can find it
         self.app.core.register_layers_to_project([topological_plots])
@@ -623,7 +623,7 @@ class PolygonQualityRules:
         # the contains function, so we make sure to have those b. unit nodes on the plots to guarantee the contains
         # works as expected. Of course, we don't touch the original plots layer, so we make a copy first.
         topological_plots = self.app.core.get_layer_copy(layers[names.LC_PLOT_T])
-        self.geometry.add_topological_vertices(topological_plots, layers[names.LC_BUILDING_UNIT_T])
+        topological_plots = self.geometry.add_topological_vertices(topological_plots, layers[names.LC_BUILDING_UNIT_T])
 
         # Now that we have a copy of the plot layer, we register it in the project, so that Processing can find it
         self.app.core.register_layers_to_project([topological_plots])
@@ -748,7 +748,7 @@ class PolygonQualityRules:
         # break the contains function, so we make sure to have those b. unit nodes on the buildings to guarantee the
         # contains works as expected. Of course, we don't touch the original building layer, so we make a copy first.
         topological_buildings = self.app.core.get_layer_copy(layers[names.LC_BUILDING_T])
-        self.geometry.add_topological_vertices(topological_buildings, layers[names.LC_BUILDING_UNIT_T])
+        topological_buildings = self.geometry.add_topological_vertices(topological_buildings, layers[names.LC_BUILDING_UNIT_T])
 
         # Now that we have a copy of the building layer, we register it in the project, so that Processing can find it
         self.app.core.register_layers_to_project([topological_buildings])

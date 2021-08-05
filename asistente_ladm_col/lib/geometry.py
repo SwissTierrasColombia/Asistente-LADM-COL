@@ -444,7 +444,10 @@ class GeometryUtils(QObject):
 
     def add_topological_vertices(self, layer1, layer2):
         """
-        Modify layer1 adding vertices that are in layer2 and not in layer1
+        Modify layer1 adding vertices that are in layer2 and not in layer1.
+        After that, fix the geometries of layer1 since the prior process
+        might produce invalid geometries.
+        Note: Layer 1 is modifiec, but this method returns a new (fixed) layer.
 
         Ideally, we could pass the whole layer2 as parameter for
         addTopologicalPoints or, at least, pass one multi-geometry containing
@@ -485,6 +488,10 @@ class GeometryUtils(QObject):
         del dict_features_layer2
         gc.collect()
 
+        return processing.run("native:fixgeometries",
+                              {'INPUT': layer1,
+                               'OUTPUT': 'memory:'})['OUTPUT']
+
     def difference_plot_boundary(self, names, plots_as_lines_layer, boundary_layer, id_field):
         """
         Advanced difference function that, unlike the traditional function,
@@ -494,12 +501,7 @@ class GeometryUtils(QObject):
                                            {'INPUT': plots_as_lines_layer,
                                             'OVERLAY': boundary_layer,
                                             'OUTPUT': 'memory:'})['OUTPUT']
-        self.add_topological_vertices(approx_diff_layer, boundary_layer)
-
-        # add_topological_vertices may produce invalid geometries, so we better play safe and fix them
-        fixed_geometries = processing.run("native:fixgeometries",
-                                          {'INPUT': approx_diff_layer,
-                                           'OUTPUT': 'memory:'})['OUTPUT']
+        fixed_geometries = self.add_topological_vertices(approx_diff_layer, boundary_layer)
 
         diff_layer = processing.run("native:difference",
                                     {'INPUT': fixed_geometries,
@@ -519,12 +521,7 @@ class GeometryUtils(QObject):
                                            {'INPUT': boundary_layer,
                                             'OVERLAY': plot_as_lines_layer,
                                             'OUTPUT': 'memory:'})['OUTPUT']
-        self.add_topological_vertices(plot_as_lines_layer, approx_diff_layer)
-
-        # add_topological_vertices may produce invalid geometries, so we better play safe and fix them
-        fixed_geometries = processing.run("native:fixgeometries",
-                                          {'INPUT': plot_as_lines_layer,
-                                           'OUTPUT': 'memory:'})['OUTPUT']
+        fixed_geometries = self.add_topological_vertices(plot_as_lines_layer, approx_diff_layer)
 
         diff_layer = processing.run("native:difference",
                                     {'INPUT': approx_diff_layer,
