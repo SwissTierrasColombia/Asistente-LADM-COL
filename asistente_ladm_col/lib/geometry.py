@@ -1109,3 +1109,23 @@ class GeometryUtils(QObject):
     def create_spatial_index(layer):
         if layer.hasSpatialIndex() != QgsFeatureSource.SpatialIndexPresent:
             processing.run("native:createspatialindex", {'INPUT': layer})
+
+    @staticmethod
+    def z_coordinate_is_nan(layer):
+        """
+        Check if layer has any z-coordinate with nan value
+        :param layer: QgsVectorLayer
+        :return: True if any z-coordinate with nan value, False in other case
+        """
+
+        if layer.isSpatial():
+            nodes_layer = layer
+
+            # When the layer is not of type point or is multigeometry
+            # the vertices are extracted because the function z($geometry) only works for geometry of type point.
+            if layer.geometryType() != QgsWkbTypes.PointGeometry or QgsWkbTypes.isMultiType(layer.wkbType()):
+                nodes_layer = processing.run("native:extractvertices", {'INPUT': layer, 'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
+            validation = QgsVectorLayerUtils().getValues(nodes_layer, "z($geometry) = 'nan'")[0]
+            return any(validation)
+        else:
+            return False

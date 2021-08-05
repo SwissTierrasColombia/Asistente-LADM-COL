@@ -37,6 +37,7 @@ from asistente_ladm_col.config.general_config import (URL_REPORTS_LIBRARIES,
                                                       DEPENDENCY_REPORTS_DIR_NAME)
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.lib.geometry import GeometryUtils
 from asistente_ladm_col.utils.qt_utils import (normalize_local_url,
                                                OverrideCursor)
 from asistente_ladm_col.lib.dependency.report_dependency import ReportDependency
@@ -67,6 +68,7 @@ class BaseReportGenerator(QObject):
 
         self._downloading = False
         self.__plot_layer = None
+        self.spatial_layers_to_validate = {}
 
     def stderr_ready(self, proc):
         text = bytes(proc.readAllStandardError()).decode(self.encoding)
@@ -186,6 +188,9 @@ class BaseReportGenerator(QObject):
         if not self.check_java_dependency():
             return False
 
+        if not self.spatial_layers_are_valid():
+            return False
+
         if not self.__plot_layer:
             # We should call get_layer only once in the report generator lifetime
             self.__plot_layer = self.app.core.get_layer(self.db, self.db.names.LC_PLOT_T, load=True)
@@ -197,6 +202,23 @@ class BaseReportGenerator(QObject):
                                                                          "To generate reports, first select at least one plot!"))
             return False
 
+        return True
+
+    def spatial_layers_are_valid(self):
+        # It is validated that there are no geometries where its Z coordinate is null.
+        self.app.core.get_layers(self.db, self.spatial_layers_to_validate, load=False)
+
+        invalid_layers = list()
+        for layer_name in self.spatial_layers_to_validate:
+            if GeometryUtils.z_coordinate_is_nan(self.spatial_layers_to_validate[layer_name]):
+                invalid_layers.append(self.spatial_layers_to_validate[layer_name].name())
+
+        if invalid_layers:
+            self.logger.warning_msg(__name__,
+                                    QCoreApplication.translate("ReportGenerator",
+                                                               "The following layers have geometries without z value: {}. Please adjust in order to generate the report!".format(
+                                                                   ', '.join(invalid_layers))))
+            return False
         return True
 
     def generate_report(self, output_folder):
