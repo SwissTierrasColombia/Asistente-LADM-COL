@@ -771,7 +771,7 @@ class TesQualityValidations(unittest.TestCase):
             geom_polygon = clone_polygons.getFeature(1).geometry()
             init_vertex_geom = [vertex for vertex in geom_polygon.vertices()]
 
-            self.geometry.add_topological_vertices(clone_polygons, lines_layer)
+            clone_polygons = self.geometry.add_topological_vertices(clone_polygons, lines_layer)
 
             geom_polygon = clone_polygons.getFeature(1).geometry()
             adjusted_vertex_geom = [vertex for vertex in geom_polygon.vertices()]
