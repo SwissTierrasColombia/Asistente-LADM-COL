@@ -123,7 +123,7 @@ class GPKGLADMQuery(QGISLADMQuery):
                                FROM {lc_parcel_t} p left join {col_ue_baunit_t} ue on p.{t_id} = ue.{col_ue_baunit_t_parcel_f}) AS p_ue
                                GROUP BY {t_id}, {t_ili_tid}, {lc_parcel_t_parcel_type_f}) AS report
                    WHERE ({lc_parcel_t_parcel_type_f} = (select {t_id} from {lc_condition_parcel_type_d} where {ilicode} = '{parcel_type_no_horizontal_property}')
-                         AND (sum_t !=1 OR sum_uc != 0))
+                         AND sum_t != 1)
                          OR ({lc_parcel_t_parcel_type_f} in (select {t_id} from {lc_condition_parcel_type_d} where {ilicode} in ('{parcel_type_horizontal_property_parent}', '{parcel_type_condominium_parent}', '{parcel_type_cemetery_parent}', '{parcel_type_public_use}', '{parcel_type_condominium_parcel_unit}'))
                          AND (sum_t!=1 OR sum_uc > 0))
                          OR ({lc_parcel_t_parcel_type_f} in (select {t_id} from {lc_condition_parcel_type_d} where {ilicode} in ('{parcel_type_road}', '{parcel_type_cemetery_parcel_unit}'))
