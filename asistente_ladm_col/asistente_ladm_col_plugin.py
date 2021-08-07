@@ -39,14 +39,12 @@ from processing.modeler.ModelerUtils import ModelerUtils
 from processing.script import ScriptUtils
 
 from asistente_ladm_col.config.gui.db_engine_gui_config import DBEngineGUIConfig
-from asistente_ladm_col.config.ladm_names import MODEL_CONFIG
-from asistente_ladm_col.config.role_config import get_role_config
 from asistente_ladm_col.gui.field_data_capture.dockwidget_field_data_capture_admin_coordinator import DockWidgetFieldDataCaptureAdminCoordinator
 from asistente_ladm_col.gui.field_data_capture.dockwidget_field_data_capture_coordinator_surveyor import DockWidgetFieldDataCaptureCoordinatorSurveyor
 from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
 from asistente_ladm_col.gui.queries.ladm_query_controller import LADMQueryController
-from asistente_ladm_col.lib.ladm_col_models import (LADMColModelRegistry,
-                                                    LADMColModel)
+from asistente_ladm_col.lib.model_registry import (LADMColModelRegistry,
+                                                   LADMColModel)
 from asistente_ladm_col.lib.dependency.plugin_dependency import PluginDependency
 from asistente_ladm_col.config.enums import (EnumDbActionType,
                                              EnumWizardType,
@@ -164,16 +162,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self.iface = iface
         self.__with_gui = with_gui
 
-        # Register LADM-COL models
-        self.model_registry = LADMColModelRegistry()
-        for model_key, model_config in MODEL_CONFIG.items():
-            self.model_registry.register_model(LADMColModel(model_key, model_config))
-
-        # Register roles
-        self.role_registry = RoleRegistry()
-        for role_key, role_config in get_role_config().items():
-            if ROLE_ENABLED in role_config and role_config[ROLE_ENABLED]:
-                self.role_registry.register_role(role_key, role_config)
+        self.model_registry = LADMColModelRegistry()  # Automatically registers default LADM-COL models
+        self.role_registry = RoleRegistry()  # Automatically registers default roles
 
         # Create member objects
         self.main_window = self.iface.mainWindow()

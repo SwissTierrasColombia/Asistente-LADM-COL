@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 """
 /***************************************************************************
-                              Asistente LADM_COL
+                              Asistente LADM-COL
                              --------------------
         begin                : 2020-07-27
         git sha              : :%H$
@@ -17,11 +16,11 @@
  ***************************************************************************/
 """
 import datetime
-from asistente_ladm_col.config.db_mapping_config import DB_MAPPING_CONFIG
 from asistente_ladm_col.config.keys.ili2db_keys import *
 from asistente_ladm_col.config.query_names import QueryNames
 from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
 from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
 
 
 class DBMappingRegistry:
@@ -68,9 +67,12 @@ class DBMappingRegistry:
         self.TABLE_DICT.update(mapping.copy())
 
     def refresh_mapping_for_role(self):
+        # TODO: Check if we can do the same only by using Model Registry,
+        #       since supported models should be already role supported models!
+        model_registry = LADMColModelRegistry()
         for model_key in RoleRegistry().get_active_role_supported_models():
-            if model_key in DB_MAPPING_CONFIG:
-                self.register_db_mapping(DB_MAPPING_CONFIG[model_key])
+            if model_key in model_registry.supported_model_keys():
+                self.register_db_mapping(model_registry.get_model_mapping(model_key))
 
     def initialize_table_and_field_names(self, db_mapping):
         """

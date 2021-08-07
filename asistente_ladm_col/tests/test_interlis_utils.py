@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import nose2
-from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
+from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
 
 from qgis.testing import (start_app,
                           unittest)

@@ -47,7 +47,7 @@ from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.config.query_names import QueryNames
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.lib.db.db_connector import DBConnector
-from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
+from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
 from asistente_ladm_col.lib.logger import Logger
 
 

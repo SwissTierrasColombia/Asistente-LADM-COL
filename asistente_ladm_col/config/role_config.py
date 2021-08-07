@@ -7,7 +7,7 @@ from asistente_ladm_col.config.general_config import (FDC_DATASET_NAME,
 from asistente_ladm_col.config.gui.common_keys import *
 from asistente_ladm_col.config.gui.gui_config import GUI_Config
 from asistente_ladm_col.config.keys.ili2db_keys import *
-from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
+
 
 basic_role_gui = GUI_Config().get_gui_dict(TEMPLATE_GUI)
 basic_role_gui[TOOLBAR] = [{  # Overwrite list of toolbars
@@ -240,6 +240,8 @@ def get_field_admin_role_models():
     Function to delay configuration for admin role models, since it
     needs to overwrite ili2db params from the main model config
     """
+    from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
+
     field_admin_role_models = COMMON_ROLE_MODELS.copy()
     field_admin_role_models[ROLE_SUPPORTED_MODELS] = COMMON_SUPPORTED_MODELS + [LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY]
     field_admin_role_models[ROLE_CHECKED_MODELS] = [LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY]

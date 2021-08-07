@@ -3,7 +3,7 @@ import os
 import tempfile
 
 from asistente_ladm_col.config.ili2db_names import ILI2DBNames
-from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
+from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
 from xml.dom.minidom import parse
 
 from qgis.testing import unittest, start_app
