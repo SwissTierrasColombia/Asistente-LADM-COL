@@ -20,7 +20,7 @@ import psycopg2
 from PyQt5.QtCore import QCoreApplication
 
 from asistente_ladm_col.config.keys.ili2db_keys import ILI2DB_SCHEMAIMPORT, ILI2DB_CREATE_BASKET_COL_KEY
-from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
+from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
 
 from qgis.PyQt.QtCore import QObject
 
@@ -398,7 +398,7 @@ class DBConnector(QObject):
                 code = EnumTestConnectionMsg.NO_LADM_MODELS_FOUND_IN_SUPPORTED_VERSION
                 msg = QCoreApplication.translate("DBConnector",
                                                  "At least one LADM-COL model should exist in the required version (besides the basic ones: '{}')! Supported models are: '{}', but your DB has '{}'").format(
-                    ', '.join([m.full_name() for m in self.__ladmcol_models.hidden_models()]),
+                    ', '.join([m.full_name() for m in self.__ladmcol_models.hidden_and_supported_models()]),
                     ', '.join([m.full_name() for m in self.__ladmcol_models.supported_models()]),
                     ', '.join(self.get_models()))
 

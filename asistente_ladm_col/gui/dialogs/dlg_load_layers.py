@@ -29,7 +29,7 @@ from qgis.PyQt.QtWidgets import (QDialog,
                                  QComboBox)
 from qgis.core import QgsWkbTypes
 
-from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
+from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
 from asistente_ladm_col.config.enums import EnumLayerRegistryType
 from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.config.query_names import QueryNames

@@ -37,7 +37,7 @@ from asistente_ladm_col.config.general_config import (JAVA_REQUIRED_VERSION,
                                                       DEFAULT_USE_CUSTOM_MODELS,
                                                       DEFAULT_MODELS_DIR)
 from asistente_ladm_col.lib.dependency.java_dependency import JavaDependency
-from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
+from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qt_utils import OverrideCursor
 

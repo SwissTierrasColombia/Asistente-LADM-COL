@@ -21,6 +21,7 @@ from qgis.PyQt.QtCore import (QObject,
 
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.gui.common_keys import *
+from asistente_ladm_col.config.role_config import get_role_config
 from asistente_ladm_col.utils.singleton import SingletonQObject
 from asistente_ladm_col.lib.logger import Logger
 
@@ -50,6 +51,11 @@ class RoleRegistry(QObject, metaclass=SingletonQObject):
         self.app = AppInterface()
         self._registered_roles = dict()
         self._default_role = BASIC_ROLE
+
+        # Register default roles
+        for role_key, role_config in get_role_config().items():
+            if ROLE_ENABLED in role_config and role_config[ROLE_ENABLED]:
+                self.register_role(role_key, role_config)
 
     def register_role(self, role_key, role_dict):
         """

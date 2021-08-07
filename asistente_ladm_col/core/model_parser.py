@@ -21,7 +21,7 @@ from qgis.PyQt.QtCore import (QObject,
 
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
+from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
 from asistente_ladm_col.utils.utils import is_version_valid
 
 
@@ -36,8 +36,8 @@ class ModelParser(QObject):
         self.logger = Logger()
 
         ladmcol_models = LADMColModelRegistry()
-        self.current_model_version = {model_id: None for model_id in ladmcol_models.model_ids()}
-        self.model_version_is_supported = {model_id: False for model_id in ladmcol_models.model_ids()}
+        self.current_model_version = {model_id: None for model_id in ladmcol_models.model_keys()}
+        self.model_version_is_supported = {model_id: False for model_id in ladmcol_models.model_keys()}
 
         self._db = db
 
@@ -87,18 +87,21 @@ class ModelParser(QObject):
 
     def at_least_one_ladm_col_model_exists(self):
         """
-        Check that all hidden models are supported (hidden models are supposed to be the building blocks of extended
-        ones) and that there is at least one non-hidden model that is supported.
+        Check that all hidden_and_supported models (hidden models are supposed to be the building blocks
+        of extended ones) are also supported in the DB and that there is at least one non-hidden_and_supported
+        model that is supported in the DB.
         """
-        hidden_model_ids = [model.id() for model in LADMColModelRegistry().hidden_models()]
+        hidden_model_ids = [model.id() for model in LADMColModelRegistry().hidden_and_supported_models()]
+        non_hidden_model_ids = [model.id() for model in LADMColModelRegistry().non_hidden_and_supported_models()]
+
         hidden_models_supported = list()
         non_hidden_models_supported = list()
 
-        for model_id, supported in self.model_version_is_supported.items():
+        for model_id, is_supported in self.model_version_is_supported.items():
             if model_id in hidden_model_ids:
-                hidden_models_supported.append(supported)
-            else:
-                non_hidden_models_supported.append(supported)
+                hidden_models_supported.append(is_supported)
+            elif model_id in non_hidden_model_ids:
+                non_hidden_models_supported.append(is_supported)
 
         return not (False in hidden_models_supported) and any(non_hidden_models_supported)
 

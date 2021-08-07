@@ -1,5 +1,5 @@
 import qgis
-from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
+from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
 
 from asistente_ladm_col.config.query_names import QueryNames
 from asistente_ladm_col.config.ladm_names import LADMNames

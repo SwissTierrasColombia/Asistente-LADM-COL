@@ -14,7 +14,7 @@ from qgis.utils import (isPluginLoaded,
 
 from asistente_ladm_col.lib.context import (SettingsContext,
                                             TaskContext)
-from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
+from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qt_utils import OverrideCursor
 from asistente_ladm_col.utils.utils import Utils

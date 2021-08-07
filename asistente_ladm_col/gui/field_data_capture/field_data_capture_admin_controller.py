@@ -21,7 +21,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.gui.field_data_capture.base_field_data_capture_controller import BaseFieldDataCaptureController
 from asistente_ladm_col.gui.field_data_capture.basket_exporter import BasketExporter
-from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
+from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
 from asistente_ladm_col.utils.qt_utils import normalize_local_url
 
 
