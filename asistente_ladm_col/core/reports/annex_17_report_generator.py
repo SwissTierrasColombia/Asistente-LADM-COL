@@ -28,12 +28,6 @@ class Annex17ReportGenerator(BaseReportGenerator):
     def __init__(self, db, ladm_data):
         super(Annex17ReportGenerator, self).__init__(db, ladm_data)
         self.report_name = ANNEX_17_REPORT
-        self.spatial_layers_to_validate = {
-            db.names.LC_PLOT_T: None,
-            db.names.LC_BUILDING_T: None,
-            db.names.LC_BOUNDARY_T: None,
-            db.names.LC_BOUNDARY_POINT_T: None
-        }
 
     def get_geojson_layer(self, layer_name, plot_id):
         if layer_name in ('terreno', 'terreno_overview', 'terrenos', 'terrenos_overview'):
@@ -53,3 +47,10 @@ class Annex17ReportGenerator(BaseReportGenerator):
             # We have validated
             self.generate_report(dlg.output_folder)
 
+    def _spatial_layers_to_validate(self):
+        return {
+            self.db.names.LC_PLOT_T: None,
+            self.db.names.LC_BUILDING_T: None,
+            self.db.names.LC_BOUNDARY_T: None,
+            self.db.names.LC_BOUNDARY_POINT_T: None
+        }

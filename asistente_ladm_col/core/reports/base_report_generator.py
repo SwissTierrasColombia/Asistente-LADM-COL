@@ -61,6 +61,8 @@ class BaseReportGenerator(QObject):
         self.report_dependency.download_dependency_completed.connect(self.download_report_complete)
         self.report_name = None
 
+        self._spatial_layers_are_valid = None  # To cache spatial validations
+
         self.encoding = locale.getlocale()[1]
         # This might be unset
         if not self.encoding:
@@ -68,7 +70,6 @@ class BaseReportGenerator(QObject):
 
         self._downloading = False
         self.__plot_layer = None
-        self.spatial_layers_to_validate = {}
 
     def stderr_ready(self, proc):
         text = bytes(proc.readAllStandardError()).decode(self.encoding)
@@ -188,11 +189,11 @@ class BaseReportGenerator(QObject):
         if not self.check_java_dependency():
             return False
 
-        if not self.spatial_layers_are_valid():
+        if not self._validate_spatial_layers():
             return False
 
         if not self.__plot_layer:
-            # We should call get_layer only once in the report generator lifetime
+            # We should call get_layer only once in the report generator lifetime (except by spatial validations...)
             self.__plot_layer = self.app.core.get_layer(self.db, self.db.names.LC_PLOT_T, load=True)
             if not self.__plot_layer:
                 return False
@@ -204,22 +205,44 @@ class BaseReportGenerator(QObject):
 
         return True
 
-    def spatial_layers_are_valid(self):
-        # It is validated that there are no geometries where its Z coordinate is null.
-        self.app.core.get_layers(self.db, self.spatial_layers_to_validate, load=False)
+    def _spatial_layers_to_validate(self):
+        return dict()
+
+    def reset_spatial_validation_cache(self):
+        """
+        Use it if you want to force spatial validations again.
+
+        Spatial validations are called by demand (validate_dependencies())
+        or each time you call the run() method. So we avoid such check if
+        we did it once already. By using this method you let the generator
+        check spatial validations once more (e.g., if edits were made on
+        your layers).
+        """
+        self._spatial_layers_are_valid = None
+
+    def _validate_spatial_layers(self):
+        if self._spatial_layers_are_valid is not None:
+            return self._spatial_layers_are_valid
+
+        # Validate that there are no vertices with 'nan' Z coordinates
+        spatial_layers_to_validate = self._spatial_layers_to_validate()
+        self.app.core.get_layers(self.db, spatial_layers_to_validate, load=False)
 
         invalid_layers = list()
-        for layer_name in self.spatial_layers_to_validate:
-            if GeometryUtils.z_coordinate_is_nan(self.spatial_layers_to_validate[layer_name]):
-                invalid_layers.append(self.spatial_layers_to_validate[layer_name].name())
+        for layer_name in spatial_layers_to_validate:
+            if GeometryUtils.any_nan_z_coordinate(spatial_layers_to_validate[layer_name]):
+                invalid_layers.append(spatial_layers_to_validate[layer_name].name())
 
         if invalid_layers:
             self.logger.warning_msg(__name__,
                                     QCoreApplication.translate("ReportGenerator",
-                                                               "The following layers have geometries without z value: {}. Please adjust in order to generate the report!".format(
+                                                               "The following layers have geometries without Z value (Z='nan'): {}. Set a valid Z value before generating the report!".format(
                                                                    ', '.join(invalid_layers))))
-            return False
-        return True
+            self._spatial_layers_are_valid = False
+        else:
+            self._spatial_layers_are_valid = True
+
+        return self._spatial_layers_are_valid
 
     def generate_report(self, output_folder):
         if not self.validate_dependencies():

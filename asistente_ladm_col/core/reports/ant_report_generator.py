@@ -34,15 +34,6 @@ class ANTReportGenerator(BaseReportGenerator):
     def __init__(self, db, ladm_data):
         super(ANTReportGenerator, self).__init__(db, ladm_data)
         self.report_name = ANT_MAP_REPORT
-        self.spatial_layers_to_validate = {
-            db.names.LC_PLOT_T: None,
-            db.names.LC_BUILDING_T: None,
-            db.names.LC_BOUNDARY_T: None,
-            db.names.LC_BOUNDARY_POINT_T: None,
-            db.names.CC_ROAD_NOMENCLATURE_T: None,
-            db.names.CC_URBAN_PERIMETER_T: None,
-            db.names.CC_MUNICIPALITY_BOUNDARY_T: None
-        }
 
         self.__result_dict = dict()  # To store parameters obtained from the dialog and required for the report
 
@@ -123,3 +114,14 @@ class ANTReportGenerator(BaseReportGenerator):
         if res == QDialog.Accepted:
             self.__result_dict = dlg.result_dict
             self.generate_report(dlg.output_folder)
+
+    def _spatial_layers_to_validate(self):
+        return {
+            self.db.names.LC_PLOT_T: None,
+            self.db.names.LC_BUILDING_T: None,
+            self.db.names.LC_BOUNDARY_T: None,
+            self.db.names.LC_BOUNDARY_POINT_T: None,
+            self.db.names.CC_ROAD_NOMENCLATURE_T: None,
+            self.db.names.CC_URBAN_PERIMETER_T: None,
+            self.db.names.CC_MUNICIPALITY_BOUNDARY_T: None
+        }
