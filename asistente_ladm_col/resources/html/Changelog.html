@@ -4,12 +4,21 @@
     <meta charset="UTF-8">
 </head>
 <body>
-<p>Cambios en la version <b>3.1.6</b></p>
+<p>Cambios en la version <b>3.1.7</b></p>
 <ul>
-    <li>Remover XTF temporales si la operación de exportar a XTF no es exitosa.</li>
-	<li>Mejoras en la generación de reportes ANT. Actualización de dependencia de reportes a v1.1.</li>
-    <li>Mejoras en tarea 'Generar insumos catastrales' del Sistema de Transición: Ahora soporta el envío de reportes de Omisiones y Comisiones (opcional).</li>
-    <li>Fix de issue identificando el EPSG:9377 con PROJ 8.</li>
+    <li>Reglas de calidad:
+        <ul>
+            <li>Ignorar geometrías vacías cuando se valida superposición de puntos (issue #461).</li>
+	        <li>Resolución de problema al exportar reglas de calidad a GeoPackage (issue #467).</li>
+            <li>Función de agregar puntos topológicos ahora siempre retorna una capa con geometrías reparadas (issue #470).</li>
+	        <li>Regla de calidad E4010 ya no exige que un predio NPH no deba tener una unidades de construcción asociadas.</li>
+        </ul>
+    </li>
+    <li>Reportes:
+        <ul>
+            <li>Arreglo del filtro de servicios web (mapas base) para plano ANT: ya no lista servicios tipo XYZ.</li>
+        </ul>
+    </li>
 </ul>
 </body>
 </html>
