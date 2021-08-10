@@ -5455,7 +5455,7 @@ Rol:</translation>
 <context>
     <name>Geometry</name>
     <message>
-        <location filename="../lib/geometry.py" line="429"/>
+        <location filename="../lib/geometry.py" line="432"/>
         <source>Checking polygon gaps we found a &apos;{}&apos; geometry, which is not supported! Please report the issue.</source>
         <translation>Revisando huecos entre polígonos encontramos una geometría &apos;{}&apos;, la cual no está soportada. Por favor reporta este inconveniente.</translation>
     </message>
@@ -10846,6 +10846,11 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation>El número predial debe tener 30 caracteres numéricos</translation>
     </message>
     <message>
+        <location filename="../config/translation_strings.py" line="260"/>
+        <source>Cuando la condición del predio es &apos;NPH&apos;, el predio debe tener asociado 1 terreno</source>
+        <translation>Cuando la condición del predio es &apos;NPH&apos;, el predio debe tener asociado 1 terreno</translation>
+    </message>
+    <message>
         <source>La unidad de construcción no está dentro de ninguna contrucción</source>
         <translation type="vanished">La unidad de construcción no está dentro de ninguna contrucción</translation>
     </message>
@@ -11023,9 +11028,8 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation>Cuando la condición del predio es &apos;Vía&apos;, el predio debe tener asociado 1 terreno y 0 construcciones y 0 unidades de construcción</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="260"/>
         <source>Cuando la condición del predio es &apos;NPH&apos;, el predio debe tener asociado 1 terreno y 0 unidades de construcción</source>
-        <translation>Cuando la condición del predio es &apos;NPH&apos;, el predio debe tener asociado 1 terreno y 0 unidades de construcción</translation>
+        <translation type="vanished">Cuando la condición del predio es &apos;NPH&apos;, el predio debe tener asociado 1 terreno y 0 unidades de construcción</translation>
     </message>
     <message>
         <location filename="../config/translation_strings.py" line="261"/>
