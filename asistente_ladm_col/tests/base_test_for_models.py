@@ -99,7 +99,7 @@ class BaseTestForModels(ABC):
     def __get_all_mapped_field_names(cls):
         # Get all field variables mapped from the db table and fields
         required_fields = list()
-        for key, value in cls.db.names.TABLE_DICT.items():
+        for key, value in cls.db.names.__table_field_dict.items():
             for key_field, value_field in value[QueryNames.FIELDS_DICT].items():
                 if getattr(cls.db.names, value_field, False):
                     required_fields.append(value_field)
@@ -109,7 +109,7 @@ class BaseTestForModels(ABC):
     def __get_all_mapped_table_names(cls):
         # Get all table variables mapped from the db table and fields
         required_tables = list()
-        for key, value in cls.db.names.TABLE_DICT.items():
+        for key, value in cls.db.names.__table_field_dict.items():
             if getattr(cls.db.names, value[QueryNames.VARIABLE_NAME], False):
                 required_tables.append(value[QueryNames.VARIABLE_NAME])
         return required_tables

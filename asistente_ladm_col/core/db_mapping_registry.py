@@ -60,21 +60,28 @@ class DBMappingRegistry:
             "BASKET_T_ATTACHMENT_KEY_F": BASKET_T_ATTACHMENT_KEY
         }
 
-        # Main mapping dictionary: {table_key: {variable: 'table_variable_name', field_dict:{field_key: 'field_variable'}}}
-        self.TABLE_DICT = dict()
+        # Main mapping dictionary:
+        #     {table_key: {variable: 'table_variable_name', field_dict:{field_key: 'field_variable'}}}
+        # It only gets mappings for models that are both, supported by the active rol, and present in the DB.
+        # This dict is reset each time the active role changes.
+        #
+        # It's used to:
+        #   1) Set variables that are present in both, the dict itself and the DB. Note: The dict doesn't change
+        #      after it has been registered via register_db_mapping().
+        #   2) Traverse the expected DB-model variables so that we can test they are set.
+        self.__table_field_dict = dict()
 
-    def register_db_mapping(self, mapping):
-        self.TABLE_DICT.update(mapping.copy())
+    def __register_db_mapping(self, model_key, mapping):
+        self.__table_field_dict[model_key] = mapping.copy()
 
-    def refresh_mapping_for_role(self):
-        # TODO: Check if we can do the same only by using Model Registry,
-        #       since supported models should be already role supported models!
+    def __refresh_mapping_for_role(self, db_models):
         model_registry = LADMColModelRegistry()
-        for model_key in RoleRegistry().get_active_role_supported_models():
-            if model_key in model_registry.supported_model_keys():
-                self.register_db_mapping(model_registry.get_model_mapping(model_key))
 
-    def initialize_table_and_field_names(self, db_mapping):
+        for model in model_registry.supported_models():
+            if model.full_name() in db_models:
+                self.__register_db_mapping(model.id(), model_registry.get_model_mapping(model.id()))
+
+    def initialize_table_and_field_names(self, db_mapping, db_models):
         """
         Update class variables (table and field names) according to a dictionary of names coming from a DB connection.
         This function should be called when a new DB connection is established for making all classes in the plugin able
@@ -82,10 +89,12 @@ class DBMappingRegistry:
 
         :param db_mapping: Expected dict with key as iliname (fully qualified object name in the model) with no version
                            info, and value as sqlname (produced by ili2db).
+        :param db_models: Models present in the DB.
+
         :return: True if anything is updated, False otherwise.
         """
-        self.reset_table_and_field_names()  # We will start mapping from scratch, so reset any previous mapping
-        self.refresh_mapping_for_role()  # Now, for the active role, register his/her db mapping per allowed model
+        self.__reset_table_and_field_names()  # We will start mapping from scratch, so reset any previous mapping
+        self.__refresh_mapping_for_role(db_models)  # Now, for the active role, register the db mappings per allowed model
 
         any_update = False
         table_names_count = 0
@@ -93,18 +102,19 @@ class DBMappingRegistry:
         if db_mapping:
             for key in self.ili2db_names.values():
                 if key not in db_mapping:
-                    self.logger.error(__name__, "dict_names is not properly built, this required fields was not found: {}").format(key)
+                    self.logger.error(__name__, "dict_names is not properly built, this required field was not found: {}").format(key)
                     return False
 
-            for table_key, attrs in self.TABLE_DICT.items():
-                if table_key in db_mapping:
-                    setattr(self, attrs[QueryNames.VARIABLE_NAME], db_mapping[table_key][QueryNames.TABLE_NAME])
-                    table_names_count += 1
-                    any_update = True
-                    for field_key, field_variable in attrs[QueryNames.FIELDS_DICT].items():
-                        if field_key in db_mapping[table_key]:
-                            setattr(self, field_variable, db_mapping[table_key][field_key])
-                            field_names_count += 1
+            for model_key, registered_mapping in self.__table_field_dict.items():
+                for table_key, attrs in registered_mapping.items():
+                    if table_key in db_mapping:
+                        setattr(self, attrs[QueryNames.VARIABLE_NAME], db_mapping[table_key][QueryNames.TABLE_NAME])
+                        table_names_count += 1
+                        any_update = True
+                        for field_key, field_variable in attrs[QueryNames.FIELDS_DICT].items():
+                            if field_key in db_mapping[table_key]:
+                                setattr(self, field_variable, db_mapping[table_key][field_key])
+                                field_names_count += 1
 
             # Required fields coming from ili2db (T_ID_F, T_ILI_TID, etc.)
             for k,v in self.ili2db_names.items():
@@ -113,15 +123,16 @@ class DBMappingRegistry:
         self.logger.info(__name__, "Table and field names have been set!")
         self.logger.debug(__name__, "Number of table names set: {}".format(table_names_count))
         self.logger.debug(__name__, "Number of field names set: {}".format(field_names_count))
+        self.logger.debug(__name__, "Number of common ili2db names set: {}".format(len(self.ili2db_names)))
 
         return any_update
 
-    def reset_table_and_field_names(self):
+    def __reset_table_and_field_names(self):
         """
-        Start TABLE_DICT from scratch to prepare the next mapping.
-        The other varis are set to None for the same reason.
+        Start __table_field_dict from scratch to prepare the next mapping.
+        The other vars are set to None for the same reason.
         """
-        self.TABLE_DICT = dict()
+        self.__table_field_dict = dict()
 
         for k, v in self.ili2db_names.items():
             setattr(self, k, None)
@@ -131,37 +142,40 @@ class DBMappingRegistry:
 
         self.logger.info(__name__, "Names (DB mapping) have been reset to prepare the next mapping.")
 
-    def test_names(self, table_and_field_names):
+    def test_names(self):
         """
-        Test whether required table/field names are present.
+        Test whether required table/field names are present. Required names are all those that are in the
+        __table_field_dict variable (names of supported models by the active role and at the same time present in the
+        DB) and the ones in ili2db_names variable.
 
-        :param table_and_field_names: Flat list (no structure) of table and field names present in the db
         :return: Tuple bool: Names are valid or not, string: Message to indicate what exactly failed
         """
-        # Names that are mapped in the code
-        mapped_names = dict()
-        for k, v in self.TABLE_DICT.items():
-            mapped_names[k] = v[QueryNames.VARIABLE_NAME]
-            for k1, v1 in v[QueryNames.FIELDS_DICT].items():
-                mapped_names[k1] = v1
+        # Get required names (registered names) from the __table_field_dict
+        required_names = list()
+        for model_key, registered_mapping in self.__table_field_dict.items():
+            self.logger.debug(__name__, "Names to test in model '{}': {}".format(model_key, len(registered_mapping)))
+            for k, v in registered_mapping.items():
+                required_names.append(v[QueryNames.VARIABLE_NAME])
+                for k1, v1 in v[QueryNames.FIELDS_DICT].items():
+                    required_names.append(v1)
 
-        # Iterate names from DB and add to a list to check only those that coming from the DB are also mapped in code
-        required_names = list(set([mapped_names[name] for name in table_and_field_names if name in mapped_names]))
-        if not required_names:
-            return False, "The DB has no table or field names to check! As is, the plugin cannot get tables or fields from it!"
-
-        not_mapped = list(set([name for name in table_and_field_names if not name in mapped_names]))
-        self.logger.debug(__name__, "DB names not mapped in code ({}): First 10 --> {}".format(len(not_mapped), not_mapped[:10]))
-        self.logger.debug(__name__, "Number of required names: {}".format(len(required_names)))
-        required_names.extend(list(self.ili2db_names.keys()))
+        required_names = list(set(required_names))  # Cause tables from base models might be registered by submodels
+        required_ili2db_names = list(self.ili2db_names.keys())
+        count_required_names_before = len(required_names)
+        required_names.extend(required_ili2db_names)
+        self.logger.debug(__name__, "Testing names... Number of required names: {} ({} + {})".format(
+            len(required_names),
+            count_required_names_before,
+            len(required_ili2db_names)
+        ))
 
         names_not_found = list()
         for required_name in required_names:
             if getattr(self, required_name, None) is None:
                 names_not_found.append(required_name)
 
-        self.logger.debug(__name__, "Variable names not properly set: {}".format(names_not_found))
         if names_not_found:
+            self.logger.debug(__name__, "Variable names not properly set: {}".format(names_not_found))
             return False, "Name '{}' was not found!".format(names_not_found[0])
 
         return True, ""

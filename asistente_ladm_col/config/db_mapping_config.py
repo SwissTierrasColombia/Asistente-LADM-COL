@@ -52,9 +52,7 @@ class DBMappingConfig:
                 "LADM_COL.LADM_Nucleo.ExtArchivo.Fecha_Entrega": "EXT_ARCHIVE_S_DELIVERY_DATE_F",
                 "LADM_COL.LADM_Nucleo.ExtArchivo.Fecha_Grabacion": "EXT_ARCHIVE_S_STORAGE_DATE_F",
                 "LADM_COL.LADM_Nucleo.ExtArchivo.Espacio_De_Nombres": "EXT_ARCHIVE_S_NAMESPACE_F",
-                "LADM_COL.LADM_Nucleo.ExtArchivo.Local_Id": "EXT_ARCHIVE_S_LOCAL_ID_F",
-                "LADM_COL.LADM_Nucleo.COL_Fuente.Ext_Archivo_ID..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_FuenteAdministrativa": "EXT_ARCHIVE_S_LC_ADMINISTRATIVE_SOURCE_F",
-                "LADM_COL.LADM_Nucleo.COL_Fuente.Ext_Archivo_ID..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_FuenteEspacial": "EXT_ARCHIVE_S_LC_SPATIAL_SOURCE_F"
+                "LADM_COL.LADM_Nucleo.ExtArchivo.Local_Id": "EXT_ARCHIVE_S_LOCAL_ID_F"
             }},
             "LADM_COL.LADM_Nucleo.ExtDireccion": {QueryNames.VARIABLE_NAME: "EXT_ADDRESS_S", QueryNames.FIELDS_DICT: {
                 "LADM_COL.LADM_Nucleo.ExtDireccion.Valor_Via_Principal": "EXT_ADDRESS_S_VALUE_MAIN_ROAD_F",
@@ -70,11 +68,7 @@ class DBMappingConfig:
                 "LADM_COL.LADM_Nucleo.ExtDireccion.Tipo_Direccion": "EXT_ADDRESS_S_ADDRESS_TYPE_F",
                 "LADM_COL.LADM_Nucleo.ExtDireccion.Sector_Ciudad": "EXT_ADDRESS_S_CITY_SECTOR_F",
                 "LADM_COL.LADM_Nucleo.ExtDireccion.Codigo_Postal": "EXT_ADDRESS_S_POSTAL_CODE_F",
-                "LADM_COL.LADM_Nucleo.ExtDireccion.Complemento": "EXT_ADDRESS_S_COMPLEMENT_F",
-                "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Construccion": "EXT_ADDRESS_S_LC_BUILDING_F",
-                "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_ServidumbreTransito": "EXT_ADDRESS_S_LC_RIGHT_OF_WAY_F",
-                "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Terreno": "EXT_ADDRESS_S_LC_PLOT_F",
-                "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_UnidadConstruccion": "EXT_ADDRESS_S_LC_BUILDING_UNIT_F"
+                "LADM_COL.LADM_Nucleo.ExtDireccion.Complemento": "EXT_ADDRESS_S_COMPLEMENT_F"
             }},
             "LADM_COL.LADM_Nucleo.ExtDireccion.Tipo_Direccion": {QueryNames.VARIABLE_NAME: "EXT_ADDRESS_TYPE_D",
                                                                  QueryNames.FIELDS_DICT: {}},
@@ -90,12 +84,25 @@ class DBMappingConfig:
                 "LADM_COL.LADM_Nucleo.Fraccion.Denominador": "FRACTION_S_DENOMINATOR_F",
                 "LADM_COL.LADM_Nucleo.Fraccion.Numerador": "FRACTION_S_NUMERATOR_F"
             }},
-            "LADM_COL.LADM_Nucleo.COL_UnidadAdministrativaBasicaTipo": {QueryNames.VARIABLE_NAME: "COL_BAUNIT_TYPE_D",
-                                                                        QueryNames.FIELDS_DICT: {}},
-            "LADM_COL.LADM_Nucleo.COL_DimensionTipo": {QueryNames.VARIABLE_NAME: "COL_DIMENSION_TYPE_D",
-                                                       QueryNames.FIELDS_DICT: {}},
-            "LADM_COL.LADM_Nucleo.COL_PuntoTipo": {QueryNames.VARIABLE_NAME: "COL_POINT_TYPE_D",
-                                                   QueryNames.FIELDS_DICT: {}},
+            "LADM_COL.LADM_Nucleo.COL_UnidadAdministrativaBasicaTipo": {QueryNames.VARIABLE_NAME: "COL_BAUNIT_TYPE_D", QueryNames.FIELDS_DICT: {}},
+            "LADM_COL.LADM_Nucleo.COL_DimensionTipo": {QueryNames.VARIABLE_NAME: "COL_DIMENSION_TYPE_D", QueryNames.FIELDS_DICT: {}},
+            "LADM_COL.LADM_Nucleo.COL_PuntoTipo": {QueryNames.VARIABLE_NAME: "COL_POINT_TYPE_D", QueryNames.FIELDS_DICT: {}},
+            "LADM_COL.LADM_Nucleo.col_miembros": {QueryNames.VARIABLE_NAME: "MEMBERS_T", QueryNames.FIELDS_DICT: {
+                "LADM_COL.LADM_Nucleo.col_miembros.participacion..LADM_COL.LADM_Nucleo.col_miembros": "FRACTION_S_MEMBER_F"
+            }}
+        },
+        LADMNames.SURVEY_MODEL_KEY: {
+            # First, map extended classes from LADM_COL
+            "LADM_COL.LADM_Nucleo.ExtArchivo": {QueryNames.VARIABLE_NAME: "EXT_ARCHIVE_S", QueryNames.FIELDS_DICT: {
+                "LADM_COL.LADM_Nucleo.COL_Fuente.Ext_Archivo_ID..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_FuenteAdministrativa": "EXT_ARCHIVE_S_LC_ADMINISTRATIVE_SOURCE_F",
+                "LADM_COL.LADM_Nucleo.COL_Fuente.Ext_Archivo_ID..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_FuenteEspacial": "EXT_ARCHIVE_S_LC_SPATIAL_SOURCE_F"
+            }},
+            "LADM_COL.LADM_Nucleo.ExtDireccion": {QueryNames.VARIABLE_NAME: "EXT_ADDRESS_S", QueryNames.FIELDS_DICT: {
+                "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Construccion": "EXT_ADDRESS_S_LC_BUILDING_F",
+                "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_ServidumbreTransito": "EXT_ADDRESS_S_LC_RIGHT_OF_WAY_F",
+                "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Terreno": "EXT_ADDRESS_S_LC_PLOT_F",
+                "LADM_COL.LADM_Nucleo.COL_UnidadEspacial.Ext_Direccion_ID..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_UnidadConstruccion": "EXT_ADDRESS_S_LC_BUILDING_UNIT_F"
+            }},
             "LADM_COL.LADM_Nucleo.col_masCcl": {QueryNames.VARIABLE_NAME: "MORE_BFS_T", QueryNames.FIELDS_DICT: {
                 "LADM_COL.LADM_Nucleo.col_masCcl.ccl_mas..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Lindero": "MORE_BFS_T_LC_BOUNDARY_F",
                 "LADM_COL.LADM_Nucleo.col_masCcl.ue_mas..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Construccion": "MORE_BFS_T_LC_BUILDING_F",
@@ -111,7 +118,6 @@ class DBMappingConfig:
                 "LADM_COL.LADM_Nucleo.col_menosCcl.ue_menos..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_UnidadConstruccion": "LESS_BFS_T_LC_BUILDING_UNIT_F",
             }},
             "LADM_COL.LADM_Nucleo.col_miembros": {QueryNames.VARIABLE_NAME: "MEMBERS_T", QueryNames.FIELDS_DICT: {
-                "LADM_COL.LADM_Nucleo.col_miembros.participacion..LADM_COL.LADM_Nucleo.col_miembros": "FRACTION_S_MEMBER_F",
                 "LADM_COL.LADM_Nucleo.col_miembros.agrupacion..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_AgrupacionInteresados": "MEMBERS_T_GROUP_PARTY_F",
                 "LADM_COL.LADM_Nucleo.col_miembros.interesado..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Interesado": "MEMBERS_T_PARTY_F"
             }},
@@ -121,19 +127,17 @@ class DBMappingConfig:
                 "LADM_COL.LADM_Nucleo.col_puntoCcl.punto..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_PuntoLevantamiento": "POINT_BFS_T_LC_SURVEY_POINT_F",
                 "LADM_COL.LADM_Nucleo.col_puntoCcl.punto..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_PuntoLindero": "POINT_BFS_T_LC_BOUNDARY_POINT_F",
             }},
-            "LADM_COL.LADM_Nucleo.col_puntoFuente": {QueryNames.VARIABLE_NAME: "COL_POINT_SOURCE_T",
-                                                     QueryNames.FIELDS_DICT: {
-                                                         "LADM_COL.LADM_Nucleo.col_puntoFuente.fuente_espacial..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_FuenteEspacial": "COL_POINT_SOURCE_T_SOURCE_F",
-                                                         "LADM_COL.LADM_Nucleo.col_puntoFuente.punto..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_PuntoControl": "COL_POINT_SOURCE_T_LC_CONTROL_POINT_F",
-                                                         "LADM_COL.LADM_Nucleo.col_puntoFuente.punto..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_PuntoLevantamiento": "COL_POINT_SOURCE_T_LC_SURVEY_POINT_F",
-                                                         "LADM_COL.LADM_Nucleo.col_puntoFuente.punto..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_PuntoLindero": "COL_POINT_SOURCE_T_LC_BOUNDARY_POINT_F"
-                                                     }},
-            "LADM_COL.LADM_Nucleo.col_rrrFuente": {QueryNames.VARIABLE_NAME: "COL_RRR_SOURCE_T",
-                                                   QueryNames.FIELDS_DICT: {
-                                                       "LADM_COL.LADM_Nucleo.col_rrrFuente.fuente_administrativa..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_FuenteAdministrativa": "COL_RRR_SOURCE_T_SOURCE_F",
-                                                       "LADM_COL.LADM_Nucleo.col_rrrFuente.rrr..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Derecho": "COL_RRR_SOURCE_T_LC_RIGHT_F",
-                                                       "LADM_COL.LADM_Nucleo.col_rrrFuente.rrr..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Restriccion": "COL_RRR_SOURCE_T_LC_RESTRICTION_F"
-                                                   }},
+            "LADM_COL.LADM_Nucleo.col_puntoFuente": {QueryNames.VARIABLE_NAME: "COL_POINT_SOURCE_T", QueryNames.FIELDS_DICT: {
+                "LADM_COL.LADM_Nucleo.col_puntoFuente.fuente_espacial..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_FuenteEspacial": "COL_POINT_SOURCE_T_SOURCE_F",
+                "LADM_COL.LADM_Nucleo.col_puntoFuente.punto..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_PuntoControl": "COL_POINT_SOURCE_T_LC_CONTROL_POINT_F",
+                "LADM_COL.LADM_Nucleo.col_puntoFuente.punto..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_PuntoLevantamiento": "COL_POINT_SOURCE_T_LC_SURVEY_POINT_F",
+                "LADM_COL.LADM_Nucleo.col_puntoFuente.punto..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_PuntoLindero": "COL_POINT_SOURCE_T_LC_BOUNDARY_POINT_F"
+            }},
+            "LADM_COL.LADM_Nucleo.col_rrrFuente": {QueryNames.VARIABLE_NAME: "COL_RRR_SOURCE_T", QueryNames.FIELDS_DICT: {
+                "LADM_COL.LADM_Nucleo.col_rrrFuente.fuente_administrativa..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_FuenteAdministrativa": "COL_RRR_SOURCE_T_SOURCE_F",
+                "LADM_COL.LADM_Nucleo.col_rrrFuente.rrr..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Derecho": "COL_RRR_SOURCE_T_LC_RIGHT_F",
+                "LADM_COL.LADM_Nucleo.col_rrrFuente.rrr..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Restriccion": "COL_RRR_SOURCE_T_LC_RESTRICTION_F"
+            }},
             "LADM_COL.LADM_Nucleo.col_ueBaunit": {QueryNames.VARIABLE_NAME: "COL_UE_BAUNIT_T", QueryNames.FIELDS_DICT: {
                 "LADM_COL.LADM_Nucleo.col_ueBaunit.baunit..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Predio": "COL_UE_BAUNIT_T_PARCEL_F",
                 "LADM_COL.LADM_Nucleo.col_ueBaunit.ue..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Terreno": "COL_UE_BAUNIT_T_LC_PLOT_F",
@@ -148,18 +152,15 @@ class DBMappingConfig:
                 "LADM_COL.LADM_Nucleo.col_ueFuente.ue..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Terreno": "COL_UE_SOURCE_T_LC_PLOT_F",
                 "LADM_COL.LADM_Nucleo.col_ueFuente.ue..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_UnidadConstruccion": "COL_UE_SOURCE_T_LC_BUILDING_UNIT_F"
             }},
-            "LADM_COL.LADM_Nucleo.col_baunitFuente": {QueryNames.VARIABLE_NAME: "COL_BAUNIT_SOURCE_T",
-                                                      QueryNames.FIELDS_DICT: {
-                                                          "LADM_COL.LADM_Nucleo.col_baunitFuente.fuente_espacial..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_FuenteEspacial": "BAUNIT_SOURCE_T_SOURCE_F",
-                                                          "LADM_COL.LADM_Nucleo.col_baunitFuente.unidad..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Predio": "BAUNIT_SOURCE_T_UNIT_F"
-                                                      }},
-            "LADM_COL.LADM_Nucleo.col_cclFuente": {QueryNames.VARIABLE_NAME: "COL_CCL_SOURCE_T",
-                                                   QueryNames.FIELDS_DICT: {
-                                                       "LADM_COL.LADM_Nucleo.col_cclFuente.fuente_espacial..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_FuenteEspacial": "COL_CCL_SOURCE_T_SOURCE_F",
-                                                       "LADM_COL.LADM_Nucleo.col_cclFuente.ccl..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Lindero": "COL_CCL_SOURCE_T_BOUNDARY_F"
-                                                   }}
-        },
-        LADMNames.SURVEY_MODEL_KEY: {
+            "LADM_COL.LADM_Nucleo.col_baunitFuente": {QueryNames.VARIABLE_NAME: "COL_BAUNIT_SOURCE_T", QueryNames.FIELDS_DICT: {
+               "LADM_COL.LADM_Nucleo.col_baunitFuente.fuente_espacial..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_FuenteEspacial": "BAUNIT_SOURCE_T_SOURCE_F",
+               "LADM_COL.LADM_Nucleo.col_baunitFuente.unidad..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Predio": "BAUNIT_SOURCE_T_UNIT_F"
+           }},
+            "LADM_COL.LADM_Nucleo.col_cclFuente": {QueryNames.VARIABLE_NAME: "COL_CCL_SOURCE_T", QueryNames.FIELDS_DICT: {
+                "LADM_COL.LADM_Nucleo.col_cclFuente.fuente_espacial..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_FuenteEspacial": "COL_CCL_SOURCE_T_SOURCE_F",
+                "LADM_COL.LADM_Nucleo.col_cclFuente.ccl..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Lindero": "COL_CCL_SOURCE_T_BOUNDARY_F"
+            }},
+            # Now map new classes
             "Modelo_Aplicacion_LADMCOL_Lev_Cat.LC_AcuerdoTipo": {QueryNames.VARIABLE_NAME: "LC_AGREEMENT_TYPE_D",
                                                                  QueryNames.FIELDS_DICT: {}},
             "Modelo_Aplicacion_LADMCOL_Lev_Cat.LC_UsoUConsTipo": {QueryNames.VARIABLE_NAME: "LC_BUILDING_UNIT_USE_D",
