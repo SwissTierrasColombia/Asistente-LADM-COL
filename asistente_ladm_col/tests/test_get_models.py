@@ -42,7 +42,8 @@ class TestGetModels(unittest.TestCase):
                                                     self.ladmcol_models.model(LADMNames.ISO19107_MODEL_KEY).full_name(),
                                                     self.ladmcol_models.model(LADMNames.LADM_COL_MODEL_KEY).full_name()],
                          'test_ladm_cadastral_manager_data': [self.ladmcol_models.model(LADMNames.SUPPLIES_MODEL_KEY).full_name(),
-                                                              self.ladmcol_models.model(LADMNames.ISO19107_MODEL_KEY).full_name()]}
+                                                              self.ladmcol_models.model(LADMNames.ISO19107_MODEL_KEY).full_name(),
+                                                              self.ladmcol_models.model(LADMNames.LADM_COL_MODEL_KEY).full_name()]}
 
         for schema_name in expected_dict:
             restore_schema(schema_name)
@@ -78,7 +79,8 @@ class TestGetModels(unittest.TestCase):
                                             self.ladmcol_models.model(LADMNames.ISO19107_MODEL_KEY).full_name(),
                                             self.ladmcol_models.model(LADMNames.LADM_COL_MODEL_KEY).full_name()],
             'test_ladm_cadastral_manager_data_gpkg': [self.ladmcol_models.model(LADMNames.SUPPLIES_MODEL_KEY).full_name(),
-                                                      self.ladmcol_models.model(LADMNames.ISO19107_MODEL_KEY).full_name()]}
+                                                      self.ladmcol_models.model(LADMNames.ISO19107_MODEL_KEY).full_name(),
+                                                      self.ladmcol_models.model(LADMNames.LADM_COL_MODEL_KEY).full_name()]}
 
         for gpkg_schema_name in expected_dict:
             self.db_gpkg = get_gpkg_conn(gpkg_schema_name)

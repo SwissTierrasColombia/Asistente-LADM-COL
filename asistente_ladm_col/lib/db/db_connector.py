@@ -428,6 +428,31 @@ class DBConnector(QObject):
 
         return False, ''
 
+    @staticmethod
+    def _parse_models_from_db_meta_attrs(lst_models):
+        """
+        Reads a list of models as saved by ili2db and  returns a dict of model dependencies.
+
+        E.g.:
+        INPUT-> ["D_G_C_V2_9_6{ LADM_COL_V1_2 ISO19107_PLANAS_V1} D_SNR_V2_9_6{ LADM_COL_V1_2} D_I_I_V2_9_6{ D_SNR_V2_9_6 D_G_C_V2_9_6}", "LADM_COL_V1_2"]
+        OUTPUT-> {'D_G_C_V2_9_6': ['LADM_COL_V1_2', 'ISO19107_PLANAS_V1'], 'D_SNR_V2_9_6': ['LADM_COL_V1_2'], 'D_I_I_V2_9_6': ['D_SNR_V2_9_6', 'D_G_C_V2_9_6'], 'LADM_COL_V1_2': []}
+
+        :param lst_models: The list of values stored in the DB meta attrs model table (column 'modelname').
+        :return: Dict of model dependencies.
+        """
+        model_hierarchy = dict()
+        for str_model in lst_models:
+            parts = str_model.split("}")
+            if len(parts) > 1:  # With dependencies
+                for part in parts:
+                    if part:  # The last element of parts is ''
+                        model, dependencies = part.split("{")
+                        model_hierarchy[model.strip()] = dependencies.strip().split(" ")
+            elif len(parts) == 1:  # No dependencies
+                model_hierarchy[parts[0].strip()] = list()
+
+        return model_hierarchy
+
 
 class FileDB(DBConnector):
     """

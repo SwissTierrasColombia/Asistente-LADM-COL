@@ -2,10 +2,10 @@
 /***************************************************************************
                               Asistente LADM-COL
                              --------------------
-        begin                : 2020-07-27
-        git sha              : :%H$
-        copyright            : (C) 2020 by Germán Carrillo (SwissTierras Colombia)
-        email                : gcarrillo@linuxmail.org
+        begin           : 2020-07-27
+        git sha         : :%H$
+        copyright       : (C) 2020 by Germán Carrillo (SwissTierras Colombia)
+        email           : gcarrillo@linuxmail.org
  ***************************************************************************/
 /***************************************************************************
  *                                                                         *
@@ -45,7 +45,7 @@ class DBMappingRegistry:
 
         # To ease addition of new ili2db names (which must be done in several classes),
         # we keep them together in a dict {variable_name: variable_key}
-        self.ili2db_names = {
+        self.__ili2db_names = {
             "T_ID_F": T_ID_KEY,
             "T_ILI_TID_F": T_ILI_TID_KEY,
             "ILICODE_F": ILICODE_KEY,
@@ -100,7 +100,7 @@ class DBMappingRegistry:
         table_names_count = 0
         field_names_count = 0
         if db_mapping:
-            for key in self.ili2db_names.values():
+            for key in self.__ili2db_names.values():
                 if key not in db_mapping:
                     self.logger.error(__name__, "dict_names is not properly built, this required field was not found: {}").format(key)
                     return False
@@ -117,13 +117,13 @@ class DBMappingRegistry:
                                 field_names_count += 1
 
             # Required fields coming from ili2db (T_ID_F, T_ILI_TID, etc.)
-            for k,v in self.ili2db_names.items():
+            for k,v in self.__ili2db_names.items():
                 setattr(self, k, db_mapping[v])
 
         self.logger.info(__name__, "Table and field names have been set!")
         self.logger.debug(__name__, "Number of table names set: {}".format(table_names_count))
         self.logger.debug(__name__, "Number of field names set: {}".format(field_names_count))
-        self.logger.debug(__name__, "Number of common ili2db names set: {}".format(len(self.ili2db_names)))
+        self.logger.debug(__name__, "Number of common ili2db names set: {}".format(len(self.__ili2db_names)))
 
         return any_update
 
@@ -134,7 +134,7 @@ class DBMappingRegistry:
         """
         self.__table_field_dict = dict()
 
-        for k, v in self.ili2db_names.items():
+        for k, v in self.__ili2db_names.items():
             setattr(self, k, None)
 
         # Clear cache
@@ -160,7 +160,7 @@ class DBMappingRegistry:
                     required_names.append(v1)
 
         required_names = list(set(required_names))  # Cause tables from base models might be registered by submodels
-        required_ili2db_names = list(self.ili2db_names.keys())
+        required_ili2db_names = list(self.__ili2db_names.keys())
         count_required_names_before = len(required_names)
         required_names.extend(required_ili2db_names)
         self.logger.debug(__name__, "Testing names... Number of required names: {} ({} + {})".format(
