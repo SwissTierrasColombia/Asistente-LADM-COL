@@ -184,14 +184,30 @@ class GPKGConnector(FileDB):
                 self.logger.warning_msg(__name__, msg)
                 return list()
 
+        # First go for all models registered in t_ili2db_model
         cursor = self.conn.cursor()
-        result = cursor.execute("""SELECT distinct substr(iliname, 1, pos-1) AS modelname from 
-                                    (SELECT *, instr(iliname,'.') AS pos FROM t_ili2db_trafo)""")
-        lst_models = list()
+        result = cursor.execute("""SELECT modelname FROM t_ili2db_model;""")
+        model_hierarchy = dict()
         if result is not None:
-            lst_models = [db_model['modelname'] for db_model in result]
-        self.logger.debug(__name__, "Models found: {}".format(lst_models))
-        return lst_models
+            all_models = [db_model['modelname'] for db_model in result]
+            model_hierarchy = self._parse_models_from_db_meta_attrs(all_models)
+
+        # Now go for all models listed in t_ili2db_trafo
+        result = cursor.execute("""SELECT distinct substr(iliname, 1, pos-1) AS modelname from 
+                                   (SELECT *, instr(iliname,'.') AS pos FROM t_ili2db_trafo)""")
+        trafo_models = list()
+        if result is not None:
+            trafo_models = [db_model['modelname'] for db_model in result]
+
+        # Finally, using those obtained from t_ili2db_trafo, go for dependencies found in t_ili2db_model
+        dependencies = list()
+        for model in trafo_models:
+            dependencies.extend(model_hierarchy.get(model, list()))
+
+        res_models = list(set(dependencies + trafo_models))
+        self.logger.debug(__name__, "Models found: {}".format(res_models))
+
+        return res_models
 
     def is_ladm_layer(self, layer):
         result = False

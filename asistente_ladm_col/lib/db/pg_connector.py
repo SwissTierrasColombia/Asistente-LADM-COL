@@ -421,16 +421,33 @@ class PGConnector(ClientServerDB):
         return dict_units
 
     def get_models(self, schema=None):
+        # First go for all models registered in t_ili2db_model
+        query = "SELECT modelname FROM {schema}.t_ili2db_model".format(schema=schema if schema else self.schema)
+        res, result = self.execute_sql_query(query)
+        model_hierarchy = dict()
+        if res:
+            all_models = [db_model['modelname'] for db_model in result]
+            model_hierarchy = self._parse_models_from_db_meta_attrs(all_models)
+        else:
+            self.logger.error_msg(__name__, "Error getting models: {}".format(result))
+
+        # Now go for all models listed in t_ili2db_trafo
         query = "SELECT distinct split_part(iliname,'.',1) as modelname FROM {schema}.t_ili2db_trafo".format(
             schema=schema if schema else self.schema)
         res, result = self.execute_sql_query(query)
-        lst_models = list()
+        trafo_models = list()
         if res:
-            lst_models = [db_model['modelname'] for db_model in result]
-            self.logger.debug(__name__, "Models found: {}".format(lst_models))
-        else:
-            self.logger.error_msg(__name__, "Error getting models: {}".format(result))
-        return lst_models
+            trafo_models = [db_model['modelname'] for db_model in result]
+
+        # Finally, using those obtained from t_ili2db_trafo, go for dependencies found in t_ili2db_model
+        dependencies = list()
+        for model in trafo_models:
+            dependencies.extend(model_hierarchy.get(model, list()))
+
+        res_models = list(set(dependencies + trafo_models))
+        self.logger.debug(__name__, "Models found: {}".format(res_models))
+
+        return res_models
 
     def create_database(self, uri, db_name):
         """
