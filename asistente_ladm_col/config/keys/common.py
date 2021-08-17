@@ -43,13 +43,13 @@ ROLE_SUPPORTED_MODELS = "role_supported_models"
 ROLE_HIDDEN_MODELS = "role_hidden_models"
 ROLE_CHECKED_MODELS = "role_checked_models"
 COMMON_SUPPORTED_MODELS = [LADMNames.LADM_COL_MODEL_KEY,
+                           LADMNames.ISO19107_MODEL_KEY,
                            LADMNames.SURVEY_MODEL_KEY,
                            LADMNames.SUPPLIES_MODEL_KEY,
                            LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY,
                            LADMNames.SUPPLIES_INTEGRATION_MODEL_KEY,
                            LADMNames.CADASTRAL_CARTOGRAPHY_MODEL_KEY,
-                           LADMNames.VALUATION_MODEL_KEY,
-                           LADMNames.ISO19107_MODEL_KEY]
+                           LADMNames.VALUATION_MODEL_KEY]
 COMMON_HIDDEN_MODELS = [LADMNames.LADM_COL_MODEL_KEY,
                         LADMNames.ISO19107_MODEL_KEY]
 COMMON_CHECKED_MODELS = [LADMNames.SURVEY_MODEL_KEY]

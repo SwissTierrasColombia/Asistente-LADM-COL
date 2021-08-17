@@ -3,7 +3,7 @@ from copy import deepcopy
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QObject)
 
-from asistente_ladm_col.config.gui.common_keys import *
+from asistente_ladm_col.config.keys.common import *
 
 
 class GUI_Config(QObject):
@@ -286,7 +286,7 @@ class GUI_Config(QObject):
     def __init__(self):
         QObject.__init__(self)
 
-    def get_gui_dict(self, name):
+    def get_gui_dict(self, name=TEMPLATE_GUI):
         """
         Gets a GUI config dict for both Toolbars and Menus.
 

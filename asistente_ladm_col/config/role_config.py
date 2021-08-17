@@ -4,7 +4,7 @@ from qgis.PyQt.QtCore import *
 
 from asistente_ladm_col.config.general_config import (FDC_DATASET_NAME,
                                                       SUPPLIES_DB_SOURCE)
-from asistente_ladm_col.config.gui.common_keys import *
+from asistente_ladm_col.config.keys.common import *
 from asistente_ladm_col.config.gui.gui_config import GUI_Config
 from asistente_ladm_col.config.keys.ili2db_keys import *
 

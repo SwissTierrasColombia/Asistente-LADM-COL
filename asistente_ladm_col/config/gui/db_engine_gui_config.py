@@ -1,7 +1,6 @@
-from qgis.PyQt.QtCore import (QCoreApplication,
-                              QObject)
+from qgis.PyQt.QtCore import QObject
 
-from asistente_ladm_col.config.gui.common_keys import *
+from asistente_ladm_col.config.keys.common import *
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.singleton import SingletonQObject
 
