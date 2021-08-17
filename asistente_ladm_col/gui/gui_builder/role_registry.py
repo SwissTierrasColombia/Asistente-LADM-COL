@@ -20,7 +20,7 @@ from qgis.PyQt.QtCore import (QObject,
                               pyqtSignal)
 
 from asistente_ladm_col.app_interface import AppInterface
-from asistente_ladm_col.config.gui.common_keys import *
+from asistente_ladm_col.config.keys.common import *
 from asistente_ladm_col.config.role_config import get_role_config
 from asistente_ladm_col.utils.singleton import SingletonQObject
 from asistente_ladm_col.lib.logger import Logger
@@ -68,8 +68,10 @@ class RoleRegistry(QObject, metaclass=SingletonQObject):
         :param role_dict: Dictionary with the following information:
                 ROLE_NAME: Name of the role
                 ROLE_DESCRIPTION: Explains what this role is about
+                ROLE_ENABLED: Whether this role is enabled or not
                 ROLE_ACTIONS: List of actions a role has access to
                 ROLE_MODELS: List of models and their configuration for the current role
+                ROLE_QUALITY_RULES: List of quality rule keys this role has access to
                 ROLE_GUI_CONFIG: Dict with the GUI config (menus and toolbars)
         :return: Whether the role was successfully registered or not.
         """
@@ -86,6 +88,27 @@ class RoleRegistry(QObject, metaclass=SingletonQObject):
             self.logger.error(__name__, "Role '{}' is not defined correctly and could not be registered! Check the role_dict parameter.".format(role_key))
 
         return valid
+
+    def unregister_role(self, role_key):
+        res = False
+        if role_key in self._registered_roles:
+            # You cannot unregister the default role
+            if role_key != self._default_role:
+                # First change active role to default if role_key is active
+                if role_key == self.get_active_role():
+                    self.set_active_role(self._default_role)
+
+                # Then unregister the role
+                self._registered_roles[role_key] = None
+                del self._registered_roles[role_key]
+                res = False
+            else:
+                self.logger.warning(__name__, "You cannot unregister the default role!")
+        else:
+            self.logger.warning(__name__,
+                                "The role ('{}') you're trying to unregister is not registered!".format(role_key))
+
+        return res
 
     def get_active_role(self):
         return self.app.settings.active_role or self._default_role

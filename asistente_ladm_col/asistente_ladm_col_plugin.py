@@ -26,7 +26,8 @@ from qgis.PyQt.QtCore import (Qt,
                               QCoreApplication,
                               QSettings,
                               pyqtSignal)
-from qgis.PyQt.QtGui import QIcon, QColor
+from qgis.PyQt.QtGui import (QIcon,
+                             QColor)
 from qgis.PyQt.QtWidgets import (QAction,
                                  QPushButton,
                                  QProgressBar,
@@ -43,8 +44,7 @@ from asistente_ladm_col.gui.field_data_capture.dockwidget_field_data_capture_adm
 from asistente_ladm_col.gui.field_data_capture.dockwidget_field_data_capture_coordinator_surveyor import DockWidgetFieldDataCaptureCoordinatorSurveyor
 from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
 from asistente_ladm_col.gui.queries.ladm_query_controller import LADMQueryController
-from asistente_ladm_col.lib.model_registry import (LADMColModelRegistry,
-                                                   LADMColModel)
+from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
 from asistente_ladm_col.lib.dependency.plugin_dependency import PluginDependency
 from asistente_ladm_col.config.enums import (EnumDbActionType,
                                              EnumWizardType,
@@ -94,11 +94,11 @@ from asistente_ladm_col.config.translation_strings import (TOOLBAR_FINALIZE_GEOM
                                                            TOOLBAR_FILL_MORE_BFS_LESS,
                                                            TOOLBAR_FILL_RIGHT_OF_WAY_RELATIONS,
                                                            TOOLBAR_IMPORT_FROM_INTERMEDIATE_STRUCTURE)
-from asistente_ladm_col.config.wizard_config import (WizardConfig)
+from asistente_ladm_col.config.wizard_config import WizardConfig
 from asistente_ladm_col.config.expression_functions import (get_domain_code_from_value,
                                                             get_domain_value_from_code,
                                                             get_domain_description_from_code)  # >> DON'T REMOVE << Registers it in QgsExpression
-from asistente_ladm_col.config.gui.common_keys import *
+from asistente_ladm_col.config.keys.common import *
 from asistente_ladm_col.core.app_core_interface import AppCoreInterface
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.gui.app_gui_interface import AppGUIInterface
