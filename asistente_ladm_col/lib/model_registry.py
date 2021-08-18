@@ -20,7 +20,14 @@ from copy import deepcopy
 from asistente_ladm_col.config.keys.common import (ROLE_SUPPORTED_MODELS,
                                                    ROLE_HIDDEN_MODELS,
                                                    ROLE_CHECKED_MODELS,
-                                                   ROLE_MODEL_ILI2DB_PARAMETERS)
+                                                   ROLE_MODEL_ILI2DB_PARAMETERS,
+                                                   MODEL_ALIAS,
+                                                   MODEL_IS_SUPPORTED,
+                                                   MODEL_SUPPORTED_VERSION,
+                                                   MODEL_HIDDEN_BY_DEFAULT,
+                                                   MODEL_CHECKED_BY_DEFAULT,
+                                                   MODEL_ILI2DB_PARAMETERS,
+                                                   MODEL_MAPPING)
 from asistente_ladm_col.config.model_config import (MODEL_ALIAS,
                                                     MODEL_IS_SUPPORTED,
                                                     MODEL_SUPPORTED_VERSION,
@@ -53,6 +60,19 @@ class LADMColModelRegistry(metaclass=Singleton):
             return False
 
         self.__models[model.id()] = model
+        self.logger.info(__name__, "Model '{}' has been registered!".format(model.id()))
+
+        return True
+
+    def unregister_model(self, model_key):
+        if model_key not in self.__models:
+            self.logger.error(__name__, "Model '{}' was not found in registered models, therefore, it cannot be unregistered!".format(model_key))
+            return False
+
+        self.__models[model_key] = None
+        del self.__models[model_key]
+        self.logger.info(__name__, "Model '{}' has been unregistered!".format(model_key))
+
         return True
 
     def supported_models(self):
