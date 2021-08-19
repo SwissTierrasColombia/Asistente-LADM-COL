@@ -32,7 +32,7 @@ def get_models_from_xtf(xtf_path):
         root = et.fromstring(text_found)
         element = root.find('MODELS')
         if element:
-            for sub_element in element.getchildren():
+            for sub_element in element:
                 if "NAME" in sub_element.attrib:
                     model_names.append(sub_element.attrib["NAME"])
 
