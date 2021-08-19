@@ -47,8 +47,6 @@ from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
                                                       SETTINGS_CONNECTION_TAB_INDEX,
                                                       JAVA_REQUIRED_VERSION,
                                                       SETTINGS_MODELS_TAB_INDEX,
-                                                      DEFAULT_USE_CUSTOM_MODELS,
-                                                      DEFAULT_MODELS_DIR,
                                                       DEFAULT_SRS_CODE,
                                                       DEFAULT_SRS_AUTH)
 from asistente_ladm_col.app_interface import AppInterface
@@ -434,9 +432,9 @@ class DialogImportData(QDialog, DIALOG_UI):
 
         # set model repository
         # if there is no option  by default use online model repository
-        self.use_local_models = settings.value('Asistente-LADM-COL/models/custom_model_directories_is_checked', DEFAULT_USE_CUSTOM_MODELS, type=bool)
+        self.use_local_models = self.app.settings.custom_models
         if self.use_local_models:
-            self.custom_model_directories = settings.value('Asistente-LADM-COL/models/custom_models', DEFAULT_MODELS_DIR)
+            self.custom_model_directories = self.app.settings.custom_model_dirs
 
     def update_configuration(self):
         """
@@ -464,8 +462,8 @@ class DialogImportData(QDialog, DIALOG_UI):
             self.base_configuration.java_path = full_java_exe_path
 
         # User could have changed the default values
-        self.use_local_models = QSettings().value('Asistente-LADM-COL/models/custom_model_directories_is_checked', DEFAULT_USE_CUSTOM_MODELS, type=bool)
-        self.custom_model_directories = QSettings().value('Asistente-LADM-COL/models/custom_models', DEFAULT_MODELS_DIR)
+        self.use_local_models = self.app.settings.custom_models
+        self.custom_model_directories = self.app.settings.custom_model_dirs
 
         # Check custom model directories
         if self.use_local_models:

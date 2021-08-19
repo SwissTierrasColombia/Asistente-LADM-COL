@@ -32,8 +32,6 @@ from asistente_ladm_col.config.config_db_supported import ConfigDBsSupported
 from asistente_ladm_col.config.enums import EnumDbActionType
 from asistente_ladm_col.config.general_config import (DEFAULT_ENDPOINT_SOURCE_SERVICE,
                                                       DEFAULT_USE_SOURCE_SERVICE_SETTING,
-                                                      DEFAULT_USE_CUSTOM_MODELS,
-                                                      DEFAULT_MODELS_DIR,
                                                       DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE,
                                                       TOLERANCE_MAX_VALUE)
 from asistente_ladm_col.config.transitional_system_config import TransitionalSystemConfig
@@ -389,9 +387,9 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         self._lst_db[current_db_engine].save_parameters_conn(dict_conn=dict_conn, db_source=self.db_source)
 
-        settings.setValue('Asistente-LADM-COL/models/custom_model_directories_is_checked', self.offline_models_radio_button.isChecked())
+        self.app.settings.custom_models = self.offline_models_radio_button.isChecked()
         if self.offline_models_radio_button.isChecked():
-            settings.setValue('Asistente-LADM-COL/models/custom_models', self.custom_model_directories_line_edit.text())
+            self.app.settings.custom_model_dirs = self.custom_model_directories_line_edit.text()
 
         self.app.settings.tolerance = self.sbx_tolerance.value()
         settings.setValue('Asistente-LADM-COL/quality/use_roads', self.chk_use_roads.isChecked())
@@ -451,10 +449,10 @@ class SettingsDialog(QDialog, DIALOG_UI):
         # Restore QSettings
         settings = QSettings()
 
-        custom_model_directories_is_checked = settings.value('Asistente-LADM-COL/models/custom_model_directories_is_checked', DEFAULT_USE_CUSTOM_MODELS, type=bool)
+        custom_model_directories_is_checked = self.app.settings.custom_models
         if custom_model_directories_is_checked:
             self.offline_models_radio_button.setChecked(True)
-            self.custom_model_directories_line_edit.setText(settings.value('Asistente-LADM-COL/models/custom_models', DEFAULT_MODELS_DIR))
+            self.custom_model_directories_line_edit.setText(self.app.settings.custom_model_dirs)
             self.custom_model_directories_line_edit.setVisible(True)
             self.custom_models_dir_button.setVisible(True)
         else:
