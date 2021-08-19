@@ -27,15 +27,10 @@ from asistente_ladm_col.config.keys.common import (ROLE_SUPPORTED_MODELS,
                                                    MODEL_HIDDEN_BY_DEFAULT,
                                                    MODEL_CHECKED_BY_DEFAULT,
                                                    MODEL_ILI2DB_PARAMETERS,
-                                                   MODEL_MAPPING)
-from asistente_ladm_col.config.model_config import (MODEL_ALIAS,
-                                                    MODEL_IS_SUPPORTED,
-                                                    MODEL_SUPPORTED_VERSION,
-                                                    MODEL_HIDDEN_BY_DEFAULT,
-                                                    MODEL_CHECKED_BY_DEFAULT,
-                                                    MODEL_ILI2DB_PARAMETERS,
-                                                    MODEL_MAPPING,
-                                                    ModelConfig)
+                                                   MODEL_MAPPING,
+                                                   MODEL_DIR)
+from asistente_ladm_col.config.model_config import ModelConfig
+from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.singleton import Singleton
@@ -48,7 +43,8 @@ class LADMColModelRegistry(metaclass=Singleton):
     """
     def __init__(self):
         self.logger = Logger()
-        self.__models = dict()
+        self.app = AppInterface()
+        self.__models = dict()  # {model_key1: LADMColModel1, ...}
         self.__model_config = ModelConfig()
 
         # Register default models
@@ -56,18 +52,44 @@ class LADMColModelRegistry(metaclass=Singleton):
             self.register_model(LADMColModel(model_key, model_config))
 
     def register_model(self, model):
+        """
+        Registers an INTERLIS model to be accessible for registered roles.
+
+        :param model: LADMColModel instance.
+        :return: True if the model was registered, False otherwise.
+        """
         if not isinstance(model, LADMColModel) or model.id() in self.__models:
             return False
 
         self.__models[model.id()] = model
         self.logger.info(__name__, "Model '{}' has been registered!".format(model.id()))
 
+        if model.model_dir():
+            self.app.settings.add_custom_model_dir(model.model_dir())
+            self.logger.info(__name__, "Model dir '{}' has been registered!".format(model.model_dir()))
+
         return True
 
-    def unregister_model(self, model_key):
+    def unregister_model(self, model_key, unregister_model_dir=False):
+        """
+        Unregisters an INTERLIS model.
+
+        :param model_key: Id of the model to unregister.
+        :param unregister_model_dir: If True, we'll search the paths associated to the model_key. If any path is found,
+                                     it will be removed, so we won't search for models in that path anymore. This is
+                                     False by default because it might affect other registered models, so only set it
+                                     as True if removing such path won't affect discovering other models.
+        :return: True if the model was unregistered, False otherwise.
+        """
         if model_key not in self.__models:
             self.logger.error(__name__, "Model '{}' was not found in registered models, therefore, it cannot be unregistered!".format(model_key))
             return False
+
+        if unregister_model_dir:
+            model_dir = self.__models[model_key].model_dir()
+            if model_dir:
+                self.app.settings.remove_custom_model_dir(model_dir)
+                self.logger.info(__name__, "Model dir '{}' has been unregistered!".format(model_dir))
 
         self.__models[model_key] = None
         del self.__models[model_key]
@@ -140,6 +162,11 @@ class LADMColModel:
         self.__ili2db_parameters = model_data.get(MODEL_ILI2DB_PARAMETERS, dict())
         self.__mapping = model_data.get(MODEL_MAPPING, dict())
 
+        # String with paths where to find the model. If several paths are needed, they must be
+        # separated by a semicolon ";". Paths will be passed to ili2db, so any path ili2db understands
+        # will work (see https://github.com/claeis/ili2db/blob/master/docs/ili2db.rst).
+        self.__model_dir = model_data.get(MODEL_DIR, "")  # Only expected if the model comes from an Add-on
+
     def id(self):
         return self.__id
 
@@ -182,3 +209,6 @@ class LADMColModel:
 
     def get_mapping(self):
         return deepcopy(self.__mapping)
+
+    def model_dir(self):
+        return self.__model_dir
