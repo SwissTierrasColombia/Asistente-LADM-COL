@@ -58,12 +58,16 @@ class DBConnector(QObject):
         # 1) when the DB connector is created, and 2) when the plugin's active role has changed.
         self._should_update_db_mapping_values = True
 
+        # Model parser instance. If it's None, it will be recreated.
+        # The ModelParser compares DB models vs. role supported models.
+        # It should be set to None in two scenarios:
+        # 1) when the DB connector is created, and 2) when the plugin's active role has changed.
+        self._model_parser = None
+
         if uri is not None:
             self.uri = uri
         else:
             self.dict_conn_params = conn_dict
-
-        self.model_parser = None
 
         self.__ladmcol_models = LADMColModelRegistry()
 
@@ -134,64 +138,71 @@ class DBConnector(QObject):
         """
         raise NotImplementedError
 
+    def reset_db_model_parser(self):
+        """
+        Call it to let the connector know it has to update the DB model parser (e.g.,
+        when the active role has changed, since the new one could support other models).
+        """
+        self._model_parser = None
+
     def survey_model_exists(self):
         if self.read_model_parser():
-            return self.model_parser.survey_model_exists()
+            return self._model_parser.survey_model_exists()
 
         return False
 
     def valuation_model_exists(self):
         if self.read_model_parser():
-            return self.model_parser.valuation_model_exists()
+            return self._model_parser.valuation_model_exists()
 
         return False
 
     def ladm_model_exists(self):
         if self.read_model_parser():
-            return self.model_parser.ladm_model_exists()
+            return self._model_parser.ladm_model_exists()
 
         return False
 
     def cadastral_cartography_model_exists(self):
         if self.read_model_parser():
-            return self.model_parser.cadastral_cartography_model_exists()
+            return self._model_parser.cadastral_cartography_model_exists()
 
         return False
 
     def snr_data_model_exists(self):
         if self.read_model_parser():
-            return self.model_parser.snr_data_model_exists()
+            return self._model_parser.snr_data_model_exists()
 
         return False
 
     def supplies_integration_model_exists(self):
         if self.read_model_parser():
-            return self.model_parser.supplies_integration_model_exists()
+            return self._model_parser.supplies_integration_model_exists()
 
         return False
 
     def supplies_model_exists(self):
         if self.read_model_parser():
-            return self.model_parser.supplies_model_exists()
+            return self._model_parser.supplies_model_exists()
 
         return False
 
     def ladm_col_model_exists(self, model_prefix):
         if self.read_model_parser():
-            return self.model_parser.ladm_col_model_exists(model_prefix)
+            return self._model_parser.ladm_col_model_exists(model_prefix)
 
         return False
 
     def at_least_one_ladm_col_model_exists(self):
         if self.read_model_parser():
-            return self.model_parser.at_least_one_ladm_col_model_exists()
+            return self._model_parser.at_least_one_ladm_col_model_exists()
 
         return False
 
     def read_model_parser(self):
-        if self.model_parser is None:
+        if self._model_parser is None:
             try:
-                self.model_parser = ModelParser(self)
+                self._model_parser = ModelParser(self)
             except psycopg2.ProgrammingError as e:
                 # if it is not possible to access the schema due to lack of privileges
                 return False

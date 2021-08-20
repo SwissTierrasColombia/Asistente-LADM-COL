@@ -111,7 +111,13 @@ class RoleRegistry(QObject, metaclass=SingletonQObject):
         return res
 
     def get_active_role(self):
-        return self.app.settings.active_role or self._default_role
+        # We make sure the active role we return is in fact registered.
+        # Otherwise, we set the default role as active.
+        active_role = self.app.settings.active_role
+        if not active_role in self._registered_roles:
+            self.set_active_role(self._default_role)
+
+        return self.app.settings.active_role
 
     def get_active_role_name(self):
         return self.get_role_name(self.get_active_role())

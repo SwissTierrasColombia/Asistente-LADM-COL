@@ -315,7 +315,7 @@ class GPKGConnector(FileDB):
                                                                                                    "The database '{}' was created with an old version of ili2db (v3), which is no longer supported. You need to migrate it to ili2db4.").format(
                 database)
 
-        if self.model_parser is None:
+        if self._model_parser is None:
             self.model_parser = ModelParser(self)
 
         res, code, msg = self.check_db_models(required_models)

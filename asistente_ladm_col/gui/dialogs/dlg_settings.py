@@ -290,7 +290,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
             msg_box = QMessageBox(self)
             msg_box.setIcon(QMessageBox.Question)
             msg_box.setText(QCoreApplication.translate("SettingsDialog",
-                "No LADM-COL DB has been configured! You'll continue with limited functionality until you configure a LADM-COL DB.\n\nDo you want to go to 'Create LADM-COL structure' dialog?"))
+                "No LADM-COL DB has been configured! You'll continue with limited functionality until you configure a LADM-COL DB with models supported by the active role.\n\nDo you want to go to 'Create LADM-COL structure' dialog?"))
             msg_box.setWindowTitle(QCoreApplication.translate("SettingsDialog", "Important"))
             msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.Ignore)
             msg_box.setDefaultButton(QMessageBox.Ignore)
