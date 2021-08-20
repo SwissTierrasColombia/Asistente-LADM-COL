@@ -49,9 +49,9 @@ class LADMColModelRegistry(metaclass=Singleton):
 
         # Register default models
         for model_key, model_config in self.__model_config.get_models_config().items():
-            self.register_model(LADMColModel(model_key, model_config))
+            self.register_model(LADMColModel(model_key, model_config), False)
 
-    def register_model(self, model):
+    def register_model(self, model, refresh_model_for_active_role=True):
         """
         Registers an INTERLIS model to be accessible for registered roles.
 
@@ -67,6 +67,15 @@ class LADMColModelRegistry(metaclass=Singleton):
         if model.model_dir():
             self.app.settings.add_custom_model_dir(model.model_dir())
             self.logger.info(__name__, "Model dir '{}' has been registered!".format(model.model_dir()))
+
+        # Finally, update model.is_supported() data according to the active role.
+        #
+        # Note we don't want to call this while initializing the plugin,
+        # as it calls back and forth registered_roles and registered_models,
+        # or, in other words, it requires to have both models and roles
+        # registered before calling the method (or we end up with max recursion).
+        if refresh_model_for_active_role:
+            self.refresh_models_for_active_role(model.id())
 
         return True
 
@@ -122,7 +131,7 @@ class LADMColModelRegistry(metaclass=Singleton):
     def non_hidden_and_supported_models(self):
         return [model for model in self.__models.values() if not model.hidden() and model.is_supported()]
 
-    def refresh_models_for_role(self):
+    def refresh_models_for_active_role(self, only_for_model=''):
         role_key = RoleRegistry().get_active_role()
         role_models = RoleRegistry().get_role_models(role_key)
 
@@ -131,21 +140,20 @@ class LADMColModelRegistry(metaclass=Singleton):
         ili2db_params = role_models.get(ROLE_MODEL_ILI2DB_PARAMETERS, dict())
 
         for model_key, model in self.__models.items():
+            if only_for_model and model_key != only_for_model:
+                continue  # Avoid overwriting data of the other models (useful for refreshing a just-registered model)
+
             model.set_is_supported(model_key in role_models[ROLE_SUPPORTED_MODELS])
             model.set_is_hidden(model_key in role_models[ROLE_HIDDEN_MODELS])
             model.set_is_checked(model_key in role_models[ROLE_CHECKED_MODELS])
 
-            if model_key in ili2db_params and ili2db_params[model_key]:
-                model_ili2db_params = ili2db_params[model_key]
-            else:
-                model_ili2db_params = self.__model_config.get_default_ili2db_parameters(model_key)
-
+            # First attempt to get ili2db parameters from role, otherwise from model config
+            model_ili2db_params = ili2db_params.get(model_key, dict()) or self.__model_config.get_default_ili2db_parameters(model_key)
+            model.set_ili2db_params(model_ili2db_params)
             if model_ili2db_params:
                 self.logger.debug(__name__, "Model ili2db params are: {}".format(model_ili2db_params))
 
-            model.set_ili2db_params(model_ili2db_params)
-
-        self.logger.debug(__name__, "Supported models for role '{}': {}".format(role_key, role_models[ROLE_SUPPORTED_MODELS]))
+        self.logger.debug(__name__, "Supported models for active role '{}': {}".format(role_key, role_models[ROLE_SUPPORTED_MODELS]))
 
     def get_model_mapping(self, model_key):
         return self.model(model_key).get_mapping()
