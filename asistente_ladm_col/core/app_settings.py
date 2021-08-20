@@ -32,7 +32,7 @@ class AppSettings:
     """
     __ACTIVE_ROLE_KEY = "Asistente-LADM-COL/roles/active_role_key_{}".format(PLUGIN_VERSION)
     __COBOL_FILES_DIR_KEY = "Asistente-LADM-COL/etl_cobol/files_path"
-    __CUSTOM_MODELS_KEY = "Asistente-LADM-COL/models/custom_models"
+    __CUSTOM_MODELS_KEY = "Asistente-LADM-COL/models/use_custom_models"
     __CUSTOM_MODEL_DIRS_KEY = "Asistente-LADM-COL/models/custom_model_dirs"
     __ETL_SPLITTER_COLLAPSED_KEY = "Asistente-LADM-COL/supplies/etl_splitter_collapsed"
     __EXPORT_DIR_FIELD_DATA_KEY = "Asistente-LADM-COL/field_data_capture/export_dir"

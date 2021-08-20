@@ -321,7 +321,7 @@ class AsistenteLADMCOLPlugin(QObject):
         SLOT. After a role has been activated, change the plugin config for that role.
         """
         # Update supported models
-        self.model_registry.refresh_models_for_role()
+        self.model_registry.refresh_models_for_active_role()
 
         # Update db mappings in the registry
         # self.get_db_connection().names.refresh_mapping_for_role()
