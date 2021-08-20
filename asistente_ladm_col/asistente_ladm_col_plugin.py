@@ -329,6 +329,9 @@ class AsistenteLADMCOLPlugin(QObject):
         # Let the DB know it has to reset db mapping registry values (deferred until the next test_connection call)
         self.get_db_connection().reset_db_mapping_values()
 
+        # Let the DB know it has to reset db model parser (deferred until the next test_connection call)
+        self.get_db_connection().reset_db_model_parser()
+
         # Call refresh gui adding proper parameters
         self.refresh_gui(self.get_db_connection(), None, COLLECTED_DB_SOURCE)  # 3rd value is required to refresh GUI
 

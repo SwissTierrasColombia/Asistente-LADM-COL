@@ -313,7 +313,7 @@ def _field_data_capture_model_required(func_to_decorate):
         for db_source in context.get_db_sources():
             db = inst.conn_manager.get_db_connector_from_source(db_source=db_source)
             db.test_connection()
-            if not db.model_parser.model_version_is_supported[model_key]:
+            if not db.ladm_col_model_exists(model_key):
                 widget = inst.iface.messageBar().createMessage("Asistente LADM-COL",
                                                                QCoreApplication.translate("AsistenteLADMCOLPlugin",
                                                                                           "Check your {} database connection. The '{}' model is required for this functionality, but could not be found in your current database. Click the button to go to Settings.").format(

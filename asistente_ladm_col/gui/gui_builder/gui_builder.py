@@ -96,7 +96,14 @@ class GUIBuilder(QObject):
         :return:
         """
         self._db = db
-        self._test_conn_result = test_conn_result if test_conn_result is not None else db.test_connection()[0]
+
+        if test_conn_result is not None:
+            self._test_conn_result = test_conn_result
+        else:
+            self._test_conn_result, code, msg = db.test_connection()
+            if not self._test_conn_result:
+                self.logger.warning(__name__, "Test connection is False! Details: {}".format(msg))
+
         db_factory = ConfigDBsSupported().get_db_factory(db.engine)
         self._db_engine_actions = db_factory.get_db_engine_actions()
         self._engine_name = db_factory.get_name()

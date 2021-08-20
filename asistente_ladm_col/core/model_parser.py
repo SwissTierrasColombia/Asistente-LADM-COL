@@ -83,7 +83,7 @@ class ModelParser(QObject):
         return self.model_version_is_supported[LADMNames.SUPPLIES_MODEL_KEY]
 
     def ladm_col_model_exists(self, model_prefix):
-        return self.model_version_is_supported[model_prefix] if model_prefix in self.model_version_is_supported else False
+        return self.model_version_is_supported.get(model_prefix, False)
 
     def at_least_one_ladm_col_model_exists(self):
         """

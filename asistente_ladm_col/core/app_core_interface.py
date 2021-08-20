@@ -1452,7 +1452,7 @@ class AppCoreInterface(QObject):
 
         :return: List of model keys that are in DB and are allowed for current role
         """
-        return [m_k for m_k in RoleRegistry().get_active_role_supported_models() if db.model_parser.model_version_is_supported[m_k]]
+        return [m_k for m_k in RoleRegistry().get_active_role_supported_models() if db.ladm_col_model_exists(m_k)]
 
     def get_layer_copy(self, layer):
         output = processing.run("ladm_col:copy_vector_layer",
