@@ -165,6 +165,31 @@ class SettingsDialog(QDialog, DIALOG_UI):
                 if i not in self._tab_pages_list:
                     self.tabWidget.removeTab(i)
 
+    def get_required_models(self):
+        """
+        If required models have been set from context or via set_required_models(), we
+        respect them, they have the prioririty for the tests we do.
+
+        Otherwise, if selected role is not the current active role, we'll test if the DB has
+        the models that such a selected role supports. Because if we test against the active
+        role, we'll might say sth wrong to the user, like: Your current DB connection has no
+        LADM-COL models, just because the user is about to change the role from one that does
+        not have interest in the DB by one which is the proper one for the DB. Specially
+        useful for Add-ons that add new roles with access to specific models.
+
+        Note we don't modify the member variable at all, otherwise subsequent calls to this
+        method will never get into the first if clause.
+
+        :return: A list of required model keys.
+        """
+        required_models = self._required_models
+        if not required_models:
+            selected_role = self.get_selected_role()
+            if self.roles.get_active_role() != selected_role:
+                required_models = self.roles.get_role_supported_models(selected_role)
+
+        return required_models
+
     def load_roles(self):
         """
         Initialize group box for selecting the active role
@@ -258,7 +283,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
                 # Only check LADM-schema if we are not in an SCHEMA IMPORT.
                 # We know in an SCHEMA IMPORT, at this point the schema is still not LADM.
                 ladm_col_schema, code, msg = db.test_connection(EnumTestLevel.LADM,
-                                                                required_models=self._required_models)
+                                                                required_models=self.get_required_models())
 
             if not ladm_col_schema and self._action_type != EnumDbActionType.SCHEMA_IMPORT:
                 if self._blocking_mode:
@@ -509,7 +534,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
     def test_ladm_col_structure(self):
         db = self._get_db_connector_from_gui()
-        res, code, msg = db.test_connection(test_level=EnumTestLevel.LADM, required_models=self._required_models)
+        res, code, msg = db.test_connection(test_level=EnumTestLevel.LADM, required_models=self.get_required_models())
 
         if db is not None:
             db.close_connection()
