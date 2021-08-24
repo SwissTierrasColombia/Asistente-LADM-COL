@@ -114,8 +114,22 @@
 <li class="toctree-l1"><a class="reference internal" href="generacion_de_reportes.html">Generación de Reportes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exportar_importar_datos.html">Exportar e Importar Datos</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Gestión de Insumos</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#cargar-insumos-del-gestor-catastral">Cargar insumos del gestor catastral</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#identificacion-de-novedades">Identificación de novedades</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ejecutar-etl-de-insumos-cobol">Ejecutar ETL de insumos COBOL</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#paso-1-abrir-etl-de-insumos">Paso 1: Abrir ETL de insumos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#paso-2-seleccionar-etl-para-datos-de-cobol">Paso 2: Seleccionar ETL para datos de COBOL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#paso-3-seleccionar-archivos-para-ejecutar-la-etl-para-datos-cobol">Paso 3: Seleccionar archivos para ejecutar la ETL para datos COBOL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#paso-4-definir-la-conexion-a-la-base-de-datos-de-insumos">Paso 4: Definir la conexión a la base de datos de insumos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#paso-5-ejecutar-etl-para-datos-de-cobol">Paso 5: Ejecutar ETL para datos de COBOL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#paso-6-resultados-de-la-etl-para-datos-cobol">Paso 6: Resultados de la ETL para datos Cobol</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#identificacion-de-novedades">Identificación de novedades</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#paso-1-configurar-identificacion-de-novedades">Paso 1: Configurar identificación de novedades</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#paso-2-configuracion-de-conexiones">Paso 2: Configuración de conexiones</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#paso-3-abrir-consulta-masiva">Paso 3: Abrir consulta masiva</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#paso-4-resultado-consulta-masiva">Paso 4: Resultado consulta masiva</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -184,11 +198,77 @@
             
   <div class="tex2jax_ignore mathjax_ignore section" id="gestion-de-insumos">
 <h1>Gestión de Insumos<a class="headerlink" href="#gestion-de-insumos" title="Enlazar permanentemente con este título">¶</a></h1>
-<div class="section" id="cargar-insumos-del-gestor-catastral">
-<h2>Cargar insumos del gestor catastral<a class="headerlink" href="#cargar-insumos-del-gestor-catastral" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Para ejecutar esta sección es necesario que cambies al rol de Proveedor de insumos, para esto debes seguir la ruta: LADM-COL -&gt; Configuración -&gt; Pestaña Avanzado -&gt; Rol Proveedor de insumos.</p>
+<p><a class="" data-lightbox="Configuración rol de Proveedor de insumos" href="../_static/tutorial/gestion_de_insumos/cap13gestioninsumos0.gif" title="Configuración rol de Proveedor de insumos" data-title="Configuración rol de Proveedor de insumos"><img src="../_static/tutorial/gestion_de_insumos/cap13gestioninsumos0.gif" class="align-center" width="800px" alt="Configuración rol de Proveedor de insumos"/></a></p>
+<div class="note">
+<p class="admonition-title">IMPORTANTE</p>
+<p>Si es la primera vez que utilizas el Asistente LADM-COL, será necesario configurar una nueva base de datos como se menciona en el siguiente <a href="https://swisstierrascolombia.github.io/Asistente-LADM-COL/administracion_de_datos.html#crear-estructura-ladm-col">enlace</a>, pero en este caso, seleccionando los submodelos de insumos catastrales y registrales.</p>
+</div>
+<div class="section" id="ejecutar-etl-de-insumos-cobol">
+<h2>Ejecutar ETL de insumos COBOL<a class="headerlink" href="#ejecutar-etl-de-insumos-cobol" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Esta sección tiene por objetivo ejecutar la <em>ETL de COBOL</em> para transferir los datos en la estructura de COBOL a la estructura del submodelo de insumos de levantamiento catastral.</p>
+<div class="seealso">
+<p class="admonition-title">TIP</p>
+<p>El acrónimo <b>ETL</b> corresponde a <i>"Extract, Transform and Load"</i> (Extraer, Transformar y Cargar). Es ampliamente usado para describir los procesos que se llevan a cabo para migrar datos.</p>
+</div>
+<div class="section" id="paso-1-abrir-etl-de-insumos">
+<h3>Paso 1: Abrir ETL de insumos<a class="headerlink" href="#paso-1-abrir-etl-de-insumos" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>Para iniciar con el proceso debes dirigirte a la siguiente ruta <strong>LADM-COL –&gt;  Gestión de Insumos –&gt; Ejecutar ETL de Insumos</strong>.</p>
+<p><a class="" data-lightbox="Paso 1: Ejecutar ETL de Insumos" href="../_static/tutorial/gestion_de_insumos/cap13gestioninsumos1.gif" title="Paso 1: Ejecutar ETL de Insumos" data-title="Paso 1: Ejecutar ETL de Insumos"><img src="../_static/tutorial/gestion_de_insumos/cap13gestioninsumos1.gif" class="align-center" width="800px" alt="Paso 1: Ejecutar ETL de Insumos"/></a></p>
+</div>
+<div class="section" id="paso-2-seleccionar-etl-para-datos-de-cobol">
+<h3>Paso 2: Seleccionar ETL para datos de COBOL<a class="headerlink" href="#paso-2-seleccionar-etl-para-datos-de-cobol" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>Se despliega una interfaz en la cual debes seccionar la opción <em>ETL para datos COBOL</em> y dar clic en el botón <code class="docutils literal notranslate"><span class="pre">Siguiente</span></code>.</p>
+<p><a class="" data-lightbox="Paso 2: Seleccionar ETL para datos de Cobol" href="../_static/tutorial/\gestion_de_insumos/cap13gestioninsumos2.gif" title="Paso 2: Seleccionar ETL para datos de Cobol" data-title="Paso 2: Seleccionar ETL para datos de Cobol"><img src="../_static/tutorial/gestion_de_insumos/cap13gestioninsumos2.gif" class="align-center" width="800px" alt="Paso 2: Seleccionar ETL para datos de Cobol"/></a></p>
+</div>
+<div class="section" id="paso-3-seleccionar-archivos-para-ejecutar-la-etl-para-datos-cobol">
+<h3>Paso 3: Seleccionar archivos para ejecutar la ETL para datos COBOL<a class="headerlink" href="#paso-3-seleccionar-archivos-para-ejecutar-la-etl-para-datos-cobol" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>En la ventana que se despliega se habilitan las opciones para configurar los datos fuente (cargar los datos de COBOL). Debes cargar cada uno de los archivos de extensión <strong>.lis</strong> que se encuentra en los datos proporcionados al inicio del tutorial y el archivo de extensión <strong>.gdb</strong> en el último recuadro. Una vez que estén cargados los archivos, se habilita el botón <code class="docutils literal notranslate"><span class="pre">Ejecutar</span> <span class="pre">ETL</span></code>.</p>
+<p><a class="" data-lightbox="Paso 3: Seleccionar archivos para ejecutar la ETL para datos Cobol" href="../_static/tutorial/gestion_de_insumos/cap13gestioninsumos3.gif" title="Paso 3: Seleccionar archivos para ejecutar la ETL para datos Cobol" data-title="Paso 3: Seleccionar archivos para ejecutar la ETL para datos Cobol"><img src="../_static/tutorial/gestion_de_insumos/cap13gestioninsumos3.gif" class="align-center" width="800px" alt="Paso 3: Seleccionar archivos para ejecutar la ETL para datos Cobol"/></a></p>
+</div>
+<div class="section" id="paso-4-definir-la-conexion-a-la-base-de-datos-de-insumos">
+<h3>Paso 4: Definir la conexión a la base de datos de insumos<a class="headerlink" href="#paso-4-definir-la-conexion-a-la-base-de-datos-de-insumos" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>Antes de ejecutar la ETL, es importante que verifiques que la base de datos de destino sea la correcta. Para ello puedes leer el nombre de la base de datos de destino y en caso de que no corresponda, puedes definir la conexión dando clic al botón <code class="docutils literal notranslate"><span class="pre">Configurar</span> <span class="pre">conexión</span></code>.</p>
+<div class="note">
+<p class="admonition-title">IMPORTANTE</p>
+<p>Recuerda que la base de datos destino debe tener la estructura LADM-COL correspondiente a los submodelos de insumos catastrales y registrales.</p>
+</div>
+</div>
+<div class="section" id="paso-5-ejecutar-etl-para-datos-de-cobol">
+<h3>Paso 5: Ejecutar ETL para datos de COBOL<a class="headerlink" href="#paso-5-ejecutar-etl-para-datos-de-cobol" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>Al dar clic en el botón <code class="docutils literal notranslate"><span class="pre">Ejecutar</span> <span class="pre">ETL</span></code> se despliega un cuadro de diálogo en el que se te advierte que si la base de datos que seleccionaste ya tiene datos, podrían generarse datos inválidos al importarle datos nuevos. Si tu base de datos aún no tiene datos, puedes continuar con la operación dando clic en el botón <strong>Sí</strong>. Una vez que la ETL finalice su ejecución, debes dar clic en el botón <code class="docutils literal notranslate"><span class="pre">Siguiente</span></code>.</p>
+<p><a class="" data-lightbox="Paso 4: Ejecutar ETL para datos de Cobol" href="../_static/tutorial/gestion_de_insumos/cap13gestioninsumos4.gif" title="Paso 4: Ejecutar ETL para datos de Cobol" data-title="Paso 4: Ejecutar ETL para datos de Cobol"><img src="../_static/tutorial/gestion_de_insumos/cap13gestioninsumos4.gif" class="align-center" width="800px" alt="Paso 4: Ejecutar ETL para datos de Cobol"/></a></p>
+</div>
+<div class="section" id="paso-6-resultados-de-la-etl-para-datos-cobol">
+<h3>Paso 6: Resultados de la ETL para datos Cobol<a class="headerlink" href="#paso-6-resultados-de-la-etl-para-datos-cobol" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>Finalmente, se despliega un cuadro de diálogo donde se muestra el resultado de la ejecución de la ETL, listando las tablas principales del submodelo de insumos y el número de registros que se cargaron en cada una de esas tablas. Haz clic en el botón <code class="docutils literal notranslate"><span class="pre">Finalizar</span></code> para terminar el proceso.</p>
+<p><a class="" data-lightbox="Paso 5: Resultados de la ETL para datos de Cobol" href="../_static/tutorial/gestion_de_insumos/cap13gestioninsumos5.png" title="Paso 5: Resultados de la ETL para datos de Cobol" data-title="Paso 5: Resultados de la ETL para datos de Cobol"><img src="../_static/tutorial/gestion_de_insumos/cap13gestioninsumos5.png" class="align-center" width="400px" alt="Paso 5: Resultados de la ETL para datos de Cobol"/></a></p>
+</div>
 </div>
 <div class="section" id="identificacion-de-novedades">
 <h2>Identificación de novedades<a class="headerlink" href="#identificacion-de-novedades" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Esta sección permite identificar los cambios entre la base de datos de los insumos (eso es, la base de datos suministrada por el gestor catastral) y la base de datos del levantamiento catastral (la cual corresponde a los datos adquiridos en campo). Estos cambios facilitan el reconocimiento de las novedades obtenidas en la captura de información.</p>
+<div class="section" id="paso-1-configurar-identificacion-de-novedades">
+<h3>Paso 1: Configurar identificación de novedades<a class="headerlink" href="#paso-1-configurar-identificacion-de-novedades" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>Para iniciar con el proceso debes dirigirte a la siguiente ruta <strong>LADM-COL –&gt; Identificación de novedades –&gt; Configurar identificación de novedades</strong>.</p>
+<p><a class="" data-lightbox="Paso 1: Abrir interfaz configurar identificación de novedades" href="../_static/tutorial/gestion_de_insumos/cap13gestioninsumos8.gif" title="Paso 1: Abrir interfaz configurar identificación de novedades" data-title="Paso 1: Abrir interfaz configurar identificación de novedades"><img src="../_static/tutorial/gestion_de_insumos/cap13gestioninsumos8.gif" class="align-center" width="800px" alt="Paso 1: Abrir interfaz configurar identificación de novedades"/></a></p>
+</div>
+<div class="section" id="paso-2-configuracion-de-conexiones">
+<h3>Paso 2: Configuración de conexiones<a class="headerlink" href="#paso-2-configuracion-de-conexiones" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>Considerando que todo el proceso a lo largo de este tutorial se ha desarrollado en una única base de datos, se debe seleccionar la misma base de datos para <strong>Barrido predial</strong> y para <strong>Insumos</strong>. Tan pronto hayas seleccionado la misma base de datos, haz clic en <code class="docutils literal notranslate"><span class="pre">Aceptar</span></code>, lo que genera un mensaje de confirmación que informa que el proceso fue ejecutado con éxito.</p>
+<p><a class="" data-lightbox="Paso 2: Configuracion de conexiones" href="../_static/tutorial/gestion_de_insumos/cap13gestioninsumos9.gif" title="Paso 2: Configuracion de conexiones" data-title="Paso 2: Configuracion de conexiones"><img src="../_static/tutorial/gestion_de_insumos/cap13gestioninsumos9.gif" class="align-center" width="800px" alt="Paso 2: Configuracion de conexiones"/></a></p>
+</div>
+<div class="section" id="paso-3-abrir-consulta-masiva">
+<h3>Paso 3: Abrir consulta masiva<a class="headerlink" href="#paso-3-abrir-consulta-masiva" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>Para la identificación de novedades es necesario hacer clic en el botón <code class="docutils literal notranslate"><span class="pre">Consulta</span> <span class="pre">masiva</span></code>, bien sea desde el mensaje de confirmación que se desplegó luego de realizar el paso anterior o desde el menú <strong>LADM-COL –&gt; Identificación de novedades –&gt; Consulta masiva</strong>.</p>
+<p><a class="" data-lightbox="Paso 3: Abrir consulta masiva" href="../_static/tutorial/gestion_de_insumos/cap13gestioninsumos11.gif" title="Paso 3: Abrir consulta masiva" data-title="Paso 3: Abrir consulta masiva"><img src="../_static/tutorial/gestion_de_insumos/cap13gestioninsumos11.gif" class="align-center" width="600px" alt="Paso 3: Abrir consulta masiva"/></a></p>
+</div>
+<div class="section" id="paso-4-resultado-consulta-masiva">
+<h3>Paso 4: Resultado consulta masiva<a class="headerlink" href="#paso-4-resultado-consulta-masiva" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>Se obtiene un resumen de novedades que corresponde a una comparación de los datos de Levantamiento Catastral contra los datos de Insumos. El resumen indica el número de novedades encontradas agrupadas por tipo de novedad.</p>
+<p>Finalmente, en el panel de Identificación de Novedades, haz clic en el botón <code class="docutils literal notranslate"><span class="pre">Ver</span> <span class="pre">predios</span></code> de cualquiera de los tipos de novedad habilitados y selecciona un predio para ver las diferencias entre un predio en el submodelo de Insumos y el mismo predio en el modelo de aplicación Levantamiento Catastral.</p>
+<p><a class="" data-lightbox="Paso 4: Resultado consulta masiva" href="../_static/tutorial/gestion_de_insumos/cap13gestioninsumos12.gif" title="Paso 4: Resultado consulta masiva" data-title="Paso 4: Resultado consulta masiva"><img src="../_static/tutorial/gestion_de_insumos/cap13gestioninsumos12.gif" class="align-center" width="800px" alt="Paso 4: Resultado consulta masiva"/></a></p>
+</div>
 </div>
 </div>
 
