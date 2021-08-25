@@ -30,14 +30,17 @@ class AppSettings:
     """
     Centralize application setting handlers and keys
     """
-    __ACTIVE_ROLE_KEY = "Asistente-LADM-COL/roles/active_role_key_{}".format(PLUGIN_VERSION)
-    __COBOL_FILES_DIR_KEY = "Asistente-LADM-COL/etl_cobol/files_path"
-    __CUSTOM_MODELS_KEY = "Asistente-LADM-COL/models/use_custom_models"
-    __CUSTOM_MODEL_DIRS_KEY = "Asistente-LADM-COL/models/custom_model_dirs"
-    __ETL_SPLITTER_COLLAPSED_KEY = "Asistente-LADM-COL/supplies/etl_splitter_collapsed"
-    __EXPORT_DIR_FIELD_DATA_KEY = "Asistente-LADM-COL/field_data_capture/export_dir"
-    __SNC_FILES_DIR_KEY = "Asistente-LADM-COL/etl_snc/files_path"
-    __TOLERANCE_KEY = "Asistente-LADM-COL/quality/tolerance"
+
+    # Note that keys should be accessible from the outside. Sometimes it's handy to
+    # call functions that use app.settings.get_setting() and app.settings.set_setting()
+    ACTIVE_ROLE_KEY = "Asistente-LADM-COL/roles/active_role_key_{}".format(PLUGIN_VERSION)
+    COBOL_FILES_DIR_KEY = "Asistente-LADM-COL/etl_cobol/files_path"
+    CUSTOM_MODELS_KEY = "Asistente-LADM-COL/models/use_custom_models"
+    CUSTOM_MODEL_DIRS_KEY = "Asistente-LADM-COL/models/custom_model_dirs"
+    ETL_SPLITTER_COLLAPSED_KEY = "Asistente-LADM-COL/supplies/etl_splitter_collapsed"
+    EXPORT_DIR_FIELD_DATA_KEY = "Asistente-LADM-COL/field_data_capture/export_dir"
+    SNC_FILES_DIR_KEY = "Asistente-LADM-COL/etl_snc/files_path"
+    TOLERANCE_KEY = "Asistente-LADM-COL/quality/tolerance"
 
     def __init__(self):
         self.__settings = QSettings()
@@ -61,19 +64,19 @@ class AppSettings:
 
     @property
     def active_role(self):
-        return self.__settings.value(self.__ACTIVE_ROLE_KEY, None)
+        return self.__settings.value(self.ACTIVE_ROLE_KEY, None)
 
     @active_role.setter
     def active_role(self, value):
-        self.__settings.setValue(self.__ACTIVE_ROLE_KEY, value)
+        self.__settings.setValue(self.ACTIVE_ROLE_KEY, value)
 
     @property
     def cobol_files_path(self):
-        return self.__settings.value(self.__COBOL_FILES_DIR_KEY, '')
+        return self.__settings.value(self.COBOL_FILES_DIR_KEY, '')
 
     @cobol_files_path.setter
     def cobol_files_path(self, value):
-        self.__settings.setValue(self.__COBOL_FILES_DIR_KEY, value)
+        self.__settings.setValue(self.COBOL_FILES_DIR_KEY, value)
 
     def add_custom_model_dir(self, model_dir):
         """
@@ -94,47 +97,47 @@ class AppSettings:
 
     @property
     def custom_model_dirs(self):
-        return self.__settings.value(self.__CUSTOM_MODEL_DIRS_KEY, DEFAULT_MODELS_DIR)
+        return self.__settings.value(self.CUSTOM_MODEL_DIRS_KEY, DEFAULT_MODELS_DIR)
 
     @custom_model_dirs.setter
     def custom_model_dirs(self, value):
-        self.__settings.setValue(self.__CUSTOM_MODEL_DIRS_KEY, value)
+        self.__settings.setValue(self.CUSTOM_MODEL_DIRS_KEY, value)
 
     @property
     def custom_models(self):
-        return self.__settings.value(self.__CUSTOM_MODELS_KEY, DEFAULT_USE_CUSTOM_MODELS, bool)
+        return self.__settings.value(self.CUSTOM_MODELS_KEY, DEFAULT_USE_CUSTOM_MODELS, bool)
 
     @custom_models.setter
     def custom_models(self, value):
-        self.__settings.setValue(self.__CUSTOM_MODELS_KEY, value)
+        self.__settings.setValue(self.CUSTOM_MODELS_KEY, value)
 
     @property
     def etl_splitter_collapsed(self):
-        return self.__settings.value(self.__ETL_SPLITTER_COLLAPSED_KEY, False, bool)
+        return self.__settings.value(self.ETL_SPLITTER_COLLAPSED_KEY, False, bool)
 
     @etl_splitter_collapsed.setter
     def etl_splitter_collapsed(self, value):
-        self.__settings.setValue(self.__ETL_SPLITTER_COLLAPSED_KEY, value)
+        self.__settings.setValue(self.ETL_SPLITTER_COLLAPSED_KEY, value)
 
     @property
     def export_dir_field_data(self):
-        return self.__settings.value(self.__EXPORT_DIR_FIELD_DATA_KEY, os.path.expanduser('~'))
+        return self.__settings.value(self.EXPORT_DIR_FIELD_DATA_KEY, os.path.expanduser('~'))
 
     @export_dir_field_data.setter
     def export_dir_field_data(self, value):
-        self.__settings.setValue(self.__EXPORT_DIR_FIELD_DATA_KEY, value)
+        self.__settings.setValue(self.EXPORT_DIR_FIELD_DATA_KEY, value)
 
     @property
     def snc_files_path(self):
-        return self.__settings.value(self.__SNC_FILES_DIR_KEY, '')
+        return self.__settings.value(self.SNC_FILES_DIR_KEY, '')
 
     @snc_files_path.setter
     def snc_files_path(self, value):
-        self.__settings.setValue(self.__SNC_FILES_DIR_KEY, value)
+        self.__settings.setValue(self.SNC_FILES_DIR_KEY, value)
 
     @property
     def tolerance(self):
-        q_tolerance = self.__settings.value(self.__TOLERANCE_KEY, DEFAULT_TOLERANCE_VALUE, int)
+        q_tolerance = self.__settings.value(self.TOLERANCE_KEY, DEFAULT_TOLERANCE_VALUE, int)
         return q_tolerance if q_tolerance <= TOLERANCE_MAX_VALUE else TOLERANCE_MAX_VALUE
 
     @tolerance.setter
@@ -144,4 +147,4 @@ class AppSettings:
             tolerance = TOLERANCE_MAX_VALUE
         elif TOLERANCE_MAX_VALUE > value >= 0:
             tolerance = value
-        self.__settings.setValue(self.__TOLERANCE_KEY, tolerance)
+        self.__settings.setValue(self.TOLERANCE_KEY, tolerance)
