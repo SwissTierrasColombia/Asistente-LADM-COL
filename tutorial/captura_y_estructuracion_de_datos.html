@@ -203,7 +203,17 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#interesados">Interesados</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#crear-agrupacion-de-interesados">Crear Agrupación De Interesados</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tabla-interesados">Tabla Interesados</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tabla-agrupacion-de-interesados">Tabla Agrupación de interesados</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#paso-1-crear-interesado">Paso 1: Crear interesado</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#paso-2-seleccion-del-metodo-de-creacion-del-interesado">Paso 2: Selección del método de creación del interesado</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#paso-3-diligenciamiento-de-formulario-interesados">Paso 3: Diligenciamiento de formulario interesados</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#agrupacion-de-interesados">Agrupación de Interesados</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#paso-1-crear-agrupacion-de-interesados">Paso 1: Crear Agrupación de Interesados</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#paso-2-diligenciamiento-de-formulario-agrupacion-de-interesados">Paso 2: Diligenciamiento de formulario Agrupación de interesados</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#paso-3-asignacion-de-porcentajes">Paso 3: Asignación de porcentajes</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#fuentes">Fuentes</a><ul>
@@ -831,8 +841,111 @@
 </div>
 <div class="section" id="interesados">
 <h2>Interesados<a class="headerlink" href="#interesados" title="Enlazar permanentemente con este título">¶</a></h2>
-<div class="section" id="crear-agrupacion-de-interesados">
-<h3>Crear Agrupación De Interesados<a class="headerlink" href="#crear-agrupacion-de-interesados" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>Un predio debe estar asociado a una persona natural o jurídica (denominada <strong>Interesado</strong> en LADM-COL) o a un grupo de personas (denominado <strong>Agrupación de interesados</strong> en LADM-COL).</p>
+<p>En esta sección se describe el procedimiento para registrar cada uno de los interesados y agrupaciones de interesados asociados a uno o más predios, de manera que se sugiere tener en cuenta los siguientes datos de referencia:</p>
+<div class="section" id="tabla-interesados">
+<h3>Tabla Interesados<a class="headerlink" href="#tabla-interesados" title="Enlazar permanentemente con este título">¶</a></h3>
+<table class="colwidths-auto docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Descripción</p></th>
+<th class="text-align:center head"><p>Interesado 1</p></th>
+<th class="text-align:center head"><p>Interesado 2</p></th>
+<th class="text-align:center head"><p>Interesado 3</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Nombre</strong></p></td>
+<td class="text-align:center"><p>Carlos</p></td>
+<td class="text-align:center"><p>Camila</p></td>
+<td class="text-align:center"><p>Inversiones C</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Apellidos</strong></p></td>
+<td class="text-align:center"><p>Casas</p></td>
+<td class="text-align:center"><p>Cárdenas</p></td>
+<td class="text-align:center"><p></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Tipo documento</strong></p></td>
+<td class="text-align:center"><p>Cédula Ciudadanía</p></td>
+<td class="text-align:center"><p>Secuencial</p></td>
+<td class="text-align:center"><p>NIT</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Número documento</strong></p></td>
+<td class="text-align:center"><p>1032463643</p></td>
+<td class="text-align:center"><p>1042477540</p></td>
+<td class="text-align:center"><p>882734323-1</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Tipo</strong></p></td>
+<td class="text-align:center"><p>Natural</p></td>
+<td class="text-align:center"><p>Natural</p></td>
+<td class="text-align:center"><p>Jurídica</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="tabla-agrupacion-de-interesados">
+<h3>Tabla Agrupación de interesados<a class="headerlink" href="#tabla-agrupacion-de-interesados" title="Enlazar permanentemente con este título">¶</a></h3>
+<table class="colwidths-auto docutils align-default">
+<thead>
+<tr class="row-odd"><th class="text-align:center head"><p>Campo</p></th>
+<th class="text-align:center head"><p>Valor</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-align:center"><p>Nombre agrupación</p></td>
+<td class="text-align:center"><p>Asociación ASI</p></td>
+</tr>
+<tr class="row-odd"><td class="text-align:center"><p>Tipo</p></td>
+<td class="text-align:center"><p>Grupo civil</p></td>
+</tr>
+<tr class="row-even"><td class="text-align:center"><p>Interesado 1</p></td>
+<td class="text-align:center"><p>50%</p></td>
+</tr>
+<tr class="row-odd"><td class="text-align:center"><p>Interesado 2</p></td>
+<td class="text-align:center"><p>30%</p></td>
+</tr>
+<tr class="row-even"><td class="text-align:center"><p>Interesado 3</p></td>
+<td class="text-align:center"><p>20%</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="paso-1-crear-interesado">
+<h3>Paso 1: Crear interesado<a class="headerlink" href="#paso-1-crear-interesado" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>En el botón <code class="docutils literal notranslate"><span class="pre">Crear</span> <span class="pre">objetos</span> <span class="pre">de</span> <span class="pre">Levantamiento</span></code> de la barra de herramientas del Asistente LADM-COL, selecciona la opción <strong>Crear Interesado</strong>.</p>
+<p><a class="" data-lightbox="Paso 1: Crear interesado" href="../_static/tutorial/captura_y_estructura_de_datos/cap7interesados2.gif" title="Paso 1: Crear interesado" data-title="Paso 1: Crear interesado"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap7interesados2.gif" class="align-center" width="800px" alt="Paso 1: Crear interesado"/></a></p>
+</div>
+<div class="section" id="paso-2-seleccion-del-metodo-de-creacion-del-interesado">
+<h3>Paso 2: Selección del método de creación del interesado<a class="headerlink" href="#paso-2-seleccion-del-metodo-de-creacion-del-interesado" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>Se desplegará un cuadro de diálogo con dos opciones para crear interesados: <em>Ingresando datos manualmente en un formulario</em> o <em>Desde una capa de QGIS (definiendo un mapeo de campos)</em>. Para este caso, selecciona la primera opción y presiona el botón <code class="docutils literal notranslate"><span class="pre">Crear</span></code>.</p>
+<p><a class="" data-lightbox="Paso 2: Seleccion del método de creación del interesado" href="../_static/tutorial/captura_y_estructura_de_datos/cap7interesados3.gif" title="Paso 2: Seleccion del método de creación del interesado" data-title="Paso 2: Seleccion del método de creación del interesado"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap7interesados3.gif" class="align-center" width="800px" alt="Paso 2: Seleccion del método de creación del interesado"/></a></p>
+</div>
+<div class="section" id="paso-3-diligenciamiento-de-formulario-interesados">
+<h3>Paso 3: Diligenciamiento de formulario interesados<a class="headerlink" href="#paso-3-diligenciamiento-de-formulario-interesados" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>Se desplegará un formulario que debe ser diligenciado con la información correspondiente de acuerdo a los datos de referencia proporcionados en la <a class="reference external" href="#tabla-interesados">tabla de interesados</a> que se encuentra al inicio de esta sección.</p>
+<p><a class="" data-lightbox="Paso 3: Diligenciamiento de formulario interesados" href="../_static/tutorial/captura_y_estructura_de_datos/cap7interesados4.gif" title="Paso 3: Diligenciamiento de formulario interesados" data-title="Paso 3: Diligenciamiento de formulario interesados"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap7interesados4.gif" class="align-center" width="800px" alt="Paso 3: Diligenciamiento de formulario interesados"/></a></p>
+</div>
+</div>
+<div class="section" id="agrupacion-de-interesados">
+<h2>Agrupación de Interesados<a class="headerlink" href="#agrupacion-de-interesados" title="Enlazar permanentemente con este título">¶</a></h2>
+<div class="note">
+<p class="admonition-title">IMPORTANTE</p>
+<p>Antes de iniciar con este proceso, deben haberse creado todos los interesados presentes en la <a class="reference external" href="#tabla-interesados">tabla de interesados</a>.</p>
+</div>
+<div class="section" id="paso-1-crear-agrupacion-de-interesados">
+<h3>Paso 1: Crear Agrupación de Interesados<a class="headerlink" href="#paso-1-crear-agrupacion-de-interesados" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>En el botón <code class="docutils literal notranslate"><span class="pre">Crear</span> <span class="pre">objetos</span> <span class="pre">de</span> <span class="pre">Levantamiento</span></code> de la barra de herramientas del Asistente LADM-COL, selecciona la opción <strong>Crear Agrupación de Interesados</strong>.</p>
+<p><a class="" data-lightbox="Paso 1: Crear Agrupación de interesados" href="../_static/tutorial/captura_y_estructura_de_datos/cap7interesados6.gif" title="Paso 1: Crear Agrupación de interesados" data-title="Paso 1: Crear Agrupación de interesados"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap7interesados6.gif" class="align-center" width="800px" alt="Paso 1: Crear Agrupación de interesados"/></a></p>
+</div>
+<div class="section" id="paso-2-diligenciamiento-de-formulario-agrupacion-de-interesados">
+<h3>Paso 2: Diligenciamiento de formulario Agrupación de interesados<a class="headerlink" href="#paso-2-diligenciamiento-de-formulario-agrupacion-de-interesados" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>Se desplegará un formulario que debe ser diligenciado con la información correspondiente de acuerdo a los datos de referencia proporcionados en la <a class="reference external" href="#tabla-agrupacion-de-interesados">tabla agrupación de interesados</a> que se encuentra al inicio de esta sección.</p>
+<p>Debes especificar el nombre y el tipo de agrupación, y posteriormente seleccionar los tres (3) interesados creados en los pasos previos. Utiliza el botón <img alt="Trasladar a la derecha" src="../_images/ICOtrasladarderecha.png" /> para registrar los interesados en la agrupación.</p>
+<p><a class="" data-lightbox="Paso 2: Diligenciamiento de formulario Agrupación de interesados" href="../_static/tutorial/captura_y_estructura_de_datos/cap7interesados7.gif" title="Paso 2: Diligenciamiento de formulario Agrupación de interesados" data-title="Paso 2: Diligenciamiento de formulario Agrupación de interesados"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap7interesados7.gif" class="align-center" width="800px" alt="Paso 2: Diligenciamiento de formulario Agrupación de interesados"/></a></p>
+</div>
+<div class="section" id="paso-3-asignacion-de-porcentajes">
+<h3>Paso 3: Asignación de porcentajes<a class="headerlink" href="#paso-3-asignacion-de-porcentajes" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>Por último, debes asignar los porcentajes de derecho sobre el predio, teniendo en cuenta la <a class="reference external" href="#tabla-agrupacion-de-interesados">tabla agrupación de interesados</a>. Luego de ello, haz clic en el botón <code class="docutils literal notranslate"><span class="pre">Aceptar</span></code>.</p>
+<p><a class="" data-lightbox="Paso 3: Asignación de porcentajes" href="../_static/tutorial/captura_y_estructura_de_datos/cap7interesados8.gif" title="Paso 3: Asignación de porcentajes" data-title="Paso 3: Asignación de porcentajes"><img src="../_static/tutorial/captura_y_estructura_de_datos/cap7interesados8.gif" class="align-center" width="800px" alt="Paso 3: Asignación de porcentajes"/></a></p>
 </div>
 </div>
 <div class="section" id="fuentes">
