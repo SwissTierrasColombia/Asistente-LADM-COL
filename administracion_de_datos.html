@@ -186,23 +186,47 @@
             
   <div class="tex2jax_ignore mathjax_ignore section" id="administracion-de-datos">
 <h1>Administración de datos<a class="headerlink" href="#administracion-de-datos" title="Enlazar permanentemente con este título">¶</a></h1>
-<p>A través de este modulo los usuarios podrán importar y exportar los datos generados. Asi como crear la estructura inicial de trabajo conforme al modelo LADM-COL y sus modelos extendidos.</p>
+<p>Este modulo del Asistente LADM-COL permite gestionar bases de datos y datos conformes con el modelo LADM-COL. Para ello emplea herramientas que trabajan con el lenguaje INTERLIS. En particular, permite:</p>
+<ol class="simple">
+<li><p><a class="reference external" href="#crear-estructura-ladm-col">Crear una estructura</a> en base de datos conforme con el modelo LADM-COL y con sus modelos extendidos. Esto es, lleva de modelos conceptuales a modelos físicos.</p></li>
+<li><p><a class="reference external" href="#importar-datos">Importar datos</a> a una base de datos LADM-COL desde archivos de transferencia de INTERLIS, con extensión .XTF.</p></li>
+<li><p><a class="reference external" href="#exportar-datos">Exportar datos</a> desde una base de datos LADM-COL hacia archivos de transferencia de INTERLIS, con extensión .XTF.</p></li>
+</ol>
 <div class="section" id="crear-estructura-ladm-col">
 <h2>Crear estructura LADM-COL<a class="headerlink" href="#crear-estructura-ladm-col" title="Enlazar permanentemente con este título">¶</a></h2>
-<p>Esta funcionalidad permite realizar la creación de un esquema de base de datos conforme al modelo LADM-COL y sus modelos extendidos.</p>
-<img src="_static/administracion_de_datos/create_schema_ladm_qgismodelbaker.gif" alt="Crear estructura LADM-COL" style="height:500px;width:800px" />
-<p><strong>Nota</strong>: El nombre del esquema de base de datos debe estar en minúsculas y no debe contener caracteres especiales.</p>
+<p>Esta funcionalidad permite crear esquemas de base de datos (si se utiliza PostgreSQL/PostGIS o SQL Server) o archivos de base de datos (si se utiliza GeoPackage) conformes con el modelo LADM-COL y con sus modelos extendidos.</p>
+<p><a class="" data-lightbox="Crear estructura LADM-COL" href="_static/administracion_de_datos/create_schema_ladm_qgismodelbaker.gif" title="Crear estructura LADM-COL" data-title="Crear estructura LADM-COL"><img src="_static/administracion_de_datos/create_schema_ladm_qgismodelbaker.gif" class="align-center" width="800px" alt="Crear estructura LADM-COL"/></a></p>
+<div class="warning">
+<p class="admonition-title">ADVERTENCIA</p>
+<p>Para bases de datos PostgreSQL/PostGIS o SQL Server, el nombre del esquema de base de datos debe estar en minúsculas y no debe contener caracteres especiales.</p>
+</div>
 </div>
 <div class="section" id="importar-datos">
 <h2>Importar datos<a class="headerlink" href="#importar-datos" title="Enlazar permanentemente con este título">¶</a></h2>
-<p>Esta funcionalidad permite realizar la importación de los datos en formato XTF a una esquema de base de datos conforme al modelo LADM-COL o sus modelos extendidos.</p>
-<img src="_static/administracion_de_datos/import_data_qgismodelbaker.gif" alt="Importar datos desde XTF" style="height:500px;width:800px" />
+<p>Esta funcionalidad permite importar datos desde un archivo de transferencia (en formato .XTF) a un esquema de base de datos (si se utiliza PostgreSQL/PostGIS o SQL Server) o a un archivo de base de datos con extensión .GPKG (si se utiliza GeoPackage).</p>
+<p>La estructura de los datos y la estructura de la base de datos de destino deben coincidir, y deben ser conformes con el modelo LADM-COL o con sus modelos extendidos.</p>
+<p><a class="" data-lightbox="Importar datos desde un archivo XTF" href="_static/administracion_de_datos/import_data_qgismodelbaker.gif" title="Importar datos desde un archivo XTF" data-title="Importar datos desde un archivo XTF"><img src="_static/administracion_de_datos/import_data_qgismodelbaker.gif" class="align-center" width="800px" alt="Importar datos desde un archivo XTF"/></a></p>
+<div class="note">
+<p class="admonition-title">IMPORTANTE</p>
+<p>Durante la importación de datos .XTF se llevan a cabo validaciones de los datos, según el modelo con el cuál sean conformes. Por ejemplo, se valida que los valores de dominios presentes en los datos, correspondan a los valores de dominios definidos en los modelos LADM-COL.</p>
+</div>
+<div class="seealso">
+<p class="admonition-title">TIP</p>
+<p>En algunas ocasiones puede ser útil deshabilitar temporalmente las validaciones sobre los datos con el fin de poder importar un archivo XTF. Por ejemplo, puede que en una misma entidad varias personas quieran compartise estados intermedios (no finalizados, y por tanto, aún no necesariamente válidos) de un conjunto de datos. Para ello, ver la sección <a href="configuracion.html#modelos">Configuración -> Modelos</a> de la documentación.</p>
+</div>
 </div>
 <div class="section" id="exportar-datos">
 <h2>Exportar datos<a class="headerlink" href="#exportar-datos" title="Enlazar permanentemente con este título">¶</a></h2>
-<p>Esta funcionalidad permite realizar la exportación desde un esquema de base de datos conforme al LADM-COL a un archivo XTF.</p>
-<img src="_static/administracion_de_datos/export_data_qgismodelbaker.gif" alt="Exportar datos a XTF" style="height:500px;width:800px" />
+<p>Esta funcionalidad permite exportar desde un esquema de base de datos (si se utiliza PostgreSQL/PostGIS o SQL Server) o desde un archivo de base de datos con extensión .GPKG (si se utiliza GeoPackage), hacia un archivo de transferencia, con extensión .XTF.</p>
+<p><a class="" data-lightbox="Exportar datos a un archivo XTF" href="_static/administracion_de_datos/export_data_qgismodelbaker.gif" title="Exportar datos a un archivo XTF" data-title="Exportar datos a un archivo XTF"><img src="_static/administracion_de_datos/export_data_qgismodelbaker.gif" class="align-center" width="800px" alt="Exportar datos a un archivo XTF"/></a></p>
+<div class="note">
+<p class="admonition-title">IMPORTANTE</p>
+<p>Durante la exportación de datos a .XTF se llevan a cabo validaciones de los datos, según el modelo con el cuál sean conformes. Por ejemplo, se valida que los valores de dominios presentes en los datos, correspondan a los valores de dominios definidos en los modelos LADM-COL.</p>
 </div>
+<div class="seealso">
+<p class="admonition-title">TIP</p>
+<p>En algunas ocasiones puede ser útil deshabilitar temporalmente las validaciones sobre los datos con el fin de poder obtener un archivo XTF que se pueda intercambiar. Por ejemplo, puede que en una misma entidad varias personas quieran compartise estados intermedios (no finalizados, y por tanto, aún no necesariamente válidos) de un conjunto de datos. Para ello, ver la sección <a href="configuracion.html#modelos">Configuración -> Modelos</a> de la documentación.</p>
+</div></div>
 </div>
 
 
