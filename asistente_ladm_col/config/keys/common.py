@@ -39,6 +39,7 @@ MANAGER_ROLE = 'manager_role'
 ADVANCED_ROLE = 'advanced_role'
 ADMINISTRATOR_ROLE = 'administrator_role'
 
+REQUIRED_MODELS = "required_models"
 ROLE_SUPPORTED_MODELS = "role_supported_models"
 ROLE_HIDDEN_MODELS = "role_hidden_models"
 ROLE_CHECKED_MODELS = "role_checked_models"

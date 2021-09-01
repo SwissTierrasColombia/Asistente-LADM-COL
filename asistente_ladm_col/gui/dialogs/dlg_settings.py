@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 """
 /***************************************************************************
-                              Asistente LADM_COL
+                              Asistente LADM-COL
                              --------------------
         begin                : 2017-11-20
         git sha              : :%H$
@@ -34,6 +33,7 @@ from asistente_ladm_col.config.general_config import (DEFAULT_ENDPOINT_SOURCE_SE
                                                       DEFAULT_USE_SOURCE_SERVICE_SETTING,
                                                       DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE,
                                                       TOLERANCE_MAX_VALUE)
+from asistente_ladm_col.config.keys.common import REQUIRED_MODELS
 from asistente_ladm_col.config.transitional_system_config import TransitionalSystemConfig
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.gui.dialogs.dlg_custom_model_dir import CustomModelDirDialog
@@ -165,10 +165,10 @@ class SettingsDialog(QDialog, DIALOG_UI):
                 if i not in self._tab_pages_list:
                     self.tabWidget.removeTab(i)
 
-    def get_required_models(self):
+    def get_models_for_test_connection(self):
         """
         If required models have been set from context or via set_required_models(), we
-        respect them, they have the prioririty for the tests we do.
+        respect them, they have the priority for the tests we do.
 
         Otherwise, if selected role is not the current active role, we'll test if the DB has
         the models that such a selected role supports. Because if we test against the active
@@ -180,15 +180,15 @@ class SettingsDialog(QDialog, DIALOG_UI):
         Note we don't modify the member variable at all, otherwise subsequent calls to this
         method will never get into the first if clause.
 
-        :return: A list of required model keys.
+        :return: A dict of required key models or of role_supported and role_hidden model keys.
         """
-        required_models = self._required_models
-        if not required_models:
+        models = {REQUIRED_MODELS: self._required_models} if self._required_models else dict()
+        if not models:
             selected_role = self.get_selected_role()
             if self.roles.get_active_role() != selected_role:
-                required_models = self.roles.get_role_supported_models(selected_role)
+                models = self.roles.get_role_models(selected_role)
 
-        return required_models
+        return models
 
     def load_roles(self):
         """
@@ -276,14 +276,16 @@ class SettingsDialog(QDialog, DIALOG_UI):
             # Limit the validation (used in GeoPackage)
             test_level |= EnumTestLevel.SCHEMA_IMPORT
 
-        res, code, msg = db.test_connection(test_level)  # No need to pass required_models, we don't test that much
+        res, code, msg = db.test_connection(test_level)  # No need to pass models, we don't test that much
 
         if res:
             if self._action_type != EnumDbActionType.SCHEMA_IMPORT:
                 # Only check LADM-schema if we are not in an SCHEMA IMPORT.
                 # We know in an SCHEMA IMPORT, at this point the schema is still not LADM.
                 ladm_col_schema, code, msg = db.test_connection(EnumTestLevel.LADM,
-                                                                required_models=self.get_required_models())
+                                                                models=self.get_models_for_test_connection())
+                if not ladm_col_schema:
+                    self.logger.warning(__name__, "Test connection failed! Details: {}".format(msg))
 
             if not ladm_col_schema and self._action_type != EnumDbActionType.SCHEMA_IMPORT:
                 if self._blocking_mode:
@@ -523,7 +525,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         if self._action_type == EnumDbActionType.SCHEMA_IMPORT:
             test_level |= EnumTestLevel.SCHEMA_IMPORT
 
-        res, code, msg = db.test_connection(test_level)  # No need to pass required_models, we don't test that much
+        res, code, msg = db.test_connection(test_level)  # No need to pass models, we don't test that much
 
         if db is not None:
             db.close_connection()
@@ -534,7 +536,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
     def test_ladm_col_structure(self):
         db = self._get_db_connector_from_gui()
-        res, code, msg = db.test_connection(test_level=EnumTestLevel.LADM, required_models=self.get_required_models())
+        res, code, msg = db.test_connection(test_level=EnumTestLevel.LADM, models=self.get_models_for_test_connection())
 
         if db is not None:
             db.close_connection()

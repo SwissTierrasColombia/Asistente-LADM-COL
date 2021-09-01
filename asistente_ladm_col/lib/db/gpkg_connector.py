@@ -302,7 +302,7 @@ class GPKGConnector(FileDB):
         else:
             return False, EnumTestConnectionMsg.CONNECTION_COULD_NOT_BE_OPEN, msg
 
-    def _test_connection_to_ladm(self, required_models):
+    def _test_connection_to_ladm(self, models):
         database = os.path.basename(self._dict_conn_params['dbfile'])
         if not self._metadata_exists():
             return False, EnumTestConnectionMsg.INTERLIS_META_ATTRIBUTES_NOT_FOUND, QCoreApplication.translate(
@@ -318,7 +318,7 @@ class GPKGConnector(FileDB):
         if self._model_parser is None:
             self.model_parser = ModelParser(self)
 
-        res, code, msg = self.check_db_models(required_models)
+        res, code, msg = self.check_db_models(models)
         if not res:
             return res, code, msg
 

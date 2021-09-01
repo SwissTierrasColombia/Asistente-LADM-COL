@@ -39,7 +39,9 @@ from asistente_ladm_col.utils.singleton import Singleton
 class LADMColModelRegistry(metaclass=Singleton):
     """
     Registry of supported models.
-    The model in the registry is updated each time the current role changes.
+
+    The following info of registered models is updated each time the current role changes:
+        is_supported, hidden, checked and get_ili2db_params.
     """
     def __init__(self):
         self.logger = Logger()

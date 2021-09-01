@@ -694,7 +694,7 @@ class PGConnector(ClientServerDB):
         return True, EnumTestConnectionMsg.CONNECTION_TO_SCHEMA_SUCCESSFUL, QCoreApplication.translate("PGConnector",
                                                                                      "Connection to the database schema was successful.")
 
-    def _test_connection_to_ladm(self, required_models):
+    def _test_connection_to_ladm(self, models):
         if not self._metadata_exists():
             return False, EnumTestConnectionMsg.INTERLIS_META_ATTRIBUTES_NOT_FOUND, QCoreApplication.translate("PGConnector",
                                                       "The schema '{}' is not a valid LADM-COL schema. That is, the schema doesn't have the structure of the LADM-COL model.").format(
@@ -708,7 +708,7 @@ class PGConnector(ClientServerDB):
         if self._model_parser is None:
             self.model_parser = ModelParser(self)
 
-        res, code, msg = self.check_db_models(required_models)
+        res, code, msg = self.check_db_models(models)
         if not res:
             return res, code, msg
 
