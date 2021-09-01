@@ -9,6 +9,7 @@ start_app() # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.config.enums import (EnumTestConnectionMsg,
                                              EnumTestLevel)
+from asistente_ladm_col.config.keys.common import REQUIRED_MODELS
 from asistente_ladm_col.tests.utils import (get_gpkg_conn,
                                             get_pg_conn,
                                             restore_schema,
@@ -135,15 +136,15 @@ class TestDBTestConnection(unittest.TestCase):
     def test_gpkg_test_connection_required_models_success(self):
         print("\nINFO: Validate test_connection() for GeoPackage (required models (success): survey and snr)...")
         db = get_gpkg_conn('test_ladm_survey_model_gpkg')
-        res, code, msg = db.test_connection(required_models=[LADMNames.SURVEY_MODEL_KEY,
-                                                             LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY])
+        res, code, msg = db.test_connection(models={REQUIRED_MODELS: [LADMNames.SURVEY_MODEL_KEY,
+                                                                      LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY]})
         self.assertTrue(res, msg)
         self.assertEqual(code, EnumTestConnectionMsg.DB_WITH_VALID_LADM_COL_STRUCTURE)
 
     def test_gpkg_test_connection_required_models_error(self):
         print("\nINFO: Validate test_connection() for GeoPackage (required models (error): ant)...")
         db = get_gpkg_conn('test_ladm_survey_model_gpkg')
-        res, code, msg = db.test_connection(required_models=[LADMNames.VALUATION_MODEL_KEY])
+        res, code, msg = db.test_connection(models={REQUIRED_MODELS: [LADMNames.VALUATION_MODEL_KEY]})
         self.assertFalse(res, msg)
         self.assertEqual(code, EnumTestConnectionMsg.REQUIRED_LADM_MODELS_NOT_FOUND)
 

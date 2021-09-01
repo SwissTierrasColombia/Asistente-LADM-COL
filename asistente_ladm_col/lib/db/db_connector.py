@@ -24,12 +24,15 @@ from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
 
 from qgis.PyQt.QtCore import QObject
 
-from asistente_ladm_col.core.model_parser import ModelParser
 from asistente_ladm_col.config.enums import (EnumTestLevel,
                                              EnumUserLevel,
                                              EnumTestConnectionMsg)
-from asistente_ladm_col.core.db_mapping_registry import DBMappingRegistry
+from asistente_ladm_col.config.keys.common import (REQUIRED_MODELS,
+                                                   ROLE_HIDDEN_MODELS,
+                                                   ROLE_SUPPORTED_MODELS)
 from asistente_ladm_col.config.query_names import QueryNames
+from asistente_ladm_col.core.model_parser import ModelParser
+from asistente_ladm_col.core.db_mapping_registry import DBMappingRegistry
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.utils import normalize_iliname
 
@@ -144,60 +147,6 @@ class DBConnector(QObject):
         when the active role has changed, since the new one could support other models).
         """
         self._model_parser = None
-
-    def survey_model_exists(self):
-        if self.read_model_parser():
-            return self._model_parser.survey_model_exists()
-
-        return False
-
-    def valuation_model_exists(self):
-        if self.read_model_parser():
-            return self._model_parser.valuation_model_exists()
-
-        return False
-
-    def ladm_model_exists(self):
-        if self.read_model_parser():
-            return self._model_parser.ladm_model_exists()
-
-        return False
-
-    def cadastral_cartography_model_exists(self):
-        if self.read_model_parser():
-            return self._model_parser.cadastral_cartography_model_exists()
-
-        return False
-
-    def snr_data_model_exists(self):
-        if self.read_model_parser():
-            return self._model_parser.snr_data_model_exists()
-
-        return False
-
-    def supplies_integration_model_exists(self):
-        if self.read_model_parser():
-            return self._model_parser.supplies_integration_model_exists()
-
-        return False
-
-    def supplies_model_exists(self):
-        if self.read_model_parser():
-            return self._model_parser.supplies_model_exists()
-
-        return False
-
-    def ladm_col_model_exists(self, model_prefix):
-        if self.read_model_parser():
-            return self._model_parser.ladm_col_model_exists(model_prefix)
-
-        return False
-
-    def at_least_one_ladm_col_model_exists(self):
-        if self.read_model_parser():
-            return self._model_parser.at_least_one_ladm_col_model_exists()
-
-        return False
 
     def read_model_parser(self):
         if self._model_parser is None:
@@ -371,24 +320,21 @@ class DBConnector(QObject):
         """
         self._should_update_db_mapping_values = True
 
-    def check_db_models(self, required_models):
-        res = True
+    def check_db_models(self, models):
         code = EnumTestConnectionMsg.DB_MODELS_ARE_CORRECT
-        msg = ""
 
-        if required_models:
-            res, msg = self.check_required_models(required_models)
+        if models.get(REQUIRED_MODELS):
+            res, msg = self.check_required_models(models[REQUIRED_MODELS])
             if not res:
                 code = EnumTestConnectionMsg.REQUIRED_LADM_MODELS_NOT_FOUND
         else:
-            res = self.at_least_one_ladm_col_model_exists()
+            # 2 options here: if models has info, we test against such info, but if not,
+            # we test against the info from model parser. In both scenarios, we test that
+            # all hidden (base) models are in the DB and that at least one of the non-hidden
+            # models is present in the DB.
+            res, msg = self.at_least_one_ladm_col_model_exists(models)
             if not res:
                 code = EnumTestConnectionMsg.NO_LADM_MODELS_FOUND_IN_SUPPORTED_VERSION
-                msg = QCoreApplication.translate("DBConnector",
-                                                 "At least one LADM-COL model should exist in the required version (besides the basic ones: '{}')! Supported models are: '{}', but your DB has '{}'").format(
-                    ', '.join([m.full_name() for m in self.__ladmcol_models.hidden_and_supported_models()]),
-                    ', '.join([m.full_name() for m in self.__ladmcol_models.supported_models()]),
-                    ', '.join(self.get_models()))
 
         return res, code, msg
 
@@ -398,10 +344,94 @@ class DBConnector(QObject):
         not_found = [model for model in models if not self.ladm_col_model_exists(model)]
 
         if not_found:
-            msg = QCoreApplication.translate("SettingsDialog",
+            msg = QCoreApplication.translate("DBConnector",
                                              "The following required model(s) could not be found in the DB: {}.").format(', '.join(not_found))
 
         return not bool(not_found), msg
+
+    def at_least_one_ladm_col_model_exists(self, models):
+        if self.read_model_parser():
+            if models.get(ROLE_SUPPORTED_MODELS) and models.get(ROLE_HIDDEN_MODELS):
+                # We won't test against model registry (active role), but only against info in models dict
+
+                # All hidden models should exist in the DB
+                not_found = [model for model in models[ROLE_HIDDEN_MODELS] if not self.ladm_col_model_exists(model)]
+                if not_found:
+                    return False, QCoreApplication.translate("DBConnector",
+                                                             "The following required model(s) could not be found in the DB: '{}'.").format(', '.join(not_found))
+
+                # At least one non-hidden model should exist in the DB
+                non_hidden_models = [model for model in models[ROLE_SUPPORTED_MODELS] if model not in models[ROLE_HIDDEN_MODELS]]
+                found = [model for model in non_hidden_models if self.ladm_col_model_exists(model)]
+                if not found:
+                    return False, QCoreApplication.translate("DBConnector",
+                                                             "At least one of the following required model(s) should exist in the DB: '{}'. Your DB has '{}'.").format(
+                        ', '.join(non_hidden_models),
+                        ', '.join(self.get_models()))
+            else:
+                # Go to the model_parser, which deals with model_registry and will use info from the active role.
+                msg = ''
+                res = self._model_parser.at_least_one_ladm_col_model_exists()
+
+                if not res:
+                    msg = QCoreApplication.translate("DBConnector",
+                                                     "At least one LADM-COL model should exist in the required version (besides the basic ones: '{}')! Supported models are: '{}', but your DB has '{}'").format(
+                        ', '.join([m.full_name() for m in self.__ladmcol_models.hidden_and_supported_models()]),
+                        ', '.join([m.full_name() for m in self.__ladmcol_models.supported_models()]),
+                        ', '.join(self.get_models()))
+                    return False, msg
+
+            return True, ""
+
+        return False, "Error getting the model parser!"
+
+    def ladm_col_model_exists(self, model_prefix):
+        if self.read_model_parser():
+            return self._model_parser.ladm_col_model_exists(model_prefix)
+
+        return False
+
+    def survey_model_exists(self):
+        if self.read_model_parser():
+            return self._model_parser.survey_model_exists()
+
+        return False
+
+    def valuation_model_exists(self):
+        if self.read_model_parser():
+            return self._model_parser.valuation_model_exists()
+
+        return False
+
+    def ladm_model_exists(self):
+        if self.read_model_parser():
+            return self._model_parser.ladm_model_exists()
+
+        return False
+
+    def cadastral_cartography_model_exists(self):
+        if self.read_model_parser():
+            return self._model_parser.cadastral_cartography_model_exists()
+
+        return False
+
+    def snr_data_model_exists(self):
+        if self.read_model_parser():
+            return self._model_parser.snr_data_model_exists()
+
+        return False
+
+    def supplies_integration_model_exists(self):
+        if self.read_model_parser():
+            return self._model_parser.supplies_integration_model_exists()
+
+        return False
+
+    def supplies_model_exists(self):
+        if self.read_model_parser():
+            return self._model_parser.supplies_model_exists()
+
+        return False
 
     def open_connection(self):
         """
@@ -409,7 +439,7 @@ class DBConnector(QObject):
         """
         raise NotImplementedError
 
-    def test_connection(self, test_level=EnumTestLevel.LADM, user_level=EnumUserLevel.CONNECT, required_models=[]):
+    def test_connection(self, test_level=EnumTestLevel.LADM, user_level=EnumUserLevel.CONNECT, models={}):
         """
         'Template method' subclasses should overwrite it, proposing their own way to test a connection.
         """
@@ -418,7 +448,7 @@ class DBConnector(QObject):
     def _test_connection_to_db(self):
         raise NotImplementedError
 
-    def _test_connection_to_ladm(self, required_models):
+    def _test_connection_to_ladm(self, models):
         raise NotImplementedError
 
     def _db_should_have_basket_support(self):
@@ -479,7 +509,7 @@ class FileDB(DBConnector):
         """
         raise NotImplementedError
 
-    def test_connection(self, test_level=EnumTestLevel.LADM, user_level=EnumUserLevel.CONNECT, required_models=[]):
+    def test_connection(self, test_level=EnumTestLevel.LADM, user_level=EnumUserLevel.CONNECT, models={}):
         """We check several levels in order:
             1. FILE SERVER (DB file)
             2. DB
@@ -490,7 +520,9 @@ class FileDB(DBConnector):
 
         :param test_level: (EnumTestLevel) level of connection with postgres
         :param user_level: (EnumUserLevel) level of permissions a user has
-        :param required_models: A list of model prefixes that are mandatory for this DB connection
+        :param models: A dict of model prefixes that are required for this DB connection. If key is REQUIRED_MODELS,
+                       models are mandatory, whereas if keys are ROLE_SUPPORTED_MODELS and ROLE_HIDDEN_MODELS, we test
+                       the DB has at list all hidden (base) models and at least one non-hidden one.
         :return Triple: boolean result, message code, message text
         """
         is_schema_import = bool(test_level & EnumTestLevel.SCHEMA_IMPORT)
@@ -503,7 +535,7 @@ class FileDB(DBConnector):
         if not res or test_level == EnumTestLevel.DB or test_level == EnumTestLevel.DB_FILE:
             return res, code, msg
 
-        res, code, msg = self._test_connection_to_ladm(required_models)
+        res, code, msg = self._test_connection_to_ladm(models)
 
         if not res or test_level == EnumTestLevel.LADM:
             return res, code, msg
@@ -522,7 +554,7 @@ class ClientServerDB(DBConnector):
     def _test_connection_to_schema(self, user_level):
         raise NotImplementedError
 
-    def test_connection(self, test_level=EnumTestLevel.LADM, user_level=EnumUserLevel.CONNECT, required_models=[]):
+    def test_connection(self, test_level=EnumTestLevel.LADM, user_level=EnumUserLevel.CONNECT, models={}):
         """We check several levels in order:
             1. SERVER
             2. DB
@@ -532,7 +564,9 @@ class ClientServerDB(DBConnector):
 
         :param test_level: (EnumTestLevel) level of connection with postgres
         :param user_level: (EnumUserLevel) level of permissions a user has
-        :param required_models: A list of model prefixes that are mandatory for this DB connection
+        :param models: A list of model prefixes that are required for this DB connection. If key is REQUIRED_MODELS,
+                       models are mandatory, whereas if keys are ROLE_SUPPORTED_MODELS and ROLE_HIDDEN_MODELS, we test
+                       the DB has at list all hidden (base) models and at least one non-hidden one.
         :return Triple: boolean result, message code, message text
         """
         if test_level == EnumTestLevel.SERVER_OR_FILE:
@@ -551,7 +585,7 @@ class ClientServerDB(DBConnector):
         if not res or test_level == EnumTestLevel.DB_SCHEMA:
             return res, code, msg
 
-        res, code, msg = self._test_connection_to_ladm(required_models)
+        res, code, msg = self._test_connection_to_ladm(models)
 
         if not res or test_level == EnumTestLevel.LADM:
             return res, code, msg

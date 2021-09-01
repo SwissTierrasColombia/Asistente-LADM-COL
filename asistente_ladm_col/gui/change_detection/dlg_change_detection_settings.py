@@ -29,6 +29,7 @@ from qgis.gui import QgsMessageBar
 from asistente_ladm_col.config.general_config import (SUPPLIES_DB_SOURCE,
                                                       COLLECTED_DB_SOURCE,
                                                       SETTINGS_CONNECTION_TAB_INDEX)
+from asistente_ladm_col.config.keys.common import REQUIRED_MODELS
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
@@ -163,8 +164,8 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
         self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
 
         # First, update status of same_db button according to collected db connection
-        res_collected, code_collected, msg_collected = self._db_collected.test_connection(required_models=[LADMNames.SURVEY_MODEL_KEY])
-        res_supplies, code_supplies, msg_supplies = self._db_collected.test_connection(required_models=[LADMNames.SUPPLIES_MODEL_KEY])
+        res_collected, code_collected, msg_collected = self._db_collected.test_connection(models={REQUIRED_MODELS: [LADMNames.SURVEY_MODEL_KEY]})
+        res_supplies, code_supplies, msg_supplies = self._db_collected.test_connection(models={REQUIRED_MODELS: [LADMNames.SUPPLIES_MODEL_KEY]})
 
         if res_supplies:
             self.radio_button_same_db.setEnabled(True)
@@ -172,7 +173,7 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
             self.radio_button_same_db.setChecked(False)  # signal update the label
 
         if not self.radio_button_same_db.isChecked():
-            res_supplies, code_supplies, msg_supplies = self._db_supplies.test_connection(required_models=[LADMNames.SUPPLIES_MODEL_KEY])
+            res_supplies, code_supplies, msg_supplies = self._db_supplies.test_connection(models={REQUIRED_MODELS: [LADMNames.SUPPLIES_MODEL_KEY]})
 
         # Update collected db connection label
         db_description = self._db_collected.get_description_conn_string()
@@ -281,11 +282,11 @@ class ChangeDetectionSettingsDialog(QDialog, DIALOG_UI):
             pass  # Continue config db connections
 
     def collected_db_is_valid(self):
-        res, foo, bar = self._db_collected.test_connection(required_models=[LADMNames.SURVEY_MODEL_KEY])
+        res, foo, bar = self._db_collected.test_connection(models={REQUIRED_MODELS: [LADMNames.SURVEY_MODEL_KEY]})
         return res
 
     def supplies_db_is_valid(self):
-        res, foo, bar = self._db_supplies.test_connection(required_models=[LADMNames.SUPPLIES_MODEL_KEY])
+        res, foo, bar = self._db_supplies.test_connection(models={REQUIRED_MODELS: [LADMNames.SUPPLIES_MODEL_KEY]})
         return res
 
     def reject(self):

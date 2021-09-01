@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 /***************************************************************************
     begin                :    28/08/18
@@ -27,9 +26,11 @@ from asistente_ladm_col.utils.utils import is_version_valid
 
 class ModelParser(QObject):
     """
-    Assembles both Role supported models (known as registered models) and
-    models found in the DB to answer questions about the existence of a
-    registered model in the DB.
+    Assembles both plugin's registered models and models found in the DB to
+    answer questions about the existence of a registered model in the DB.
+
+    Note: Some info in the LADMColModelRegistry depends on the active role.
+          Have a look at its documentation.
     """
     def __init__(self, db):
         QObject.__init__(self)
@@ -90,6 +91,9 @@ class ModelParser(QObject):
         Check that all hidden_and_supported models (hidden models are supposed to be the building blocks
         of extended ones) are also supported in the DB and that there is at least one non-hidden_and_supported
         model that is supported in the DB.
+
+        Note: Both hidden/non hidden and supported models depend on the active role,
+              which is already taken into account by LADMColModelRegistry().
         """
         hidden_model_ids = [model.id() for model in LADMColModelRegistry().hidden_and_supported_models()]
         non_hidden_model_ids = [model.id() for model in LADMColModelRegistry().non_hidden_and_supported_models()]

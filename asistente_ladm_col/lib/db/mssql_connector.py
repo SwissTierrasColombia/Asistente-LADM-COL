@@ -476,7 +476,7 @@ class MSSQLConnector(ClientServerDB):
         return True, EnumTestConnectionMsg.CONNECTION_TO_DB_SUCCESSFUL, QCoreApplication.translate("MSSQLConnector",
                                                                                                        "Connection to the database was successful.")
 
-    def _test_connection_to_ladm(self, required_models):
+    def _test_connection_to_ladm(self, models):
         if not self._metadata_exists():
             return False, EnumTestConnectionMsg.INTERLIS_META_ATTRIBUTES_NOT_FOUND, QCoreApplication.translate(
                 "MSSQLConnector",
@@ -491,7 +491,7 @@ class MSSQLConnector(ClientServerDB):
         if self._model_parser is None:
             self.model_parser = ModelParser(self)
 
-        res, code, msg = self.check_db_models(required_models)
+        res, code, msg = self.check_db_models(models)
         if not res:
             return res, code, msg
 
