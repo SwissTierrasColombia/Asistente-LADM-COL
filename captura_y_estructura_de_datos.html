@@ -95,43 +95,106 @@
 <li class="toctree-l1"><a class="reference internal" href="configuracion.html">Configuración</a></li>
 <li class="toctree-l1"><a class="reference internal" href="administracion_de_datos.html">Administración de datos</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Captura y estructuración de datos</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#levantamiento-catastral">Levantamiento Catastral</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#topografia-y-representacion">Topografía y representación</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#crear-punto">Crear Punto</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#crear-lindero">Crear Lindero</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#topografia-y-representacion">Topografía y representación</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#crear-punto-lindero">Crear Punto Lindero</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#desde-un-archivo-csv-con-la-estructura-requerida">Desde un archivo CSV con la estructura requerida</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#desde-otra-capa-de-qgis-definiendo-un-mapeo-de-campos">Desde otra capa de QGIS (definiendo un mapeo de campos)</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#unidad-espacial">Unidad Espacial</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#crear-terreno">Crear Terreno</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#crear-construccion">Crear Construcción</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#crear-unidad-de-construccion">Crear Unidad de Construcción</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#crear-servidumbre-de-transito">Crear Servidumbre de tránsito</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#llenar-relaciones-de-servidumbre-de-transito">Llenar relaciones de servidumbre de tránsito</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#relacionar-direccion">Relacionar dirección</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#crear-punto-levantamiento">Crear Punto Levantamiento</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">Desde un archivo CSV con la estructura requerida</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">Desde otra capa de QGIS (definiendo un mapeo de campos)</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#unidad-administrativa-basica">Unidad Administrativa Básica</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#crear-predio">Crear Predio</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#crear-punto-de-control">Crear Punto de Control</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id3">Desde un archivo CSV con la estructura requerida</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id4">Desde otra capa de QGIS (definiendo un mapeo de campos)</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#interesado">Interesado</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#crear-interesado">Crear interesado</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#crear-agrupacion-de-interesados">Crear agrupación de interesados</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#rrr">RRR</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#crear-derecho">Crear derecho</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#crear-restriccion">Crear restricción</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#fuentes">Fuentes</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#crear-fuente-administrativa">Crear fuente administrativa</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#crear-fuente-espacial">Crear fuente espacial</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#crear-lindero">Crear Lindero</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#digitalizando">Digitalizando</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id5">Desde otra capa de QGIS (definiendo un mapeo de campos)</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#subir-archivos-fuentes-pendientes">Subir archivos fuentes pendientes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#unidad-espacial">Unidad Espacial</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#crear-terreno">Crear Terreno</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#seleccionando-linderos-existentes">Seleccionando linderos existentes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id6">Desde otra capa de QGIS (definiendo un mapeo de campos)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#crear-construccion">Crear Construcción</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id7">Digitalizando</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id8">Desde otra capa de QGIS (definiendo un mapeo de campos)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#crear-unidad-de-construccion">Crear Unidad de Construcción</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id9">Digitalizando</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id10">Desde otra capa de QGIS (definiendo un mapeo de campos)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#crear-servidumbre-de-transito">Crear Servidumbre de Tránsito</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#digitalizando-eje">Digitalizando eje</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#digitalizando-poligono">Digitalizando Polígono</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id11">Desde otra capa de QGIS (definiendo un mapeo de campos)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#llenar-relaciones-de-servidumbre-de-transito">Llenar relaciones de servidumbre de tránsito</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#relacionar-direccion">Relacionar dirección</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#ingresando-datos-manualmente-en-un-formulario">Ingresando datos manualmente en un formulario</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id12">Desde otra capa de QGIS (definiendo un mapeo de campos)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#unidad-administrativa-basica">Unidad Administrativa Básica</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#crear-predio">Crear Predio</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#basado-en-un-terreno-existente">Basado en un terreno existente</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#desde-otra-tabla-capa-de-qgis-configurando-un-mapeo-de-campos">Desde otra tabla/capa de QGIS (configurando un mapeo de campos)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#interesado">Interesado</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#crear-interesado">Crear interesado</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id13">Ingresando datos manualmente en un formulario</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id14">Desde otra capa de QGIS (definiendo un mapeo de campos)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#crear-agrupacion-de-interesados">Crear agrupación de interesados</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id15">Ingresando datos manualmente en un formulario</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#rrr">RRR</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#crear-derecho">Crear derecho</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id16">Ingresando datos manualmente en un formulario</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#desde-otra-tabla-de-qgis-definiendo-un-mapeo-de-campos">Desde otra tabla de QGIS (definiendo un mapeo de campos)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#crear-restriccion">Crear restricción</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id17">Ingresando datos manualmente en un formulario</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id18">Desde otra tabla de QGIS (definiendo un mapeo de campos)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#fuentes">Fuentes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#crear-fuente-administrativa">Crear fuente administrativa</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id19">Ingresando datos manualmente en un formulario</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id20">Desde otra capa de QGIS (definiendo un mapeo de campos)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#crear-fuente-espacial">Crear fuente espacial</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id21">Ingresando datos manualmente en un formulario</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id22">Desde otra capa de QGIS (definiendo un mapeo de campos)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#subir-archivos-fuente-pendientes">Subir archivos fuente pendientes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#arreglar-relaciones-ladm-col">Arreglar relaciones LADM-COL</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#como-usar-el-mapeo-de-campos">¿Cómo usar el mapeo de campos?</a></li>
 </ul>
@@ -222,290 +285,282 @@
             
   <div class="tex2jax_ignore mathjax_ignore section" id="captura-y-estructuracion-de-datos">
 <h1>Captura y estructuración de datos<a class="headerlink" href="#captura-y-estructuracion-de-datos" title="Enlazar permanentemente con este título">¶</a></h1>
-<div class="section" id="levantamiento-catastral">
-<h2>Levantamiento Catastral<a class="headerlink" href="#levantamiento-catastral" title="Enlazar permanentemente con este título">¶</a></h2>
 <div class="section" id="topografia-y-representacion">
-<h3>Topografía y representación<a class="headerlink" href="#topografia-y-representacion" title="Enlazar permanentemente con este título">¶</a></h3>
-<div class="section" id="crear-punto">
-<h4>Crear Punto<a class="headerlink" href="#crear-punto" title="Enlazar permanentemente con este título">¶</a></h4>
-<div class="section" id="punto-lindero">
-<h5>Punto lindero<a class="headerlink" href="#punto-lindero" title="Enlazar permanentemente con este título">¶</a></h5>
+<h2>Topografía y representación<a class="headerlink" href="#topografia-y-representacion" title="Enlazar permanentemente con este título">¶</a></h2>
+<div class="section" id="crear-punto-lindero">
+<h3>Crear Punto Lindero<a class="headerlink" href="#crear-punto-lindero" title="Enlazar permanentemente con este título">¶</a></h3>
 <p>Elige esta opción para cargar puntos a la capa <strong>Punto Lindero</strong> del modelo <em>LADM-COL</em>.</p>
-<p><strong>Punto Lindero</strong> es una clase especializada de <em>LA_Punto</em> que almacena puntos que definen un lindero.
-Lindero es una instancia de la clase <em>LA_BoundaryFaceString</em> y sus especializaciones.</p>
-<ol class="simple">
-<li><p>Desde un archivo CSV con la estructura requerida</p></li>
-</ol>
+<p><strong>Punto Lindero</strong> es una clase especializada de <em>COL_Punto</em> que almacena los puntos que definen un lindero.</p>
+<div class="section" id="desde-un-archivo-csv-con-la-estructura-requerida">
+<h4>Desde un archivo CSV con la estructura requerida<a class="headerlink" href="#desde-un-archivo-csv-con-la-estructura-requerida" title="Enlazar permanentemente con este título">¶</a></h4>
 <p>Agrega un archivo de valores separados por coma (CSV), seleccionando el delimitador y los campos que contienen las coordenadas de los puntos.</p>
-  <img src="_static/captura_y_estructura_de_datos/create_point_boundary.gif" alt="Crear punto lindero" style="width:800px" />
-<ol class="simple">
-<li><p>Desde otra capa de QGIS (definiendo un mapeo de campos)</p></li>
-</ol>
+<p><a class="" data-lightbox="Crear punto lindero" href="_static/captura_y_estructura_de_datos/create_point_boundary.gif" title="Crear punto lindero" data-title="Crear punto lindero"><img src="_static/captura_y_estructura_de_datos/create_point_boundary.gif" class="align-center" width="800px" alt="Crear punto lindero"/></a></p>
+</div>
+<div class="section" id="desde-otra-capa-de-qgis-definiendo-un-mapeo-de-campos">
+<h4>Desde otra capa de QGIS (definiendo un mapeo de campos)<a class="headerlink" href="#desde-otra-capa-de-qgis-definiendo-un-mapeo-de-campos" title="Enlazar permanentemente con este título">¶</a></h4>
 <p>Elige esta opción para abrir una ventana que te permite importar datos desde una tabla fuente hacia la tabla <strong>puntolindero</strong> de <em>LADM_COL</em>.</p>
 <p>Si la estructura de campos de las tablas de entrada y salida difiere, puedes definir un mapeo para transformar campos y establecer correspondencias entre ellos.</p>
 <p>Para usar esta función revisa <a class="reference external" href="#como-usar-el-mapeo-de-campos">¿Cómo usar el mapeo de campos?</a></p>
 </div>
-<div class="section" id="punto-levantamiento">
-<h5>Punto Levantamiento<a class="headerlink" href="#punto-levantamiento" title="Enlazar permanentemente con este título">¶</a></h5>
+</div>
+<div class="section" id="crear-punto-levantamiento">
+<h3>Crear Punto Levantamiento<a class="headerlink" href="#crear-punto-levantamiento" title="Enlazar permanentemente con este título">¶</a></h3>
 <p>Elige esta opción para cargar puntos a la capa <strong>Punto Levantamiento</strong> del modelo <em>LADM-COL</em>.</p>
-<p><strong>Punto Levantamiento</strong> es una clase especializada de <em>LA_Punto</em> que representa la posición horizontal de un vértice de construcción, servidumbre o auxiliares.</p>
-<ol class="simple">
-<li><p>Desde un archivo CSV con la estructura requerida</p></li>
-</ol>
+<p><strong>Punto Levantamiento</strong> es una clase especializada de <em>COL_Punto</em> que representa la posición horizontal de un vértice de construcción, servidumbre o auxiliares.</p>
+<div class="section" id="id1">
+<h4>Desde un archivo CSV con la estructura requerida<a class="headerlink" href="#id1" title="Enlazar permanentemente con este título">¶</a></h4>
 <p>Agrega un archivo de valores separados por coma (CSV), seleccionando el delimitador y los campos que contienen las coordenadas de los puntos.</p>
-<ol class="simple">
-<li><p>Desde otra capa de QGIS (definiendo un mapeo de campos)</p></li>
-</ol>
+</div>
+<div class="section" id="id2">
+<h4>Desde otra capa de QGIS (definiendo un mapeo de campos)<a class="headerlink" href="#id2" title="Enlazar permanentemente con este título">¶</a></h4>
 <p>Elige esta opción para abrir una ventana que te permite importar datos desde una tabla fuente hacia la tabla <strong>lindero</strong> de <em>LADM-COL</em>.</p>
 <p>Si la estructura de campos de las tablas de entrada y salida difiere, puedes definir un mapeo para transformar campos y establecer correspondencias entre ellos.</p>
 <p>Para usar esta función revisa <a class="reference external" href="#como-usar-el-mapeo-de-campos">¿Cómo usar el mapeo de campos?</a></p>
 </div>
-<div class="section" id="punto-de-control">
-<h5>Punto de Control<a class="headerlink" href="#punto-de-control" title="Enlazar permanentemente con este título">¶</a></h5>
+</div>
+<div class="section" id="crear-punto-de-control">
+<h3>Crear Punto de Control<a class="headerlink" href="#crear-punto-de-control" title="Enlazar permanentemente con este título">¶</a></h3>
 <p>Elige esta opción para cargar puntos a la capa <strong>Punto de Control</strong> del modelo <em>LADM-COL</em>.</p>
-<p><strong>Punto de Control</strong> es una clase especializada de <em>LA_Punto</em> que representa puntos de la densificación de la red local, que se utiliza en la operación catastral para el levantamiento de información fisica de los objetos territoriales.</p>
-<ol class="simple">
-<li><p>Desde un archivo CSV con la estructura requerida</p></li>
-</ol>
+<p><strong>Punto de Control</strong> es una clase especializada de <em>COL_Punto</em> que representa puntos de la densificación de la red local, que se utiliza en la operación catastral para el levantamiento de información física de los objetos territoriales.</p>
+<div class="section" id="id3">
+<h4>Desde un archivo CSV con la estructura requerida<a class="headerlink" href="#id3" title="Enlazar permanentemente con este título">¶</a></h4>
 <p>Agrega un archivo de valores separados por coma (CSV), seleccionando el delimitador y los campos que contienen las coordenadas de los puntos.</p>
-  <img src="_static/captura_y_estructura_de_datos/create_control_point.gif" alt="Crear punto control" style="width:800px" />
-<ol class="simple">
-<li><p>Desde otra capa de QGIS (definiendo un mapeo de campos)</p></li>
-</ol>
+<p><a class="" data-lightbox="Crear punto controlo" href="_static/captura_y_estructura_de_datos/create_control_point.gif" title="Crear punto control" data-title="Crear punto control"><img src="_static/captura_y_estructura_de_datos/create_control_point.gif" class="align-center" width="800px" alt="Crear punto control"/></a></p>
+</div>
+<div class="section" id="id4">
+<h4>Desde otra capa de QGIS (definiendo un mapeo de campos)<a class="headerlink" href="#id4" title="Enlazar permanentemente con este título">¶</a></h4>
 <p>Elige esta opción para abrir una ventana que te permite importar datos desde una tabla fuente hacia la tabla <strong>puntocontrol</strong> de <em>LADM-COL</em>.</p>
 <p>Si la estructura de campos de las tablas de entrada y salida difiere, puedes definir un mapeo para transformar campos y establecer correspondencias entre ellos.</p>
-<p>Para usar esta función revisa <a class="reference external" href="#como-usar-el-mapeo-de-campos">¿Cómo usar el mapeo de campos?</a></p>
+<p>Para usar esta función ver <a class="reference external" href="#como-usar-el-mapeo-de-campos">¿Cómo usar el mapeo de campos?</a></p>
 </div>
 </div>
 <div class="section" id="crear-lindero">
-<h4>Crear Lindero<a class="headerlink" href="#crear-lindero" title="Enlazar permanentemente con este título">¶</a></h4>
-<ol class="simple">
-<li><p>Digitalizando</p></li>
-</ol>
+<h3>Crear Lindero<a class="headerlink" href="#crear-lindero" title="Enlazar permanentemente con este título">¶</a></h3>
+<div class="section" id="digitalizando">
+<h4>Digitalizando<a class="headerlink" href="#digitalizando" title="Enlazar permanentemente con este título">¶</a></h4>
 <p>Elige esta opción si deseas agregar un <strong>Lindero</strong> usando las herramientas
 de digitalización de QGIS.</p>
-<p><strong>Lindero</strong> es una clase especializada de <em>LA_CadenaCarasLindero</em> que permite registrar los linderos. Dos linderos no pueden cruzarse ni superponerse.</p>
-  <img src="_static/captura_y_estructura_de_datos/create_boundary.gif" alt="Crear lindero" style="width:800px" />
-<ol class="simple">
-<li><p>Desde otra capa de QGIS (definiendo un mapeo de campos)</p></li>
-</ol>
+<p><strong>Lindero</strong> es una clase especializada de <em>COL_CadenaCarasLimite</em> que permite registrar los linderos. Dos linderos no pueden cruzarse ni superponerse.</p>
+<p><a class="" data-lightbox="Crear lindero" href="_static/captura_y_estructura_de_datos/create_boundary.gif" title="Crear lindero" data-title="Crear lindero"><img src="_static/captura_y_estructura_de_datos/create_boundary.gif" class="align-center" width="800px" alt="Crear lindero"/></a></p>
+</div>
+<div class="section" id="id5">
+<h4>Desde otra capa de QGIS (definiendo un mapeo de campos)<a class="headerlink" href="#id5" title="Enlazar permanentemente con este título">¶</a></h4>
 <p>Elige esta opción para abrir una ventana que te permite importar datos desde una tabla fuente hacia la tabla <strong>lindero</strong> de <em>LADM-COL</em>.</p>
 <p>Si la estructura de campos de las tablas de entrada y salida difiere, puedes definir un mapeo para transformar campos y establecer correspondencias entre ellos.</p>
 <p>Para usar esta función revisa <a class="reference external" href="#como-usar-el-mapeo-de-campos">¿Cómo usar el mapeo de campos?</a></p>
 </div>
 </div>
+</div>
 <div class="section" id="unidad-espacial">
-<h3>Unidad Espacial<a class="headerlink" href="#unidad-espacial" title="Enlazar permanentemente con este título">¶</a></h3>
+<h2>Unidad Espacial<a class="headerlink" href="#unidad-espacial" title="Enlazar permanentemente con este título">¶</a></h2>
 <div class="section" id="crear-terreno">
-<h4>Crear Terreno<a class="headerlink" href="#crear-terreno" title="Enlazar permanentemente con este título">¶</a></h4>
-<ol class="simple">
-<li><p>Seleccionando linderos existentes</p></li>
-</ol>
+<h3>Crear Terreno<a class="headerlink" href="#crear-terreno" title="Enlazar permanentemente con este título">¶</a></h3>
+<div class="section" id="seleccionando-linderos-existentes">
+<h4>Seleccionando linderos existentes<a class="headerlink" href="#seleccionando-linderos-existentes" title="Enlazar permanentemente con este título">¶</a></h4>
 <p>Elige esta opción si deseas crear un <strong>Terreno</strong> a partir de <em>Linderos</em> existentes.</p>
 <p><strong>Terreno</strong> es una porción de tierra con una extensión geográfica definida.</p>
-  <img src="_static/captura_y_estructura_de_datos/create_plot.gif" alt="Crear terreno" style="width:800px" />
-<ol class="simple">
-<li><p>Desde otra capa de QGIS (definiendo un mapeo de campos)</p></li>
-</ol>
+<p><a class="" data-lightbox="Crear terreno" href="_static/captura_y_estructura_de_datos/create_plot.gif" title="Crear terreno" data-title="Crear terreno"><img src="_static/captura_y_estructura_de_datos/create_plot.gif" class="align-center" width="800px" alt="Crear terreno"/></a></p>
+</div>
+<div class="section" id="id6">
+<h4>Desde otra capa de QGIS (definiendo un mapeo de campos)<a class="headerlink" href="#id6" title="Enlazar permanentemente con este título">¶</a></h4>
 <p>Elige esta opción para abrir una ventana que te permite importar datos desde una capa fuente hacia la capa <strong>terreno</strong> de LADM-COL.</p>
 <p>Si la estructura de campos de las capas de entrada y salida difiere, puedes definir un mapeo para transformar campos y establecer correspondencias entre ellos.</p>
 <p>Para usar esta función revisa <a class="reference external" href="#como-usar-el-mapeo-de-campos">¿Cómo usar el mapeo de campos?</a></p>
 </div>
+</div>
 <div class="section" id="crear-construccion">
-<h4>Crear Construcción<a class="headerlink" href="#crear-construccion" title="Enlazar permanentemente con este título">¶</a></h4>
-<ol class="simple">
-<li><p>Digitalizando</p></li>
-</ol>
+<h3>Crear Construcción<a class="headerlink" href="#crear-construccion" title="Enlazar permanentemente con este título">¶</a></h3>
+<div class="section" id="id7">
+<h4>Digitalizando<a class="headerlink" href="#id7" title="Enlazar permanentemente con este título">¶</a></h4>
 <p>Elige esta opción si deseas crear una <strong>Construcción</strong> a partir de <em>Puntos de Levantamiento</em> existentes.</p>
-<p><strong>Construcción</strong> es un tipo de espacio jurídico de la unidad de edificación del modelo LADM que almacena datos específicos del avalúo resultante del mismo.</p>
-  <img src="_static/captura_y_estructura_de_datos/create_building.gif" alt="Crear construcción" style="width:800px" />
-<ol class="simple">
-<li><p>Desde otra capa de QGIS (definiendo un mapeo de campos)</p></li>
-</ol>
+<p><strong>Construcción</strong> es un tipo de espacio jurídico de la unidad de edificación del modelo LADM-COL que almacena datos específicos del avalúo resultante del mismo.</p>
+<p><a class="" data-lightbox="Crear construcción" href="_static/captura_y_estructura_de_datos/create_building.gif" title="Crear construcción" data-title="Crear construcción"><img src="_static/captura_y_estructura_de_datos/create_building.gif" class="align-center" width="800px" alt="Crear construcción"/></a></p>
+</div>
+<div class="section" id="id8">
+<h4>Desde otra capa de QGIS (definiendo un mapeo de campos)<a class="headerlink" href="#id8" title="Enlazar permanentemente con este título">¶</a></h4>
 <p>Elige esta opción para abrir una ventana que te permite importar datos desde una capa fuente hacia la capa <strong>construcción</strong> de <em>LADM-COL</em>.</p>
 <p>Si la estructura de campos de las capas de entrada y salida difiere, puedes definir un mapeo para transformar campos y establecer correspondencias entre ellos.</p>
 <p>Para usar esta función revisa <a class="reference external" href="#como-usar-el-mapeo-de-campos">¿Cómo usar el mapeo de campos?</a></p>
 </div>
+</div>
 <div class="section" id="crear-unidad-de-construccion">
-<h4>Crear Unidad de Construcción<a class="headerlink" href="#crear-unidad-de-construccion" title="Enlazar permanentemente con este título">¶</a></h4>
-<ol class="simple">
-<li><p>Digitalizando</p></li>
-</ol>
+<h3>Crear Unidad de Construcción<a class="headerlink" href="#crear-unidad-de-construccion" title="Enlazar permanentemente con este título">¶</a></h3>
+<div class="section" id="id9">
+<h4>Digitalizando<a class="headerlink" href="#id9" title="Enlazar permanentemente con este título">¶</a></h4>
 <p>Elige esta opción si deseas crear una <strong>Unidad de Construcción</strong> a partir
 de <em>Puntos de Levantamiento</em> existentes.</p>
-<p><strong>Unidad de Construcción</strong> es cada conjunto de materiales consolidados dentro de un Predio que tiene unas caracteristicas específicas en cuanto a elementos constitutivos físicos y usos de los mismos.</p>
-  <img src="_static/captura_y_estructura_de_datos/create_building_unit.gif" alt="Crear unidad de construcción" style="width:800px" />
-<ol class="simple">
-<li><p>Desde otra capa de QGIS (definiendo un mapeo de campos)</p></li>
-</ol>
-<p>Elige esta opción para abrir una ventana que te permite importar datos desde una capa fuente hacia la capa <em>unidad de construccion</em> de <em>LADM_COL</em>.</p>
+<p><strong>Unidad de Construcción</strong> es cada conjunto de materiales consolidados dentro de un Predio que tiene unas características específicas en cuanto a elementos constitutivos físicos y usos de los mismos.</p>
+<p><a class="" data-lightbox="Crear unidad de construcción" href="_static/captura_y_estructura_de_datos/create_building_unit.gif" title="Crear unidad de construcción" data-title="Crear unidad de construcción"><img src="_static/captura_y_estructura_de_datos/create_building_unit.gif" class="align-center" width="800px" alt="Crear unidad de construcción"/></a></p>
+</div>
+<div class="section" id="id10">
+<h4>Desde otra capa de QGIS (definiendo un mapeo de campos)<a class="headerlink" href="#id10" title="Enlazar permanentemente con este título">¶</a></h4>
+<p>Elige esta opción para abrir una ventana que te permite importar datos desde una capa fuente hacia la capa <em>unidad de construcción</em> de <em>LADM_COL</em>.</p>
 <p>Si la estructura de campos de las capas de entrada y salida difiere, puedes definir un mapeo para transformar campos y establecer correspondencias entre ellos.</p>
 <p>Para usar esta función revisa <a class="reference external" href="#como-usar-el-mapeo-de-campos">¿Cómo usar el mapeo de campos?</a></p>
 </div>
+</div>
 <div class="section" id="crear-servidumbre-de-transito">
-<h4>Crear Servidumbre de tránsito<a class="headerlink" href="#crear-servidumbre-de-transito" title="Enlazar permanentemente con este título">¶</a></h4>
-<ol class="simple">
-<li><p>Digitalizando eje</p></li>
-</ol>
+<h3>Crear Servidumbre de Tránsito<a class="headerlink" href="#crear-servidumbre-de-transito" title="Enlazar permanentemente con este título">¶</a></h3>
+<p><strong>Servidumbre de tránsito</strong> es un tipo de unidad espacial del modelo LADM que premite la representación de servidumbres de tránsito asociadas a una <em>COL_UnidadAdministrativaBasica</em>.</p>
+<div class="section" id="digitalizando-eje">
+<h4>Digitalizando eje<a class="headerlink" href="#digitalizando-eje" title="Enlazar permanentemente con este título">¶</a></h4>
 <p>Elige esta opción si deseas crear una <strong>Servidumbre de tránsito</strong> digitalizando el eje a partir de <em>Puntos de Levantamiento</em> existentes y dando un valor de ancho.</p>
-<p><strong>Servidumbre de tránsito</strong> es un tipo de unidad espacial del modelo LADM que premite la representación de servidumbres de tránsito asociadas a una <em>LA_BAUnit</em>.</p>
-  <img src="_static/captura_y_estructura_de_datos/create_right_of_way_line.gif" alt="Crear servidumbre de tránsito digitalizando línea" style="width:800px" />
-<ol class="simple">
-<li><p>Digitalizando Polígono</p></li>
-</ol>
+<p><a class="" data-lightbox="Crear servidumbre de tránsito digitalizando línea" href="_static/captura_y_estructura_de_datos/create_right_of_way_line.gif" title="Crear servidumbre de tránsito digitalizando línea" data-title="Crear servidumbre de tránsito digitalizando línea"><img src="_static/captura_y_estructura_de_datos/create_right_of_way_line.gif" class="align-center" width="800px" alt="Crear servidumbre de tránsito digitalizando línea"/></a></p>
+</div>
+<div class="section" id="digitalizando-poligono">
+<h4>Digitalizando Polígono<a class="headerlink" href="#digitalizando-poligono" title="Enlazar permanentemente con este título">¶</a></h4>
 <p>Elige esta opción si deseas crear una <strong>Servidumbre de tránsito</strong> digitalizando un polígono a partir de <em>Puntos de Levantamiento</em> existentes.</p>
-<p><strong>Servidumbre de tránsito</strong> es un tipo de unidad espacial del modelo LADM que premite la representación de servidumbres de paso asociadas a una <em>LA_BAUnit</em>.</p>
-  <img src="_static/captura_y_estructura_de_datos/create_right_of_way_polygon.gif" alt="Crear servidumbre de paso digitalizando polígono" style="width:800px" />
-<ol class="simple">
-<li><p>Desde otra capa de QGIS (definiendo un mapeo de campos)</p></li>
-</ol>
+<p><a class="" data-lightbox="Crear servidumbre de paso digitalizando polígono" href="_static/captura_y_estructura_de_datos/create_right_of_way_polygon.gif" title="Crear servidumbre de paso digitalizando polígono" data-title="Crear servidumbre de paso digitalizando polígono"><img src="_static/captura_y_estructura_de_datos/create_right_of_way_polygon.gif" class="align-center" width="800px" alt="Crear servidumbre de paso digitalizando polígono"/></a></p>
+</div>
+<div class="section" id="id11">
+<h4>Desde otra capa de QGIS (definiendo un mapeo de campos)<a class="headerlink" href="#id11" title="Enlazar permanentemente con este título">¶</a></h4>
 <p>Elige esta opción para abrir una ventana que te permite importar datos desde una capa fuente hacia la
 capa <strong>Servidumbre de tránsito</strong> de <em>LADM_COL</em>.</p>
 <p>Si la estructura de campos de las capas de entrada y salida difiere, puedes definir un mapeo para transformar campos y establecer correspondencias entre ellos.</p>
 <p>Para usar esta función revisa <a class="reference external" href="#como-usar-el-mapeo-de-campos">¿Cómo usar el mapeo de campos?</a></p>
 </div>
+</div>
 <div class="section" id="llenar-relaciones-de-servidumbre-de-transito">
-<h4>Llenar relaciones de servidumbre de tránsito<a class="headerlink" href="#llenar-relaciones-de-servidumbre-de-transito" title="Enlazar permanentemente con este título">¶</a></h4>
+<h3>Llenar relaciones de servidumbre de tránsito<a class="headerlink" href="#llenar-relaciones-de-servidumbre-de-transito" title="Enlazar permanentemente con este título">¶</a></h3>
 <p>Ver <a class="reference external" href="barra_de_herramientas.html#llenar-relaciones-de-servidumbre-de-paso">Barra de herramientas</a>.</p>
 </div>
 <div class="section" id="relacionar-direccion">
-<h4>Relacionar dirección<a class="headerlink" href="#relacionar-direccion" title="Enlazar permanentemente con este título">¶</a></h4>
+<h3>Relacionar dirección<a class="headerlink" href="#relacionar-direccion" title="Enlazar permanentemente con este título">¶</a></h3>
 <p>Para asociar una dirección a una unidad espacial (terreno, construcción o unidad de construcción) existen dos opciones:</p>
-<ol class="simple">
-<li><p>Ingresando datos manualmente en un formulario</p></li>
-</ol>
+<div class="section" id="ingresando-datos-manualmente-en-un-formulario">
+<h4>Ingresando datos manualmente en un formulario<a class="headerlink" href="#ingresando-datos-manualmente-en-un-formulario" title="Enlazar permanentemente con este título">¶</a></h4>
 <p>Tenemos dos formas de relacionar una dirección a crear mediante formulario:</p>
 <p>a. <strong>Seleccionando en el mapa</strong>: Aquí seleccionas una <em>Unidad Espacial</em> e inmediatamente este regresará al wizard activando el botón para crear la relación.</p>
-  <img src="_static/captura_y_estructura_de_datos/associate_extaddress_select_by_map.gif" alt="Relacionar dirección seleccionando en el mapa" style="width:800px" />
+<p><a class="" data-lightbox="Relacionar dirección seleccionando en el mapa" href="_static/captura_y_estructura_de_datos/associate_extaddress_select_by_map.gif" title="Relacionar dirección seleccionando en el mapa" data-title="Relacionar dirección seleccionando en el mapa"><img src="_static/captura_y_estructura_de_datos/associate_extaddress_select_by_map.gif" class="align-center" width="800px" alt="Relacionar dirección seleccionando en el mapa"/></a></p>
 <p>b. <strong>Seleccionando por expresión</strong>: aquí seleccionas una Unidad Espacial usando una expresión. La expresión debe ser válida y debe tomar solo un objeto espacial. Si la expresión toma dos o más objetos espaciales, el botón para crear la relación no se activará.</p>
-  <img src="_static/captura_y_estructura_de_datos/associate_extaddress_select_by_expression.gif" alt="Relacionar dirección seleccionando por expresión" style="width:800px" />
-<ol class="simple">
-<li><p>Desde otra capa de QGIS (definiendo un mapeo de campos)</p></li>
-</ol>
+<p><a class="" data-lightbox="Relacionar dirección seleccionando por expresión" href="_static/captura_y_estructura_de_datos/associate_extaddress_select_by_expression.gif" title="Relacionar dirección seleccionando por expresión" data-title="Relacionar dirección seleccionando por expresión"><img src="_static/captura_y_estructura_de_datos/associate_extaddress_select_by_expression.gif" class="align-center" width="800px" alt="Relacionar dirección seleccionando por expresión"/></a></p>
+</div>
+<div class="section" id="id12">
+<h4>Desde otra capa de QGIS (definiendo un mapeo de campos)<a class="headerlink" href="#id12" title="Enlazar permanentemente con este título">¶</a></h4>
 <p>Elige esta opción para abrir una ventana que te permite importar datos desde una capa fuente  hacia la capa Dirección de <em>LADM-COL</em>.</p>
 <p>Si la estructura de campos de las capas de entrada y salida difiere, puedes definir un mapeo para transformar campos y establecer correspondencias entre ellos.</p>
 <p>Para usar esta función revisa <a class="reference external" href="#como-usar-el-mapeo-de-campos">¿Cómo usar el mapeo de campos?</a></p>
 </div>
 </div>
+</div>
 <div class="section" id="unidad-administrativa-basica">
-<h3>Unidad Administrativa Básica<a class="headerlink" href="#unidad-administrativa-basica" title="Enlazar permanentemente con este título">¶</a></h3>
+<h2>Unidad Administrativa Básica<a class="headerlink" href="#unidad-administrativa-basica" title="Enlazar permanentemente con este título">¶</a></h2>
 <div class="section" id="crear-predio">
-<h4>Crear Predio<a class="headerlink" href="#crear-predio" title="Enlazar permanentemente con este título">¶</a></h4>
-<ol class="simple">
-<li><p>Basado en un terreno existente</p></li>
-</ol>
+<h3>Crear Predio<a class="headerlink" href="#crear-predio" title="Enlazar permanentemente con este título">¶</a></h3>
+<div class="section" id="basado-en-un-terreno-existente">
+<h4>Basado en un terreno existente<a class="headerlink" href="#basado-en-un-terreno-existente" title="Enlazar permanentemente con este título">¶</a></h4>
 <p>Elige esta opción si deseas crear un <strong>Predio</strong> basado en terrenos existentes.</p>
-<p><strong>Predio</strong> es una clase <em>BA Unit</em> especializada, que describe la unidad administrativa básica del catastro colombiano. El <strong>Predio</strong> es la unidad jurídica territorial, que está formada por el terreno y puede o no tener construcciones asociadas.</p>
-  <img src="_static/captura_y_estructura_de_datos/create_parcel.gif" alt="Crear predio" style="width:800px" />
-<ol class="simple">
-<li><p>Desde otra tabla/capa de QGIS (configurando un mapeo de campos)</p></li>
-</ol>
+<p><strong>Predio</strong> es una especialización de <em>COL_UnidadAdministrativaBasica</em>, que describe la unidad administrativa básica del catastro colombiano. El <strong>Predio</strong> es la unidad jurídica territorial, que está formada por el terreno y puede o no tener construcciones asociadas.</p>
+<p><a class="" data-lightbox="Crear predio" href="_static/captura_y_estructura_de_datos/create_parcel.gif" title="Crear predio" data-title="Crear predio"><img src="_static/captura_y_estructura_de_datos/create_parcel.gif" class="align-center" width="800px" alt="Crear predio"/></a></p>
+</div>
+<div class="section" id="desde-otra-tabla-capa-de-qgis-configurando-un-mapeo-de-campos">
+<h4>Desde otra tabla/capa de QGIS (configurando un mapeo de campos)<a class="headerlink" href="#desde-otra-tabla-capa-de-qgis-configurando-un-mapeo-de-campos" title="Enlazar permanentemente con este título">¶</a></h4>
 <p>Elige esta opción para abrir una ventana que te permita importar datos de una tabla fuente en la tabla <em>LADM-COL</em> <strong>predio</strong>.</p>
 <p>Si la estructura del campo de entrada y el campo de salida difieren, puedes establecer un mapeo de campos para definir las transformaciones y correspondencias.</p>
 <p>Para usar esta función revisa <a class="reference external" href="#como-usar-el-mapeo-de-campos">¿Cómo usar el mapeo de campos?</a></p>
 </div>
 </div>
+</div>
 <div class="section" id="interesado">
-<h3>Interesado<a class="headerlink" href="#interesado" title="Enlazar permanentemente con este título">¶</a></h3>
+<h2>Interesado<a class="headerlink" href="#interesado" title="Enlazar permanentemente con este título">¶</a></h2>
 <div class="section" id="crear-interesado">
-<h4>Crear interesado<a class="headerlink" href="#crear-interesado" title="Enlazar permanentemente con este título">¶</a></h4>
-<ol class="simple">
-<li><p>Ingresando datos manualmente en un formulario</p></li>
-</ol>
+<h3>Crear interesado<a class="headerlink" href="#crear-interesado" title="Enlazar permanentemente con este título">¶</a></h3>
+<div class="section" id="id13">
+<h4>Ingresando datos manualmente en un formulario<a class="headerlink" href="#id13" title="Enlazar permanentemente con este título">¶</a></h4>
 <p>Elige esta opción si deseas agregar un <strong>Interesado</strong> llenando un formulario.</p>
-<p><strong>Interesado</strong> es una persona natural o no natural que tiene derechos o a la
+<p><strong>Interesado</strong> es una persona natural o jurídica que tiene derechos o a la
 que le recaen restricciones referidas a uno o más <em>predios</em>.</p>
-  <img src="_static/captura_y_estructura_de_datos/create_party.gif" alt="Crear interesado" style="width:800px" />
-<ol class="simple">
-<li><p>Desde otra capa de QGIS (definiendo un mapeo de campos)</p></li>
-</ol>
+<p><a class="" data-lightbox="Crear interesado" href="_static/captura_y_estructura_de_datos/create_party.gif" title="Crear interesado" data-title="Crear interesado"><img src="_static/captura_y_estructura_de_datos/create_party.gif" class="align-center" width="800px" alt="Crear interesado"/></a></p>
+</div>
+<div class="section" id="id14">
+<h4>Desde otra capa de QGIS (definiendo un mapeo de campos)<a class="headerlink" href="#id14" title="Enlazar permanentemente con este título">¶</a></h4>
 <p>Elige esta opción para abrir una ventana que te permite importar datos desde una tabla fuente hacia la tabla <strong>col_interesado</strong> de <em>LADM-COL</em>.</p>
 <p>Si la estructura de campos de las tablas de entrada y salida difiere, puedes definir un mapeo para transformar campos y establecer correspondencias entre ellos.</p>
 <p>Para usar esta función revisa <a class="reference external" href="#como-usar-el-mapeo-de-campos">¿Cómo usar el mapeo de campos?</a></p>
 </div>
+</div>
 <div class="section" id="crear-agrupacion-de-interesados">
-<h4>Crear agrupación de interesados<a class="headerlink" href="#crear-agrupacion-de-interesados" title="Enlazar permanentemente con este título">¶</a></h4>
-<ol class="simple">
-<li><p>Ingresando datos manualmente en un formulario</p></li>
-</ol>
+<h3>Crear agrupación de interesados<a class="headerlink" href="#crear-agrupacion-de-interesados" title="Enlazar permanentemente con este título">¶</a></h3>
+<div class="section" id="id15">
+<h4>Ingresando datos manualmente en un formulario<a class="headerlink" href="#id15" title="Enlazar permanentemente con este título">¶</a></h4>
 <p>Elige esta opción si deseas agregar una <strong>Agrupación de Interesados</strong> usando un formulario.</p>
 <p><strong>Agrupación de Interesados</strong> registra interesados que representan a grupos de personas. Se registra el grupo en sí, independientemente de las personas por separado. Es lo que ocurre, por ejemplo, con un grupo étnico o un groupo civil.</p>
 <p>Esta <strong>Agrupación de Interesados</strong> tiene derechos o a la que le recaen restricciones referidas a uno o más predios.</p>
 <p>Puedes insertar fracciones para tener el porcentaje de correspondencia en la <strong>Agrupación de Interesados</strong>, la suma de las fracciones debe ser igual a 1, de lo contrario la creación de la agrupación no será permitida.</p>
-  <img src="_static/captura_y_estructura_de_datos/group_party.gif" alt="Crear agrupación de interesados" style="width:800px" />
+<p><a class="" data-lightbox="Crear agrupación de interesados" href="_static/captura_y_estructura_de_datos/group_party.gif" title="Crear agrupación de interesados" data-title="Crear agrupación de interesados"><img src="_static/captura_y_estructura_de_datos/group_party.gif" class="align-center" width="800px" alt="Crear agrupación de interesados"/></a></p>
+</div>
 </div>
 </div>
 <div class="section" id="rrr">
-<h3>RRR<a class="headerlink" href="#rrr" title="Enlazar permanentemente con este título">¶</a></h3>
+<h2>RRR<a class="headerlink" href="#rrr" title="Enlazar permanentemente con este título">¶</a></h2>
 <div class="section" id="crear-derecho">
-<h4>Crear derecho<a class="headerlink" href="#crear-derecho" title="Enlazar permanentemente con este título">¶</a></h4>
-<ol class="simple">
-<li><p>Ingresando datos manualmente en un formulario</p></li>
-</ol>
+<h3>Crear derecho<a class="headerlink" href="#crear-derecho" title="Enlazar permanentemente con este título">¶</a></h3>
+<div class="section" id="id16">
+<h4>Ingresando datos manualmente en un formulario<a class="headerlink" href="#id16" title="Enlazar permanentemente con este título">¶</a></h4>
 <p>Elige esta opción si has creado previamente por lo menos una Fuente Administrativa y deseas relacionarla a un nuevo <strong>Derecho</strong> que estás a punto de crear usando un formulario.</p>
-<p><strong>COL_Derecho</strong> es una clase que registra las instancias de los derechos que un interesado ejerce sobre un predio. Es una especialización de la clase <em>LA_RRR</em> del propio modelo.</p>
-  <img src="_static/captura_y_estructura_de_datos/create_right.gif" alt="Crear derecho" style="width:800px" />
-<ol class="simple">
-<li><p>Desde otra tabla de QGIS (definiendo un mapeo de campos)</p></li>
-</ol>
+<p><strong>COL_Derecho</strong> es una clase que registra las instancias de los derechos que un interesado ejerce sobre un predio. Es una especialización de la clase <em>COL_DRR</em> del propio modelo.</p>
+<p><a class="" data-lightbox="Crear derecho" href="_static/captura_y_estructura_de_datos/create_right.gif" title="Crear derecho" data-title="Crear derecho"><img src="_static/captura_y_estructura_de_datos/create_right.gif" class="align-center" width="800px" alt="Crear derecho"/></a></p>
+</div>
+<div class="section" id="desde-otra-tabla-de-qgis-definiendo-un-mapeo-de-campos">
+<h4>Desde otra tabla de QGIS (definiendo un mapeo de campos)<a class="headerlink" href="#desde-otra-tabla-de-qgis-definiendo-un-mapeo-de-campos" title="Enlazar permanentemente con este título">¶</a></h4>
 <p>Elige esta opción para abrir una ventana que te permite importar datos desde una tabla fuente hacia la tabla <strong>col_derecho</strong> de <em>LADM-COL</em>.</p>
 <p>Si la estructura de campos de las tablas de entrada y salida difiere, puedes definir un mapeo para transformar campos y establecer correspondencias entre ellos.</p>
 <p>Para usar esta función revisa <a class="reference external" href="#como-usar-el-mapeo-de-campos">¿Cómo usar el mapeo de campos?</a></p>
 </div>
+</div>
 <div class="section" id="crear-restriccion">
-<h4>Crear restricción<a class="headerlink" href="#crear-restriccion" title="Enlazar permanentemente con este título">¶</a></h4>
-<ol class="simple">
-<li><p>Ingresando datos manualmente en un formulario</p></li>
-</ol>
+<h3>Crear restricción<a class="headerlink" href="#crear-restriccion" title="Enlazar permanentemente con este título">¶</a></h3>
+<div class="section" id="id17">
+<h4>Ingresando datos manualmente en un formulario<a class="headerlink" href="#id17" title="Enlazar permanentemente con este título">¶</a></h4>
 <p>Elige esta opción si has creado previamente por lo menos una Fuente Administrativa y deseas relacionarla a una nueva <strong>Restricción</strong> que estás a punto de crear usando un formulario.</p>
 <p><strong>COL_Restricción</strong> almacena las restricciones a las que está sometido un
 predio y que inciden sobre los derechos que pueden ejercerse sobre él.</p>
-  <img src="_static/captura_y_estructura_de_datos/create_restriction.gif" alt="Crear restricción" style="width:800px" />
-<ol class="simple">
-<li><p>Desde otra tabla de QGIS (definiendo un mapeo de campos)</p></li>
-</ol>
+<p><a class="" data-lightbox="Crear restricción" href="_static/captura_y_estructura_de_datos/create_restriction.gif" title="Crear restricción" data-title="Crear restricción"><img src="_static/captura_y_estructura_de_datos/create_restriction.gif" class="align-center" width="800px" alt="Crear restricción"/></a></p>
+</div>
+<div class="section" id="id18">
+<h4>Desde otra tabla de QGIS (definiendo un mapeo de campos)<a class="headerlink" href="#id18" title="Enlazar permanentemente con este título">¶</a></h4>
 <p>Elige esta opción para abrir una ventana que te permite importar datos
 desde una tabla fuente hacia la tabla <strong>col_restriccion</strong> de LADM-COL.</p>
 <p>Si la estructura de campos de las tablas de entrada y salida difiere, puedes definir un mapeo para transformar campos y establecer correspondencias entre ellos.</p>
 <p>Para usar esta función revisa <a class="reference external" href="#como-usar-el-mapeo-de-campos">¿Cómo usar el mapeo de campos?</a></p>
 </div>
 </div>
+</div>
 <div class="section" id="fuentes">
-<h3>Fuentes<a class="headerlink" href="#fuentes" title="Enlazar permanentemente con este título">¶</a></h3>
+<h2>Fuentes<a class="headerlink" href="#fuentes" title="Enlazar permanentemente con este título">¶</a></h2>
 <div class="section" id="crear-fuente-administrativa">
-<h4>Crear fuente administrativa<a class="headerlink" href="#crear-fuente-administrativa" title="Enlazar permanentemente con este título">¶</a></h4>
-<ol class="simple">
-<li><p>Ingresando datos manualmente en un formulario</p></li>
-</ol>
+<h3>Crear fuente administrativa<a class="headerlink" href="#crear-fuente-administrativa" title="Enlazar permanentemente con este título">¶</a></h3>
+<div class="section" id="id19">
+<h4>Ingresando datos manualmente en un formulario<a class="headerlink" href="#id19" title="Enlazar permanentemente con este título">¶</a></h4>
 <p>Elige esta opción si deseas agregar una <strong>Fuente administrativa</strong> usando un formulario.</p>
 <p><strong>Fuente administrativa</strong> es una especialización de la clase <em>COL_Fuente</em> para almacenar aquellas fuentes constituidas por documentos (documento hipotecario, documentos notariales, documentos históricos, etc.) que documentan la relación entre instancias de interesados y de predios.</p>
-  <img src="_static/captura_y_estructura_de_datos/create_admin_source.gif" alt="Crear fuente administrativa" style="width:800px" />
-<ol class="simple">
-<li><p>Desde otra capa de QGIS (definiendo un mapeo de campos)</p></li>
-</ol>
+<p><a class="" data-lightbox="Crear fuente administrativa" href="_static/captura_y_estructura_de_datos/create_admin_source.gif" title="Crear fuente administrativa" data-title="Crear fuente administrativa"><img src="_static/captura_y_estructura_de_datos/create_admin_source.gif" class="align-center" width="800px" alt="Crear fuente administrativa"/></a></p>
+</div>
+<div class="section" id="id20">
+<h4>Desde otra capa de QGIS (definiendo un mapeo de campos)<a class="headerlink" href="#id20" title="Enlazar permanentemente con este título">¶</a></h4>
 <p>Elige esta opción para abrir una ventana que te permite importar datos desde una tabla fuente hacia la tabla <strong>col_fuenteadministrativa</strong> de <em>LADM-COL</em>.</p>
 <p>Si la estructura de campos de las tablas de entrada y salida difiere, puedes definir un mapeo para transformar campos y establecer correspondencias entre ellos.</p>
 <p>Para usar esta función revisa <a class="reference external" href="#como-usar-el-mapeo-de-campos">¿Cómo usar el mapeo de campos?</a></p>
 </div>
+</div>
 <div class="section" id="crear-fuente-espacial">
-<h4>Crear fuente espacial<a class="headerlink" href="#crear-fuente-espacial" title="Enlazar permanentemente con este título">¶</a></h4>
-<ol class="simple">
-<li><p>Ingresando datos manualmente en un formulario</p></li>
-</ol>
+<h3>Crear fuente espacial<a class="headerlink" href="#crear-fuente-espacial" title="Enlazar permanentemente con este título">¶</a></h3>
+<div class="section" id="id21">
+<h4>Ingresando datos manualmente en un formulario<a class="headerlink" href="#id21" title="Enlazar permanentemente con este título">¶</a></h4>
 <p>Elige esta opción si deseas agregar una <strong>Fuente Espacial</strong> usando un formulario.</p>
 <p><strong>Fuente espacial</strong> es una especialización de la clase <em>COL_Fuente</em> para almacenar las fuentes constituidas por datos espaciales (entidades geográficas, imágenes de satélite, vuelos fotogramétricos, listados de coordenadas, mapas, planos antiguos o modernos, descripción de localizaciones, etc.) que documentan técnicamente la relación entre instancias de interesados y de predios.</p>
-  <img src="_static/captura_y_estructura_de_datos/create_spatial_source.gif" alt="Crear fuente espacial" style="width:800px" />
-<ol class="simple">
-<li><p>Desde otra capa de QGIS (definiendo un mapeo de campos)</p></li>
-</ol>
+<p><a class="" data-lightbox="Crear fuente espacial" href="_static/captura_y_estructura_de_datos/create_spatial_source.gif" title="Crear fuente espacial" data-title="Crear fuente espacial"><img src="_static/captura_y_estructura_de_datos/create_spatial_source.gif" class="align-center" width="800px" alt="Crear fuente espacial"/></a></p>
+</div>
+<div class="section" id="id22">
+<h4>Desde otra capa de QGIS (definiendo un mapeo de campos)<a class="headerlink" href="#id22" title="Enlazar permanentemente con este título">¶</a></h4>
 <p>Elige esta opción para abrir una ventana que te permite importar datos desde una tabla fuente hacia la tabla <strong>col_fuenteespacial</strong> de <em>LADM_COL</em>.</p>
 <p>Si la estructura de campos de las tablas de entrada y salida difiere, puedes definir un mapeo para transformar campos y establecer correspondencias entre ellos.</p>
 <p>Para usar esta función revisa <a class="reference external" href="#como-usar-el-mapeo-de-campos">¿Cómo usar el mapeo de campos?</a></p>
 </div>
 </div>
 </div>
-<div class="section" id="subir-archivos-fuentes-pendientes">
-<h2>Subir archivos fuentes pendientes<a class="headerlink" href="#subir-archivos-fuentes-pendientes" title="Enlazar permanentemente con este título">¶</a></h2>
+<div class="section" id="subir-archivos-fuente-pendientes">
+<h2>Subir archivos fuente pendientes<a class="headerlink" href="#subir-archivos-fuente-pendientes" title="Enlazar permanentemente con este título">¶</a></h2>
 </div>
 <div class="section" id="arreglar-relaciones-ladm-col">
 <h2>Arreglar relaciones LADM-COL<a class="headerlink" href="#arreglar-relaciones-ladm-col" title="Enlazar permanentemente con este título">¶</a></h2>
@@ -521,7 +576,8 @@ desde una tabla fuente hacia la tabla <strong>col_restriccion</strong> de LADM-C
 <div class="warning">
 <p class="admonition-title">ADVERTENCIA</p>
 <p>Cuando importas datos usando el mapeo de campos, es muy conveniente deshabilitar cualquier cálculo automático configurado en la capa/tabla de destino. De lo contrario, los datos que provengan de la capa/tabla origen, al llegar a la capa/tabla destino, serán sobreescritos por los valores automáticos mencionados. Ver la sección <a href="configuracion.html#calcular-campos-automaticos-al-cargar-datos-masivamente">Configuración</a>.</p>
-</div></div>
+</div>
+</div>
 </div>
 
 
