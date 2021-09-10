@@ -1151,6 +1151,13 @@ class AppCoreInterface(QObject):
         return True
 
     @_activate_processing_plugin
+    def run_etl_model_in_backgroud_mode_disable_automatic_values_in_batch_mode(self, db, input_layer, ladm_col_layer_name):
+        automatic_values_in_batch_mode = QSettings().value('Asistente-LADM-COL/automatic_values/automatic_values_in_batch_mode', DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE, bool)
+        QSettings().setValue('Asistente-LADM-COL/automatic_values/automatic_values_in_batch_mode', False)
+        self.run_etl_model_in_backgroud_mode(db, input_layer, ladm_col_layer_name)
+        QSettings().setValue('Asistente-LADM-COL/automatic_values/automatic_values_in_batch_mode', automatic_values_in_batch_mode)
+
+    @_activate_processing_plugin
     def run_etl_model_in_backgroud_mode(self, db, input_layer, ladm_col_layer_name):
         output_layer = self.get_layer(db, ladm_col_layer_name, load=True)
         start_feature_count = output_layer.featureCount()

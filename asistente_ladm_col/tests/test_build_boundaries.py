@@ -7,6 +7,9 @@ from qgis.core import (QgsVectorLayer,
 
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.gui.toolbar import ToolBar
+
+start_app()  # need to start before asistente_ladm_col.tests.utils
+
 from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             import_processing,
                                             import_asistente_ladm_col,
@@ -15,8 +18,6 @@ from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             get_copy_gpkg_conn,
                                             get_test_copy_path,
                                             unload_qgis_model_baker)
-
-start_app()  # need to start before asistente_ladm_col.tests.utils
 
 import_processing()
 import processing
@@ -68,14 +69,14 @@ class TestBuildBoundaries(unittest.TestCase):
                                     "', '".join(boundary_ids))
         layers[db_gpkg.names.LC_BOUNDARY_T].selectByExpression(exp)
 
-        self.toolbar.build_boundaries(db_gpkg)
+        self.toolbar.build_boundaries_and_topology_tables(db_gpkg)
 
         layers_feature_count = {db_gpkg.names.LC_BOUNDARY_POINT_T: 12,
                                 db_gpkg.names.LC_BOUNDARY_T: 22,
                                 db_gpkg.names.LC_PLOT_T: 14,
                                 db_gpkg.names.MORE_BFS_T: 43,
                                 db_gpkg.names.LESS_BFS_T: 0,
-                                db_gpkg.names.POINT_BFS_T: 47}
+                                db_gpkg.names.POINT_BFS_T: 28}
 
         for layer_name, feature_count in layers_feature_count.items():
             self.assertEqual(layers[layer_name].featureCount(),
@@ -83,7 +84,7 @@ class TestBuildBoundaries(unittest.TestCase):
                              'Features count does not match for the layer {}'.format(layer_name))
 
         print('\nINFO: Check build boundaries for all features...')
-        self.toolbar.build_boundaries(db_gpkg, True)
+        self.toolbar.build_boundaries_and_topology_tables(db_gpkg, True)
 
         layers_feature_count = {db_gpkg.names.LC_BOUNDARY_POINT_T: 12,
                                 db_gpkg.names.LC_BOUNDARY_T: 25,
@@ -111,7 +112,7 @@ class TestBuildBoundaries(unittest.TestCase):
         self.assertEqual(boundary_layer.selectedFeatureCount(), 1,
                          'Null features count does not match for the layer boundary layer')
 
-        self.toolbar.build_boundaries(db_gpkg, True)
+        self.toolbar.build_boundaries_and_topology_tables(db_gpkg, True)
 
         self.assertEqual(boundary_layer.featureCount(), 6, 'Features count does not match for the layer boundary layer')
 
@@ -129,7 +130,7 @@ class TestBuildBoundaries(unittest.TestCase):
         boundary_layer = self.app.core.get_layer(db_gpkg, db_gpkg.names.LC_BOUNDARY_T, load=True)
         self.assertEqual(boundary_layer.featureCount(), 16, 'Features count does not match for the layer boundary layer')
 
-        self.toolbar.build_boundaries(db_gpkg, True)
+        self.toolbar.build_boundaries_and_topology_tables(db_gpkg, True)
 
         self.assertEqual(boundary_layer.featureCount(), 1, 'Features count does not match for the layer boundary layer')
 
@@ -137,7 +138,6 @@ class TestBuildBoundaries(unittest.TestCase):
         boundary_layer.selectByExpression(exp)
         self.assertEqual(boundary_layer.selectedFeatureCount(), 0,
                          'Null features count does not match for the layer boundary layer')
-
 
     def test_build_boundaries_with_invalid_geom_in_processing(self):
         print('\nINFO: Validating build boundaries, invalid geometries generated when running the processing algorithm are fixed...')
@@ -148,7 +148,7 @@ class TestBuildBoundaries(unittest.TestCase):
         boundary_layer = self.app.core.get_layer(db_gpkg, db_gpkg.names.LC_BOUNDARY_T, load=True)
         self.assertEqual(boundary_layer.featureCount(), 7, 'Features count does not match for the layer boundary layer')
 
-        self.toolbar.build_boundaries(db_gpkg, True)
+        self.toolbar.build_boundaries_and_topology_tables(db_gpkg, True)
 
         self.assertEqual(boundary_layer.featureCount(), 17, 'Features count does not match for the layer boundary layer')
 
@@ -195,6 +195,28 @@ class TestBuildBoundaries(unittest.TestCase):
                         found = True
                         break
                 self.assertTrue(found, 'The geometries are invalid: case {case}. Geometry in WKT: {geometry}'.format(case=case, geometry=boundary_geom.asWkt()))
+
+    def test_pair_boundary_plot(self):
+        print('\nValidating pairs boundary-plot')
+        gpkg_path = get_test_copy_path('db/static/gpkg/quality_validations.gpkg')
+        self.db_gpkg = get_gpkg_conn('tests_quality_validations_gpkg')
+        self.names = self.db_gpkg.names
+        self.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
+
+        uri = gpkg_path + '|layername={layername}'.format(layername='topology_boundaries')
+        boundary_layer = QgsVectorLayer(uri, 'topology_boundaries', 'ogr')
+
+        uri = gpkg_path + '|layername={layername}'.format(layername='topology_plots')
+        plot_layer = QgsVectorLayer(uri, 'topology_plots', 'ogr')
+
+        result1, result2 = self.toolbar.get_pair_boundary_plot(boundary_layer,
+                                                               plot_layer,
+                                                               self.names.T_ID_F,
+                                                               use_selection=False)
+
+        self.assertEqual(result1, [(1, 3), (3, 3)])
+
+        self.assertEqual(result2, [(1, 4)])
 
     @classmethod
     def tearDownClass(cls):
