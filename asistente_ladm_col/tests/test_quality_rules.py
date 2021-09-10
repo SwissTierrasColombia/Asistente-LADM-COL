@@ -861,7 +861,7 @@ class TesQualityRules(unittest.TestCase):
         self.assertTrue(res)
         self.assertEqual(len(records), 10)
 
-    def _test_tolerance_for_building_should_be_within_plot_rule(self):
+    def test_tolerance_for_building_should_be_within_plot_rule(self):
         print('\nINFO: Validating tolerance in building should be within plot...')
 
         db_gpkg = get_gpkg_conn('tests_quality_rules_tolerance_gpkg')
@@ -880,15 +880,14 @@ class TesQualityRules(unittest.TestCase):
         error_layer = res.result(rule_key).error_layer
         self.assertEqual(error_layer.featureCount(), 27)
         features = [f for f in error_layer.getFeatures("codigo_error = '{}'".format(QUALITY_RULE_ERROR_CODE_E300902))]
-        expected_t_ili_tids = ['117f44fd-5485-4560-9708-911e88e03c15', '1b1bfc0d-eaaf-4635-bc19-90daa1d9bd87',
-                               '1d0c1b12-cead-413c-b38c-de9a423cdc66', '2d323bb9-19d7-41f7-8894-e9c62f80ceb5',
-                               '2e11e7f9-1209-4d8b-9bd2-84f268ac6faf', '4819d292-f255-4be5-970c-732d9f296619',
-                               '72567696-053c-4f78-8db6-17084bbce012', '94a10323-e192-4364-863f-7ef872876fe5',
-                               'a468fa02-6cf6-4f20-986b-ccdfb4c201d2', 'b29a2af5-39f0-46ed-badb-84bd3c0b704d',
-                               'c1b53a98-c3b0-4de1-8293-b3455c4bd517', 'c8ef8b15-c776-42ef-a30c-822001be7460',
-                               'd9bd3ad3-085d-4a36-a177-9c4fb192a9af', 'e5e60bc6-132a-4428-9b32-9046278e0bd2',
+        expected_t_ili_tids = ['117f44fd-5485-4560-9708-911e88e03c15', '1b0d4d48-6f42-40f6-a196-947bf43ec708',
+                               '1b1bfc0d-eaaf-4635-bc19-90daa1d9bd87', '1d0c1b12-cead-413c-b38c-de9a423cdc66',
+                               '2d323bb9-19d7-41f7-8894-e9c62f80ceb5', '2e11e7f9-1209-4d8b-9bd2-84f268ac6faf',
+                               '72567696-053c-4f78-8db6-17084bbce012', 'a468fa02-6cf6-4f20-986b-ccdfb4c201d2',
+                               'b311be43-50e5-46ac-9e13-bc6730be36b6', 'c1b53a98-c3b0-4de1-8293-b3455c4bd517',
+                               'c8ef8b15-c776-42ef-a30c-822001be7460', 'e5e60bc6-132a-4428-9b32-9046278e0bd2',
                                'e912cb4f-f76f-45d7-be83-702624db1ea0']
-        self.assertEqual(len(features), len(expected_t_ili_tids))  # 15
+        self.assertEqual(len(features), len(expected_t_ili_tids))  # 13
         self.assertEqual(expected_t_ili_tids, sorted([f['id_construccion'] for f in features]))
 
         # Tolerance: 1mm
@@ -904,7 +903,7 @@ class TesQualityRules(unittest.TestCase):
         expected_t_ili_tids = ['117f44fd-5485-4560-9708-911e88e03c15',
                                'c8ef8b15-c776-42ef-a30c-822001be7460']
         self.assertEqual(len(features), len(expected_t_ili_tids))  # 2
-        self.assertEqual(sorted(expected_t_ili_tids), sorted([f['id_construccion'] for f in features]))
+        self.assertEqual(expected_t_ili_tids, sorted([f['id_construccion'] for f in features]))
 
         # Tolerance: 2mm
         print("INFO: Testing with 2mm of tolerance...")
@@ -919,7 +918,7 @@ class TesQualityRules(unittest.TestCase):
         self.assertEqual(len(features), len(expected_t_ili_tids))
         self.assertEqual(expected_t_ili_tids, [f['id_construccion'] for f in features])
 
-    def _test_tolerance_for_building_unit_should_be_within_plot_rule(self):
+    def test_tolerance_for_building_unit_should_be_within_plot_rule(self):
         print('\nINFO: Validating tolerance in building unit should be within plot...')
 
         db_gpkg = get_gpkg_conn('tests_quality_rules_tolerance_gpkg')
@@ -938,15 +937,18 @@ class TesQualityRules(unittest.TestCase):
         error_layer = res.result(rule_key).error_layer
         self.assertEqual(error_layer.featureCount(), 49)
         features = [f for f in error_layer.getFeatures("codigo_error = '{}'".format(QUALITY_RULE_ERROR_CODE_E301002))]
-        expected_t_ili_tids = ['1dcfd30f-ea16-4afb-9050-f09199b08162',
-                               'e2002bad-c64c-4b47-a00a-d62a565ea339',
-                               'faafc505-6943-429c-8350-b5d4402199c4',
-                               'ebc11cf4-53a1-4f8a-80ff-c7fc271bad90',
-                               '6cf8733a-38b7-4923-8ccf-edd4b20c173f',
-                               '3d8cfa50-5b16-4806-ade3-bbeb2e62a38f',
-                               '48ee9a5a-027b-4f7c-85f9-7d05abe990f9']
-        self.assertEqual(len(features), len(expected_t_ili_tids))  # 7
-        self.assertEqual(sorted(expected_t_ili_tids), sorted([f['id_unidad_construccion'] for f in features]))
+        expected_t_ili_tids = ['0af93cab-1989-4b44-ad8d-0f3a1fb8dbd5', '14c31044-de9d-4797-83c9-7b40c44a6a15',
+                               '1cf7ee73-4d06-4134-bd3c-00d6c5dbab46', '1dcfd30f-ea16-4afb-9050-f09199b08162',
+                               '27272d59-1635-4ce6-babf-efc1122815ad', '284415e7-5a71-49f6-af8c-6a8fab6f6e68',
+                               '297870c1-063b-4e56-917e-ea2ed86e8cf7', '55988f7b-3b05-438c-8a2a-34948096cd63',
+                               '6cf8733a-38b7-4923-8ccf-edd4b20c173f', '710bcff9-3b47-4ba9-a430-fcc6532092e3',
+                               '8e043e1f-ab9c-47fd-9702-bb2301863a17', 'da374f95-4674-4e47-b0af-8780c7d2c94b',
+                               'dcfbb7af-e211-48b4-b421-2a3b7d70b5ce', 'df24bc58-84f0-4fb1-9e3f-5ee1f961e63b',
+                               'e2002bad-c64c-4b47-a00a-d62a565ea339', 'e3692ae7-0df9-4473-a6da-836539dcc077',
+                               'ebc11cf4-53a1-4f8a-80ff-c7fc271bad90', 'f145a235-4eb9-476a-be73-64d33d5101d7',
+                               'faafc505-6943-429c-8350-b5d4402199c4']
+        self.assertEqual(len(features), len(expected_t_ili_tids))  # 19
+        self.assertEqual(expected_t_ili_tids, sorted([f['id_unidad_construccion'] for f in features]))
 
         # Tolerance: 1mm
         print("INFO: Testing with 1mm of tolerance...")
@@ -976,7 +978,7 @@ class TesQualityRules(unittest.TestCase):
         self.assertEqual(len(features), len(expected_t_ili_tids))
         self.assertEqual(expected_t_ili_tids, [f['id_unidad_construccion'] for f in features])
 
-    def _test_tolerance_for_building_unit_should_be_within_building_rule(self):
+    def test_tolerance_for_building_unit_should_be_within_building_rule(self):
         print('\nINFO: Validating tolerance in building unit should be within building...')
 
         db_gpkg = get_gpkg_conn('tests_quality_rules_tolerance_gpkg')
@@ -997,13 +999,9 @@ class TesQualityRules(unittest.TestCase):
         features = [f for f in error_layer.getFeatures("codigo_error = '{}'".format(QUALITY_RULE_ERROR_CODE_E301102))]
         expected_t_ili_tids = ['1dcfd30f-ea16-4afb-9050-f09199b08162',
                                '7504133f-9a00-40fa-9e8d-4ab64a3543aa',
-                               '8e043e1f-ab9c-47fd-9702-bb2301863a17',
-                               '48ee9a5a-027b-4f7c-85f9-7d05abe990f9',
-                               '6cf8733a-38b7-4923-8ccf-edd4b20c173f',
-                               'faafc505-6943-429c-8350-b5d4402199c4',
-                               'e2002bad-c64c-4b47-a00a-d62a565ea339']
-        self.assertEqual(len(features), len(expected_t_ili_tids))  # 7
-        self.assertEqual(sorted(expected_t_ili_tids), sorted([f['id_unidad_construccion'] for f in features]))
+                               '8e043e1f-ab9c-47fd-9702-bb2301863a17']
+        self.assertEqual(len(features), len(expected_t_ili_tids))  # 3
+        self.assertEqual(expected_t_ili_tids, sorted([f['id_unidad_construccion'] for f in features]))
 
         # Tolerance: 1mm
         print("INFO: Testing with 1mm of tolerance...")
@@ -1045,7 +1043,7 @@ class TesQualityRules(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        print("INFO: Resetting tolerance value to {}...".format(DEFAULT_TOLERANCE_VALUE))
+        print("\nINFO: Resetting tolerance value to {}...".format(DEFAULT_TOLERANCE_VALUE))
         cls.app.settings.tolerance = DEFAULT_TOLERANCE_VALUE
 
         print("INFO: Unloading Model Baker...")
