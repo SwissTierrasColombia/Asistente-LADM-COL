@@ -41,9 +41,12 @@ from processing.script import ScriptUtils
 
 from asistente_ladm_col.config.ladm_names import MODEL_CONFIG
 from asistente_ladm_col.config.role_config import get_role_config
+from asistente_ladm_col.config.transitional_system_config import TransitionalSystemConfig
 from asistente_ladm_col.gui.field_data_capture.dockwidget_field_data_capture_admin_coordinator import DockWidgetFieldDataCaptureAdminCoordinator
 from asistente_ladm_col.gui.field_data_capture.dockwidget_field_data_capture_coordinator_surveyor import DockWidgetFieldDataCaptureCoordinatorSurveyor
 from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
+from asistente_ladm_col.gui.transitional_system.dlg_upload_files_cadastral_supplies import \
+    STCadastralSuppliesUploadFileDialog
 from asistente_ladm_col.lib.ladm_col_models import (LADMColModelRegistry,
                                                     LADMColModel)
 from asistente_ladm_col.lib.dependency.plugin_dependency import PluginDependency
@@ -129,7 +132,6 @@ from asistente_ladm_col.core.reports.ant_report_generator import ANTReportGenera
 from asistente_ladm_col.core.reports.annex_17_report_generator import Annex17ReportGenerator
 from asistente_ladm_col.gui.right_of_way import RightOfWay
 from asistente_ladm_col.gui.toolbar import ToolBar
-from asistente_ladm_col.gui.supplies.dlg_upload_file import STUploadFileDialog
 from asistente_ladm_col.gui.wizards.survey.dlg_create_group_party_survey import CreateGroupPartySurvey
 from asistente_ladm_col.gui.wizards.survey.wiz_create_points_survey import CreatePointsSurveyWizard
 from asistente_ladm_col.lib.db.db_connection_manager import ConnectionManager
@@ -1563,13 +1565,22 @@ class AsistenteLADMCOLPlugin(QObject):
         if kwargs:
             params.update(kwargs)
 
-        if 'request_id' not in params or 'supply_type' not in params:
+        if 'request_id' not in params or 'task_type' not in params:
             return
 
         request_id = params['request_id']
-        supply_type = params['supply_type']
+        task_type = params['task_type']
+        other_params = params.get('other_params', dict())
 
-        dlg = STUploadFileDialog(request_id, supply_type, self.main_window)
+        st_config = TransitionalSystemConfig()
+        if task_type == st_config.TASK_GENERATE_CADASTRAL_SUPPLIES:
+            dlg = STCadastralSuppliesUploadFileDialog(request_id, other_params, self.main_window)
+        elif task_type == st_config.TASK_VALIDATE_QUALITY_RULES:
+            # TODO: dlg = STQualityReportUploadFileDialog(request_id, other_params, self.main_window)
+            pass
+        else:
+            return
+
         if isinstance(context, TaskContext):
             dlg.on_result.connect(context.get_slot_on_result())
 

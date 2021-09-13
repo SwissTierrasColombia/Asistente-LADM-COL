@@ -39,6 +39,10 @@ class TransitionalSystemConfig(QObject, metaclass=SingletonQObject):
                     3:OPERATOR_ROLE,
                     4:SUPPLIES_PROVIDER_ROLE}
 
+    TASK_INTEGRATE_SUPPLIES = 1
+    TASK_GENERATE_CADASTRAL_SUPPLIES = 2
+    TASK_VALIDATE_QUALITY_RULES = 3
+
     def __init__(self):
         QObject.__init__(self)
 
@@ -66,5 +70,9 @@ class TransitionalSystemConfig(QObject, metaclass=SingletonQObject):
         return "{}/api/workspaces/v1/tasks/{{}}/finish".format(self.get_domain())
 
     @property
-    def ST_UPLOAD_FILE_SERVICE_URL(self):
+    def ST_PROVIDER_UPLOAD_FILE_SERVICE_URL(self):
         return "{}/api/workspaces/v1/providers/requests/{{}}".format(self.get_domain())
+
+    @property
+    def ST_MANAGER_UPLOAD_FILE_SERVICE_URL(self):
+        return "{}/api/workspaces/v1/managers/requests/{{}}".format(self.get_domain())
