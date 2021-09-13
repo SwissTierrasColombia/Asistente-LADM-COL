@@ -1,12 +1,11 @@
-# -*- coding: utf-8 -*-
 """
 /***************************************************************************
-                              Asistente LADM_COL
+                              Asistente LADM-COL
                              --------------------
-        begin                : 2020-02-11
-        git sha              : :%H$
-        copyright            : (C) 2020 by Germán Carrillo (Swissphoto BSF)
-        email                : gcarrillo@linuxmail.org
+        begin           : 2021-09-13
+        git sha         : :%H$
+        copyright       : (C) 2020 by Germán Carrillo (SwissTierras Colombia)
+        email           : gcarrillo@linuxmail.org
  ***************************************************************************/
 /***************************************************************************
  *                                                                         *
@@ -28,6 +27,7 @@ from qgis.PyQt.QtCore import (Qt,
                               pyqtSignal)
 from qgis.gui import QgsMessageBar
 
+from asistente_ladm_col.gui.transitional_system.dlg_base_upload_file import STBaseUploadFileDialog
 from asistente_ladm_col.utils.qt_utils import (make_file_selector,
                                                ProcessWithStatus)
 from asistente_ladm_col.utils.st_utils import STUtils
@@ -38,22 +38,10 @@ from asistente_ladm_col.utils.utils import (Utils,
 DIALOG_TRANSITION_SYSTEM_UI = get_ui_class('supplies/dlg_upload_file.ui')
 
 
-class STUploadFileDialog(QDialog, DIALOG_TRANSITION_SYSTEM_UI):
-    on_result = pyqtSignal(bool)  # whether the tool was run successfully or not
+class STCadastralSuppliesUploadFileDialog(STBaseUploadFileDialog):
 
-    def __init__(self, request_id, supply_type, parent=None):
-        QDialog.__init__(self, parent)
-        self.setupUi(self)
-
-        self.request_id = request_id
-        self.supply_type = supply_type
-        self.st_utils = STUtils()
-
-        self.buttonBox.accepted.disconnect()
-        self.buttonBox.accepted.connect(self.upload_file)
-        self.buttonBox.helpRequested.connect(self.show_help)
-
-        self.restore_settings()  # To update file paths, which will be used as basis in FileDialogs
+    def __init__(self, request_id, other_params, parent=None):
+        STBaseUploadFileDialog.__init__(self, request_id, other_params, parent=None)
 
         self.btn_browse_xtf_file.clicked.connect(
             make_file_selector(self.txt_xtf_file_path,
@@ -74,21 +62,11 @@ class STUploadFileDialog(QDialog, DIALOG_TRANSITION_SYSTEM_UI):
                                QCoreApplication.translate("STUploadFileDialog",
                                                           "GeoPackage Database (*.gpkg)")))
 
-        self.initialize_progress()
-
-        self.bar = QgsMessageBar()
-        self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
-        self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
-
-    def upload_file(self):
+    def _handle_upload_file(self):
         """
-        The XTF is mandatory. If report files are sent, XLS is mandatory and GPKG is optional. But sending report files
-        is optional.
+        The XTF is mandatory. If report files are sent, XLS is mandatory and GPKG is optional.
+        But sending report files is optional.
         """
-        self.bar.clearWidgets()
-        self.start_progress()
-        self.enable_controls(False)
-
         xtf_file_path = self.txt_xtf_file_path.text().strip()
         if not self.txt_comments.toPlainText():
             res = False
@@ -121,32 +99,22 @@ class STUploadFileDialog(QDialog, DIALOG_TRANSITION_SYSTEM_UI):
 
                     zip_reports_file_path = Utils.compress_files(reports)
 
+                # Prepare upload
+                url = self.st_config.ST_PROVIDER_UPLOAD_FILE_SERVICE_URL.format(self.request_id)
+                files = [('files[]', open(zip_xtf_file_path, 'rb'))]
+                if zip_reports_file_path:  # Optional ZIP file
+                    files.append(('extra', open(zip_reports_file_path, 'rb')))
+
                 with ProcessWithStatus(QCoreApplication.translate("STUploadFileDialog", "Uploading file to ST server...")):
-                    res, res_msg = self.st_utils.upload_files(self.request_id,
-                                                              self.supply_type,
-                                                              zip_xtf_file_path,
-                                                              zip_reports_file_path,
+                    res, res_msg = self.st_utils.upload_files(url,
+                                                              self.other_params,
+                                                              files,
                                                               self.txt_comments.toPlainText())
         else:
             res = False
             res_msg = QCoreApplication.translate("STUploadFileDialog", "The XTF file '{}' does not exist!").format(xtf_file_path)
 
-        self.show_message(res_msg, Qgis.Success if res else Qgis.Warning)
-
-        self.initialize_progress()
-
-        if res:
-            self.store_settings()
-        else:
-            self.enable_controls(True)  # Prepare next run
-
-        self.on_result.emit(res)  # Inform other classes if the execution was successful
-
-        return  # Do not close dialog
-
-    def show_message(self, message, level):
-        self.bar.clearWidgets()  # Remove previous messages before showing a new one
-        self.bar.pushMessage(message, level, 0)
+        return res, res_msg
 
     def store_settings(self):
         settings = QSettings()
@@ -164,17 +132,3 @@ class STUploadFileDialog(QDialog, DIALOG_TRANSITION_SYSTEM_UI):
 
         self.txt_xls_file_path.setText(xls_path if folder_path and file_names else '')
         self.txt_gpkg_file_path.setText(gpkg_path if folder_path and file_names else '')
-
-    def start_progress(self):
-        self.progress.setVisible(True)
-        self.progress.setRange(0, 0)
-
-    def initialize_progress(self):
-        self.progress.setVisible(False)
-
-    def enable_controls(self, enable):
-        self.gbx_page_1.setEnabled(enable)
-        self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(enable)
-
-    def show_help(self):
-        show_plugin_help('transitional_system_upload_file')

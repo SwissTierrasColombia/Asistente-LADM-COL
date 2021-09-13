@@ -16,20 +16,15 @@ class STUtils(QObject):
         self.st_session = STSession()
         self.st_config = TransitionalSystemConfig()
 
-    def upload_files(self, request_id, supply_type, zip_xtf_file_path, zip_reports_file_path, comments):
-        url = self.st_config.ST_UPLOAD_FILE_SERVICE_URL.format(request_id)
+    def upload_files(self, url, other_params, files, comments):
+        self.logger.debug(__name__, "Preparing PUT request ({}, {}, number of files: {}, {})".format(
+            url,
+            other_params,
+            len(files),
+            comments))
 
-        self.logger.debug(__name__, "Preparing PUT request ({}, {}, {}, {}, {})".format(request_id, supply_type,
-                                                                                        zip_xtf_file_path,
-                                                                                        zip_reports_file_path,
-                                                                                        comments))
-
-        payload = {'typeSupplyId': supply_type,
-                   'observations': comments}
-
-        files = [('files[]', open(zip_xtf_file_path, 'rb'))]
-        if zip_reports_file_path:  # Optional ZIP file
-            files.append(('extra', open(zip_reports_file_path, 'rb')))
+        payload = {'observations': comments}
+        payload.update(other_params)
 
         headers = {
             'Authorization': "Bearer {}".format(self.st_session.get_logged_st_user().get_token())
