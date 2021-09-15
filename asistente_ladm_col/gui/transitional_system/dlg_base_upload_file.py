@@ -15,8 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 """
-import os.path
-
 from qgis.core import Qgis
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QSizePolicy,
@@ -25,11 +23,12 @@ from qgis.PyQt.QtCore import (Qt,
                               pyqtSignal)
 from qgis.gui import QgsMessageBar
 
+from asistente_ladm_col.config.transitional_system_config import TransitionalSystemConfig
 from asistente_ladm_col.utils.st_utils import STUtils
 from asistente_ladm_col.utils.ui import get_ui_class
 from asistente_ladm_col.utils.utils import show_plugin_help
 
-DIALOG_TRANSITION_SYSTEM_UI = get_ui_class('supplies/dlg_upload_file.ui')
+DIALOG_TRANSITION_SYSTEM_UI = get_ui_class('transitional_system/dlg_base_upload_file.ui')
 
 
 class STBaseUploadFileDialog(QDialog, DIALOG_TRANSITION_SYSTEM_UI):
@@ -39,35 +38,41 @@ class STBaseUploadFileDialog(QDialog, DIALOG_TRANSITION_SYSTEM_UI):
         QDialog.__init__(self, parent)
         self.setupUi(self)
 
-        self.request_id = request_id
-        self.other_params = other_params
-        self.st_utils = STUtils()
+        self._request_id = request_id
+        self._other_params = other_params
+        self._st_utils = STUtils()
+        self._st_config = TransitionalSystemConfig()
 
         self.buttonBox.accepted.disconnect()
         self.buttonBox.accepted.connect(self.upload_file)
         self.buttonBox.helpRequested.connect(self.show_help)
 
-        self.restore_settings()  # To update file paths, which will be used as basis in FileDialogs
+        self.restore_settings()
+
+        self.file_layout.addWidget(self._file_widget)
+        self._file_widget.setVisible(True)
 
         self.initialize_progress()
 
-        self.bar = QgsMessageBar()
-        self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
-        self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
+        self.txt_help_page.setHtml(self._get_help_text())
+
+        self._bar = QgsMessageBar()
+        self._bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        self.layout().addWidget(self._bar, 0, 0, Qt.AlignTop)
 
     def upload_file(self):
-        self.bar.clearWidgets()
+        self._bar.clearWidgets()
         self.start_progress()
         self.enable_controls(False)
 
-        res, res_msg = self._upload_file()
+        res, res_msg = self._handle_upload_file()
 
         self._show_message(res_msg, Qgis.Success if res else Qgis.Warning)
 
         self.initialize_progress()
 
         if res:
-            self.store_settings()
+            self.save_settings()
         else:
             self.enable_controls(True)  # Prepare next run
 
@@ -79,14 +84,14 @@ class STBaseUploadFileDialog(QDialog, DIALOG_TRANSITION_SYSTEM_UI):
         raise NotImplementedError
 
     def _show_message(self, message, level):
-        self.bar.clearWidgets()  # Remove previous messages before showing a new one
-        self.bar.pushMessage(message, level, 0)
+        self._bar.clearWidgets()  # Remove previous messages before showing a new one
+        self._bar.pushMessage(message, level, 0)
 
-    def store_settings(self):
-        raise NotImplementedError
+    def save_settings(self):
+        self._file_widget.save_settings()
 
     def restore_settings(self):
-        raise NotImplementedError
+        pass
 
     def start_progress(self):
         self.progress.setVisible(True)
@@ -98,6 +103,10 @@ class STBaseUploadFileDialog(QDialog, DIALOG_TRANSITION_SYSTEM_UI):
     def enable_controls(self, enable):
         self.gbx_page_1.setEnabled(enable)
         self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(enable)
+
+    def _get_help_text(self):
+        # We expect an HTML here
+        raise NotImplementedError
 
     def show_help(self):
         show_plugin_help('transitional_system_upload_file')
