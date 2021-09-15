@@ -45,8 +45,7 @@ from asistente_ladm_col.config.transitional_system_config import TransitionalSys
 from asistente_ladm_col.gui.field_data_capture.dockwidget_field_data_capture_admin_coordinator import DockWidgetFieldDataCaptureAdminCoordinator
 from asistente_ladm_col.gui.field_data_capture.dockwidget_field_data_capture_coordinator_surveyor import DockWidgetFieldDataCaptureCoordinatorSurveyor
 from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
-from asistente_ladm_col.gui.transitional_system.dlg_upload_files_cadastral_supplies import \
-    STCadastralSuppliesUploadFileDialog
+from asistente_ladm_col.gui.transitional_system.dlg_upload_file_cadastral_supplies import STCadastralSuppliesUploadFileDialog
 from asistente_ladm_col.lib.ladm_col_models import (LADMColModelRegistry,
                                                     LADMColModel)
 from asistente_ladm_col.lib.dependency.plugin_dependency import PluginDependency
