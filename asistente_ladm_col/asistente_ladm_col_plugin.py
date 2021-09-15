@@ -46,6 +46,7 @@ from asistente_ladm_col.gui.field_data_capture.dockwidget_field_data_capture_adm
 from asistente_ladm_col.gui.field_data_capture.dockwidget_field_data_capture_coordinator_surveyor import DockWidgetFieldDataCaptureCoordinatorSurveyor
 from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
 from asistente_ladm_col.gui.transitional_system.dlg_upload_file_cadastral_supplies import STCadastralSuppliesUploadFileDialog
+from asistente_ladm_col.gui.transitional_system.dlg_upload_file_quality_rules import STQualityRulesUploadFileDialog
 from asistente_ladm_col.lib.ladm_col_models import (LADMColModelRegistry,
                                                     LADMColModel)
 from asistente_ladm_col.lib.dependency.plugin_dependency import PluginDependency
@@ -1575,8 +1576,7 @@ class AsistenteLADMCOLPlugin(QObject):
         if task_type == st_config.TASK_GENERATE_CADASTRAL_SUPPLIES:
             dlg = STCadastralSuppliesUploadFileDialog(request_id, other_params, self.main_window)
         elif task_type == st_config.TASK_VALIDATE_QUALITY_RULES:
-            # TODO: dlg = STQualityReportUploadFileDialog(request_id, other_params, self.main_window)
-            pass
+            dlg = STQualityRulesUploadFileDialog(request_id, other_params, self.main_window)
         else:
             return
 

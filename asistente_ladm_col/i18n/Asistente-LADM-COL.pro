@@ -35,9 +35,11 @@ FORMS = ../ui/change_detection/changes_all_parcels_panel_widget.ui \
         ../ui/supplies/snc_data_source_widget.ui \
         ../ui/supplies/wig_cobol_supplies.ui \
         ../ui/supplies/wiz_supplies_etl.ui \
+        ../ui/transitional_system/cadastral_supplies_file_widget.ui \
+        ../ui/transitional_system/quality_rules_file_widget.ui \
         ../ui/transitional_system/dlg_cancel_task.ui \
         ../ui/transitional_system/dlg_login_st.ui \
-        ../ui/transitional_system/dlg_upload_file.ui \
+        ../ui/transitional_system/dlg_base_upload_file.ui \
         ../ui/transitional_system/dockwidget_transitional_system.ui \
         ../ui/transitional_system/home_widget.ui \
         ../ui/transitional_system/task_widget_item.ui \
@@ -125,9 +127,13 @@ SOURCES = ../__init__.py \
           ../gui/supplies/snc_data_sources_widget.py \
           ../gui/supplies/wiz_supplies_etl.py \
           ../gui/toolbar.py \
+          ../gui/transitional_system/cadastral_supplies_file_widget.py \
           ../gui/transitional_system/dlg_cancel_task.py \
           ../gui/transitional_system/dlg_login_st.py \
-          ../gui/transitional_system/dlg_upload_file.py \
+          ../gui/transitional_system/dlg_base_upload_file.py \
+          ../gui/transitional_system/dlg_upload_file_cadastral_supplies.py \
+          ../gui/transitional_system/dlg_upload_file_quality_rules.py \
+          ../gui/transitional_system/quality_rules_file_widget.py \
           ../gui/transitional_system/task_panel.py \
           ../gui/transitional_system/tasks_widget.py \
           ../gui/transitional_system/transitional_system_initial_panel.py \
