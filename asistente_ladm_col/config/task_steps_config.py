@@ -179,7 +179,7 @@ class TaskStepsConfig(QObject, metaclass=SingletonQObject):
                  STEP_TYPE: EnumSTStepType.VALIDATE_QUALITY_RULES,
                  STEP_DESCRIPTION: QCoreApplication.translate("TaskStepsConfig", "Validate Quality Rules on the assigned data."),
                  STEP_CUSTOM_ACTION_SLOT: {
-                     SLOT_NAME: self._slot_caller.show_dlg_export_data,
+                     SLOT_NAME: self._slot_caller.show_dlg_quality,
                      SLOT_CONTEXT: TaskContext([COLLECTED_DB_SOURCE]),
                      SLOT_PARAMS: {}}
                  },

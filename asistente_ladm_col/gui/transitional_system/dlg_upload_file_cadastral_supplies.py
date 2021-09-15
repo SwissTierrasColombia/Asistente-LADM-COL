@@ -4,7 +4,7 @@
                              --------------------
         begin           : 2021-09-13
         git sha         : :%H$
-        copyright       : (C) 2020 by Germán Carrillo (SwissTierras Colombia)
+        copyright       : (C) 2021 by Germán Carrillo (SwissTierras Colombia)
         email           : gcarrillo@linuxmail.org
  ***************************************************************************/
 /***************************************************************************
@@ -31,6 +31,9 @@ class STCadastralSuppliesUploadFileDialog(STBaseUploadFileDialog):
         self._file_widget = STCadastralSuppliesFileWidget()
 
         STBaseUploadFileDialog.__init__(self, request_id, other_params, parent)
+
+        self.setWindowTitle(QCoreApplication.translate("STCadastralSuppliesUploadFileDialog",
+                                                       "Upload cadastral supplies files to Transitional System"))
 
     def _handle_upload_file(self):
         """

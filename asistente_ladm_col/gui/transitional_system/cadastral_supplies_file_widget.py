@@ -4,7 +4,7 @@
                              --------------------
         begin           : 2021-09-15
         git sha         : :%H$
-        copyright       : (C) 2020 by Germán Carrillo (SwissTierras Colombia)
+        copyright       : (C) 2021 by Germán Carrillo (SwissTierras Colombia)
         email           : gcarrillo@linuxmail.org
  ***************************************************************************/
 /***************************************************************************
