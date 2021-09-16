@@ -117,27 +117,24 @@ class MSSQLLADMQuery(QGISLADMQuery):
     @staticmethod
     def get_uebaunit_parcel(db):
         query = """
-            SELECT report.{t_id}, {t_ili_tid}, {ilicode} as {lc_parcel_t_parcel_type_f}, sum_t, sum_c, sum_uc  FROM (
-                   SELECT *
-                   FROM (SELECT {t_id}, {t_ili_tid}, {lc_parcel_t_parcel_type_f}, sum(count_terreno) sum_t, sum(count_construccion) sum_c, sum(count_unidadconstruccion) sum_uc
-                         FROM (SELECT p.{t_id}, p.{t_ili_tid},
-                                      p.{lc_parcel_t_parcel_type_f},
-                                      (CASE WHEN ue.{col_ue_baunit_t_lc_plot_f} IS NOT NULL THEN 1 ELSE 0 END) count_terreno,
-                                      (CASE WHEN ue.{col_ue_baunit_t_lc_building_f} IS NOT NULL THEN 1 ELSE 0 END) count_construccion,
-                                      (CASE WHEN ue.{col_ue_baunit_t_lc_building_unit_f} IS NOT NULL THEN 1 ELSE 0 END) count_unidadconstruccion
-                               FROM {schema}.{lc_parcel_t} p left join {schema}.{col_ue_baunit_t} ue on p.{t_id} = ue.{col_ue_baunit_t_parcel_f}) AS p_ue
-                               GROUP BY {t_id}, {t_ili_tid}, {lc_parcel_t_parcel_type_f}) AS report
-                   WHERE ({lc_parcel_t_parcel_type_f} = (select {t_id} from {schema}.{lc_condition_parcel_type_d} where {ilicode} = '{parcel_type_no_horizontal_property}')
-                         AND (sum_t !=1 OR sum_uc != 0))
-                         OR ({lc_parcel_t_parcel_type_f} in (select {t_id} from {schema}.{lc_condition_parcel_type_d} where {ilicode} in ('{parcel_type_horizontal_property_parent}', '{parcel_type_condominium_parent}', '{parcel_type_cemetery_parent}', '{parcel_type_public_use}', '{parcel_type_condominium_parcel_unit}'))
-                         AND (sum_t!=1 OR sum_uc > 0))
-                         OR ({lc_parcel_t_parcel_type_f} in (select {t_id} from {schema}.{lc_condition_parcel_type_d} where {ilicode} in ('{parcel_type_road}', '{parcel_type_cemetery_parcel_unit}'))
-                         AND (sum_t !=1 OR sum_uc > 0 OR sum_c > 0))
-                         OR ({lc_parcel_t_parcel_type_f}= (select {t_id} from {schema}.{lc_condition_parcel_type_d} where {ilicode} = '{parcel_type_horizontal_property_parcel_unit}')
-                         AND (sum_t !=0 OR sum_c != 0 OR sum_uc = 0 ))
-                         OR ({lc_parcel_t_parcel_type_f} in (select {t_id} from {schema}.{lc_condition_parcel_type_d} where {ilicode} in ('{parcel_type_horizontal_property_mejora}', '{parcel_type_no_horizontal_property_mejora}'))
-                         AND (sum_t !=0 OR sum_c != 1 OR sum_uc != 0))
-            ) as report join {schema}.{lc_condition_parcel_type_d} ON report.{lc_parcel_t_parcel_type_f} = {lc_condition_parcel_type_d}.{t_id}
+            select report.{t_id}, report.{t_ili_tid}, {ilicode} as {lc_parcel_t_parcel_type_f}, sum_t, sum_c, sum_uc
+            from (select p.{t_id}, p.{t_ili_tid}, {lc_parcel_t_parcel_type_f}, count({col_ue_baunit_t_lc_plot_f}) sum_t,
+                        count({col_ue_baunit_t_lc_building_f}) sum_c, count({col_ue_baunit_t_lc_building_unit_f}) sum_uc
+                    from {schema}.{lc_parcel_t} p
+                    left join {schema}.{col_ue_baunit_t} ue on p.{t_id} = ue.{col_ue_baunit_t_parcel_f}
+                    group by p.{t_id}) as report
+            join {schema}.{lc_condition_parcel_type_d} cp on report.{lc_parcel_t_parcel_type_f} = cp.{t_id}
+            where
+                ({ilicode} = '{parcel_type_no_horizontal_property}'
+                    and (sum_t != 1 or sum_uc > 0))
+                or ({ilicode} in ('{parcel_type_horizontal_property_parent}', '{parcel_type_condominium_parent}', '{parcel_type_cemetery_parent}', '{parcel_type_public_use}', '{parcel_type_condominium_parcel_unit}')
+                    and (sum_t != 1 or sum_uc > 0))
+                or ({ilicode} in ('{parcel_type_road}', '{parcel_type_cemetery_parcel_unit}')
+                    and (sum_t != 1 or sum_uc > 0 or sum_c > 0))
+                or ({ilicode} = '{parcel_type_horizontal_property_parcel_unit}'
+                    and (sum_t > 0 or sum_c > 0 or sum_uc = 0 ))
+                or ({ilicode} in ('{parcel_type_horizontal_property_mejora}', '{parcel_type_no_horizontal_property_mejora}')
+                    and (sum_t > 0 or sum_c != 1 or sum_uc > 0));
                 """.format(t_id=db.names.T_ID_F,
                            t_ili_tid=db.names.T_ILI_TID_F,
                            schema=db.schema,
