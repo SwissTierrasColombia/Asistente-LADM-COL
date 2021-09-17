@@ -163,20 +163,22 @@ class MSSQLLADMQuery(QGISLADMQuery):
     @staticmethod
     def get_parcels_with_invalid_parcel_type_and_22_position_number(db):
         query = """
-            SELECT report.{t_id}, report.{t_ili_tid}, {ilicode} as {lc_parcel_t_parcel_type_f}
-            FROM (
-                   SELECT {t_id}, {t_ili_tid},
-                          {lc_parcel_t_parcel_type_f}
-                   FROM {schema}.{lc_parcel_t}
-                   WHERE ({lc_parcel_t_parcel_number_f} IS NOT NULL
-                          AND (substring({lc_parcel_t_parcel_number_f},22,1) != '0' AND {lc_parcel_t_parcel_type_f}=(select {t_id} from {schema}.{lc_condition_parcel_type_d} where {ilicode} = '{parcel_type_no_horizontal_property}'))
-                          OR (substring({lc_parcel_t_parcel_number_f},22,1) != '9' AND {lc_parcel_t_parcel_type_f} in (select {t_id} from {schema}.{lc_condition_parcel_type_d} where {ilicode} in ('{parcel_type_horizontal_property_parent}', '{parcel_type_horizontal_property_parcel_unit}')))
-                          OR (substring({lc_parcel_t_parcel_number_f},22,1) != '8' AND {lc_parcel_t_parcel_type_f} in (select {t_id} from {schema}.{lc_condition_parcel_type_d} where {ilicode} in ('{parcel_type_condominium_parent}', '{parcel_type_condominium_parcel_unit}')))
-                          OR (substring({lc_parcel_t_parcel_number_f},22,1) != '7' AND {lc_parcel_t_parcel_type_f} in (select {t_id} from {schema}.{lc_condition_parcel_type_d} where {ilicode} in ('{parcel_type_cemetery_parent}', '{parcel_type_cemetery_parcel_unit}')))
-                          OR (substring({lc_parcel_t_parcel_number_f},22,1) != '5' AND {lc_parcel_t_parcel_type_f} in (select {t_id} from {schema}.{lc_condition_parcel_type_d} where {ilicode} in ('{parcel_type_horizontal_property_mejora}', '{parcel_type_no_horizontal_property_mejora}')))
-                          OR (substring({lc_parcel_t_parcel_number_f},22,1) != '4' AND {lc_parcel_t_parcel_type_f}=(select {t_id} from {schema}.{lc_condition_parcel_type_d} where {ilicode} = '{parcel_type_road}'))
-                          OR (substring({lc_parcel_t_parcel_number_f},22,1) != '3' AND {lc_parcel_t_parcel_type_f}=(select {t_id} from {schema}.{lc_condition_parcel_type_d} where {ilicode} = '{parcel_type_public_use}')))
-            ) AS report join {schema}.{lc_condition_parcel_type_d} on report.{lc_parcel_t_parcel_type_f} = {lc_condition_parcel_type_d}.{t_id}
+            with parcels
+            as (
+                select p.{t_id}, p.{t_ili_tid}, {ilicode}, substring({lc_parcel_t_parcel_number_f},22,1) as pos22
+                from {schema}.{lc_parcel_t} p
+                join {schema}.{lc_condition_parcel_type_d} cpt on {lc_parcel_t_parcel_type_f} = cpt.{t_id}
+            )
+            select {t_id}, {t_ili_tid}, {ilicode} as {lc_parcel_t_parcel_type_f}
+            from parcels
+            where pos22 is null
+                or (pos22 != '0' and {ilicode} = '{parcel_type_no_horizontal_property}')
+                or (pos22 != '9' and {ilicode} in ('{parcel_type_horizontal_property_parent}', '{parcel_type_horizontal_property_parcel_unit}'))
+                or (pos22 != '8' and {ilicode} in ('{parcel_type_condominium_parent}', '{parcel_type_condominium_parcel_unit}'))
+                or (pos22 != '7' and {ilicode} in ('{parcel_type_cemetery_parent}', '{parcel_type_cemetery_parcel_unit}'))
+                or (pos22 != '5' and {ilicode} in ('{parcel_type_horizontal_property_mejora}', '{parcel_type_no_horizontal_property_mejora}'))
+                or (pos22 != '4' and {ilicode} = '{parcel_type_road}')
+                or (pos22 != '3' and {ilicode} = '{parcel_type_public_use}');
                 """.format(t_id=db.names.T_ID_F,
                            t_ili_tid=db.names.T_ILI_TID_F,
                            schema=db.schema,
