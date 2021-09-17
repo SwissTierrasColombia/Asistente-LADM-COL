@@ -131,7 +131,7 @@ class TaskStepsConfig(QObject, metaclass=SingletonQObject):
                  STEP_CUSTOM_ACTION_SLOT: {
                      SLOT_NAME: self._slot_caller.open_encrypted_db_connection,
                      SLOT_PARAMS: {'db_engine': 'pg',
-                                   'conn_dict': task_data['connection'] if 'connection' in task_data else {},
+                                   'conn_dict': task_data.get('connection', dict()),
                                    'user_level': EnumUserLevel.CONNECT}},
                 },
                 {STEP_NUMBER: 2,
@@ -160,36 +160,49 @@ class TaskStepsConfig(QObject, metaclass=SingletonQObject):
                                                               "Choose a DB connection to create there the Cadastral Survey model structure."),
                  STEP_CUSTOM_ACTION_SLOT: {
                      SLOT_NAME: self._slot_caller.show_dlg_import_schema,
-                     SLOT_CONTEXT: TaskContext([COLLECTED_DB_SOURCE]),
+                     SLOT_CONTEXT: TaskContext(),
                      SLOT_PARAMS: {'link_to_import_data': False,
                                    'selected_models': [LADMNames.SURVEY_MODEL_KEY]}}
                  },
                 {STEP_NUMBER: 2,
+                 STEP_NAME: QCoreApplication.translate("TaskStepsConfig", "Download assigned XTF file"),
+                 STEP_TYPE: EnumSTStepType.DOWNLOAD_FILE,
+                 STEP_DESCRIPTION: QCoreApplication.translate("TaskStepsConfig",
+                                                              "Download the assigned XTF file with Cadastral Survey data."),
+                 STEP_CUSTOM_ACTION_SLOT: {
+                     SLOT_NAME: self._slot_caller.show_dlg_download_st_file,
+                     SLOT_CONTEXT: TaskContext(),
+                     SLOT_PARAMS: {'title': QCoreApplication.translate("TaskStepsConfig", "Download assigned XTF file"),
+                                   'format': 'XTF Transfer File (*.xtf)',
+                                   'url_files': [task_data.get('xtf', '')],
+                                   'settings_key': 'Asistente-LADM-COL/transitional_system/quality_rules/xtf_folder'}}
+                 },
+                {STEP_NUMBER: 3,
                  STEP_NAME: QCoreApplication.translate("TaskStepsConfig", "Import XTF data"),
                  STEP_TYPE: EnumSTStepType.IMPORT_DATA,
                  STEP_DESCRIPTION: QCoreApplication.translate("TaskStepsConfig",
                                                               "Import the assigned XTF data."),
                  STEP_CUSTOM_ACTION_SLOT: {
                      SLOT_NAME: self._slot_caller.show_dlg_import_data,
-                     SLOT_CONTEXT: TaskContext([COLLECTED_DB_SOURCE]),
+                     SLOT_CONTEXT: TaskContext(),
                      SLOT_PARAMS: {}}
                  },
-                {STEP_NUMBER: 3,
+                {STEP_NUMBER: 4,
                  STEP_NAME: QCoreApplication.translate("TaskStepsConfig", "Validate Quality Rules"),
                  STEP_TYPE: EnumSTStepType.VALIDATE_QUALITY_RULES,
                  STEP_DESCRIPTION: QCoreApplication.translate("TaskStepsConfig", "Validate Quality Rules on the assigned data."),
                  STEP_CUSTOM_ACTION_SLOT: {
                      SLOT_NAME: self._slot_caller.show_dlg_quality,
-                     SLOT_CONTEXT: TaskContext([COLLECTED_DB_SOURCE]),
+                     SLOT_CONTEXT: TaskContext(),
                      SLOT_PARAMS: {}}
                  },
-                {STEP_NUMBER: 4,
+                {STEP_NUMBER: 5,
                  STEP_NAME: QCoreApplication.translate("TaskStepsConfig", "Upload validation report files"),
                  STEP_TYPE: EnumSTStepType.UPLOAD_FILE,
                  STEP_DESCRIPTION: QCoreApplication.translate("TaskStepsConfig", "Upload the report (PDF) file and optionally, a GeoPackage to the Transitional System."),
                  STEP_CUSTOM_ACTION_SLOT: {
                      SLOT_NAME: self._slot_caller.show_dlg_st_upload_file,
-                     SLOT_CONTEXT: TaskContext([COLLECTED_DB_SOURCE]),
+                     SLOT_CONTEXT: TaskContext(),
                      SLOT_PARAMS: {
                          'request_id': task_data['request']['requestId'] if 'request' in task_data else None,
                          'other_params': {'typeSupplyId': task_data['request'][

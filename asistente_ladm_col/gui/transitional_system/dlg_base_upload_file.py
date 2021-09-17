@@ -23,7 +23,6 @@ from qgis.PyQt.QtCore import (Qt,
                               pyqtSignal)
 from qgis.gui import QgsMessageBar
 
-from asistente_ladm_col.config.transitional_system_config import TransitionalSystemConfig
 from asistente_ladm_col.utils.st_utils import STUtils
 from asistente_ladm_col.utils.ui import get_ui_class
 from asistente_ladm_col.utils.utils import show_plugin_help
@@ -41,7 +40,6 @@ class STBaseUploadFileDialog(QDialog, DIALOG_TRANSITION_SYSTEM_UI):
         self._request_id = request_id
         self._other_params = other_params
         self._st_utils = STUtils()
-        self._st_config = TransitionalSystemConfig()
 
         self.buttonBox.accepted.disconnect()
         self.buttonBox.accepted.connect(self.upload_file)

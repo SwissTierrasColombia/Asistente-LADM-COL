@@ -15,8 +15,9 @@ class TransitionalSystemConfig(QObject, metaclass=SingletonQObject):
     ST_LOGIN_AUTHORIZATION_CLIENT = "Basic {}".format(encoded.decode('utf-8'))
     ST_EXPECTED_RESPONSE = "unauthorized"
 
-    ST_CONNECTION_ERROR_MSG = QCoreApplication.translate("TransitionalSystemConfig", "There was an error accessing the task service. Details: {}")
-    ST_STATUS_500_MSG = QCoreApplication.translate("TransitionalSystemConfig", "There is an error in the task server! (Status: 500)")
+    ST_CONNECTION_ERROR_MSG = QCoreApplication.translate("TransitionalSystemConfig", "There was an error accessing the ST service. Details: {}")
+    ST_GENERIC_ERROR_MSG = QCoreApplication.translate("TransitionalSystemConfig", "There was a HTTP error (4xx or 5xx) accessing the ST service. Details: {}")
+    ST_STATUS_500_MSG = QCoreApplication.translate("TransitionalSystemConfig", "There is an error in the ST server! (Status: 500)")
     ST_STATUS_GT_500_MSG = QCoreApplication.translate("TransitionalSystemConfig", "A connection could not be established with the server, it is possible that the server is not running.")
     ST_STATUS_401_MSG = QCoreApplication.translate("TransitionalSystemConfig", "Unauthorized client! (Status: 401)")
 
@@ -42,6 +43,8 @@ class TransitionalSystemConfig(QObject, metaclass=SingletonQObject):
     TASK_INTEGRATE_SUPPLIES = 1
     TASK_GENERATE_CADASTRAL_SUPPLIES = 2
     TASK_VALIDATE_QUALITY_RULES = 3
+
+    DEFAULT_CHUNK_SIZE = 1024*1024*10  # 10 MB (in bytes)
 
     def __init__(self):
         QObject.__init__(self)
