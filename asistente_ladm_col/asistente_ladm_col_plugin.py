@@ -31,7 +31,8 @@ from qgis.PyQt.QtGui import QIcon, QColor
 from qgis.PyQt.QtWidgets import (QAction,
                                  QPushButton,
                                  QProgressBar,
-                                 QMessageBox)
+                                 QMessageBox,
+                                 QFileDialog)
 from qgis.core import (Qgis,
                        QgsApplication,
                        QgsProcessingModelAlgorithm,
@@ -150,6 +151,7 @@ from asistente_ladm_col.utils.decorators import (_db_connection_required,
                                                  _cadastral_cartography_model_required,
                                                  _field_data_capture_model_required,
                                                  _update_context_to_current_role)
+from asistente_ladm_col.utils.st_utils import STUtils
 from asistente_ladm_col.utils.utils import show_plugin_help
 from asistente_ladm_col.utils.qt_utils import (ProcessWithStatus, 
                                                normalize_local_url)
@@ -1544,6 +1546,45 @@ class AsistenteLADMCOLPlugin(QObject):
         action = self.gui_builder.get_action(action_tag)
         if action is not None:
             action.trigger()
+
+    def show_dlg_download_st_file(self, *args, **kwargs):
+        if not args and not kwargs:
+            return
+
+        context = args[0]
+
+        # Parse parameters
+        params = kwargs
+        if 'title' not in params or 'format' not in params or 'url_files' not in params or 'settings_key' not in params:
+            return
+
+        title = params['title']
+        format = params['format']
+        url_files = params['url_files']
+        settings_key = params['settings_key']
+        settings = QSettings()
+
+        for url in url_files:
+            if not url:
+                self.logger.debug(__name__, "No URL was given from the task to download the ST file.")
+                return
+
+            path = settings.value(settings_key, os.path.expanduser('~'))
+            filename, _ = QFileDialog.getSaveFileName(self.main_window, title, path, format)
+            if filename:
+                filename = filename if filename[-4:] == '.xtf' else filename + '.xtf'
+                st_utils = STUtils()
+                res, msg = st_utils.download_file(url, filename)
+                if not res:
+                    self.logger.warning_msg(__name__, msg)
+                    return
+            else:
+                self.logger.warning_msg(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                                             "A file location was not chosen. File download cancelled."))
+                return
+
+        if isinstance(context, TaskContext):
+            context.get_slot_on_result()(True)  # Send a True to check the task step's checkbox
 
     def show_dlg_st_upload_file(self, *args, **kwargs):
         if not args and not kwargs:

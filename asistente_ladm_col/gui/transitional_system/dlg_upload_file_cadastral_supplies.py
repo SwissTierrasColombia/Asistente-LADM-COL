@@ -73,7 +73,7 @@ class STCadastralSuppliesUploadFileDialog(STBaseUploadFileDialog):
                     zip_reports_file_path = Utils.compress_files(reports)
 
                 # Prepare upload
-                url = self._st_config.ST_PROVIDER_UPLOAD_FILE_SERVICE_URL.format(self._request_id)
+                url = self._st_utils.st_config.ST_PROVIDER_UPLOAD_FILE_SERVICE_URL.format(self._request_id)
                 files = [('files[]', open(zip_xtf_file_path, 'rb'))]
                 if zip_reports_file_path:  # Optional ZIP file
                     files.append(('extra', open(zip_reports_file_path, 'rb')))
