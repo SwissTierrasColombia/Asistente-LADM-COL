@@ -4,19 +4,16 @@
     <meta charset="UTF-8">
 </head>
 <body>
-<p>Cambios en la version <b>3.1.7</b></p>
+<p>Cambios en la version <b>3.1.8</b></p>
 <ul>
-    <li>Reglas de calidad:
+    <li>Python:
         <ul>
-            <li>Ignorar geometrías vacías cuando se valida superposición de puntos (issue #461).</li>
-	        <li>Resolución de problema al exportar reglas de calidad a GeoPackage (issue #467).</li>
-            <li>Función de agregar puntos topológicos ahora siempre retorna una capa con geometrías reparadas (issue #470).</li>
-	        <li>Regla de calidad E4010 ya no exige que un predio NPH no deba tener una unidades de construcción asociadas.</li>
+            <li>Se corrige problema con módulo xml.etree en Python v3.9.</li>
         </ul>
     </li>
     <li>Reportes:
         <ul>
-            <li>Arreglo del filtro de servicios web (mapas base) para plano ANT: ya no lista servicios tipo XYZ.</li>
+            <li>Como prerrequisito para generar reportes, se valida que las geometrías no tienen ningún vértice con coordenada Z nula.</li>
         </ul>
     </li>
 </ul>

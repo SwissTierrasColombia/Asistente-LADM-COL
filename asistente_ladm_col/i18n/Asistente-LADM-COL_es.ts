@@ -5455,7 +5455,7 @@ Rol:</translation>
 <context>
     <name>Geometry</name>
     <message>
-        <location filename="../lib/geometry.py" line="432"/>
+        <location filename="../lib/geometry.py" line="433"/>
         <source>Checking polygon gaps we found a &apos;{}&apos; geometry, which is not supported! Please report the issue.</source>
         <translation>Revisando huecos entre polígonos encontramos una geometría &apos;{}&apos;, la cual no está soportada. Por favor reporta este inconveniente.</translation>
     </message>
@@ -9280,17 +9280,17 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">¡No se encontró la capa &apos;Terreno&apos; en la base de datos! {}</translation>
     </message>
     <message>
-        <location filename="../core/reports/base_report_generator.py" line="175"/>
+        <location filename="../core/reports/base_report_generator.py" line="178"/>
         <source>Java is a prerequisite. Since it was not found, it is being configured...</source>
         <translation>Java está siendo configurando...</translation>
     </message>
     <message>
-        <location filename="../core/reports/base_report_generator.py" line="196"/>
+        <location filename="../core/reports/base_report_generator.py" line="202"/>
         <source>To generate reports, first select at least one plot!</source>
         <translation>¡Primero selecciona por lo menos un terreno para generar reportes!</translation>
     </message>
     <message>
-        <location filename="../core/reports/base_report_generator.py" line="257"/>
+        <location filename="../core/reports/base_report_generator.py" line="302"/>
         <source>Skipping report for plot with {}={} because it has holes. The reporter module does not support such polygons yet.</source>
         <translation>Omitiendo reporte para el terreno con {}={} porque tiene agujeros. El módulo de reportes no soporta dichos polígonos todavía.</translation>
     </message>
@@ -9307,7 +9307,7 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">Necesitas seleccionar una carpeta para almacenar los reportes antes de continuar.</translation>
     </message>
     <message>
-        <location filename="../core/reports/base_report_generator.py" line="244"/>
+        <location filename="../core/reports/base_report_generator.py" line="289"/>
         <source>Generating {} report{}...</source>
         <translation>Generando {} reporte{}...</translation>
     </message>
