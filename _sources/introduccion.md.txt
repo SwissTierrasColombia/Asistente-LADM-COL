@@ -25,7 +25,7 @@ Un proyecto de: <a href="https://swisstierrascolombia.com" target="_blank">Swiss
 
 ### Soporte de funcionalidades por motor de base de datos
 
-La versión actual (<a href="https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/3.1.7" target="_blank">3.1.7</a>) del Asistente LADM-COL depende del plugin <a href="https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.5/QgisModelBaker_6115.zip" target="_blank">QGIS Model Baker v6.1.1.5</a> y soporta los motores de Base de Datos PostgreSQL/PostGIS, GeoPackage y SQL Server.
+La versión actual (<a href="https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/3.1.8" target="_blank">3.1.8</a>) del Asistente LADM-COL depende del plugin <a href="https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.5/QgisModelBaker_6115.zip" target="_blank">QGIS Model Baker v6.1.1.5</a> y soporta los motores de Base de Datos PostgreSQL/PostGIS, GeoPackage y SQL Server.
 
 Este es el soporte funcional para cada motor:
 
