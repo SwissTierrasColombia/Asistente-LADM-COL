@@ -25,7 +25,7 @@ class LayerRemovedSignalsManager:
 
     def __init__(self, layers: dict, layer_removed_behavior):
         self.__layers = layers
-        self.__connected_function_list = []
+        self.__connected_function_list = dict()
         self.__layer_removed_behavior = layer_removed_behavior
 
     # MapInteractionExpansion / SelectFeaturesOnMapWrapper
@@ -34,7 +34,7 @@ class LayerRemovedSignalsManager:
             if not self.__layers[layer_name]:
                 continue
             connected_function = partial(self.__layer_removed, layer_name)
-            self.__connected_function_list.append(connected_function)
+            self.__connected_function_list[layer_name] = connected_function
             self.__layers[layer_name].willBeDeleted.connect(connected_function)
 
     def disconnect_signals(self):
@@ -45,7 +45,7 @@ class LayerRemovedSignalsManager:
                 continue
             # Layer was found, listen to its removal so that we can update the variable properly
             try:
-                self.__layers[layer_name].willBeDeleted.disconnect(self.__connected_function_list)
+                self.__layers[layer_name].willBeDeleted.disconnect(self.__connected_function_list[layer_name])
                 disconnected_functions.append(layer_name)
 
             except RuntimeError as err:
