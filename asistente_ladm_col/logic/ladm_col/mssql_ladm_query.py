@@ -127,9 +127,9 @@ class MSSQLLADMQuery(QGISLADMQuery):
                                       (CASE WHEN ue.{col_ue_baunit_t_lc_building_unit_f} IS NOT NULL THEN 1 ELSE 0 END) count_unidadconstruccion
                                FROM {schema}.{lc_parcel_t} p left join {schema}.{col_ue_baunit_t} ue on p.{t_id} = ue.{col_ue_baunit_t_parcel_f}) AS p_ue
                                GROUP BY {t_id}, {t_ili_tid}, {lc_parcel_t_parcel_type_f}) AS report
-                   WHERE ({lc_parcel_t_parcel_type_f} = (select {t_id} from {schema}.{lc_condition_parcel_type_d} where {ilicode} = '{parcel_type_no_horizontal_property}')
+                   WHERE ({lc_parcel_t_parcel_type_f} in (select {t_id} from {schema}.{lc_condition_parcel_type_d} where {ilicode} in ('{parcel_type_no_horizontal_property}', '{parcel_type_public_use}'))
                          AND sum_t != 1)
-                         OR ({lc_parcel_t_parcel_type_f} in (select {t_id} from {schema}.{lc_condition_parcel_type_d} where {ilicode} in ('{parcel_type_horizontal_property_parent}', '{parcel_type_condominium_parent}', '{parcel_type_cemetery_parent}', '{parcel_type_public_use}', '{parcel_type_condominium_parcel_unit}'))
+                         OR ({lc_parcel_t_parcel_type_f} in (select {t_id} from {schema}.{lc_condition_parcel_type_d} where {ilicode} in ('{parcel_type_horizontal_property_parent}', '{parcel_type_condominium_parent}', '{parcel_type_cemetery_parent}', '{parcel_type_condominium_parcel_unit}'))
                          AND (sum_t!=1 OR sum_uc > 0))
                          OR ({lc_parcel_t_parcel_type_f} in (select {t_id} from {schema}.{lc_condition_parcel_type_d} where {ilicode} in ('{parcel_type_road}', '{parcel_type_cemetery_parcel_unit}'))
                          AND (sum_t !=1 OR sum_uc > 0 OR sum_c > 0))
