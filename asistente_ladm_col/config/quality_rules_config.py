@@ -769,7 +769,8 @@ class QualityRuleConfig:
                     names.LC_PLOT_T: {
                         ADJUSTED_INPUT_LAYER: names.LC_PLOT_T,
                         ADJUSTED_REFERENCE_LAYER: names.LC_PLOT_T,
-                        FIX_ADJUSTED_LAYER: True
+                        FIX_ADJUSTED_LAYER: True,
+                        ADJUSTED_TOPOLOGICAL_POINTS: True
                     }
                 }
             }, EnumQualityRule.Polygon.OVERLAPS_IN_BUILDINGS: {
@@ -777,7 +778,8 @@ class QualityRuleConfig:
                 QUALITY_RULE_ADJUSTED_LAYERS: {
                     names.LC_BUILDING_T: {
                         ADJUSTED_INPUT_LAYER: names.LC_BUILDING_T,
-                        ADJUSTED_REFERENCE_LAYER: names.LC_BUILDING_T
+                        ADJUSTED_REFERENCE_LAYER: names.LC_BUILDING_T,
+                        ADJUSTED_TOPOLOGICAL_POINTS: True
                     }
                 }
             }, EnumQualityRule.Polygon.OVERLAPS_IN_RIGHTS_OF_WAY: {
@@ -785,7 +787,8 @@ class QualityRuleConfig:
                 QUALITY_RULE_ADJUSTED_LAYERS: {
                     names.LC_RIGHT_OF_WAY_T: {
                         ADJUSTED_INPUT_LAYER: names.LC_RIGHT_OF_WAY_T,
-                        ADJUSTED_REFERENCE_LAYER: names.LC_RIGHT_OF_WAY_T
+                        ADJUSTED_REFERENCE_LAYER: names.LC_RIGHT_OF_WAY_T,
+                        ADJUSTED_TOPOLOGICAL_POINTS: True
                     }
                 }
             }, EnumQualityRule.Polygon.PLOTS_COVERED_BY_BOUNDARIES: {
