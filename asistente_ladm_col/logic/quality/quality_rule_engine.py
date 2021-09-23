@@ -59,7 +59,13 @@ class QualityRuleEngine(QObject):
         self.__quality_rules = QualityRules()
         self.quality_rule_logger = QualityRuleLogger(self.__db, self.__tolerance)
 
-    def initialize(self, db, rules, tolerance):
+        # Clear informality cache before executing QRs.
+        # Note: between creating an object of this class and calling validate_quality_rules() a lot
+        # of things could happen (like new caches being built!). It is your responsibility to create
+        # an instance of this class or initialize() a QREngine object just before calling validate_quality_rules().
+        self.app.core.clear_cached_informal_spatial_units()
+
+    def initialize(self, db, rules, tolerance, clear_informality_cache=True):
         """
         Objects of this class are reusable calling initialize()
         """
@@ -71,6 +77,12 @@ class QualityRuleEngine(QObject):
         self.__tolerance = self.app.settings.tolerance  # Tolerance input might be altered (e.g., if it comes negative)
         self.__layer_manager.initialize(self.__rules.keys(), self.__tolerance)
         self.quality_rule_logger.initialize(self.__db, self.__tolerance)
+
+        # This time, (initializing an existing object) we give you the chance to avoid
+        # rebuilding the informality cache. It is handy if you're executing validations
+        # consecutively and you're sure that reusing a previous cache does make sense.
+        if clear_informality_cache:
+            self.app.core.clear_cached_informal_spatial_units()
 
     def __get_dict_rules(self, rules):
         if isinstance(rules, dict):
