@@ -59,6 +59,7 @@ from asistente_ladm_col.config.enums import EnumQualityRule
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.quality_rule.quality_rule_manager import QualityRuleManager
+from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 from asistente_ladm_col.utils.utils import get_uuid_dict, remove_keys_from_dict
 from asistente_ladm_col.lib.geometry import GeometryUtils
 
@@ -105,21 +106,36 @@ class PolygonQualityRules:
             flat_overlapping = list(set(flat_overlapping))  # unique values
 
             if type(polygon_layer) == QgsVectorLayer: # A string might come from processing for empty layers
-                dict_uuids = {f.id(): f[db.names.T_ILI_TID_F] for f in polygon_layer.getFeatures(flat_overlapping)}
+                dict_uuids = {f.id(): (f[db.names.T_ILI_TID_F], f[db.names.T_ID_F]) for f in polygon_layer.getFeatures(flat_overlapping)}
+
+            informal_spatial_unit_tids = list()
+            if overlapping:
+                ladm_data = LADMData()
+                if polygon_layer_name == db.names.LC_PLOT_T:
+                    # Informality checks only make sense for overlaps among Plots
+                    informal_spatial_unit_tids = ladm_data.get_informal_plot_tids(db)
 
             features = []
 
             for overlapping_item in overlapping:
-                polygon_id_field = overlapping_item[0]
-                overlapping_id_field = overlapping_item[1]
-                polygon_intersection = self.geometry.get_intersection_polygons(polygon_layer, polygon_id_field, overlapping_id_field)
+                polygon_fid = overlapping_item[0]
+                overlapping_fid = overlapping_item[1]
+
+                if informal_spatial_unit_tids:
+                    # If (for thematic reasons) the overlap is not considered an error, we skip it from the result
+                    is_1_informal = dict_uuids.get(polygon_fid, (None, -1))[1] in informal_spatial_unit_tids
+                    is_2_informal = dict_uuids.get(overlapping_fid, (None, -1))[1] in informal_spatial_unit_tids
+                    if is_1_informal != is_2_informal:  # Overlap for T-F and F-T combinations is allowed (not an error)
+                        continue
+
+                polygon_intersection = self.geometry.get_intersection_polygons(polygon_layer, polygon_fid, overlapping_fid)
 
                 if polygon_intersection is not None:
                     new_feature = QgsVectorLayerUtils().createFeature(
                         error_layer,
                         polygon_intersection,
-                        {0: dict_uuids.get(polygon_id_field),
-                         1: dict_uuids.get(overlapping_id_field),
+                        {0: dict_uuids.get(polygon_fid, (None,))[0],  # t_ili_tid
+                         1: dict_uuids.get(overlapping_fid, (None,))[0],  # t_ili_tid
                          2: self.quality_rules_manager.get_error_message(error_code),
                          3: error_code})
                     features.append(new_feature)

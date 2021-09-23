@@ -1,8 +1,6 @@
 from qgis.core import NULL
 
-from asistente_ladm_col.config.general_config import PLUGINS_DIR
 from asistente_ladm_col.config.ladm_names import LADMNames
-from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
 from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 
 
