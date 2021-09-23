@@ -105,7 +105,7 @@ class PolygonQualityRules:
             flat_overlapping = list(set(flat_overlapping))  # unique values
 
             if type(polygon_layer) == QgsVectorLayer: # A string might come from processing for empty layers
-                dict_uuids = {f.id(): f[db.names.T_ILI_TID_F] for f in polygon_layer.getFeatures() if f.id() in flat_overlapping}
+                dict_uuids = {f.id(): f[db.names.T_ILI_TID_F] for f in polygon_layer.getFeatures(flat_overlapping)}
 
             features = []
 
