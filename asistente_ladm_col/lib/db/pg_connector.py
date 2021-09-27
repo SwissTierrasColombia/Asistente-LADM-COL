@@ -209,6 +209,7 @@ class PGConnector(ClientServerDB):
         dict_names[DISPLAY_NAME_KEY] = "dispname"
         dict_names[ILICODE_KEY] = "ilicode"
         dict_names[DESCRIPTION_KEY] = "description"
+        dict_names[THIS_CLASS_KEY] = "thisclass"
         dict_names[T_BASKET_KEY] = "t_basket"
         dict_names[T_ILI2DB_BASKET_KEY] = "t_ili2db_basket"
         dict_names[T_ILI2DB_DATASET_KEY] = "t_ili2db_dataset"

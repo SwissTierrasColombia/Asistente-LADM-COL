@@ -39,7 +39,7 @@ def get_domain_code_from_value(domain_table, value, value_is_ilicode, validate_c
 @qgsfunction(args='auto', group='LADM-COL', referenced_columns=[])
 def get_domain_value_from_code(domain_table, code, value_is_ilicode, validate_conn, feature, parent):
     """
-    Gets a t_id from a domain value
+    Gets a domain value from its t_id
 
     : param domain_table: Either a string (class name in the DB) or a Vector Layer
     : param code: t_id to search in the domain
@@ -65,6 +65,36 @@ def get_domain_value_from_code(domain_table, code, value_is_ilicode, validate_co
                 res = plugin.ladm_data.get_domain_value_from_code(db, domain_table, code, value_is_ilicode)
         else:
             res = -3 if debug else None
+
+    return res
+
+
+@qgsfunction(args='auto', group='LADM-COL', referenced_columns=[], helpText=TranslatableConfigStrings.help_get_multi_domain_code_from_value)
+def get_multi_domain_code_from_value(domain_table, value, child_domain_table, feature, parent):
+    """
+    Gets a t_id from both a domain ilicode and a child domain class name.
+    When a DB has more than 1 child domain, the ilicode may be duplicated,
+    so we need the child_domain_table name to disambiguate.
+
+    : param domain_table: Either a string (class name in the DB) or a Vector Layer
+    : param value: Domain value (ilicode) to look for
+    : param child_domain_table: Name of the child domain table
+    : param feature: Not used, but mandatory for QGIS
+    : param parent: Not used, but mandatory for QGIS
+    """
+    debug = False
+    res = None
+
+    from qgis import utils
+    if not "asistente_ladm_col" in utils.plugins:
+        res = -1 if debug else None
+    else:
+        plugin = utils.plugins["asistente_ladm_col"]  # Dict of active plugins
+        db = plugin.get_db_connection()
+        if db.names.T_ID_F is None:
+            db.names.test_connection()  # First build the DBMappingRegistry object
+
+        res = plugin.ladm_data.get_domain_code_from_value(db, domain_table, value, True, child_domain_table)
 
     return res
 

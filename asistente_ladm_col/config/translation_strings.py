@@ -105,9 +105,9 @@ class TranslatableConfigStrings(QObject):
     help_get_domain_code_from_value = QCoreApplication.translate("TranslatableConfigStrings", "Gets the t_id that corresponds to a domain value") + \
                                          QCoreApplication.translate("TranslatableConfigStrings", "<h4>Syntax</h4>") + \
                                          "<span class=\"functionname\">get_domain_code_from_value</span>(" \
-                                         "<span class=\"argument\">domain_table</span>," \
-                                         "<span class=\"argument\">value</span>," \
-                                         "<span class=\"argument\">value_is_ilicode</span>," \
+                                         "<span class=\"argument\">domain_table</span>, " \
+                                         "<span class=\"argument\">value</span>, " \
+                                         "<span class=\"argument\">value_is_ilicode</span>, " \
                                          "<span class=\"argument\">validate_conn</span>)" + \
                                          QCoreApplication.translate("TranslatableConfigStrings", "<h4>Arguments</h4>") + \
                                          "<span class=\"argument\">domain_table</span> " + QCoreApplication.translate("TranslatableConfigStrings", "Domain table name or layer obj") + \
@@ -120,6 +120,26 @@ class TranslatableConfigStrings(QObject):
   'NPH',
   True,
   False) → {}</pre>""".format(QCoreApplication.translate("TranslatableConfigStrings", "Gets the t_id of NPH in\n  domain lc_condicionprediotipo"))
+
+    help_get_multi_domain_code_from_value = QCoreApplication.translate("TranslatableConfigStrings", "Gets the t_id that corresponds to a (child) domain value") + \
+                                      QCoreApplication.translate("TranslatableConfigStrings", "<h4>Syntax</h4>") + \
+                                      "<span class=\"functionname\">get_multi_domain_code_from_value</span>(" \
+                                      "<span class=\"argument\">domain_table</span>, " \
+                                      "<span class=\"argument\">value</span>, " \
+                                      "<span class=\"argument\">child_domain_table</span>)" +  \
+                                      QCoreApplication.translate("TranslatableConfigStrings", "<h4>Arguments</h4>") + \
+                                      "<span class=\"argument\">domain_table</span> " + QCoreApplication.translate(
+        "TranslatableConfigStrings", "Domain table name or layer obj") + \
+                                      "<br><span class=\"argument\">value</span> " + QCoreApplication.translate(
+        "TranslatableConfigStrings", "Domain value to look for") + \
+                                      "<br><span class=\"argument\">child_domain_table</span> " + QCoreApplication.translate(
+        "TranslatableConfigStrings", "Name of the child domain to disambiguate with other duplicated ilicodes from other models") + \
+                                      QCoreApplication.translate("TranslatableConfigStrings", "<h4>Examples</h4>") + \
+                                      """<pre>get_multi_domain_code_from_value( 
+  'col_fuenteadministrativatipo',
+  'Documento_Publico.Acto_Administrativo',
+  'Ambiente_V0_1.MA_FuenteAdministrativaTipo')<br> → {}</pre>""".format(QCoreApplication.translate("TranslatableConfigStrings",
+                                                         "Gets the t_id of Acto_Administrativo in\n  domain col_fuenteadministrativatipo\n and child domain MA_FuenteAdministrativaTipo."))
 
     def __init__(self):
         pass

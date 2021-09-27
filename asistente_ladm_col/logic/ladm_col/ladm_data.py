@@ -796,7 +796,7 @@ class LADMData(QObject):
             names.LC_PLOT_T_PLOT_AREA_F: DICT_KEY_PLOT_T_AREA_F
         }
 
-    def get_domain_code_from_value(self, db, domain_table, value, value_is_ilicode=True):
+    def get_domain_code_from_value(self, db, domain_table, value, value_is_ilicode=True, child_domain_table=''):
         """
         Get the t_id corresponding to a domain value. First look at the response in a cache.
 
@@ -804,6 +804,8 @@ class LADMData(QObject):
         :param domain_table: Table name or QgsVectorLayer
         :param value: Value to search in the domain.
         :param value_is_ilicode: Whether is an iliCode or a display name.
+        :param child_domain_table: (Optional) Name of the child domain table (may be required to disambiguate duplicate
+                                   ilicodes, which occurs when the DB has multiple child domains).
         :return: The t_id corresponding to the given value or None.
         """
         res = None
@@ -821,12 +823,16 @@ class LADMData(QObject):
             domain_table_name = domain_table.name()
 
         # Try to get it from cache
-        found_in_cache, cached_value = db.names.get_domain_code(domain_table_name, value, value_is_ilicode)
+        found_in_cache, cached_value = db.names.get_domain_code(domain_table_name,
+                                                                value,
+                                                                value_is_ilicode,
+                                                                child_domain_table)
 
         if found_in_cache:
             if DEFAULT_LOG_MODE == EnumLogMode.DEV:
                 self.logger.debug(__name__, "(From cache!) Get domain ({}) code from {} ({}): {}".format(
-                    domain_table_name, db.names.ILICODE_F if value_is_ilicode else db.names.DISPLAY_NAME_F, value, cached_value))
+                    child_domain_table if child_domain_table else domain_table_name,
+                    db.names.ILICODE_F if value_is_ilicode else db.names.DISPLAY_NAME_F, value, cached_value))
             return cached_value
 
         # Not in cache, let's go for the value and cache it
@@ -837,6 +843,10 @@ class LADMData(QObject):
 
         if domain_table is not None:
             expression = "\"{}\" = '{}'".format(db.names.ILICODE_F if value_is_ilicode else db.names.DISPLAY_NAME_F, value)
+
+            if child_domain_table:  # We add another field:value expression to disambiguate multiple results
+                expression = "{} AND \"{}\" = '{}'".format(expression, db.names.THIS_CLASS_F, child_domain_table)
+
             request = QgsFeatureRequest(QgsExpression(expression))
             request.setSubsetOfAttributes([db.names.T_ID_F], domain_table.fields())
 
@@ -845,18 +855,19 @@ class LADMData(QObject):
             if features.nextFeature(feature):
                 res = feature[db.names.T_ID_F]
                 if res is not None:
-                    db.names.cache_domain_value(domain_table_name, res, value, value_is_ilicode)
+                    db.names.cache_domain_value(domain_table_name, res, value, value_is_ilicode, child_domain_table)
             else:
                 value_not_found = True
         else:
             value_not_found = True
 
         if value_not_found:
-            db.names.cache_wrong_query(QueryNames.VALUE_KEY, domain_table_name, None, value, value_is_ilicode)
+            db.names.cache_wrong_query(QueryNames.VALUE_KEY, domain_table_name, None, value, value_is_ilicode, child_domain_table)
 
         if DEFAULT_LOG_MODE == EnumLogMode.DEV:
             self.logger.debug(__name__, "Get domain ({}) code from {} ({}): {}".format(
-                domain_table_name, db.names.ILICODE_F if value_is_ilicode else db.names.DISPLAY_NAME_F, value, res))
+                child_domain_table if child_domain_table else domain_table_name,
+                db.names.ILICODE_F if value_is_ilicode else db.names.DISPLAY_NAME_F, value, res))
 
         return res
 

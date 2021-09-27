@@ -97,6 +97,7 @@ from asistente_ladm_col.config.translation_strings import (TOOLBAR_FINALIZE_GEOM
 from asistente_ladm_col.config.wizard_config import WizardConfig
 from asistente_ladm_col.config.expression_functions import (get_domain_code_from_value,
                                                             get_domain_value_from_code,
+                                                            get_multi_domain_code_from_value,
                                                             get_domain_description_from_code)  # >> DON'T REMOVE << Registers it in QgsExpression
 from asistente_ladm_col.config.keys.common import *
 from asistente_ladm_col.core.app_core_interface import AppCoreInterface
@@ -282,6 +283,7 @@ class AsistenteLADMCOLPlugin(QObject):
     def uninstall_custom_expression_functions():
         QgsExpression.unregisterFunction('get_domain_code_from_value')
         QgsExpression.unregisterFunction('get_domain_value_from_code')
+        QgsExpression.unregisterFunction('get_multi_domain_code_from_value')
         QgsExpression.unregisterFunction('get_domain_description_from_code')
 
     def initialize_requirements(self):
