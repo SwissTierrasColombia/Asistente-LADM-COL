@@ -51,6 +51,7 @@ class DBMappingRegistry:
             "ILICODE_F": ILICODE_KEY,
             "DESCRIPTION_F": DESCRIPTION_KEY,
             "DISPLAY_NAME_F": DISPLAY_NAME_KEY,
+            "THIS_CLASS_F": THIS_CLASS_KEY,
             "T_BASKET_F": T_BASKET_KEY,
             "T_ILI2DB_BASKET_T": T_ILI2DB_BASKET_KEY,
             "T_ILI2DB_DATASET_T": T_ILI2DB_DATASET_KEY,
@@ -180,15 +181,18 @@ class DBMappingRegistry:
 
         return True, ""
 
-    def cache_domain_value(self, domain_table, t_id, value, value_is_ilicode):
+    def cache_domain_value(self, domain_table, t_id, value, value_is_ilicode, child_domain_table=''):
         key = "{}..{}".format('ilicode' if value_is_ilicode else 'dispname', value)
+
+        if child_domain_table:
+            key = "{}..{}".format(key, child_domain_table)
 
         if domain_table in self._cached_domain_values:
             self._cached_domain_values[domain_table][key] = t_id
         else:
             self._cached_domain_values[domain_table] = {key: t_id}
 
-    def cache_wrong_query(self, query_type, domain_table, code, value, value_is_ilicode):
+    def cache_wrong_query(self, query_type, domain_table, code, value, value_is_ilicode, child_domain_table=''):
         """
         If query was by value, then use value in key and code in the corresponding value pair, and viceversa
 
@@ -197,8 +201,14 @@ class DBMappingRegistry:
         :param code: t_id
         :param value: iliCode or dispName value
         :param value_is_ilicode: whether the value to be searched is iliCode or not
+        :param child_domain_table: (Optional) Name of the child domain table (may be required to disambiguate duplicate
+                                   ilicodes, which occurs when the DB has multiple child domains).
         """
         key = "{}..{}".format('ilicode' if value_is_ilicode else 'dispname', value if query_type == QueryNames.VALUE_KEY else code)
+
+        if child_domain_table:
+            key = "{}..{}".format(key, child_domain_table)
+
         if domain_table in self._cached_wrong_domain_queries[query_type]:
             self._cached_wrong_domain_queries[query_type][domain_table][key] = code if query_type == QueryNames.VALUE_KEY else value
         else:
@@ -207,6 +217,9 @@ class DBMappingRegistry:
     def get_domain_value(self, domain_table, t_id, value_is_ilicode):
         """
         Get a domain value from the cache. First, attempt to get it from the 'right' cache, then from the 'wrong' cache.
+
+        Note: Here we don't need a child_domain_table (like we do in get_domain_code), because the t_id is enough to get
+              a single domain record, even if the DB has multiple child domains.
 
         :param domain_table: Domain table name.
         :param t_id: t_id to be searched.
@@ -217,12 +230,17 @@ class DBMappingRegistry:
         field_name = 'ilicode' if value_is_ilicode else 'dispname'
         if domain_table in self._cached_domain_values:
             for k,v in self._cached_domain_values[domain_table].items():
-                if v == t_id:
+                if v == t_id:  # In this case, we compare by value and we're interested in the value included in the key
                     key = k.split("..")
                     if key[0] == field_name:
-                        return True, key[1]  # Compound key: ilicode..value or dispname..value
+                        # Compound key: ilicode..value/dispname..value/ilicode..value..child/dispname..value..child
+                        # Note: if the value was stored with a key that includes child_domain_table, we still have
+                        #       the field_name in key[0] and the value in key[1]. We also have the child_domain_table
+                        #       in key[2], but we don't care about it, since the t_id is enough to get the value (i.e.,
+                        #       we won't need to disambiguate anything).
+                        return True, key[1]
 
-        # Search in 'wrong' cache
+        # Search in 'wrong' cache (in this case, we'll never find anything that has child_domain_table included in key)
         if domain_table in self._cached_wrong_domain_queries[QueryNames.CODE_KEY]:
             key = "{}..{}".format('ilicode' if value_is_ilicode else 'dispname', t_id)
             if key in self._cached_wrong_domain_queries[QueryNames.CODE_KEY][domain_table]:
@@ -230,19 +248,25 @@ class DBMappingRegistry:
 
         return False, None
 
-    def get_domain_code(self, domain_table, value, value_is_ilicode):
+    def get_domain_code(self, domain_table, value, value_is_ilicode, child_domain_table=''):
         """
-        Get a domain code from the cache. First, attempt to get it from the 'right' cache, then from the 'wrong' cache.
+        Get a domain code (t_id) from the cache. First, attempt from the 'right' cache, then from the 'wrong' cache.
 
         :param domain_table: Domain table name.
         :param value: value to be searched.
         :param value_is_ilicode: Whether the value is iliCode (True) or dispName (False)
+        :param child_domain_table: (Optional) Name of the child domain table (may be required to disambiguate duplicate
+                                   ilicodes, which occurs when the DB has multiple child domains).
         :return: tuple (found, t_id)
                         found: boolean, whether the value was found in cache or not
                         t_id: t_id of the corresponding ilicode
         """
         # Search in 'right' cache
         key = "{}..{}".format('ilicode' if value_is_ilicode else 'dispname', value)
+
+        if child_domain_table:
+            key = "{}..{}".format(key, child_domain_table)
+
         if domain_table in self._cached_domain_values:
             if key in self._cached_domain_values[domain_table]:
                 return True, self._cached_domain_values[domain_table][key]

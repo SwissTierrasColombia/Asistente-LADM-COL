@@ -115,6 +115,7 @@ class GPKGConnector(FileDB):
         dict_names[DISPLAY_NAME_KEY] = "dispName"
         dict_names[ILICODE_KEY] = "iliCode"
         dict_names[DESCRIPTION_KEY] = "description"
+        dict_names[THIS_CLASS_KEY] = "thisClass"
         dict_names[T_BASKET_KEY] = "T_basket"
         dict_names[T_ILI2DB_BASKET_KEY] = "T_ILI2DB_BASKET"
         dict_names[T_ILI2DB_DATASET_KEY] = "T_ILI2DB_DATASET"

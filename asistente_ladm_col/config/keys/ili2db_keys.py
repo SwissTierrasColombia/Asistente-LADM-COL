@@ -3,6 +3,7 @@ T_ILI_TID_KEY = 't_ili_tid'
 DESCRIPTION_KEY = 'description'
 ILICODE_KEY = 'ilicode'
 DISPLAY_NAME_KEY = 'display_name'
+THIS_CLASS_KEY = 'this_class'
 
 T_BASKET_KEY = 't_basket'
 T_ILI2DB_DATASET_KEY = 't_ili2db_dataset'
