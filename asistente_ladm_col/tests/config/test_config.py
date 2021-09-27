@@ -46,6 +46,7 @@ TEST_SCHEMAS_MAPPING = {
     'test_ladm_cadastral_cartography_gpkg': 'ladm/gpkg/test_ladm_cartography_model_v1_1.gpkg',
     'test_ladm_col_queries_qpkg': 'ladm/gpkg/test_ladm_col_queries_v1_1.gpkg',
     'test_ladm_all_models_gpkg': 'ladm/gpkg/test_ladm_all_models_v1_1.gpkg',
+    'test_ladm_multiple_child_domains_gpkg': 'ladm/gpkg/test_multiple_models_ambiente_y_lc.gpkg',
     'tests_geometry_util_gpkg': 'static/gpkg/geometry_utils.gpkg',
     'tests_quality_validations_gpkg': 'static/gpkg/quality_validations.gpkg',
     'tests_quality_rules_tolerance_gpkg': 'ladm/gpkg/test_quality_rules_tolerance.gpkg',
