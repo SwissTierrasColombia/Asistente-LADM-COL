@@ -22,8 +22,15 @@ class TestLADMData(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         import_qgis_model_baker()
+
+        # DB with single child model
         cls.db_gpkg = get_copy_gpkg_conn('test_ladm_survey_model_gpkg')
         res, code, msg = cls.db_gpkg.test_connection()
+        cls.assertTrue(res, msg)
+
+        # DB with multiple child models and domains
+        cls.db_multi_gpkg = get_copy_gpkg_conn('test_ladm_multiple_child_domains_gpkg')
+        res, code, msg = cls.db_multi_gpkg.test_connection()
         cls.assertTrue(res, msg)
 
         cls.app = AppInterface()
@@ -38,7 +45,7 @@ class TestLADMData(unittest.TestCase):
         layer = self.app.core.get_layer(self.db_gpkg, names.COL_POINT_TYPE_D, load=True)
         self.assertEqual(layer.featureCount(), 14)
 
-        field_name = "thisClass"
+        field_name = self.db_gpkg.names.THIS_CLASS_F
         field_values = ["LADM_COL_V3_0.LADM_Nucleo.COL_PuntoTipo"]
 
         # We have 3 cases to test:
@@ -204,6 +211,49 @@ class TestLADMData(unittest.TestCase):
         domain_layer = QgsVectorLayer("NoGeometry", 'domain layer', "memory")
         value = self.ladm_data.get_domain_code_from_value(self.db_gpkg, domain_layer, LADMNames.PARCEL_TYPE_NO_HORIZONTAL_PROPERTY, value_is_ilicode=True)
         self.assertIsNone(value)
+
+    def test_get_multi_domain_code_from_value(self):
+        print('\nINFO: Validating get multi domain code from value...')
+
+        duplicated_ilicode = 'Documento_Publico.Acto_Administrativo'
+        this_class_environment = 'Ambiente_V0_1.MA_FuenteAdministrativaTipo'
+        this_class_survey = 'Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.LC_FuenteAdministrativaTipo'
+        t_id_environment_model = -1
+        t_id_survey_model = -1
+
+        layer = self.app.core.get_layer(self.db_multi_gpkg, self.db_multi_gpkg.names.COL_ADMINISTRATIVE_SOURCE_TYPE_D, load=True)
+        test_features = self.ladm_data.get_features_from_t_ids(layer,
+                                                               self.db_multi_gpkg.names.ILICODE_F,
+                                                               [duplicated_ilicode],
+                                                               no_geometry=True,
+                                                               only_attributes=[self.db_multi_gpkg.names.THIS_CLASS_F,
+                                                                                self.db_multi_gpkg.names.T_ID_F])
+        self.assertEqual(len(test_features), 2)
+
+        for f in test_features:
+            if f[self.db_gpkg.names.THIS_CLASS_F] == this_class_environment:
+                t_id_environment_model = f[self.db_gpkg.names.T_ID_F]
+            elif f[self.db_gpkg.names.THIS_CLASS_F] == this_class_survey:
+                t_id_survey_model = f[self.db_gpkg.names.T_ID_F]
+
+        self.assertNotEqual(t_id_environment_model, -1, 't_id for environment model not found!')
+        self.assertNotEqual(t_id_survey_model, -1, 't_id for survey model not found!')
+
+        # Good parameters, environment model
+        value = self.ladm_data.get_domain_code_from_value(self.db_multi_gpkg,
+                                                          self.db_multi_gpkg.names.COL_ADMINISTRATIVE_SOURCE_TYPE_D,
+                                                          duplicated_ilicode,
+                                                          True,
+                                                          this_class_environment)
+        self.assertEqual(value, t_id_environment_model)
+
+        # Good parameters, survey model
+        value = self.ladm_data.get_domain_code_from_value(self.db_multi_gpkg,
+                                                          self.db_multi_gpkg.names.COL_ADMINISTRATIVE_SOURCE_TYPE_D,
+                                                          duplicated_ilicode,
+                                                          True,
+                                                          this_class_survey)
+        self.assertEqual(value, t_id_survey_model)
 
     @classmethod
     def tearDownClass(cls):
