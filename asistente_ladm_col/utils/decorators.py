@@ -128,6 +128,7 @@ def _db_connection_required(func_to_decorate):
 
     return decorated_function
 
+
 def _qgis_model_baker_required(func_to_decorate):
     @wraps(func_to_decorate)
     def decorated_function(*args, **kwargs):
@@ -166,6 +167,7 @@ def _qgis_model_baker_required(func_to_decorate):
 
     return decorated_function
 
+
 def _activate_processing_plugin(func_to_decorate):
     @wraps(func_to_decorate)
     def decorated_function(*args, **kwargs):
@@ -182,6 +184,7 @@ def _activate_processing_plugin(func_to_decorate):
         return func_to_decorate(*args, **kwargs)
 
     return decorated_function
+
 
 def _log_quality_rule_validations(func_to_decorate):
     @wraps(func_to_decorate)
@@ -228,6 +231,7 @@ def _log_quality_rule_validations(func_to_decorate):
 
     return add_format_to_text
 
+
 def _survey_model_required(func_to_decorate):
     """Requires list of sources. Example: [COLLECTED_DB_SOURCE, SUPPLIES_DB_SOURCE]"""
     @wraps(func_to_decorate)
@@ -265,6 +269,7 @@ def _survey_model_required(func_to_decorate):
 
     return decorated_function
 
+
 def _supplies_model_required(func_to_decorate):
     @wraps(func_to_decorate)
     def decorated_function(*args, **kwargs):
@@ -300,6 +305,7 @@ def _supplies_model_required(func_to_decorate):
         func_to_decorate(*args, **kwargs)
 
     return decorated_function
+
 
 # TODO: Unify all model required decorators into one with model_key as argument
 def _field_data_capture_model_required(func_to_decorate):
@@ -341,6 +347,7 @@ def _field_data_capture_model_required(func_to_decorate):
         func_to_decorate(*args, **kwargs)
 
     return decorated_function
+
 
 def _valuation_model_required(func_to_decorate):
     @wraps(func_to_decorate)
@@ -459,6 +466,7 @@ def _map_swipe_tool_required(func_to_decorate):
 
     return decorated_function
 
+
 def _validate_if_wizard_is_open(func_to_decorate):
     @wraps(func_to_decorate)
     def decorated_function(*args, **kwargs):
@@ -528,7 +536,7 @@ def _with_override_cursor(func_to_decorate):
     def decorated_function(*args, **kwargs):
 
         with OverrideCursor(Qt.WaitCursor):
-            func_to_decorate(*args, **kwargs)
+            return func_to_decorate(*args, **kwargs)
 
     return decorated_function
 
