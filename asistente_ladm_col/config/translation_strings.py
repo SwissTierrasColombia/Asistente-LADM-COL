@@ -277,7 +277,7 @@ class TranslatableConfigStrings(QObject):
             QUALITY_RULE_ERROR_CODE_E401008: QCoreApplication.translate("TranslatableConfigStrings", "Cuando la condición del predio es 'PH Matriz', el predio debe tener asociado 1 terreno y 0 unidades de construcción"),
             QUALITY_RULE_ERROR_CODE_E401009: QCoreApplication.translate("TranslatableConfigStrings", "Cuando la condición del predio es 'PH Unidad Predial', el predio debe tener asociado 0 terrenos y 0 construcciones y 1 unidad de construcción"),
             QUALITY_RULE_ERROR_CODE_E401010: QCoreApplication.translate("TranslatableConfigStrings", "Cuando la condición del predio es 'Vía', el predio debe tener asociado 1 terreno y 0 construcciones y 0 unidades de construcción"),
-            QUALITY_RULE_ERROR_CODE_E401011: QCoreApplication.translate("TranslatableConfigStrings", "Cuando la condición del predio es 'NPH', el predio debe tener asociado 1 terreno y 0 unidades de construcción"),
+            QUALITY_RULE_ERROR_CODE_E401011: QCoreApplication.translate("TranslatableConfigStrings", "Cuando la condición del predio es 'NPH', el predio debe tener asociado 1 terreno"),
             QUALITY_RULE_ERROR_CODE_E401101: QCoreApplication.translate("TranslatableConfigStrings", "Punto Lindero no debe tener registros repetidos"),
             QUALITY_RULE_ERROR_CODE_E401201: QCoreApplication.translate("TranslatableConfigStrings", "Punto Levantamiento no debe tener registros repetidos"),
             QUALITY_RULE_ERROR_CODE_E401301: QCoreApplication.translate("TranslatableConfigStrings", "Punto Control no debe tener registros repetidos"),
