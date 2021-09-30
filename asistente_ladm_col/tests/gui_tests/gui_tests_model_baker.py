@@ -1,5 +1,4 @@
 import qgis
-from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
 
 from asistente_ladm_col.config.query_names import QueryNames
 from asistente_ladm_col.config.ladm_names import LADMNames
@@ -19,10 +18,10 @@ def functionalTests():
         plugin.show_dlg_import_schema(**models)
 
     def open_schema_import_dialog_model1():
-        open_schema_import_dialog({'selected_models': [LADMColModelRegistry().model(LADMNames.SUPPLIES_MODEL_KEY).full_name()]})
+        open_schema_import_dialog({'selected_models': [LADMNames.SUPPLIES_MODEL_KEY]})
 
     def open_schema_import_dialog_model2():
-        open_schema_import_dialog({'selected_models': [LADMColModelRegistry().model(LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY).full_name()]})
+        open_schema_import_dialog({'selected_models': [LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY]})
 
     def get_initial_models_in_cache():
         global initial_models

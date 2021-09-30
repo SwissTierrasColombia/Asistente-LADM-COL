@@ -79,7 +79,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         QDialog.__init__(self, parent)
         self.iface = iface
         self.conn_manager = conn_manager
-        self.selected_models = selected_models
+        self.selected_models = selected_models  # List of model keys
         self.link_to_import_data = link_to_import_data
         self.logger = Logger()
         self.app = AppInterface()
@@ -195,7 +195,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
                 item.setData(Qt.UserRole, model.full_name())
                 item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
                 if self.selected_models:  # From parameters
-                    item.setCheckState(Qt.Checked if model.full_name() in self.selected_models else Qt.Unchecked)
+                    item.setCheckState(Qt.Checked if model.id() in self.selected_models else Qt.Unchecked)
                 else:  # By default
                     item.setCheckState(Qt.Checked if model.checked() else Qt.Unchecked)
                 self.import_models_list_widget.addItem(item)

@@ -149,7 +149,8 @@ class DialogImportData(QDialog, DIALOG_UI):
                 self.accepted()
             elif button.text() == self.BUTTON_NAME_GO_TO_CREATE_STRUCTURE:
                 self.close()  # Close import data dialog
-                self.open_dlg_import_schema.emit({'selected_models': self.get_ili_models()})  # Emit signal to open import schema dialog
+                selected_models = [self.__ladmcol_models.model_by_full_name(m).id() for m in self.get_ili_models()]
+                self.open_dlg_import_schema.emit({'selected_models': selected_models})  # To open import schema dialog
 
     def reject(self):
         if self._running_tool:
