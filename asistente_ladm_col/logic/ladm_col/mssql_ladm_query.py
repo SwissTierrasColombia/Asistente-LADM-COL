@@ -125,9 +125,9 @@ class MSSQLLADMQuery(QGISLADMQuery):
                     group by p.{t_id}) as report
             join {schema}.{lc_condition_parcel_type_d} cp on report.{lc_parcel_t_parcel_type_f} = cp.{t_id}
             where
-                ({ilicode} = '{parcel_type_no_horizontal_property}'
+                ({ilicode} in ('{parcel_type_no_horizontal_property}', '{parcel_type_public_use}')
                     and sum_t != 1)
-                or ({ilicode} in ('{parcel_type_horizontal_property_parent}', '{parcel_type_condominium_parent}', '{parcel_type_cemetery_parent}', '{parcel_type_public_use}', '{parcel_type_condominium_parcel_unit}')
+                or ({ilicode} in ('{parcel_type_horizontal_property_parent}', '{parcel_type_condominium_parent}', '{parcel_type_cemetery_parent}', '{parcel_type_condominium_parcel_unit}')
                     and (sum_t != 1 or sum_uc > 0))
                 or ({ilicode} in ('{parcel_type_road}', '{parcel_type_cemetery_parcel_unit}')
                     and (sum_t != 1 or sum_uc > 0 or sum_c > 0))
