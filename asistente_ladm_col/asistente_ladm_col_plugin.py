@@ -1176,8 +1176,8 @@ class AsistenteLADMCOLPlugin(QObject):
         if kwargs:
             params.update(kwargs)
 
-        selected_models_import_schema = params['selected_models'] if 'selected_models' in params else list()
-        link_to_import_data = params['link_to_import_data'] if 'link_to_import_data' in params else True
+        selected_models_import_schema = params.get('selected_models', list())
+        link_to_import_data = params.get('link_to_import_data', True)
 
         dlg = DialogImportSchema(self.iface,
                                  self.conn_manager,
