@@ -28,8 +28,8 @@
  """
 from asistente_ladm_col.config.general_config import WIZARD_FEATURE_NAME
 from asistente_ladm_col.gui.wizards.model.common.args.model_args import ExecFormAdvancedArgs
-from asistente_ladm_col.gui.wizards.model.common.muanual_feature_creator import (AlphaFeatureCreator,
-                                                                                 ManualFeatureCreator)
+from asistente_ladm_col.gui.wizards.model.common.manual_feature_creator import (AlphaFeatureCreator,
+                                                                                ManualFeatureCreator)
 from asistente_ladm_col.gui.wizards.model.creator_model import CreatorModel
 
 

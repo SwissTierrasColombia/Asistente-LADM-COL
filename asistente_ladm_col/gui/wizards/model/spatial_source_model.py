@@ -44,15 +44,18 @@ class SpatialSourceModel(SingleWizardModel):
         self.__iface = iface
 
         self.__feature_selector_on_map = SelectFeaturesOnMapWrapper(self.__iface, self._logger)
-        self.__feature_selector_on_map.register_observer(self)
+        self.__feature_selector_on_map.features_selected.connect(self.features_selected)
+        self.__feature_selector_on_map.map_tool_changed.connect(self.map_tool_changed)
 
         self.__feature_selector_by_expression = SelectFeatureByExpressionDialogWrapper(self.__iface)
-        self.__feature_selector_by_expression.register_observer(self)
+        self.__feature_selector_by_expression.feature_selection_by_expression_changed.connect(
+            self.feature_selection_by_expression_changed)
 
         self.__relatable_layers = dict()
         self.__init_selectable_layer_by_type()
 
-        self.__layer_remove_manager = LayerRemovedSignalsManager(self._layers, self)
+        self.__layer_remove_manager = LayerRemovedSignalsManager(self._layers)
+        self.__layer_remove_manager.layer_removed.connect(self.layer_removed)
 
     def __init_selectable_layer_by_type(self):
         # TODO Change the name

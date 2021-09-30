@@ -26,7 +26,7 @@ from asistente_ladm_col.config.general_config import (WIZARD_LAYERS,
                                                       WIZARD_READ_ONLY_FIELDS)
 from asistente_ladm_col.gui.wizards.model.common.args.model_args import (FinishFeatureCreationArgs,
                                                                          ExecFormAdvancedArgs)
-from asistente_ladm_col.gui.wizards.model.common.muanual_feature_creator import ManualFeatureCreator
+from asistente_ladm_col.gui.wizards.model.common.manual_feature_creator import ManualFeatureCreator
 from asistente_ladm_col.gui.wizards.model.common.refactor_fields_feature_creator import RefactorFieldsFeatureCreator
 from asistente_ladm_col.gui.wizards.model.common.common_operations import CommonOperationsModel
 from asistente_ladm_col.gui.wizards.model.common.layer_remove_signals_manager import LayerRemovedSignalsManager
@@ -53,8 +53,11 @@ class CreatorModel(ABC):
         self._editing_layer = self._wizard_config[WIZARD_LAYERS][self._editing_layer_name]
 
         self.__manual_feature_creator = self._create_feature_creator()
-
-        self.__manual_feature_creator.register_observer(self)
+        # chain of signals
+        self.__manual_feature_creator.form_rejected.connect(self.form_rejected)
+        self.__manual_feature_creator.exec_form_advanced.connect(self.exec_form_advanced)
+        # connect local method finish feature creator
+        self.__manual_feature_creator.finish_feature_creation.connect(self.__finish_feature_creation)
 
         self.__feature_creator_from_refactor = RefactorFieldsFeatureCreator(self.app, db)
 
@@ -64,9 +67,10 @@ class CreatorModel(ABC):
 
         self.refactor_field_mapping = self.__common_operations.get_field_mappings_file_names()
 
-        self.__layer_remove_manager = LayerRemovedSignalsManager(self._wizard_config[WIZARD_LAYERS], self)
+        self.__layer_remove_manager = LayerRemovedSignalsManager(self._wizard_config[WIZARD_LAYERS])
+        self.__layer_remove_manager.layer_removed.connect(self.layer_removed)
 
-    def finish_feature_creation(self, layerId, features):
+    def __finish_feature_creation(self, layerId, features):
         fid = features[0].id()
         is_valid = False
         feature_tid = None

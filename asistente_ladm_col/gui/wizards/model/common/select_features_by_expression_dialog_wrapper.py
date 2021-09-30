@@ -22,28 +22,24 @@
  *                                                                         *
  ***************************************************************************/
  """
+from qgis.PyQt.QtCore import (QObject,
+                             pyqtSignal)
 from qgis.gui import QgsExpressionSelectionDialog
 
 
-class SelectFeatureByExpressionDialogWrapper:
+class SelectFeatureByExpressionDialogWrapper(QObject):
     """
     Wrapper class that extends selecting by expression.
     """
+    feature_selection_by_expression_changed = pyqtSignal()
 
     def __init__(self, iface):
+        QObject.__init__(self)
         self.__iface = iface
-        self.__observer = None
-
-    def register_observer(self, observer):
-        self.__observer = observer
 
     def select_features_by_expression(self, layer):
         self.__iface.setActiveLayer(layer)
         dlg_expression_selection = QgsExpressionSelectionDialog(layer)
-        layer.selectionChanged.connect(self.__selection_changed)
+        layer.selectionChanged.connect(self.feature_selection_by_expression_changed)
         dlg_expression_selection.exec()
-        layer.selectionChanged.disconnect(self.__selection_changed)
-
-    def __selection_changed(self):
-        if self.__observer:
-            self.__observer.feature_selection_by_expression_changed()
+        layer.selectionChanged.disconnect(self.feature_selection_by_expression_changed)

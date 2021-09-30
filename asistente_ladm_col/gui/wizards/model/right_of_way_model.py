@@ -115,7 +115,9 @@ class RightOfWayModel(SingleSpatialWizardModel):
         QgsProject.instance().addMapLayer(temporal_layer, True)
 
         self.__temporal_layer["memory_line_layer"] = temporal_layer
-        self.__layer_removed_signal_manager = LayerRemovedSignalsManager(self.__temporal_layer, None)
+        self.__layer_removed_signal_manager = LayerRemovedSignalsManager(self.__temporal_layer)
+        self.__layer_removed_signal_manager.layer_removed.connect(self.layer_removed)
+
         self.__layer_removed_signal_manager.connect_signals()
 
         self._manual_feature_creator.editing_layer = temporal_layer

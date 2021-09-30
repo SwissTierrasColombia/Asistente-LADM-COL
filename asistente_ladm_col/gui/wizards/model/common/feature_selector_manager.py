@@ -29,11 +29,13 @@ class FeatureSelectorManager:
         self.__features_on_map_observer_list = list()
         self.__feature_selector_by_expression_observers = list()
 
-        self.__feature_selector_on_map = SelectFeaturesOnMapWrapper(self.__iface, self.__logger)
-        self.__feature_selector_on_map.register_observer(self)
+        self.__feature_selector_on_map = SelectFeaturesOnMapWrapper(self.__iface, self._logger)
+        self.__feature_selector_on_map.features_selected.connect(self.features_selected)
+        self.__feature_selector_on_map.map_tool_changed.connect(self.map_tool_changed)
 
         self.__feature_selector_by_expression = SelectFeatureByExpressionDialogWrapper(self.__iface)
-        self.__feature_selector_by_expression.register_observer(self)
+        self.__feature_selector_by_expression.feature_selection_by_expression_changed.connect(
+            self.feature_selection_by_expression_changed)
 
         self.__relatable_layers = relatable_layers
 

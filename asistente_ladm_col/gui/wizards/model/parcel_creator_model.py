@@ -34,8 +34,8 @@ from asistente_ladm_col.config.layer_config import (LayerConfig,
 from asistente_ladm_col.gui.wizards.model.common.args.model_args import (ExecFormAdvancedArgs,
                                                                          ParcelFinishFeatureCreationArgs)
 from asistente_ladm_col.gui.wizards.model.common.association_utils import AssociationUtils
-from asistente_ladm_col.gui.wizards.model.common.muanual_feature_creator import (ManualFeatureCreator,
-                                                                                 AlphaFeatureCreator)
+from asistente_ladm_col.gui.wizards.model.common.manual_feature_creator import (ManualFeatureCreator,
+                                                                                AlphaFeatureCreator)
 from asistente_ladm_col.gui.wizards.model.common.feature_selector_manager import FeatureSelectorManager
 from asistente_ladm_col.gui.wizards.model.creator_model import CreatorModel
 

@@ -30,8 +30,8 @@ from asistente_ladm_col.config.general_config import (WIZARD_LAYERS,
 from asistente_ladm_col.gui.wizards.model.common.args.model_args import (SpacialSourceFinishFeatureCreationArgs,
                                                                          ExecFormAdvancedArgs)
 from asistente_ladm_col.gui.wizards.model.common.association_utils import AssociationUtils
-from asistente_ladm_col.gui.wizards.model.common.muanual_feature_creator import (ManualFeatureCreator,
-                                                                                 AlphaFeatureCreator)
+from asistente_ladm_col.gui.wizards.model.common.manual_feature_creator import (ManualFeatureCreator,
+                                                                                AlphaFeatureCreator)
 from asistente_ladm_col.gui.wizards.model.common.select_features_by_expression_dialog_wrapper import \
     SelectFeatureByExpressionDialogWrapper
 from asistente_ladm_col.gui.wizards.model.creator_model import CreatorModel
@@ -52,7 +52,9 @@ class RrrModel(CreatorModel):
         self.__feature_selector_by_expression_observers = list()
 
         self.__feature_selector_by_expression = SelectFeatureByExpressionDialogWrapper(self.__iface)
-        self.__feature_selector_by_expression.register_observer(self)
+
+        # self.__feature_selector_by_expression.feature_selection_by_expression_changed.connect(
+        #     self.feature_selection_by_expression_changed)
 
         self.__relatable_layers = dict()
         self.__init_selectable_layer_by_type()

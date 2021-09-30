@@ -22,22 +22,26 @@
  *                                                                         *
  ***************************************************************************/
  """
-from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import (QCoreApplication,
+                              QObject,
+                             pyqtSignal)
+
 from qgis.PyQt.QtWidgets import QMessageBox
 
-from asistente_ladm_col.gui.wizards.signal_disconnectable import SignalDisconnectable
 from asistente_ladm_col.utils.select_map_tool import SelectMapTool
 
 
-class SelectFeaturesOnMapWrapper(SignalDisconnectable):
+class SelectFeaturesOnMapWrapper(QObject):  # (SignalDisconnectable):
+    features_selected = pyqtSignal()
+    map_tool_changed = pyqtSignal()
 
     def __init__(self, iface, logger, multiple_features=True):
+        QObject.__init__(self)
         self.__iface = iface
         self.__canvas = self.__iface.mapCanvas()
         self.__map_tool = self.__canvas.mapTool()
         self.__select_maptool = None
 
-        self.__observer = None
         self.__logger = logger
 
         self.multiple_features = multiple_features
@@ -59,7 +63,7 @@ class SelectFeaturesOnMapWrapper(SignalDisconnectable):
             self.__canvas.setMapTool(old_tool)
             self.__canvas.mapToolSet.connect(self.__map_tool_changed)
         else:
-            self.__notify_map_tool_close()
+            self.map_tool_changed.emit()
 
     def select_features_on_map(self, layer):
         self.__iface.setActiveLayer(layer)
@@ -87,7 +91,7 @@ class SelectFeaturesOnMapWrapper(SignalDisconnectable):
             pass
 
     def __features_selected(self):
-        self.__notify_features_selected()
+        self.features_selected.emit()
 
         # Disconnect signal that check if map tool change
         # This is necessary before changing the tool to the user's previous selection
@@ -96,14 +100,3 @@ class SelectFeaturesOnMapWrapper(SignalDisconnectable):
 
         self.__logger.info(__name__, "Select maptool SIGNAL disconnected")
         self.__select_maptool.features_selected_signal.disconnect(self.__features_selected)
-
-    def register_observer(self, observer):
-        self.__observer = observer
-
-    def __notify_map_tool_close(self):
-        if self.__observer:
-            self.__observer.map_tool_changed()
-
-    def __notify_features_selected(self):
-        if self.__observer:
-            self.__observer.features_selected()

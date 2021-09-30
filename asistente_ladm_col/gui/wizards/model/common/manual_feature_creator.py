@@ -21,30 +21,23 @@
 from abc import (abstractmethod,
                  ABC)
 
-from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import (QCoreApplication,
+                              QObject,
+                             pyqtSignal)
 from qgis.core import QgsProject
 
+from asistente_ladm_col.gui.wizards.model.common.abstract_qobject_meta import AbstractQObjectMeta
 from asistente_ladm_col.gui.wizards.model.common.args.model_args import (ValidFeaturesDigitizedArgs,
                                                                          ExecFormAdvancedArgs,
                                                                          UnexpectedFeaturesDigitizedArgs)
 from asistente_ladm_col.config.enums import EnumDigitizedFeatureStatus
 
 
-class ManualFeatureCreatorObserver(ABC):
-    @abstractmethod
-    def finish_feature_creation(self, layerId, features):
-        pass
+class ManualFeatureCreator(QObject, metaclass=AbstractQObjectMeta):
+    finish_feature_creation = pyqtSignal(str, list)
+    form_rejected = pyqtSignal()
+    exec_form_advanced = pyqtSignal(ExecFormAdvancedArgs)
 
-    @abstractmethod
-    def form_rejected(self):
-        pass
-
-    @abstractmethod
-    def exec_form_advanced(self, args: ExecFormAdvancedArgs):
-        pass
-
-
-class ManualFeatureCreator(ABC):
     def __init__(self, iface, app, logger, layer, feature_name):
         super(ManualFeatureCreator, self).__init__()
         self._iface = iface
@@ -53,11 +46,6 @@ class ManualFeatureCreator(ABC):
 
         self._logger = logger
         self._feature_name = feature_name
-
-        self.__observer = None
-
-    def register_observer(self, observer: ManualFeatureCreatorObserver):
-        self.__observer = observer
 
     def create(self):
         layer = self._get_editing_layer()
@@ -91,12 +79,12 @@ class ManualFeatureCreator(ABC):
     def _exec_form(self, layer, feature):
         dialog = self._iface.getFeatureForm(layer, feature)
 
-        dialog.rejected.connect(self.__notify_form_rejected)
+        dialog.rejected.connect(self.form_rejected)
         dialog.setModal(True)
 
         if dialog.exec_():
             args = ExecFormAdvancedArgs(layer, feature)
-            self.__notify_exec_form_advanced(args)
+            self.exec_form_advanced.emit(args)
             saved = layer.commitChanges()
 
             if not saved:
@@ -111,28 +99,12 @@ class ManualFeatureCreator(ABC):
         else:
             layer.rollBack()
         self._iface.mapCanvas().refresh()
-        dialog.rejected.disconnect(self.__notify_form_rejected)
+        dialog.rejected.disconnect(self.form_rejected)
 
     def __finish_feature_creation(self, layerId, features):
         self._layer.committedFeaturesAdded.disconnect(self.__finish_feature_creation)
         self._logger.info(__name__, "{} committedFeaturesAdded SIGNAL disconnected".format(self._feature_name))
-        self.__notify_finish_feature_creation(layerId, features)
-
-    def __notify_finish_feature_creation(self, layerId, features):
-        if self.__observer:
-            self.__observer.finish_feature_creation(layerId, features)
-
-    def __notify_exec_form_advanced(self, exec_form_advanced_args: ExecFormAdvancedArgs):
-        if self.__observer:
-            self.__observer.exec_form_advanced(exec_form_advanced_args)
-
-    def __notify_form_rejected(self):
-        if self.__observer:
-            self.__observer.form_rejected()
-
-    def __register_finish_feature(self):
-        if self.__observer:
-            self._layer.committedFeaturesAdded.connect(self.__observer.finish_feature_creation)
+        self.finish_feature_creation.emit(layerId, features)
 
 
 class AlphaFeatureCreator(ManualFeatureCreator):
@@ -149,23 +121,13 @@ class AlphaFeatureCreator(ManualFeatureCreator):
 
 
 class SpatialFeatureCreator(ManualFeatureCreator):
+    valid_features_digitized = pyqtSignal(ValidFeaturesDigitizedArgs)
+    unexpected_features_digitized = pyqtSignal(UnexpectedFeaturesDigitizedArgs)
 
     def __init__(self, iface, app, logger, layer, feature_name, tolerance=None):
         super(SpatialFeatureCreator, self).__init__(iface, app, logger, layer, feature_name)
         self.__tolerance = tolerance
         self.editing_layer = layer
-        self.__observer = None
-
-    def register_geometry_observer(self, observer):
-        self.__observer = observer
-
-    def __notify_valid_features_digitized(self, args: ValidFeaturesDigitizedArgs):
-        if self.__observer:
-            self.__observer.valid_features_digitized(args)
-
-    def __notify_unexpected_features_digitized(self, args: UnexpectedFeaturesDigitizedArgs):
-        if self.__observer:
-            self.__observer.unexpected_features_digitized(args)
 
     def _add_feature(self, layer):
         QgsProject.instance().setAutoTransaction(False)
@@ -188,7 +150,7 @@ class SpatialFeatureCreator(ManualFeatureCreator):
         if self.editing_layer.editBuffer():
             feature_count = len(self.editing_layer.editBuffer().addedFeatures())
             if feature_count == 0:
-                self.__notify_unexpected_features_digitized(
+                self.unexpected_features_digitized.emit(
                     UnexpectedFeaturesDigitizedArgs(self.editing_layer, EnumDigitizedFeatureStatus.ZERO_FEATURES,
                                                     feature_count))
 
@@ -199,21 +161,22 @@ class SpatialFeatureCreator(ManualFeatureCreator):
                     feature = self.__pre_exe_form()
                     self._exec_form(self._layer, feature)
                 else:
-                    self.__notify_unexpected_features_digitized(
+                    self.unexpected_features_digitized.emit(
                         UnexpectedFeaturesDigitizedArgs(self.editing_layer, EnumDigitizedFeatureStatus.INVALID,
                                                         feature_count))
             else:
-                self.__notify_unexpected_features_digitized(
+                self.unexpected_features_digitized.emit(
                     UnexpectedFeaturesDigitizedArgs(self.editing_layer, EnumDigitizedFeatureStatus.OTHER,
                                                     feature_count))
         # TODO check case: editBuffer=false
 
-    def is_a_valid_amount_of_features(self, feature_count):
+    @staticmethod
+    def is_a_valid_amount_of_features(feature_count):
         return feature_count == 1
 
     def __pre_exe_form(self):
         args = ValidFeaturesDigitizedArgs(self.editing_layer, self.__get_added_feature())
-        self.__notify_valid_features_digitized(args)
+        self.valid_features_digitized.emit(args)
         return args.feature
 
     #  ok

@@ -62,7 +62,9 @@ class PlotModel(FeatureSelectorManager):
         FeatureSelectorManager.__init__(self, self.__relatable_layers, self.iface, self._logger)
         self.type_of_selected_layer_to_associate = EnumRelatableLayers.BOUNDARY
 
-        self.__layer_remove_manager = LayerRemovedSignalsManager(self._layers, self)
+        self.__layer_remove_manager = LayerRemovedSignalsManager(self._layers)
+
+        # self.__layer_remove_manager.layer_removed.connect(self.layer_removed)
 
         self.__common_operations = \
             CommonOperationsModel(self._wizard_config[WIZARD_LAYERS], self._editing_layer_name, self.app,

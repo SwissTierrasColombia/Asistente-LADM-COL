@@ -20,15 +20,18 @@
  """
 from functools import partial
 
+from qgis.PyQt.QtCore import (QObject,
+                             pyqtSignal)
 
-class LayerRemovedSignalsManager:
 
-    def __init__(self, layers: dict, layer_removed_behavior):
+class LayerRemovedSignalsManager(QObject):
+    layer_removed = pyqtSignal()
+
+    def __init__(self, layers: dict):
+        QObject.__init__(self)
         self.__layers = layers
         self.__connected_function_list = dict()
-        self.__layer_removed_behavior = layer_removed_behavior
 
-    # MapInteractionExpansion / SelectFeaturesOnMapWrapper
     def connect_signals(self):
         for layer_name in self.__layers:
             if not self.__layers[layer_name]:
@@ -71,5 +74,4 @@ class LayerRemovedSignalsManager:
         # assigned None to layer because wrapper object will be deleted but
         # python object will keep pointing to the deleted layer
         self.__layers[layer_name] = None
-        if self.__layer_removed_behavior:
-            self.__layer_removed_behavior.layer_removed()
+        self.layer_removed.emit()

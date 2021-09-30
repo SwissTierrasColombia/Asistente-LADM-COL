@@ -54,10 +54,12 @@ class ExtAddressModel(SingleSpatialWizardModel):
         self._logger = Logger()
 
         self.__feature_selector_on_map = SelectFeaturesOnMapWrapper(self.__iface, self._logger)
-        self.__feature_selector_on_map.register_observer(self)
+        self.__feature_selector_on_map.features_selected.connect(self.features_selected)
+        self.__feature_selector_on_map.map_tool_changed.connect(self.map_tool_changed)
 
         self.__feature_selector_by_expression = SelectFeatureByExpressionDialogWrapper(self.__iface)
-        self.__feature_selector_by_expression.register_observer(self)
+        self.__feature_selector_by_expression.feature_selection_by_expression_changed.connect(
+            self.feature_selection_by_expression_changed)
 
         self.type_of_selected_layer_to_associate = None
         self.__init_selectable_layer_by_type()
