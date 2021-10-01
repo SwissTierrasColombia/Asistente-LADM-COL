@@ -1354,15 +1354,25 @@ class AsistenteLADMCOLPlugin(QObject):
     @_survey_model_required
     @_activate_processing_plugin
     def show_dlg_quality(self, *args):
+        if not args:
+            return
+
+        context = args[0]
+
         quality_dialog = QualityDialog(self.main_window)
         quality_dialog.exec_()
 
-        self.quality_rule_engine = QualityRuleEngine(self.get_db_connection(), quality_dialog.selected_rules)
-        self.quality_rule_engine.quality_rule_logger.show_message_emitted.connect(self.show_log_quality_message)
-        self.quality_rule_engine.quality_rule_logger.show_button_emitted.connect(self.show_log_quality_button)
-        self.quality_rule_engine.quality_rule_logger.set_initial_progress_emitted.connect(self.set_log_quality_initial_progress)
-        self.quality_rule_engine.quality_rule_logger.set_final_progress_emitted.connect(self.set_log_quality_final_progress)
-        self.quality_rule_engine.validate_quality_rules()
+        if quality_dialog.selected_rules:
+            self.quality_rule_engine = QualityRuleEngine(self.get_db_connection(), quality_dialog.selected_rules)
+            self.quality_rule_engine.quality_rule_logger.show_message_emitted.connect(self.show_log_quality_message)
+            self.quality_rule_engine.quality_rule_logger.show_button_emitted.connect(self.show_log_quality_button)
+            self.quality_rule_engine.quality_rule_logger.set_initial_progress_emitted.connect(self.set_log_quality_initial_progress)
+            self.quality_rule_engine.quality_rule_logger.set_final_progress_emitted.connect(self.set_log_quality_final_progress)
+
+            if isinstance(context, TaskContext):
+                self.quality_rule_engine.on_result.connect(context.get_slot_on_result())
+
+            self.quality_rule_engine.validate_quality_rules()
 
     def show_wiz_property_record_card(self):
         # TODO: Remove
