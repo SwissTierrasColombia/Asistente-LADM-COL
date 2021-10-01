@@ -19,8 +19,7 @@ from asistente_ladm_col.logic.quality.quality_rules import QualityRules
 
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QObject,
-                              pyqtSignal,
-                              QSettings)
+                              pyqtSignal)
 
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.lib.logger import Logger
@@ -32,6 +31,8 @@ class QualityRuleEngine(QObject):
     """
     Engine that executes Quality Rules
     """
+    on_result = pyqtSignal(bool)  # whether the Quality Rules could be run or not (independently of the result)
+
     def __init__(self, db, rules):
         QObject.__init__(self)
         self.logger = Logger()
@@ -74,6 +75,7 @@ class QualityRuleEngine(QObject):
 
             self.quality_rule_logger.generate_log_button()
             self.__layer_manager.clean_temporary_layers()
+            self.on_result.emit(True)
         else:
             self.logger.warning(__name__, QCoreApplication.translate("QualityRuleEngine", "No rules to validate!"))
 

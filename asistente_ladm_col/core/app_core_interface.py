@@ -955,7 +955,7 @@ class AppCoreInterface(QObject):
                     else:
                         res = False
                         msg['text'] = QCoreApplication.translate("SettingsDialog",
-                                                                 "There was a problem connecting to the server. The server might be down or the service cannot be reached at the given URL.")
+                                                                 "There was a problem connecting to the server. The server might be down or the service cannot be reached at the given URL. Status: {}").format(status)
                 else:
                     res = False
                     msg['text'] = QCoreApplication.translate("SettingsDialog",
