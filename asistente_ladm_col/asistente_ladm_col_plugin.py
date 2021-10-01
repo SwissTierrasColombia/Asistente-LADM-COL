@@ -1555,26 +1555,40 @@ class AsistenteLADMCOLPlugin(QObject):
 
         # Parse parameters
         params = kwargs
-        if 'title' not in params or 'format' not in params or 'url_files' not in params or 'settings_key' not in params:
+        if 'title' not in params or 'file_format' not in params or 'url_files' not in params or 'settings_key' not in params:
+            self.logger.warning_msg(__name__, "The required parameters could not be read from the task configuration!")
             return
 
         title = params['title']
-        format = params['format']
+        file_format = params['file_format']  # Should be a single extension!!! E.g., 'XTF Transfer File (*.xtf)'
         url_files = params['url_files']
         settings_key = params['settings_key']
         settings = QSettings()
 
+        format_parts = file_format.split("(*")
+        extension = format_parts[1].strip(")") if len(format_parts) > 1 else ''  # e.g. ".xtf"
+
+        if not extension or len(extension) != 4:
+            self.logger.warning_msg(__name__, "The file format ({}) is not supported to download the ST file!".format(file_format))
+            return
+
+        st_utils = STUtils()
         for url in url_files:
             if not url:
                 self.logger.debug(__name__, "No URL was given from the task to download the ST file.")
                 return
 
             path = settings.value(settings_key, os.path.expanduser('~'))
-            filename, _ = QFileDialog.getSaveFileName(self.main_window, title, path, format)
+            filename, _ = QFileDialog.getSaveFileName(self.main_window, title, path, file_format)
+
             if filename:
-                filename = filename if filename[-4:] == '.xtf' else filename + '.xtf'
-                st_utils = STUtils()
-                res, msg = st_utils.download_file(url, filename)
+                settings.setValue(settings_key, os.path.dirname(filename))
+                filename = filename if filename[-4:] == extension else filename + extension
+
+                msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Downloading {} file from ST...").format(extension[-3:])
+                with ProcessWithStatus(msg):
+                    res, msg = st_utils.download_file(url, filename)
+
                 if not res:
                     self.logger.warning_msg(__name__, msg)
                     return
@@ -1582,6 +1596,10 @@ class AsistenteLADMCOLPlugin(QObject):
                 self.logger.warning_msg(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
                                                                              "A file location was not chosen. File download cancelled."))
                 return
+
+        self.logger.info_msg(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                                  "The {} file was downloaded successfully to '{}'!").format(
+            extension[-3:].upper(), filename))
 
         if isinstance(context, TaskContext):
             context.get_slot_on_result()(True)  # Send a True to check the task step's checkbox

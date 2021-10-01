@@ -73,9 +73,13 @@ class TransitionalSystemConfig(QObject, metaclass=SingletonQObject):
         return "{}/api/workspaces/v1/tasks/{{}}/finish".format(self.get_domain())
 
     @property
+    def ST_MANAGER_DOWNLOAD_ZIP_QUALITY_FILE_SERVICE_URL(self):
+        return "{}/api/quality/v1/deliveries/{{}}/products/{{}}/attachments/{{}}/download".format(self.get_domain())
+
+    @property
     def ST_PROVIDER_UPLOAD_FILE_SERVICE_URL(self):
         return "{}/api/workspaces/v1/providers/requests/{{}}".format(self.get_domain())
 
     @property
     def ST_MANAGER_UPLOAD_FILE_SERVICE_URL(self):
-        return "{}/api/workspaces/v1/managers/requests/{{}}".format(self.get_domain())
+        return "{}/api/quality/v1/deliveries/{{}}/products/{{}}/attachments/{{}}/report".format(self.get_domain())
