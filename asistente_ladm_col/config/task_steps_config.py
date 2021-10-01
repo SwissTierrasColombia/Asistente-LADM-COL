@@ -1,8 +1,7 @@
 from qgis.PyQt.QtCore import (QObject,
                               QCoreApplication)
 
-from asistente_ladm_col.config.general_config import (SUPPLIES_DB_SOURCE,
-                                                      COLLECTED_DB_SOURCE)
+from asistente_ladm_col.config.general_config import SUPPLIES_DB_SOURCE
 from asistente_ladm_col.config.gui.common_keys import ACTION_RUN_ETL_SUPPLIES
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.config.enums import (EnumSTStepType,
@@ -173,8 +172,13 @@ class TaskStepsConfig(QObject, metaclass=SingletonQObject):
                      SLOT_NAME: self._slot_caller.show_dlg_download_st_file,
                      SLOT_CONTEXT: TaskContext(),
                      SLOT_PARAMS: {'title': QCoreApplication.translate("TaskStepsConfig", "Download assigned XTF file"),
-                                   'format': 'XTF Transfer File (*.xtf)',
-                                   'url_files': [task_data.get('xtf', '')],
+                                   'file_format': 'XTF Transfer File (*.xtf)',
+                                   'url_files': [
+                                       self._st_config.ST_MANAGER_DOWNLOAD_ZIP_QUALITY_FILE_SERVICE_URL.format(
+                                           task_data.get('attachment', dict()).get('deliveryId', '-9999'),
+                                           task_data.get('attachment', dict()).get('deliveryProductId', '-9999'),
+                                           task_data.get('attachment', dict()).get('attachmentId', '-9999'))
+                                   ],
                                    'settings_key': 'Asistente-LADM-COL/transitional_system/quality_rules/xtf_folder'}}
                  },
                 {STEP_NUMBER: 3,
@@ -204,9 +208,12 @@ class TaskStepsConfig(QObject, metaclass=SingletonQObject):
                      SLOT_NAME: self._slot_caller.show_dlg_st_upload_file,
                      SLOT_CONTEXT: TaskContext(),
                      SLOT_PARAMS: {
-                         'request_id': task_data['request']['requestId'] if 'request' in task_data else None,
-                         'other_params': {'typeSupplyId': task_data['request'][
-                             'typeSupplyId'] if 'request' in task_data else None},
+                         'request_id': None,
+                         'other_params': {
+                             'overwriteReport': 'true',
+                             'deliveryId': task_data.get('attachment', dict()).get('deliveryId', '-9999'),
+                             'deliveryProductId': task_data.get('attachment', dict()).get('deliveryProductId', '-9999'),
+                             'attachmentId': task_data.get('attachment', dict()).get('attachmentId', '-9999')},
                          'task_type': task_type}}
                  }]
 

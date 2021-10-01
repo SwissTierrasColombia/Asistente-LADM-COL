@@ -72,6 +72,8 @@ DIALOG_UI = get_ui_class('qgis_model_baker/dlg_import_data.ui')
 
 class DialogImportData(QDialog, DIALOG_UI):
     open_dlg_import_schema = pyqtSignal(dict)  # dict with key-value params
+    on_result = pyqtSignal(bool)  # whether the tool was run successfully or not
+
     BUTTON_NAME_IMPORT_DATA = QCoreApplication.translate("DialogImportData", "Import data")
     BUTTON_NAME_GO_TO_CREATE_STRUCTURE = QCoreApplication.translate("DialogImportData",  "Go to Create Structure...")
 
@@ -390,6 +392,7 @@ class DialogImportData(QDialog, DIALOG_UI):
                 if dataImporter.run() != iliimporter.Importer.SUCCESS:
                     self._running_tool = False
                     self.show_message(QCoreApplication.translate("DialogImportData", "An error occurred when importing the data. For more information see the log..."), Qgis.Warning)
+                    self.on_result.emit(False)  # Inform other classes that the execution was not successful
                     return
             except JavaNotFoundError:
                 self._running_tool = False
@@ -405,6 +408,7 @@ class DialogImportData(QDialog, DIALOG_UI):
             self.buttonBox.setEnabled(True)
             self.buttonBox.addButton(QDialogButtonBox.Close)
             self.progress_bar.setValue(100)
+            self.on_result.emit(True)  # Inform other classes that the execution was successful
             self.show_message(QCoreApplication.translate("DialogImportData", "Import of the data was successfully completed"), Qgis.Success)
 
     def download_java_complete(self):

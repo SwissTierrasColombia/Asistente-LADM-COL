@@ -60,12 +60,16 @@ class STQualityRulesUploadFileDialog(STBaseUploadFileDialog):
                 zip_reports_file_path = Utils.compress_files(reports)
 
                 # Prepare upload
-                url = self._st_utils.st_config.ST_MANAGER_UPLOAD_FILE_SERVICE_URL.format(self._request_id)
-                files = [('files[]', open(zip_reports_file_path, 'rb'))]
+                url = self._st_utils.st_config.ST_MANAGER_UPLOAD_FILE_SERVICE_URL.format(
+                    self._other_params['deliveryId'],
+                    self._other_params['deliveryProductId'],
+                    self._other_params['attachmentId']
+                )
+                files = [('attachment', open(zip_reports_file_path, 'rb'))]
 
                 with ProcessWithStatus(QCoreApplication.translate("STQualityRulesUploadFileDialog", "Uploading file to ST server...")):
                     res, res_msg = self._st_utils.upload_files(url,
-                                                               self._other_params,
+                                                               {'overwriteReport': self._other_params['overwriteReport']},
                                                                files,
                                                                self.txt_comments.toPlainText())
         else:
