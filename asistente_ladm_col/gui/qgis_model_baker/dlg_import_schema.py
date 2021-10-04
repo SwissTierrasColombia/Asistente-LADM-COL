@@ -109,6 +109,11 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         #      invalidates the cache as models change.
         self._schedule_layers_and_relations_refresh = False
 
+        # Useful for the ST, when a task step needs that we create a Survey DB structure
+        # and then we don't want to refresh the GUI, because that will close the ST dock
+        # widget!
+        self._avoid_gui_refresh_on_db_change = False  # Can be set by set_avoid_gui_refresh_on_db_change()
+
         self.setupUi(self)
 
         self.validators = Validators()
@@ -166,16 +171,30 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         unload the plugin, destroying dialogs and thus, leading to crashes.
         """
         if self._schedule_layers_and_relations_refresh:
-            self.conn_manager.db_connection_changed.connect(self.app.core.cache_layers_and_relations)
+            if self._avoid_gui_refresh_on_db_change:
+                self.conn_manager.db_connection_changed_avoid_gui_refresh.connect(self.app.core.cache_layers_and_relations)
+            else:
+                self.conn_manager.db_connection_changed.connect(self.app.core.cache_layers_and_relations)
 
         if self._db_was_changed:
-            self.conn_manager.db_connection_changed.emit(self.db, self.db.test_connection()[0], self.db_source)
+            if self._avoid_gui_refresh_on_db_change:
+                self.conn_manager.db_connection_changed_avoid_gui_refresh.emit(self.db,
+                                                                               self.db.test_connection()[0],
+                                                                               self.db_source)
+            else:
+                self.conn_manager.db_connection_changed.emit(self.db, self.db.test_connection()[0], self.db_source)
 
         if self._schedule_layers_and_relations_refresh:
-            self.conn_manager.db_connection_changed.disconnect(self.app.core.cache_layers_and_relations)
+            if self._avoid_gui_refresh_on_db_change:
+                self.conn_manager.db_connection_changed_avoid_gui_refresh.disconnect(self.app.core.cache_layers_and_relations)
+            else:
+                self.conn_manager.db_connection_changed.disconnect(self.app.core.cache_layers_and_relations)
 
         self.logger.info(__name__, "Dialog closed.")
         self.done(QDialog.Accepted)
+
+    def set_avoid_gui_refresh_on_db_change(self, avoid_refresh):
+        self._avoid_gui_refresh_on_db_change = avoid_refresh
 
     def update_connection_info(self):
         db_description = self.db.get_description_conn_string()

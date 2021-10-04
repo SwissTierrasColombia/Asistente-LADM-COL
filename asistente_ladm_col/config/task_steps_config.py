@@ -161,7 +161,8 @@ class TaskStepsConfig(QObject, metaclass=SingletonQObject):
                      SLOT_NAME: self._slot_caller.show_dlg_import_schema,
                      SLOT_CONTEXT: TaskContext(),
                      SLOT_PARAMS: {'link_to_import_data': False,
-                                   'selected_models': [LADMNames.SURVEY_MODEL_KEY]}}
+                                   'selected_models': [LADMNames.SURVEY_MODEL_KEY],
+                                   'avoid_gui_refresh_on_db_connection_changed': True}}
                  },
                 {STEP_NUMBER: 2,
                  STEP_NAME: QCoreApplication.translate("TaskStepsConfig", "Download assigned XTF file"),
@@ -179,7 +180,7 @@ class TaskStepsConfig(QObject, metaclass=SingletonQObject):
                                            task_data.get('attachment', dict()).get('deliveryProductId', '-9999'),
                                            task_data.get('attachment', dict()).get('attachmentId', '-9999'))
                                    ],
-                                   'settings_key': 'Asistente-LADM-COL/transitional_system/quality_rules/xtf_folder'}}
+                                   'settings_key': 'Asistente-LADM-COL/QgisModelBaker/ili2pg/xtffile_import'}}
                  },
                 {STEP_NUMBER: 3,
                  STEP_NAME: QCoreApplication.translate("TaskStepsConfig", "Import XTF data"),

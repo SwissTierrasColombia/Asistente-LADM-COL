@@ -38,6 +38,7 @@ class ConnectionManager(QObject):
     are not handled by this class).
     """
     db_connection_changed = pyqtSignal(DBConnector, bool, str)  # dbconn, ladm_col_db, db_source
+    db_connection_changed_avoid_gui_refresh = pyqtSignal(DBConnector, bool, str)  # dbconn, ladm_col_db, db_source
 
     def __init__(self):
         QObject.__init__(self)

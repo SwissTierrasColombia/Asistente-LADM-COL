@@ -1178,6 +1178,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
         selected_models_import_schema = params.get('selected_models', list())
         link_to_import_data = params.get('link_to_import_data', True)
+        avoid_gui_refresh_on_db_connection_changed = params.get('avoid_gui_refresh_on_db_connection_changed', False)
 
         dlg = DialogImportSchema(self.iface,
                                  self.conn_manager,
@@ -1186,6 +1187,8 @@ class AsistenteLADMCOLPlugin(QObject):
                                  link_to_import_data,
                                  parent=self.main_window)
         dlg.open_dlg_import_data.connect(partial(self.show_dlg_import_data, context))
+        if avoid_gui_refresh_on_db_connection_changed:
+            dlg.set_avoid_gui_refresh_on_db_change(True)
 
         if isinstance(context, TaskContext):
             dlg.on_result.connect(context.get_slot_on_result())
@@ -1590,12 +1593,13 @@ class AsistenteLADMCOLPlugin(QObject):
 
             path = settings.value(settings_key, os.path.expanduser('~'))
             filename, _ = QFileDialog.getSaveFileName(self.main_window, title, path, file_format)
+            QCoreApplication.processEvents()
 
             if filename:
-                settings.setValue(settings_key, os.path.dirname(filename))
+                settings.setValue(settings_key, filename)
                 filename = filename if filename[-4:] == extension else filename + extension
 
-                msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Downloading {} file from ST...").format(extension[-3:])
+                msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Downloading {} file from ST...").format(extension[-3:].upper())
                 with ProcessWithStatus(msg):
                     res, msg = st_utils.download_file(url, filename)
 
