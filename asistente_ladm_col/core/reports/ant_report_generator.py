@@ -37,6 +37,10 @@ class ANTReportGenerator(BaseReportGenerator):
 
         self.__result_dict = dict()  # To store parameters obtained from the dialog and required for the report
 
+    def get_file_name(self, plot_id):
+        parcel_id_operation = self.ladm_data.get_parcels_related_to_plots(self.db, [plot_id], self.db.names.LC_PARCEL_T_ID_OPERATION_F) or ['']
+        return '{}_{}_{}.pdf'.format(self.report_name, plot_id, parcel_id_operation[0])
+
     def update_json_data(self, json_spec_file, plot_feature, tmp_dir):
         """
         Overwrite parent method

@@ -314,9 +314,8 @@ class BaseReportGenerator(QObject):
                 proc.readyReadStandardOutput.connect(
                     functools.partial(self.stdout_ready, proc=proc))
 
-                parcel_number = self.ladm_data.get_parcels_related_to_plots(self.db, [plot_id], self.db.names.LC_PARCEL_T_PARCEL_NUMBER_F) or ['']
                 self.app.gui.activate_layer(self.__plot_layer)  # Previous function changed the selected layer, so, select again plot layer
-                file_name = '{}_{}_{}.pdf'.format(self.report_name, plot_id, parcel_number[0])
+                file_name = self.get_file_name(plot_id)
 
                 current_report_path = os.path.join(output_folder, file_name)
                 proc.start(script_path, ['-config', yaml_config_path, '-spec', json_file, '-output', current_report_path])
@@ -340,6 +339,12 @@ class BaseReportGenerator(QObject):
                     else:
                         os.remove(current_report_path)  # Deletes the report when it could not be generated correctly
 
+                    # Temporary files used to create the report are removed
+                    if os.path.isfile(json_file):
+                        os.remove(json_file)
+
+                    self.clean_report_data_dir()
+
                     step += 1
                     try:
                         progress.setValue(step * 100 / total)
@@ -347,7 +352,6 @@ class BaseReportGenerator(QObject):
                         pass  # progressBar was deleted
 
         os.remove(yaml_config_path)
-        self.clean_report_data_dir()
 
         self.enable_action_requested.emit(self.report_name, True)
         self.logger.clear_message_bar()
@@ -395,4 +399,7 @@ class BaseReportGenerator(QObject):
                                                                          "You have just canceled the report dependency download."), 5)
 
     def run(self):
+        raise NotImplementedError
+
+    def get_file_name(self, plot_id):
         raise NotImplementedError
