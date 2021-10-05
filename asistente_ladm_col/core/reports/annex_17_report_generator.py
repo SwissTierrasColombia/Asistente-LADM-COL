@@ -29,6 +29,10 @@ class Annex17ReportGenerator(BaseReportGenerator):
         super(Annex17ReportGenerator, self).__init__(db, ladm_data)
         self.report_name = ANNEX_17_REPORT
 
+    def get_file_name(self, plot_id):
+        parcel_number = self.ladm_data.get_parcels_related_to_plots(self.db, [plot_id], self.db.names.LC_PARCEL_T_PARCEL_NUMBER_F) or ['']
+        return '{}_{}_{}.pdf'.format(self.report_name, plot_id, parcel_number[0])
+
     def get_geojson_layer(self, layer_name, plot_id):
         if layer_name in ('terreno', 'terreno_overview', 'terrenos', 'terrenos_overview'):
             # True if you want the selected plot and False if you want the plots surrounding the selected plot
