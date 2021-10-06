@@ -109,7 +109,3 @@ class ModelConfig:
     def get_models_config(self):
         # Return a copy to avoid external changes to original config
         return deepcopy(self.__MODEL_CONFIG)
-
-    def get_default_ili2db_parameters(self, model_key):
-        # Return a copy to avoid external changes to original config
-        return deepcopy(self.__MODEL_CONFIG.get(model_key, dict()).get(MODEL_ILI2DB_PARAMETERS, dict()))

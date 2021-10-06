@@ -138,7 +138,7 @@ class LADMColModelRegistry(metaclass=Singleton):
         role_models = RoleRegistry().get_role_models(role_key)
 
         # ili2db params may come from the model config itself or overwritten by the current user.
-        # It the user does not have such config, we grab it from MODEL_CONFIG.
+        # If the user does not have such config, we grab it from MODEL_CONFIG.
         ili2db_params = role_models.get(ROLE_MODEL_ILI2DB_PARAMETERS, dict())
 
         for model_key, model in self.__models.items():
@@ -150,7 +150,7 @@ class LADMColModelRegistry(metaclass=Singleton):
             model.set_is_checked(model_key in role_models[ROLE_CHECKED_MODELS])
 
             # First attempt to get ili2db parameters from role, otherwise from model config
-            model_ili2db_params = ili2db_params.get(model_key, dict()) or self.__model_config.get_default_ili2db_parameters(model_key)
+            model_ili2db_params = ili2db_params.get(model_key, dict()) or model.get_default_ili2db_params()
             model.set_ili2db_params(model_ili2db_params)
             if model_ili2db_params:
                 self.logger.debug(__name__, "Model ili2db params are: {}".format(model_ili2db_params))
@@ -169,8 +169,10 @@ class LADMColModel:
         self.__supported_version = model_data.get(MODEL_SUPPORTED_VERSION, "")
         self.__hidden_by_default = model_data.get(MODEL_HIDDEN_BY_DEFAULT, False)
         self.__checked_by_default = model_data.get(MODEL_CHECKED_BY_DEFAULT, False)
-        self.__ili2db_parameters = model_data.get(MODEL_ILI2DB_PARAMETERS, dict())
         self.__mapping = model_data.get(MODEL_MAPPING, dict())
+
+        self.__default_ili2db_parameters = model_data.get(MODEL_ILI2DB_PARAMETERS, dict())
+        self.__ili2db_parameters = deepcopy(self.__default_ili2db_parameters)  # Default params shouldn't be modified
 
         # String with paths where to find the model. If several paths are needed, they must be
         # separated by a semicolon ";". Paths will be passed to ili2db, so any path ili2db understands
@@ -211,8 +213,12 @@ class LADMColModel:
     def set_is_checked(self, checked):
         self.__checked_by_default = checked
 
+    def get_default_ili2db_params(self):
+        # Come from the model config itself and won't be modified
+        return deepcopy(self.__default_ili2db_parameters)
+
     def get_ili2db_params(self):
-        return self.__ili2db_parameters.copy()
+        return deepcopy(self.__ili2db_parameters)
 
     def set_ili2db_params(self, parameters):
         self.__ili2db_parameters = parameters

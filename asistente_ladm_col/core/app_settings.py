@@ -80,6 +80,10 @@ class AppSettings:
 
     def add_custom_model_dir(self, model_dir):
         """
+        Adds a custom dir to the dirs ili2db will visit searching for models.
+        If an existing model is passed once more, it will be identified as
+        duplicated and only counted once.
+
         :param model_dir: May consist of several paths separated by ;
         """
         self.custom_model_dirs = ";".join(list(set(self.custom_model_dirs.split(";") + model_dir.split(";"))))
