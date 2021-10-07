@@ -102,7 +102,7 @@ class DBConnector(QObject):
     def _metadata_exists(self):
         raise NotImplementedError
 
-    def _has_basket_col(self):
+    def has_basket_col(self):
         raise NotImplementedError
 
     def close_connection(self):

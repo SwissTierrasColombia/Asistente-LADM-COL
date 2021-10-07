@@ -171,6 +171,32 @@ def get_informal_building_units(feature, parent):
     return res
 
 
+@qgsfunction(args='auto', group='LADM-COL', referenced_columns=[], helpText=TranslatableConfigStrings.help_get_default_basket)
+def get_default_basket(feature, parent):
+    """
+    Gets the t_id from the default basket in the DB. If it does not exist,
+    it first creates the default basket and returns the newly created t_id.
+
+    :param feature: Not used, but mandatory for QGIS
+    :param parent: Not used, but mandatory for QGIS
+    """
+    debug = False
+    res = None
+
+    from qgis import utils
+    if not "asistente_ladm_col" in utils.plugins:
+        res = -1 if debug else None
+    else:
+        plugin = utils.plugins["asistente_ladm_col"]  # Dict of active plugins
+        db = plugin.get_db_connection()
+        if db.names.T_ID_F is None:
+            db.names.test_connection()  # First build the DBMappingRegistry object
+
+        res = plugin.ladm_data.get_default_basket_id(db)
+
+    return res
+
+
 @qgsfunction(args='auto', group='LADM-COL')
 def get_domain_description_from_code(value, table, feature, parent):
     """

@@ -141,7 +141,7 @@ class GPKGConnector(FileDB):
     def _metadata_exists(self):
         return self._table_exists(ILI2DBNames.INTERLIS_TEST_METADATA_TABLE_PG)
 
-    def _has_basket_col(self):
+    def has_basket_col(self):
         if self.conn is None:
             res, msg = self.open_connection()
             if not res:
@@ -154,7 +154,6 @@ class GPKGConnector(FileDB):
                           WHERE tag='{}' AND setting='{}';""".format(ILI2DBNames.BASKET_COL_TAG, ILI2DBNames.BASKET_COL_VALUE))
 
         return bool(cursor.fetchall())
-
 
     def get_uri_for_layer(self, layer_name):
         return (True, '{uri}|layername={table}'.format(
@@ -324,7 +323,7 @@ class GPKGConnector(FileDB):
             return res, code, msg
 
         basket_required, model_name = self._db_should_have_basket_support()
-        if basket_required and not self._has_basket_col():
+        if basket_required and not self.has_basket_col():
             return False, EnumTestConnectionMsg.BASKET_COLUMN_NOT_FOUND, \
                    QCoreApplication.translate("GPKGConnector", "Basket column not found, but it is required by model '{}'!.").format(model_name)
 

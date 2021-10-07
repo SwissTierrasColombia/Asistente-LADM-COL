@@ -121,6 +121,14 @@ class TranslatableConfigStrings(QObject):
   True,
   False) → {}</pre>""".format(QCoreApplication.translate("TranslatableConfigStrings", "Gets the t_id of NPH in\n  domain lc_condicionprediotipo"))
 
+    help_get_default_basket = QCoreApplication.translate("TranslatableConfigStrings",
+                                                       "Gets the t_id of the default basket in the current DB. This function creates the basket if it does not exist yet. If the DB does not support baskets, it returns None.") + \
+                                      QCoreApplication.translate("TranslatableConfigStrings", "<h4>Syntax</h4>") + \
+                                      "<span class=\"functionname\">get_default_basket()</span>" + \
+                                      QCoreApplication.translate("TranslatableConfigStrings", "<h4>Examples</h4>") + \
+                                      """<pre>get_default_basket() → {}</pre>""".format(QCoreApplication.translate("TranslatableConfigStrings",
+                                                       "\nGets the t_id of\nthe default basket"))
+
     help_get_multi_domain_code_from_value = QCoreApplication.translate("TranslatableConfigStrings", "Gets the t_id that corresponds to a (child) domain value") + \
                                       QCoreApplication.translate("TranslatableConfigStrings", "<h4>Syntax</h4>") + \
                                       "<span class=\"functionname\">get_multi_domain_code_from_value</span>(" \
