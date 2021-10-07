@@ -436,7 +436,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
                 for param in params[ILI2DB_SCHEMAIMPORT]:  # List of tuples
                     if param[0] == ILI2DB_CREATE_BASKET_COL_KEY:  # param: (option, value)
                         configuration.create_basket_col = True
-                        self.logger.debug(__name__, "Schema Import createBasketCol enabled! (taken from role config)")
+                        self.logger.debug(__name__, "Schema Import createBasketCol enabled (model '{}')! (taken from role config)".format(model.id()))
 
         return configuration
 

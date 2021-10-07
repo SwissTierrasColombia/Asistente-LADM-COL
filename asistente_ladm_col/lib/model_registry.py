@@ -28,7 +28,10 @@ from asistente_ladm_col.config.keys.common import (ROLE_SUPPORTED_MODELS,
                                                    MODEL_CHECKED_BY_DEFAULT,
                                                    MODEL_ILI2DB_PARAMETERS,
                                                    MODEL_MAPPING,
-                                                   MODEL_DIR)
+                                                   MODEL_DIR,
+                                                   MODEL_BASKET_INFO,
+                                                   MODEL_BASKET_TOPIC_NAME,
+                                                   MODEL_BASKET_TOPIC_NAME_PREFERRED)
 from asistente_ladm_col.config.model_config import ModelConfig
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
@@ -179,6 +182,9 @@ class LADMColModel:
         # will work (see https://github.com/claeis/ili2db/blob/master/docs/ili2db.rst).
         self.__model_dir = model_data.get(MODEL_DIR, "")  # Only expected if the model comes from an Add-on
 
+        # Information about baskets for this model, if needed
+        self.__basket_info = model_data.get(MODEL_BASKET_INFO, dict())
+
     def id(self):
         return self.__id
 
@@ -228,3 +234,12 @@ class LADMColModel:
 
     def model_dir(self):
         return self.__model_dir
+
+    def has_basket_info(self):
+        return bool(self.__basket_info)
+
+    def basket_topic_name(self):
+        return self.__basket_info.get(MODEL_BASKET_TOPIC_NAME, '')
+
+    def is_basket_topic_name_preferred(self):
+        return self.__basket_info.get(MODEL_BASKET_TOPIC_NAME_PREFERRED, False)
