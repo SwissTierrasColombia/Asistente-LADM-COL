@@ -50,6 +50,7 @@ from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
                                                       DEFAULT_SRS_CODE,
                                                       DEFAULT_SRS_AUTH)
 from asistente_ladm_col.app_interface import AppInterface
+from asistente_ladm_col.config.keys.ili2db_keys import ILI2DB_IMPORT, ILI2DB_DATASET
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
 from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
 from asistente_ladm_col.utils.interlis_utils import get_models_from_xtf
@@ -199,10 +200,10 @@ class DialogImportData(QDialog, DIALOG_UI):
                 color = '#fff'  # White
 
                 self.import_models_qmodel = QStandardItemModel()
-                model_names= get_models_from_xtf(self.xtf_file_line_edit.text().strip())
+                model_names = get_models_from_xtf(self.xtf_file_line_edit.text().strip())
 
-                for model in self.__ladmcol_models.supported_models():
-                    if not model.hidden() and model.full_name() in model_names:
+                for model in self.__ladmcol_models.non_hidden_and_supported_models():
+                    if model.full_name() in model_names:
                         item = QStandardItem(model.full_alias())
                         item.setData(model.full_name(), Qt.UserRole)
                         item.setCheckable(False)
@@ -285,6 +286,7 @@ class DialogImportData(QDialog, DIALOG_UI):
             return
 
         configuration = self.update_configuration()
+        configuration = self.apply_role_model_configuration(configuration)
 
         if configuration.disable_validation:  # If data validation at import is disabled, we ask for confirmation
             self.msg = QMessageBox()
@@ -478,6 +480,31 @@ class DialogImportData(QDialog, DIALOG_UI):
             configuration.ilimodels = ';'.join(self.get_ili_models())
 
         configuration.disable_validation = not QSettings().value('Asistente-LADM-COL/models/validate_data_importing_exporting', True, bool)
+
+        return configuration
+
+    def apply_role_model_configuration(self, configuration):
+        """
+        Applies the configuration that the active role has set over models that are in both the DB and the XTF.
+
+        Important:
+        Note that this works better if the checked models are limited to one (e.g. Field Data Capture) or limited to
+        a group of related models (e.g., the 3 supplies models). When the checked models are heterogeneous, results
+        start to be unpredictable, as the configuration for a single model may affect the others.
+
+        :param configuration: SchemaImportConfiguration object
+        :return: configuration object updated
+        """
+        model_names = get_models_from_xtf(self.xtf_file_line_edit.text().strip())
+
+        for model in self.__ladmcol_models.non_hidden_and_supported_models():
+            if model.full_name() in model_names:  # We'll check models in the DB that are also in the XTF
+                params = model.get_ili2db_params()
+                if ILI2DB_IMPORT in params:
+                    for param in params[ILI2DB_IMPORT]:  # List of tuples
+                        if param[0] == ILI2DB_DATASET:  # param: (option, value)
+                            configuration.dataset = param[1]
+                            self.logger.debug(__name__, "Import XTF data into dataset '{}'! (taken from role config)".format(param[1]))
 
         return configuration
 

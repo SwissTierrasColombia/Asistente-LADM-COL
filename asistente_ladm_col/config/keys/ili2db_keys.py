@@ -24,4 +24,5 @@ ILI2DB_DELETE = 'ili2db_delete'
 # ili2db parameters
 ILI2DB_CREATE_BASKET_COL_KEY = 'create_basket_col_key'
 ILI2DB_DATASET_KEY = 'dataset_key'
+ILI2DB_DATASET = 'dataset'
 
