@@ -206,6 +206,9 @@ class RoleRegistry(QObject, metaclass=SingletonQObject):
     def get_role_supported_models(self, role_key):
         return self.get_role_models(role_key)[ROLE_SUPPORTED_MODELS]
 
+    def active_role_needs_automatic_expression_for_baskets(self):
+        return self._registered_roles[self.get_active_role()].get(ROLE_NEEDS_AUTOMATIC_VALUE_FOR_BASKETS, False)
+
     def get_role_quality_rules(self, role_key):
         if role_key not in self._registered_roles:
             self.logger.error(__name__, "Role '{}' was not found, returning default role's quality rules.".format(role_key))
