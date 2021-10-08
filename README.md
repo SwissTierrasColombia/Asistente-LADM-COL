@@ -238,6 +238,7 @@ Para usar el Asistente LADM-COL se requiere:
    - Tareas de generación de insumos catastrales.
      - ETL para generar insumos catastrales a partir de datos del IGAC (fuente SNC).
      - ETL para generar insumos catastrales a partir de datos del IGAC (fuente Cobol).
+   - Tarea de validación de reglas de calidad. Entrega de reporte en PDF y (opcionalmente) base de datos de errores en GeoPackage.
  - Soporte de roles y generación de interfaz de usuario para cada rol.
 
 ## Pruebas automatizadas y asistidas al software
