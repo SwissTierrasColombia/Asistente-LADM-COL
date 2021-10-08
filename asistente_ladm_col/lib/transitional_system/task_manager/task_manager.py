@@ -69,6 +69,7 @@ class STTaskManager(QObject):
         if status_OK:
             # Parse, create and register tasks
             response_data = json.loads(response.text)
+            self.logger.info(__name__, "{} tasks found!".format(len(response_data)))
             for task_data in response_data:
                 task = STTask(task_data)
                 if task.is_valid():

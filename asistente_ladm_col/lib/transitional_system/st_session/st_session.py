@@ -62,6 +62,7 @@ class STSession(QObject, metaclass=SingletonQObject):
         s.mount(st_config.ST_LOGIN_SERVICE_URL, HTTPAdapter(max_retries=0))
 
         try:
+            self.logger.info(__name__, "Connecting to ST server ({})...".format(st_config.get_domain()))
             response = s.request("POST", st_config.ST_LOGIN_SERVICE_URL, data=payload, headers=headers)
         except requests.ConnectionError as e:
             msg = QCoreApplication.translate("STSession", "There was an error accessing the login service. Details: {}").format(e)
@@ -106,6 +107,10 @@ class STSession(QObject, metaclass=SingletonQObject):
                 self.logger.warning(__name__, st_config.ST_STATUS_GT_500_MSG)
             elif response.status_code == 401:
                 msg = QCoreApplication.translate("STSession", "Unauthorized client! The server won't allow requests from this client.")
+            else:
+                msg = QCoreApplication.translate("STSession", "Unable to login! Status code: {}. See QGIS log for details.").format(response.status_code)
+
+            self.logger.debug(__name__, "ST server response: {}".format(response.text))
             self.logger.warning(__name__, msg)
 
         return status_OK, msg, should_emit_role_changed
