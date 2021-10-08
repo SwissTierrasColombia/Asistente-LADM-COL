@@ -78,6 +78,7 @@ The current version ([3.1.8](https://github.com/SwissTierrasColombia/Asistente-L
    - Tasks of cadastral supplies generation and assisted integration of supplies (partial support). 
      - ETL to generate cadastral supplies from cadastral authority (IGAC) data (SNC source).
      - ETL to generate cadastral supplies from cadastral authority (IGAC) data (Cobol source).
+   - Task to validate quality rules. Delivery of a PDF report and (optionally) a GeoPackage database with the errors found.
  - Roles support and GUI for each role.
  - Create database structures for the LADM-COL v3.0 model using the national map projection.
  - Two database engines to manage LADM-COL data:
