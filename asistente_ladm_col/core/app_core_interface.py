@@ -935,11 +935,11 @@ class AppCoreInterface(QObject):
 
                     allData = reply.readAll()
                     status = reply.attribute(QNetworkRequest.HttpStatusCodeAttribute)
-                    if status == 401:
+                    if status == 200:
                         try:
                             data = json.loads(str(allData, 'utf-8'))
 
-                            if 'error' in data and data['error'] == st_config.ST_EXPECTED_RESPONSE:
+                            if data.get('status', '') == st_config.ST_EXPECTED_RESPONSE:
                                 res = True
                                 msg['text'] = QCoreApplication.translate("SettingsDialog",
                                                                          "The tested service is valid to connect with Transitional System!")
@@ -964,7 +964,7 @@ class AppCoreInterface(QObject):
             res = False
             msg['text'] = QCoreApplication.translate("SettingsDialog", "Not valid service URL to test!")
 
-        return (res, msg)
+        return res, msg
 
     def load_field_mapping(self, field_mapping):
         path_file_field_mapping = os.path.join(FIELD_MAPPING_PATH, '{}.{}'.format(field_mapping, "txt"))

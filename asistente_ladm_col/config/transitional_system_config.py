@@ -13,7 +13,7 @@ class TransitionalSystemConfig(QObject, metaclass=SingletonQObject):
     ST_LOGIN_SERVICE_PAYLOAD = "username={}&password={}&grant_type=password"
     encoded = b'c3Qtd2ViLWpqOHNmUUVVOm5FSmVzR3ZF'  # b'c3Qtd2ViLWRldmVsb3AtZHZLREtnUXI6MTIzNDU='
     ST_LOGIN_AUTHORIZATION_CLIENT = "Basic {}".format(encoded.decode('utf-8'))
-    ST_EXPECTED_RESPONSE = "unauthorized"
+    ST_EXPECTED_RESPONSE = "st_on"
 
     ST_CONNECTION_ERROR_MSG = QCoreApplication.translate("TransitionalSystemConfig", "There was an error accessing the ST service. Details: {}")
     ST_GENERIC_ERROR_MSG = QCoreApplication.translate("TransitionalSystemConfig", "There was a HTTP error (4xx or 5xx) accessing the ST service. Details: {}")
