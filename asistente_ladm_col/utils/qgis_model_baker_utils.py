@@ -90,6 +90,7 @@ class QgisModelBakerUtils(QObject):
             qgis_model_baker = qgis.utils.plugins["QgisModelBaker"]
             generator = self.get_generator(db)
             layers = generator.layers(layer_list)
+            layers = self._filter_layers(layers)
             relations, bags_of_enum = generator.relations(layers, layer_list)
             legend = generator.legend(layers, ignore_node_names=[translated_strings[ERROR_LAYER_GROUP]])
             qgis_model_baker.create_project(layers, relations, bags_of_enum, legend, auto_transaction=False)
@@ -109,6 +110,7 @@ class QgisModelBakerUtils(QObject):
             tool = self._dbs_supported.get_db_factory(db.engine).get_model_baker_db_ili_mode()
             generator = self.get_generator(db)
             model_baker_layers = generator.layers(layer_list)
+            model_baker_layers = self._filter_layers(model_baker_layers)
 
             for model_baker_layer in model_baker_layers:
                 layer = model_baker_layer.create()  # Convert Model Baker layer to QGIS layer
@@ -116,6 +118,22 @@ class QgisModelBakerUtils(QObject):
                 layers.append(layer)
         else:
             self.log_invalid_version()
+
+        return layers
+
+    @staticmethod
+    def _filter_layers(layers):
+        """
+        Modifies the input list of MB layers, removing elements that meet a condition.
+
+        :param layers: List of Model Baker Layer objects of list of layer info dicts.
+        :return: Filtered list of layers.
+        """
+        if layers:
+            if isinstance(layers[0], dict):
+                layers = [layer for layer in layers if not "_nu_" in layer["tablename"].lower()]
+            elif isinstance(layers[0], list):
+                layers = [layer for layer in layers if not "_nu_" in layer.name.lower()]
 
         return layers
 
@@ -129,17 +147,16 @@ class QgisModelBakerUtils(QObject):
             generator = self.get_generator(db)
 
             layers = generator.get_tables_info_without_ignored_tables()
+            layers = self._filter_layers(layers)
             relations = [relation for relation in generator.get_relations_info()]
-            self.logger.debug(__name__, "Relationships before filter: {}".format(len(relations)))
-            QgisModelBakerUtils.filter_relations(relations)
-            self.logger.debug(__name__, "Relationships after filter: {}".format(len(relations)))
+            QgisModelBakerUtils._filter_relations(relations)
             return (layers, relations, {})
         else:
             self.log_invalid_version()
             return (list(), list(), dict())
 
     @staticmethod
-    def filter_relations(relations):
+    def _filter_relations(relations):
         """
         Modifies the input list of relations, removing elements that meet a condition.
 
@@ -148,7 +165,10 @@ class QgisModelBakerUtils(QObject):
         """
         to_delete = list()
         for relation in relations:
-            if relation[QueryNames.REFERENCING_FIELD].startswith('uej2_') or relation[QueryNames.REFERENCING_FIELD].startswith('ue_'):
+            if relation[QueryNames.REFERENCING_FIELD].startswith('uej2_') or \
+                    relation[QueryNames.REFERENCING_FIELD].startswith('ue_') or \
+                    '_nu_' in relation[QueryNames.REFERENCING_LAYER].lower() or \
+                    '_nu_' in relation[QueryNames.REFERENCED_LAYER].lower():
                 to_delete.append(relation)
 
         for idx in to_delete:
@@ -160,12 +180,6 @@ class QgisModelBakerUtils(QObject):
             return generator.get_tables_info_without_ignored_tables()
         else:
             self.log_invalid_version()
-
-    def get_first_index_for_layer_type(self, layer_type, group=QgsProject.instance().layerTreeRoot()):
-        if QgisModelBakerUtils.mb_version_valid():
-            import QgisModelBaker
-            return QgisModelBaker.utils.qgis_utils.get_first_index_for_layer_type(layer_type, group)
-        return None
 
     @staticmethod
     def get_suggested_index_for_layer(layer, group):
