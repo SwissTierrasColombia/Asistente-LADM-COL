@@ -68,9 +68,6 @@ class DBMappingConfig:
             "LADM_COL.LADM_Nucleo.COL_InterpolacionTipo": {QueryNames.VARIABLE_NAME: "COL_INTERPOLATION_TYPE_D", QueryNames.FIELDS_DICT: {}},
             "LADM_COL.LADM_Nucleo.COL_MetodoProduccionTipo": {QueryNames.VARIABLE_NAME: "COL_PRODUCTION_METHOD_TYPE_D", QueryNames.FIELDS_DICT: {}},
             "LADM_COL.LADM_Nucleo.COL_RelacionSuperficieTipo": {QueryNames.VARIABLE_NAME: "COL_SURFACE_RELATION_TYPE_D", QueryNames.FIELDS_DICT: {}},
-            "LADM_COL.LADM_Nucleo.COL_ContenidoNivelTipo": {QueryNames.VARIABLE_NAME: "COL_CONTENT_LEVEL_TYPE_D", QueryNames.FIELDS_DICT: {}},
-            "LADM_COL.LADM_Nucleo.COL_EstructuraTipo": {QueryNames.VARIABLE_NAME: "COL_STRUCTURE_TYPE_D", QueryNames.FIELDS_DICT: {}},
-            "LADM_COL.LADM_Nucleo.COL_RegistroTipo": {QueryNames.VARIABLE_NAME: "COL_REGISTRY_TYPE_D", QueryNames.FIELDS_DICT: {}},
             "LADM_COL.LADM_Nucleo.ExtInteresado": {QueryNames.VARIABLE_NAME: "EXT_PARTY_S", QueryNames.FIELDS_DICT: {}},
             "LADM_COL.LADM_Nucleo.Fraccion": {QueryNames.VARIABLE_NAME: "FRACTION_S", QueryNames.FIELDS_DICT: {
                 "LADM_COL.LADM_Nucleo.Fraccion.Denominador": "FRACTION_S_DENOMINATOR_F",
