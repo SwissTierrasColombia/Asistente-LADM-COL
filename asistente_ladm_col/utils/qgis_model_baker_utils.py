@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 """
 /***************************************************************************
-                              Asistente LADM_COL
+                              Asistente LADM-COL
                              --------------------
         begin                : 2018-02-06
         git sha              : :%H$
@@ -59,10 +58,7 @@ class QgisModelBakerUtils(QObject):
             tool = self._dbs_supported.get_db_factory(db.engine).get_model_baker_db_ili_mode()
 
             qgis_model_baker = qgis.utils.plugins["QgisModelBaker"]
-            generator = qgis_model_baker.get_generator()(tool, db.uri, "smart2", db.schema, pg_estimated_metadata=False)
-            tables_to_ignore = LayerConfig.get_tables_to_ignore(db.names, AppInterface().core.get_active_models_per_db(db))
-            generator.set_additional_ignored_layers(tables_to_ignore)
-            return generator
+            return qgis_model_baker.get_generator()(tool, db.uri, "smart2", db.schema, pg_estimated_metadata=False)
         else:
             self.log_invalid_version()
             return None
