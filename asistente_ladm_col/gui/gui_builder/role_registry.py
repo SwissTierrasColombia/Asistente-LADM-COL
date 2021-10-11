@@ -57,7 +57,7 @@ class RoleRegistry(QObject, metaclass=SingletonQObject):
             if ROLE_ENABLED in role_config and role_config[ROLE_ENABLED]:
                 self.register_role(role_key, role_config)
 
-    def register_role(self, role_key, role_dict):
+    def register_role(self, role_key, role_dict, activate_role=False):
         """
         Register roles for the LADM-COL assistant. Roles have access only to certain GUI controls, to
         certain LADM-COL models and to certain quality rules.
@@ -77,7 +77,8 @@ class RoleRegistry(QObject, metaclass=SingletonQObject):
         """
         valid = False
         if ROLE_NAME in role_dict and ROLE_DESCRIPTION in role_dict and ROLE_ACTIONS in role_dict and \
-                ROLE_GUI_CONFIG in role_dict and ROLE_MODELS in role_dict:
+                ROLE_GUI_CONFIG in role_dict and TEMPLATE_GUI in role_dict[ROLE_GUI_CONFIG] \
+                and ROLE_MODELS in role_dict:
             if role_dict[ROLE_GUI_CONFIG]:  # It's mandatory to provide a GUI config for the role
                 self._registered_roles[role_key] = role_dict
                 valid = True
@@ -86,6 +87,9 @@ class RoleRegistry(QObject, metaclass=SingletonQObject):
                                   "Role '{}' has no GUI config and could not be registered!".format(role_key))
         else:
             self.logger.error(__name__, "Role '{}' is not defined correctly and could not be registered! Check the role_dict parameter.".format(role_key))
+
+        if activate_role:
+            self.set_active_role(role_key)
 
         return valid
 
@@ -182,13 +186,21 @@ class RoleRegistry(QObject, metaclass=SingletonQObject):
 
         return list(set(self._registered_roles[role_key][ROLE_ACTIONS] + self.COMMON_ACTIONS))
 
-    def get_role_gui_config(self, role_key):
+    def get_role_gui_config(self, role_key, gui_type=TEMPLATE_GUI):
+        """
+        Return the role GUI config.
+
+        :param role_key: Role id.
+        :param gui_type: Either TEMPLATE_GUI or DEFAULT_GUI (the one for wrong db connections).
+        :return: Dict with the GUI config for the role.
+        """
         if role_key not in self._registered_roles:
             self.logger.error(__name__, "Role '{}' was not found, returning default role's GUI configuration.".format(role_key))
             role_key = self._default_role
 
         # Return a deepcopy, since we don't want external classes to modify a role's GUI config
-        return deepcopy(self._registered_roles[role_key][ROLE_GUI_CONFIG])
+        gui_conf = self._registered_roles[role_key][ROLE_GUI_CONFIG].get(gui_type, dict())
+        return deepcopy(gui_conf)  # The plugin knows what to do if the role has no DEFAULT_GUI
 
     def get_role_models(self, role_key):
         """

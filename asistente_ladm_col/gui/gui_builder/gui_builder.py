@@ -242,11 +242,16 @@ class GUIBuilder(QObject):
         :return: Dictionary in the form of a gui_config dict (still unfiltered).
         """
         if self._test_conn_result:
-            self.logger.info(__name__, "Using gui_config from the role.")
+            self.logger.info(__name__, "Using template gui_config from the role.")
             return RoleRegistry().get_role_gui_config(role_key)
         else:
-            self.logger.info(__name__, "Using gui_config from the default GUI (minimal).")
-            return GUI_Config().get_gui_dict(DEFAULT_GUI)  # If test_connection is False, we use a default gui config)
+            default_gui = RoleRegistry().get_role_gui_config(role_key, DEFAULT_GUI)
+            if default_gui:
+                self.logger.info(__name__, "Using default gui_config (minimal) from the role.")
+                return default_gui
+            else:
+                self.logger.info(__name__, "Using gui_config from the default GUI (minimal).")
+                return GUI_Config().get_gui_dict(DEFAULT_GUI)  # Use a default gui config given by the plugin
 
     def _get_role_actions(self, role_key):
         """
