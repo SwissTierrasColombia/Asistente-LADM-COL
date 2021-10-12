@@ -52,5 +52,5 @@ class LogQualityDialog(QDialog, DIALOG_LOG_QUALITY_UI):
                     Utils.set_time_format(self.execution_total_time),
                     self.tolerance)
 
-        save_pdf_format('Asistente-LADM-COL/log_quality_dialog/save_path', title, self.text)
+        save_pdf_format("Asistente-LADM-COL/quality_rules/save_path", title, self.text)
 

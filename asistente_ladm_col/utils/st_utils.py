@@ -60,6 +60,8 @@ class STUtils(QObject):
 
             self.logger.warning(__name__, msg)
             return False, msg
+        except SSLError as e:
+            return False, QCoreApplication.translate("STUtils", "There was a problem downloading the file. Try it again! Details: {}").format(e)
 
         # Now unzip it
         tmpFolder = tempfile.mktemp()

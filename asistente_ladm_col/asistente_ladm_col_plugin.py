@@ -1612,7 +1612,7 @@ class AsistenteLADMCOLPlugin(QObject):
                 return
 
         self.logger.info_msg(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                                  "The {} file was downloaded successfully to '{}'!").format(
+                                                                  "The {} file was successfully downloaded to '{}'!").format(
             extension[-3:].upper(), filename))
 
         if isinstance(context, TaskContext):

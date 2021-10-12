@@ -16,10 +16,13 @@
  *                                                                         *
  ***************************************************************************/
 """
+import os.path
+
 from qgis.PyQt.QtCore import (QObject,
                               pyqtSlot,
                               pyqtSignal,
-                              QCoreApplication)
+                              QCoreApplication,
+                              QSettings)
 from qgis.PyQt.QtWidgets import (QFileDialog,
                                  QDockWidget)
 
@@ -200,12 +203,15 @@ class AppGUIInterface(QObject):
                                                                              "There are no error layers to export!"))
                 return
 
+            settings = QSettings()
+            settings_path = "Asistente-LADM-COL/quality_rules/save_path"
             filename, matched_filter = QFileDialog.getSaveFileName(self.iface.mainWindow(),
                                            QCoreApplication.translate("AppGUIInterface", "Where do you want to save your GeoPackage?"),
-                                           ".",
+                                           settings.value(settings_path, '.'),
                                            QCoreApplication.translate("AppGUIInterface", "GeoPackage (*.gpkg)"))
 
             if filename:
+                settings.setValue(settings_path, os.path.dirname(filename))
                 if not filename.endswith(".gpkg") and filename:
                     filename = filename + ".gpkg"
 
