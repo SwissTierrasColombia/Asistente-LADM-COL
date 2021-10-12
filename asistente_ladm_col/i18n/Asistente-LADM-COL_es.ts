@@ -219,22 +219,22 @@
 <context>
     <name>AppGUIInterface</name>
     <message>
-        <location filename="../gui/app_gui_interface.py" line="199"/>
+        <location filename="../gui/app_gui_interface.py" line="202"/>
         <source>There are no error layers to export!</source>
         <translation>¡No hay capas de errores para exportar!</translation>
     </message>
     <message>
-        <location filename="../gui/app_gui_interface.py" line="204"/>
+        <location filename="../gui/app_gui_interface.py" line="209"/>
         <source>Where do you want to save your GeoPackage?</source>
         <translation>¿Dónde quieres guardar tu base de datos GeoPackage?</translation>
     </message>
     <message>
-        <location filename="../gui/app_gui_interface.py" line="206"/>
+        <location filename="../gui/app_gui_interface.py" line="211"/>
         <source>GeoPackage (*.gpkg)</source>
         <translation>Base de datos GeoPackage (*.gpkg)</translation>
     </message>
     <message>
-        <location filename="../gui/app_gui_interface.py" line="214"/>
+        <location filename="../gui/app_gui_interface.py" line="220"/>
         <source>Exporting quality errors to GeoPackage...</source>
         <translation>Exportando errores de calidad a GeoPackage...</translation>
     </message>
@@ -243,17 +243,17 @@
         <translation type="vanished">Exportando errores de calidad a GeoPackage...</translation>
     </message>
     <message>
-        <location filename="../gui/app_gui_interface.py" line="227"/>
+        <location filename="../gui/app_gui_interface.py" line="233"/>
         <source>The quality errors have been exported to GeoPackage!</source>
         <translation>¡Los errores de calidad han sido exportados a GeoPackage!</translation>
     </message>
     <message>
-        <location filename="../gui/app_gui_interface.py" line="230"/>
+        <location filename="../gui/app_gui_interface.py" line="236"/>
         <source>Export to GeoPackage was cancelled. No output file was selected.</source>
         <translation>Se canceló la exportación a GeoPackage. No se seleccionó ningún archivo.</translation>
     </message>
     <message>
-        <location filename="../gui/app_gui_interface.py" line="233"/>
+        <location filename="../gui/app_gui_interface.py" line="239"/>
         <source>There is no quality error group to export!</source>
         <translation>¡No hay grupo de errores de calidad para exportar!</translation>
     </message>
@@ -321,12 +321,12 @@
         <translation>Interesado</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="495"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="499"/>
         <source>Create Party</source>
         <translation>Crear Interesado</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="499"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="503"/>
         <source>Create Group Party</source>
         <translation>Crear Agrupación de Interesados</translation>
     </message>
@@ -398,7 +398,7 @@
         <translation type="vanished">Crear objetos de Operación</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="469"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="473"/>
         <source>Create Plot</source>
         <translation>Crear Terreno</translation>
     </message>
@@ -407,7 +407,7 @@
         <translation type="vanished">Pre-procesamiento</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="633"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="637"/>
         <source>Queries</source>
         <translation>Consultar datos</translation>
     </message>
@@ -425,59 +425,59 @@
         <translation>Topografía y Representación</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="319"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="323"/>
         <source>&apos;Origen Nacional&apos; projection could not be configured. Therefore you cannot use this version of the LADM-COL Assistant.</source>
         <translation>No se pudo configurar la proyeccion &apos;Origen Nacional&apos;. Por lo tanto no puedes utilizar esta versión del Asistente LADM-COL.</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="418"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="422"/>
         <source>Run supplies ETL</source>
         <translation>Ejecutar ETL de insumos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="423"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="427"/>
         <source>Omissions and Commissions Report - COBOL</source>
         <translation>Reporte Omisiones y Comisiones - COBOL</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="428"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="432"/>
         <source>Omissions and Commissions Report - SNC</source>
         <translation>Reporte Omisiones y Comisiones - SNC</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="443"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="447"/>
         <source>Allocate parcels</source>
         <translation>Asignar predios</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="448"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="452"/>
         <source>Synchronize field data</source>
         <translation>Sincronizar datos de campo</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="461"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="465"/>
         <source>Create Point</source>
         <translation>Crear Punto</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="465"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="469"/>
         <source>Create Boundary</source>
         <translation>Crear Lindero</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="473"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="477"/>
         <source>Create Building</source>
         <translation>Crear Construcción</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="477"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="588"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="481"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="592"/>
         <source>Create Building Unit</source>
         <translation>Crear Unidad de Construcción</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="490"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="584"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="494"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="588"/>
         <source>Create Parcel</source>
         <translation>Crear Predio</translation>
     </message>
@@ -490,17 +490,17 @@
         <translation type="vanished">Crear Interesado Jurídico</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="511"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="515"/>
         <source>Upload Pending Source Files</source>
         <translation>Subir Archivos Fuente Pendientes</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="517"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="521"/>
         <source>Create Right</source>
         <translation>Crear Derecho</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="521"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="525"/>
         <source>Create Restriction</source>
         <translation>Crear Restricción</translation>
     </message>
@@ -513,17 +513,17 @@
         <translation type="vanished">Revisar Reglas de Calidad</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="504"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="508"/>
         <source>Create Administrative Source</source>
         <translation>Crear Fuente Administrativa</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="508"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="512"/>
         <source>Create Spatial Source</source>
         <translation>Crear Fuente Espacial</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="526"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="530"/>
         <source>Quality</source>
         <translation>Calidad</translation>
     </message>
@@ -560,12 +560,12 @@
         <translation type="vanished">Revisar todo</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="631"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="635"/>
         <source>Load layers</source>
         <translation>Cargar capas</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="653"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="657"/>
         <location filename="../utils/decorators.py" line="87"/>
         <location filename="../utils/decorators.py" line="247"/>
         <location filename="../utils/decorators.py" line="282"/>
@@ -576,12 +576,12 @@
         <translation>Configuración</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="656"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="660"/>
         <source>Help</source>
         <translation>Ayuda</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="658"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="662"/>
         <source>About</source>
         <translation>Acerca de</translation>
     </message>
@@ -634,17 +634,17 @@
         <translation type="vanished">Administración de datos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="644"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="648"/>
         <source>Create LADM-COL structure</source>
         <translation>Crear estructura LADM-COL</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="647"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="651"/>
         <source>Import data</source>
         <translation>Importar datos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="650"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="654"/>
         <source>Export data</source>
         <translation>Exportar datos</translation>
     </message>
@@ -656,22 +656,22 @@
         <translation>Reportes</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="636"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="640"/>
         <source>Annex 17</source>
         <translation>Anexo 17</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="640"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="644"/>
         <source>ANT Map</source>
         <translation>Plano ANT</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="481"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="485"/>
         <source>Create Right of Way</source>
         <translation>Crear Servidumbre de Paso</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="302"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="306"/>
         <source>LADM-COL Assistant - Warning</source>
         <translation>Asistente LADM-COL - Advertencia</translation>
     </message>
@@ -680,17 +680,17 @@
         <translation type="vanished">No se pudo configurar la proyección CTM12. Por tanto, no se puede usar esta versión del Asistente LADM-COL.</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="347"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="351"/>
         <source>Refreshing GUI for the LADM-COL Assistant...</source>
         <translation>Refrescando la interfaz del Asistente LADM-COL...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="400"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="404"/>
         <source>Login...</source>
         <translation>Autenticarse...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="404"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="408"/>
         <source>Logout</source>
         <translation>Salir</translation>
     </message>
@@ -703,22 +703,37 @@
         <translation type="vanished">Omisiones y Comisiones</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="485"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="489"/>
         <source>Associate Address</source>
         <translation>Relacionar Dirección</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="531"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="535"/>
         <source>Fix LADM-COL relations</source>
         <translation>Arreglar relaciones LADM-COL</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="617"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="621"/>
         <source>Change detection settings</source>
         <translation>Configurar identificación de novedades</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1580"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1602"/>
+        <source>Downloading {} file from ST...</source>
+        <translation>Descargando archivo {} desde el Sistema de Transición...</translation>
+    </message>
+    <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="1610"/>
+        <source>A file location was not chosen. File download cancelled.</source>
+        <translation>No se eligió una ubicación para el archivo. Se ha cancelado la descarga.</translation>
+    </message>
+    <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="1614"/>
+        <source>The {} file was successfully downloaded to &apos;{}&apos;!</source>
+        <translation>Se ha descargado el archivo {} a &apos;{}&apos;!</translation>
+    </message>
+    <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="1663"/>
         <source>Connecting to remote db...</source>
         <translation>Conectándose a base de datos remota...</translation>
     </message>
@@ -739,22 +754,22 @@
         <translation type="vanished">Exportar datos (Insumos)</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1398"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1415"/>
         <source>Opening Query Changes per Parcel panel...</source>
         <translation>Abriendo panel de novedades por predio...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1409"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1426"/>
         <source>Opening Query Changes for All Parcels panel...</source>
         <translation>Abriendo panel de novedades masivas...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1517"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1534"/>
         <source>Continue?</source>
         <translation>¿Continuar?</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1518"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1535"/>
         <source>Are you sure you want to log out from the Transitional System?</source>
         <translation>¿Estás segura/o que quieres salir del Sistema de Transición?</translation>
     </message>
@@ -763,7 +778,7 @@
         <translation type="vanished">Ficha predial</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="575"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="579"/>
         <source>Create Property Record Card</source>
         <translation>Crear Ficha Predial</translation>
     </message>
@@ -788,17 +803,17 @@
         <translation type="vanished">Crear Equipamiento Comunal</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="592"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="596"/>
         <source>Create Building Unit Qualification</source>
         <translation>Crear Calificación de Unidad de Construcción</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="596"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="600"/>
         <source>Create Geoeconomic Zone</source>
         <translation>Crear Zona Homogénea Geoeconómica</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="600"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="604"/>
         <source>Create Physical Zone</source>
         <translation>Crear Zona Homogénea Física</translation>
     </message>
@@ -808,14 +823,14 @@
         <translation>Identificación de novedades</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="613"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="812"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="617"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="816"/>
         <source>Query per parcel</source>
         <translation>Consulta por predio</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="615"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="817"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="619"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="821"/>
         <source>Query all parcels</source>
         <translation>Consulta masiva</translation>
     </message>
@@ -824,7 +839,7 @@
         <translation type="vanished">Configuración de datos oficiales</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="801"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="805"/>
         <source>Open About Dialog</source>
         <translation>Abrir diálogo Acerca de</translation>
     </message>
@@ -1552,7 +1567,7 @@
 <context>
     <name>ConnectionManager</name>
     <message>
-        <location filename="../lib/db/db_connection_manager.py" line="84"/>
+        <location filename="../lib/db/db_connection_manager.py" line="85"/>
         <source>An error occurred while trying to close the connection.</source>
         <translation>Ocurrió un error mientras se intentaba cerrar la conexión.</translation>
     </message>
@@ -2046,12 +2061,12 @@
 <context>
     <name>CreateGroupPartySurvey</name>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1304"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1311"/>
         <source>First enable automatic values for namespace, local_id and t_ili_tid fields before creating group parties. Click the button to open the settings dialog.</source>
         <translation>Primero habilita los valores automáticos para los campos &apos;espacio de nombres&apos;, &apos;local_id&apos; y &apos;t_ili_tid&apos; antes de crear agrupaciones de interesados. Haz clic en el botón para abrir el diálogo de configuración.</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1306"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1313"/>
         <source>Open Settings</source>
         <translation>Abrir Configuración</translation>
     </message>
@@ -3811,102 +3826,102 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">[Nombre de la base de datos GeoPackage que va a ser creada]</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="122"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="124"/>
         <source>[Name of the XTF to be imported]</source>
         <translation>[Nombre del XTF a ser importado]</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="133"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="135"/>
         <source>Show log</source>
         <translation>Mostrar detalles</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="75"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="77"/>
         <source>Import data</source>
         <translation>Importar datos</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="76"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="78"/>
         <source>Go to Create Structure...</source>
         <translation>Ir a Crear Estructura...</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="118"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="120"/>
         <source>Open Transfer or Catalog File</source>
         <translation>Abrir archivo de transferencia o catálogo</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="130"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="132"/>
         <source>Connection Settings</source>
         <translation>Configurar conexión</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="157"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="160"/>
         <source>Warning</source>
         <translation>Advertencia</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="158"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="161"/>
         <source>The Import Data tool is still running. Please wait until it finishes.</source>
         <translation>La herramienta de importar datos todavía se está ejecutando. Por favor espera hasta que termine.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="187"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="190"/>
         <source>The database is not defined!</source>
         <translation>¡La base de datos no está definida!</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="217"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="220"/>
         <source>No models were found in the XTF. Is it a valid file?</source>
         <translation>No se encontraron modelos en el archivo XTF. ¿Es un archivo válido?</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="223"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="226"/>
         <source>Please set a valid XTF file</source>
         <translation>Por favor selecciona un archivo XTF válido</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="245"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="248"/>
         <source>Target DB Connection Settings</source>
         <translation>Configuración de la BD de destino</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="246"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="249"/>
         <source>Configure where do you want the XTF data to be imported.</source>
         <translation>Configura a cuál base de datos le quieres importar datos.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="273"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="276"/>
         <source>Please set a valid XTF file before importing data. XTF file does not exist.</source>
         <translation>Por favor define un XTF válido antes de importar datos. El archivo XTF no existe.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="281"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="284"/>
         <source>Configuring Java {}...</source>
         <translation>Configurando Java {}...</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="294"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="297"/>
         <source>Are you sure you want to import your data without validation?</source>
         <translation>¿Estás segura/o que quieres importar los datos sin validación?</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="296"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="299"/>
         <source>Import XTF without validation?</source>
         <translation>¿Importar XTF sin validación?</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="305"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="308"/>
         <source>Please set a valid XTF before importing data.</source>
         <translation>Por favor define un archivo XTF válido antes de importar los datos.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="313"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="316"/>
         <source>The selected XTF file does not have information according to the LADM-COL model to import.</source>
         <translation>El archivo XTF seleccionado no tiene información correspondiente al modelo LADM-COL para importar.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="326"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="329"/>
         <source>The selected XTF file does not have data from any LADM-COL model supported by the LADM-COL Assistant. Therefore, you cannot import it! These are the models supported:
 
  * {}</source>
@@ -3915,7 +3930,7 @@ p, li { white-space: pre-wrap; }
  * {}</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="339"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="342"/>
         <source>IMPORT ERROR: The XTF file to import does not have the same models as the target database schema. Please create a schema that also includes the following missing modules:
 
  * {}</source>
@@ -3924,7 +3939,7 @@ p, li { white-space: pre-wrap; }
  * {}</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="395"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="399"/>
         <source>Java {} could not be found. You can configure the JAVA_HOME environment variable manually, restart QGIS and try again.</source>
         <translation>No se pudo encontrar Java {}. Puedes configurar la variable de entorno JAVA_HOME manualmente, reiniciar QGIS e intentar de nuevo.</translation>
     </message>
@@ -3933,7 +3948,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Por favor define una base de datos válida antes de crear el proyecto.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="391"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="394"/>
         <source>An error occurred when importing the data. For more information see the log...</source>
         <translation>Ocurrió un error cuando se importaban datos. Para más información revisa los detalles del log...</translation>
     </message>
@@ -3946,12 +3961,12 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">No se encontró JAVA. Por favor &lt;a href=&quot;https://java.com/en/download/&quot;&gt;instala Java&lt;/a&gt; o &lt;a href=&quot;#configure&quot;&gt;configura una ruta personalizada a Java&lt;/a&gt;. La variable de entorno JAVA_HOME también está soportada.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="407"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="412"/>
         <source>Import of the data was successfully completed</source>
         <translation>Se importaron los datos exitósamente</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="511"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="516"/>
         <source>Error when importing data</source>
         <translation>Error al importar datos</translation>
     </message>
@@ -4183,7 +4198,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">[Nombre del esquema a ser creado]</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="120"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="125"/>
         <source>Connection Settings</source>
         <translation>Configurar conexión</translation>
     </message>
@@ -4206,7 +4221,7 @@ p, li { white-space: pre-wrap; }
         <translation>Base de datos GeoPackage (*.gpkg)</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="128"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="133"/>
         <source>Show log</source>
         <translation>Mostrar detalles</translation>
     </message>
@@ -4216,42 +4231,42 @@ p, li { white-space: pre-wrap; }
         <translation>Crear estructura LADM-COL</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="158"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="163"/>
         <source>Warning</source>
         <translation>Advertencia</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="159"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="164"/>
         <source>The Import Schema tool is still running. Please wait until it finishes.</source>
         <translation>La herramienta de crear estructura LADM-COL todavía se está ejecutando. Por favor espera hasta que termine.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="187"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="206"/>
         <source>The database is not defined!</source>
         <translation>¡La base de datos no está definida!</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="233"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="252"/>
         <source>Target DB Connection Settings</source>
         <translation>Configuración de la BD de destino</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="234"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="253"/>
         <source>Configure where do you want the LADM-COL structure to be created.</source>
         <translation>Configura a cuál base de datos le quieres crear la estructura LADM-COL.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="263"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="282"/>
         <source>Configuring Java {}...</source>
         <translation>Configurando Java {}...</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="309"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="328"/>
         <source>Java {} could not be found. You can configure the JAVA_HOME environment variable manually, restart QGIS and try again.</source>
         <translation>No se pudo encontrar Java {}. Puedes configurar la variable de entorno JAVA_HOME manualmente, reiniciar QGIS e intentar de nuevo.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="370"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="389"/>
         <source>The {} (Colombian National Origin) is recommended,&lt;br&gt;since official models were created for that projection.</source>
         <translation>Se recomienda el {} (Origen Nacional),&lt;br&gt;pues los modelos oficiales fueron creados para trabajar con esa proyección.</translation>
     </message>
@@ -4268,12 +4283,12 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Por favor define un esquema válido antes de crear la estructura LADM-COL.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="276"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="295"/>
         <source>You should select a valid model(s) before creating the LADM-COL structure.</source>
         <translation>Debes seleccionar modelo(s) válidos antes de crear la estructura LADM-COL.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="304"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="323"/>
         <source>An error occurred when creating the LADM-COL structure. For more information see the log...</source>
         <translation>Ocurrió un error cuando se creaba la estructura LADM-COL. Para más información revisa los detalles del log...</translation>
     </message>
@@ -4282,14 +4297,14 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">No se pudo encontrar Java. Puedes configurar la variable de entorno JAVA_HOME, reiniciar QGIS e intentarlo de nuevo.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="324"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="343"/>
         <source>
 Done!</source>
         <translation>
 ¡Terminado exitósamente!</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="325"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="344"/>
         <source>LADM-COL structure was successfully created!</source>
         <translation>¡La estructura LADM-COL se creó exitósamente!</translation>
     </message>
@@ -4298,7 +4313,7 @@ Done!</source>
         <translation type="vanished">Selecciona un código EPSG de Sistema de Referencia de Coordenadas</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="373"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="392"/>
         <source>Coordinate Reference System</source>
         <translation>Sistema de Referencia de Coordenadas</translation>
     </message>
@@ -4307,12 +4322,12 @@ Done!</source>
         <translation type="vanished">La estructura LADM-COL se creó exitósamente</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="461"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="480"/>
         <source>Model(s) successfully imported into the database!</source>
         <translation>¡Se importaron exitósamente los modelos a la base de datos!</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="464"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="483"/>
         <source>Finished with errors!</source>
         <translation>¡Terminado con errores!</translation>
     </message>
@@ -4592,24 +4607,62 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>DialogSTUploadFile</name>
     <message>
+        <location filename="../ui/transitional_system/dlg_base_upload_file.ui" line="14"/>
         <source>Upload file to Transitional System</source>
-        <translation type="vanished">Enviar archivo al Sistema de Transición</translation>
+        <translation>Enviar archivo al Sistema de Transición</translation>
+    </message>
+    <message>
+        <location filename="../ui/transitional_system/dlg_base_upload_file.ui" line="67"/>
+        <source>Selecciona y describe los archivos a subir</source>
+        <translation>Selecciona y describe los archivos a subir</translation>
+    </message>
+    <message>
+        <location filename="../ui/transitional_system/dlg_base_upload_file.ui" line="98"/>
+        <source>Describe el (los) archivo(s) que vas a subir.</source>
+        <translation>Describe el (los) archivo(s) que vas a subir.</translation>
+    </message>
+    <message>
+        <location filename="../ui/transitional_system/dlg_base_upload_file.ui" line="148"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;Desde este diálogo puedes subir archivos al &lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-style:italic; color:#545454;&quot;&gt;Sistema de Transición&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;. &lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;En la sección &lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-style:italic; color:#545454;&quot;&gt;Comentarios&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt; se agrega una descripción del archivo a subir.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;Los archivos que se esperan son:&lt;/span&gt;&lt;/p&gt;
+&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li align=&quot;justify&quot; style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;Un archivo XTF (obligatorio).&lt;/span&gt;&lt;/li&gt;
+&lt;li align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;Uno o dos archivos de reporte de Omisiones y Comisiones (opcionales).&lt;/span&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;Desde este diálogo puedes subir archivos al &lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-style:italic; color:#545454;&quot;&gt;Sistema de Transición&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;. &lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;En la sección &lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-style:italic; color:#545454;&quot;&gt;Comentarios&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt; se agrega una descripción del archivo a subir.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;Los archivos que se esperan son:&lt;/span&gt;&lt;/p&gt;
+&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li align=&quot;justify&quot; style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;Un archivo XTF (obligatorio).&lt;/span&gt;&lt;/li&gt;
+&lt;li align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;Uno o dos archivos de reporte de Omisiones y Comisiones (opcionales).&lt;/span&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>...</source>
         <translation type="vanished">...</translation>
     </message>
     <message>
+        <location filename="../ui/transitional_system/dlg_base_upload_file.ui" line="85"/>
         <source>Up to 500 characters...</source>
-        <translation type="vanished">Hasta 500 caracteres...</translation>
+        <translation>Hasta 500 caracteres...</translation>
     </message>
     <message>
         <source>XTF path:</source>
         <translation type="vanished">Ruta al XTF:</translation>
     </message>
     <message>
+        <location filename="../ui/transitional_system/dlg_base_upload_file.ui" line="105"/>
         <source>Comentarios:</source>
-        <translation type="vanished">Comentarios:</translation>
+        <translation>Comentarios:</translation>
     </message>
     <message>
         <source>Describa el archivo que va a subir.</source>
@@ -6109,12 +6162,12 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
 <context>
     <name>ImportFromExcelDialog</name>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="912"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="916"/>
         <source>Some errors were found while importing from the intermediate Excel file into LADM-COL!</source>
         <translation>¡Se encontraron errores importando desde la estructura intermedia de Excel a LADM-COL!</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="916"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="920"/>
         <source>Show errors found</source>
         <translation>Mostrar errores encontrados</translation>
     </message>
@@ -6915,17 +6968,17 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
 <context>
     <name>LogQualityDialog</name>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="879"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="883"/>
         <source>Show Results</source>
         <translation>Mostrar Resultados</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="887"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="891"/>
         <source>Checking {} out of {}: &apos;{}&apos;</source>
         <translation>Revisando {} de {}: &apos;{}&apos;</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="899"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="903"/>
         <source>All the {} quality rules were checked! Click the button at the right-hand side to see a report.</source>
         <translation>¡Se terminaron de revisar las {} reglas de calidad! Haz clic en el botón de la derecha para ver un reporte.</translation>
     </message>
@@ -7166,8 +7219,12 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
     </message>
     <message>
         <location filename="../gui/transitional_system/dlg_login_st.py" line="69"/>
+        <source>Connecting to ST login service...</source>
+        <translation>Conectando al servicio de autenticación del Sistema de Transición...</translation>
+    </message>
+    <message>
         <source>Connecting to login service...</source>
-        <translation>Conectando al servicio de autenticación...</translation>
+        <translation type="vanished">Conectando al servicio de autenticación...</translation>
     </message>
 </context>
 <context>
@@ -8664,7 +8721,7 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
 <context>
     <name>QualityRule</name>
     <message>
-        <location filename="../gui/app_gui_interface.py" line="116"/>
+        <location filename="../gui/app_gui_interface.py" line="119"/>
         <source>codigo_error</source>
         <translation>codigo_error</translation>
     </message>
@@ -8672,17 +8729,17 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
 <context>
     <name>QualityRuleEngine</name>
     <message>
-        <location filename="../logic/quality/quality_rule_engine.py" line="64"/>
+        <location filename="../logic/quality/quality_rule_engine.py" line="65"/>
         <source>Validating {} quality rules (tolerance: {}).</source>
         <translation>Validando {} reglas de calidad (tolerancia: {}).</translation>
     </message>
     <message>
-        <location filename="../logic/quality/quality_rule_engine.py" line="72"/>
+        <location filename="../logic/quality/quality_rule_engine.py" line="73"/>
         <source>Couldn&apos;t execute &apos;{}&apos; quality rule! Required layers are not available. Skipping...</source>
         <translation>¡No se pudo ejecutar la regla de calidad &apos;{}&apos;! Las capas requeridas no están disponibles. Saltando...</translation>
     </message>
     <message>
-        <location filename="../logic/quality/quality_rule_engine.py" line="78"/>
+        <location filename="../logic/quality/quality_rule_engine.py" line="80"/>
         <source>No rules to validate!</source>
         <translation>¡No hay reglas para validar!</translation>
     </message>
@@ -9530,9 +9587,131 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
     </message>
 </context>
 <context>
+    <name>STCadastralSuppliesFileWidget</name>
+    <message>
+        <location filename="../gui/transitional_system/cadastral_supplies_file_widget.py" line="40"/>
+        <source>Select the XTF file you want to upload to the transitional system</source>
+        <translation>Selecciona el archivo XTF que quieres enviar al Sistema de Transición</translation>
+    </message>
+    <message>
+        <location filename="../gui/transitional_system/cadastral_supplies_file_widget.py" line="42"/>
+        <source>INTERLIS 2 transfer format (*.xtf)</source>
+        <translation>Archivo de transferencia INTERLIS 2 (*.xtf)</translation>
+    </message>
+    <message>
+        <location filename="../gui/transitional_system/cadastral_supplies_file_widget.py" line="46"/>
+        <source>Select the XLS file you want to upload to the transitional system</source>
+        <translation>Selecciona el archivo XLS que quieres enviar al Sistema de Transición</translation>
+    </message>
+    <message>
+        <location filename="../gui/transitional_system/cadastral_supplies_file_widget.py" line="48"/>
+        <source>Excel File (*.xlsx *.xls)</source>
+        <translation>Archivo de Excel (* .xlsx * .xls)</translation>
+    </message>
+    <message>
+        <location filename="../gui/transitional_system/cadastral_supplies_file_widget.py" line="52"/>
+        <source>Select the GeoPackage file you want to upload to the transitional system</source>
+        <translation>Selecciona el archivo GeoPackage que quieres enviar al Sistema de Transición</translation>
+    </message>
+    <message>
+        <location filename="../gui/transitional_system/cadastral_supplies_file_widget.py" line="54"/>
+        <source>GeoPackage Database (*.gpkg)</source>
+        <translation>Base de datos GeoPackage (*.gpkg)</translation>
+    </message>
+</context>
+<context>
+    <name>STCadastralSuppliesUploadFileDialog</name>
+    <message>
+        <location filename="../gui/transitional_system/dlg_upload_file_cadastral_supplies.py" line="35"/>
+        <source>Upload cadastral supplies files to Transitional System</source>
+        <translation>Enviar archivos de insumos catastrales al Sistema de Transición</translation>
+    </message>
+    <message>
+        <location filename="../gui/transitional_system/dlg_upload_file_cadastral_supplies.py" line="46"/>
+        <source>File was not uploaded! Details: Comments are required.</source>
+        <translation>¡El archivo no pudo ser enviado! Detalles: Se requiere agregar comentarios.</translation>
+    </message>
+    <message>
+        <location filename="../gui/transitional_system/dlg_upload_file_cadastral_supplies.py" line="55"/>
+        <source>The XLSX file &apos;{}&apos; does not exist!</source>
+        <translation>¡El archivo XLSX &apos;{}&apos; no existe!</translation>
+    </message>
+    <message>
+        <location filename="../gui/transitional_system/dlg_upload_file_cadastral_supplies.py" line="59"/>
+        <source>The GeoPackage file &apos;{}&apos; does not exist!</source>
+        <translation>¡El archivo GeoPackage &apos;{}&apos; no existe!</translation>
+    </message>
+    <message>
+        <location filename="../gui/transitional_system/dlg_upload_file_cadastral_supplies.py" line="63"/>
+        <source>If you send a GPKG file, you need to send the corresponding XLS as well!</source>
+        <translation>¡Si envías un archivo GPKG, también debes enviar el archivo XLS!</translation>
+    </message>
+    <message>
+        <location filename="../gui/transitional_system/dlg_upload_file_cadastral_supplies.py" line="81"/>
+        <source>Uploading file to ST server...</source>
+        <translation>Enviando el archivo al servidor del Sistema de Transición...</translation>
+    </message>
+    <message>
+        <location filename="../gui/transitional_system/dlg_upload_file_cadastral_supplies.py" line="88"/>
+        <source>The XTF file &apos;{}&apos; does not exist!</source>
+        <translation>¡El archivo XTF &apos;{}&apos; no existe!</translation>
+    </message>
+</context>
+<context>
+    <name>STQualityRulesFileWidget</name>
+    <message>
+        <location filename="../gui/transitional_system/quality_rules_file_widget.py" line="38"/>
+        <source>Select the PDF report file you want to upload to the transitional system</source>
+        <translation>Selecciona el archivo de reporte PDF que quieres enviar al Sistema de Transición</translation>
+    </message>
+    <message>
+        <location filename="../gui/transitional_system/quality_rules_file_widget.py" line="40"/>
+        <source>Portable Document Format (*.pdf)</source>
+        <translation>Formato de Documentos Portable (*.pdf)</translation>
+    </message>
+    <message>
+        <location filename="../gui/transitional_system/quality_rules_file_widget.py" line="44"/>
+        <source>Select the GeoPackage file you want to upload to the transitional system</source>
+        <translation>Selecciona el archivo GeoPackage que quieres enviar al Sistema de Transición</translation>
+    </message>
+    <message>
+        <location filename="../gui/transitional_system/quality_rules_file_widget.py" line="46"/>
+        <source>GeoPackage Database (*.gpkg)</source>
+        <translation>Base de datos GeoPackage (*.gpkg)</translation>
+    </message>
+</context>
+<context>
+    <name>STQualityRulesUploadFileDialog</name>
+    <message>
+        <location filename="../gui/transitional_system/dlg_upload_file_quality_rules.py" line="35"/>
+        <source>Upload quality rules files to Transitional System</source>
+        <translation>Enviar archivos de reglas de calidad al Sistema de Transición</translation>
+    </message>
+    <message>
+        <location filename="../gui/transitional_system/dlg_upload_file_quality_rules.py" line="45"/>
+        <source>File was not uploaded! Details: Comments are required.</source>
+        <translation>¡El archivo no pudo ser enviado! Detalles: Se requiere agregar comentarios.</translation>
+    </message>
+    <message>
+        <location filename="../gui/transitional_system/dlg_upload_file_quality_rules.py" line="54"/>
+        <source>The GeoPackage file &apos;{}&apos; does not exist!</source>
+        <translation>¡El archivo GeoPackage &apos;{}&apos; no existe!</translation>
+    </message>
+    <message>
+        <location filename="../gui/transitional_system/dlg_upload_file_quality_rules.py" line="70"/>
+        <source>Uploading file to ST server...</source>
+        <translation>Enviando el archivo al servidor del Sistema de Transición...</translation>
+    </message>
+    <message>
+        <location filename="../gui/transitional_system/dlg_upload_file_quality_rules.py" line="77"/>
+        <source>The PDF file &apos;{}&apos; does not exist!</source>
+        <translation>¡El archivo PDF &apos;{}&apos; no existe!</translation>
+    </message>
+</context>
+<context>
     <name>STSession</name>
     <message>
-        <location filename="../lib/transitional_system/st_session/st_session.py" line="67"/>
+        <location filename="../lib/transitional_system/st_session/st_session.py" line="68"/>
         <source>There was an error accessing the login service. Details: {}</source>
         <translation>Hubo un error accediendo al servicio de autenticación. Detalles: {}</translation>
     </message>
@@ -9541,32 +9720,37 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">¡Usuario autenticado exitósamente!</translation>
     </message>
     <message>
-        <location filename="../lib/transitional_system/st_session/st_session.py" line="84"/>
+        <location filename="../lib/transitional_system/st_session/st_session.py" line="85"/>
         <source>User logged in successfully in the Transitional System!</source>
         <translation>¡Has ingresado exitósamente al Sistema de Transición!</translation>
     </message>
     <message>
-        <location filename="../lib/transitional_system/st_session/st_session.py" line="100"/>
+        <location filename="../lib/transitional_system/st_session/st_session.py" line="101"/>
         <source>Wrong user name or password, change credentials and try again.</source>
         <translation>Usuario o contraseña inválidos. Cambia los datos de acceso e intenta de nuevo.</translation>
     </message>
     <message>
-        <location filename="../lib/transitional_system/st_session/st_session.py" line="103"/>
+        <location filename="../lib/transitional_system/st_session/st_session.py" line="104"/>
         <source>There is an error in the login server!</source>
         <translation>¡Hubo un error en el servidor de autenticación!</translation>
     </message>
     <message>
-        <location filename="../lib/transitional_system/st_session/st_session.py" line="108"/>
+        <location filename="../lib/transitional_system/st_session/st_session.py" line="109"/>
         <source>Unauthorized client! The server won&apos;t allow requests from this client.</source>
         <translation>¡Cliente no autorizado! El servidor no recibirá peticiones desde este cliente.</translation>
     </message>
     <message>
-        <location filename="../lib/transitional_system/st_session/st_session.py" line="123"/>
+        <location filename="../lib/transitional_system/st_session/st_session.py" line="111"/>
+        <source>Unable to login! Status code: {}. See QGIS log for details.</source>
+        <translation>¡No se pudo ingresar al sistema! Código de estado: {}. Revisa el log de QGIS para más detalles.</translation>
+    </message>
+    <message>
+        <location filename="../lib/transitional_system/st_session/st_session.py" line="128"/>
         <source>User was logged out successfully!</source>
         <translation>¡El usuario salió del Sistema de Transición exitósamente!</translation>
     </message>
     <message>
-        <location filename="../lib/transitional_system/st_session/st_session.py" line="125"/>
+        <location filename="../lib/transitional_system/st_session/st_session.py" line="130"/>
         <source>There was not logged in user! Therefore, no logout.</source>
         <translation>¡No había usuario autenticado! Por lo tanto, no hubo logout.</translation>
     </message>
@@ -9606,17 +9790,37 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
 <context>
     <name>STUtils</name>
     <message>
-        <location filename="../utils/st_utils.py" line="49"/>
+        <location filename="../utils/st_utils.py" line="64"/>
+        <source>There was a problem downloading the file. Try it again! Details: {}</source>
+        <translation>Hubo un problema descargando el archivo. ¡Inténtalo de nuevo! Detalles: {}</translation>
+    </message>
+    <message>
+        <location filename="../utils/st_utils.py" line="80"/>
+        <source>The file inside the ZIP file does not have the proper extension ({})</source>
+        <translation>El archivo dentro del ZIP no tiene la extensión adecuada ({})</translation>
+    </message>
+    <message>
+        <location filename="../utils/st_utils.py" line="85"/>
+        <source>There should be only one file inside the downloaded ZIP file!</source>
+        <translation>¡Debería haber solamente un archivo dentro del archivo ZIP descargado!</translation>
+    </message>
+    <message>
+        <location filename="../utils/st_utils.py" line="88"/>
+        <source>There was an error with the download. The downloaded file is invalid.</source>
+        <translation>Hubo un error con la descarga. El archivo descargado no es válido.</translation>
+    </message>
+    <message>
+        <location filename="../utils/st_utils.py" line="124"/>
         <source>The file was successfully uploaded to the Transitional System!</source>
         <translation>¡El archivo fue enviado exitósamente al Sistema de Transición!</translation>
     </message>
     <message>
-        <location filename="../utils/st_utils.py" line="63"/>
+        <location filename="../utils/st_utils.py" line="138"/>
         <source>File was not uploaded! Details: {}</source>
         <translation>¡El archivo no pudo ser enviado! Detalles: {}</translation>
     </message>
     <message>
-        <location filename="../utils/st_utils.py" line="66"/>
+        <location filename="../utils/st_utils.py" line="141"/>
         <source>Status code not handled: {}</source>
         <translation>Código de estado no esperado: {}</translation>
     </message>
@@ -9701,7 +9905,6 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
     </message>
     <message>
         <location filename="../core/app_core_interface.py" line="904"/>
-        <location filename="../core/app_core_interface.py" line="957"/>
         <location filename="../gui/queries/dockwidget_queries.py" line="493"/>
         <source>There was a problem connecting to the server. The server might be down or the service cannot be reached at the given URL.</source>
         <translation>Hubo un problema conectando al servidor. El servidor podría estar caído o el servicio puede no ser accesible desde la URL especificada.</translation>
@@ -9712,6 +9915,11 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <location filename="../gui/queries/dockwidget_queries.py" line="497"/>
         <source>There was a problem connecting to Internet.</source>
         <translation>Hubo un problema con la conexión a Internet.</translation>
+    </message>
+    <message>
+        <location filename="../core/app_core_interface.py" line="957"/>
+        <source>There was a problem connecting to the server. The server might be down or the service cannot be reached at the given URL. Status: {}</source>
+        <translation>Hubo un problema conectando al servidor. El servidor podría estar caído o el servicio puede no ser accesible desde la URL especificada. Estado: {}</translation>
     </message>
     <message>
         <location filename="../gui/queries/dockwidget_queries.py" line="502"/>
@@ -10006,7 +10214,7 @@ Si confirmas que quieres cambiar el rol, se cerrará tu sesión del Sistema de T
 <context>
     <name>TaskManager</name>
     <message>
-        <location filename="../lib/transitional_system/task_manager/task_manager.py" line="221"/>
+        <location filename="../lib/transitional_system/task_manager/task_manager.py" line="222"/>
         <source>Task not closed! Details: {}</source>
         <translation>La tarea no se finalizó! Detalles: {}</translation>
     </message>
@@ -10039,6 +10247,11 @@ Si confirmas que quieres cambiar el rol, se cerrará tu sesión del Sistema de T
         <location filename="../gui/transitional_system/task_panel.py" line="112"/>
         <source> (optional)</source>
         <translation> (opcional)</translation>
+    </message>
+    <message>
+        <location filename="../gui/transitional_system/task_panel.py" line="113"/>
+        <source>Step {}{}</source>
+        <translation>Paso {}{}</translation>
     </message>
     <message>
         <location filename="../gui/transitional_system/task_panel.py" line="207"/>
@@ -10077,17 +10290,17 @@ Si confirmas que quieres cambiar el rol, se cerrará tu sesión del Sistema de T
 <context>
     <name>TaskStepsConfig</name>
     <message>
-        <location filename="../config/task_steps_config.py" line="58"/>
+        <location filename="../config/task_steps_config.py" line="59"/>
         <source>Create supplies structure in DB</source>
         <translation>Crear estructura LADM-COL (Insumos)</translation>
     </message>
     <message>
-        <location filename="../config/task_steps_config.py" line="60"/>
+        <location filename="../config/task_steps_config.py" line="61"/>
         <source>Choose a DB connection to create there the Supplies model structure.</source>
         <translation>Selecciona una conexión de base de datos para crear allí la estructura del modelo de insumos.</translation>
     </message>
     <message>
-        <location filename="../config/task_steps_config.py" line="69"/>
+        <location filename="../config/task_steps_config.py" line="70"/>
         <source>Run supplies ETL</source>
         <translation>Ejecutar ETL de insumos</translation>
     </message>
@@ -10096,17 +10309,17 @@ Si confirmas que quieres cambiar el rol, se cerrará tu sesión del Sistema de T
         <translation type="vanished">Migrar datos de Cobol (archivos .lis) y su correspondiente GDB a LADM-COL (modelo de insumos).</translation>
     </message>
     <message>
-        <location filename="../config/task_steps_config.py" line="71"/>
+        <location filename="../config/task_steps_config.py" line="72"/>
         <source>Migrate SNC or Cobol data to the LADM-COL (supplies model).</source>
         <translation>Migrar datos del SNC o Cobol a LADM-COL (modelo de insumos).</translation>
     </message>
     <message>
-        <location filename="../config/task_steps_config.py" line="79"/>
+        <location filename="../config/task_steps_config.py" line="80"/>
         <source>Generate XTF</source>
         <translation>Generar XTF</translation>
     </message>
     <message>
-        <location filename="../config/task_steps_config.py" line="81"/>
+        <location filename="../config/task_steps_config.py" line="82"/>
         <source>Export the data from the DB to a transfer file (.xtf).</source>
         <translation>Exporta los datos de la base de datos a un archivo de transferencia (.xtf).</translation>
     </message>
@@ -10119,59 +10332,110 @@ Si confirmas que quieres cambiar el rol, se cerrará tu sesión del Sistema de T
         <translation type="vanished">Envía el archivo XTF al Sistema de Transición.</translation>
     </message>
     <message>
-        <location filename="../config/task_steps_config.py" line="89"/>
+        <location filename="../config/task_steps_config.py" line="90"/>
         <source>Generate report (COBOL)</source>
         <translation>Generar reporte (COBOL)</translation>
     </message>
     <message>
-        <location filename="../config/task_steps_config.py" line="91"/>
+        <location filename="../config/task_steps_config.py" line="92"/>
         <source>Generate omissions and commissions report (COBOL).</source>
         <translation>Generar reporte de Omisiones y Comisiones (COBOL).</translation>
     </message>
     <message>
-        <location filename="../config/task_steps_config.py" line="100"/>
+        <location filename="../config/task_steps_config.py" line="101"/>
         <source>Generate report (SNC)</source>
         <translation>Generar reporte (SNC)</translation>
     </message>
     <message>
-        <location filename="../config/task_steps_config.py" line="102"/>
+        <location filename="../config/task_steps_config.py" line="103"/>
         <source>Generate omissions and commissions report (SNC).</source>
         <translation>Generar reporte de Omisiones y Comisiones (SNC).</translation>
     </message>
     <message>
-        <location filename="../config/task_steps_config.py" line="110"/>
+        <location filename="../config/task_steps_config.py" line="111"/>
         <source>Upload XTF (and optionally, report files)</source>
-        <translation>Envíar el archivo XTF (y opcionalmente, archivos de reportes)</translation>
+        <translation>Enviar el archivo XTF (y opcionalmente, archivos de reportes)</translation>
     </message>
     <message>
-        <location filename="../config/task_steps_config.py" line="112"/>
+        <location filename="../config/task_steps_config.py" line="113"/>
         <source>Upload the XTF file (and optionally, report files) to the Transitional System.</source>
         <translation>Envíar el archivo XTF (y opcionalmente, archivos de reportes) al Sistema de Transición.</translation>
     </message>
     <message>
-        <location filename="../config/task_steps_config.py" line="124"/>
+        <location filename="../config/task_steps_config.py" line="126"/>
         <source>Connect to remote DB</source>
         <translation>Conectar a base de datos remota</translation>
     </message>
     <message>
-        <location filename="../config/task_steps_config.py" line="126"/>
+        <location filename="../config/task_steps_config.py" line="128"/>
         <source>Establish and test the connection to a remote DB, which will be used to integrate data in an assisted manner.</source>
         <translation>Establece y prueba la conexión a una base de datos remota, la cual será usada para integrar datos de manera asistida.</translation>
     </message>
     <message>
-        <location filename="../config/task_steps_config.py" line="135"/>
+        <location filename="../config/task_steps_config.py" line="137"/>
         <source>Explore data from Cadastre and Land Registry</source>
         <translation>Explorar datos de Catastro y Registro</translation>
     </message>
     <message>
-        <location filename="../config/task_steps_config.py" line="138"/>
+        <location filename="../config/task_steps_config.py" line="140"/>
         <source>Load parcel data from cadastre and registry into QGIS.</source>
         <translation>Carga datos prediales de catastro y registro a QGIS.</translation>
     </message>
     <message>
-        <location filename="../config/task_steps_config.py" line="146"/>
+        <location filename="../config/task_steps_config.py" line="148"/>
         <source>Start assisted integration</source>
         <translation>Empezar integración asistida</translation>
+    </message>
+    <message>
+        <location filename="../config/task_steps_config.py" line="156"/>
+        <source>Create cadastral survey structure in DB</source>
+        <translation>Crear estructura de levantamiento catastral en la base de datos</translation>
+    </message>
+    <message>
+        <location filename="../config/task_steps_config.py" line="158"/>
+        <source>Choose a DB connection to create there the Cadastral Survey model structure.</source>
+        <translation>Elegir una conexión de base de datos para crear la estructura del modelo Levantamiento Catastral.</translation>
+    </message>
+    <message>
+        <location filename="../config/task_steps_config.py" line="168"/>
+        <location filename="../config/task_steps_config.py" line="175"/>
+        <source>Download assigned XTF file</source>
+        <translation>Descargar el archivo XTF asignado</translation>
+    </message>
+    <message>
+        <location filename="../config/task_steps_config.py" line="170"/>
+        <source>Download the assigned XTF file with Cadastral Survey data.</source>
+        <translation>Descargar el archivo XTF asignado con datos del levantamiento catastral.</translation>
+    </message>
+    <message>
+        <location filename="../config/task_steps_config.py" line="186"/>
+        <source>Import XTF data</source>
+        <translation>Importar datos desde archivo XTF</translation>
+    </message>
+    <message>
+        <location filename="../config/task_steps_config.py" line="188"/>
+        <source>Import the assigned XTF data.</source>
+        <translation>Importar datos desde el archivo XTF asignado.</translation>
+    </message>
+    <message>
+        <location filename="../config/task_steps_config.py" line="196"/>
+        <source>Validate Quality Rules</source>
+        <translation>Validar reglas de calidad</translation>
+    </message>
+    <message>
+        <location filename="../config/task_steps_config.py" line="198"/>
+        <source>Validate Quality Rules on the assigned data.</source>
+        <translation>Validar reglas de calidad a los datos asignados.</translation>
+    </message>
+    <message>
+        <location filename="../config/task_steps_config.py" line="205"/>
+        <source>Upload validation report files</source>
+        <translation>Enviar archivos del reporte de la validación</translation>
+    </message>
+    <message>
+        <location filename="../config/task_steps_config.py" line="207"/>
+        <source>Upload the report (PDF) file and optionally, a GeoPackage to the Transitional System.</source>
+        <translation>Enviar el archivo del reporte (PDF) y opcionalmente una base de datos GeoPackage al Sistema de Transición.</translation>
     </message>
 </context>
 <context>
@@ -10335,22 +10599,35 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
 <context>
     <name>TransitionalSystemConfig</name>
     <message>
-        <location filename="../config/transitional_system_config.py" line="18"/>
         <source>There was an error accessing the task service. Details: {}</source>
-        <translation>Hubo un error accediendo al servicio de tareas. Detalles: {}</translation>
+        <translation type="vanished">Hubo un error accediendo al servicio de tareas. Detalles: {}</translation>
+    </message>
+    <message>
+        <source>There is an error in the task server! (Status: 500)</source>
+        <translation type="vanished">Hay un error en el servidor de tareas! (Código: 500)</translation>
+    </message>
+    <message>
+        <location filename="../config/transitional_system_config.py" line="18"/>
+        <source>There was an error accessing the ST service. Details: {}</source>
+        <translation>Hubo un error accediendo al servicio del Sistema de Transición. Detalles: {}</translation>
     </message>
     <message>
         <location filename="../config/transitional_system_config.py" line="19"/>
-        <source>There is an error in the task server! (Status: 500)</source>
-        <translation>Hay un error en el servidor de tareas! (Código: 500)</translation>
+        <source>There was a HTTP error (4xx or 5xx) accessing the ST service. Details: {}</source>
+        <translation>Hubo un error HTTP (4xx o 5xx) accediendo al servicio del Sistema de Transición. Detalles: {}</translation>
     </message>
     <message>
         <location filename="../config/transitional_system_config.py" line="20"/>
+        <source>There is an error in the ST server! (Status: 500)</source>
+        <translation>¡Hay un error en el servidor del Sistema de Transición! (Código: 500)</translation>
+    </message>
+    <message>
+        <location filename="../config/transitional_system_config.py" line="21"/>
         <source>A connection could not be established with the server, it is possible that the server is not running.</source>
         <translation>No se ha podido conectar al servidor, es posible que el servidor no esté funcionando.</translation>
     </message>
     <message>
-        <location filename="../config/transitional_system_config.py" line="21"/>
+        <location filename="../config/transitional_system_config.py" line="22"/>
         <source>Unauthorized client! (Status: 401)</source>
         <translation>Cliente no autorizado! (Código: 401)</translation>
     </message>
@@ -12212,6 +12489,56 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <location filename="../gui/dialogs/dlg_import_from_excel.py" line="560"/>
         <source>The &apos;{}&apos; tool was cancelled.</source>
         <translation>La herramienta &apos;{}&apos; fue cancelada.</translation>
+    </message>
+</context>
+<context>
+    <name>wdg_files</name>
+    <message>
+        <location filename="../ui/transitional_system/cadastral_supplies_file_widget.ui" line="14"/>
+        <location filename="../ui/transitional_system/quality_rules_file_widget.ui" line="14"/>
+        <source>Form</source>
+        <translation>Formulario</translation>
+    </message>
+    <message>
+        <location filename="../ui/transitional_system/cadastral_supplies_file_widget.ui" line="26"/>
+        <source>XTF path</source>
+        <translation>Ruta al XTF</translation>
+    </message>
+    <message>
+        <location filename="../ui/transitional_system/cadastral_supplies_file_widget.ui" line="49"/>
+        <location filename="../ui/transitional_system/cadastral_supplies_file_widget.ui" line="79"/>
+        <location filename="../ui/transitional_system/cadastral_supplies_file_widget.ui" line="109"/>
+        <location filename="../ui/transitional_system/quality_rules_file_widget.ui" line="46"/>
+        <location filename="../ui/transitional_system/quality_rules_file_widget.ui" line="59"/>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+    <message>
+        <location filename="../ui/transitional_system/cadastral_supplies_file_widget.ui" line="56"/>
+        <location filename="../ui/transitional_system/cadastral_supplies_file_widget.ui" line="86"/>
+        <location filename="../ui/transitional_system/quality_rules_file_widget.ui" line="30"/>
+        <source>Archivo opcional</source>
+        <translation>Archivo opcional</translation>
+    </message>
+    <message>
+        <location filename="../ui/transitional_system/cadastral_supplies_file_widget.ui" line="59"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#555753;&quot;&gt;XLS path&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#555753;&quot;&gt;Ruta al XLS&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="../ui/transitional_system/cadastral_supplies_file_widget.ui" line="89"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#555753;&quot;&gt;GPKG path&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#555753;&quot;&gt;Ruta al GPKG&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="../ui/transitional_system/quality_rules_file_widget.ui" line="33"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#555753;&quot;&gt;GPKG file&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#555753;&quot;&gt;Archivo GPKG&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="../ui/transitional_system/quality_rules_file_widget.ui" line="79"/>
+        <source>PDF report</source>
+        <translation>Reporte PDF</translation>
     </message>
 </context>
 <context>

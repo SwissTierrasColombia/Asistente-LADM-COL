@@ -110,10 +110,10 @@ class TaskPanelWidget(QgsPanelWidget, WIDGET_UI):
             children = []
 
             optional_suffix = QCoreApplication.translate("TaskPanelWidget", " (optional)")
-            step_item = QTreeWidgetItem([QCoreApplication.translate("TaskPanelWidget", "Step {}{}").format(
+            step_text = QCoreApplication.translate("TaskPanelWidget", "Step {}{}").format(
                 i + 1,
-                optional_suffix if step.is_optional() else ""
-            )])
+                optional_suffix if step.is_optional() else "")
+            step_item = QTreeWidgetItem([step_text])
             step_item.setData(0, Qt.UserRole, step)
             step_item.setData(0, Qt.BackgroundRole, QBrush(GRAY_COLOR))
             step_item.setToolTip(0, step.get_name())
