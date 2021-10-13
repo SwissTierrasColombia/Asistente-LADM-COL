@@ -313,6 +313,14 @@ class DialogExportData(QDialog, DIALOG_UI):
                     self._running_tool = False
                     self.show_message(QCoreApplication.translate("DialogExportData", "An error occurred when exporting the data. For more information see the log..."), Qgis.Warning)
                     self.on_result.emit(False)  # Inform other classes that the execution was not successful
+
+                    # Since the export was not successful, we'll try to remove any temp XTF generated
+                    if os.path.exists(configuration.xtffile):
+                        try:
+                            os.remove(configuration.xtffile)
+                        except:
+                            pass
+
                     return
             except JavaNotFoundError:
                 self._running_tool = False
