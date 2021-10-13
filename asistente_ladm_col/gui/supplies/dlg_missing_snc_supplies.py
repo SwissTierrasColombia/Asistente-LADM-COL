@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 """
 /***************************************************************************
-                              Asistente LADM_COL
+                              Asistente LADM-COL
                              --------------------
         begin                : 2020-08-08
         git sha              : :%H$
@@ -22,9 +21,8 @@ from osgeo import gdal
 from qgis.PyQt.QtWidgets import (QMessageBox,
                                  QDialogButtonBox)
 from qgis.PyQt.QtCore import (Qt,
-                              QSettings,
                               QCoreApplication)
-from qgis.PyQt.QtGui import  QValidator
+from qgis.PyQt.QtGui import QValidator
 from qgis.core import (Qgis,
                        QgsProject,
                        QgsVectorLayer,
@@ -33,13 +31,10 @@ from qgis.core import (Qgis,
 import processing
 
 from asistente_ladm_col.utils.qt_utils import (OverrideCursor,
-                                               DirValidator,
-                                               make_folder_selector,
                                                normalize_local_url)
 
 from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.utils.utils import show_plugin_help
-from asistente_ladm_col.utils.ui import load_ui
 from asistente_ladm_col.gui.supplies.dlg_missing_supplies_base import MissingSuppliesBaseDialog
 
 
@@ -73,6 +68,7 @@ class MissingSncSuppliesDialog(MissingSuppliesBaseDialog):
     def accepted(self):
         self.bar.clearWidgets()
         self.save_settings(self.data_system)
+        etl_result = False
 
         self.folder_path = self.txt_file_path_folder_supplies.text()
         self.file_names = self.txt_file_names_supplies.text().strip()
@@ -124,6 +120,7 @@ class MissingSncSuppliesDialog(MissingSuppliesBaseDialog):
                                             path2=self.gpkg_path)
                                         self.logger.clear_status()
                                         self.logger.success_msg(__name__, msg)
+                                        etl_result = True
                                     else:
                                         self.initialize_feedback()  # Get ready for an eventual new execution
                                         self.progress_base = 0
@@ -151,6 +148,8 @@ class MissingSncSuppliesDialog(MissingSuppliesBaseDialog):
                     self.show_message(msg_csv, Qgis.Warning)
 
             self.set_gui_controls_enabled(True)
+
+        self.on_result.emit(etl_result)  # Inform other classes if the execution was successful
 
     def validate_files_in_folder(self):
         """
