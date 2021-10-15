@@ -163,7 +163,16 @@ Para usar esta función revisa [¿Cómo usar el mapeo de campos?](#como-usar-el-
 
 ### Llenar relaciones de servidumbre de tránsito
 
-Ver [Barra de herramientas](barra_de_herramientas.html#llenar-relaciones-de-servidumbre-de-paso).
+Debes seleccionar una **Servidumbre de tránsito**, uno o más **Terreno(s)** que se benefician con la servidumbre de tránsito, y una o más **Fuentes Administrativas** que soporten la servidumbre de tránsito.
+
+El `Asistente LADM-COL` automáticamente creará las relaciones entre los predios beneficiados, las servidumbres de tránsito y las fuentes administrativas. Dichas relaciones corresponden a las tablas `col_uebaunit` (predio-servidumbre de tránsito) y `col_rrrfuente` (restricción-fuente administrativa) del modelo de aplicación de Levantamiento Catastral.
+
+<div class="note">
+<p class="admonition-title">IMPORTANTE</p>
+<p>Antes de llenar relaciones de servidumbre de tránsito, las relaciones entre predios y terrenos deben estar correctamente diligenciadas (tabla col_uebaunit). De lo contrario, la herramienta lo advertirá y no podrá continuar con el proceso.</p>
+</div>
+
+<a class="" data-lightbox="Llenar relaciones de servidumbre de tránsito" href="_static/captura_y_estructura_de_datos/fill_relations_right_of_way.gif" title="Llenar relaciones de servidumbre de tránsito" data-title="Llenar relaciones de servidumbre de tránsito"><img src="_static/captura_y_estructura_de_datos/fill_relations_right_of_way.gif" class="align-center" width="800px" alt="Llenar relaciones de servidumbre de tránsito"/></a>
 
 ### Relacionar dirección
 
