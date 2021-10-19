@@ -55,5 +55,5 @@ class STQualityRulesFileWidget(QWidget, WIDGET_UI):
 
     def restore_settings(self):
         settings = QSettings()
-        self.txt_pdf_file_path.setText(settings.value('Asistente-LADM-COL/transitional_system/quality_rules/pdf_path'))
-        self.txt_gpkg_file_path.setText(settings.value('Asistente-LADM-COL/transitional_system/quality_rules/gpkg_path'))
+        self.txt_pdf_file_path.setText(settings.value('Asistente-LADM-COL/transitional_system/quality_rules/pdf_path', ''))
+        self.txt_gpkg_file_path.setText(settings.value('Asistente-LADM-COL/transitional_system/quality_rules/gpkg_path', ''))
