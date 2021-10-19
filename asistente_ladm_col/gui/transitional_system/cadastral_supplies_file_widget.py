@@ -61,12 +61,13 @@ class STCadastralSuppliesFileWidget(QWidget, WIDGET_UI):
 
     def restore_settings(self):
         settings = QSettings()
-        self.txt_xtf_file_path.setText(settings.value('Asistente-LADM-COL/QgisModelBaker/ili2pg/xtffile_export'))
+        self.txt_xtf_file_path.setText(settings.value('Asistente-LADM-COL/QgisModelBaker/ili2pg/xtffile_export', ''))
 
-        folder_path = settings.value('Asistente-LADM-COL/missing_supplies_snc/folder_path')
-        file_names = settings.value('Asistente-LADM-COL/missing_supplies_snc/file_names')
-        xls_path = os.path.join(folder_path, "{}.xlsx".format(file_names))
-        gpkg_path = os.path.join(folder_path, "{}.gpkg".format(file_names))
+        folder_path = settings.value('Asistente-LADM-COL/missing_supplies_snc/folder_path', '')
+        file_names = settings.value('Asistente-LADM-COL/missing_supplies_snc/file_names', '')
+        if file_names:
+            xls_path = os.path.join(folder_path, "{}.xlsx".format(file_names))
+            gpkg_path = os.path.join(folder_path, "{}.gpkg".format(file_names))
 
         self.txt_xls_file_path.setText(xls_path if folder_path and file_names else '')
         self.txt_gpkg_file_path.setText(gpkg_path if folder_path and file_names else '')
