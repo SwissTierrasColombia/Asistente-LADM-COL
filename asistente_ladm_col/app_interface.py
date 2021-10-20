@@ -36,6 +36,7 @@ class AppInterface(QObject, metaclass=SingletonQObject):
         self.settings = AppSettings()
         self.core = None
         self.gui = None
+        self.processing = None
 
     def set_core_interface(self, core):
         self.core = core
@@ -44,6 +45,9 @@ class AppInterface(QObject, metaclass=SingletonQObject):
     def set_gui_interface(self, gui):
         self.gui = gui
         self.set_connections()
+
+    def set_processing_interface(self, processing):
+        self.processing = processing
 
     def set_connections(self):
         if self.core and self.gui:
