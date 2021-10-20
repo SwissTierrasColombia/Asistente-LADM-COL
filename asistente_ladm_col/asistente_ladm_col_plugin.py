@@ -17,7 +17,6 @@
 """
 import glob
 import os.path
-import shutil
 from functools import partial
 
 import qgis.utils
@@ -34,10 +33,7 @@ from qgis.PyQt.QtWidgets import (QAction,
                                  QMessageBox)
 from qgis.core import (Qgis,
                        QgsApplication,
-                       QgsProcessingModelAlgorithm,
                        QgsExpression)
-from processing.modeler.ModelerUtils import ModelerUtils
-from processing.script import ScriptUtils
 
 from asistente_ladm_col.config.gui.db_engine_gui_config import DBEngineGUIConfig
 from asistente_ladm_col.gui.field_data_capture.dockwidget_field_data_capture_admin_coordinator import DockWidgetFieldDataCaptureAdminCoordinator
@@ -101,6 +97,7 @@ from asistente_ladm_col.config.expression_functions import (get_domain_code_from
                                                             get_domain_description_from_code)  # >> DON'T REMOVE << Registers it in QgsExpression
 from asistente_ladm_col.config.keys.common import *
 from asistente_ladm_col.core.app_core_interface import AppCoreInterface
+from asistente_ladm_col.core.app_processing_interface import AppProcessingInterface
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.gui.app_gui_interface import AppGUIInterface
 from asistente_ladm_col.gui.supplies.wiz_supplies_etl import SuppliesETLWizard
@@ -133,7 +130,6 @@ from asistente_ladm_col.gui.wizards.survey.dlg_create_group_party_survey import 
 from asistente_ladm_col.gui.wizards.survey.wiz_create_points_survey import CreatePointsSurveyWizard
 from asistente_ladm_col.lib.db.db_connection_manager import ConnectionManager
 from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.lib.processing.ladm_col_provider import LADMCOLAlgorithmProvider
 from asistente_ladm_col.logic.quality.quality_rule_engine import QualityRuleEngine
 from asistente_ladm_col.utils.decorators import (_db_connection_required,
                                                  _validate_if_wizard_is_open,
@@ -207,12 +203,10 @@ class AsistenteLADMCOLPlugin(QObject):
         self._context_settings.blocking_mode = False  # Settings dialog should not block if called from the action
         # Note: Do not change the contexts that we just set, if you need a different context, just create your own
 
-        self.ladm_col_provider = LADMCOLAlgorithmProvider()
-        self.__processing_resources_installed = list()
-
     def initGui(self):
         self.app = AppInterface()
         self.app.set_core_interface(AppCoreInterface())
+        self.app.set_processing_interface(AppProcessingInterface())
         self.app.set_gui_interface(AppGUIInterface(self.iface))
         self.app.settings.with_gui = self.__with_gui  # This makes it accessible in the whole plugin
 
@@ -239,7 +233,7 @@ class AsistenteLADMCOLPlugin(QObject):
             self.initialize_requirements()
 
         # Add LADM-COL provider, models and scripts to QGIS
-        self.initialize_processing_resources()
+        self.app.processing.initialize_processing_resources()
 
     def create_actions(self):
         self.create_supplies_actions()
@@ -683,95 +677,6 @@ class AsistenteLADMCOLPlugin(QObject):
             ACTION_ABOUT: self._about_action
         })
 
-    def initialize_processing_resources(self):
-        """
-        Add custom provider, models and scripts to QGIS
-        """
-        QgsApplication.processingRegistry().addProvider(self.ladm_col_provider)
-
-        connect_provider_added = False
-        if QgsApplication.processingRegistry().providerById('model'):
-            self.add_processing_resources('model')
-        else:
-            connect_provider_added = True
-
-        if QgsApplication.processingRegistry().providerById('script'):
-            self.add_processing_resources('script')
-        else:
-            connect_provider_added = True
-
-        if connect_provider_added:  # We need to wait until processing is initialized
-            QgsApplication.processingRegistry().providerAdded.connect(self.add_processing_resources)
-
-    def add_processing_resources(self, provider_id):
-        if provider_id not in ['model', 'script']:
-            return
-
-        if sorted(self.__processing_resources_installed) == ["models", "script"]:  # We are done, disconnect.
-            QgsApplication.processingRegistry().providerAdded.disconnect(self.add_processing_resources)
-
-        if provider_id == 'model':
-            # Add LADM-COL models
-            basepath = os.path.dirname(os.path.abspath(__file__))
-            plugin_models_dir = os.path.join(basepath, "lib", "processing", "models")
-
-            # First get model file names from the model root folder
-            filenames = list()
-            for filename in glob.glob(os.path.join(plugin_models_dir, '*.model3')):  # Non-recursive
-                filenames.append(filename)
-
-            # Now, go for subfolders.
-            # We store models that depend on QGIS versions in folders like "314" (for QGIS 3.14.x)
-            # This was initially needed for the FieldMapper input, which was migrated to C++ in QGIS 3.14
-            qgis_major_version = str(Qgis.QGIS_VERSION_INT)[:3]
-            qgis_major_version_path = os.path.join(plugin_models_dir, qgis_major_version)
-
-            if not os.path.isdir(qgis_major_version_path):
-                # No folder for this version (e.g., unit tests on QGIS-dev), so let's find the most recent version
-                subfolders = [sf.name for sf in os.scandir(plugin_models_dir) if sf.is_dir()]
-                if subfolders:
-                    qgis_major_version_path = os.path.join(plugin_models_dir, max(subfolders))
-
-            for filename in glob.glob(os.path.join(qgis_major_version_path, '*.model3')):
-                filenames.append(filename)
-
-            # Finally, do load the models!
-            count = 0
-            for filename in filenames:
-                alg = QgsProcessingModelAlgorithm()
-                if not alg.fromFile(filename):
-                    self.logger.critical(__name__, "Couldn't load model from {}".format(filename))
-                    return
-
-                destFilename = os.path.join(ModelerUtils.modelsFolders()[0], os.path.basename(filename))
-                shutil.copyfile(filename, destFilename)
-                count += 1
-
-            if count:
-                QgsApplication.processingRegistry().providerById('model').refreshAlgorithms()
-                self.logger.debug(__name__, "{} LADM-COL models were installed!".format(count))
-
-            self.__processing_resources_installed.append('model')
-        elif provider_id == 'script':
-            # Add LADM-COL scripts
-            basepath = os.path.dirname(os.path.abspath(__file__))
-            plugin_scripts_dir = os.path.join(basepath, "lib", "processing", "scripts")
-
-            count = 0
-            scripts_dir = ScriptUtils.defaultScriptsFolder()
-            for filename in glob.glob(os.path.join(plugin_scripts_dir, '*.py')):
-                try:
-                    shutil.copy(filename, scripts_dir)
-                    count += 1
-                except OSError as e:
-                    self.logger.critical(__name__, "Couldn't install LADM-COL script '{}'!".format(filename))
-
-            if count:
-                QgsApplication.processingRegistry().providerById("script").refreshAlgorithms()
-                self.logger.debug(__name__, "{} LADM-COL scripts were installed!".format(count))
-
-            self.__processing_resources_installed.append('script')
-
     def enable_action(self, action_name, enable):
         if action_name == ANT_MAP_REPORT:
             self._ant_map_action.setEnabled(enable)
@@ -1072,7 +977,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
         # Close all connections
         self.conn_manager.close_db_connections()
-        QgsApplication.processingRegistry().removeProvider(self.ladm_col_provider)
+        self.app.processing.unload_resources()
 
     @_validate_if_wizard_is_open
     def show_settings(self, *args):
