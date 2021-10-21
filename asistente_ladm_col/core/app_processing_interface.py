@@ -4,7 +4,7 @@
                              --------------------
         begin          : 2021-10-20
         git sha        : :%H$
-        copyright      : (C) 2020 by Germán Carrillo (SwissTierras Colombia)
+        copyright      : (C) 2021 by Germán Carrillo (SwissTierras Colombia)
         email          : gcarrillo@linuxmail.org
  ***************************************************************************/
 /***************************************************************************
@@ -46,12 +46,6 @@ class AppProcessingInterface(QObject):
         self.__processing_resources_installed = list()
         self.__processing_model_dirs_to_register = [PROCESSING_MODELS_DIR]
         self.__processing_script_dirs_to_register = [PROCESSING_SCRIPTS_DIR]
-
-        # Cache variables
-        self._layers = list()
-        self._relations = list()
-        self._bags_of_enum = dict()
-        self._informal_spatial_units = dict()
 
     def initialize_processing_resources(self):
         """
