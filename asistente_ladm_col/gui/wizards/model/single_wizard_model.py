@@ -36,7 +36,7 @@ from asistente_ladm_col.gui.wizards.model.creator_model import CreatorModel
 class SingleWizardModel(CreatorModel):
 
     def __init__(self, iface, db, wiz_config):
-        super().__init__(iface, db, wiz_config)
+        CreatorModel.__init__(self, iface, db, wiz_config)
 
     def exec_form_advanced(self, args: ExecFormAdvancedArgs):
         pass

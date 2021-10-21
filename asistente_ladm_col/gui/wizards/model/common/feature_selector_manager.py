@@ -16,16 +16,26 @@
  *                                                                         *
  ***************************************************************************/
  """
+from abc import ABC
+
+from qgis.PyQt.QtCore import (QObject,
+                             pyqtSignal)
+
+from asistente_ladm_col.gui.wizards.model.common.abstract_qobject_meta import AbstractQObjectMeta
 from asistente_ladm_col.gui.wizards.model.common.select_features_by_expression_dialog_wrapper import \
     SelectFeatureByExpressionDialogWrapper
 from asistente_ladm_col.gui.wizards.model.common.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
 
 
-class FeatureSelectorManager:
+class FeatureSelectorManager(QObject, metaclass=AbstractQObjectMeta):
+    features_selected = pyqtSignal()
+    map_tool_changed = pyqtSignal()
+    feature_selection_by_expression_changed = pyqtSignal()
 
     def __init__(self, relatable_layers, iface, logger):
+        QObject.__init__(self)
         self.__iface = iface
-        self.__logger = logger
+        self._logger = logger
         self.__features_on_map_observer_list = list()
         self.__feature_selector_by_expression_observers = list()
 
@@ -51,15 +61,6 @@ class FeatureSelectorManager:
         layer = self.__relatable_layers[self.type_of_selected_layer_to_associate]
         self.__feature_selector_by_expression.select_features_by_expression(layer)
 
-    def map_tool_changed(self):
-        self.__notify_map_tool_changed()
-
-    def features_selected(self):
-        self.__notify_features_selected()
-
-    def feature_selection_by_expression_changed(self):
-        self.__notify_feature_selection_by_expression_changed()
-
     def dispose(self):
         self.__feature_selector_on_map.init_map_tool()
         self.__feature_selector_on_map.disconnect_signals()
@@ -71,30 +72,3 @@ class FeatureSelectorManager:
             feature_count[layer] = self.__relatable_layers[layer].selectedFeatureCount()
 
         return feature_count
-
-    #       OBSERVERS
-    # on map ---
-    def register_features_on_map_observer(self, observer):
-        self.__features_on_map_observer_list.append(observer)
-
-    def remove_features_on_map_observer(self, observer):
-        self.__features_on_map_observer_list.remove(observer)
-
-    def __notify_features_selected(self):
-        for item in self.__features_on_map_observer_list:
-            item.features_selected()
-
-    def __notify_map_tool_changed(self):
-        for item in self.__features_on_map_observer_list:
-            item.map_tool_changed()
-
-    # by expression ---
-    def register_feature_selection_by_expression_observer(self, observer):
-        self.__feature_selector_by_expression_observers.append(observer)
-
-    def remove_feature_selection_by_expression_observer(self, observer):
-        self.__feature_selector_by_expression_observers.remove(observer)
-
-    def __notify_feature_selection_by_expression_changed(self):
-        for item in self.__feature_selector_by_expression_observers:
-            item.feature_selection_by_expression_changed()

@@ -67,8 +67,11 @@ class PlotController(QObject):
 
         # ----- model section
         self.__model = model
-        self.__model.register_features_on_map_observer(self)
-        self.__model.register_feature_selection_by_expression_observer(self)
+        self.__model.features_selected.connect(self.features_selected)
+        self.__model.map_tool_changed.connect(self.map_tool_changed)
+        self.__model.feature_selection_by_expression_changed.connect(self.feature_selection_by_expression_changed)
+
+        self.__model.layer_removed.connect(self.layer_removed)
 
         self.__model.set_ready_only_fields(True)
         # ------ view section

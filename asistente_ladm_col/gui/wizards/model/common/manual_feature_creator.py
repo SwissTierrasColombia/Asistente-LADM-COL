@@ -39,7 +39,7 @@ class ManualFeatureCreator(QObject, metaclass=AbstractQObjectMeta):
     exec_form_advanced = pyqtSignal(ExecFormAdvancedArgs)
 
     def __init__(self, iface, app, logger, layer, feature_name):
-        super(ManualFeatureCreator, self).__init__()
+        QObject.__init__(self)
         self._iface = iface
         self._app = app
         self._layer = layer
@@ -110,7 +110,7 @@ class ManualFeatureCreator(QObject, metaclass=AbstractQObjectMeta):
 class AlphaFeatureCreator(ManualFeatureCreator):
 
     def __init__(self, iface, app, logger, layer, feature_name):
-        super(AlphaFeatureCreator, self).__init__(iface, app, logger, layer, feature_name)
+        ManualFeatureCreator.__init__(self, iface, app, logger, layer, feature_name)
 
     def _add_feature(self, layer):
         feature = self._app.core.get_new_feature(layer)
@@ -125,7 +125,7 @@ class SpatialFeatureCreator(ManualFeatureCreator):
     unexpected_features_digitized = pyqtSignal(UnexpectedFeaturesDigitizedArgs)
 
     def __init__(self, iface, app, logger, layer, feature_name, tolerance=None):
-        super(SpatialFeatureCreator, self).__init__(iface, app, logger, layer, feature_name)
+        ManualFeatureCreator.__init__(self, iface, app, logger, layer, feature_name)
         self.__tolerance = tolerance
         self.editing_layer = layer
 

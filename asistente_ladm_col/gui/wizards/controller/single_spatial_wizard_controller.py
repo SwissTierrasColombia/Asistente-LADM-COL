@@ -79,11 +79,12 @@ class SingleSpatialWizardController(QObject):
 
         # ----- model section
         self.__model = model
-        self.__model.register_finish_feature_creation_observer(self)
-        self.__model.register_form_rejected_observer(self)
-        self.__model.register_unexpected_features_digitized_observer(self)
-        self.__model.register_valid_features_digitized_observer(self)
-        self.__model.register_layer_removed_observer(self)
+        self.__model.finish_feature_creation.connect(self.finish_feature_creation)
+        self.__model.form_rejected.connect(self.form_rejected)
+        self.__model.unexpected_features_digitized.connect(self.unexpected_features_digitized)
+        self.__model.valid_features_digitized.connect(self.valid_features_digitized)
+
+        self.__model.layer_removed.connect(self.layer_removed)
 
         self.__model.set_ready_only_fields(True)
 

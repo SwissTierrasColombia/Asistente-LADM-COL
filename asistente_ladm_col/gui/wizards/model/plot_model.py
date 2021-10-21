@@ -20,7 +20,8 @@
  *                                                                         *
  ***************************************************************************/
  """
-from enum import Enum
+from qgis.PyQt.QtCore import (QObject,
+                             pyqtSignal)
 
 from qgis.core import Qgis
 from qgis.PyQt.QtCore import QCoreApplication
@@ -40,6 +41,7 @@ from asistente_ladm_col.gui.wizards.model.common.layer_remove_signals_manager im
 
 
 class PlotModel(FeatureSelectorManager):
+    layer_removed = pyqtSignal()
 
     def __init__(self, iface, db, wiz_config):
         self.app = AppInterface()
@@ -63,8 +65,7 @@ class PlotModel(FeatureSelectorManager):
         self.type_of_selected_layer_to_associate = EnumRelatableLayers.BOUNDARY
 
         self.__layer_remove_manager = LayerRemovedSignalsManager(self._layers)
-
-        # self.__layer_remove_manager.layer_removed.connect(self.layer_removed)
+        self.__layer_remove_manager.layer_removed.connect(self.layer_removed)
 
         self.__common_operations = \
             CommonOperationsModel(self._wizard_config[WIZARD_LAYERS], self._editing_layer_name, self.app,

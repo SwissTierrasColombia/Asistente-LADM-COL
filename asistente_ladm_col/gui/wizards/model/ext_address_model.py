@@ -26,6 +26,9 @@
  *                                                                         *
  ***************************************************************************/
  """
+from qgis.PyQt.QtCore import (QObject,
+                             pyqtSignal)
+
 from asistente_ladm_col import Logger
 from asistente_ladm_col.config.enums import EnumRelatableLayers
 from asistente_ladm_col.config.general_config import WIZARD_LAYERS
@@ -37,12 +40,12 @@ from asistente_ladm_col.gui.wizards.model.single_spatial_wizard_model import Sin
 
 
 class ExtAddressModel(SingleSpatialWizardModel):
+    features_selected = pyqtSignal()
+    map_tool_changed = pyqtSignal()
+    feature_selection_by_expression_changed = pyqtSignal()
 
     def __init__(self, iface, db, wiz_config):
         super().__init__(iface, db, wiz_config)
-
-        self.__features_on_map_observer_list = list()
-        self.__feature_selector_by_expression_observers = list()
 
         self.__association_failed_observers = list()
 
@@ -88,15 +91,6 @@ class ExtAddressModel(SingleSpatialWizardModel):
         # TODO Check if layer exists in self._layers
         layer = self.__relatable_layers[self.type_of_selected_layer_to_associate]
         self.__feature_selector_by_expression.select_features_by_expression(layer)
-
-    def map_tool_changed(self):
-        self.__notify_map_tool_changed()
-
-    def features_selected(self):
-        self.__notify_features_selected()
-
-    def feature_selection_by_expression_changed(self):
-        self.__notify_feature_selection_by_expression_changed()
 
     def dispose(self):
         self.__feature_selector_on_map.init_map_tool()
@@ -155,29 +149,3 @@ class ExtAddressModel(SingleSpatialWizardModel):
     def __notify_association_failed(self):
         for item in self.__association_failed_observers:
            item.association_failed()
-
-    # on map ---
-    def register_features_on_map_observer(self, observer):
-        self.__features_on_map_observer_list.append(observer)
-
-    def remove_features_on_map_observer(self, observer):
-        self.__features_on_map_observer_list.remove(observer)
-
-    def __notify_features_selected(self):
-        for item in self.__features_on_map_observer_list:
-            item.features_selected()
-
-    def __notify_map_tool_changed(self):
-        for item in self.__features_on_map_observer_list:
-            item.map_tool_changed()
-
-    # by expression ---
-    def register_feature_selection_by_expression_observer(self, observer):
-        self.__feature_selector_by_expression_observers.append(observer)
-
-    def remove_feature_selection_by_expression_observer(self, observer):
-        self.__feature_selector_by_expression_observers.remove(observer)
-
-    def __notify_feature_selection_by_expression_changed(self):
-        for item in self.__feature_selector_by_expression_observers:
-            item.feature_selection_by_expression_changed()

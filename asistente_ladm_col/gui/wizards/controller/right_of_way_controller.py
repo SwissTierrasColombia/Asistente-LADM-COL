@@ -40,7 +40,7 @@ from asistente_ladm_col.gui.wizards.view.right_of_way_view import RightOfWayView
 class RightOfWayController(SingleSpatialWizardController):
 
     def __init__(self, model: RightOfWayModel, iface, db, wizard_settings):
-        super().__init__(model, iface, db, wizard_settings)
+        SingleSpatialWizardController.__init__(self, model, iface, db, wizard_settings)
         self.__model = model
 
     def _create_view(self):

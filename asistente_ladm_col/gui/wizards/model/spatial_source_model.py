@@ -18,6 +18,9 @@
  *                                                                         *
  ***************************************************************************/
  """
+from qgis.PyQt.QtCore import (QObject,
+                             pyqtSignal)
+
 from asistente_ladm_col.config.enums import EnumRelatableLayers
 from asistente_ladm_col.config.general_config import WIZARD_LAYERS
 from asistente_ladm_col.gui.wizards.model.common.args.model_args import SpacialSourceFinishFeatureCreationArgs
@@ -30,13 +33,12 @@ from asistente_ladm_col.gui.wizards.model.single_wizard_model import SingleWizar
 
 
 class SpatialSourceModel(SingleWizardModel):
+    features_selected = pyqtSignal()
+    map_tool_changed = pyqtSignal()
+    feature_selection_by_expression_changed = pyqtSignal()
 
     def __init__(self, iface, db, wiz_config):
         super().__init__(iface, db, wiz_config)
-
-        self.__features_on_map_observer_list = list()
-        self.__feature_selector_by_expression_observers = list()
-        self.__layer_removed_observers = list()
 
         self._layers = wiz_config[WIZARD_LAYERS]
         self.names = db.names
@@ -77,22 +79,13 @@ class SpatialSourceModel(SingleWizardModel):
         layer = self.__relatable_layers[option_type]
         self.__feature_selector_by_expression.select_features_by_expression(layer)
 
-    def map_tool_changed(self):
-        self.__notify_map_tool_changed()
-
-    def features_selected(self):
-        self.__notify_features_selected()
-
-    def feature_selection_by_expression_changed(self):
-        self.__notify_feature_selection_by_expression_changed()
-
     def dispose(self):
         self.__layer_remove_manager.disconnect_signals()
         self.__feature_selector_on_map.init_map_tool()
         super().dispose()
         self.__feature_selector_on_map.disconnect_signals()
 
-    def finish_feature_creation(self, layerId, features):
+    def _finish_feature_creation(self, layerId, features):
         if len(features) != 1:
             # TODO send this info to controller
             # message = QCoreApplication.translate("WizardTranslations", "'{}' tool has been closed. We should have got only one {} by we have {}").format(self.WIZARD_TOOL_NAME, self.WIZARD_FEATURE_NAME, len(features))
@@ -140,7 +133,7 @@ class SpatialSourceModel(SingleWizardModel):
                                                        self.names.COL_POINT_SOURCE_T_SOURCE_F, feature_tid)
 
         self._notify_finish_feature_creation(
-            # TODO associated features is missing
+            # TODO associated features is missing       1774700
             SpacialSourceFinishFeatureCreationArgs(True, feature_tid, 1, None)
         )
         # TODO These message
@@ -158,30 +151,3 @@ class SpatialSourceModel(SingleWizardModel):
             feature_count[layer] = self.__relatable_layers[layer].selectedFeatureCount()
 
         return feature_count
-
-    #       OBSERVERS
-    # on map ---
-    def register_features_on_map_observer(self, observer):
-        self.__features_on_map_observer_list.append(observer)
-
-    def remove_features_on_map_observer(self, observer):
-        self.__features_on_map_observer_list.remove(observer)
-
-    def __notify_features_selected(self):
-        for item in self.__features_on_map_observer_list:
-            item.features_selected()
-
-    def __notify_map_tool_changed(self):
-        for item in self.__features_on_map_observer_list:
-            item.map_tool_changed()
-
-    # by expression ---
-    def register_feature_selection_by_expression_observer(self, observer):
-        self.__feature_selector_by_expression_observers.append(observer)
-
-    def remove_feature_selection_by_expression_observer(self, observer):
-        self.__feature_selector_by_expression_observers.remove(observer)
-
-    def __notify_feature_selection_by_expression_changed(self):
-        for item in self.__feature_selector_by_expression_observers:
-            item.feature_selection_by_expression_changed()

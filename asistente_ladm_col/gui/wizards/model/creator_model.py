@@ -19,28 +19,30 @@
 from abc import (ABC,
                  abstractmethod)
 
+from qgis.PyQt.QtCore import (QObject,
+                             pyqtSignal)
+
 from asistente_ladm_col import Logger
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.general_config import (WIZARD_LAYERS,
                                                       WIZARD_EDITING_LAYER_NAME,
                                                       WIZARD_READ_ONLY_FIELDS)
+from asistente_ladm_col.gui.wizards.model.common.abstract_qobject_meta import AbstractQObjectMeta
 from asistente_ladm_col.gui.wizards.model.common.args.model_args import (FinishFeatureCreationArgs,
                                                                          ExecFormAdvancedArgs)
 from asistente_ladm_col.gui.wizards.model.common.manual_feature_creator import ManualFeatureCreator
 from asistente_ladm_col.gui.wizards.model.common.refactor_fields_feature_creator import RefactorFieldsFeatureCreator
 from asistente_ladm_col.gui.wizards.model.common.common_operations import CommonOperationsModel
 from asistente_ladm_col.gui.wizards.model.common.layer_remove_signals_manager import LayerRemovedSignalsManager
-from asistente_ladm_col.gui.wizards.model.common.observers import (FinishFeatureCreationObserver,
-                                                                   FormRejectedObserver)
 
 
-class CreatorModel(ABC):
+class CreatorModel(QObject, metaclass=AbstractQObjectMeta):
+    finish_feature_creation = pyqtSignal(FinishFeatureCreationArgs)
+    form_rejected = pyqtSignal()
+    layer_removed = pyqtSignal()
 
     def __init__(self, iface, db, wiz_config):
-        self.__finish_feature_creation_observer_list = list()
-        self.__form_rejected_observer_list = list()
-        self.__layer_removed_observer_list = list()
-
+        QObject.__init__(self)
         self.app = AppInterface()
 
         self._db = db
@@ -57,7 +59,7 @@ class CreatorModel(ABC):
         self.__manual_feature_creator.form_rejected.connect(self.form_rejected)
         self.__manual_feature_creator.exec_form_advanced.connect(self.exec_form_advanced)
         # connect local method finish feature creator
-        self.__manual_feature_creator.finish_feature_creation.connect(self.__finish_feature_creation)
+        self.__manual_feature_creator.finish_feature_creation.connect(self._finish_feature_creation)
 
         self.__feature_creator_from_refactor = RefactorFieldsFeatureCreator(self.app, db)
 
@@ -70,7 +72,7 @@ class CreatorModel(ABC):
         self.__layer_remove_manager = LayerRemovedSignalsManager(self._wizard_config[WIZARD_LAYERS])
         self.__layer_remove_manager.layer_removed.connect(self.layer_removed)
 
-    def __finish_feature_creation(self, layerId, features):
+    def _finish_feature_creation(self, layerId, features):
         fid = features[0].id()
         is_valid = False
         feature_tid = None
@@ -82,7 +84,7 @@ class CreatorModel(ABC):
             feature_tid = self._editing_layer.getFeature(fid)[self._db.names.T_ID_F]
 
         args = FinishFeatureCreationArgs(is_valid, feature_tid)
-        self._notify_finish_feature_creation(args)
+        self.finish_feature_creation.emit(args)
 
     @abstractmethod
     def _create_feature_creator(self) -> ManualFeatureCreator:
@@ -102,45 +104,8 @@ class CreatorModel(ABC):
         self.__layer_remove_manager.reconnect_signals()
         self.__manual_feature_creator.create()
 
-    def form_rejected(self):
-        self._notify_form_rejected()
-
-    def layer_removed(self):
-        self.__notify_layer_removed()
-
     def dispose(self):
         self.__layer_remove_manager.disconnect_signals()
         self.__manual_feature_creator.disconnect_signals()
         self.__common_operations.rollback_in_layers_with_empty_editing_buffer()
         self.__common_operations.set_ready_only_field(False)
-
-    # observers
-    def register_finish_feature_creation_observer(self, observer: FinishFeatureCreationObserver):
-        self.__finish_feature_creation_observer_list.append(observer)
-
-    def register_form_rejected_observer(self, observer: FormRejectedObserver):
-        self.__form_rejected_observer_list.append(observer)
-
-    def remove_finish_feature_creation_observer(self, observer: FinishFeatureCreationObserver):
-        self.__finish_feature_creation_observer_list.remove(observer)
-
-    def remove_form_rejected_observer(self, observer: FormRejectedObserver):
-        self.__form_rejected_observer_list.remove(observer)
-
-    def _notify_finish_feature_creation(self, args: FinishFeatureCreationArgs):
-        for item in self.__finish_feature_creation_observer_list:
-            item.finish_feature_creation(args)
-
-    def _notify_form_rejected(self):
-        for item in self.__form_rejected_observer_list:
-            item.form_rejected()
-
-    def __notify_layer_removed(self):
-        for item in self.__layer_removed_observer_list:
-            item.layer_removed()
-
-    def register_layer_removed_observer(self, observer):
-        self.__layer_removed_observer_list.append(observer)
-
-    def remove_layer_removed_observer(self, observer):
-        self.__layer_removed_observer_list.remove(observer)

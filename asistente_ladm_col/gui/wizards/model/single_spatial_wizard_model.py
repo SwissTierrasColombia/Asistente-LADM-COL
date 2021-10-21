@@ -26,6 +26,8 @@
  *                                                                         *
  ***************************************************************************/
  """
+from qgis.PyQt.QtCore import (QObject,
+                             pyqtSignal)
 from asistente_ladm_col.config.general_config import WIZARD_FEATURE_NAME
 from asistente_ladm_col.gui.wizards.model.common.args.model_args import (UnexpectedFeaturesDigitizedArgs,
                                                                          ExecFormAdvancedArgs,
@@ -33,19 +35,15 @@ from asistente_ladm_col.gui.wizards.model.common.args.model_args import (Unexpec
                                                                          ValidFeaturesDigitizedArgs)
 from asistente_ladm_col.gui.wizards.model.common.manual_feature_creator import (SpatialFeatureCreator,
                                                                                 ManualFeatureCreator)
-from asistente_ladm_col.gui.wizards.model.common.observers import (ValidFeatureDigitizedObserver,
-                                                                   UnexpectedFeatureDigitizedObserver)
 from asistente_ladm_col.gui.wizards.model.creator_model import CreatorModel
 
 
 class SingleSpatialWizardModel(CreatorModel):
+    valid_features_digitized = pyqtSignal(ValidFeaturesDigitizedArgs)
+    unexpected_features_digitized = pyqtSignal(UnexpectedFeaturesDigitizedArgs)
 
     def __init__(self, iface, db, wiz_config):
-        super().__init__(iface, db, wiz_config)
-
-        self.__valid_feature_observer_list = list()
-        self.__unexpected_features_digitized_observer_list = list()
-        self.__layer_removed_observer_list = list()
+        CreatorModel.__init__(self, iface, db, wiz_config)
 
     def _create_feature_creator(self) -> ManualFeatureCreator:
         self._manual_feature_creator = SpatialFeatureCreator(self._iface, self.app, self._logger,
@@ -55,52 +53,12 @@ class SingleSpatialWizardModel(CreatorModel):
 
         return self._manual_feature_creator
 
-    def finish_feature_creation(self, layerId, features):
-        fid = features[0].id()
-        is_valid = False
-        feature_tid = None
-
-        if not self._editing_layer.getFeature(fid).isValid():
-            self._logger.warning(__name__, "Feature not found in layer {} ...".format(self._editing_layer_name))
-        else:
-            is_valid = True
-            feature_tid = self._editing_layer.getFeature(fid)[self._db.names.T_ID_F]
-
-        args = FinishFeatureCreationArgs(is_valid, feature_tid)
-        self._notify_finish_feature_creation(args)
-
     def exec_form_advanced(self, args: ExecFormAdvancedArgs):
         pass
 
     #   spatial methods
     def save_created_geometry(self):
         self._manual_feature_creator.save_created_geometry()
-
-    def valid_features_digitized(self, args: ValidFeaturesDigitizedArgs):
-        self.__notify_valid_features(args)
-
-    def unexpected_features_digitized(self, args: UnexpectedFeaturesDigitizedArgs):
-        self.__notify_unexpected_features_digitized(args)
-
-    def __notify_valid_features(self, args: ValidFeaturesDigitizedArgs):
-        for item in self.__valid_feature_observer_list:
-            item.valid_features_digitized(args)
-
-    def __notify_unexpected_features_digitized(self, args: UnexpectedFeaturesDigitizedArgs):
-        for item in self.__unexpected_features_digitized_observer_list:
-            item.unexpected_features_digitized(args)
-
-    def register_valid_features_digitized_observer(self, observer: ValidFeatureDigitizedObserver):
-        self.__valid_feature_observer_list.append(observer)
-
-    def remove_valid_features_digitized_observer(self, observer: ValidFeatureDigitizedObserver):
-        self.__valid_feature_observer_list.remove(observer)
-
-    def register_unexpected_features_digitized_observer(self, observer: UnexpectedFeatureDigitizedObserver):
-        self.__unexpected_features_digitized_observer_list.append(observer)
-
-    def remove_unexpected_features_digitized_observer(self, observer: UnexpectedFeatureDigitizedObserver):
-        self.__unexpected_features_digitized_observer_list.remove(observer)
 
     def rollback_layer(self, layer):
         # stop edition in close_wizard crash qgis

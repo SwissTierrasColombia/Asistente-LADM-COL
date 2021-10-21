@@ -48,19 +48,15 @@ from asistente_ladm_col.config.general_config import (WIZARD_STRINGS,
                                                       WIZARD_SELECT_SOURCE_HELP,
                                                       WIZARD_CREATION_MODE_KEY)
 from asistente_ladm_col.config.help_strings import HelpStrings
+from asistente_ladm_col.gui.wizards.model.common.abstract_qobject_meta import AbstractQObjectMeta
 from asistente_ladm_col.gui.wizards.model.common.args.model_args import FinishFeatureCreationArgs
-from asistente_ladm_col.gui.wizards.model.common.observers import FinishFeatureCreationObserver
 from asistente_ladm_col.gui.wizards.model.common.wizard_q_settings_manager import WizardQSettingsManager
 from asistente_ladm_col.gui.wizards.controller.controller_args import CreateFeatureArgs
 from asistente_ladm_col.gui.wizards.model.single_wizard_model import SingleWizardModel
 from asistente_ladm_col.gui.wizards.view.single_wizard_view import SingleWizardView
 
 
-class SingleWizardControllerMeta(type(FinishFeatureCreationObserver), type(QObject)):
-    pass
-
-
-class SingleWizardController(QObject, metaclass=SingleWizardControllerMeta):
+class SingleWizardController(QObject, metaclass=AbstractQObjectMeta):
     update_wizard_is_open_flag = pyqtSignal(bool)
 
     def __init__(self, model: SingleWizardModel, db, wizard_settings):
@@ -75,8 +71,8 @@ class SingleWizardController(QObject, metaclass=SingleWizardControllerMeta):
 
         # ----- model section
         self.__model = model
-        self.__model.register_finish_feature_creation_observer(self)
-        self.__model.register_form_rejected_observer(self)
+        self.__model.finish_feature_creation.connect(self.finish_feature_creation)
+        self.__model.form_rejected.connect(self.form_rejected)
 
         self.__model.set_ready_only_fields(True)
 

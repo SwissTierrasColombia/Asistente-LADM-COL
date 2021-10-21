@@ -38,7 +38,7 @@ class RrrController(SingleWizardController):
         super().__init__(model, db, wizard_settings)
         self.__model = model
 
-        self.__model.register_feature_selection_by_expression_observer(self)
+        self.__model.feature_selection_by_expression_changed.connect(self.feature_selection_by_expression_changed)
 
     def _create_view(self):
         wizard_page2 = RrrSelectorView(self, self._get_view_config())

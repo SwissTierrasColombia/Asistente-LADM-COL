@@ -42,10 +42,11 @@ class ParcelController(SingleWizardController):
 
     def __init__(self, model: ParcelCreatorModel, db, wizard_settings):
         self.__model = model
-        super().__init__(model, db, wizard_settings)
+        SingleWizardController.__init__(self, model, db, wizard_settings)
 
-        self.__model.register_feature_selection_by_expression_observer(self)
-        self.__model.register_features_on_map_observer(self)
+        self.__model.features_selected.connect(self.features_selected)
+        self.__model.map_tool_changed.connect(self.map_tool_changed)
+        self.__model.feature_selection_by_expression_changed.connect(self.feature_selection_by_expression_changed)
         # QSetings
         self.__settings_manager = WizardQSettingsManager(self.wizard_config[WIZARD_QSETTINGS][WIZARD_QSETTINGS_PATH])
 

@@ -1,7 +1,10 @@
 from abc import ABCMeta
 
-from qgis.PyQt.QtCore import QObject
+try:
+    from qgis.PyQt.QtCore import pyqtWrapperType
+except ImportError:
+    from sip import wrappertype as pyqtWrapperType
 
 
-class AbstractQObjectMeta(ABCMeta, type(QObject)):
+class AbstractQObjectMeta(pyqtWrapperType, ABCMeta):
     pass

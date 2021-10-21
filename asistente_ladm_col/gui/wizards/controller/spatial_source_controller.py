@@ -33,11 +33,12 @@ from asistente_ladm_col.gui.wizards.view.spatial_source_view import SpatialSourc
 class SpatialSourceController(SingleWizardController):
 
     def __init__(self, model: SpatialSourceModel, db, wizard_settings):
-        super().__init__(model, db, wizard_settings)
+        SingleWizardController.__init__(self, model, db, wizard_settings)
         self.__model = model
 
-        self.__model.register_feature_selection_by_expression_observer(self)
-        self.__model.register_features_on_map_observer(self)
+        self.__model.feature_selection_by_expression_changed.connect(self.feature_selection_by_expression_changed)
+        self.__model.features_selected.connect(self.features_selected)
+        self.__model.map_tool_changed.connect(self.map_tool_changed)
 
     def _create_view(self):
         wizard_page2 = SpatialSourceFeaturesSelectorView(self, self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP2])

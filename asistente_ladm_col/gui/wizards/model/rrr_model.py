@@ -22,6 +22,9 @@
  *                                                                         *
  ***************************************************************************/
  """
+from qgis.PyQt.QtCore import (QObject,
+                             pyqtSignal)
+
 from asistente_ladm_col.config.enums import EnumRelatableLayers
 
 from asistente_ladm_col.config.general_config import (WIZARD_LAYERS,
@@ -38,9 +41,10 @@ from asistente_ladm_col.gui.wizards.model.creator_model import CreatorModel
 
 
 class RrrModel(CreatorModel):
+    feature_selection_by_expression_changed = pyqtSignal()
 
     def __init__(self, iface, db, wiz_config):
-        super().__init__(iface, db, wiz_config)
+        CreatorModel.__init__(self, iface, db, wiz_config)
         self._layers = wiz_config[WIZARD_LAYERS]
         self.__wizard_config = wiz_config
         self.__iface = iface
@@ -49,12 +53,11 @@ class RrrModel(CreatorModel):
         self.__editing_layer = self.__wizard_config[WIZARD_LAYERS][self.__editing_layer_name]
 
         self.names = db.names
-        self.__feature_selector_by_expression_observers = list()
 
         self.__feature_selector_by_expression = SelectFeatureByExpressionDialogWrapper(self.__iface)
 
-        # self.__feature_selector_by_expression.feature_selection_by_expression_changed.connect(
-        #     self.feature_selection_by_expression_changed)
+        self.__feature_selector_by_expression.feature_selection_by_expression_changed.connect(
+            self.feature_selection_by_expression_changed)
 
         self.__relatable_layers = dict()
         self.__init_selectable_layer_by_type()
@@ -63,7 +66,7 @@ class RrrModel(CreatorModel):
         self.__relatable_layers[EnumRelatableLayers.ADMINISTRATIVE_SOURCE] = \
             self._layers[self.names.LC_ADMINISTRATIVE_SOURCE_T]
 
-    def finish_feature_creation(self, layerId, features):
+    def _finish_feature_creation(self, layerId, features):
         if len(features) != 1:
             self._notify_finish_feature_creation(
                 SpacialSourceFinishFeatureCreationArgs(added_features_amount=len(features)))
@@ -121,14 +124,3 @@ class RrrModel(CreatorModel):
             feature_count[layer] = self.__relatable_layers[layer].selectedFeatureCount()
 
         return feature_count
-
-    # by expression ---
-    def register_feature_selection_by_expression_observer(self, observer):
-        self.__feature_selector_by_expression_observers.append(observer)
-
-    def remove_feature_selection_by_expression_observer(self, observer):
-        self.__feature_selector_by_expression_observers.remove(observer)
-
-    def __notify_feature_selection_by_expression_changed(self):
-        for item in self.__feature_selector_by_expression_observers:
-            item.feature_selection_by_expression_changed()

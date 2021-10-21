@@ -43,8 +43,9 @@ class ExtAddressController(SingleSpatialWizardController):
         self.__model = model
         self.__initialize_selected_option()
 
-        self.__model.register_feature_selection_by_expression_observer(self)
-        self.__model.register_features_on_map_observer(self)
+        self.__model.feature_selection_by_expression_changed.connect(self.feature_selection_by_expression_changed)
+        self.__model.features_selected.connect(self.features_selected)
+        self.__model.map_tool_changed.connect(self.map_tool_changed)
 
     def _create_view(self):
         self.__view = ExtAddressView(self, self._get_view_config())
