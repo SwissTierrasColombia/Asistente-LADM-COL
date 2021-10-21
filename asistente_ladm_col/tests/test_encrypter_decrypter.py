@@ -18,8 +18,6 @@ asistente_ladm_col = AsistenteLADMCOLPlugin(get_iface(), False)
 
 start_app()
 
-asistente_ladm_col.initGui()
-
 
 class TestEncrypterDecrypter(unittest.TestCase):
 
