@@ -4164,7 +4164,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Excel File (*.xlsx *.xls)</source>
-        <translation type="vanished">Archivo de Excel (* .xlsx * .xls)</translation>
+        <translation type="vanished">Archivo de Excel (*.xlsx *.xls)</translation>
     </message>
     <message>
         <source>Excel file not found. Update your plugin. For details see log.</source>
