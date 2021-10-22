@@ -50,7 +50,7 @@ from asistente_ladm_col.config.change_detection_config import (PLOT_GEOMETRY_KEY
                                                                DICT_ALIAS_KEYS_CHANGE_DETECTION)
 from asistente_ladm_col.gui.change_detection.dlg_select_duplicate_parcel_change_detection import SelectDuplicateParcelDialog
 from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.utils.decorators import _with_override_cursor
+from asistente_ladm_col.utils.decorators import with_override_cursor
 from asistente_ladm_col.utils import get_ui_class
 
 WIDGET_UI = get_ui_class('change_detection/changes_per_parcel_panel_widget.ui')
@@ -191,7 +191,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetChanges", "Previous Parcel Number"), PREVIOUS_PARCEL_NUMBER_SEARCH_KEY)
         self.cbo_parcel_fields.addItem(QCoreApplication.translate("DockWidgetChanges", "Folio de Matrícula Inmobiliaria"), FMI_PARCEL_SEARCH_KEY)
 
-    @_with_override_cursor
+    @with_override_cursor
     def search_data(self, **kwargs):
         """
         Get plot geometries associated with parcels, both collected and supplies, zoom to them, fill comparison table

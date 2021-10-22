@@ -146,7 +146,7 @@ class AppProcessingInterface(QObject):
         if count:
             QgsApplication.processingRegistry().providerById("script").refreshAlgorithms()
             if DEFAULT_LOG_MODE == EnumLogMode.DEV:
-                self.logger.debug(__name__, "{} LADM-COL Processing scripts were installed!".format(count, registered_scripts))
+                self.logger.debug(__name__, "{} LADM-COL Processing scripts were installed! {}".format(count, registered_scripts))
             else:
                 self.logger.debug(__name__, "{} LADM-COL Processing scripts were installed!".format(count))
 
