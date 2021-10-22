@@ -19,6 +19,24 @@ class DBMappingConfig:
        modules are properly set and are actually found in the DB. For
        instance, we can easily detect if a user changes the underlying .ili
        model and pretends it to be a known model.
+
+    How to set a mapping:
+
+    1. You need the ilinames that are present in the DB (ili2db metadata tables). You can do this by code,
+       just get a DBConnector object and call its get_db_mapping() method, like this:
+
+       a = qgis.utils.plugins['asistente_ladm_col']
+       a.get_db_connection().get_db_mapping()
+
+    2. Choose variable names you'll use throughout the code. Example: "LC_MYTABLE_T".
+        We suggest you to use these suffixes: t for tables, d for domains, f for fields.
+        If your variable points to an application or extended model, use its prefix.
+
+    3. You can map both tables and fields. It depends on what you'll use in your code.
+
+    4. Note that fields coming for relations have a special notation for their ilinames,
+       namely, they include a ".." separator. Don't worry, get_db_mapping() will give you
+       the proper iliname you need to use, also in the case of fields coming for relations.
     """
     __DB_MAPPING_CONFIG = {
         LADMNames.LADM_COL_MODEL_KEY: {
@@ -606,9 +624,6 @@ class DBMappingConfig:
                 QueryNames.VARIABLE_NAME: "CC_ROAD_TYPE_D", QueryNames.FIELDS_DICT: {}},
         }
     }
-
-    def __init__(self):
-        pass
 
     def get_model_mapping(self, model_key):
         # Return a deepcopy of the mapping to protect the original config
