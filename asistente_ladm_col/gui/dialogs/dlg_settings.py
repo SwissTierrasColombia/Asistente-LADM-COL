@@ -30,7 +30,8 @@ from qgis.gui import QgsMessageBar
 
 from asistente_ladm_col.config.config_db_supported import ConfigDBsSupported
 from asistente_ladm_col.config.enums import EnumDbActionType
-from asistente_ladm_col.config.general_config import (DEFAULT_ENDPOINT_SOURCE_SERVICE,
+from asistente_ladm_col.config.general_config import (DEFAULT_ILI2DB_DEBUG_MODE,
+                                                      DEFAULT_ENDPOINT_SOURCE_SERVICE,
                                                       DEFAULT_USE_SOURCE_SERVICE_SETTING,
                                                       DEFAULT_USE_CUSTOM_MODELS,
                                                       DEFAULT_MODELS_DIR,
@@ -46,6 +47,7 @@ from asistente_ladm_col.lib.db.db_connector import (DBConnector,
                                                     EnumTestLevel)
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.transitional_system.st_session.st_session import STSession
+from asistente_ladm_col.utils.qt_utils import make_save_file_selector
 from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.utils import show_plugin_help
 
@@ -109,6 +111,13 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         self.btn_default_value_sources.clicked.connect(self.set_default_value_source_service)
         self.btn_default_value_transitional_system.clicked.connect(self.set_default_value_transitional_system_service)
+
+        log_file_selector = make_save_file_selector(
+            self.txt_log_file_path,
+            title=QCoreApplication.translate("SettingsDialog", "Create log file"),
+            file_filter=QCoreApplication.translate("SettingsDialog", "Plain text (*.txt)"),
+            extension='.txt')
+        self.btn_log_file_path.clicked.connect(log_file_selector)
 
         self.chk_use_roads.toggled.connect(self.update_images_state)
 
@@ -241,6 +250,12 @@ class SettingsDialog(QDialog, DIALOG_UI):
         res_doc_repo, msg_doc_repo = self.check_document_repository_before_saving_settings()
         if not res_doc_repo:
             self.show_message(msg_doc_repo, Qgis.Warning, 0)
+            return  # Do not close the dialog
+
+        if self.chk_debug.isChecked() and not self.txt_log_file_path.text().strip():
+            self.show_message(
+                QCoreApplication.translate("SettingsDialog", "If the debug is enabled, a log file path has to be set."),
+                Qgis.Warning, 0)
             return  # Do not close the dialog
 
         ladm_col_schema = False
@@ -397,6 +412,8 @@ class SettingsDialog(QDialog, DIALOG_UI):
         settings.setValue('Asistente-LADM-COL/quality/use_roads', self.chk_use_roads.isChecked())
 
         settings.setValue('Asistente-LADM-COL/models/validate_data_importing_exporting', self.chk_validate_data_importing_exporting.isChecked())
+        settings.setValue('Asistente-LADM-COL/models/debug', self.chk_debug.isChecked())
+        settings.setValue('Asistente-LADM-COL/models/log_file_path', self.txt_log_file_path.text())
 
         endpoint_transitional_system = self.txt_service_transitional_system.text().strip()
         settings.setValue('Asistente-LADM-COL/sources/service_transitional_system', (endpoint_transitional_system[:-1] if endpoint_transitional_system.endswith('/') else endpoint_transitional_system) or TransitionalSystemConfig().ST_DEFAULT_DOMAIN)
@@ -476,6 +493,8 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.txt_namespace.setText(str(settings.value('Asistente-LADM-COL/automatic_values/namespace_prefix', "")))
 
         self.chk_validate_data_importing_exporting.setChecked(settings.value('Asistente-LADM-COL/models/validate_data_importing_exporting', True, bool))
+        self.chk_debug.setChecked(settings.value('Asistente-LADM-COL/models/debug', DEFAULT_ILI2DB_DEBUG_MODE, bool))
+        self.txt_log_file_path.setText(settings.value('Asistente-LADM-COL/models/log_file_path', ''))
 
         self.txt_service_transitional_system.setText(settings.value('Asistente-LADM-COL/sources/service_transitional_system', TransitionalSystemConfig().ST_DEFAULT_DOMAIN))
         self.txt_service_endpoint.setText(settings.value('Asistente-LADM-COL/sources/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE))
