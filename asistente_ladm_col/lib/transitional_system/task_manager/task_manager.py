@@ -26,7 +26,7 @@ from qgis.PyQt.QtCore import (QCoreApplication,
 from asistente_ladm_col.config.transitional_system_config import TransitionalSystemConfig
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.transitional_system.task_manager.task import STTask
-from asistente_ladm_col.utils.decorators import _with_override_cursor
+from asistente_ladm_col.utils.decorators import with_override_cursor
 
 
 class STTaskManager(QObject):
@@ -43,7 +43,7 @@ class STTaskManager(QObject):
         self.__registered_tasks = dict()
         self.st_config = TransitionalSystemConfig()
 
-    @_with_override_cursor
+    @with_override_cursor
     def __retrieve_tasks(self, st_user, task_type=None, task_status=None):
         headers = {
             'Authorization': "Bearer {}".format(st_user.get_token()),
@@ -119,7 +119,7 @@ class STTaskManager(QObject):
         self.__registered_tasks = dict()
         self.logger.info(__name__, "All tasks have been unregistered!")
 
-    @_with_override_cursor
+    @with_override_cursor
     def start_task(self, st_user, task_id):
         payload = {}
         headers = {
@@ -154,7 +154,7 @@ class STTaskManager(QObject):
             else:
                 self.logger.warning(__name__, "Status code not handled: {}".format(response.status_code))
 
-    @_with_override_cursor
+    @with_override_cursor
     def cancel_task(self, st_user, task_id, reason):
         payload = json.dumps({"reason": reason})
         headers = {
@@ -186,7 +186,7 @@ class STTaskManager(QObject):
             else:
                 self.logger.warning(__name__, "Status code not handled: {}, payload: {}".format(response.status_code, payload))
 
-    @_with_override_cursor
+    @with_override_cursor
     def close_task(self, st_user, task_id):
         payload = {}
         headers = {

@@ -68,7 +68,7 @@ from asistente_ladm_col.logic.ladm_col.config.queries.qgis.ctm12_queries import 
                                                                                  get_insert_cm12_bounds_query,
                                                                                  get_ctm12_bounds_exist_query)
 from asistente_ladm_col.utils.crs_utils import get_ctm12_crs, get_crs_authid
-from asistente_ladm_col.utils.decorators import _activate_processing_plugin
+from asistente_ladm_col.utils.decorators import activate_processing_plugin
 from asistente_ladm_col.lib.geometry import GeometryUtils
 from asistente_ladm_col.utils.qgis_model_baker_utils import QgisModelBakerUtils
 from asistente_ladm_col.utils.qt_utils import (OverrideCursor,
@@ -1021,7 +1021,7 @@ class AppCoreInterface(QObject):
 
         return mapping
 
-    @_activate_processing_plugin
+    @activate_processing_plugin
     def save_field_mapping(self, ladm_col_layer_name):
         if not os.path.exists(FIELD_MAPPING_PATH):
             os.makedirs(FIELD_MAPPING_PATH)
@@ -1113,7 +1113,7 @@ class AppCoreInterface(QObject):
 
         return csv_layer_export
 
-    @_activate_processing_plugin
+    @activate_processing_plugin
     def copy_csv_to_db(self, csv_layer, db, target_layer_name):
         QgsProject.instance().addMapLayer(csv_layer)
 
@@ -1156,7 +1156,7 @@ class AppCoreInterface(QObject):
 
         return True
 
-    @_activate_processing_plugin
+    @activate_processing_plugin
     def run_etl_model_in_backgroud_mode(self, db, input_layer, ladm_col_layer_name):
         output_layer = self.get_layer(db, ladm_col_layer_name, load=True)
         start_feature_count = output_layer.featureCount()
@@ -1197,7 +1197,7 @@ class AppCoreInterface(QObject):
                                                                       "Model '{}' was not found and cannot be opened!").format(model_name))
             return False
 
-    @_activate_processing_plugin
+    @activate_processing_plugin
     def show_etl_model(self, db, input_layer, ladm_col_layer_name, field_mapping=''):
         output = self.get_layer(db, ladm_col_layer_name, load=True)
         if not output:

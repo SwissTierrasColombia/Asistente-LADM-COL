@@ -32,7 +32,7 @@ from asistente_ladm_col.config.ili2db_names import ILI2DBNames
 from asistente_ladm_col.lib.dependency.java_dependency import JavaDependency
 from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
 from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.utils.decorators import _with_override_cursor
+from asistente_ladm_col.utils.decorators import with_override_cursor
 
 
 class Ili2DB(QObject):
@@ -193,7 +193,7 @@ class Ili2DB(QObject):
 
         return configuration
 
-    @_with_override_cursor
+    @with_override_cursor
     def import_schema(self, db, ili_models=list(), create_basket_col=False):
         # Check prerequisite
         if not self.get_full_java_exe_path():
@@ -234,7 +234,7 @@ class Ili2DB(QObject):
         self.logger.clear_status()
         return res, msg
 
-    @_with_override_cursor
+    @with_override_cursor
     def import_data(self, db, xtf_path, dataset='', baskets=list(), disable_validation=False):
         # Check prerequisite
         if not self.get_full_java_exe_path():
@@ -276,7 +276,7 @@ class Ili2DB(QObject):
         self.logger.clear_status()
         return res, msg
 
-    @_with_override_cursor
+    @with_override_cursor
     def export(self, db, xtf_path, dataset='', baskets=list(), disable_validation=False):
         # Check prerequisite
         if not self.get_full_java_exe_path():
@@ -319,7 +319,7 @@ class Ili2DB(QObject):
         self.logger.clear_status()
         return res, msg
 
-    @_with_override_cursor
+    @with_override_cursor
     def update(self, db, xtf_path, dataset_name):
         # Check prerequisite
         if not self.get_full_java_exe_path():
