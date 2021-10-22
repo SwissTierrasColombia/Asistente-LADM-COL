@@ -29,6 +29,7 @@ PLUGIN_VERSION = get_plugin_metadata('asistente_ladm_col', 'version')
 PLUGIN_NAME = get_plugin_metadata('asistente_ladm_col', 'name')
 PLUGINS_DIR = os.path.dirname(PLUGIN_DIR)
 
+DEFAULT_ILI2DB_DEBUG_MODE = False
 DEFAULT_USE_ROADS_VALUE = False
 DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE = True
 HELP_URL = "https://swisstierrascolombia.github.io/Asistente-LADM-COL"

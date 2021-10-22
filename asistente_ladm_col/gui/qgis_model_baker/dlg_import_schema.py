@@ -38,7 +38,8 @@ from qgis.PyQt.QtWidgets import (QDialog,
 from qgis.core import Qgis
 from qgis.gui import QgsMessageBar
 
-from asistente_ladm_col.config.general_config import (DEFAULT_SRS_AUTH,
+from asistente_ladm_col.config.general_config import (DEFAULT_ILI2DB_DEBUG_MODE,
+                                                      DEFAULT_SRS_AUTH,
                                                       DEFAULT_SRS_CODE,
                                                       COLLECTED_DB_SOURCE,
                                                       SETTINGS_CONNECTION_TAB_INDEX,
@@ -419,6 +420,10 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         full_java_exe_path = JavaDependency.get_full_java_exe_path()
         if full_java_exe_path:
             self.base_configuration.java_path = full_java_exe_path
+
+        # Debug mode
+        self.base_configuration.debugging_enabled = QSettings().value('Asistente-LADM-COL/models/debug', DEFAULT_ILI2DB_DEBUG_MODE, type=bool)
+        self.base_configuration.logfile_path = QSettings().value('Asistente-LADM-COL/models/log_file_path', '')
 
         # User could have changed the default values
         self.use_local_models = QSettings().value('Asistente-LADM-COL/models/custom_model_directories_is_checked', DEFAULT_USE_CUSTOM_MODELS, type=bool)
