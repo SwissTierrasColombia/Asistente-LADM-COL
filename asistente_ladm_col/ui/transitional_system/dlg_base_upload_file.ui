@@ -64,7 +64,7 @@
        <item row="0" column="1">
         <widget class="QGroupBox" name="gbx_page_1">
          <property name="title">
-          <string>Selecciona y describe los archivos a subir</string>
+          <string>Selecciona y describe los archivos a enviar</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
           <property name="topMargin">
@@ -95,7 +95,7 @@
           <item row="5" column="0" colspan="2">
            <widget class="QPlainTextEdit" name="txt_comments">
             <property name="placeholderText">
-             <string>Describe el (los) archivo(s) que vas a subir.</string>
+             <string>Describe el (los) archivo(s) que vas a enviar.</string>
             </property>
            </widget>
           </item>
