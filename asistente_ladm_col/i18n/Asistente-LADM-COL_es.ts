@@ -3104,7 +3104,7 @@
     </message>
     <message>
         <location filename="../ui/dialogs/dlg_settings.ui" line="123"/>
-        <location filename="../ui/dialogs/dlg_settings.ui" line="174"/>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="142"/>
         <source>Models</source>
         <translation>Modelos</translation>
     </message>
@@ -3121,22 +3121,22 @@
         <translation type="vanished">[Se busca en %PATH y %JAVA_HOME de manera predeterminada]</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/dlg_settings.ui" line="217"/>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="185"/>
         <source>…</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/dlg_settings.ui" line="224"/>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="192"/>
         <source>Use models from local folders</source>
         <translation>Usar modelos de carpetas locales</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/dlg_settings.ui" line="204"/>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="172"/>
         <source>Use models from Internet repository </source>
         <translation>Usar modelos de repositorio de Internet </translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/dlg_settings.ui" line="186"/>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="154"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
 &lt;p&gt;Directories which contain Interlis Models (ili files). Several paths can be separated with a semicolon `;`. It is also possible to specify URL&apos;s of model repositories.&lt;/p&gt;
 &lt;dl&gt;
@@ -3157,12 +3157,12 @@
 &lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/dlg_settings.ui" line="197"/>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="165"/>
         <source>%ILI_FROM_DB;%XTF_DIR;http://models.interlis.ch/;%JAR_DIR</source>
         <translation>%ILI_FROM_DB;%XTF_DIR;http://models.interlis.ch/;%JAR_DIR</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/dlg_settings.ui" line="248"/>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="334"/>
         <source>Quality</source>
         <translation>Calidad</translation>
     </message>
@@ -3175,22 +3175,22 @@
         <translation type="vanished">200</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/dlg_settings.ui" line="336"/>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="422"/>
         <source>Missing roads will not be marked as errors.</source>
         <translation>Las vías faltantes no serán marcadas como errores.</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/dlg_settings.ui" line="349"/>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="435"/>
         <source>Missing roads wil be marked as errors.</source>
         <translation>Las vías faltantes serán marcadas como errores.</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/dlg_settings.ui" line="301"/>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="387"/>
         <source>Take roads into account when checking for gaps in plots</source>
         <translation>Tener en cuenta las vías al revisar huecos en terrenos</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/dlg_settings.ui" line="429"/>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="515"/>
         <source>Automatic Values</source>
         <translation>Valores Automáticos</translation>
     </message>
@@ -3199,100 +3199,122 @@
         <translation type="vanished">Por ejemplo, cuando se cargan datos desde archivos CSV o desde otra tabla/capa de QGIS</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/dlg_settings.ui" line="544"/>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="630"/>
         <source>Calculate automatic fields when loading/importing data in batch mode</source>
         <translation>Calcular campos automáticos al cargar/importar datos masivamente</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/dlg_settings.ui" line="464"/>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="550"/>
         <source>Calculate Namespace automatically</source>
         <translation>Calcular Espacio de Nombres automáticamente</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/dlg_settings.ui" line="262"/>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="266"/>
+        <source>Note this only applies to ili2db commands.
+Warning: The log file might be huge.</source>
+        <translation>Esto solo aplica a operaciones de ili2db.
+Advertencia: El archivo de log puede llegar a ser muy grande.</translation>
+    </message>
+    <message>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="270"/>
+        <source>Enable detailed log (debug mode)</source>
+        <translation>Activar modo debug (archivo de log detallado)</translation>
+    </message>
+    <message>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="285"/>
+        <source>Path to log file</source>
+        <translation>Ruta a archivo de log</translation>
+    </message>
+    <message>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="323"/>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+    <message>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="348"/>
         <source>Vertices separated by a distance lesser than or equal to the tolerance,
 will be considered to be in the same location</source>
         <translation>Los vértices separados por una distancia menor o igual a la tolerancia,
 serán considerados como superpuestos</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/dlg_settings.ui" line="266"/>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="352"/>
         <source>Tolerance for topology rules (in milimeters)</source>
         <translation>Tolerancia para reglas topológicas (en milímetros)</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/dlg_settings.ui" line="273"/>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="359"/>
         <source>mm.</source>
         <translation>mm.</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/dlg_settings.ui" line="435"/>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="521"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;A column that contains UUIDs identifying every object in the database. Unlike the t_id, the UUID will remain with the object after an XTF Export. Note that the UUID is not the PK.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Una columna que contiene UUIDs identificando unívocamente cada objeto en la base de datos. A diferencia del t_id, el UUID permanecerá con el objeto luego de exportar a XTF. Nota que el UUID no es la llave primaria.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/dlg_settings.ui" line="438"/>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="524"/>
         <source>Calculate t_ili_tid automatically</source>
         <translation>Calcular t_ili_tid automáticamente</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/dlg_settings.ui" line="461"/>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="547"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Most of the classes in LADM-COL have two attributes that combined must be unique in the whole schema/database. They are called namespace and local_id. To make it easier to fill those attributes, the LADM-COL Assistant can set automatic values for them. Namely, namespace will correspond to an optional prefix (e.g., MY_ORGANIZATION) plus the class name (e.g., BOUNDARY): MY_ORGANIZATION_BOUNDARY.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;La mayoría de clases de LADM-COL tienen dos atributos, cuya combinación debe ser única en toda la base de datos o esquema. Son llamados &apos;espacio de nombres&apos; y &apos;local id&apos;. Para facilitar el llenado de esos atributos, el Asistente LADM-COL puede definir valores automáticos para ellos. Concretamente, el espacio de nombres corresponderá a un prefijo opcional (ej., MI_ORGANIZACIÓN) sumado al nombre de la calase (ej., LINDERO): MI_ORGANIZACIÓN_LINDERO.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/dlg_settings.ui" line="515"/>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="601"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;On the other hand, local_id will correspond to the id of the record in the database of the origin institution.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Por otra parte, local_id corresponderá al identificador del registro en la base de datos de la institución que lo administra.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/dlg_settings.ui" line="518"/>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="604"/>
         <source>Calculate Local ID automatically</source>
         <translation>Calcular Local ID automáticamente</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/dlg_settings.ui" line="541"/>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="627"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;For instance, when loading data from an ETL, from a CSV or from another QGIS table/layer.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Por ejemplo, cuando se cargan datos de un ETL, de un CSV o de otra tabla/capa de QGIS.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/dlg_settings.ui" line="620"/>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="706"/>
         <source>Services</source>
         <translation>Servicios</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/dlg_settings.ui" line="632"/>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="718"/>
         <source>Transitional system</source>
         <translation>Sistema de Transición</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/dlg_settings.ui" line="653"/>
-        <location filename="../ui/dialogs/dlg_settings.ui" line="770"/>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="739"/>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="856"/>
         <source>Use default value</source>
         <translation>Usar URL predeterminada</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/dlg_settings.ui" line="678"/>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="764"/>
         <source>http://apist.proadmintierra.info/</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/dlg_settings.ui" line="692"/>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="778"/>
         <source>You can set here the URL of the Transitional System service.</source>
         <translation>Aquí puedes definir la URL del servicio del Sistema de Transición.</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/dlg_settings.ui" line="746"/>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="832"/>
         <source>https://ide.proadmintierra.info/ws/</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/dlg_settings.ui" line="841"/>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="927"/>
         <source>Advanced</source>
         <translation>Avanzado</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/dlg_settings.ui" line="860"/>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="946"/>
         <source>Active role:</source>
         <translation>Rol activo:</translation>
     </message>
@@ -3305,12 +3327,12 @@ serán considerados como superpuestos</translation>
         <translation type="vanished">Agencia Nacional de Tierras (ANT)</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/dlg_settings.ui" line="155"/>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="215"/>
         <source>Options for data management</source>
         <translation>Opciones de administración de datos</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/dlg_settings.ui" line="161"/>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="221"/>
         <source>Validate data while importing from/exporting to XTF</source>
         <translation>Validar datos cuando se importa o exporta un archivo XTF</translation>
     </message>
@@ -3335,12 +3357,12 @@ serán considerados como superpuestos</translation>
         <translation type="vanished">Espacio de Nombres</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/dlg_settings.ui" line="481"/>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="567"/>
         <source>Prefix</source>
         <translation>Prefijo</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/dlg_settings.ui" line="497"/>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="583"/>
         <source>e.g., your organization&apos;s name</source>
         <translation>por ejemplo, el nombre de tu organización</translation>
     </message>
@@ -3349,18 +3371,18 @@ serán considerados como superpuestos</translation>
         <translation type="vanished">Identificador Local (local ID)</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/dlg_settings.ui" line="728"/>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="814"/>
         <source>Sources</source>
         <translation>Fuentes</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/dlg_settings.ui" line="791"/>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="877"/>
         <source>You can set here the URL of the service to upload source files. </source>
         <translation>Aquí puedes definir la URL del servicio para subir archivos fuente. </translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/dlg_settings.ui" line="671"/>
-        <location filename="../ui/dialogs/dlg_settings.ui" line="739"/>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="757"/>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="825"/>
         <source>Service URL:</source>
         <translation>URL del servicio:</translation>
     </message>
@@ -3369,8 +3391,8 @@ serán considerados como superpuestos</translation>
         <translation type="vanished">Usar repositorio documental</translation>
     </message>
     <message>
-        <location filename="../ui/dialogs/dlg_settings.ui" line="660"/>
-        <location filename="../ui/dialogs/dlg_settings.ui" line="777"/>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="746"/>
+        <location filename="../ui/dialogs/dlg_settings.ui" line="863"/>
         <source>Test Service</source>
         <translation>Probar Servicio</translation>
     </message>
@@ -3517,23 +3539,23 @@ serán considerados como superpuestos</translation>
         <translation type="vanished">GeoPackage</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="113"/>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="283"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="114"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="284"/>
         <source>Save in XTF Transfer File</source>
         <translation>Guardar en archivo de transferencia XTF</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="114"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="115"/>
         <source>XTF Transfer File (*.xtf);;Interlis 1 Transfer File (*.itf);;XML (*.xml);;GML (*.gml)</source>
         <translation>XTF Transfer File (*.xtf);;Interlis 1 Transfer File (*.itf);;XML (*.xml);;GML (*.gml)</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="120"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="121"/>
         <source>[Name of the XTF to be created]</source>
         <translation>[Nombre del XTF a ser creado]</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="128"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="129"/>
         <source>Connection Settings</source>
         <translation>Configurar conexión</translation>
     </message>
@@ -3552,12 +3574,12 @@ serán considerados como superpuestos</translation>
         <translation>Base de datos GeoPackage (*.gpkg)</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="131"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="132"/>
         <source>Show log</source>
         <translation>Mostrar detalles</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="138"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="139"/>
         <source>Export data</source>
         <translation>Exportar datos</translation>
     </message>
@@ -3566,12 +3588,12 @@ serán considerados como superpuestos</translation>
         <translation type="vanished">Debes seleccionar un esquema válido desde el cuál se obtendrán los datos.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="263"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="264"/>
         <source>Please set a valid XTF file before exporting data.</source>
         <translation>Por favor define un archivo XTF válido antes de exportar los datos.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="271"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="272"/>
         <source>Please set a valid schema to export. This schema does not have information to export.</source>
         <translation>Por favor define un esquema válido para exportar. Este esquema no tiene información para exportar.</translation>
     </message>
@@ -3584,59 +3606,59 @@ serán considerados como superpuestos</translation>
         <translation type="vanished">Por favor define una base de datos válida antes de crear el proyecto.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="154"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="155"/>
         <source>The database is not defined!</source>
         <translation>¡La base de datos no está definida!</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="177"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="178"/>
         <source>Warning</source>
         <translation>Advertencia</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="178"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="179"/>
         <source>The Export Data tool is still running. Please wait until it finishes.</source>
         <translation>La herramienta de exportar datos todavía se está ejecutando. Por favor espera hasta que termine.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="210"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="211"/>
         <source>Source DB Connection Settings</source>
         <translation>Configuración de la BD de origen</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="211"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="212"/>
         <source>Configure which DB you want to export data from.</source>
         <translation>Configura desde cuál base de datos quieres exportar datos.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="239"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="240"/>
         <source>Configuring Java {}...</source>
         <translation>Configurando Java {}...</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="252"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="253"/>
         <source>Are you sure you want to export your data without validation?</source>
         <translation>¿Estás segura/o que quieres exportar los datos sin validación?</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="254"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="255"/>
         <source>Export XTF without validation?</source>
         <translation>¿Exportar XTF sin validación?</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="282"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="283"/>
         <source>{filename} already exists.
 Do you want to replace it?</source>
         <translation>{filename} ya existe.
 ¿Quieres reemplazarlo?</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="316"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="317"/>
         <source>An error occurred when exporting the data. For more information see the log...</source>
         <translation>Ocurrió un error cuando se exportaban datos. Para más información revisa los detalles del log...</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="328"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="329"/>
         <source>Java {} could not be found. You can configure the JAVA_HOME environment variable manually, restart QGIS and try again.</source>
         <translation>No se pudo encontrar Java {}. Puedes configurar la variable de entorno JAVA_HOME manualmente, reiniciar QGIS e intentar de nuevo.</translation>
     </message>
@@ -3645,12 +3667,12 @@ Do you want to replace it?</source>
         <translation type="vanished">No se pudo encontrar Java. Puedes configurar la variable de entorno JAVA_HOME, reiniciar QGIS e intentarlo de nuevo.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="340"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="341"/>
         <source>Export of the data was successfully completed.</source>
         <translation>Se exportaron los datos exitósamente.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="425"/>
+        <location filename="../gui/qgis_model_baker/dlg_export_data.py" line="430"/>
         <source>Finished ({})</source>
         <translation>Terminado ({})</translation>
     </message>
@@ -3826,102 +3848,102 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">[Nombre de la base de datos GeoPackage que va a ser creada]</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="124"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="125"/>
         <source>[Name of the XTF to be imported]</source>
         <translation>[Nombre del XTF a ser importado]</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="135"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="136"/>
         <source>Show log</source>
         <translation>Mostrar detalles</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="77"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="78"/>
         <source>Import data</source>
         <translation>Importar datos</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="78"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="79"/>
         <source>Go to Create Structure...</source>
         <translation>Ir a Crear Estructura...</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="120"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="121"/>
         <source>Open Transfer or Catalog File</source>
         <translation>Abrir archivo de transferencia o catálogo</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="132"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="133"/>
         <source>Connection Settings</source>
         <translation>Configurar conexión</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="160"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="161"/>
         <source>Warning</source>
         <translation>Advertencia</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="161"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="162"/>
         <source>The Import Data tool is still running. Please wait until it finishes.</source>
         <translation>La herramienta de importar datos todavía se está ejecutando. Por favor espera hasta que termine.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="190"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="191"/>
         <source>The database is not defined!</source>
         <translation>¡La base de datos no está definida!</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="220"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="221"/>
         <source>No models were found in the XTF. Is it a valid file?</source>
         <translation>No se encontraron modelos en el archivo XTF. ¿Es un archivo válido?</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="226"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="227"/>
         <source>Please set a valid XTF file</source>
         <translation>Por favor selecciona un archivo XTF válido</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="248"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="249"/>
         <source>Target DB Connection Settings</source>
         <translation>Configuración de la BD de destino</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="249"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="250"/>
         <source>Configure where do you want the XTF data to be imported.</source>
         <translation>Configura a cuál base de datos le quieres importar datos.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="276"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="277"/>
         <source>Please set a valid XTF file before importing data. XTF file does not exist.</source>
         <translation>Por favor define un XTF válido antes de importar datos. El archivo XTF no existe.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="284"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="285"/>
         <source>Configuring Java {}...</source>
         <translation>Configurando Java {}...</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="297"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="298"/>
         <source>Are you sure you want to import your data without validation?</source>
         <translation>¿Estás segura/o que quieres importar los datos sin validación?</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="299"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="300"/>
         <source>Import XTF without validation?</source>
         <translation>¿Importar XTF sin validación?</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="308"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="309"/>
         <source>Please set a valid XTF before importing data.</source>
         <translation>Por favor define un archivo XTF válido antes de importar los datos.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="316"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="317"/>
         <source>The selected XTF file does not have information according to the LADM-COL model to import.</source>
         <translation>El archivo XTF seleccionado no tiene información correspondiente al modelo LADM-COL para importar.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="329"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="330"/>
         <source>The selected XTF file does not have data from any LADM-COL model supported by the LADM-COL Assistant. Therefore, you cannot import it! These are the models supported:
 
  * {}</source>
@@ -3930,7 +3952,7 @@ p, li { white-space: pre-wrap; }
  * {}</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="342"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="343"/>
         <source>IMPORT ERROR: The XTF file to import does not have the same models as the target database schema. Please create a schema that also includes the following missing modules:
 
  * {}</source>
@@ -3939,7 +3961,7 @@ p, li { white-space: pre-wrap; }
  * {}</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="399"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="400"/>
         <source>Java {} could not be found. You can configure the JAVA_HOME environment variable manually, restart QGIS and try again.</source>
         <translation>No se pudo encontrar Java {}. Puedes configurar la variable de entorno JAVA_HOME manualmente, reiniciar QGIS e intentar de nuevo.</translation>
     </message>
@@ -3948,7 +3970,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Por favor define una base de datos válida antes de crear el proyecto.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="394"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="395"/>
         <source>An error occurred when importing the data. For more information see the log...</source>
         <translation>Ocurrió un error cuando se importaban datos. Para más información revisa los detalles del log...</translation>
     </message>
@@ -3961,17 +3983,17 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">No se encontró JAVA. Por favor &lt;a href=&quot;https://java.com/en/download/&quot;&gt;instala Java&lt;/a&gt; o &lt;a href=&quot;#configure&quot;&gt;configura una ruta personalizada a Java&lt;/a&gt;. La variable de entorno JAVA_HOME también está soportada.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="412"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="413"/>
         <source>Import of the data was successfully completed</source>
         <translation>Se importaron los datos exitósamente</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="516"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_data.py" line="521"/>
         <source>Error when importing data</source>
         <translation>Error al importar datos</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="76"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="77"/>
         <source>Go to Import Data...</source>
         <translation>Ir a Importar Datos...</translation>
     </message>
@@ -4198,7 +4220,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">[Nombre del esquema a ser creado]</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="125"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="126"/>
         <source>Connection Settings</source>
         <translation>Configurar conexión</translation>
     </message>
@@ -4221,52 +4243,52 @@ p, li { white-space: pre-wrap; }
         <translation>Base de datos GeoPackage (*.gpkg)</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="133"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="134"/>
         <source>Show log</source>
         <translation>Mostrar detalles</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="75"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="76"/>
         <source>Create LADM-COL structure</source>
         <translation>Crear estructura LADM-COL</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="163"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="164"/>
         <source>Warning</source>
         <translation>Advertencia</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="164"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="165"/>
         <source>The Import Schema tool is still running. Please wait until it finishes.</source>
         <translation>La herramienta de crear estructura LADM-COL todavía se está ejecutando. Por favor espera hasta que termine.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="206"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="207"/>
         <source>The database is not defined!</source>
         <translation>¡La base de datos no está definida!</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="252"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="253"/>
         <source>Target DB Connection Settings</source>
         <translation>Configuración de la BD de destino</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="253"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="254"/>
         <source>Configure where do you want the LADM-COL structure to be created.</source>
         <translation>Configura a cuál base de datos le quieres crear la estructura LADM-COL.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="282"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="283"/>
         <source>Configuring Java {}...</source>
         <translation>Configurando Java {}...</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="328"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="329"/>
         <source>Java {} could not be found. You can configure the JAVA_HOME environment variable manually, restart QGIS and try again.</source>
         <translation>No se pudo encontrar Java {}. Puedes configurar la variable de entorno JAVA_HOME manualmente, reiniciar QGIS e intentar de nuevo.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="389"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="390"/>
         <source>The {} (Colombian National Origin) is recommended,&lt;br&gt;since official models were created for that projection.</source>
         <translation>Se recomienda el {} (Origen Nacional),&lt;br&gt;pues los modelos oficiales fueron creados para trabajar con esa proyección.</translation>
     </message>
@@ -4283,12 +4305,12 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Por favor define un esquema válido antes de crear la estructura LADM-COL.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="295"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="296"/>
         <source>You should select a valid model(s) before creating the LADM-COL structure.</source>
         <translation>Debes seleccionar modelo(s) válidos antes de crear la estructura LADM-COL.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="323"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="324"/>
         <source>An error occurred when creating the LADM-COL structure. For more information see the log...</source>
         <translation>Ocurrió un error cuando se creaba la estructura LADM-COL. Para más información revisa los detalles del log...</translation>
     </message>
@@ -4297,14 +4319,14 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">No se pudo encontrar Java. Puedes configurar la variable de entorno JAVA_HOME, reiniciar QGIS e intentarlo de nuevo.</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="343"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="344"/>
         <source>
 Done!</source>
         <translation>
 ¡Terminado exitósamente!</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="344"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="345"/>
         <source>LADM-COL structure was successfully created!</source>
         <translation>¡La estructura LADM-COL se creó exitósamente!</translation>
     </message>
@@ -4313,7 +4335,7 @@ Done!</source>
         <translation type="vanished">Selecciona un código EPSG de Sistema de Referencia de Coordenadas</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="392"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="393"/>
         <source>Coordinate Reference System</source>
         <translation>Sistema de Referencia de Coordenadas</translation>
     </message>
@@ -4322,12 +4344,12 @@ Done!</source>
         <translation type="vanished">La estructura LADM-COL se creó exitósamente</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="480"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="485"/>
         <source>Model(s) successfully imported into the database!</source>
         <translation>¡Se importaron exitósamente los modelos a la base de datos!</translation>
     </message>
     <message>
-        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="483"/>
+        <location filename="../gui/qgis_model_baker/dlg_import_schema.py" line="488"/>
         <source>Finished with errors!</source>
         <translation>¡Terminado con errores!</translation>
     </message>
@@ -4613,13 +4635,21 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../ui/transitional_system/dlg_base_upload_file.ui" line="67"/>
-        <source>Selecciona y describe los archivos a subir</source>
-        <translation>Selecciona y describe los archivos a subir</translation>
+        <source>Selecciona y describe los archivos a enviar</source>
+        <translation>Selecciona y describe los archivos a enviar</translation>
     </message>
     <message>
         <location filename="../ui/transitional_system/dlg_base_upload_file.ui" line="98"/>
+        <source>Describe el (los) archivo(s) que vas a enviar.</source>
+        <translation>Describe el (los) archivo(s) que vas a enviar.</translation>
+    </message>
+    <message>
+        <source>Selecciona y describe los archivos a subir</source>
+        <translation type="vanished">Selecciona y describe los archivos a subir</translation>
+    </message>
+    <message>
         <source>Describe el (los) archivo(s) que vas a subir.</source>
-        <translation>Describe el (los) archivo(s) que vas a subir.</translation>
+        <translation type="vanished">Describe el (los) archivo(s) que vas a subir.</translation>
     </message>
     <message>
         <location filename="../ui/transitional_system/dlg_base_upload_file.ui" line="148"/>
@@ -9945,7 +9975,22 @@ You&apos;ll continue with a limited functionality until you configure an LADM-CO
 ¡Continuarás con funcionalidades limitadas hasta que configures una base de datos LADM-COL válida!</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_settings.py" line="294"/>
+        <location filename="../gui/dialogs/dlg_settings.py" line="117"/>
+        <source>Create log file</source>
+        <translation>Crear archivo de log</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_settings.py" line="118"/>
+        <source>Plain text (*.txt)</source>
+        <translation>Texto plano (*.txt)</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_settings.py" line="257"/>
+        <source>If the debug is enabled, a log file path has to be set.</source>
+        <translation>Si el modo debug está activo, debe indicarse una ruta al archivo de log.</translation>
+    </message>
+    <message>
+        <location filename="../gui/dialogs/dlg_settings.py" line="309"/>
         <source>No LADM-COL DB has been configured! You&apos;ll continue with limited functionality until you configure a LADM-COL DB.
 
 Do you want to go to &apos;Create LADM-COL structure&apos; dialog?</source>
@@ -9954,27 +9999,27 @@ Do you want to go to &apos;Create LADM-COL structure&apos; dialog?</source>
 ¿Quieres ir al diálogo &quot;Crear estructura LADM-COL&quot;?</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_settings.py" line="296"/>
+        <location filename="../gui/dialogs/dlg_settings.py" line="311"/>
         <source>Important</source>
         <translation>Importante</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_settings.py" line="299"/>
+        <location filename="../gui/dialogs/dlg_settings.py" line="314"/>
         <source>Yes, go to create structure</source>
         <translation>Si, ir a crear estructura</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_settings.py" line="300"/>
+        <location filename="../gui/dialogs/dlg_settings.py" line="315"/>
         <source>No, I&apos;ll do it later</source>
         <translation>No, lo haré luego</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_settings.py" line="313"/>
+        <location filename="../gui/dialogs/dlg_settings.py" line="328"/>
         <source>Warning</source>
         <translation>Advertencia</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_settings.py" line="314"/>
+        <location filename="../gui/dialogs/dlg_settings.py" line="329"/>
         <source>You have a ST connection opened and you want to change your role.
 If you confirm that you want to change your role, you&apos;ll be logged out from the ST.
 
@@ -9985,12 +10030,12 @@ Si confirmas que quieres cambiar el rol, se cerrará tu sesión del Sistema de T
 ¿Realmente quieres cambiar el rol?</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_settings.py" line="354"/>
+        <location filename="../gui/dialogs/dlg_settings.py" line="369"/>
         <source>The source service is not valid, so it cannot be activated! Adjust such configuration before saving settings.</source>
         <translation>¡El servicio de fuentes documentales no es válido, por eso no puede activarse! Ajusta su configuración antes de guardar.</translation>
     </message>
     <message>
-        <location filename="../gui/dialogs/dlg_settings.py" line="554"/>
+        <location filename="../gui/dialogs/dlg_settings.py" line="573"/>
         <source>Missing roads will be marked as errors.</source>
         <translation>Las vías faltantes serán marcadas como errores.</translation>
     </message>
