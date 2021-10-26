@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 """
-import glob
 import os.path
 from functools import partial
 
@@ -40,6 +39,7 @@ from asistente_ladm_col.gui.field_data_capture.dockwidget_field_data_capture_adm
 from asistente_ladm_col.gui.field_data_capture.dockwidget_field_data_capture_coordinator_surveyor import DockWidgetFieldDataCaptureCoordinatorSurveyor
 from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
 from asistente_ladm_col.gui.queries.ladm_query_controller import LADMQueryController
+from asistente_ladm_col.core.xtf_model_converter.xtf_model_converter_controller import XTFModelConverterController
 from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
 from asistente_ladm_col.lib.dependency.plugin_dependency import PluginDependency
 from asistente_ladm_col.config.enums import (EnumDbActionType,
@@ -1157,11 +1157,12 @@ class AsistenteLADMCOLPlugin(QObject):
 
         context = args[0]
 
-        dlg = XTFModelConverterDialog(self.main_window)
+        self.logger.info(__name__, "XTF Model Converter dialog opened.")
+        controller = XTFModelConverterController()
+        dlg = XTFModelConverterDialog(controller, self.main_window)
         if isinstance(context, TaskContext):
             dlg.on_result.connect(context.get_slot_on_result())
 
-        self.logger.info(__name__, "XTF Model Converter dialog opened.")
         dlg.exec_()
 
     @validate_if_wizard_is_open
