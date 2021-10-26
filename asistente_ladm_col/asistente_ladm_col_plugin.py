@@ -645,9 +645,9 @@ class AsistenteLADMCOLPlugin(QObject):
         self._export_data_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/export_to_xtf.svg"),
                                            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Export data"),
                                            self.main_window)
-        self._xtf_model_conversion_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/schema.png"),
-                                           QCoreApplication.translate("AsistenteLADMCOLPlugin", "XTF model conversion"),
-                                           self.main_window)
+        self._xtf_model_converter_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/schema.png"),
+                                                   QCoreApplication.translate("AsistenteLADMCOLPlugin", "XTF model converter"),
+                                                   self.main_window)
         self._settings_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/settings.svg"),
                                         QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"),
                                         self.main_window)
@@ -660,7 +660,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._import_schema_action.triggered.connect(partial(self.show_dlg_import_schema, self._context_collected, **{'selected_models':list()}))
         self._import_data_action.triggered.connect(partial(self.show_dlg_import_data, self._context_collected))
         self._export_data_action.triggered.connect(partial(self.show_dlg_export_data, self._context_collected))
-        self._xtf_model_conversion_action.triggered.connect(partial(self.show_dlg_xtf_model_conversion, self._context_collected))
+        self._xtf_model_converter_action.triggered.connect(partial(self.show_dlg_xtf_model_converter, self._context_collected))
         self._queries_action.triggered.connect(partial(self.show_queries, self._context_collected))
         self._load_layers_action.triggered.connect(partial(self.load_layers_from_qgis_model_baker, self._context_collected))
         self._settings_action.triggered.connect(partial(self.show_settings, self._context_settings))
@@ -676,7 +676,7 @@ class AsistenteLADMCOLPlugin(QObject):
             ACTION_SCHEMA_IMPORT: self._import_schema_action,
             ACTION_IMPORT_DATA: self._import_data_action,
             ACTION_EXPORT_DATA: self._export_data_action,
-            ACTION_XTF_MODEL_CONVERSION: self._xtf_model_conversion_action,
+            ACTION_XTF_MODEL_CONVERTER: self._xtf_model_converter_action,
             ACTION_SETTINGS: self._settings_action,
             ACTION_HELP: self._help_action,
             ACTION_ABOUT: self._about_action
@@ -1149,19 +1149,19 @@ class AsistenteLADMCOLPlugin(QObject):
         dlg.exec_()
 
     @validate_if_wizard_is_open
-    def show_dlg_xtf_model_conversion(self, *args):
-        from .gui.xtf_model_conversion.dlg_xtf_model_conversion import XtfModelConversionDialog
+    def show_dlg_xtf_model_converter(self, *args):
+        from .gui.xtf_model_converter.dlg_xtf_model_converter import XTFModelConverterDialog
 
         if not args or not isinstance(args[0], Context):
             return
 
         context = args[0]
 
-        dlg = XtfModelConversionDialog(self.main_window)
+        dlg = XTFModelConverterDialog(self.main_window)
         if isinstance(context, TaskContext):
             dlg.on_result.connect(context.get_slot_on_result())
 
-        self.logger.info(__name__, "XTF Model Conversion dialog ({}) opened.".format(context.get_db_sources()[0]))
+        self.logger.info(__name__, "XTF Model Converter dialog opened.")
         dlg.exec_()
 
     @validate_if_wizard_is_open

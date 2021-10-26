@@ -41,6 +41,7 @@ class AppSettings:
     EXPORT_DIR_FIELD_DATA_KEY = "Asistente-LADM-COL/field_data_capture/export_dir"
     SNC_FILES_DIR_KEY = "Asistente-LADM-COL/etl_snc/files_path"
     TOLERANCE_KEY = "Asistente-LADM-COL/quality/tolerance"
+    XTF_CONVERTER_SPLITTER_COLLAPSED = "Asistente-LADM-COL/xtf_model_converter/xtf_converter_splitter_collapsed"
 
     def __init__(self):
         self.__settings = QSettings()
@@ -152,3 +153,11 @@ class AppSettings:
         elif TOLERANCE_MAX_VALUE > value >= 0:
             tolerance = value
         self.__settings.setValue(self.TOLERANCE_KEY, tolerance)
+
+    @property
+    def xtf_converter_splitter_collapsed(self):
+        return self.__settings.value(self.XTF_CONVERTER_SPLITTER_COLLAPSED, False, bool)
+
+    @xtf_converter_splitter_collapsed.setter
+    def xtf_converter_splitter_collapsed(self, value):
+        self.__settings.setValue(self.XTF_CONVERTER_SPLITTER_COLLAPSED, value)
