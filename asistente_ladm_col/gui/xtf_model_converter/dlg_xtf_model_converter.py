@@ -1,12 +1,13 @@
-# -*- coding: utf-8 -*-
 """
 /***************************************************************************
-                              Asistente LADM_COL
+                              Asistente LADM-COL
                              --------------------
-        begin                : 2021-01-29
-        git sha              : :%H$
-        copyright            : (C) 2021 by Sergio Ramírez (SwissTierras Colombia)
-        email                : seralra96@gmail.com
+        begin           : 2021-01-29
+        git sha         : :%H$
+        copyright       : (C) 2021 by Sergio Ramírez (SwissTierras Colombia)
+                          (C) 2021 by Germán Carrillo (SwissTierras Colombia)
+        email           : seralra96@gmail.com
+                          gcarrillo@linuxmail.org
  ***************************************************************************/
 /***************************************************************************
  *                                                                         *
@@ -25,27 +26,21 @@ from qgis.PyQt.QtCore import (Qt,
                               QCoreApplication,
                               pyqtSignal)
 from qgis.PyQt.QtGui import QValidator
-from qgis.core import (Qgis,
-                       QgsProject,
-                       QgsVectorLayer)
+from qgis.core import Qgis
 from qgis.gui import QgsMessageBar
 
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qt_utils import (FileValidator,
-                                               DirValidator,
-                                               NonEmptyStringValidator,
                                                Validators,
-                                               normalize_local_url,
-                                               make_file_selector,
-                                               make_folder_selector)
+                                               make_file_selector)
 from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.lib.processing.custom_processing_feedback import CustomFeedback
 
-DIALOG_LOG_EXCEL_UI = get_ui_class('xtf_model_conversion/dlg_xtf_model_conversion.ui')
+DIALOG_XTF_MODEL_CONVERTER_UI = get_ui_class('xtf_model_converter/dlg_xtf_model_converter.ui')
 
 
-class XtfModelConversionDialog(QDialog, DIALOG_LOG_EXCEL_UI):
+class XTFModelConverterDialog(QDialog, DIALOG_XTF_MODEL_CONVERTER_UI):
     on_result = pyqtSignal(bool)  # whether the tool was run successfully or not
 
     def __init__(self, parent=None):
@@ -59,7 +54,7 @@ class XtfModelConversionDialog(QDialog, DIALOG_LOG_EXCEL_UI):
 
         self._dialog_mode = None
         self._running_tool = False        
-        self.tool_name = QCoreApplication.translate("XtfModelConversionDialog", "XTF Model Conversion")
+        self.tool_name = QCoreApplication.translate("XTFModelConverterDialog", "XTF Model Converter")
  
         # Initialize
         self.initialize_feedback()
@@ -72,32 +67,37 @@ class XtfModelConversionDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         # Set connections
         self.buttonBox.accepted.disconnect()
         self.buttonBox.accepted.connect(self.accepted)
-        self.buttonBox.button(QDialogButtonBox.Ok).setText(QCoreApplication.translate("XtfModelConversionDialog", "Convert"))
+        self.buttonBox.button(QDialogButtonBox.Ok).setText(QCoreApplication.translate("XTFModelConverterDialog", "Convert"))
         self.finished.connect(self.finished_slot)
 
-        self.btn_browse_file_xtf_in.clicked.connect(
-            make_file_selector(self.txt_file_path_xtf_in, QCoreApplication.translate("XtfModelConversionDialog",
+        self.btn_browse_file_source_xtf.clicked.connect(
+            make_file_selector(self.txt_source_xtf, QCoreApplication.translate("XTFModelConverterDialog",
                         "Select the INTERLIS Transfer File .xtf file you want to convert"),
-                        QCoreApplication.translate("XtfModelConversionDialog", 'XTF File (*.xtf)')))
+                        QCoreApplication.translate("XTFModelConverterDialog", 'Transfer file (*.xtf)')))
 
-        self.btn_browse_file_xtf_out.clicked.connect(
-                make_file_selector(self.txt_file_path_xtf_out, QCoreApplication.translate(
-                "XtfModelConversionDialog", "Set the INTERLIS Transfer File .xtf to export"),
-                        QCoreApplication.translate("XtfModelConversionDialog", 'XTF File (*.xtf)')))
+        self.btn_browse_file_target_xtf.clicked.connect(
+                make_file_selector(self.txt_target_xtf, QCoreApplication.translate(
+                "XTFModelConverterDialog", "Set the output path of the coverted INTERLIS Transfer File"),
+                        QCoreApplication.translate("XTFModelConverterDialog", 'Transfer file (*.xtf)')))
+
+        self.restore_settings()
 
         # Set validations
         file_validator_xtf_in = FileValidator(pattern='*.xtf', allow_non_existing=False)
         file_validator_xtf_out = FileValidator(pattern='*.xtf', allow_non_existing=True)
-        non_empty_validator_name = NonEmptyStringValidator()
 
-        self.txt_file_path_xtf_in.setValidator(file_validator_xtf_in)
-        self.txt_file_path_xtf_out.setValidator(file_validator_xtf_out)
+        self.txt_source_xtf.setValidator(file_validator_xtf_in)
+        self.txt_target_xtf.setValidator(file_validator_xtf_out)
 
-        self.txt_file_path_xtf_in.textChanged.connect(self.validators.validate_line_edits)
-        self.txt_file_path_xtf_out.textChanged.connect(self.validators.validate_line_edits)
+        self.txt_source_xtf.textChanged.connect(self.validators.validate_line_edits)
+        self.txt_target_xtf.textChanged.connect(self.validators.validate_line_edits)
         
-        self.txt_file_path_xtf_in.textChanged.connect(self.input_data_changed)
-        self.txt_file_path_xtf_out.textChanged.connect(self.input_data_changed)
+        self.txt_source_xtf.textChanged.connect(self.input_data_changed)
+        self.txt_target_xtf.textChanged.connect(self.input_data_changed)
+
+        # Trigger validators now
+        self.txt_source_xtf.textChanged.emit(self.txt_source_xtf.text())
+        self.txt_target_xtf.textChanged.emit(self.txt_target_xtf.text())
 
     def progress_configuration(self, base, num_process):
         """
@@ -112,18 +112,23 @@ class XtfModelConversionDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         QCoreApplication.processEvents()  # Listen to cancel from the user
         self.progress.setValue(self.progress_base + self.custom_feedback.progress())
 
+    def accepted(self):
+        self.save_settings()
+        # TODO: Call converter!
+        # self._controller.convert(self.txt_source_xtf.text(), self.txt_target_xtf.text(), converter, params)
+
     def reject(self):
         if self._running_tool:
             reply = QMessageBox.question(self,
-                                         QCoreApplication.translate("XtfModelConversionDialog", "Warning"),
-                                         QCoreApplication.translate("XtfModelConversionDialog",
+                                         QCoreApplication.translate("XTFModelConverterDialog", "Warning"),
+                                         QCoreApplication.translate("XTFModelConverterDialog",
                                                                     "The '{}' tool is still running. Do you want to cancel it? If you cancel, the data might be incomplete in the target database.").format(self.tool_name),
                                          QMessageBox.Yes, QMessageBox.No)
 
             if reply == QMessageBox.Yes:
                 self.custom_feedback.cancel()
                 self._running_tool = False
-                msg = QCoreApplication.translate("XtfModelConversionDialog", "The '{}' tool was cancelled.").format(self.tool_name)
+                msg = QCoreApplication.translate("XTFModelConverterDialog", "The '{}' tool was cancelled.").format(self.tool_name)
                 self.logger.info(__name__, msg)
                 self.show_message(msg, Qgis.Info)
         else:
@@ -134,37 +139,46 @@ class XtfModelConversionDialog(QDialog, DIALOG_LOG_EXCEL_UI):
         self.bar.clearWidgets()
 
     def input_data_changed(self):
-        self.set_import_button_enabled(self.validate_inputs())
+        state_source_xtf = self.txt_source_xtf.validator().validate(self.txt_source_xtf.text().strip(), 0)[0] == QValidator.Acceptable
+        state_target_xtf = self.txt_target_xtf.validator().validate(self.txt_target_xtf.text().strip(), 0)[0] == QValidator.Acceptable
 
-    def set_import_button_enabled(self, enable):
+        state_converter = True
+
+        self.set_convert_button_enabled(state_source_xtf and state_converter and state_target_xtf)
+
+    def set_convert_button_enabled(self, enable):
         self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(enable)
-
-    def validate_inputs(self):
-        raise NotImplementedError
-
-    def validate_common_inputs(self):
-        return self.txt_file_path_gdb.validator().validate(self.txt_file_path_gdb.text().strip(), 0)[0] == QValidator.Acceptable
 
     def initialize_feedback(self):
         self.progress.setValue(0)
         self.progress.setVisible(False)
         self.custom_feedback = CustomFeedback()
         self.custom_feedback.progressChanged.connect(self.progress_changed)
-        self.set_gui_controls_enabled(True)
+        self.set_gui_controls_enabled(False)
 
     def set_gui_controls_enabled(self, enable):
-        if self.buttonBox.button(QDialogButtonBox.Ok) is not None:  # It's None if the tool finished successfully
-            self.set_import_button_enabled(enable)
+        #if self.buttonBox.button(QDialogButtonBox.Ok) is not None:  # It's None if the tool finished successfully
+        #    self.set_convert_button_enabled(enable)
+        # self.gbx_parameters.setEnabled(enable)
+        pass
 
-    def save_settings(self, system):
+    def save_settings(self):
         settings = QSettings()
-        settings.setValue('Asistente-LADM-COL/xtf_model_conversion_{}/xtf_in_path'.format(system), self.txt_file_path_xtf_in.text())
-        settings.setValue('Asistente-LADM-COL/xtf_model_conversion_{}/xtf_out_path'.format(system), self.txt_file_path_xtf_out.text())
+        settings.setValue('Asistente-LADM-COL/xtf_model_converter/xtf_in_path', self.txt_source_xtf.text())
+        settings.setValue('Asistente-LADM-COL/xtf_model_converter/xtf_out_path', self.txt_target_xtf.text())
+
+        # In the main page (source-target configuration), save if splitter is closed
+        self.app.settings.xtf_converter_splitter_collapsed = self.splitter.sizes()[1] == 0
         
-    def restore_settings(self, system):
+    def restore_settings(self):
         settings = QSettings()
-        self.txt_file_path_xtf_in.setText(settings.value('Asistente-LADM-COL/xtf_model_conversion_{}/xtf_in_path'.format(system), ''))
-        self.txt_file_path_xtf_out.setText(settings.value('Asistente-LADM-COL/xtf_model_conversion_{}/xtf_out_path'.format(system), ''))
+        self.txt_source_xtf.setText(settings.value('Asistente-LADM-COL/xtf_model_converter/xtf_in_path', ''))
+        self.txt_target_xtf.setText(settings.value('Asistente-LADM-COL/xtf_model_converter/xtf_out_path', ''))
+
+        # If splitter in the main page was closed before, set it as closed again
+        if self.app.settings.xtf_converter_splitter_collapsed:
+            sizes = self.splitter.sizes()
+            self.splitter.setSizes([sizes[0], 0])
         
     def show_message(self, message, level):
         self.bar.clearWidgets()  # Remove previous messages before showing a new one
