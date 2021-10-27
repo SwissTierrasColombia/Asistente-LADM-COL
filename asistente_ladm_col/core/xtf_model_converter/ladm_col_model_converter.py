@@ -1,19 +1,29 @@
-from abc import ABCMeta
+"""
+/***************************************************************************
+                              Asistente LADM-COL
+                             --------------------
+        begin           : 2021-10-26
+        git sha         : :%H$
+        copyright       : (C) 2021 by Germán Carrillo (SwissTierras Colombia)
+        email           : gcarrillo@linuxmail.org
+ ***************************************************************************/
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License v3.0 as          *
+ *   published by the Free Software Foundation.                            *
+ *                                                                         *
+ ***************************************************************************/
+"""
+from abc import abstractmethod
 
 from qgis.PyQt.QtCore import (pyqtSignal,
                               QObject)
 
-try:
-    from qgis.PyQt.QtCore import pyqtWrapperType
-except ImportError:
-    from sip import wrappertype as pyqtWrapperType
+from asistente_ladm_col.utils.abstract_class import AbstractQObjectMeta
 
 
-class AbstractQObjectMeta(pyqtWrapperType, ABCMeta):
-    pass
-
-
-class LADMColModelConverter(QObject):
+class LADMColModelConverter(QObject, metaclass=AbstractQObjectMeta):
     """
     Abstract class for LADM-COL model converters
     """
@@ -37,8 +47,9 @@ class LADMColModelConverter(QObject):
         return model_full_name in self._from_models
 
     def is_valid(self):
-        return self.id().strip() and self.display_name().strip() and len(self._from_models) and len(self._to_models)
+        return bool(self.id().strip()) and bool(self.display_name().strip()) and len(self._from_models) and len(self._to_models)
 
+    @abstractmethod
     def convert(self, source_xtf, target_xtf, params):
         """
         Convert the data inside the source XTF file to the LADM-COL structure in self.__to_models().
