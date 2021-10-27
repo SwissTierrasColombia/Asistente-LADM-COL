@@ -47,7 +47,7 @@
           </font>
          </property>
          <property name="title">
-          <string>Configure conversion between models</string>
+          <string>Configure conversion between LADM-COL models</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_7">
           <item row="6" column="1">
@@ -89,10 +89,10 @@
              </size>
             </property>
             <property name="toolTip">
-             <string/>
+             <string>Browse source XTF file</string>
             </property>
             <property name="whatsThis">
-             <string>Browse source XTF file</string>
+             <string/>
             </property>
             <property name="text">
              <string>...</string>
@@ -144,10 +144,10 @@
              </size>
             </property>
             <property name="toolTip">
-             <string/>
+             <string>Set an output path for target XTF</string>
             </property>
             <property name="whatsThis">
-             <string>Set an output path for target XTF</string>
+             <string/>
             </property>
             <property name="text">
              <string>...</string>
