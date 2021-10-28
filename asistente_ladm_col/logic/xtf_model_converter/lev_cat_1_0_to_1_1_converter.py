@@ -25,7 +25,7 @@ from asistente_ladm_col.utils.utils import get_number_of_lines_in_file
 
 class Survey10To11Converter(LADMColModelConverter):
     """
-    Abstract class for LADM-COL model converters
+    Convert data from Lev_Cat_V1_0 to Lev_Cat_V1_1
     """
     _REPLACE_STRINGS = {"Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0": "Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1",
                         "<Tipo>Escritura_Publica</Tipo>": "<Tipo>Documento_Publico.Escritura_Publica</Tipo>",
