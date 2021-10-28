@@ -81,6 +81,8 @@ class XTFModelConverterDialog(QDialog, DIALOG_XTF_MODEL_CONVERTER_UI):
                 "XTFModelConverterDialog", "Set the output path of the coverted INTERLIS Transfer File"),
                         QCoreApplication.translate("XTFModelConverterDialog", 'Transfer file (*.xtf)')))
 
+        self._controller.progress_changed.connect(self.progress.setValue)
+
         self.restore_settings()
 
         # Set validations
@@ -110,6 +112,7 @@ class XTFModelConverterDialog(QDialog, DIALOG_XTF_MODEL_CONVERTER_UI):
         self.save_settings()
 
         self.set_gui_controls_enabled(False)
+        self.progress.setVisible(True)
 
         msg = QCoreApplication.translate("XTFModelConverterDialog", "Converting XTF data (this might take a while)...")
         with ProcessWithStatus(msg):
