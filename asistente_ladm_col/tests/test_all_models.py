@@ -3,21 +3,27 @@ from abc import ABC
 
 import nose2
 
-from qgis.testing import start_app
-
-start_app() # need to start before asistente_ladm_col.tests.utils
-
 from asistente_ladm_col.lib.db.db_connector import DBConnector
 from asistente_ladm_col.tests.base_test_for_models import BaseTestForModels
 from asistente_ladm_col.tests.utils import (get_pg_conn,
+                                            drop_pg_schema,
+                                            get_test_path,
                                             get_gpkg_conn,
                                             get_mssql_conn,
-                                            restore_schema_mssql,
-                                            reset_db_mssql,
-                                            restore_schema)
+                                            get_test_copy_path,
+                                            get_gpkg_conn_from_path,
+                                            reset_db_mssql)
+
+from asistente_ladm_col.config.ladm_names import LADMNames
+from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
 
 
 class BaseTestForAllModels(BaseTestForModels, ABC):
+    xtf_path = get_test_path("db/ladm/test_ladm_all_models_v1_1.xtf")
+    models = [LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).full_name(),
+              LADMColModelRegistry().model(LADMNames.VALUATION_MODEL_KEY).full_name(),
+              LADMColModelRegistry().model(LADMNames.CADASTRAL_CARTOGRAPHY_MODEL_KEY).full_name()]
+
     def get_name_of_models(self):
         return 'All models'
 
@@ -35,7 +41,10 @@ class TestAllModelsPG(BaseTestForAllModels, unittest.TestCase):
 
     @classmethod
     def restore_db(cls):
-        restore_schema(cls.schema)
+        drop_pg_schema(cls.schema)
+        db = get_pg_conn(cls.schema)
+        cls.ili2db.import_schema(db, cls.models)
+        cls.ili2db.import_data(db, cls.xtf_path)
 
     @classmethod
     def get_connector(cls) -> DBConnector:
@@ -56,7 +65,11 @@ class TestAllModelsGPKG(BaseTestForAllModels, unittest.TestCase):
 
     @classmethod
     def get_connector(cls) -> DBConnector:
-        return get_gpkg_conn('test_ladm_all_models_gpkg')
+        gpkg_path = get_test_copy_path('db/static/gpkg/ili2db.gpkg')
+        db = get_gpkg_conn_from_path(gpkg_path)
+        cls.ili2db.import_schema(db, cls.models)
+        cls.ili2db.import_data(db, cls.xtf_path)
+        return db
 
 
 class TestAllModelsMSSQL(BaseTestForAllModels, unittest.TestCase):
@@ -68,7 +81,9 @@ class TestAllModelsMSSQL(BaseTestForAllModels, unittest.TestCase):
     @classmethod
     def restore_db(cls):
         reset_db_mssql(cls.schema)
-        restore_schema_mssql(cls.schema)
+        db = get_mssql_conn(cls.schema)
+        cls.ili2db.import_schema(db, cls.models)
+        cls.ili2db.import_data(db, cls.xtf_path)
 
     @classmethod
     def get_connector(cls) -> DBConnector:

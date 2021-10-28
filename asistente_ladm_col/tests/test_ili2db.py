@@ -4,24 +4,19 @@ import tempfile
 from qgis.testing import (start_app,
                           unittest)
 
-from asistente_ladm_col.tests.utils import (get_iface,
-                                            get_test_copy_path,
+from asistente_ladm_col.tests.utils import (get_test_copy_path,
                                             get_test_path,
                                             get_gpkg_conn_from_path,
                                             get_pg_conn,
-                                            drop_schema,
+                                            drop_pg_schema,
                                             get_mssql_conn,
                                             reset_db_mssql,
                                             import_qgis_model_baker,
                                             unload_qgis_model_baker)
-from asistente_ladm_col.asistente_ladm_col_plugin import AsistenteLADMCOLPlugin
 
 from asistente_ladm_col.lib.qgis_model_baker.ili2db import Ili2DB
 from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
 from asistente_ladm_col.config.ladm_names import LADMNames
-
-
-asistente_ladm_col = AsistenteLADMCOLPlugin(get_iface(), False)
 
 start_app()
 
@@ -38,7 +33,7 @@ class TestIli2db(unittest.TestCase):
         gpkg_path = get_test_copy_path('db/static/gpkg/ili2db.gpkg')
         gpkg_db = get_gpkg_conn_from_path(gpkg_path)
 
-        drop_schema(schema_name)
+        drop_pg_schema(schema_name)
         pg_db = get_pg_conn(schema_name)
 
         reset_db_mssql(schema_name)

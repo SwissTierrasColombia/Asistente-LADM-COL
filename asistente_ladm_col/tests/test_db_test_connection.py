@@ -10,8 +10,11 @@ start_app() # need to start before asistente_ladm_col.tests.utils
 from asistente_ladm_col.config.enums import (EnumTestConnectionMsg,
                                              EnumTestLevel)
 from asistente_ladm_col.config.keys.common import REQUIRED_MODELS
+from asistente_ladm_col.lib.qgis_model_baker.ili2db import Ili2DB
+from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
 from asistente_ladm_col.tests.utils import (get_gpkg_conn,
                                             get_pg_conn,
+                                            drop_pg_schema,
                                             restore_schema,
                                             get_gpkg_conn_from_path,
                                             import_qgis_model_baker,
@@ -22,17 +25,28 @@ from asistente_ladm_col.tests.utils import (get_gpkg_conn,
 
 
 class TestDBTestConnection(unittest.TestCase):
+    ladm_all_models = [LADMColModelRegistry().model(LADMNames.VALUATION_MODEL_KEY).full_name(),
+                       LADMColModelRegistry().model(LADMNames.CADASTRAL_CARTOGRAPHY_MODEL_KEY).full_name(),
+                       LADMColModelRegistry().model(LADMNames.SUPPLIES_MODEL_KEY).full_name(),
+                       LADMColModelRegistry().model(LADMNames.SUPPLIES_INTEGRATION_MODEL_KEY).full_name(),
+                       LADMColModelRegistry().model(LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY).full_name(),
+                       LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).full_name(),
+                       LADMColModelRegistry().model(LADMNames.ISO19107_MODEL_KEY).full_name(),
+                       LADMColModelRegistry().model(LADMNames.LADM_COL_MODEL_KEY).full_name()]
 
     @classmethod
     def setUpClass(cls):
         print("\nINFO: Importing Model Baker...")
         import_qgis_model_baker()
+        cls.ili2db = Ili2DB()
 
     def test_pg_test_connection_interlis_ladm_col_models(self):
         print("\nINFO: Validate test_connection() for PostgreSQL (Interlis, no LADM-COL models)...")
 
-        restore_schema('test_ladm_all_models')
+        drop_pg_schema('test_ladm_all_models')
         db_pg = get_pg_conn('test_ladm_all_models')
+        self.ili2db.import_schema(db_pg, self.ladm_all_models)
+
         res, code, msg = db_pg.test_connection()
         self.assertTrue(res, msg)
         self.assertEqual(code, EnumTestConnectionMsg.SCHEMA_WITH_VALID_LADM_COL_STRUCTURE)
@@ -186,8 +200,8 @@ class TestDBTestConnection(unittest.TestCase):
         print("\nINFO: Validate test_connection() for SQL Server (Interlis, no LADM-COL models)...")
         schema = 'test_ladm_all_models'
         reset_db_mssql(schema)
-        restore_schema_mssql(schema)
         db_conn = get_mssql_conn(schema)
+        self.ili2db.import_schema(db_conn, self.ladm_all_models)
         res, code, msg = db_conn.test_connection()
         self.assertTrue(res, msg)
         self.assertEqual(code, EnumTestConnectionMsg.SCHEMA_WITH_VALID_LADM_COL_STRUCTURE)

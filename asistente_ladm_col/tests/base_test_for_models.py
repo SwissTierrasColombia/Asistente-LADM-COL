@@ -1,8 +1,18 @@
 from abc import ABC
 
-from asistente_ladm_col.config.enums import EnumTestLevel
-from asistente_ladm_col.lib.db.db_connector import DBConnector
+from qgis.testing import start_app
 
+start_app() # need to start before asistente_ladm_col.tests.utils
+
+from asistente_ladm_col.config.enums import EnumTestLevel
+from asistente_ladm_col.config.ladm_names import LADMNames
+from asistente_ladm_col.lib.db.db_connector import DBConnector
+from asistente_ladm_col.lib.qgis_model_baker.ili2db import Ili2DB
+from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
+
+
+from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
+                                            unload_qgis_model_baker)
 
 class BaseTestForModels(ABC):
 
@@ -25,6 +35,9 @@ class BaseTestForModels(ABC):
 
     @classmethod
     def setUpClass(cls):
+        import_qgis_model_baker()
+        cls.ili2db = Ili2DB()
+
         print("INFO: Restoring databases to be used")
         cls.restore_db()
         cls.db = cls.get_connector()
@@ -51,5 +64,8 @@ class BaseTestForModels(ABC):
 
     @classmethod
     def tearDownClass(cls):
+        print("INFO: Unloading Model Baker...")
+        unload_qgis_model_baker()
+
         print("INFO: Closing open connections to databases")
         cls.db.conn.close()
