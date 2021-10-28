@@ -48,7 +48,9 @@ class Survey10To11Converter(LADMColModelConverter):
                         "<PuntoTipo>Sin_Materializacion</PuntoTipo>": "<PuntoTipo>Catastro.Sin_Materializacion</PuntoTipo>",
                         "<PuntoTipo>Mojon</PuntoTipo>": "<PuntoTipo>Catastro.Mojon</PuntoTipo>",
                         "<PuntoTipo>Incrustacion</PuntoTipo>": "<PuntoTipo>Catastro.Incrustacion</PuntoTipo>",
-                        "<PuntoTipo>Pilastra</PuntoTipo>": "<PuntoTipo>Catastro.Pilastra</PuntoTipo>"}
+                        "<PuntoTipo>Pilastra</PuntoTipo>": "<PuntoTipo>Catastro.Pilastra</PuntoTipo>",
+                        "Submodelo_Cartografia_Catastral_V1_0": "Submodelo_Cartografia_Catastral_V1_1",
+                        "Submodelo_Avaluos_V1_0": "Submodelo_Avaluos_V1_1"}
 
     def __init__(self):
         LADMColModelConverter.__init__(self)
