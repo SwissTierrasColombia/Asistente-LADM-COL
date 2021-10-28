@@ -19,6 +19,7 @@ from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.core.xtf_model_converter.ladm_col_model_converter import LADMColModelConverter
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.logic.xtf_model_converter.lev_cat_1_0_to_1_1_converter import Survey10To11Converter
+from asistente_ladm_col.logic.xtf_model_converter.lev_cat_1_1_to_1_0_converter import Survey11To10Converter
 from asistente_ladm_col.utils.singleton import Singleton
 
 
@@ -33,6 +34,7 @@ class XTFModelConverterRegistry(metaclass=Singleton):
 
         # Register default models
         self.register_model_converter(Survey10To11Converter())
+        self.register_model_converter(Survey11To10Converter())
 
     def register_model_converter(self, converter):
         """

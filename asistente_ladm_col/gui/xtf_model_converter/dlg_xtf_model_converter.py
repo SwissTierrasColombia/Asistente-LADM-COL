@@ -34,6 +34,7 @@ from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qt_utils import (FileValidator,
                                                Validators,
                                                make_file_selector,
+                                               make_save_file_selector,
                                                ProcessWithStatus)
 from asistente_ladm_col.utils import get_ui_class
 
@@ -77,9 +78,10 @@ class XTFModelConverterDialog(QDialog, DIALOG_XTF_MODEL_CONVERTER_UI):
                         QCoreApplication.translate("XTFModelConverterDialog", 'Transfer file (*.xtf)')))
 
         self.btn_browse_file_target_xtf.clicked.connect(
-                make_file_selector(self.txt_target_xtf, QCoreApplication.translate(
+            make_save_file_selector(self.txt_target_xtf, QCoreApplication.translate(
                 "XTFModelConverterDialog", "Set the output path of the coverted INTERLIS Transfer File"),
-                        QCoreApplication.translate("XTFModelConverterDialog", 'Transfer file (*.xtf)')))
+                                    QCoreApplication.translate("XTFModelConverterDialog", 'Transfer file (*.xtf)'),
+                                    extension='.xtf'))
 
         self._controller.progress_changed.connect(self.progress.setValue)
 
@@ -111,6 +113,7 @@ class XTFModelConverterDialog(QDialog, DIALOG_XTF_MODEL_CONVERTER_UI):
     def accepted(self):
         self.save_settings()
 
+        self.bar.clearWidgets()  # Remove previous messages
         self.set_gui_controls_enabled(False)
         self.progress.setVisible(True)
 
