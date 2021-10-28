@@ -249,9 +249,10 @@ def survey_model_required(func_to_decorate):
             if not db.survey_model_exists():
                 widget = inst.iface.messageBar().createMessage("Asistente LADM-COL",
                                                             QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                                                        "Check your {} database connection. The '{}' model is required for this functionality, but could not be found in your current database. Click the button to go to Settings.").format(
+                                                                                        "Check your {} database connection. The '{} {}' model is required for this functionality, but could not be found in your current database. Click the button to go to Settings.").format(
                                                                 Tr.tr_db_source(db_source),
-                                                                LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).alias()))
+                                                                LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).alias(),
+                                                                LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).supported_version()))
                 button = QPushButton(widget)
                 button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"))
 
@@ -285,9 +286,10 @@ def supplies_model_required(func_to_decorate):
             if not db.supplies_model_exists():
                 widget = inst.iface.messageBar().createMessage("Asistente LADM-COL",
                                                             QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                                                        "Check your {} database connection. The '{}' model is required for this functionality, but could not be found in your current database. Click the button to go to Settings.").format(
+                                                                                        "Check your {} database connection. The '{} {}' model is required for this functionality, but could not be found in your current database. Click the button to go to Settings.").format(
                                                                 Tr.tr_db_source(db_source),
-                                                                LADMColModelRegistry().model(LADMNames.SUPPLIES_MODEL_KEY).alias()))
+                                                                LADMColModelRegistry().model(LADMNames.SUPPLIES_MODEL_KEY).alias(),
+                                                                LADMColModelRegistry().model(LADMNames.SUPPLIES_MODEL_KEY).supported_version()))
                 button = QPushButton(widget)
                 button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"))
 
@@ -325,9 +327,10 @@ def field_data_capture_model_required(func_to_decorate):
             if not db.ladm_col_model_exists(model_key):
                 widget = inst.iface.messageBar().createMessage("Asistente LADM-COL",
                                                                QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                                                          "Check your {} database connection. The '{}' model is required for this functionality, but could not be found in your current database. Click the button to go to Settings.").format(
+                                                                                          "Check your {} database connection. The '{} {}' model is required for this functionality, but could not be found in your current database. Click the button to go to Settings.").format(
                                                                    Tr.tr_db_source(db_source),
-                                                                   LADMColModelRegistry().model(model_key).alias()))
+                                                                   LADMColModelRegistry().model(model_key).alias(),
+                                                                   LADMColModelRegistry().model(model_key).supported_version()))
                 button = QPushButton(widget)
                 button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"))
 
@@ -365,9 +368,10 @@ def valuation_model_required(func_to_decorate):
         if not db.valuation_model_exists():
             widget = inst.iface.messageBar().createMessage("Asistente LADM-COL",
                                                            QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                                                      "Check your {} database connection. The '{}' model is required for this functionality, but could not be found in your current database. Click the button to go to Settings.").format(
+                                                                                      "Check your {} database connection. The '{} {}' model is required for this functionality, but could not be found in your current database. Click the button to go to Settings.").format(
                                                                Tr.tr_db_source(db_source),
-                                                               LADMColModelRegistry().model(LADMNames.VALUATION_MODEL_KEY).alias()))
+                                                               LADMColModelRegistry().model(LADMNames.VALUATION_MODEL_KEY).alias(),
+                                                               LADMColModelRegistry().model(LADMNames.VALUATION_MODEL_KEY).supported_version()))
             button = QPushButton(widget)
             button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"))
 
@@ -405,10 +409,13 @@ def cadastral_cartography_model_required(func_to_decorate):
             if not db.cadastral_cartography_model_exists():
                 widget = inst.iface.messageBar().createMessage("Asistente LADM-COL",
                                                                QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                                                          "Check your {} database connection. The '{}' model is required for this functionality, but could not be found in your current database. Click the button to go to Settings.").format(
+                                                                                          "Check your {} database connection. The '{} {}' model is required for this functionality, but could not be found in your current database. Click the button to go to Settings.").format(
                                                                    Tr.tr_db_source(db_source),
                                                                    LADMColModelRegistry().model(
-                                                                       LADMNames.CADASTRAL_CARTOGRAPHY_MODEL_KEY).alias()))
+                                                                       LADMNames.CADASTRAL_CARTOGRAPHY_MODEL_KEY).alias(),
+                                                                   LADMColModelRegistry().model(
+                                                                       LADMNames.CADASTRAL_CARTOGRAPHY_MODEL_KEY).alias()
+                                                               ))
                 button = QPushButton(widget)
                 button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"))
 
