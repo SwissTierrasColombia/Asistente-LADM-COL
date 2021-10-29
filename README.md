@@ -14,11 +14,11 @@ Enlaces de interés: [Documentación](https://swisstierrascolombia.github.io/Asi
 Un proyecto de: [SwissTierras Colombia](https://swisstierrascolombia.com/) ([BSF-Swissphoto AG](http://bsf-swissphoto.com/) - [INCIGE S.A.S](http://www.incige.com/))
 
 
-:arrow_right: Con la versión actual del Asistente LADM-COL, te sugerimos utilizar QGIS v3.14.16, disponible en https://qgis.org/downloads/
+:arrow_right: Con la versión actual del Asistente LADM-COL, te sugerimos utilizar QGIS v3.20.x, disponible en https://qgis.org/downloads/
 
 ## Soporte de funcionalidades por motor de base de datos
 
-La versión actual ([3.1.4](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/3.1.4)) del Asistente LADM-COL depende del plugin [QGIS Model Baker v6.1.1.5](https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.5/QgisModelBaker_6115.zip) y soporta los motores de Base de Datos PostgreSQL/PostGIS, GeoPackage y SQL Server.
+La versión actual ([3.2.0-beta-1](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/3.2.0-beta-1)) del Asistente LADM-COL depende del plugin [QGIS Model Baker v6.3.2](https://github.com/opengisch/QgisModelBaker/releases/download/v6.3.2/QgisModelBaker.v6.3.2.zip) y soporta los motores de Base de Datos PostgreSQL/PostGIS, GeoPackage y SQL Server.
 
 Este es el soporte funcional para cada motor: 
 
@@ -43,13 +43,13 @@ Para usar el Asistente LADM-COL se requiere:
    - GNU/Linux
    - macOS
  - Software base:
-   - QGIS v3.10.0-A Coruña o superior ([descargar](https://qgis.org/downloads/)).
+   - QGIS v3.16.x - Hannover o superior ([descargar](https://qgis.org/downloads/)).
    - Java v1.8
    - PostgreSQL 9.5 o superior (funciona con PostgreSQL 10, 11 ó 12).
    - PostGIS 2.4 o superior.
    - (Opcional) SQL Server 2012 o superior.
  - Complementos de QGIS (al instalar el Asistente LADM-COL usando el Administrador de Complementos de QGIS, las dependencias se instalarán automáticamente):
-   - QGIS Model Baker v6.1.1.5
+   - QGIS Model Baker v6.3.2
    - MapSwipe Tool v1.2
 
 ## Galería
@@ -89,7 +89,7 @@ Para usar el Asistente LADM-COL se requiere:
 
 #### Captura y estructuración de datos
 
-+ Capturar datos para el modelo de aplicación de Levantamiento Catastral v1.0 ([descargar](https://github.com/SwissTierrasColombia/LADM_COL/releases/download/1.0/Modelo_Aplicacion_LADMCOL_Levantamiento_Catastral_V1_0.zip)).
++ Capturar datos para el modelo de aplicación de Levantamiento Catastral v1.1.
 
  - Agregar puntos a las capas `Punto Lindero`, `Punto Levantamiento` y `Punto Control`:
    - Desde archivo CSV con la estructura requerida.
@@ -154,7 +154,6 @@ Para usar el Asistente LADM-COL se requiere:
    - Usando formularios preconfigurados (relacionando el nuevo objeto a `Fuentes Administrativas` previamente seleccionadas).
    - Desde otra tabla con cualquier estructura, definiendo un mapeo de campos.
    
-  - Importar datos alfanuméricos desde [estructura intermedia en Excel](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/blob/master/asistente_ladm_col/resources/excel/datos_estructura_excel.xlsx).
   - Configurar valores automáticos para campos `t_ili_tid`, `espacio_de_nombres` y `local_id`.
   - Usar estilos preconfigurados en archivos QML para asignarlos a las capas cargadas.
 

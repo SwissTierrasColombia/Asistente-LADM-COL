@@ -4,20 +4,26 @@
     <meta charset="UTF-8">
 </head>
 <body>
-<p>Cambios en la version <b>3.1.4</b></p>
+<p>Cambios en la version <b>3.2.0-beta-1</b></p>
 <ul>
-    <li> Ajustes:
+    <li>Soporta el modelo de aplicación de Levantamiento Catastral v1.1.</li>
+    <li>Se introduce un conversor de datos en formato XTF. Conversiones soportadas hasta el momento: Desde el modelo de aplicación de Levantamiento Catastral 1.0 hacia su versión 1.1 y viceversa.</li>
+    <li>Script qr_standalone.py para ejecutar reglas de calidad desde la terminal de comandos (sin iniciar una sesión gráfica de QGIS).</li>
+    <li>Soporta el modelo de aplicación de Levantamiento Catastral v1.1.</li>
+    <li>Informalidad:
         <ul>
-            <li>Soporte de ETLs de SNC/Cobol a submodelo de insumos para QGIS v3.16.x</li>
-            <li>Ajuste a caso extremo de las reglas de calidad '<i>Las construcciones deben estar dentro de su terreno correspondiente</i>', '<i>Las unidades de construcción deben estar dentro de su terreno correspondiente</i>' y '<i>Las unidades de construcción deben estar dentro de su construcción correspondiente</i>'. (Fix <a href="https://github.com/SwissTierrasColombia/Asistente-LADM-COL/issues/410">#410</a>)</li>
+            <li>Se introduce simbología para identificar la informalidad en terrenos, construcciones y unidades de construcción.</li>
+            <li>Los predios informales se pueden recorrer uno a uno en el módulo de consultas, obteniendo la información de los mismos por componente.</li>
         </ul>
     </li>
-    <li> Documentación:
+    <li>Mejoras y optimización del módulo de reglas de calidad.:
         <ul>
-            <li>Mejoras en la organización y en la gestión de la documentación: automatización de publicación y de release.</li>
-            <li>Reestructuración y nuevas secciones en la documentación.</li>
+            <li>La regla de calidad "Los terrenos no deben superponerse" soporta informalidad. Esto es, si dos terrenos se superponen pero uno es formal y el otro informal, no se considera como error topológico.</li>
         </ul>
     </li>
+    <li>Se introduce el soporte de Add-ons para extender la funcionalidad del Asistente LADM-COL. Los Add-ons son plugins de QGIS que dependen del Asistente LADM-COL. Por ejemplo, el Add-on de Ambiente agrega varios modelos, un rol y nuevas funcionalidades relativas al sector Ambiente.</li>
+    <li>En importación masiva de datos, los mapeos de campos muestran los campos obligatorios resaltados para facilitar el llenado.</li>
+    <li>El orden de los atributos de cada formulario es configurable (archivo LADM_COL_configuration.toml).</li>
 </ul>
 </body>
 </html>
