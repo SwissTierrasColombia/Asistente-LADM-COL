@@ -6,13 +6,11 @@ import nose2
 from asistente_ladm_col.lib.db.db_connector import DBConnector
 from asistente_ladm_col.tests.base_test_for_models import BaseTestForModels
 from asistente_ladm_col.tests.utils import (get_pg_conn,
-                                            drop_pg_schema,
                                             get_test_path,
-                                            get_gpkg_conn,
                                             get_mssql_conn,
-                                            get_test_copy_path,
-                                            get_gpkg_conn_from_path,
-                                            reset_db_mssql)
+                                            restore_pg_db,
+                                            restore_mssql_db,
+                                            restore_gpkg_db)
 
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
@@ -41,10 +39,7 @@ class TestAllModelsPG(BaseTestForAllModels, unittest.TestCase):
 
     @classmethod
     def restore_db(cls):
-        drop_pg_schema(cls.schema)
-        db = get_pg_conn(cls.schema)
-        cls.ili2db.import_schema(db, cls.models)
-        cls.ili2db.import_data(db, cls.xtf_path)
+        restore_pg_db(cls.schema, cls.models, cls.xtf_path)
 
     @classmethod
     def get_connector(cls) -> DBConnector:
@@ -65,11 +60,7 @@ class TestAllModelsGPKG(BaseTestForAllModels, unittest.TestCase):
 
     @classmethod
     def get_connector(cls) -> DBConnector:
-        gpkg_path = get_test_copy_path('db/static/gpkg/ili2db.gpkg')
-        db = get_gpkg_conn_from_path(gpkg_path)
-        cls.ili2db.import_schema(db, cls.models)
-        cls.ili2db.import_data(db, cls.xtf_path)
-        return db
+        return restore_gpkg_db(cls.models, cls.xtf_path)
 
 
 class TestAllModelsMSSQL(BaseTestForAllModels, unittest.TestCase):
@@ -80,10 +71,7 @@ class TestAllModelsMSSQL(BaseTestForAllModels, unittest.TestCase):
 
     @classmethod
     def restore_db(cls):
-        reset_db_mssql(cls.schema)
-        db = get_mssql_conn(cls.schema)
-        cls.ili2db.import_schema(db, cls.models)
-        cls.ili2db.import_data(db, cls.xtf_path)
+        restore_mssql_db(cls.schema, cls.models, cls.xtf_path)
 
     @classmethod
     def get_connector(cls) -> DBConnector:

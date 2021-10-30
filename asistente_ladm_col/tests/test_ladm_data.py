@@ -13,8 +13,14 @@ start_app()  # need to start before asistente_ladm_col.tests.utils
 from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             unload_qgis_model_baker,
                                             get_field_values_by_key_values,
-                                            get_copy_gpkg_conn)
+                                            get_copy_gpkg_conn,
+                                            get_test_path,
+                                            get_test_copy_path,
+                                            get_gpkg_conn_from_path,
+                                            restore_gpkg_db)
+
 from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
+from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
 
 
 class TestLADMData(unittest.TestCase):
@@ -24,7 +30,7 @@ class TestLADMData(unittest.TestCase):
         import_qgis_model_baker()
 
         # DB with single child model
-        cls.db_gpkg = get_copy_gpkg_conn('test_ladm_survey_model_gpkg')
+        cls.db_gpkg = restore_gpkg_db([LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).full_name()], "db/ladm/test_ladm_survey_model_v1_1.xtf")
         res, code, msg = cls.db_gpkg.test_connection()
         cls.assertTrue(res, msg)
 

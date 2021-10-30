@@ -37,6 +37,11 @@ from asistente_ladm_col.asistente_ladm_col_plugin import AsistenteLADMCOLPlugin
 from asistente_ladm_col.config.general_config import FIELD_MAPPING_PARAMETER
 from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 
+
+from asistente_ladm_col.lib.qgis_model_baker.ili2db import Ili2DB
+from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
+from asistente_ladm_col.config.ladm_names import LADMNames
+
 QgsApplication.setPrefixPath('/usr', True)
 qgs = QgsApplication([], False)
 qgs.initQgis()
@@ -47,6 +52,8 @@ import processing
 from qgis.testing.mocked import get_iface
 
 from .config.test_config import TEST_SCHEMAS_MAPPING
+
+ili2db = Ili2DB()
 
 # PostgreSQL connection to schema with a LADM-COL model from ./etl_script_uaecd.py
 DB_HOSTNAME = "postgres"
@@ -364,3 +371,32 @@ def get_field_values_by_key_values(layer, field, field_values, expected_field):
     features = LADMData.get_features_from_t_ids(layer, field, field_values, only_attributes=[expected_field])
 
     return [f[expected_field] for f in features]
+
+
+def restore_pg_db(schema_name, models_name, xtf_path=None):
+    drop_pg_schema(schema_name)
+    db = get_pg_conn(schema_name)
+    restore_db(db, models_name, xtf_path)
+    return db
+
+
+def restore_mssql_db(schema_name, models_name, xtf_path=None):
+    reset_db_mssql(schema_name)
+    db = get_mssql_conn(schema_name)
+    restore_db(db, models_name, xtf_path)
+    return db
+
+
+def restore_gpkg_db(models_name, xtf_path=None):
+    gpkg_path = get_test_copy_path('db/static/gpkg/ili2db.gpkg')
+    db = get_gpkg_conn_from_path(gpkg_path)
+    restore_db(db, models_name, xtf_path)
+    return db
+
+
+def restore_db(db, models_name, xtf_path=None):
+    ili2db.import_schema(db, models_name)
+
+    if xtf_path:
+        # Run import data
+        ili2db.import_data(db, xtf_path)

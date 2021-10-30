@@ -16,6 +16,7 @@ from asistente_ladm_col.tests.utils import (get_gpkg_conn,
                                             get_pg_conn,
                                             drop_pg_schema,
                                             restore_schema,
+                                            restore_gpkg_db,
                                             get_gpkg_conn_from_path,
                                             import_qgis_model_baker,
                                             unload_qgis_model_baker,
@@ -94,7 +95,8 @@ class TestDBTestConnection(unittest.TestCase):
 
     def test_gpkg_test_connection(self):
         print("\nINFO: Validate test_connection() for GeoPackage (survey model: OK!)...")
-        db = get_gpkg_conn('test_ladm_survey_model_gpkg')
+
+        db = restore_gpkg_db([LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).full_name()], "db/ladm/test_ladm_survey_model_v1_1.xtf")
         res, code, msg = db.test_connection()
         self.assertTrue(res, msg)
         self.assertEqual(code, EnumTestConnectionMsg.DB_WITH_VALID_LADM_COL_STRUCTURE)
@@ -149,7 +151,7 @@ class TestDBTestConnection(unittest.TestCase):
 
     def test_gpkg_test_connection_required_models_success(self):
         print("\nINFO: Validate test_connection() for GeoPackage (required models (success): survey and snr)...")
-        db = get_gpkg_conn('test_ladm_survey_model_gpkg')
+        db = restore_gpkg_db([LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).full_name()], "db/ladm/test_ladm_survey_model_v1_1.xtf")
         res, code, msg = db.test_connection(models={REQUIRED_MODELS: [LADMNames.SURVEY_MODEL_KEY,
                                                                       LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY]})
         self.assertTrue(res, msg)
@@ -157,7 +159,7 @@ class TestDBTestConnection(unittest.TestCase):
 
     def test_gpkg_test_connection_required_models_error(self):
         print("\nINFO: Validate test_connection() for GeoPackage (required models (error): ant)...")
-        db = get_gpkg_conn('test_ladm_survey_model_gpkg')
+        db = restore_gpkg_db([LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).full_name()], "db/ladm/test_ladm_survey_model_v1_1.xtf")
         res, code, msg = db.test_connection(models={REQUIRED_MODELS: [LADMNames.VALUATION_MODEL_KEY]})
         self.assertFalse(res, msg)
         self.assertEqual(code, EnumTestConnectionMsg.REQUIRED_LADM_MODELS_NOT_FOUND)

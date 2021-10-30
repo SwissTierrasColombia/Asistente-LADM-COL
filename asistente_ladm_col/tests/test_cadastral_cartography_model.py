@@ -10,14 +10,21 @@ start_app()  # need to start before asistente_ladm_col.tests.utils
 from asistente_ladm_col.lib.db.db_connector import DBConnector
 from asistente_ladm_col.tests.base_test_for_models import BaseTestForModels
 from asistente_ladm_col.tests.utils import (get_pg_conn,
-                                            get_gpkg_conn,
+                                            get_test_path,
                                             get_mssql_conn,
-                                            restore_schema_mssql,
-                                            reset_db_mssql,
-                                            restore_schema)
+                                            restore_pg_db,
+                                            restore_mssql_db,
+                                            restore_gpkg_db)
+
+from asistente_ladm_col.config.ladm_names import LADMNames
+from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
 
 
 class BaseTestForCadastralCartographyModel(BaseTestForModels, ABC):
+    xtf_path = get_test_path("db/ladm/test_ladm_cartography_model_v1_1.xtf")
+    models = [LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).full_name(),
+              LADMColModelRegistry().model(LADMNames.CADASTRAL_CARTOGRAPHY_MODEL_KEY).full_name()]
+
     def get_name_of_models(self):
         return 'Reference cadastral cartography model'
     
@@ -36,7 +43,7 @@ class TestCadastralCartographyPG(BaseTestForCadastralCartographyModel, unittest.
 
     @classmethod
     def restore_db(cls):
-        restore_schema(cls.schema)
+        restore_pg_db(cls.schema, cls.models, cls.xtf_path)
 
     @classmethod
     def get_connector(cls) -> DBConnector:
@@ -57,7 +64,7 @@ class TestCadastralCartographyGPKG(BaseTestForCadastralCartographyModel, unittes
 
     @classmethod
     def get_connector(cls) -> DBConnector:
-        return get_gpkg_conn('test_ladm_cadastral_cartography_gpkg')
+        return restore_gpkg_db(cls.models, cls.xtf_path)
 
 
 class TestCadastralCartographyModelMSSQL(BaseTestForCadastralCartographyModel, unittest.TestCase):
@@ -68,8 +75,7 @@ class TestCadastralCartographyModelMSSQL(BaseTestForCadastralCartographyModel, u
 
     @classmethod
     def restore_db(cls):
-        reset_db_mssql(cls.schema)
-        restore_schema_mssql(cls.schema)
+        restore_mssql_db(cls.schema, cls.models, cls.xtf_path)
 
     @classmethod
     def get_connector(cls) -> DBConnector:

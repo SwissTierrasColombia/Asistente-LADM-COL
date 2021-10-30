@@ -10,11 +10,14 @@ start_app() # need to start before asistente_ladm_col.tests.utils
 from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             unload_qgis_model_baker,
                                             get_pg_conn,
-                                            get_copy_gpkg_conn,
                                             restore_schema,
                                             get_mssql_conn,
                                             restore_schema_mssql,
-                                            reset_db_mssql)
+                                            reset_db_mssql,
+                                            restore_gpkg_db)
+
+from asistente_ladm_col.config.ladm_names import LADMNames
+from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
 
 
 class TestGetLayers(unittest.TestCase):
@@ -23,7 +26,7 @@ class TestGetLayers(unittest.TestCase):
     def setUpClass(cls):
         import_qgis_model_baker(),
         cls.app = AppInterface()
-        cls.db_gpkg = get_copy_gpkg_conn('test_ladm_survey_model_gpkg')
+        cls.db_gpkg = restore_gpkg_db([LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).full_name()], "db/ladm/test_ladm_survey_model_v1_1.xtf")
 
         print("INFO: Restoring databases to be used")
         restore_schema('test_ladm_col')

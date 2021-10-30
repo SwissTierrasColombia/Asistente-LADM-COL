@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><TRANSFER xmlns="http://www.interlis.ch/INTERLIS2.3">
+<HEADERSECTION SENDER="ili2gpkg-4.4.4-5586f5e20f4e40fd05286ecb363ec6d450b85cfa" VERSION="2.3"><MODELS><MODEL NAME="ISO19107_PLANAS_V3_0" VERSION="2016-03-07" URI="http://www.swisslm.ch/models"></MODEL><MODEL NAME="LADM_COL_V3_0" VERSION="V1.2.0" URI="http://www.proadmintierra.info/"></MODEL><MODEL NAME="Submodelo_Insumos_Gestor_Catastral_V1_0" VERSION="2019-08-01" URI="mailto:PC4@localhost"></MODEL><MODEL NAME="Submodelo_Insumos_SNR_V1_0" VERSION="V2.3" URI="http://www.proadmintierra.info/"></MODEL><MODEL NAME="Submodelo_Integracion_Insumos_V1_0" VERSION="2019-09-06" URI="mailto:PC4@localhost"></MODEL><MODEL NAME="Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1" VERSION="V2.2.1" URI="http://www.proadmintierra.info/"></MODEL></MODELS></HEADERSECTION>
+<DATASECTION>
+<Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.Levantamiento_Catastral BID="Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.Levantamiento_Catastral">
+</Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.Levantamiento_Catastral>
+<Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral BID="Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral">
+</Submodelo_Insumos_Gestor_Catastral_V1_0.Datos_Gestor_Catastral>
+<Submodelo_Insumos_SNR_V1_0.Datos_SNR BID="Submodelo_Insumos_SNR_V1_0.Datos_SNR">
+</Submodelo_Insumos_SNR_V1_0.Datos_SNR>
+<Submodelo_Integracion_Insumos_V1_0.Datos_Integracion_Insumos BID="Submodelo_Integracion_Insumos_V1_0.Datos_Integracion_Insumos">
+</Submodelo_Integracion_Insumos_V1_0.Datos_Integracion_Insumos>
+</DATASECTION>
+</TRANSFER>
