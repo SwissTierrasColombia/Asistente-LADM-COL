@@ -8,9 +8,14 @@ from asistente_ladm_col.app_interface import AppInterface
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
+from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
+from asistente_ladm_col.config.ladm_names import LADMNames
+
 from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             unload_qgis_model_baker,
                                             get_copy_gpkg_conn,
+                                            restore_gpkg_db,
+                                            get_test_path,
                                             run_etl_model)
 
 
@@ -19,8 +24,13 @@ class TestRefactorFieldsMapping(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         import_qgis_model_baker()
-        cls.db_gpkg_empty = get_copy_gpkg_conn('test_empty_ladm_gpkg')
-        cls.db_gpkg_test = get_copy_gpkg_conn('test_export_data_qpkg')
+        survey_models = [LADMColModelRegistry().model(LADMNames.LADM_COL_MODEL_KEY).full_name(),
+                         LADMColModelRegistry().model(LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY).full_name(),
+                         LADMColModelRegistry().model(LADMNames.SUPPLIES_MODEL_KEY).full_name(),
+                         LADMColModelRegistry().model(LADMNames.SUPPLIES_INTEGRATION_MODEL_KEY).full_name(),
+                         LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).full_name()]
+        cls.db_gpkg_empty = restore_gpkg_db(survey_models)
+        cls.db_gpkg_test = restore_gpkg_db(survey_models, get_test_path("db/ladm/test_export_data_ladm_v1_1.xtf"))
         cls.app = AppInterface()
 
         res, code, msg = cls.db_gpkg_empty.test_connection()

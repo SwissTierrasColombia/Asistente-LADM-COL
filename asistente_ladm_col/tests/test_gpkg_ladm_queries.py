@@ -7,14 +7,17 @@ from qgis.testing import (unittest,
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
-from asistente_ladm_col.tests.utils import (get_copy_gpkg_conn,
-                                            get_field_values_by_key_values,
+from asistente_ladm_col.tests.utils import (get_field_values_by_key_values,
+                                            restore_gpkg_db,
+                                            get_test_path,
                                             standardize_query_results,
                                             import_asistente_ladm_col,
                                             import_qgis_model_baker,
                                             unload_qgis_model_baker,
                                             import_processing)
 from asistente_ladm_col.logic.ladm_col.qgis_ladm_query import QGISLADMQuery
+from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
+from asistente_ladm_col.config.ladm_names import LADMNames
 
 from asistente_ladm_col.tests.resources.expected_results.queries.ladm_basic_query_test_results import expected_result_ladm_basic_query
 from asistente_ladm_col.tests.resources.expected_results.queries.ladm_legal_query_test_results import expected_result_ladm_legal_query
@@ -32,7 +35,12 @@ class TestGPKGLADMQueries(unittest.TestCase):
         import_processing()
         import_asistente_ladm_col() # Import plugin
         import_qgis_model_baker()
-        cls.db_gpkg = get_copy_gpkg_conn('test_ladm_col_queries_qpkg')
+        models = [LADMColModelRegistry().model(LADMNames.LADM_COL_MODEL_KEY).full_name(),
+                  LADMColModelRegistry().model(LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY).full_name(),
+                  LADMColModelRegistry().model(LADMNames.SUPPLIES_MODEL_KEY).full_name(),
+                  LADMColModelRegistry().model(LADMNames.SUPPLIES_INTEGRATION_MODEL_KEY).full_name(),
+                  LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).full_name()]
+        cls.db_gpkg = restore_gpkg_db(models, get_test_path("db/ladm/test_ladm_col_queries_v1_1.xtf"), True)
 
         # We can't use the restored database connection because the expression functions use the one in the plugin;
         # that's why we have to get the database connection and assign it to the plugin

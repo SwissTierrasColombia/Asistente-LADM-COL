@@ -12,6 +12,8 @@ from asistente_ladm_col.utils.crs_utils import get_crs_authid
 
 start_app()  # need to start before asistente_ladm_col.tests.utils
 
+from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.config.general_config import DEFAULT_TOLERANCE_VALUE
 from asistente_ladm_col.logic.quality.quality_rule_engine import QualityRuleEngine
 from asistente_ladm_col.logic.quality.quality_rule_layer_manager import QualityRuleLayerManager
@@ -22,6 +24,9 @@ from asistente_ladm_col.logic.quality.polygon_quality_rules import PolygonQualit
 from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             import_processing,
                                             get_test_copy_path,
+                                            restore_gpkg_db,
+                                            restore_pg_db,
+                                            get_test_path,
                                             get_pg_conn,
                                             get_gpkg_conn,
                                             get_gpkg_conn_from_path,
@@ -55,6 +60,12 @@ import processing
 
 
 class TesQualityRules(unittest.TestCase):
+
+    SURVEY_MODELS = [LADMColModelRegistry().model(LADMNames.LADM_COL_MODEL_KEY).full_name(),
+                     LADMColModelRegistry().model(LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY).full_name(),
+                     LADMColModelRegistry().model(LADMNames.SUPPLIES_MODEL_KEY).full_name(),
+                     LADMColModelRegistry().model(LADMNames.SUPPLIES_INTEGRATION_MODEL_KEY).full_name(),
+                     LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).full_name()]
 
     @classmethod
     def setUpClass(cls):
@@ -702,12 +713,11 @@ class TesQualityRules(unittest.TestCase):
 
     def test_no_error_quality_rule(self):
         print('\nINFO: Validating no errors in quality rules...')
-        gpkg_path = get_test_copy_path('db/ladm/gpkg/test_valid_quality_rules_v1_1.gpkg')
-        self.db_gpkg = get_gpkg_conn_from_path(gpkg_path)
-        res, code, msg = self.db_gpkg.test_connection()
+        db_gpkg = restore_gpkg_db(self.SURVEY_MODELS, get_test_path("db/ladm/test_valid_quality_rules_v1_1.xtf"))
+        res, code, msg = db_gpkg.test_connection()
         self.assertTrue(res, msg)
 
-        query_manager = ConfigDBsSupported().get_db_factory(self.db_gpkg.engine).get_ladm_queries()
+        query_manager = ConfigDBsSupported().get_db_factory(db_gpkg.engine).get_ladm_queries()
 
         rules = [EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS,
                  EnumQualityRule.Point.OVERLAPS_IN_CONTROL_POINTS,
@@ -728,79 +738,80 @@ class TesQualityRules(unittest.TestCase):
                  EnumQualityRule.Polygon.BUILDINGS_SHOULD_BE_WITHIN_PLOTS,
                  EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_PLOTS]
 
-        layer_manager = QualityRuleLayerManager(self.db_gpkg, rules, 0)
+        layer_manager = QualityRuleLayerManager(db_gpkg, rules, 0)
 
         # Points rules
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS, layer_manager.get_layers(EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS)).level, Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Point.OVERLAPS_IN_CONTROL_POINTS, layer_manager.get_layers(EnumQualityRule.Point.OVERLAPS_IN_CONTROL_POINTS)).level, Qgis.Warning)  # "There are no points in layer 'lc_puntocontrol' to check for overlaps!"
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES, layer_manager.get_layers(EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES)).level, Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_PLOT_NODES, layer_manager.get_layers(EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_PLOT_NODES)).level, Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(db_gpkg, EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS, layer_manager.get_layers(EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS)).level, Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(db_gpkg, EnumQualityRule.Point.OVERLAPS_IN_CONTROL_POINTS, layer_manager.get_layers(EnumQualityRule.Point.OVERLAPS_IN_CONTROL_POINTS)).level, Qgis.Warning)  # "There are no points in layer 'lc_puntocontrol' to check for overlaps!"
+        self.assertEqual(self.quality_rules.validate_quality_rule(db_gpkg, EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES, layer_manager.get_layers(EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES)).level, Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(db_gpkg, EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_PLOT_NODES, layer_manager.get_layers(EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_PLOT_NODES)).level, Qgis.Success)
 
         # Lines rules
         # TODO: Fix the OVERLAPS_IN_BOUNDARIES test!
-        # self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Line.OVERLAPS_IN_BOUNDARIES)[1], Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Line.BOUNDARIES_ARE_NOT_SPLIT, layer_manager.get_layers(EnumQualityRule.Line.BOUNDARIES_ARE_NOT_SPLIT)).level, Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Line.BOUNDARIES_COVERED_BY_PLOTS, layer_manager.get_layers(EnumQualityRule.Line.BOUNDARIES_COVERED_BY_PLOTS)).level, Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Line.BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS, layer_manager.get_layers(EnumQualityRule.Line.BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS)).level, Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Line.DANGLES_IN_BOUNDARIES, layer_manager.get_layers(EnumQualityRule.Line.DANGLES_IN_BOUNDARIES)).level, Qgis.Success)
+        # self.assertEqual(self.quality_rules.validate_quality_rule(db_gpkg, EnumQualityRule.Line.OVERLAPS_IN_BOUNDARIES)[1], Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(db_gpkg, EnumQualityRule.Line.BOUNDARIES_ARE_NOT_SPLIT, layer_manager.get_layers(EnumQualityRule.Line.BOUNDARIES_ARE_NOT_SPLIT)).level, Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(db_gpkg, EnumQualityRule.Line.BOUNDARIES_COVERED_BY_PLOTS, layer_manager.get_layers(EnumQualityRule.Line.BOUNDARIES_COVERED_BY_PLOTS)).level, Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(db_gpkg, EnumQualityRule.Line.BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS, layer_manager.get_layers(EnumQualityRule.Line.BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS)).level, Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(db_gpkg, EnumQualityRule.Line.DANGLES_IN_BOUNDARIES, layer_manager.get_layers(EnumQualityRule.Line.DANGLES_IN_BOUNDARIES)).level, Qgis.Success)
 
         # Polygons rules
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.OVERLAPS_IN_PLOTS, layer_manager.get_layers(EnumQualityRule.Polygon.OVERLAPS_IN_PLOTS)).level, Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.OVERLAPS_IN_BUILDINGS, layer_manager.get_layers(EnumQualityRule.Polygon.OVERLAPS_IN_BUILDINGS)).level, Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.OVERLAPS_IN_RIGHTS_OF_WAY, layer_manager.get_layers(EnumQualityRule.Polygon.OVERLAPS_IN_RIGHTS_OF_WAY)).level, Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.PLOTS_COVERED_BY_BOUNDARIES, layer_manager.get_layers(EnumQualityRule.Polygon.PLOTS_COVERED_BY_BOUNDARIES)).level, Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.RIGHT_OF_WAY_OVERLAPS_BUILDINGS, layer_manager.get_layers(EnumQualityRule.Polygon.RIGHT_OF_WAY_OVERLAPS_BUILDINGS)).level, Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.GAPS_IN_PLOTS, layer_manager.get_layers(EnumQualityRule.Polygon.GAPS_IN_PLOTS)).level, Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.MULTIPART_IN_RIGHT_OF_WAY, layer_manager.get_layers(EnumQualityRule.Polygon.MULTIPART_IN_RIGHT_OF_WAY)).level, Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.PLOT_NODES_COVERED_BY_BOUNDARY_POINTS, layer_manager.get_layers(EnumQualityRule.Polygon.PLOT_NODES_COVERED_BY_BOUNDARY_POINTS)).level, Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.BUILDINGS_SHOULD_BE_WITHIN_PLOTS, layer_manager.get_layers(EnumQualityRule.Polygon.BUILDINGS_SHOULD_BE_WITHIN_PLOTS)).level, Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_PLOTS, layer_manager.get_layers(EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_PLOTS)).level, Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(db_gpkg, EnumQualityRule.Polygon.OVERLAPS_IN_PLOTS, layer_manager.get_layers(EnumQualityRule.Polygon.OVERLAPS_IN_PLOTS)).level, Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(db_gpkg, EnumQualityRule.Polygon.OVERLAPS_IN_BUILDINGS, layer_manager.get_layers(EnumQualityRule.Polygon.OVERLAPS_IN_BUILDINGS)).level, Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(db_gpkg, EnumQualityRule.Polygon.OVERLAPS_IN_RIGHTS_OF_WAY, layer_manager.get_layers(EnumQualityRule.Polygon.OVERLAPS_IN_RIGHTS_OF_WAY)).level, Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(db_gpkg, EnumQualityRule.Polygon.PLOTS_COVERED_BY_BOUNDARIES, layer_manager.get_layers(EnumQualityRule.Polygon.PLOTS_COVERED_BY_BOUNDARIES)).level, Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(db_gpkg, EnumQualityRule.Polygon.RIGHT_OF_WAY_OVERLAPS_BUILDINGS, layer_manager.get_layers(EnumQualityRule.Polygon.RIGHT_OF_WAY_OVERLAPS_BUILDINGS)).level, Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(db_gpkg, EnumQualityRule.Polygon.GAPS_IN_PLOTS, layer_manager.get_layers(EnumQualityRule.Polygon.GAPS_IN_PLOTS)).level, Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(db_gpkg, EnumQualityRule.Polygon.MULTIPART_IN_RIGHT_OF_WAY, layer_manager.get_layers(EnumQualityRule.Polygon.MULTIPART_IN_RIGHT_OF_WAY)).level, Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(db_gpkg, EnumQualityRule.Polygon.PLOT_NODES_COVERED_BY_BOUNDARY_POINTS, layer_manager.get_layers(EnumQualityRule.Polygon.PLOT_NODES_COVERED_BY_BOUNDARY_POINTS)).level, Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(db_gpkg, EnumQualityRule.Polygon.BUILDINGS_SHOULD_BE_WITHIN_PLOTS, layer_manager.get_layers(EnumQualityRule.Polygon.BUILDINGS_SHOULD_BE_WITHIN_PLOTS)).level, Qgis.Success)
+        self.assertEqual(self.quality_rules.validate_quality_rule(db_gpkg, EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_PLOTS, layer_manager.get_layers(EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_PLOTS)).level, Qgis.Success)
 
         # Logic rules
-        res, records = query_manager.get_parcels_with_no_right(self.db_gpkg)
+        res, records = query_manager.get_parcels_with_no_right(db_gpkg)
         self.assertTrue(res)
         self.assertEqual(len(records), 0)
 
-        res, records = query_manager.get_group_party_fractions_that_do_not_make_one(self.db_gpkg)
+        res, records = query_manager.get_group_party_fractions_that_do_not_make_one(db_gpkg)
         self.assertTrue(res)
         self.assertEqual(len(records), 0)
 
-        res, records = query_manager.get_parcels_with_invalid_department_code(self.db_gpkg)
+        res, records = query_manager.get_parcels_with_invalid_department_code(db_gpkg)
         self.assertTrue(res)
         self.assertEqual(len(records), 0)
 
-        res, records = query_manager.get_parcels_with_invalid_municipality_code(self.db_gpkg)
+        res, records = query_manager.get_parcels_with_invalid_municipality_code(db_gpkg)
         self.assertTrue(res)
         self.assertEqual(len(records), 0)
 
-        res, records = query_manager.get_parcels_with_invalid_parcel_number(self.db_gpkg)
+        res, records = query_manager.get_parcels_with_invalid_parcel_number(db_gpkg)
         self.assertTrue(res)
         self.assertEqual(len(records), 0)
 
-        res, records = query_manager.get_parcels_with_invalid_previous_parcel_number(self.db_gpkg)
+        res, records = query_manager.get_parcels_with_invalid_previous_parcel_number(db_gpkg)
         self.assertTrue(res)
         self.assertEqual(len(records), 0)
 
-        res, records = query_manager.get_invalid_col_party_type_natural(self.db_gpkg)
+        res, records = query_manager.get_invalid_col_party_type_natural(db_gpkg)
         self.assertTrue(res)
         self.assertEqual(len(records), 0)
 
-        res, records = query_manager.get_invalid_col_party_type_no_natural(self.db_gpkg)
+        res, records = query_manager.get_invalid_col_party_type_no_natural(db_gpkg)
         self.assertTrue(res)
         self.assertEqual(len(records), 0)
 
-        res, records = query_manager.get_parcels_with_invalid_parcel_type_and_22_position_number(self.db_gpkg)
+        res, records = query_manager.get_parcels_with_invalid_parcel_type_and_22_position_number(db_gpkg)
         self.assertTrue(res)
         self.assertEqual(len(records), 0)
 
-        res, records = query_manager.get_uebaunit_parcel(self.db_gpkg)
+        res, records = query_manager.get_uebaunit_parcel(db_gpkg)
         self.assertTrue(res)
         self.assertEqual(len(records), 0)
 
     def test_logic_quality_rules_pg(self):
         print('\nINFO: Validating logic quality rules PG...')
-        restore_schema('test_logic_quality_rules')
-        db_pg = get_pg_conn('test_logic_quality_rules')
+        schema = 'test_logic_quality_rules'
+        db_pg = restore_pg_db(schema, self.SURVEY_MODELS, get_test_path("db/ladm/test_logic_quality_rules_v1_1.xtf"), True)
+
         names = db_pg.names
         res, code, msg = db_pg.test_connection()
 
@@ -811,7 +822,7 @@ class TesQualityRules(unittest.TestCase):
 
     def test_logic_quality_rules_gpkg(self):
         print('\nINFO: Validating logic quality rules GPKG...')
-        db_gpkg = get_gpkg_conn('test_logic_quality_rules_gpkg')
+        db_gpkg = restore_gpkg_db(self.SURVEY_MODELS, get_test_path("db/ladm/test_logic_quality_rules_v1_1.xtf"), True)
         res, code, msg = db_gpkg.test_connection()
         self.assertTrue(res, msg)
 

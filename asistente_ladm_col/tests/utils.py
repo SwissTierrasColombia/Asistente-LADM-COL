@@ -21,6 +21,7 @@ import sys
 from shutil import copyfile
 from sys import platform
 import subprocess
+import uuid
 
 import psycopg2
 import pyodbc
@@ -39,8 +40,6 @@ from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 
 
 from asistente_ladm_col.lib.qgis_model_baker.ili2db import Ili2DB
-from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
-from asistente_ladm_col.config.ladm_names import LADMNames
 
 QgsApplication.setPrefixPath('/usr', True)
 qgs = QgsApplication([], False)
@@ -184,7 +183,7 @@ def get_test_path(path):
 def get_test_copy_path(path):
     src_path = get_test_path(path)
     dst_path = os.path.split(src_path)
-    dst_path = os.path.join(dst_path[0], "_" + dst_path[1])
+    dst_path = os.path.join(dst_path[0], "_test_{}_{}".format(str(uuid.uuid4())[:8], dst_path[1]))
     copyfile(src_path, dst_path)
     return dst_path
 
@@ -373,30 +372,30 @@ def get_field_values_by_key_values(layer, field, field_values, expected_field):
     return [f[expected_field] for f in features]
 
 
-def restore_pg_db(schema_name, models_name, xtf_path=None):
+def restore_pg_db(schema_name, models_name, xtf_path=None, disable_validation=False):
     drop_pg_schema(schema_name)
     db = get_pg_conn(schema_name)
-    restore_db(db, models_name, xtf_path)
+    _restore_db(db, models_name, xtf_path, disable_validation)
     return db
 
 
-def restore_mssql_db(schema_name, models_name, xtf_path=None):
+def restore_mssql_db(schema_name, models_name, xtf_path=None, disable_validation=False):
     reset_db_mssql(schema_name)
     db = get_mssql_conn(schema_name)
-    restore_db(db, models_name, xtf_path)
+    _restore_db(db, models_name, xtf_path, disable_validation)
     return db
 
 
-def restore_gpkg_db(models_name, xtf_path=None):
+def restore_gpkg_db(models_name, xtf_path=None, disable_validation=False):
     gpkg_path = get_test_copy_path('db/static/gpkg/ili2db.gpkg')
     db = get_gpkg_conn_from_path(gpkg_path)
-    restore_db(db, models_name, xtf_path)
+    _restore_db(db, models_name, xtf_path, disable_validation)
     return db
 
 
-def restore_db(db, models_name, xtf_path=None):
+def _restore_db(db, models_name, xtf_path, disable_validation):
     ili2db.import_schema(db, models_name)
 
     if xtf_path:
         # Run import data
-        ili2db.import_data(db, xtf_path)
+        ili2db.import_data(db, xtf_path, disable_validation=disable_validation)
