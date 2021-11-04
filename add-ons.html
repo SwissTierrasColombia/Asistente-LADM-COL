@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Cargar capas &mdash; documentación de Asistente LADM-COL - </title>
+  <title>Add-ons &mdash; documentación de Asistente LADM-COL - </title>
   
 
   
@@ -41,8 +41,8 @@
   <link rel="stylesheet" href="_static/sphinxcontrib-images/LightBox2/lightbox2/css/lightbox.css" type="text/css" />
     <link rel="index" title="Índice" href="genindex.html" />
     <link rel="search" title="Búsqueda" href="search.html" />
-    <link rel="next" title="Gestión de insumos" href="gestion_de_insumos.html" />
-    <link rel="prev" title="Barra de herramientas" href="barra_de_herramientas.html" /> 
+    <link rel="next" title="Introducción" href="tutorial/introduccion.html" />
+    <link rel="prev" title="Sistema de transición" href="sistema_de_transicion.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -96,7 +96,7 @@
 <li class="toctree-l1"><a class="reference internal" href="administracion_de_datos.html">Administración de datos</a></li>
 <li class="toctree-l1"><a class="reference internal" href="captura_y_estructura_de_datos.html">Captura y estructuración de datos</a></li>
 <li class="toctree-l1"><a class="reference internal" href="barra_de_herramientas.html">Barra de herramientas</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Cargar capas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cargar_capas.html">Cargar capas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gestion_de_insumos.html">Gestión de insumos</a></li>
 <li class="toctree-l1"><a class="reference internal" href="captura_de_datos_en_campo.html">Captura de datos en campo</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reglas_de_calidad.html">Reglas de calidad</a></li>
@@ -104,7 +104,10 @@
 <li class="toctree-l1"><a class="reference internal" href="reportes.html">Reportes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="identificacion_de_novedades.html">Identificación de novedades</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sistema_de_transicion.html">Sistema de transición</a></li>
-<li class="toctree-l1"><a class="reference internal" href="add-ons.html">Add-ons</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Add-ons</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#add-on-de-ambiente">Add-on de ambiente</a></li>
+</ul>
+</li>
 </ul>
 <p class="caption"><span class="caption-text">TUTORIAL</span></p>
 <ul>
@@ -161,13 +164,13 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>Cargar capas</li>
+      <li>Add-ons</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/cargar_capas.md.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/add-ons.md.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -180,26 +183,19 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="tex2jax_ignore mathjax_ignore section" id="cargar-capas">
-<h1>Cargar capas<a class="headerlink" href="#cargar-capas" title="Enlazar permanentemente con este título">¶</a></h1>
-<p>El Asistente LADM-COL tiene una herramienta para cargar capas conservando las características del modelo .ili con el que se generó la base de datos.</p>
-<p>Esta herramienta permite acceder a un listado completo de capas de la base de datos, permitiendo seleccionar aquellas que se quieren cargar a QGIS. Dicha selección puede hacerse manualmente en el listado de capas o haciendo uso de conjuntos de capas por temática, como se mostrará en breve.</p>
-<div class="seealso">
-<p class="admonition-title">TIP</p>
-<p>La herramienta "Cargar Capas" del Asistente LADM-COL, realiza de forma automática la configuración de dominios,  relaciones, formularios de edición y simbología para las capas de una base de datos LADM-COL.</p>
-</div>
-<p>Después de haber creado la <a class="reference external" href="administracion_de_datos.html#crear-estructura-ladm-col">estructura LADM-COL</a> en la base de datos donde se guardarán los datos, y luego de haber realizado bien sea la importación de estos a partir del archivo XTF del conjunto de datos (como se describe en la sección <a class="reference external" href="administracion_de_datos.html#importar-datos">Importar datos</a>), o la generación manual de datos (como se explica en <a class="reference external" href="captura_y_estructura_de_datos.html#captura-y-estructuracion-de-datos">Captura y estructuración de datos</a>), se procede a cargar capas a QGIS con el fin de explorar los datos, como se ilustra en la siguiente animación.</p>
-<p><a class="" data-lightbox="Cargar capas" href="_static/cargar_capas/load_layers.gif" title="Cargar capas" data-title="Cargar capas"><img src="_static/cargar_capas/load_layers.gif" class="align-center" width="800px" alt="Cargar capas"/></a></p>
-<p>Las capas se muestran en grupos, según el modelo LADM-COL al cual pertenezcan. En la parte inferior de la ventana interna hay tres <em>check boxes</em> (cajas de chequeo) que permiten ver u ocultar en el listado de capas, los dominios, estructuras y asociaciones que contenga la base de datos. No se despliegan por defecto, con el fin de que el usuario pueda manipular las capas básicas de forma más clara. Los tres <em>check boxes</em> son:</p>
+  <div class="tex2jax_ignore mathjax_ignore section" id="add-ons">
+<h1>Add-ons<a class="headerlink" href="#add-ons" title="Enlazar permanentemente con este título">¶</a></h1>
+<p>Los add-ons son complementos de QGIS que permiten extender las funcionalidades del Asistente LADM-COL, agregándole nuevos modelos LADM-COL, nuevos roles, interfaces (menús y barras de herramientas) propias para esos nuevos roles y nuevos módulos y funcionalidades.</p>
+<p>Los add-ons pueden ser instalados desde el administrador de complementos de QGIS y siempre necesitarán tener instalado el Asistente LADM-COL.</p>
+<p>Los add-ons permiten que otras organizaciones o sectores ofrezcan sus propias funcionalidades para datos LADM-COL, reutilizando el núcleo del Asistente LADM-COL.</p>
+<p><strong>Add-ons disponibles</strong></p>
 <ul class="simple">
-<li><p><strong>Mostrar dominios</strong>: Muestra los diferentes dominios del modelo. Ejemplo: <em>LC_CondicionPredioTipo</em>.</p></li>
-<li><p><strong>Mostrar estructuras</strong>: Muestra las tablas de tipo «Estructura» del modelo. Ejemplo: <em>Dirección</em>.</p></li>
-<li><p><strong>Mostrar asociaciones</strong>: Muestra las tablas de paso originadas por relaciones muchos a muchos (M:N) entre tablas y/o capas geográficas. Ejemplo: <em>COL_UEBAUnit</em>.</p></li>
+<li><p><a class="reference external" href="#add-on-de-ambiente">Add-on de ambiente</a>.</p></li>
 </ul>
-<p><a class="" data-lightbox="Cajas de chequeo" href="_static/cargar_capas/Cajas_seleccion.png" title="Cajas de chequeo" data-title="Cajas de chequeo"><img src="_static/cargar_capas/Cajas_seleccion.png" class="align-center" width="800px" alt="Cajas de chequeo"/></a></p>
-<p>En la parte inferior de la ventana <em>Cargar Capas</em> existe un menú desplegable llamado «<strong>Seleccionar tablas predefinida para</strong>», que permite seleccionar un conjunto de capas previamente asociados por temática, sin tener que seleccionar una a una, como son los datos de interesados, los datos de derechos y los datos de Punto Lindero, Lindero y Terreno.</p>
-<p>Al seleccionar una de las opciones se observa que en el listado de capas aparecen capas seleccionadas por temática. Al dar clic en Aceptar, dichas capas se cargan al panel de capas y al mapa de QGIS, como se aprecia en la siguiente animación.</p>
-<p><a class="" data-lightbox="Conjuntos predefinidos de capas" href="_static/cargar_capas/tablas_predefinidas.gif" title="Conjuntos predefinidos de capas" data-title="Conjuntos predefinidos de capas"><img src="_static/cargar_capas/tablas_predefinidas.gif" class="align-center" width="800px" alt="Conjuntos predefinidos de capas"/></a></p>
+<div class="section" id="add-on-de-ambiente">
+<h2>Add-on de ambiente<a class="headerlink" href="#add-on-de-ambiente" title="Enlazar permanentemente con este título">¶</a></h2>
+<p><em>En construcción…</em></p>
+</div>
 </div>
 
 
@@ -210,10 +206,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="gestion_de_insumos.html" class="btn btn-neutral float-right" title="Gestión de insumos" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="tutorial/introduccion.html" class="btn btn-neutral float-right" title="Introducción" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="barra_de_herramientas.html" class="btn btn-neutral float-left" title="Barra de herramientas" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="sistema_de_transicion.html" class="btn btn-neutral float-left" title="Sistema de transición" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

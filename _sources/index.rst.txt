@@ -18,6 +18,7 @@ Documentación del Asistente LADM-COL
    reportes.md
    identificacion_de_novedades.md
    sistema_de_transicion.md
+   add-ons.md
    
 .. toctree::
    :maxdepth: 2
