@@ -11,10 +11,12 @@ from asistente_ladm_col.app_interface import AppInterface
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
+from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             unload_qgis_model_baker,
-                                            restore_schema,
-                                            get_pg_conn,
+                                            restore_pg_db,
+                                            get_test_path,
                                             import_processing,
                                             delete_features,
                                             get_test_copy_path)
@@ -30,10 +32,9 @@ class TestInsertFeaturesToLayer(unittest.TestCase):
         import_qgis_model_baker()
 
         cls.app = AppInterface()
-
-        restore_schema('test_ladm_cadastral_manager_data')
-        cls.db = get_pg_conn('test_ladm_cadastral_manager_data')
-
+        cls.db = restore_pg_db('insert_features_to_layer',
+                                  [LADMColModelRegistry().model(LADMNames.SUPPLIES_MODEL_KEY).full_name()],
+                                  get_test_path("db/ladm/test_ladm_cadastral_manager_model_v1_0.xtf"))
         res, code, msg = cls.db.test_connection()
         cls.assertTrue(res, msg)
 
