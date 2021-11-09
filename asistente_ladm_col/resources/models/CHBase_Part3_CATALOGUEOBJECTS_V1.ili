@@ -1,0 +1,64 @@
+INTERLIS 2.3;
+
+!!@ technicalContact="models@geo.admin.ch"
+!!@ furtherInformation="http://www.geo.admin.ch/internet/geoportal/de/home/topics/geobasedata/models.html"
+MODEL CatalogueObjects_V1 (en)
+AT "http://www.geo.admin.ch"
+VERSION "2011-08-30"  =
+
+  TOPIC Catalogues(ABSTRACT) =
+
+    CLASS Item (ABSTRACT) =
+    END Item;
+
+    STRUCTURE CatalogueReference (ABSTRACT) =
+      Reference : REFERENCE TO (EXTERNAL) Item;
+    END CatalogueReference;
+
+    STRUCTURE MandatoryCatalogueReference (ABSTRACT) =
+      Reference : MANDATORY REFERENCE TO (EXTERNAL) Item;
+    END MandatoryCatalogueReference;
+
+  END Catalogues;
+
+END CatalogueObjects_V1.
+
+!!@ technicalContact="models@geo.admin.ch"
+!!@ furtherInformation="http://www.geo.admin.ch/internet/geoportal/de/home/topics/geobasedata/models.html"
+MODEL CatalogueObjectTrees_V1 (en)
+AT "http://www.geo.admin.ch"
+VERSION "2011-08-30"  =
+  IMPORTS CatalogueObjects_V1;
+
+  TOPIC Catalogues(ABSTRACT)
+  EXTENDS CatalogueObjects_V1.Catalogues =
+
+    CLASS Item (ABSTRACT,EXTENDED) =
+      IsSuperItem : MANDATORY BOOLEAN;
+      IsUseable : MANDATORY BOOLEAN;
+      MANDATORY CONSTRAINT
+        IsSuperItem OR IsUseable;
+    END Item;
+
+    ASSOCIATION EntriesTree =
+      Parent -<#> {0..1} Item;
+      Child -- {0..*} Item;
+      MANDATORY CONSTRAINT
+        Parent->IsSuperItem;
+    END EntriesTree;
+
+    STRUCTURE CatalogueReference (ABSTRACT,EXTENDED) =
+      Reference (EXTENDED) : REFERENCE TO (EXTERNAL) Item;
+      MANDATORY CONSTRAINT
+        Reference->IsUseable;
+    END CatalogueReference;
+
+    STRUCTURE MandatoryCatalogueReference (ABSTRACT,EXTENDED) =
+      Reference (EXTENDED) : MANDATORY REFERENCE TO (EXTERNAL) Item;
+      MANDATORY CONSTRAINT
+        Reference->IsUseable;
+    END MandatoryCatalogueReference;
+
+  END Catalogues;
+
+END CatalogueObjectTrees_V1.

@@ -130,7 +130,7 @@ from asistente_ladm_col.gui.wizards.survey.dlg_create_group_party_survey import 
 from asistente_ladm_col.gui.wizards.survey.wiz_create_points_survey import CreatePointsSurveyWizard
 from asistente_ladm_col.lib.db.db_connection_manager import ConnectionManager
 from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.logic.quality.quality_rule_engine import QualityRuleEngine
+from asistente_ladm_col.core.quality_rules.quality_rule_engine import QualityRuleEngine
 from asistente_ladm_col.utils.decorators import (db_connection_required,
                                                  validate_if_wizard_is_open,
                                                  qgis_model_baker_required,

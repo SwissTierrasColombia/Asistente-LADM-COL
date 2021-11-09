@@ -13,8 +13,8 @@ from asistente_ladm_col.utils.crs_utils import get_crs_authid
 start_app()  # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.config.general_config import DEFAULT_TOLERANCE_VALUE
-from asistente_ladm_col.logic.quality.quality_rule_engine import QualityRuleEngine
-from asistente_ladm_col.logic.quality.quality_rule_layer_manager import QualityRuleLayerManager
+from asistente_ladm_col.core.quality_rules.quality_rule_engine import QualityRuleEngine
+from asistente_ladm_col.core.quality_rules.quality_rule_layer_manager import QualityRuleLayerManager
 from asistente_ladm_col.config.config_db_supported import ConfigDBsSupported
 from asistente_ladm_col.logic.quality.quality_rules import QualityRules
 from asistente_ladm_col.logic.quality.point_quality_rules import PointQualityRules

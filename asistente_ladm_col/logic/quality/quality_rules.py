@@ -26,7 +26,7 @@ from asistente_ladm_col.logic.quality.point_quality_rules import PointQualityRul
 from asistente_ladm_col.logic.quality.line_quality_rules import LineQualityRules
 from asistente_ladm_col.logic.quality.polygon_quality_rules import PolygonQualityRules
 from asistente_ladm_col.logic.quality.logic_quality_rules import LogicQualityRules
-from asistente_ladm_col.logic.quality.quality_rule_execution_result import QualityRuleExecutionResult
+from asistente_ladm_col.core.quality_rules.quality_rule_execution_result import QualityRuleExecutionResult
 
 
 class QualityRules:

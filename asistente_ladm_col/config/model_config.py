@@ -89,6 +89,22 @@ class ModelConfig:
                 MODEL_CHECKED_BY_DEFAULT: False,
                 MODEL_MAPPING: db_mapping_config.get_model_mapping(LADMNames.ISO19107_MODEL_KEY)
             },
+            LADMNames.CATALOGUE_OBJECTS_MODEL_KEY: {
+                MODEL_ALIAS: QCoreApplication.translate("TranslatableConfigStrings", "Catalogue objects"),
+                MODEL_IS_SUPPORTED: True,
+                MODEL_SUPPORTED_VERSION: "1",
+                MODEL_HIDDEN_BY_DEFAULT: True,
+                MODEL_CHECKED_BY_DEFAULT: False,
+                MODEL_MAPPING: dict()
+            },
+            LADMNames.QUALITY_ERROR_MODEL_KEY: {
+                MODEL_ALIAS: QCoreApplication.translate("TranslatableConfigStrings", "Quality errors"),
+                MODEL_IS_SUPPORTED: True,
+                MODEL_SUPPORTED_VERSION: "0.1",
+                MODEL_HIDDEN_BY_DEFAULT: False,
+                MODEL_CHECKED_BY_DEFAULT: False,
+                MODEL_MAPPING: dict()
+            },
             LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY: {
                 MODEL_ALIAS: QCoreApplication.translate("TranslatableConfigStrings", "Field data capture"),
                 MODEL_IS_SUPPORTED: False,
