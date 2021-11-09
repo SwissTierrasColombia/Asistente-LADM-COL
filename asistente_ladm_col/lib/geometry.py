@@ -233,7 +233,8 @@ class GeometryUtils(QObject):
             segments.extend(self.get_polyline_as_single_segments(geom.constGet()))
         return segments
 
-    def get_overlapping_points(self, point_layer):
+    @staticmethod
+    def get_overlapping_points(point_layer):
         """
         Returns a list of lists, where inner lists are ids of overlapping
         points, e.g., [[1, 3], [19, 2, 8]].

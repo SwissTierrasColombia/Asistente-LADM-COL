@@ -128,18 +128,6 @@ class QualityRuleConfig:
             EnumQualityRule.Point: {
                 QUALITY_GROUP_NAME: QCoreApplication.translate("QualityDialog", "Rules for Points"),
                 QUALITY_RULES: {
-                    EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS: {
-                        QUALITY_RULE_ID: EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS,
-                        QUALITY_RULE_NAME: translated_strings[EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS],
-                        QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "punto_lindero_superposicion"),
-                        QUALITY_RULE_TABLE_FIELDS: [
-                            QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_punto_lindero"), QVariant.String),
-                            QgsField(QCoreApplication.translate("QualityRulesConfig", "conteo"), QVariant.Int)
-                        ],
-                        QUALITY_RULE_DOMAIN_ERROR_CODES: [
-                            QUALITY_RULE_ERROR_CODE_E100101
-                        ]
-                    },
                     EnumQualityRule.Point.OVERLAPS_IN_CONTROL_POINTS: {
                         QUALITY_RULE_ID: EnumQualityRule.Point.OVERLAPS_IN_CONTROL_POINTS,
                         QUALITY_RULE_NAME: translated_strings[EnumQualityRule.Point.OVERLAPS_IN_CONTROL_POINTS],
@@ -685,14 +673,7 @@ class QualityRuleConfig:
     @staticmethod
     def get_quality_rules_layer_config(names):
         return {
-            EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS: {
-                QUALITY_RULE_LADM_COL_LAYERS: [names.LC_BOUNDARY_POINT_T],
-                QUALITY_RULE_ADJUSTED_LAYERS: {
-                    names.LC_BOUNDARY_POINT_T: {
-                        ADJUSTED_INPUT_LAYER: names.LC_BOUNDARY_POINT_T,
-                        ADJUSTED_REFERENCE_LAYER: names.LC_BOUNDARY_POINT_T}
-                }
-            }, EnumQualityRule.Point.OVERLAPS_IN_CONTROL_POINTS: {
+            EnumQualityRule.Point.OVERLAPS_IN_CONTROL_POINTS: {
                 QUALITY_RULE_LADM_COL_LAYERS: [names.LC_CONTROL_POINT_T],
                 QUALITY_RULE_ADJUSTED_LAYERS: {
                     names.LC_CONTROL_POINT_T: {

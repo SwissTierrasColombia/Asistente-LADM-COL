@@ -29,7 +29,7 @@ from asistente_ladm_col.config.quality_rules_config import (QUALITY_RULE_ID,
                                                             QUALITY_RULE_DOMAIN_ERROR_CODES)
 
 
-class QualityRule:
+class QualityRuleOld:
     def __init__(self, quality_rule_data):
         self.__quality_rule_data = quality_rule_data
         self.logger = Logger()

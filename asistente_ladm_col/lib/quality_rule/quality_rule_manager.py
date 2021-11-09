@@ -19,7 +19,7 @@
 from qgis.PyQt.QtCore import QObject
 
 from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
-from asistente_ladm_col.lib.quality_rule.quality_rule import QualityRule
+from asistente_ladm_col.lib.quality_rule.quality_rule import QualityRuleOld
 from asistente_ladm_col.config.enums import EnumQualityRule
 from asistente_ladm_col.config.quality_rules_config import (QUALITY_GROUP_NAME,
                                                             QUALITY_RULES,
@@ -46,7 +46,7 @@ class QualityRuleManager(QObject, metaclass=SingletonQObject):
             self._quality_rule_groups[group_k] = group_v[QUALITY_GROUP_NAME]
 
             for rule_k, rule_v in group_v[QUALITY_RULES].items():
-                self.__quality_rules[rule_k] = QualityRule(rule_v)
+                self.__quality_rules[rule_k] = QualityRuleOld(rule_v)
         self.logger.info(__name__, "{} quality rules registered!".format(len(self.__quality_rules)))
 
     def get_quality_rule(self, rule_key):

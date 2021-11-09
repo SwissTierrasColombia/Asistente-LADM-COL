@@ -114,6 +114,17 @@ class EnumLayerRegistryType(Enum):
     IN_LAYER_TREE = 2
 
 
+class EnumQualityRuleType(Enum):
+    """
+    Loaded layers in QGIS can be: 1) only in registry or 2) both in registry and in layer tree
+    """
+    GENERIC = 0  # For instance, iliValidator errors, which may include all types
+    POINT = 1
+    LINE = 2
+    POLYGON = 3
+    LOGIC = 4
+
+
 # https://www.notinventedhere.org/articles/python/how-to-use-strings-as-name-aliases-in-python-enums.html
 class EnumQualityRule:
     class Point(Enum):

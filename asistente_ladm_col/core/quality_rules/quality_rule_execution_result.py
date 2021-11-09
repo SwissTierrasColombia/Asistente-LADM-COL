@@ -34,7 +34,7 @@ class QualityRulesExecutionResult:
 
 
 class QualityRuleExecutionResult:
-    def __init__(self, msg, level, error_layers):
+    def __init__(self, msg, level, error_layers=None):
         """
         Stores the result of a single quality rule.
 
