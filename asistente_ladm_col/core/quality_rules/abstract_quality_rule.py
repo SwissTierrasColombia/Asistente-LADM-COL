@@ -58,7 +58,7 @@ class AbstractQualityRule(QObject, metaclass=AbstractQObjectMeta):
         return self._field_mapping
 
     @staticmethod
-    def layer_config(names):
+    def layers_config(names):
         # Dictionary of layer configuration. Specifies which layers are needed
         # by the rule and how it needs them for a 'tolerance > 0' scenario.
         return dict()
@@ -83,7 +83,7 @@ class AbstractQualityRule(QObject, metaclass=AbstractQObjectMeta):
     def validate_features(self, features=None, feature_ids=list()):
         return False
 
-    def __save_errors(self, db_qr, error_code, error_data, ili_name=''):
+    def _save_errors(self, db_qr, error_code, error_data, ili_name=''):
         """
         Save errors into DB with errores_calidad model structure
 

@@ -892,7 +892,7 @@ class TesQualityRules(unittest.TestCase):
 
         # Tolerance: 1mm
         print("INFO: Testing with 1mm of tolerance...")
-        quality_rule_engine.initialize(db_gpkg, list_rules, 1, False)
+        quality_rule_engine.initialize(db_gpkg, list_rules, 1, clear_informality_cache=False)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res.result(rule_key).level, Qgis.Critical)
@@ -907,7 +907,7 @@ class TesQualityRules(unittest.TestCase):
 
         # Tolerance: 2mm
         print("INFO: Testing with 2mm of tolerance...")
-        quality_rule_engine.initialize(db_gpkg, list_rules, 2, False)
+        quality_rule_engine.initialize(db_gpkg, list_rules, 2, clear_informality_cache=False)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res.result(rule_key).level, Qgis.Critical)
@@ -952,7 +952,7 @@ class TesQualityRules(unittest.TestCase):
 
         # Tolerance: 1mm
         print("INFO: Testing with 1mm of tolerance...")
-        quality_rule_engine.initialize(db_gpkg, dict_rules, 1, False)
+        quality_rule_engine.initialize(db_gpkg, dict_rules, 1, clear_informality_cache=False)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res.result(rule_key).level, Qgis.Critical)
@@ -967,7 +967,7 @@ class TesQualityRules(unittest.TestCase):
 
         # Tolerance: 2mm
         print("INFO: Testing with 2mm of tolerance...")
-        quality_rule_engine.initialize(db_gpkg, dict_rules, 2, False)
+        quality_rule_engine.initialize(db_gpkg, dict_rules, 2, clear_informality_cache=False)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res.result(rule_key).level, Qgis.Critical)
@@ -1005,7 +1005,7 @@ class TesQualityRules(unittest.TestCase):
 
         # Tolerance: 1mm
         print("INFO: Testing with 1mm of tolerance...")
-        quality_rule_engine.initialize(db_gpkg, dict_rules, 1, False)
+        quality_rule_engine.initialize(db_gpkg, dict_rules, 1, clear_informality_cache=False)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res.result(rule_key).level, Qgis.Critical)
@@ -1019,7 +1019,7 @@ class TesQualityRules(unittest.TestCase):
 
         # Tolerance: 2mm
         print("INFO: Testing with 2mm of tolerance...")
-        quality_rule_engine.initialize(db_gpkg, dict_rules, 2, False)
+        quality_rule_engine.initialize(db_gpkg, dict_rules, 2, clear_informality_cache=False)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res.result(rule_key).level, Qgis.Critical)

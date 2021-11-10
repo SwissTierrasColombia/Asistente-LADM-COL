@@ -34,21 +34,15 @@ class QualityRulesExecutionResult:
 
 
 class QualityRuleExecutionResult:
-    def __init__(self, msg, level, error_layers=None):
+    def __init__(self, level, msg):
         """
         Stores the result of a single quality rule.
 
-        :param msg: Message describing the obtained result.
         :param level: Indicates whether the rule was successful (Qgis.Success), couldn't be validated (Qgis.Warning),
                       or was not successful (Qgis.Critical).
+        :param msg: Message describing the obtained result.
         :param error_layers: List of QgsVectorLayers. They may be spatial or not and they might be empty if no error is
                              found.
         """
-        self.msg = msg
         self.level = level
-        self.error_layers = error_layers
-
-        # We add a handy member variable to get the error layer directly. Up to now, only 1 QR returns more than 1
-        # layer. Note that error_layers might be empty, if there were errors or the prerequisites for running the
-        # quality rule were not met (e.g., an imput layer has no feature to validate the QR).
-        self.error_layer = error_layers[0] if error_layers else None
+        self.msg = msg

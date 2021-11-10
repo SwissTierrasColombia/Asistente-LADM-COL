@@ -48,7 +48,7 @@ class QROverlappingBoundaryPoints(AbstractQualityRule):
         # Optional. Only useful for display purposes.
         self._field_mapping = dict()  # E.g., {'id_objetos': 'ids_punto_lindero', 'valores': 'conteo'}
 
-    def layer_config(self, names):
+    def layers_config(self, names):
         return {
             QUALITY_RULE_LADM_COL_LAYERS: [names.LC_BOUNDARY_POINT_T],
             QUALITY_RULE_ADJUSTED_LAYERS: {
@@ -90,7 +90,7 @@ class QROverlappingBoundaryPoints(AbstractQualityRule):
 
                 errors.append(error_data)
 
-            self.__save_errors(db_qr, self._ERROR_01, errors)
+            self._save_errors(db_qr, self._ERROR_01, errors)
 
             if len(errors) > 0:
                 return QualityRuleExecutionResult(Qgis.Critical,

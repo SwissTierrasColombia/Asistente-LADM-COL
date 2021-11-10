@@ -204,7 +204,7 @@ qr_engine = QualityRuleEngine(db, quality_rules, TOLERANCE)
 print("\n[INFO] Testing {} quality rules with {}mm of tolerance...".format(
     len(quality_rules),
     TOLERANCE))
-res = qr_engine.validate_quality_rules()
+res, msg, qr_res = qr_engine.validate_quality_rules()
 
 
 # ------------------------------------------------------------------------------
@@ -214,7 +214,7 @@ res = qr_engine.validate_quality_rules()
 print("\n[INFO] Results can be found at '{}'!".format(OUTPUT_DIR))
 
 # GeoPackage (only if at least 1 error is found)
-error_layers = res.all_error_layers()
+error_layers = qr_res.all_error_layers()
 if error_layers:
     gpkg_filepath = os.path.join(OUTPUT_DIR, 
                                  "Reglas_de_Calidad_{}.gpkg".format(TIMESTAMP))

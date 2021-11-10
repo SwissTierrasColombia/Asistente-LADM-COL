@@ -191,21 +191,19 @@ def activate_processing_plugin(func_to_decorate):
 
 def _log_quality_rule_validations(func_to_decorate):
     @wraps(func_to_decorate)
-    def add_format_to_text(self, rule_key, layers, **args):
+    def add_format_to_text(self, rule, layers):
         """
         Decorator used for registering log quality info
-        :param self: QualityDialog instance
-        :param rule_key: rule_key
+        :param self: QualityRuleEngine instance
+        :param rule: Quality rule instance
         :param layers: layers
-        :param args: 'rule_name' is the executed quality rule name
         """
-        rule_name = args['rule_name']
-        self.quality_rule_logger.set_initial_progress_emitted.emit(rule_name)
+        self.quality_rule_logger.set_initial_progress_emitted.emit(rule.name())
         log_text_content = LOG_QUALITY_LIST_CONTAINER_OPEN
 
         start_time = time.time()
         with OverrideCursor(Qt.WaitCursor):
-            qr_result = func_to_decorate(self, rule_key, layers, **args)
+            qr_result = func_to_decorate(self, rule, layers)
         end_time = time.time()
 
         if qr_result.level == Qgis.Critical:
@@ -225,10 +223,10 @@ def _log_quality_rule_validations(func_to_decorate):
         log_text_content += LOG_QUALITY_CONTENT_SEPARATOR
 
         self.quality_rule_logger.log_text += "{}{} [{}]{}".format(LOG_QUALITY_PREFIX_TOPOLOGICAL_RULE_TITLE,
-                                                              rule_name, Utils().set_time_format(end_time - start_time), LOG_QUALITY_SUFFIX_TOPOLOGICAL_RULE_TITLE)
+                                                              rule.name(), Utils().set_time_format(end_time - start_time), LOG_QUALITY_SUFFIX_TOPOLOGICAL_RULE_TITLE)
         self.quality_rule_logger.log_text += log_text_content
 
-        self.quality_rule_logger.set_final_progress_emitted.emit(rule_name)
+        self.quality_rule_logger.set_final_progress_emitted.emit(rule.name())
 
         return qr_result
 

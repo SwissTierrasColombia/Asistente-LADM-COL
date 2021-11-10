@@ -14,6 +14,8 @@
  *                                                                         *
  ***************************************************************************/
 """
+import os.path
+import tempfile
 import time
 
 from qgis.PyQt.QtCore import (QCoreApplication,
@@ -27,8 +29,8 @@ from asistente_ladm_col.core.quality_rules.quality_rule_execution_result import 
                                                                                  QualityRuleExecutionResult)
 from asistente_ladm_col.core.quality_rules.quality_rule_registry import QualityRuleRegistry
 from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.lib.qgis_model_baker.ili2db import Ili2DB
 from asistente_ladm_col.lib.quality_rule.quality_rule_manager import QualityRuleManager
-from asistente_ladm_col.logic.quality.quality_rules import QualityRules
 from asistente_ladm_col.utils.decorators import _log_quality_rule_validations
 from asistente_ladm_col.utils.utils import Utils
 
@@ -49,6 +51,7 @@ class QualityRuleEngine(QObject):
         self.__qr_registry = QualityRuleRegistry()
 
         self.__db = db
+        self.__db_qr = None
         self.__rules = self.__get_dict_rules(rules)
         self.__result_layers = list()
         self.__with_gui = self.app.settings.with_gui
@@ -58,7 +61,6 @@ class QualityRuleEngine(QObject):
         self.app.settings.tolerance = tolerance  # Tolerance must be given, we don't want anything implicit about it
         self.__tolerance = self.app.settings.tolerance  # Tolerance input might be altered (e.g., if it comes negative)
         self.__layer_manager = QualityRuleLayerManager(db, self.__rules, self.__tolerance)
-        self.__quality_rules = QualityRules()
         self.quality_rule_logger = QualityRuleLogger(self.__db, self.__tolerance)
 
         # Clear informality cache before executing QRs.
@@ -67,14 +69,18 @@ class QualityRuleEngine(QObject):
         # an instance of this class or initialize() a QREngine object just before calling validate_quality_rules().
         self.app.core.clear_cached_informal_spatial_units()
 
-    def initialize(self, db, rules, tolerance, clear_informality_cache=True):
+    def initialize(self, db, rules, tolerance, output_path='', clear_informality_cache=True):
         """
         Objects of this class are reusable calling initialize()
         """
         self.__result_layers = list()
         self.__db = db
+        self.__db_qr = None
         self.__rules = self.__get_dict_rules(rules)
         self.__with_gui = self.app.settings.with_gui
+
+        self._output_path = output_path
+
         self.app.settings.tolerance = tolerance
         self.__tolerance = self.app.settings.tolerance  # Tolerance input might be altered (e.g., if it comes negative)
         self.__layer_manager.initialize(self.__rules, self.__tolerance)
@@ -93,55 +99,107 @@ class QualityRuleEngine(QObject):
         # If rules is a list, we need to retrieve the quality rule names from the QRRegistry
         return {rule_key: self.__qr_registry.get_quality_rule(rule_key) for rule_key in rules}
 
+    def __get_valid_output_path(self, output_path):
+        if not os.path.exists(output_path):
+            output_path = tempfile.gettempdir()
+            self.logger.warning(__name__, QCoreApplication.translate("QualityRuleEngine",
+                                                                     "Output dir doesn't exist! Using now '{}'").format(OUTPUT_DIR))
+
+        output_path = os.path.join(output_path, "Reglas_de_Calidad_{}".format(self.__timestamp))
+        try:
+            os.makedirs(output_path)
+        except PermissionError as e:
+            self.logger.critical_msg(__name__, QCoreApplication.translate("QualityRuleEngine",
+                                                                          "Output dir '{}' is read-only!").format(output_path))
+            output_path = None
+
+        return output_path
+
     def validate_quality_rules(self):
-        res = dict()  # {rule_key: QualityRuleExecutionResult}
+        res = False
+        msg = ""
+        qr_res = dict()  # {rule_key: QualityRuleExecutionResult}
         if self.__rules:
+            # First, create the error db and fill its metadata...
+            self.__timestamp = time.strftime('%Y%m%d_%H%M%S')
+            res_db, msg_db, self.__db_qr = self.__get_quality_error_connector()
+
+            if not res_db:
+                self.logger.warning_msg(__name__, QCoreApplication.translate("QualityRuleEngine",
+                                                                             "There was a problem creating the quality error DB! Details:").format(msg_db))
+                return False, msg_db, None
+
             self.quality_rule_logger.set_count_topology_rules(len(self.__rules))
             self.logger.info(__name__,
                              QCoreApplication.translate("QualityRuleEngine",
                                 "Validating {} quality rules (tolerance: {}).").format(len(self.__rules), self.__tolerance))
 
-            for rule_key, rule_name in self.__rules.items():
-                if rule_name is not None:
+            for rule_key, rule in self.__rules.items():
+                if rule is not None:
                     layers = self.__layer_manager.get_layers(rule_key)
                     if layers:
-                        res[rule_key] = self.__validate_quality_rule(rule_key, layers, rule_name=rule_name)
-                        if self.__with_gui:
-                            self.add_error_layers(res[rule_key].error_layers)
+                        qr_res[rule_key] = self.__validate_quality_rule(rule, layers)
+                        # if self.__with_gui:
+                        #     self.add_error_layers(qr_res[rule_key].error_layers)
                     else:
-                        msg = QCoreApplication.translate("QualityRuleEngine",
-                                "Couldn't execute '{}' quality rule! Required layers are not available. Skipping...").format(rule_name)
-                        res[rule_key] = QualityRuleExecutionResult(msg, None, dict())  # TODO: should be Qgis.None when https://github.com/qgis/QGIS/issues/42996 is solved
-                        self.logger.warning(__name__, msg)
+                        qr_msg = QCoreApplication.translate("QualityRuleEngine",
+                                "Couldn't execute '{}' quality rule! Required layers are not available. Skipping...").format(rule.name())
+                        qr_res[rule_key] = QualityRuleExecutionResult(Qgis.NoLevel, qr_msg)
+                        self.logger.warning(__name__, qr_msg)
                 else:
-                    msg = QCoreApplication.translate("QualityRuleEngine",
-                                                     "Quality rule with key '{}' does not exist! Skipping...").format(
+                    qr_msg = QCoreApplication.translate("QualityRuleEngine",
+                                                     "Quality rule with key '{}' does not exist or is not registered! Skipping...").format(
                         rule_key)
-                    res[rule_key] = QualityRuleExecutionResult(msg, None, dict())
-                    self.logger.warning(__name__, msg)
+                    qr_res[rule_key] = QualityRuleExecutionResult(Qgis.NoLevel, qr_msg)
+                    self.logger.warning(__name__, qr_msg)
 
+            res = True
+            msg = "Success!"
             self.quality_rule_logger.generate_log_button()
             self.__layer_manager.clean_temporary_layers()
         else:
             self.logger.warning(__name__, QCoreApplication.translate("QualityRuleEngine", "No rules to validate!"))
 
-        return QualityRulesExecutionResult(res)
+        return res, msg, QualityRulesExecutionResult(qr_res)
 
     @_log_quality_rule_validations
-    def __validate_quality_rule(self, rule_key, layers, rule_name):
+    def __validate_quality_rule(self, rule, layers):
         """
         Intermediate function to log quality rule execution.
 
-        :param rule_key: rule key
-        :param rule_name: Rule name (needed for the logging decorator)
+        :param rule: Quality rule instance
+        :param layers: Layer dict with the layers the quality rule needs (ready to use for tolerance > 0 scenarios)
         :return: An instance of QualityRuleExecutionResult
         """
-        return self.__quality_rules.validate_quality_rule(self.__db, rule_key, layers)
+        return rule.validate(self.__db, self.__db_qr, layers, self.__tolerance)
 
     def add_error_layers(self, error_layers):
         for error_layer in error_layers:
             if error_layer.featureCount():  # Only load error layers that have at least one feature
                 self.app.gui.add_error_layer(None, error_layer)
+
+    def __get_quality_error_connector(self):
+        self._output_path = self.__get_valid_output_path(self._output_path)
+        if self._output_path is None:
+            return False, "", None
+
+        db_file = os.path.join(self._output_path, "Reglas_de_Calidad_{}.gpkg".format(self.__timestamp))
+        from asistente_ladm_col.lib.db.gpkg_connector import GPKGConnector
+        db = GPKGConnector(db_file)
+        from asistente_ladm_col.config.layer_config import LADMNames
+        from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
+        ili2db = Ili2DB()
+        error_model = LADMColModelRegistry().model(LADMNames.QUALITY_ERROR_MODEL_KEY)
+        res, msg = ili2db.import_schema(db, [error_model.full_name()])
+
+        if res:
+            for catalogue_key, catalogue_xtf_path in error_model.get_catalogues().items():
+                self.logger.info(__name__, "Importing catalogue '{}' to quality error database...".format(catalogue_key))
+                res_xtf, msg_xtf = ili2db.import_data(db, catalogue_xtf_path)
+                if not res_xtf:
+                    self.logger.warning(__name__, "There was a problem importing catalogue '{}'! Skipping...".format(catalogue_key))
+
+        return res, msg, None if not res else db
 
 
 class QualityRuleLogger(QObject):

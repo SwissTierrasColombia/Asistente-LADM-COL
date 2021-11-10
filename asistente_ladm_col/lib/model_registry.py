@@ -31,7 +31,8 @@ from asistente_ladm_col.config.keys.common import (ROLE_SUPPORTED_MODELS,
                                                    MODEL_DIR,
                                                    MODEL_BASKET_INFO,
                                                    MODEL_BASKET_TOPIC_NAME,
-                                                   MODEL_BASKET_TOPIC_NAME_PREFERRED)
+                                                   MODEL_BASKET_TOPIC_NAME_PREFERRED,
+                                                   MODEL_CATALOGUES)
 from asistente_ladm_col.config.model_config import ModelConfig
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
@@ -163,6 +164,21 @@ class LADMColModelRegistry(metaclass=Singleton):
     def get_model_mapping(self, model_key):
         return self.model(model_key).get_mapping()
 
+    def register_catalogue_for_model(self, model_key, catalogue):
+        res = False
+        model = self.__models.get(model_key, None)
+        if model:
+            model.add_catalogue(catalogue)
+            res = True
+
+        return res
+
+    def unregister_catalogue_from_model(self, model_key, catalogue_key):
+        return self.__models[model_key].remove_catalogue(catalogue_key) if model_key in self.__models else False
+
+    def get_model_catalogues(self, model_key):
+        return self.__models[model_key].get_catalogues() if model_key in self.__models else dict()
+
 
 class LADMColModel:
     def __init__(self, model_id, model_data):
@@ -184,6 +200,9 @@ class LADMColModel:
 
         # Information about baskets for this model, if needed
         self.__basket_info = model_data.get(MODEL_BASKET_INFO, dict())
+
+        # INTERLIS catalogues to define external domain tables
+        self.__catalogues = model_data.get(MODEL_CATALOGUES, dict())  # {catalogue_name1: catalogue_xtf_path1, ...}
 
     def id(self):
         return self.__id
@@ -243,3 +262,21 @@ class LADMColModel:
 
     def is_basket_topic_name_preferred(self):
         return self.__basket_info.get(MODEL_BASKET_TOPIC_NAME_PREFERRED, False)
+
+    def add_catalogue(self, catalogue):
+        """
+        :param catalogue: Dictionary {catalogue_key: catalogue_xtf_path}
+        """
+        self.__catalogues.update(catalogue)
+
+    def remove_catalogue(self, catalogue_key):
+        res = False
+        if catalogue_key in self.__catalogues:
+            self.__catalogues[catalogue_key] = None
+            del self.__catalogues[catalogue_key]
+            res = True
+
+        return res
+
+    def get_catalogues(self):
+        return deepcopy(self.__catalogues)
