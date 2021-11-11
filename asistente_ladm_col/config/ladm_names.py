@@ -56,7 +56,7 @@ class LADMNames(metaclass=Singleton):
     CADASTRAL_CARTOGRAPHY_MODEL_KEY = "Submodelo_Cartografia_Catastral"
     VALUATION_MODEL_KEY = "Submodelo_Avaluos"
     ISO19107_MODEL_KEY = "ISO19107_PLANAS"
-    CATALOGUE_OBJECTS_MODEL_KEY = "CatalogueObjects"
+    CATALOG_OBJECTS_MODEL_KEY = "CatalogueObjects"
     QUALITY_ERROR_MODEL_KEY = "Errores_Calidad"
     FIELD_DATA_CAPTURE_MODEL_KEY = "Captura_Geo"
 

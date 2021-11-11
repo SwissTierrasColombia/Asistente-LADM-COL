@@ -47,12 +47,12 @@ def get_quality_error_connector(output_path, timestamp):
     res, msg = ili2db.import_schema(db, [error_model.full_name()])
 
     if res:
-        for catalogue_key, catalogue_xtf_path in error_model.get_catalogues().items():
-            logger.info(__name__, "Importing catalogue '{}' to quality error database...".format(catalogue_key))
-            res_xtf, msg_xtf = ili2db.import_data(db, catalogue_xtf_path)
+        for catalog_key, catalog_xtf_path in error_model.get_catalogs().items():
+            logger.info(__name__, "Importing catalog '{}' to quality error database...".format(catalog_key))
+            res_xtf, msg_xtf = ili2db.import_data(db, catalog_xtf_path)
             if not res_xtf:
                 logger.warning(__name__,
-                               "There was a problem importing catalogue '{}'! Skipping...".format(catalogue_key))
+                               "There was a problem importing catalog '{}'! Skipping...".format(catalog_key))
 
     return res, msg, None if not res else db
 
@@ -76,14 +76,14 @@ def _get_valid_output_path(output_path, timestamp):
     return output_path
 
 
-def save_errors(db_qr, rule_code, error_code, error_data, target_layer, ili_name=''):
+def save_errors(db_qr, rule_code, error_code, error_data, target_layer, ili_name=None):
     """
     Save error data in the quality error model by error_code, which means that you should call this function once
     per error type. Accepts both, spatial and non-spatial errors.
 
     :param db_qr: DB Connector
-    :param rule_code: Rule code as specified in the external catalogues.
-    :param error_code: Error code as specified in the external catalogues.
+    :param rule_code: Rule code as specified in the external catalogs.
+    :param error_code: Error code as specified in the external catalogs.
     :param error_data: Dict of lists:
                            {'geometries': [geometries], 'data': [obj_uuids, rel_obj_uuids, values, details]}
                            Note: this dict will always have 2 elements.
@@ -116,12 +116,12 @@ def save_errors(db_qr, rule_code, error_code, error_data, target_layer, ili_name
     # We do now a soon check of rule code and error code to stop if cannot be found
     fids = LADMData.get_fids_from_key_values(layers[names.ERR_RULE_TYPE_T], names.ERR_RULE_TYPE_T_CODE_F, [rule_code])
     if not fids:
-        return False, "There was a problem saving quality error data. The rule '{}' cannot be found in the database. Is that rule in any registered catalogue?".format(rule_code)
+        return False, "There was a problem saving quality error data. The rule '{}' cannot be found in the database. Is that rule in any registered catalog?".format(rule_code)
     rule_code_id = fids[0]
 
     fids = LADMData.get_fids_from_key_values(layers[names.ERR_ERROR_TYPE_T], names.ERR_ERROR_TYPE_T_CODE_F, [error_code])
     if not fids:
-        return False, "There was a problem saving quality error data. The error '{}' cannot be found in the database. Is that error in any registered catalogue?".format(
+        return False, "There was a problem saving quality error data. The error '{}' cannot be found in the database. Is that error in any registered catalog?".format(
             error_code)
     error_code_id = fids[0]
 

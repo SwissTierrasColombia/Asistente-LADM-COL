@@ -127,7 +127,7 @@ VERSION "2021-09-21"  =
       /** Nombre calificado de clase o topic del modelo de INTERLIS
        */
       !!@ ili2db.dispName = "Nombre ili Objetos"
-      Nombre_ili_Objetos : NAME;
+      Nombre_ili_Objetos : TEXT*1024;
       /** Detalles técnicos del error
        */
       !!@ ili2db.dispName = "Detalles"

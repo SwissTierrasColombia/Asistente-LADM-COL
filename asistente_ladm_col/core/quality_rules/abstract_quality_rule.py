@@ -92,12 +92,12 @@ class AbstractQualityRule(QObject, metaclass=AbstractQObjectMeta):
     def validate_features(self, features=None, feature_ids=list()):
         return False
 
-    def _save_errors(self, db_qr, error_code, error_data, target_layer=None, ili_name=''):
+    def _save_errors(self, db_qr, error_code, error_data, target_layer=None, ili_name=None):
         """
         Save errors into DB with errores_calidad model structure
 
         :param db_qr: DBConnector of the target database
-        :param error_code: Exactly as specified in error catalogues
+        :param error_code: Exactly as specified in error catalogs
         :param error_data: Dict of lists:
                            {'geometries': [geometries], 'data': [obj_uuids, rel_obj_uuids, values, details]}
                            Note: this dict will always have 2 elements.
@@ -111,5 +111,5 @@ class AbstractQualityRule(QObject, metaclass=AbstractQObjectMeta):
         :return: Boolean, depending on whether the errors were saved or not.
         """
         target_layer = self._type if target_layer is None else target_layer
-        res, msg = save_errors(db_qr, self._id, error_code, error_data, target_layer, ili_name='')
+        res, msg = save_errors(db_qr, self._id, error_code, error_data, target_layer, ili_name=None)
         print(res, msg)

@@ -116,7 +116,7 @@ class DialogImportData(QDialog, DIALOG_UI):
 
         self.xtf_file_browse_button.clicked.connect(
             make_file_selector(self.xtf_file_line_edit, title=QCoreApplication.translate("DialogImportData", "Open Transfer or Catalog File"),
-                               file_filter=QCoreApplication.translate("DialogImportData",'Transfer File (*.xtf *.itf);;Catalogue File (*.xml *.xls *.xlsx)')))
+                               file_filter=QCoreApplication.translate("DialogImportData",'Transfer File (*.xtf *.itf);;Catalog File (*.xml *.xls *.xlsx)')))
 
         self.validators = Validators()
         self.xtf_file_line_edit.setPlaceholderText(QCoreApplication.translate("DialogImportData", "[Name of the XTF to be imported]"))
