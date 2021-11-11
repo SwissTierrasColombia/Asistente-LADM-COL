@@ -25,6 +25,7 @@ from asistente_ladm_col.config.keys.common import (QUALITY_RULE_LAYERS,
                                                    QUALITY_RULE_ADJUSTED_LAYERS,
                                                    ADJUSTED_INPUT_LAYER,
                                                    ADJUSTED_REFERENCE_LAYER)
+from asistente_ladm_col.config.layer_config import LADMNames
 from asistente_ladm_col.core.quality_rules.abstract_quality_rule import AbstractQualityRule
 from asistente_ladm_col.core.quality_rules.quality_rule_execution_result import QualityRuleExecutionResult
 from asistente_ladm_col.lib.geometry import GeometryUtils
@@ -42,6 +43,8 @@ class QROverlappingBoundaryPoints(AbstractQualityRule):
         self._id = "IGAC-R1001"
         self._name = "Los puntos de lindero no deben superponerse"
         self._type = EnumQualityRuleType.POINT
+        self._tags = ["igac", "instituto geográfico agustín codazzi", "puntos", "punto lindero", "superposición"]
+        self._models = [LADMNames.SURVEY_MODEL_KEY]
 
         self._errors = {self._ERROR_01: "Los puntos de lindero no deben superponerse"}
 
@@ -79,16 +82,18 @@ class QROverlappingBoundaryPoints(AbstractQualityRule):
 
             dict_uuids = {f.id(): f[db.names.T_ILI_TID_F] for f in point_layer.getFeatures(flat_overlapping)}
 
-            errors = []
+            errors = {'geometries': list(), 'data': list()}
             for items in overlapping:
                 # We need a feature geometry, pick the first id to get it
                 feature = point_layer.getFeature(items[0])
-                error_data = [
-                    feature.geometry(),
-                    [str(dict_uuids.get(i)) for i in items],
-                    len(items)]
+                errors['geometries'].append(feature.geometry())
 
-                errors.append(error_data)
+                error_data = [
+                    [str(dict_uuids.get(i)) for i in items],
+                    None,
+                    len(items),
+                    None]
+                errors['data'].append(error_data)
 
             self._save_errors(db_qr, self._ERROR_01, errors)
 
@@ -96,7 +101,7 @@ class QROverlappingBoundaryPoints(AbstractQualityRule):
                 return QualityRuleExecutionResult(Qgis.Critical,
                                                   QCoreApplication.translate("QualityRules",
                                                                              "{} overlapping points were found in '{}'!").format(
-                                                      len(errors), layer_name),
+                                                      len(errors['data']), layer_name),
                                                   )
             else:
                 return QualityRuleExecutionResult(Qgis.Success,

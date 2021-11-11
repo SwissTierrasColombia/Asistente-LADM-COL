@@ -106,7 +106,7 @@ class ModelConfig:
                 MODEL_SUPPORTED_VERSION: "0.1",
                 MODEL_HIDDEN_BY_DEFAULT: False,
                 MODEL_CHECKED_BY_DEFAULT: False,
-                MODEL_MAPPING: dict(),
+                MODEL_MAPPING: db_mapping_config.get_model_mapping(LADMNames.QUALITY_ERROR_MODEL_KEY),
                 MODEL_CATALOGUES: {'iliValidator': ILIVALIDATOR_ERRORS_CATALOGUE_PATH,
                                    'IGAC': IGAC_ERRORS_CATALOGUE_PATH}
             },

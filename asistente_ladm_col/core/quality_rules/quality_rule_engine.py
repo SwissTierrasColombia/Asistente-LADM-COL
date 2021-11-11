@@ -15,7 +15,6 @@
  ***************************************************************************/
 """
 import os.path
-import tempfile
 import time
 
 from qgis.PyQt.QtCore import (QCoreApplication,
@@ -29,9 +28,9 @@ from asistente_ladm_col.core.quality_rules.quality_rule_execution_result import 
                                                                                  QualityRuleExecutionResult)
 from asistente_ladm_col.core.quality_rules.quality_rule_registry import QualityRuleRegistry
 from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.lib.qgis_model_baker.ili2db import Ili2DB
 from asistente_ladm_col.lib.quality_rule.quality_rule_manager import QualityRuleManager
 from asistente_ladm_col.utils.decorators import _log_quality_rule_validations
+from asistente_ladm_col.utils.quality_error_db_utils import get_quality_error_connector
 from asistente_ladm_col.utils.utils import Utils
 
 
@@ -56,7 +55,7 @@ class QualityRuleEngine(QObject):
         self.__result_layers = list()
         self.__with_gui = self.app.settings.with_gui
 
-        self._output_path = output_path
+        self.__output_path = output_path
 
         self.app.settings.tolerance = tolerance  # Tolerance must be given, we don't want anything implicit about it
         self.__tolerance = self.app.settings.tolerance  # Tolerance input might be altered (e.g., if it comes negative)
@@ -79,7 +78,7 @@ class QualityRuleEngine(QObject):
         self.__rules = self.__get_dict_rules(rules)
         self.__with_gui = self.app.settings.with_gui
 
-        self._output_path = output_path
+        self.__output_path = output_path
 
         self.app.settings.tolerance = tolerance
         self.__tolerance = self.app.settings.tolerance  # Tolerance input might be altered (e.g., if it comes negative)
@@ -99,22 +98,6 @@ class QualityRuleEngine(QObject):
         # If rules is a list, we need to retrieve the quality rule names from the QRRegistry
         return {rule_key: self.__qr_registry.get_quality_rule(rule_key) for rule_key in rules}
 
-    def __get_valid_output_path(self, output_path):
-        if not os.path.exists(output_path):
-            output_path = tempfile.gettempdir()
-            self.logger.warning(__name__, QCoreApplication.translate("QualityRuleEngine",
-                                                                     "Output dir doesn't exist! Using now '{}'").format(OUTPUT_DIR))
-
-        output_path = os.path.join(output_path, "Reglas_de_Calidad_{}".format(self.__timestamp))
-        try:
-            os.makedirs(output_path)
-        except PermissionError as e:
-            self.logger.critical_msg(__name__, QCoreApplication.translate("QualityRuleEngine",
-                                                                          "Output dir '{}' is read-only!").format(output_path))
-            output_path = None
-
-        return output_path
-
     def validate_quality_rules(self):
         res = False
         msg = ""
@@ -122,7 +105,7 @@ class QualityRuleEngine(QObject):
         if self.__rules:
             # First, create the error db and fill its metadata...
             self.__timestamp = time.strftime('%Y%m%d_%H%M%S')
-            res_db, msg_db, self.__db_qr = self.__get_quality_error_connector()
+            res_db, msg_db, self.__db_qr = get_quality_error_connector(self.__output_path, self.__timestamp)
 
             if not res_db:
                 self.logger.warning_msg(__name__, QCoreApplication.translate("QualityRuleEngine",
@@ -178,28 +161,8 @@ class QualityRuleEngine(QObject):
             if error_layer.featureCount():  # Only load error layers that have at least one feature
                 self.app.gui.add_error_layer(None, error_layer)
 
-    def __get_quality_error_connector(self):
-        self._output_path = self.__get_valid_output_path(self._output_path)
-        if self._output_path is None:
-            return False, "", None
-
-        db_file = os.path.join(self._output_path, "Reglas_de_Calidad_{}.gpkg".format(self.__timestamp))
-        from asistente_ladm_col.lib.db.gpkg_connector import GPKGConnector
-        db = GPKGConnector(db_file)
-        from asistente_ladm_col.config.layer_config import LADMNames
-        from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
-        ili2db = Ili2DB()
-        error_model = LADMColModelRegistry().model(LADMNames.QUALITY_ERROR_MODEL_KEY)
-        res, msg = ili2db.import_schema(db, [error_model.full_name()])
-
-        if res:
-            for catalogue_key, catalogue_xtf_path in error_model.get_catalogues().items():
-                self.logger.info(__name__, "Importing catalogue '{}' to quality error database...".format(catalogue_key))
-                res_xtf, msg_xtf = ili2db.import_data(db, catalogue_xtf_path)
-                if not res_xtf:
-                    self.logger.warning(__name__, "There was a problem importing catalogue '{}'! Skipping...".format(catalogue_key))
-
-        return res, msg, None if not res else db
+    def get_db_quality(self):
+        return self.__db_qr
 
 
 class QualityRuleLogger(QObject):
