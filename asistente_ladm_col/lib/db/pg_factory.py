@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 """
 /***************************************************************************
-                              Asistente LADM_COL
+                              Asistente LADM-COL
                              --------------------
         begin                : 2019-02-21
         git sha              : :%H$
@@ -16,9 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 """
-from asistente_ladm_col.lib.db.db_factory import DBFactory
 from asistente_ladm_col.gui.db_panel.pg_config_panel import PGConfigPanel
+from asistente_ladm_col.lib.db.db_factory import DBFactory
 from asistente_ladm_col.lib.db.pg_connector import PGConnector
+from asistente_ladm_col.lib.ili.enums import DbIliMode
 from asistente_ladm_col.logic.ladm_col.pg_ladm_query import PGLADMQuery
 
 
@@ -31,7 +31,6 @@ class PGFactory(DBFactory):
         return "PostgreSQL/PostGIS"
 
     def get_model_baker_db_ili_mode(self):
-        from QgisModelBaker.libili2db.globals import DbIliMode
         return DbIliMode.ili2pg
 
     def get_config_panel(self, parent):

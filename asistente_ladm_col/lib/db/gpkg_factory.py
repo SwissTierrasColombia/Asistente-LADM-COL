@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 """
 /***************************************************************************
-                              Asistente LADM_COL
+                              Asistente LADM-COL
                              --------------------
         begin                : 2019-02-21
         git sha              : :%H$
@@ -16,9 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 """
-from asistente_ladm_col.lib.db.db_factory import DBFactory
 from asistente_ladm_col.gui.db_panel.gpkg_config_panel import GPKGConfigPanel
+from asistente_ladm_col.lib.db.db_factory import DBFactory
 from asistente_ladm_col.lib.db.gpkg_connector import GPKGConnector
+from asistente_ladm_col.lib.ili.enums import DbIliMode
 from asistente_ladm_col.logic.ladm_col.gpkg_ladm_query import GPKGLADMQuery
 
 
@@ -31,7 +31,6 @@ class GPKGFactory(DBFactory):
         return 'GeoPackage'
 
     def get_model_baker_db_ili_mode(self):
-        from QgisModelBaker.libili2db.globals import DbIliMode
         return DbIliMode.ili2gpkg
 
     def get_config_panel(self, parent):

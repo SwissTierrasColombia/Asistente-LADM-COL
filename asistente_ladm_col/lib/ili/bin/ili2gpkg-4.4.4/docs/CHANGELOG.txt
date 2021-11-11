@@ -1,0 +1,752 @@
+ideas/open issues/questions
+----------------------------
+- gui: button 'create tables'
+- gui: button 'drop tables'
+- gui: button 'create scripts'
+- ordered assocs
+- make use of quoted identifiers
+- --logValidOverlaps
+- support ili2 views
+- --initNameMapping
+- einfache Liste mit den neu erzeugten Vertexpunkte (aufgrund der Overlap-Bereinigung)
+- Schalter für das "disablen" der Overlaps-Bereinigung. Bei vorhandenen gueltigen Overlaps erfolgen: a) Import mit NULL als Polygon, ohne Fehlermeldung, b) Import mit NULL als Polygon, mit Warning, c) kein Import, Fehlermeldung
+
+LATEST
+---------------------------
+
+ili2db 4.4.4 (2020-10-02)
+------------------------------
+- fixed MultiSurface export / Unexpected WKB type 3 (#358)
+- remove use of ObjectOutputStream.writeObject() (#354)
+- Separate GUI (Swing) classes from Main class (#357)
+- export: switch delayedObjects from heap to file (#363)
+- ili import: Unexpected behavior with EXTENDED enumerations (#362)
+- ili import: create metainfo about OID domain (#365)
+- Rounder: do not try to round illegal values/NaN (#367)
+- fix NaN in arc segmentation (#367) 
+- iox-ili-1.21.3
+- ili2c-5.1.4
+
+ili2db 4.4.3 (2020-05-04)
+------------------------------
+- improved ili 2.4/2.3 model lookup
+- ili2gpkg: added CRS 'MAGNA-SIRGAS / CTM12', 38820, 'STC' to init script
+- iox-ili-1.21.0
+- ili2c-5.1.1
+
+ili2db 4.4.2 (2020-04-01)
+------------------------------
+- fix Export with empty geometry fails with NPE (#338)
+- iox-ili-1.20.18
+- ili2c-5.0.8
+
+ili2db 4.4.1 (2020-03-02)
+------------------------------
+- Create SQL script (--createscript) for SQL Server) generates wrong insert commands (#328)
+- Broken ili1 export (#326)
+- ili2ora: Fix npe thrown when executing createscript operation (#332)
+- ili2ora: add tablespace support (#335)
+- iox-ili 1.20.17
+- ili2c-5.0.6
+
+ili2db 4.4.0 (2020-01-31)
+------------------------------
+- create db tables ony in a derived language (#221)
+- add kind of association (Association, Composition, Aggregation) into meta tables (#323)
+- Cardinality of "BAG OF" is missing in the metadata tables (#171)
+- if --sqlEnableNull add NOT NULL meta-attribute for ili MANDATORY attrs (#180)
+- Exception when calling schemaimport with views (#310)
+- JTS parser fails reading a MultiPolygonZ from Geopackage (#325)
+- BASKET OID AS INTERLIS.UUIDOID: Problem bei XTF-Export aus PostGIS (#287)
+- enable export of BID without --createBasketCol (if object/basket assignment possible) (#287)
+- log missing/wrong id for enum values
+- fix missing baskets in statistics
+- iox-ili-1.20.16
+
+ili2db 4.3.3 (2019-12-23)
+------------------------------
+- fix --update without stable BID (#315)
+- fix --update n:n ASSOCATION (#315, #316)
+- fix export to base model if base class abstract (#314)
+- iox-ili-1.20.15
+
+ili2db 4.3.2 (2019-11-08)
+------------------------------
+- fix extended geometry attributes in model generates duplicated geometry fields in DB (#296)
+- iox-ili-1.20.14
+
+ili2db 4.3.1 (2019-10-25)
+------------------------------
+- fix --replace if forward reference in xtf (#299)
+- fix missing objects in exported xtf
+- fix "--deleteData" has no effect (#295)
+- move --deleteData from schemaimport to import code (#291)
+- fixed duplicate metainfo records (#255)
+
+ili2db 4.3.0 (2019-09-20)
+------------------------------
+- fix LocalisedMText, MultilingualMText smart mapping (#306)
+- export XTF in a different language (#222)
+- fixed polymorph export contains cantonal model reference (#282)
+
+ili2db 4.2.0 (2019-09-06)
+------------------------------
+- new option --modelSrsCode model=epsgCode
+- new option --exportCrsModels modelname
+- new option --expandLocalised (#289)
+- new meta attribute to flag a CLASS as having OID (#207)
+- skiped topics during import should not be validated (#125)
+- tag CLASS tables (like STRUCTUREs) (#268)
+- remove reference to javax.xml.bind.DatatypeConverter/sun.misc (because of removal in jdk11) 
+- ili2gpkg: allow relationship loops
+- ili2gpkg: Add two SRSs to init.sql (32635 and 4686) (#300)
+- fixed incomplete schema import if reference to class in other model 
+- fixed export of superfluous TID in standalone assocs (#292)
+- iox-ili-1.20.13
+- ili2c-5.0.2
+- ehisqlgen-1.13.8
+
+ili2db 4.1.0 (2019-05-03)
+------------------------------
+- added --export3 to export from ili2db-3.x schemas
+- fixed --delete if no import meta tables
+- round numeric values on import/export (--disableRounding) #201
+- ili2mysql: failed to create table T_KEY_OBJECT #280
+- ili2gpkg: fixed multiple geometry attr in extended classes #257
+- remove constraint that t_id must be unqiue across all tables #145
+- support multiple translated ili1 models #224
+- fixed data import into json mapped structures #277
+- ili2fgdb: fixed "dangling references" on export #276
+
+ili2db 4.0.0 (2019-04-05) BETA
+------------------------------
+- IMPORTANT: ili2db 4.x breaks schema compatibility with ili2db 3.x
+- T_ILI2DB_MODEL.file -> filename
+- T_ILI2DB_IMPORT_BASKET.import -> importrun
+- T_ILI2DB_ATTRNAME.owner -> colowner
+- T_ILI2DB_SETTINGS.settings new length 1024
+- T_ILI2DB_BASKETS.domains new column
+- set ch.ehi.ili2db.ver3_translation=True (in T_ILI2DB_SETTINGS) to get ver3 translation
+- remove ch.ehi.ili2db.ver4_translation=True (in T_ILI2DB_SETTINGS) to get ver4 translation
+- xtf24: import/export coord generics
+- attributes of 1:n associations
+- ehisqlgen-1.13.7
+- iox-ili-1.20.11
+- ili2c-5.0.0
+- fixed: missing resource ch.ehi.basics.wizard
+- replaced TOML file reader with INI file reader
+- Fehler beim polymorphen Schreiben von Modellen mit CatalogueObjects #229 
+- separate tid import from tid column creation #274
+- --createscript creates wrong sql insert commands #261
+- Wrong dependency scope for ili2db in ili2pg artefact #272
+- remove implicit schema import with --import #112
+- make --ver4-translation the default #271
+- Confusing error message in Export #264
+- failed to insert setting #157
+- cleanup column/table names of ili2db metatables #238
+- check sql table names for reserved words #267
+- check sql names for mysql reserved words #265
+- check sql names for oracle reserved words #266
+- NullPointerException on import after schemaimport with v4-SNAPSHOT #259
+- unexpected namesapce http://www.interlis.ch/INTERLIS2.2 #258
+- --createscript should include CREATE SCHEMA stmt #260
+- Create SQL script should insert values for enumerations and t_ili2db meta tables #124
+- remove default SRS code #111
+- Change --defaultSrsCode to 2056 #80
+- ili2db schema import: missing fk in one-to-many relationships with attributes #228
+- JSON-Stringobjekt vs. JSON-Array #247
+- ili2pg: SSL-connection to DB Server possible? #176
+- add --dbparams option to support additional connection parameters #252
+- remove tag @iliname from db comments #251
+- reference ili2c-5.x #253
+- ignore ordering of JSON properties #245
+- add mysql support #234
+- new option --validate #237
+- ch.ehi.ili2db.c1Min should be the value from the ili-model #226
+- map BAG/LIST to JSON by default #218
+- Add t_type property in meta-info table and constraint on the column #242
+- ili2gpkg: support ARRAY mapping (to JSON) #240
+- use postgis geometry types instead of AddGeometryColumn #236
+- support smart mapping of structures to JSON #128
+- Create SQL script without creating tables in the database #85
+- --createEnumTabs with --createFk should create FKs to enum tabs #19
+- ili2pg Fehler auf AI KKGEO #225
+- ili2mssql: remove db specific default CRS #127
+
+ili2pg 3.12.2 (2018-09-07)
+-----------------------------
+- Add geometry meta info to T_ILI2DB_COLUMN_PROP
+- Add FK meta info to T_ILI2DB_COLUMN_PROP
+- MSSQL: Add prePreScript and postPosScript template methods
+- MSSQL: fixed connection string is to long for ilicache/filesystem 
+- switched from ant to gradle build
+- ili2fgdb: fixed reference resolution
+- ili2fgdb: fixed query of int column
+- fgdb4j-1.1.1
+- ehisqlgen-1.13.6
+- iox-ili-1.20.9
+
+ili2pg 3.12.1 (2018-08-13)
+-----------------------------
+- iox-ili 1.20.8
+
+ili2pg 3.12.0 (2018-08-04)
+-----------------------------
+- fixed: create secondary table (with geometry attr) per main table with smart2
+- new option --skipReferenceErrors
+- with --export multiple datasets can be exported (--dataset set1;set2) 
+- new option --importBid to import transient BIDs
+- import BID only if stable BID or --importBid
+- use basket db-internal id if no explicit BID
+
+ili2pg 3.11.5 (2018-07-06)
+-----------------------------
+- ili2c-4.7.9
+- iox-ili-1.20.7
+- fixed Viewable.getAttributesAndRoles2() workaround
+- fixed import:  table t_ili2db_meta_attrs may not exist, if db schema created with a pre 3.11.2 version
+- added --ver4-noSchemaImport to avoid implicit schema import during data import
+
+ili2pg 3.11.4 (2018-06-22)
+-----------------------------
+- fixed object references reolution with DB records based on EXTERNAL instead of OID AS 
+- fixed export validation error "incompatible values" if LocalisationCH_V1.LocalisedText without language
+- use models from xtf element MODEL instead of first basket 
+- use OutParam instead of Holder
+- ili2c-4.7.8
+- iox-ili-1.20.6
+- ehibasics-1.2.0
+- ehisqlgen-1.13.5
+
+ili2fgdb/ili2pg/ili2gpkg 3.11.3 (2018-04-12)
+-----------------------------
+- ehisqlgen-1.13.4
+- ili2fgdb: fixed resource leaks
+- ili2fgdb: fixed MultiSurface export
+- ili2db: fixed import/export of a reference to a concrete extension class, which is an extension of an already concrete base class
+- ili2db: use common Version.properties
+
+ili2pg 3.11.2 (2018-02-08)
+-----------------------------
+- added new option --iliMetaAttrs
+- read all ili-meta-attributes into a new table t_ili2db_meta_attrs
+- iox-ili-1.20.2
+- ili2c-4.7.7
+- ehisqlgen-1.13.3
+
+ili2pg 3.11.1 (2017-12-29)
+-----------------------------
+- fixed export of TIDs if CLASS is without OID but --importTid was used
+- ili2c-4.7.6
+- iox-ili-1.20.1
+
+ili2pg 3.11.0 (2017-11-28)
+-----------------------------
+- added MultiPoint smart mapping
+- added ARRAY smart mapping
+- read CRS from ili
+- create datasetName on --import
+- ili2c-4.7.5
+- iox-ili-1.20.0
+- ehisqlgen-1.12.0
+
+ili2pg 3.10.10 (2017-11-03)
+-----------------------------
+- added mssql support
+- added mssql keywords to list of reserved words
+
+ili2fgdb 3.10.9 (2017-10-26)
+-----------------------------
+- ili2db: new option --exportModels to export according to a base model
+- ili2pg: fixed --setupPgExt if external connection
+- ili2db: log current date/time
+- ili2db: add geometry extent info to t_ili2db_column_prop 
+- ili2fgdb: fixed schema import of 3D shapes (z-values)
+- ili2fgdb: hardcoded XYFalseOrigin values for LV03/LV95 
+- iox-ili 1.19.8
+
+ili2fgdb 3.10.8 (2017-09-14)
+-----------------------------
+- ili2fgdb: fixed import/export of NULL shapes
+- ili2fgdb: fixed export of classes with multiple geometries
+- ili2fgdb: fixed export of curve section (ignore Spiral, Bezier3Curve, EllipticArc)
+- ili2fgdb: close boundaries of polygons, if not yet closed
+- ili2fgdb: fixed export of Dates (if user stored timestamps)
+- ili2fgdb: fixed setting of xyResolution and xyTolerance
+- iox-ili 1.19.7
+
+ili2pg/ili2fgdb 3.10.7 (2017-08-23)
+-----------------------------
+- fixed import of references to existing objects in db
+- fixed statistics
+
+ili2pg 3.10.6 (2017-08-21)
+-----------------------------
+- fixed import of forward references
+- iox-ili 1.19.5
+- fixed missing origin model of TRANSLATION OF in t_ili2db_model.modelname 
+
+ili2gpkg 3.10.5 (2017-08-18)
+-----------------------------
+- ehisqlgen-1.11.2
+- fixed export of models with identical column names in different secondary tables
+- fixed read/write of java class names to t_ili2db_settings
+
+ili2fgdb 3.10.4 (2017-08-16) BETA
+-----------------------------
+- ili2fgdb: fixed JVM crash
+- ili2fgdb: fixed sub-selects in prepared stmts
+- ili2fgdb: fixed NULL literal in select value list
+
+ili2fgdb 3.10.3 (2017-08-15) BETA
+-----------------------------
+- ili2fgdb: fixed "failed to create folder jdbc:ili2fgdb:../file.gdb" if using forward slashes in --dbfile arg
+
+ili2fgdb 3.10.2 (2017-08-14) BETA
+-----------------------------
+- ili2fgdb: fixed time import/export
+- ili2fgdb: added --fgdbXyResolution
+- ili2fgdb: added --fgdbXyTolerance
+- ili2fgdb: fixed NPE while --import
+
+ili2fgdb 3.10.1 (2017-08-14) BETA
+-----------------------------
+- ili2fgdb: support all datatypes
+- ili2fgdb: support export of structures
+- iox-ili 1.19.5
+- fixed --preScript/--postScript argument handling
+
+ili2fgdb 3.10.0 (2017-07-06) BETA
+-----------------------------
+- initial support of ESRI FileGDB API 1.5
+- read ilidoc as enum element description
+
+ili2pg/ili2gpkg 3.9.1 (2017-06-27)
+-----------------------------
+- added metaInfo/textKind=MTEXT
+- read/use @ili2db.dispName from enum elements
+- PostGIS: unique constraints changed to ST_AsBinary() for geometries 
+- fixed "Unexpected WKB type 2" if MULTILINESTRING 
+- iox-ili-1.19.4
+- ehisqlgen-1.11.1
+
+ili2pg/ili2gpkg 3.9.0 (2017-06-19)
+-----------------------------
+- added list of reserved sqlite and postgresql keywords
+- added option --preScript/--postScript to support before- and after-import custom sql
+- added verify that given --defaultSrsAuth/Code exists in DB
+- added option --setupPgExt to create postgresql extensions 'uuid-ossp' and 'postgis'
+- added option --createMetaInfo to create meta tables with info from model
+- added option --coalesceMultiLine
+- improve performance of db table existence check
+- fixed export: export of objects without OID in inheritance tree mixed with/without stable OID
+- ili2c-4.7.3
+- iox-ili-1.19.1
+- ehisqlgen-1.11.0
+
+ili2pg/ili2gpkg 3.8.1 (2017-04-21)
+-----------------------------
+- fixed schema import: FK of embedded assocations in subtypes must be NULLable 
+- fixed import: failed to insert FK of structele to subtyped parents
+- fixed export: failed to export extended attributes
+- fixed export: fixed use of unqualified columnname (disturbed sqlite JDBC driver)
+- fixed export: export of CLASS inheritance tree mixed with/without stable OID
+- ili2c-4.7.2
+- iox-ili-1.18.1
+
+ili2pg/ili2gpkg 3.8.0 (2017-04-10)
+-----------------------------
+- new option --ver4-translation to support TRANSLATION OF in ili2db 4.x mode (incompatible with ili2db 3.x versions)
+- new option --translation  to assign a translated ili1 model to its orginal language equivalent
+- fixed: import of EXTERNAL references to objects with UUID as oid
+- fixed: export of pre 1582-10-15 dates
+- fixed: BLACKBOX is mapped to a wrong sql type
+- fixed: make index name unique per schema
+- iox-ili-1.17.0
+- ili2c-4.7.1
+
+ili2pg/ili2gpkg 3.7.0 (2017-03-26)
+-----------------------------
+- fixed: --createEnumTabs creates too many tables 
+- generate BID for baskets read from ITF files as $dataset.$topicname if --dataset is used
+- new option --createDatasetCol to create dataset column in each table
+- new option --skipGeometryErrors to ignore geometry errors
+- new option --disableAreaValidation to disable AREA validation
+- new option --forceTypeValidation  to restrict customization of validation related to \"multiplicity\"
+- iox-ili-1.16.0
+
+ili2pg/ili2gpkg 3.6.2 (2017-03-17)
+-----------------------------
+- fixed --sqlEnableNull on FK columns
+- itf: validate TID per table
+- iox-ili-1.15.0
+
+ili2pg/ili2gpkg 3.6.1 (2017-01-20)
+-----------------------------
+- fixed export of references to a class with subClass mapping
+- add docu from ili to fk columns
+- added new options --proxy, --proxyPort
+
+ili2pg/ili2gpkg 3.6.0 (2016-12-30)
+-----------------------------
+- new option --beautifyEnumDispName to replace underscore with space from dispName 
+- new column 'inactive' in enum tables
+- import: filter data to given --topics or --baskets
+- new option --createNumChecks
+- ehisqlgen-1.9.0
+- fixed GeoPackage FK constraints
+- new option --ILIGML20 to write eCH-0118-2.0
+- fixed: use default CRS for srsName when writing GML
+
+ili2pg/ili2gpkg 3.5.1 (2016-12-21)
+-----------------------------
+- import: failed to resolve EXTENDED EXTERNAL ReferenceAttr
+- import: fixed "ERROR: relation "t_ili2db_seq" already exists"
+- import: fixed java.lang.NullPointerException with CatalogueObjects_V1.Catalogues.CatalogueReference.Reference
+- schemaimport: fixed table name mapping (java.lang.NullPointerException)
+
+ili2pg/ili2gpkg 3.5.0 (2016-11-25)
+-----------------------------
+- import: map LocalisedText to unlimited text
+- export: failed to export all baskets of a dataset
+- fixed db table/column name conflict if only case differs in ili
+- fixed wrong NOT NULL on FK columns with --smart2Inheritance
+- fixed --update with existing dataset
+- MultiSurface not detected as geometry column during mapping configuration
+- fixed sql precision for numerical types
+- fixed missing "CREATE SEQUENCE t_ili2db_seq" in create script
+- ehisqlgen-1.8.0
+- iox-ili-1.13.6
+
+ili2pg/ili2gpkg 3.4.1 (2016-11-14)
+-----------------------------
+- fixed sql statement to query existing oids from a table without a t_type column
+- fixed missing/wrong references when importing ITF files with TIDs unique only per table
+
+ili2pg 3.4.0 (2016-09-17)
+-----------------------------
+- support ili meta attr ili2db.mapping=MultiSurface
+- import: fixed --skipPolygonBuilding (failed to create line tables)
+- export: fixed mapping of sqlid to TID if --skipPolygonBuilding
+- import: buffer objects with forward references to disk to save heap space
+- validation: handle Itf linetables
+- iox-ili-1.13.4
+
+ili2pg 3.3.2 (2016-09-05)
+-----------------------------
+- iox-ili-1.13.2
+- validator: validate DATE, BOOLEAN, XMLDate, XMLDateTime, XMLTime, UUIDOID
+- validator: validate OID AS UUIDOID
+- validator: added global config section [PARAMTER] with entry validation="off"
+
+ili2gpkg 3.3.1 (2016-08-29)
+----------------------------------
+- iox-ili-1.13.1
+- check free memory over get/set calls of all pools
+
+ili2pg 3.3.0 (2016-08-10)
+----------------------------------
+- fixed incomplete --delete with multiple baskets
+- fixed visiting of class/structure extensions in models that are not referenced but loaded (Jagdbanngebiete_V2.ili failure)
+- new option --idSeqMin and --idSeqMax to set the min/max of the id sequence generator
+- generate t_id as bigint (to match sequence generator)
+- show maxMemory at startup
+- check that --import with --dataset uses a new name
+
+ili2gpkg/ili2pg 3.2.0 (2016-07-08)
+----------------------------------
+- new function --replace to replace a dataset
+- new function --delete to delete a dataset
+- new option --dataset name to name a dataset
+- new option --validConfig file to configure the validation
+- new option --disableValidation to disable any data validation
+- fixed superfluous t_type if a concrete class without any extensions
+- API: moved Ili2cUtility functions to ili2c.jar
+- deprecated t_ili2db_import, t_ili2db_import_basket, t_ili2db_import_object
+- ili2c-4.5.23
+- iox-ili-1.12.0
+
+ili2gpkg/ili2pg 3.1.0 (2016-05-31)
+----------------------------------
+- added column datasetName to table T_ILI2DB_DATASET to make a dataset identifiable from the outside
+- new option --smart2Inheritance 
+- --smartInheritance renamed to --smart1Inheritance 
+
+ili2gpkg/ili2pg 3.0.4 (2016-05-26)
+----------------------------------
+- API: set connection as closed after processing (Config.setJdbcConnection(null);)
+- ili2c-4.5.22
+- iox-ili-1.11.5
+- GPKG: fixed mapping of date value (avoid shift of one day due to timezone conversion)
+- PG: fixed insert of a NULL UUID
+- PG: postgresql-9.4.1208.jre6.jar
+
+ili2gpkg/ili2pg 3.0.3 (2016-03-09)
+----------------------------------
+- map ili:TEXT to sql text type without length limit
+- fixed mapping of struct attr in sub class, if struct defined after base class
+- fixed mapping of struct attr with abstract structure
+- GPKG: fixed mapping of 1..10 to INTEGER
+- GPKG: fixed import of date/time to meet GeoPackage spec
+- do not create duplicate linetables with --skipPolygonBuilding and mor than one geom attr in maintable
+- fixed import of invalid dangling references
+
+ili2gpkg/ili2pg 3.0.2 (2016-02-10)
+----------------------------------
+- fixed smart mapping of RoleDef to class with superClass mapping 
+- fixed import with 1:1 mapping of struct attr in a base class
+
+ili2gpkg/ili2pg 3.0.1 (2016-01-26)
+----------------------------------
+- API: fixed typo Config.setItfTranferfile()
+- fixed String index out of range if sql table name conflict
+
+ili2gpkg/ili2pg 3.0.0 (2016-01-23)
+----------------------------
+- GPKG: fixed missing init.sql
+- GPKG: fixed TOWGS84-Parameter of EPSG:21781
+- GPKG: fixed CH srs
+- GPKG: added TABLE gpkg_extensions
+- GPKG: added envelope to GeoPackageBinaryHeader
+- GPKG: add only first geometry column to gpkg_contents and gpkg_geometry_columns
+- T_ILI2DB_SETTINGS.setting changed to length 255
+- jts-core-1.14
+- new option --skipPolygonBuildingErrors
+- GPKG: fixed timestamp parse exception 
+- fixed export without t_basket column
+- fixed duplicate column name from same attribute-name in subclasses
+- new option --oneGeomPerTable
+- refactored table naming
+- removed deprecated option --mapconfig
+- new option --createUnique to map simple ili unique constraints
+- API: client might open db connection (use Config.setJdbcConnection())
+- fixed missing content of table t_ili2db_inheritance
+- changed content of table t_ili2db_inheritance from sqlnames to ilinames
+
+ili2pg 2.5.1 (2016-01-04)
+----------------------------
+- support GeoPackage (--dbfile file.gpkg)
+- fixed duplicate columnname if structattr in class with subclass-mapping
+
+ili2pg 2.5.0 (2015-12-23)
+----------------------------
+- ili-obj/sql-record conversion refactored 
+- new option --noSmartMapping
+- new option --coalesceCatalogueRef
+- new option --expandMultilingual
+- new option --coalesceMultiSurface
+- new option --smartInheritance
+
+ili2pg 2.4.0 (2015-12-09)
+----------------------------
+- fixed export of VIEWs 
+- fixed import/export of TIDs of VIEWs
+- skip TRANSIENT VIEWs
+- support ili2 EXTERNAL
+- ili2pg: t_id with default value
+- PgMain.initConfig() made public, so that it can be used by API clients
+- create T_Ili_Tid column if class has OID (without explicit --importTid)
+- export --baskets
+- export --topics
+- export BID
+- support --update
+- ili2c-4.5.19
+
+ili2pg 2.3.1 (2015-11-23)
+----------------------------
+- check for invalid placed arguments (options without "--" prefix)
+- fixed loss of arearef if --skipPolygonBuilding
+- fixed conversion of 3d-xtf to wkb (polyline/surface/area)
+- tag errors in logfile
+- iox-ili-1.11.1
+- ili2c-4.5.18
+
+ili2pg 2.3.0 (2015-10-01)
+----------------------------
+- switch back to enum with xtf-code (to handle extended enums)
+- new option --createEnumColAsItfCode
+- new option --createFk
+- new option --createFkIdx
+- handle t_ili_tid on export (incl. forward references)
+- imp: fix use --models to create db schema
+- imp: fix handle assoc without TID 
+
+
+ili2pg 2.2.0 (2015-09-10)
+----------------------------
+- gml export: adjusted to approved eCH-0118-1.0
+- ili2c-4.5.17
+- iox-ili 1.11.0
+
+ili2pg 2.1.7 (2015-09-04)
+----------------------------
+- send top level exception also to --log file
+- fixed eye handling in overlap remover
+- ili2c-4.5.16
+- iox-ili 1.10.6
+
+ili2pg 2.1.6 (2015-08-14) BETA
+----------------------------
+- ili2c-4.5.15
+- Arc/Arc overlap remover added
+- Ili2db.run(), Ili2db.runImport(), Ili2db.runExport(), Ili2db.runSchemaImport() throw Ili2dbException on error, normal return only on success
+
+ili2pg 2.1.5 (2015-08-10) BETA
+----------------------------
+- ili2c-4.5.14
+- Arc/Straight overlap remover added
+
+ili2pg 2.1.4 (2015-06-16) BETA
+----------------------------
+- gml export: added (pre-public eCH-0118 version)
+- itf export: export from polygons to linetables
+- itf import: ignore valid overlpas (result polygons might be invalid)
+- bug xtfexport: use no dbschema qualifier in t_type query criteria
+
+ili2pg 2.1.3 (2015-04-30) BETA
+----------------------------
+- itf import: import polygons with arcs 
+- bug iliimport --createSingleEnumTab: handle ViewDef attrs without type (type is derived from base)
+- bug iliimport --createEnumTabs: handle ViewDef attrs without type (type is derived from base)
+- bug gui iliimport: set %XTF_DIR to folder of selected ili-file so that imports resolve
+
+ili2pg 2.1.2 (2015-04-21) BETA
+----------------------------
+- improved ilidir logging
+- bugfix: use always semicolon as modeldir and modelname separator
+- add %ILI_FROM_DB to default modeldir
+- bug import: handle reference attrs 
+- bug export: handle EXTENDED attrs 
+- bug iliimport: handle ViewDef attrs without type (type is derived from base)
+
+ili2pg 2.1.1 (2015-04-09) BETA
+----------------------------
+- support xtf-surface
+- build polygons out of itf line tables
+- bug import: fixed polygon building; use external/file based cache
+- bug export: read ili from database
+- bug export: differentiate ili-cache location on database and dbschema
+- ili2c 4.5.12
+
+ili2pg 2.0.3 (2012-08-17) BETA
+----------------------------
+- added comments on tables and columns
+- metatables renamed (T_ILI2DB_BASKET, T_ILI2DB_MODEL, T_ILI2DB_IMPORT, ...)
+- added T_ILI2DB_DATASET
+- added T_ILI2DB_IMPORT_BASKET
+- added T_ILI2DB_BASKET/dataset
+- define primary key on T_ILI2DB_ATTRNAME
+- define primary key on T_ILI2DB_CLASSNAME
+- define primary key on T_ILI2DB_INHERITANCE
+- define primary key on T_KEY_OBJECT
+- define primary key on T_ILI2DB_MODELS
+- use system dependent path-separator to seperate modeldirs and models
+- import T_ILI2DB_IMPORT/importfile with absolute path
+- bug: fixed creation of column name based on qualified ili attribute name
+- bug: fixed join syntax if MS-ACCESS
+- bug: fixed NullPointerException with structele export
+- bug: read ili-model only from db if table with models exists
+- bug: fixed export of boolean
+- bug: multi import of same MODEL
+
+ili2pg 2.0.2 (2012-03-05) BETA
+----------------------------
+- schema support
+- log db version info
+- bug GUI: NullPointerException if schema import
+- attribute renaming
+- table renaming
+- INTERLIS_DATE/XMLDate/XMLDateTime/XMLTime
+- line attributes
+
+ili2pg 2.0.1 (2012-02-10) BETA
+----------------------------
+- enum with itf-code
+- Enum_txt
+- single commit
+- ordering of itf-attributes
+- delete existing data at import
+- collect statistics per class
+- logfile
+- customize max sql-name length
+- avoid superfluous tables from MODEL INTERLIS
+
+ili2ora 1.4.1 (2008-01-29)
+----------------------------
+- bug: missing JTS in distribution
+
+ili2ora 1.4.0 (2008-01-28)
+----------------------------
+- added support to store geometry as OGC WKB (-geomwkb switch) for use without oracle locator/spatial
+- added support to store geometry as OGC WKT (-geomwkt switch) for use without oracle locator/spatial
+- create primary key
+
+ili2ora 1.3.3 (2007-11-21)
+----------------------------
+- recompiled with java 1.4 as target
+- Bug: IndexOutOfBoundsException if 3D COORD
+- Bug: failed to parse all oracle specific cmdline arguments
+- Bug: NullPointerException if filename without path on cmdline
+- changed default CRS back to EPSG:21781 (="CH1903 / LV03" on ora 10.2; seems to be different on different ora versions) 
+
+ili2ora 1.3.2 (2007-11-13)
+----------------------------
+- changed default CRS authority to NULL
+
+ili2ora 1.3.1 (2007-11-12)
+----------------------------
+- ili2c 3.5.5
+- new GUI
+- new commandline option to select default SRS
+
+ili2ora 1.1.1 (2005-08-10)
+----------------------------
+- remove flag -trace in startup script (improve speed)
+- Bug: jvm crash (iom_java.dll uses wrong C runtime library)
+
+ili2ora 1.1.0 (2005-07-05)
+----------------------------
+- T_Seq is mandatory for structs
+- report unknown types on import
+- export structs
+- handle structs of other models
+- Bug: incorrect encoding of non-ansi characters
+- Bug: incorrect schema generation for decimals
+- Bug: insert/query-statement incorrect if name of attribute/role mapped
+- Bug: incorrect schema generation for boolean
+- Bug: incorrect export if embedded link undefined
+- Bug: use sql name of attribute to link from struct value to parent
+
+ili2ora 1.0.0 (2005-05-09)
+----------------------------
+- add columns T_ParentAttr,T_Seq to tables that represent structures
+- use T_ILI2ORA_CLASSNAME (instead of mapping config file) at export
+- ordered structs
+- unload data
+
+
+ili2ora 0.3.0 (2005-04-05)
+----------------------------
+- read mapping config from an xml file 
+- insert mapping into table T_ILI2ORA_CLASSNAME
+- insert inheritance tree into table T_ILI2ORA_INHERITANCE
+- update gui during workload
+- handle structs
+- handle boolean datatype
+- create createscript
+- add sample zpl
+- add ili2ora model
+- replace debug dlls with release dlls in distribution
+- upgrade xerces-c to 2.6.0
+
+ili2ora 0.2.0 (2005-02-21)
+----------------------------
+- load data
+- info about progress
+- button 'check models'
+- Bug: returned immediately after option -trace
+
+ili2ora 0.1.0 (2005-02-10)
+----------------------------
+- initial release
+- translates INTERLIS 2 data model definitions to an oracle schema.

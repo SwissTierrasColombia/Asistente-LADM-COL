@@ -126,12 +126,13 @@ def is_plugin_version_valid(plugin_name, min_required_version, exact_required_ve
 
 def is_version_valid(current_version, min_required_version, exact_required_version=False, module_tested=''):
     """
-    Generic one, it helps us to validate whether a current version is greater or equal (if exact_required_version)
-    to a min_required_version
+    Generic one, it helps us to validate whether a current version is greater or equal to a min_required_version or,
+    if exact_required_version, if a current version is exactly the required one.
 
     :param current_version: String, in the form 2.9.5
     :param min_required_version: String, in the form 2.9.5
-    :param exact_required_version: Boolean, if true, only the exact version is valid
+    :param exact_required_version: Boolean, if true, only the exact version is valid. If False, the min_required_version
+                                   or any greater version will be accepted.
     :param module_tested: String, only for displaying a log with context
     :return: Whether the current version is valid or not
     """

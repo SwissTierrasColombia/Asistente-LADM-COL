@@ -25,10 +25,10 @@ from qgis.core import QgsVectorLayerUtils
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.enums import EnumQualityRuleType
 from asistente_ladm_col.config.layer_config import LADMNames
+from asistente_ladm_col.core.ili2db import Ili2DB
 from asistente_ladm_col.lib.db.gpkg_connector import GPKGConnector
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
-from asistente_ladm_col.lib.qgis_model_baker.ili2db import Ili2DB
 from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 
 app = AppInterface()
