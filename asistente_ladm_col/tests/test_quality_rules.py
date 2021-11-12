@@ -89,8 +89,8 @@ class TesQualityRules(unittest.TestCase):
         print('\nINFO: Validating boundary points are covered by plot nodes...')
 
         gpkg_path = get_test_copy_path('db/static/gpkg/quality_validations.gpkg')
-        self.db_gpkg = get_gpkg_conn('tests_quality_validations_gpkg')
-        names = self.db_gpkg.names
+        db_gpkg = get_gpkg_conn('tests_quality_validations_gpkg')
+        names = db_gpkg.names
         names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 
         uri = gpkg_path + '|layername={layername}'.format(layername='puntolindero')
@@ -574,8 +574,8 @@ class TesQualityRules(unittest.TestCase):
         print('\nINFO: Validating missing boundary points in boundaries...')
 
         gpkg_path = get_test_copy_path('db/static/gpkg/quality_validations.gpkg')
-        self.db_gpkg = get_gpkg_conn('tests_quality_validations_gpkg')
-        self.db_gpkg.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
+        db_gpkg = get_gpkg_conn('tests_quality_validations_gpkg')
+        db_gpkg.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 
         uri = gpkg_path + '|layername={layername}'.format(layername='boundary')
         boundary_layer = QgsVectorLayer(uri, 'boundary', 'ogr')
@@ -588,7 +588,7 @@ class TesQualityRules(unittest.TestCase):
         point_features = [feature for feature in point_layer.getFeatures()]
         self.assertEqual(len(point_features), 9)
 
-        missing_points = self.quality_rules.point_quality_rules.get_missing_boundary_points_in_boundaries(self.db_gpkg, point_layer, boundary_layer)
+        missing_points = self.quality_rules.point_quality_rules.get_missing_boundary_points_in_boundaries(db_gpkg, point_layer, boundary_layer)
 
         geometries = [geom.asWkt() for k, v in missing_points.items() for geom in v]
 
@@ -605,8 +605,8 @@ class TesQualityRules(unittest.TestCase):
         print('\nINFO: Validating missing boundary points in boundaries without points...')
 
         gpkg_path = get_test_copy_path('db/static/gpkg/quality_validations.gpkg')
-        self.db_gpkg = get_gpkg_conn('tests_quality_validations_gpkg')
-        self.db_gpkg.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
+        db_gpkg = get_gpkg_conn('tests_quality_validations_gpkg')
+        db_gpkg.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 
         uri = gpkg_path + '|layername={layername}'.format(layername='boundary')
         boundary_layer = QgsVectorLayer(uri, 'boundary', 'ogr')
@@ -618,7 +618,7 @@ class TesQualityRules(unittest.TestCase):
         point_features = [feature for feature in point_layer.getFeatures()]
         self.assertEqual(len(point_features), 0)
 
-        missing_points = self.quality_rules.point_quality_rules.get_missing_boundary_points_in_boundaries(self.db_gpkg, point_layer, boundary_layer)
+        missing_points = self.quality_rules.point_quality_rules.get_missing_boundary_points_in_boundaries(db_gpkg, point_layer, boundary_layer)
 
         geometries = [geom.asWkt() for k, v in missing_points.items() for geom in v]
 
@@ -644,8 +644,8 @@ class TesQualityRules(unittest.TestCase):
         print('\nINFO: Validating missing survey points in buildings...')
 
         gpkg_path = get_test_copy_path('db/static/gpkg/quality_validations.gpkg')
-        self.db_gpkg = get_gpkg_conn('tests_quality_validations_gpkg')
-        self.db_gpkg.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
+        db_gpkg = get_gpkg_conn('tests_quality_validations_gpkg')
+        db_gpkg.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 
         uri = gpkg_path + '|layername={layername}'.format(layername='construccion')
         building_layer = QgsVectorLayer(uri, 'construccion', 'ogr')
@@ -658,7 +658,7 @@ class TesQualityRules(unittest.TestCase):
         survey_features = [feature for feature in survey_layer.getFeatures()]
         self.assertEqual(len(survey_features), 11)
 
-        missing_points = self.quality_rules.point_quality_rules.get_missing_boundary_points_in_boundaries(self.db_gpkg, survey_layer, building_layer)
+        missing_points = self.quality_rules.point_quality_rules.get_missing_boundary_points_in_boundaries(db_gpkg, survey_layer, building_layer)
 
         geometries = [geom.asWkt() for k, v in missing_points.items() for geom in v]
 
@@ -677,8 +677,8 @@ class TesQualityRules(unittest.TestCase):
         print('\nINFO: Validating plot nodes are covered by boundary points...')
 
         gpkg_path = get_test_copy_path('db/static/gpkg/quality_validations.gpkg')
-        self.db_gpkg = get_gpkg_conn('tests_quality_validations_gpkg')
-        names = self.db_gpkg.names
+        db_gpkg = get_gpkg_conn('tests_quality_validations_gpkg')
+        names = db_gpkg.names
         names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 
         uri = gpkg_path + '|layername={layername}'.format(layername='puntolindero')
