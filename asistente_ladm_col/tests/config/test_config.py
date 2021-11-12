@@ -2,7 +2,6 @@ TEST_SCHEMAS_MAPPING = {
     # TEST DB POSTGRES
     'test_ladm_col': 'ladm/pg/ladm_col_v1_1.sql',
     'test_ladm_col_empty': 'ladm/pg/test_ladm_col_empty_v1_1.sql',
-    'test_ladm_validations_topology_tables': 'ladm/pg/test_ladm_validations_topology_tables_v1_1.sql',
     'test_change_detections': 'ladm/pg/test_change_detections_v1_1.sql',
     'test_distinct_geoms': 'ladm/pg/test_distinct_geoms_v1_1.sql',
     'interlis_no_ladm': 'static/pg/interlis_no_ladm.sql',

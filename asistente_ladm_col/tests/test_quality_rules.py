@@ -76,7 +76,14 @@ class TesQualityRules(unittest.TestCase):
         cls.quality_rules_manager = QualityRuleManager()
 
         print("INFO: Restoring databases to be used")
-        restore_schema('test_ladm_validations_topology_tables')
+
+        schema = 'test_ladm_validations_topology_tables'
+        models = [LADMColModelRegistry().model(LADMNames.LADM_COL_MODEL_KEY).full_name(),
+                  LADMColModelRegistry().model(LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY).full_name(),
+                  LADMColModelRegistry().model(LADMNames.SUPPLIES_MODEL_KEY).full_name(),
+                  LADMColModelRegistry().model(LADMNames.SUPPLIES_INTEGRATION_MODEL_KEY).full_name(),
+                  LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).full_name()]
+        cls.db_pg = restore_pg_db(schema, models, get_test_path("db/ladm/test_ladm_validations_topology_tables_v1_1.xtf"), True)
 
     def test_check_boundary_points_covered_by_plot_nodes(self):
         print('\nINFO: Validating boundary points are covered by plot nodes...')
@@ -121,8 +128,6 @@ class TesQualityRules(unittest.TestCase):
     def test_topology_boundary_nodes_must_be_covered_by_boundary_points(self):
         print('\nINFO: Validating boundary nodes must be covered by boundary points...')
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Line.BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS)
-        schema_name = 'test_ladm_validations_topology_tables'
-        self.db_pg = get_pg_conn(schema_name)
         names = self.db_pg.names
 
         res, code, msg = self.db_pg.test_connection()
@@ -223,8 +228,6 @@ class TesQualityRules(unittest.TestCase):
     def test_topology_boundary_points_must_be_covered_by_boundary_nodes(self):
         print('\nINFO: Validating boundary points must be covered by boundary nodes...')
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES)
-        schema_name = 'test_ladm_validations_topology_tables'
-        self.db_pg = get_pg_conn(schema_name)
         names = self.db_pg.names
 
         res, code, msg = self.db_pg.test_connection()
@@ -354,8 +357,6 @@ class TesQualityRules(unittest.TestCase):
     def test_topology_plot_must_be_covered_by_boundary(self):
         print('\nINFO: Validating plots must be covered by boundaries...')
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.PLOTS_COVERED_BY_BOUNDARIES)
-        schema_name = 'test_ladm_validations_topology_tables'
-        self.db_pg = get_pg_conn(schema_name)
         names = self.db_pg.names
 
         res, code, msg = self.db_pg.test_connection()
@@ -466,8 +467,6 @@ class TesQualityRules(unittest.TestCase):
     def test_topology_boundary_must_be_covered_by_plot(self):
         print('\nINFO: Validating boundaries must be covered by plots...')
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Line.BOUNDARIES_COVERED_BY_PLOTS)
-        schema_name = 'test_ladm_validations_topology_tables'
-        self.db_pg = get_pg_conn(schema_name)
         names = self.db_pg.names
 
         res, code, msg = self.db_pg.test_connection()
