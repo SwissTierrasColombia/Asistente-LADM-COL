@@ -18,12 +18,12 @@
  *                                                                         *
  ***************************************************************************/
 """
-from QgisModelBaker.libili2db import iliimporter
-from QgisModelBaker.libili2db.ili2dbconfig import (SchemaImportConfiguration,
-                                                   BaseConfiguration)
-from QgisModelBaker.libili2db.ili2dbutils import color_log_text
-from QgisModelBaker.libili2db.ilicache import IliCache
-from QgisModelBaker.libili2db.ili2dbutils import JavaNotFoundError
+from asistente_ladm_col.lib.ili import iliimporter
+from asistente_ladm_col.lib.ili.ili2dbconfig import (SchemaImportConfiguration,
+                                                     BaseConfiguration)
+from asistente_ladm_col.lib.ili.ili2dbutils import color_log_text
+from asistente_ladm_col.lib.ili.ilicache import IliCache
+from asistente_ladm_col.lib.ili.ili2dbutils import JavaNotFoundError
 
 from qgis.PyQt.QtCore import (Qt,
                               QCoreApplication,
