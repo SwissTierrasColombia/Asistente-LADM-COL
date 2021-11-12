@@ -1,6 +1,5 @@
 TEST_SCHEMAS_MAPPING = {
     # TEST DB POSTGRES
-    'test_ladm_col': 'ladm/pg/ladm_col_v1_1.sql',
     'test_ladm_col_empty': 'ladm/pg/test_ladm_col_empty_v1_1.sql',
     'test_change_detections': 'ladm/pg/test_change_detections_v1_1.sql',
     'test_distinct_geoms': 'ladm/pg/test_distinct_geoms_v1_1.sql',
@@ -13,8 +12,6 @@ TEST_SCHEMAS_MAPPING = {
     'interlis_ili2db3_ladm_mssql': 'static/mssql/interlis_ili2db3_ladm_mssql.sql',
     'interlis_no_ladm_mssql': 'static/mssql/interlis_no_ladm_mssql.sql',
     'ladm_col_211_mssql': 'static/mssql/ladm_col_211_mssql.sql',
-    'test_ladm_col_queries_mssql': 'ladm/mssql/test_ladm_col_queries_v1_1.sql',
-    'test_ladm_col_mssql': 'ladm/mssql/test_ladm_col_v1_1.sql',
     # TEST DB GEOPACKAGE
     'test_ladm_multiple_child_domains_gpkg': 'ladm/gpkg/test_multiple_models_ambiente_y_lc.gpkg',
     'tests_geometry_util_gpkg': 'static/gpkg/geometry_utils.gpkg',

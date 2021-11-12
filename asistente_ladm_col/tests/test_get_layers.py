@@ -9,11 +9,8 @@ start_app() # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             unload_qgis_model_baker,
-                                            get_pg_conn,
-                                            restore_schema,
-                                            get_mssql_conn,
-                                            restore_schema_mssql,
-                                            reset_db_mssql,
+                                            restore_pg_db,
+                                            restore_mssql_db,
                                             restore_gpkg_db)
 
 from asistente_ladm_col.config.ladm_names import LADMNames
@@ -26,16 +23,18 @@ class TestGetLayers(unittest.TestCase):
     def setUpClass(cls):
         import_qgis_model_baker(),
         cls.app = AppInterface()
-        cls.db_gpkg = restore_gpkg_db([LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).full_name()], "db/ladm/test_ladm_survey_model_v1_1.xtf")
 
         print("INFO: Restoring databases to be used")
-        restore_schema('test_ladm_col')
-        cls.db_pg = get_pg_conn('test_ladm_col')
-
         schema = 'test_ladm_col'
-        reset_db_mssql(schema)
-        restore_schema_mssql(schema)
-        cls.db_mssql = get_mssql_conn(schema)
+        models = [LADMColModelRegistry().model(LADMNames.LADM_COL_MODEL_KEY).full_name(),
+                  LADMColModelRegistry().model(LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY).full_name(),
+                  LADMColModelRegistry().model(LADMNames.SUPPLIES_MODEL_KEY).full_name(),
+                  LADMColModelRegistry().model(LADMNames.SUPPLIES_INTEGRATION_MODEL_KEY).full_name(),
+                  LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).full_name()]
+
+        cls.db_gpkg = restore_gpkg_db(models)
+        cls.db_pg = restore_pg_db(schema, models)
+        cls.db_mssql = restore_mssql_db(schema, models)
 
     def test_get_layer_in_pg(self):
         print("\nINFO: Validating get_layer() method in PG...")
