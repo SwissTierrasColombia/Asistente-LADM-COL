@@ -647,15 +647,15 @@ class DBMappingConfig:
                     "Errores_Calidad.Topic_Errores.Metadatos.Tolerancia": "ERR_METADATA_T_TOLERANCE_F",
                     "Errores_Calidad.Topic_Errores.Metadatos.Reglas_Validadas..Errores_Calidad.Topic_Errores.Metadatos": "ERR_METADATA_T_RULES_F"
                 }},
-            "Errores_Calidad.Topic_Errores.Error": {
+            "Errores_Calidad.Topic_Errores.ErrorCalidad": {
                 QueryNames.VARIABLE_NAME: "ERR_QUALITY_ERROR_T", QueryNames.FIELDS_DICT: {
-                    "Errores_Calidad.Topic_Errores.Error.Detalles": "ERR_QUALITY_ERROR_T_DETAILS_F",
-                    "Errores_Calidad.Topic_Errores.Error.Id_Objetos": "ERR_QUALITY_ERROR_T_OBJECT_IDS_F",
-                    "Errores_Calidad.Topic_Errores.Error.Id_Objetos_Relacionados": "ERR_QUALITY_ERROR_T_RELATED_OBJECT_IDS_F",
-                    "Errores_Calidad.Topic_Errores.Error.Nombre_ili_Objetos": "ERR_QUALITY_ERROR_T_ILI_NAME_F",
-                    "Errores_Calidad.Topic_Errores.Error.Valores": "ERR_QUALITY_ERROR_T_VALUES_F",
-                    "Errores_Calidad.Topic_Errores.Error.Tipo_Error..Errores_Calidad.Catalogos_Errores.TipoError": "ERR_QUALITY_ERROR_T_ERROR_TYPE_F",
-                    "Errores_Calidad.Topic_Errores.Error.Tipo_Regla..Errores_Calidad.Catalogos_Errores.TipoRegla": "ERR_QUALITY_ERROR_T_RULE_TYPE_F",
+                    "Errores_Calidad.Topic_Errores.ErrorCalidad.Detalles": "ERR_QUALITY_ERROR_T_DETAILS_F",
+                    "Errores_Calidad.Topic_Errores.ErrorCalidad.Id_Objetos": "ERR_QUALITY_ERROR_T_OBJECT_IDS_F",
+                    "Errores_Calidad.Topic_Errores.ErrorCalidad.Id_Objetos_Relacionados": "ERR_QUALITY_ERROR_T_RELATED_OBJECT_IDS_F",
+                    "Errores_Calidad.Topic_Errores.ErrorCalidad.Nombre_ili_Objetos": "ERR_QUALITY_ERROR_T_ILI_NAME_F",
+                    "Errores_Calidad.Topic_Errores.ErrorCalidad.Valores": "ERR_QUALITY_ERROR_T_VALUES_F",
+                    "Errores_Calidad.Topic_Errores.ErrorCalidad.Tipo_Error..Errores_Calidad.Catalogos_Errores.TipoError": "ERR_QUALITY_ERROR_T_ERROR_TYPE_F",
+                    "Errores_Calidad.Topic_Errores.ErrorCalidad.Tipo_Regla..Errores_Calidad.Catalogos_Errores.TipoRegla": "ERR_QUALITY_ERROR_T_RULE_TYPE_F",
                     "Errores_Calidad.Topic_Errores.Error_Linea.Linea_Relacionada..Errores_Calidad.Topic_Errores.Linea": "ERR_QUALITY_ERROR_T_LINE_F",
                     "Errores_Calidad.Topic_Errores.Error_Poligono.Poligono_Relacionado..Errores_Calidad.Topic_Errores.Poligono": "ERR_QUALITY_ERROR_T_POLYGON_F",
                     "Errores_Calidad.Topic_Errores.Error_Punto.Punto_Relacionado..Errores_Calidad.Topic_Errores.Punto": "ERR_QUALITY_ERROR_T_POINT_F"

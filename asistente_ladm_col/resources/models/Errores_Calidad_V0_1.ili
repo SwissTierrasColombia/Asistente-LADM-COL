@@ -102,8 +102,8 @@ VERSION "2021-09-21"  =
       UUIDOID : INTERLIS.UUIDOID;
     END UUIDs;
 
-    !!@ ili2db.dispName = "Errores de validación"
-    CLASS Error =
+    !!@ ili2db.dispName = "Errores de Calidad"
+    CLASS ErrorCalidad =
       /** Tipo de regla de calidad que se incumple.
        */
       !!@ ili2db.dispName = "Regla de Calidad"
@@ -132,21 +132,21 @@ VERSION "2021-09-21"  =
        */
       !!@ ili2db.dispName = "Detalles"
       Detalles : TEXT*9999;
-    END Error;
+    END ErrorCalidad;
 
     ASSOCIATION Error_Linea =
       Linea_Relacionada -- {0..1} Linea;
-      Error_Relacionado -- {1} Error;
+      Error_Relacionado -- {1} ErrorCalidad;
     END Error_Linea;
 
     ASSOCIATION Error_Poligono =
       Poligono_Relacionado -- {0..1} Poligono;
-      Error_Relacionado -- {1} Error;
+      Error_Relacionado -- {1} ErrorCalidad;
     END Error_Poligono;
 
     ASSOCIATION Error_Punto =
       Punto_Relacionado -- {0..1} Punto;
-      Error_Relacionado -- {1} Error;
+      Error_Relacionado -- {1} ErrorCalidad;
     END Error_Punto;
 
   END Topic_Errores;

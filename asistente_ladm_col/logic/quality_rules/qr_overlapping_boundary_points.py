@@ -88,7 +88,7 @@ class QROverlappingBoundaryPoints(AbstractQualityRule):
                 feature = point_layer.getFeature(items[0])
                 errors['geometries'].append(feature.geometry())
 
-                error_data = [
+                error_data = [  # [obj_uuids, rel_obj_uuids, values, details]
                     [str(dict_uuids.get(i)) for i in items],
                     None,
                     len(items),
@@ -101,7 +101,7 @@ class QROverlappingBoundaryPoints(AbstractQualityRule):
                 return QualityRuleExecutionResult(Qgis.Critical,
                                                   QCoreApplication.translate("QualityRules",
                                                                              "{} overlapping points were found in '{}'!").format(
-                                                      len(errors['data']), layer_name),
+                                                      len(flat_overlapping), layer_name),
                                                   )
             else:
                 return QualityRuleExecutionResult(Qgis.Success,
