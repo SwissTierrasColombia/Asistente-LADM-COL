@@ -342,3 +342,30 @@ class UpdateDataConfiguration(Ili2DbCommandConfiguration):
         args += [self.xtffile]
 
         return args
+
+
+class ValidateDataConfiguration(Ili2DbCommandConfiguration):
+
+    def __init__(self):
+        super().__init__()
+        self.xtflogfile = ''
+        self.configfile = ''
+        self.db_ili_version = None
+
+    def to_ili2db_args(self, extra_args=[], with_action=True):
+        args = list()
+
+        if with_action:
+            args += ["--validate"]
+
+        args += extra_args
+
+        args += Ili2DbCommandConfiguration.to_ili2db_args(self)
+
+        if self.configfile:
+            args += ["--validConfig", self.configfile]
+
+        if self.xtflogfile:
+            args += ["--xtflog", self.xtflogfile]
+
+        return args

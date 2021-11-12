@@ -16,10 +16,6 @@
  *                                                                         *
  ***************************************************************************/
 """
-import re
-
-from qgis.PyQt.QtCore import pyqtSignal
-
 from asistente_ladm_col.lib.ili.ili2dbconfig import UpdateDataConfiguration
 from asistente_ladm_col.lib.ili.iliexecutable import IliExecutable
 

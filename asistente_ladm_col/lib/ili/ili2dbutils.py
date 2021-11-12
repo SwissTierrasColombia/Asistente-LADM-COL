@@ -116,7 +116,7 @@ def color_log_text(text, txt_edit):
         if textline.startswith("Warning:"):
             txt_edit.setTextColor(QColor('#FFBF00'))
             txt_edit.append(textline)
-        elif "error" in textline.lower() or "failed" in textline.lower():
+        elif "error:" in textline.lower() or "failed" in textline.lower():
             txt_edit.setTextColor(QColor('#aa2222'))
             txt_edit.append(textline)
         else:

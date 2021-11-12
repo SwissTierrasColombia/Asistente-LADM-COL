@@ -32,7 +32,6 @@ from asistente_ladm_col.utils.abstract_class import AbstractQObjectMeta
 
 class IliExecutable(QObject, metaclass=AbstractQObjectMeta):
     SUCCESS = 0
-    # TODO: Insert more codes?
     ERROR = 1000
     ILI2DB_NOT_FOUND = 1001
 
@@ -42,7 +41,7 @@ class IliExecutable(QObject, metaclass=AbstractQObjectMeta):
     process_finished = pyqtSignal(int, int)
 
     __done_pattern = re.compile(r"Info: \.\.\.([a-z]+ )?done")
-    __result = None
+    _result = None
 
     def __init__(self, parent=None):
         QObject.__init__(self, parent)
@@ -85,7 +84,6 @@ class IliExecutable(QObject, metaclass=AbstractQObjectMeta):
         ili2db_bin = get_ili2db_bin(self.tool, self._get_ili2db_version(), self.stdout, self.stderr)
         if not ili2db_bin:
             return self.ILI2DB_NOT_FOUND
-        print(ili2db_bin)
         return ["-jar", ili2db_bin]
 
     def _escaped_arg(self, argument):
@@ -150,20 +148,25 @@ class IliExecutable(QObject, metaclass=AbstractQObjectMeta):
 
         self.process_started.emit(self.command_without_password(edited_command))
 
-        self.__result = self.ERROR
+        self._result = self.ERROR
 
         loop = QEventLoop()
         proc.finished.connect(loop.exit)
         loop.exec()
 
-        self.process_finished.emit(proc.exitCode(), self.__result)
-        return self.__result
+        self.process_finished.emit(proc.exitCode(), self._result)
+        return self._result
+
+    def _search_custom_pattern(self, text):
+        pass
 
     def stderr_ready(self, proc):
         text = bytes(proc.readAllStandardError()).decode(self.encoding)
 
         if self.__done_pattern.search(text):
-            self.__result = self.SUCCESS
+            self._result = self.SUCCESS
+
+        self._search_custom_pattern(text)
 
         self.stderr.emit(text)
 
