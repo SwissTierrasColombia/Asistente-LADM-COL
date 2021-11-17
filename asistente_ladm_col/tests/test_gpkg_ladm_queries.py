@@ -40,7 +40,7 @@ class TestGPKGLADMQueries(unittest.TestCase):
                   LADMColModelRegistry().model(LADMNames.SUPPLIES_MODEL_KEY).full_name(),
                   LADMColModelRegistry().model(LADMNames.SUPPLIES_INTEGRATION_MODEL_KEY).full_name(),
                   LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).full_name()]
-        cls.db_gpkg = restore_gpkg_db(models, get_test_path("db/ladm/test_ladm_col_queries_v1_1.xtf"), True)
+        cls.db_gpkg = restore_gpkg_db('test_gpkg_ladm_queries', models, get_test_path("db/ladm/test_ladm_col_queries_v1_1.xtf"), True)
 
         # We can't use the restored database connection because the expression functions use the one in the plugin;
         # that's why we have to get the database connection and assign it to the plugin

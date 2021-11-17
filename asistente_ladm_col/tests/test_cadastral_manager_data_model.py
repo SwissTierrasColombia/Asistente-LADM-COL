@@ -52,6 +52,7 @@ class TestCadastralManagerDataModelPG(BaseTestCadastralManagerDataModel, unittes
 
 
 class TestCadastralManagerDataModelGPKG(BaseTestCadastralManagerDataModel, unittest.TestCase):
+    file_name = 'test_supplies_model'
 
     def get_db_name(self):
         return 'GPKG'
@@ -62,7 +63,7 @@ class TestCadastralManagerDataModelGPKG(BaseTestCadastralManagerDataModel, unitt
 
     @classmethod
     def get_connector(cls) -> DBConnector:
-        return restore_gpkg_db(cls.models, cls.xtf_path)
+        return restore_gpkg_db(cls.file_name, cls.models, cls.xtf_path)
 
 
 class TestCadastralManagerDataModelMSSQL(BaseTestCadastralManagerDataModel, unittest.TestCase):

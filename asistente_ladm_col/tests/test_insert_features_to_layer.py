@@ -32,9 +32,7 @@ class TestInsertFeaturesToLayer(unittest.TestCase):
         import_qgis_model_baker()
 
         cls.app = AppInterface()
-        cls.db = restore_pg_db('insert_features_to_layer',
-                                  [LADMColModelRegistry().model(LADMNames.SUPPLIES_MODEL_KEY).full_name()],
-                                  get_test_path("db/ladm/test_ladm_cadastral_manager_model_v1_0.xtf"))
+        cls.db = restore_pg_db('insert_features_to_layer', [LADMColModelRegistry().model(LADMNames.SUPPLIES_MODEL_KEY).full_name()])
         res, code, msg = cls.db.test_connection()
         cls.assertTrue(res, msg)
 
@@ -44,7 +42,7 @@ class TestInsertFeaturesToLayer(unittest.TestCase):
         # Config settings
         QSettings().setValue('Asistente-LADM-COL/automatic_values/automatic_values_in_batch_mode', True)
 
-        source_layer_path = get_test_copy_path("db/ladm/gpkg/insert_features_to_layer.gpkg") + "|layername=a"
+        source_layer_path = get_test_copy_path("db/static/gpkg/insert_features_to_layer.gpkg") + "|layername=a"
 
         layer_cadastral_parcel = self.app.core.get_layer(self.db, self.db.names.GC_PARCEL_T, load=True)
         # self.set_automatic_fields(db, layer, layer_name)  # Since this is the first get_layer(), no need to call it
@@ -71,7 +69,7 @@ class TestInsertFeaturesToLayer(unittest.TestCase):
         QSettings().setValue('Asistente-LADM-COL/automatic_values/automatic_values_in_batch_mode', True)
         QSettings().setValue('Asistente-LADM-COL/automatic_values/t_ili_tid_enabled', False)
 
-        source_layer_path = get_test_copy_path("db/ladm/gpkg/insert_features_to_layer.gpkg") + "|layername=a"
+        source_layer_path = get_test_copy_path("db/static/gpkg/insert_features_to_layer.gpkg") + "|layername=a"
 
         layer_cadastral_parcel = self.app.core.get_layer(self.db, self.db.names.GC_PARCEL_T, load=True)
         self.app.core.set_automatic_fields(self.db, layer_cadastral_parcel, self.db.names.GC_PARCEL_T, self.app.core.get_active_models_per_db(self.db))
@@ -97,7 +95,7 @@ class TestInsertFeaturesToLayer(unittest.TestCase):
         # Config settings
         QSettings().setValue('Asistente-LADM-COL/automatic_values/automatic_values_in_batch_mode', False)
 
-        source_layer_path = get_test_copy_path("db/ladm/gpkg/insert_features_to_layer.gpkg") + "|layername=a"
+        source_layer_path = get_test_copy_path("db/static/gpkg/insert_features_to_layer.gpkg") + "|layername=a"
 
         layer_cadastral_parcel = self.app.core.get_layer(self.db, self.db.names.GC_PARCEL_T, load=True)
         self.app.core.set_automatic_fields(self.db, layer_cadastral_parcel, self.db.names.GC_PARCEL_T, self.app.core.get_active_models_per_db(self.db))

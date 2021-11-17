@@ -13,7 +13,6 @@ from asistente_ladm_col.config.ladm_names import LADMNames
 
 from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             unload_qgis_model_baker,
-                                            get_copy_gpkg_conn,
                                             restore_gpkg_db,
                                             get_test_path,
                                             run_etl_model)
@@ -29,8 +28,8 @@ class TestRefactorFieldsMapping(unittest.TestCase):
                          LADMColModelRegistry().model(LADMNames.SUPPLIES_MODEL_KEY).full_name(),
                          LADMColModelRegistry().model(LADMNames.SUPPLIES_INTEGRATION_MODEL_KEY).full_name(),
                          LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).full_name()]
-        cls.db_gpkg_empty = restore_gpkg_db(survey_models)
-        cls.db_gpkg_test = restore_gpkg_db(survey_models, get_test_path("db/ladm/test_export_data_ladm_v1_1.xtf"))
+        cls.db_gpkg_empty = restore_gpkg_db('test_refactor_field_empty', survey_models)
+        cls.db_gpkg_test = restore_gpkg_db('test_refactor_field', survey_models, get_test_path("db/ladm/test_export_data_ladm_v1_1.xtf"))
         cls.app = AppInterface()
 
         res, code, msg = cls.db_gpkg_empty.test_connection()

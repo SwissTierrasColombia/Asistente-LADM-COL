@@ -54,6 +54,7 @@ class TestCadastralCartographyPG(BaseTestForCadastralCartographyModel, unittest.
 
 
 class TestCadastralCartographyGPKG(BaseTestForCadastralCartographyModel, unittest.TestCase):
+    file_name = 'test_ladm_cadastral_cartography'
 
     def get_db_name(self):
         return 'GPKG'
@@ -64,7 +65,7 @@ class TestCadastralCartographyGPKG(BaseTestForCadastralCartographyModel, unittes
 
     @classmethod
     def get_connector(cls) -> DBConnector:
-        return restore_gpkg_db(cls.models, cls.xtf_path)
+        return restore_gpkg_db(cls.file_name, cls.models, cls.xtf_path)
 
 
 class TestCadastralCartographyModelMSSQL(BaseTestForCadastralCartographyModel, unittest.TestCase):

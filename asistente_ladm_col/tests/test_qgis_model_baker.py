@@ -91,7 +91,7 @@ class TestQgisModelBaker(unittest.TestCase):
 
     def test_export_data_in_gpkg(self):
         print("\nINFO: Validate Export Data in GPKG...")
-        gpkg_db = restore_gpkg_db(self.SURVEY_MODELS, get_test_path("db/ladm/test_export_data_ladm_v1_1.xtf"))
+        gpkg_db = restore_gpkg_db('test_export_data_in_gpkg', self.SURVEY_MODELS, get_test_path("db/ladm/test_export_data_ladm_v1_1.xtf"))
 
         base_config = BaseConfiguration()
         base_config.custom_model_directories = testdata_path(MODELS_PATH)
@@ -182,7 +182,7 @@ class TestQgisModelBaker(unittest.TestCase):
     def test_import_data_in_gpkg(self):
         print("\nINFO: Validate Import Data in GPKG...")
 
-        gpkg_db = restore_gpkg_db(self.SURVEY_MODELS)
+        gpkg_db = restore_gpkg_db('test_import_data_in_gpkg', self.SURVEY_MODELS)
         base_config = BaseConfiguration()
         base_config.custom_model_directories = testdata_path(MODELS_PATH)
         base_config.custom_model_directories_enabled = True

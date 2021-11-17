@@ -30,7 +30,7 @@ class TestLADMData(unittest.TestCase):
         import_qgis_model_baker()
 
         # DB with single child model
-        cls.db_gpkg = restore_gpkg_db([LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).full_name()], "db/ladm/test_ladm_survey_model_v1_1.xtf")
+        cls.db_gpkg = restore_gpkg_db('test_ladm_data', [LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).full_name()])
         res, code, msg = cls.db_gpkg.test_connection()
         cls.assertTrue(res, msg)
 

@@ -53,6 +53,7 @@ class TestSNRDataModelPG(BaseTestSNRDataModel, unittest.TestCase):
 
 
 class TestSNRDataModelGPKG(BaseTestSNRDataModel, unittest.TestCase):
+    file_name = 'test_ladm_snr_data'
 
     def get_db_name(self):
         return 'GPKG'
@@ -63,7 +64,7 @@ class TestSNRDataModelGPKG(BaseTestSNRDataModel, unittest.TestCase):
 
     @classmethod
     def get_connector(cls) -> DBConnector:
-        return restore_gpkg_db(cls.models, cls.xtf_path)
+        return restore_gpkg_db(cls.file_name, cls.models, cls.xtf_path)
 
 
 class TestSNRDataModelMSSQL(BaseTestSNRDataModel, unittest.TestCase):

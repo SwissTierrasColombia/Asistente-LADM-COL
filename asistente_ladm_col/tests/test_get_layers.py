@@ -32,7 +32,7 @@ class TestGetLayers(unittest.TestCase):
                   LADMColModelRegistry().model(LADMNames.SUPPLIES_INTEGRATION_MODEL_KEY).full_name(),
                   LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).full_name()]
 
-        cls.db_gpkg = restore_gpkg_db(models)
+        cls.db_gpkg = restore_gpkg_db(schema, models)
         cls.db_pg = restore_pg_db(schema, models)
         cls.db_mssql = restore_mssql_db(schema, models)
 

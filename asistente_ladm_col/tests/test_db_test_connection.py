@@ -96,7 +96,7 @@ class TestDBTestConnection(unittest.TestCase):
     def test_gpkg_test_connection(self):
         print("\nINFO: Validate test_connection() for GeoPackage (survey model: OK!)...")
 
-        db = restore_gpkg_db([LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).full_name()], "db/ladm/test_ladm_survey_model_v1_1.xtf")
+        db = restore_gpkg_db('test_gpkg_test_connection', [LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).full_name()])
         res, code, msg = db.test_connection()
         self.assertTrue(res, msg)
         self.assertEqual(code, EnumTestConnectionMsg.DB_WITH_VALID_LADM_COL_STRUCTURE)
@@ -151,7 +151,7 @@ class TestDBTestConnection(unittest.TestCase):
 
     def test_gpkg_test_connection_required_models_success(self):
         print("\nINFO: Validate test_connection() for GeoPackage (required models (success): survey and snr)...")
-        db = restore_gpkg_db([LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).full_name()], "db/ladm/test_ladm_survey_model_v1_1.xtf")
+        db = restore_gpkg_db('test_gpkg_test_connection_required_models_success', [LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).full_name()])
         res, code, msg = db.test_connection(models={REQUIRED_MODELS: [LADMNames.SURVEY_MODEL_KEY,
                                                                       LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY]})
         self.assertTrue(res, msg)
@@ -159,7 +159,7 @@ class TestDBTestConnection(unittest.TestCase):
 
     def test_gpkg_test_connection_required_models_error(self):
         print("\nINFO: Validate test_connection() for GeoPackage (required models (error): ant)...")
-        db = restore_gpkg_db([LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).full_name()], "db/ladm/test_ladm_survey_model_v1_1.xtf")
+        db = restore_gpkg_db('test_gpkg_test_connection_required_models_error', [LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).full_name()])
         res, code, msg = db.test_connection(models={REQUIRED_MODELS: [LADMNames.VALUATION_MODEL_KEY]})
         self.assertFalse(res, msg)
         self.assertEqual(code, EnumTestConnectionMsg.REQUIRED_LADM_MODELS_NOT_FOUND)

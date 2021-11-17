@@ -21,7 +21,6 @@ import sys
 from shutil import copyfile
 from sys import platform
 import subprocess
-import uuid
 
 import psycopg2
 import pyodbc
@@ -183,7 +182,7 @@ def get_test_path(path):
 def get_test_copy_path(path):
     src_path = get_test_path(path)
     dst_path = os.path.split(src_path)
-    dst_path = os.path.join(dst_path[0], "_test_{}_{}".format(str(uuid.uuid4())[:8], dst_path[1]))
+    dst_path = os.path.join(dst_path[0], "_" + dst_path[1])
     copyfile(src_path, dst_path)
     return dst_path
 
@@ -386,11 +385,19 @@ def restore_mssql_db(schema_name, models_name, xtf_path=None, disable_validation
     return db
 
 
-def restore_gpkg_db(models_name, xtf_path=None, disable_validation=False):
-    gpkg_path = get_test_copy_path('db/static/gpkg/ili2db.gpkg')
+def restore_gpkg_db(file_name, models_name, xtf_path=None, disable_validation=False):
+    gpkg_path = get_test_gpkg_template_path(file_name)
     db = get_gpkg_conn_from_path(gpkg_path)
     _restore_db(db, models_name, xtf_path, disable_validation)
     return db
+
+
+def get_test_gpkg_template_path(file_name):
+    src_path = get_test_path('db/static/gpkg/ili2db.gpkg')
+    dst_path = os.path.split(src_path)
+    dst_path = os.path.join(dst_path[0], "_{}.gpkg".format(file_name))
+    copyfile(src_path, dst_path)
+    return dst_path
 
 
 def _restore_db(db, models_name, xtf_path, disable_validation):

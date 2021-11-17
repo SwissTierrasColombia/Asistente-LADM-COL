@@ -712,7 +712,7 @@ class TesQualityRules(unittest.TestCase):
 
     def test_no_error_quality_rule(self):
         print('\nINFO: Validating no errors in quality rules...')
-        db_gpkg = restore_gpkg_db(self.SURVEY_MODELS, get_test_path("db/ladm/test_valid_quality_rules_v1_1.xtf"))
+        db_gpkg = restore_gpkg_db('test_no_error_quality_rule', self.SURVEY_MODELS, get_test_path("db/ladm/test_valid_quality_rules_v1_1.xtf"))
         res, code, msg = db_gpkg.test_connection()
         self.assertTrue(res, msg)
 
@@ -821,7 +821,7 @@ class TesQualityRules(unittest.TestCase):
 
     def test_logic_quality_rules_gpkg(self):
         print('\nINFO: Validating logic quality rules GPKG...')
-        db_gpkg = restore_gpkg_db(self.SURVEY_MODELS, get_test_path("db/ladm/test_logic_quality_rules_v1_1.xtf"), True)
+        db_gpkg = restore_gpkg_db('test_logic_quality_rules_gpkg', self.SURVEY_MODELS, get_test_path("db/ladm/test_logic_quality_rules_v1_1.xtf"), True)
         res, code, msg = db_gpkg.test_connection()
         self.assertTrue(res, msg)
 

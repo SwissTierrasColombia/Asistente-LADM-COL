@@ -52,6 +52,7 @@ class TestOperationModelPG(BaseTestOperationModel, unittest.TestCase):
 
 
 class TestOperationModelGPKG(BaseTestOperationModel, unittest.TestCase):
+    file_name = 'test_ladm_survey_model'
 
     def get_db_name(self):
         return 'GPKG'
@@ -62,7 +63,7 @@ class TestOperationModelGPKG(BaseTestOperationModel, unittest.TestCase):
 
     @classmethod
     def get_connector(cls) -> DBConnector:
-        return restore_gpkg_db(cls.models, cls.xtf_path)
+        return restore_gpkg_db(cls.file_name, cls.models, cls.xtf_path)
 
 
 class TestOperationModelMSSQL(BaseTestOperationModel, unittest.TestCase):
