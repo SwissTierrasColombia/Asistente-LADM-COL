@@ -45,6 +45,9 @@ class TasksWidget(QWidget, WIDGET_UI):
         self._user = user
         self.st_config = TransitionalSystemConfig()
 
+        self.lbl_sort_by.setVisible(False)
+        self.cbo_sort_by.setVisible(False)
+
         self.lvw_tasks.itemSelectionChanged.connect(self.update_controls)
         self.lvw_tasks.itemDoubleClicked.connect(self.call_task_panel)
         self.btn_view_task.clicked.connect(self.view_task)

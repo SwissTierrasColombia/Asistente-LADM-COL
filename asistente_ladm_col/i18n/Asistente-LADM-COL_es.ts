@@ -10684,6 +10684,13 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <source>Transitional System</source>
         <translation>Sistema de Transición</translation>
     </message>
+    <message>
+        <location filename="../gui/transitional_system/transitional_system_initial_panel.py" line="65"/>
+        <source>User: {}
+Role: {}</source>
+        <translation>Usuario: {}
+Rol: {}</translation>
+    </message>
 </context>
 <context>
     <name>TranslatableConfigStrings</name>

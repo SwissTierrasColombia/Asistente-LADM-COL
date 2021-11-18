@@ -63,7 +63,7 @@ class TransitionalSystemInitialPanelWidget(QgsPanelWidget, WIDGET_UI):
     def _update_user_info(self):
         self.lbl_user_info.setText(
             QCoreApplication.translate("TransitionalSystemInitialPanelWidget",
-                                       "User: {}\nRole: {}".format(self._user.get_name(), self._user.get_role())))
+                                       "User: {}\nRole: {}").format(self._user.get_name(), self._user.get_role()))
 
     def fill_data(self):
         pass
