@@ -24,7 +24,6 @@ from math import sqrt
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QObject,
                               QVariant)
-from qgis._core import QgsProcessingFeedback
 from qgis.core import (QgsField,
                        QgsGeometry,
                        QgsPolygon,
@@ -33,6 +32,7 @@ from qgis.core import (QgsField,
                        QgsLineString,
                        QgsMultiLineString,
                        QgsProcessingFeedback,
+                       QgsProcessingException,
                        QgsSpatialIndex,
                        QgsVectorLayer,
                        QgsVectorLayerEditUtils,
@@ -45,6 +45,7 @@ from qgis.core import (QgsField,
 import processing
 
 from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.lib.processing.custom_processing_feedback import CustomFeedbackWithErrors
 from asistente_ladm_col.utils.crs_utils import get_crs_authid
 
 
@@ -465,6 +466,14 @@ class GeometryUtils(QObject):
         if layer2.geometryType() == QgsWkbTypes.PolygonGeometry:
             layer2 = processing.run("ladm_col:polygonstolines", {'INPUT': layer2, 'OUTPUT': 'memory:'})['OUTPUT']
 
+        # Since addPopologicalPoints is based on layer's geometry precision,
+        # and it might be 0 by default (which will lead QGIS to use 1mm of
+        # tolerance in the end, because that's how they have coded it), let's
+        # set a tolerance near to 0 to make sure our layer1 doesn't get vertices
+        # that are too far (because the current mehotd should work like having a
+        # tolerance=0mm).
+        layer1.geometryOptions().setGeometryPrecision(0.0000001)
+
         geom_added = list()
         index = QgsSpatialIndex(layer2)
         dict_features_layer2 = None
@@ -489,9 +498,36 @@ class GeometryUtils(QObject):
         del dict_features_layer2
         gc.collect()
 
-        return processing.run("native:fixgeometries",
-                              {'INPUT': layer1,
-                               'OUTPUT': 'memory:'})['OUTPUT']
+        fixed = processing.run("native:fixgeometries",
+                               {'INPUT': layer1,
+                                'OUTPUT': 'memory:'})['OUTPUT']
+
+        # A vertex may have been added to layer1 but not moved to the base vertex from layer2,
+        # which might be very close at a distance close to 0, but at a distance > 0 anyways.
+        # For some rules, this means the base vertex in layer2 may be out of a polygon in layer1,
+        # which will be enough for a spatial predicate (e.g., whithin) to fail. To solve this,
+        # we make sure that after adding vertices to layer1, we move such vertices to match
+        # layer2 ones, by using snapgeometries. This time, we won't allow new vertices, so we
+        # choose behavior 2 (instead of 0, which is used almost always when we run such an alg.).
+        params = {
+            'INPUT': fixed,
+            'REFERENCE_LAYER': layer2,
+            'TOLERANCE': 0.0000001,
+            'BEHAVIOR': 2,  # Prefer aligning nodes, don't insert vertices
+            'OUTPUT': 'TEMPORARY_OUTPUT'
+        }
+        feedback = CustomFeedbackWithErrors()
+        try:
+            res = processing.run("native:snapgeometries", params, feedback=feedback)['OUTPUT']
+        except QgsProcessingException as e:
+            self.logger.warning(__name__, QCoreApplication.translate("Geometry",
+                                                                     "'{}' and '{}' layers could not be adjusted. Details: {}".format(
+                                                                         layer1.name(),
+                                                                         layer2.name(),
+                                                                         feedback.msg)))
+            return fixed  # Return the fixed one, which should work 99.99% of times anyways
+
+        return res
 
     def difference_plot_boundary(self, names, plots_as_lines_layer, boundary_layer, id_field):
         """
