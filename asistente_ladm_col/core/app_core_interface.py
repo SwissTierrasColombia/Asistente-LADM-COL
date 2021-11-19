@@ -1367,6 +1367,12 @@ class AppCoreInterface(QObject):
         if behavior is None:
             if input_layer == reference_layer and input_layer.geometryType() == QgsWkbTypes.PointGeometry:
                 behavior = 7  # It's a bit aggressive for polygons, for points it works fine
+            elif input_layer == reference_layer and input_layer.geometryType() != QgsWkbTypes.PointGeometry:
+                # Behavior 2 may return unexpected results on polygons. Namely,
+                # on separated (but near) polygons it has gave us polygon overlaps.
+                # Therefore, we'll avoid it (also 7 for the description above) and
+                # choose 0 instead.
+                behavior = 0  # Align nodes inserting new vertices
             else:
                 behavior = 2
                 tolerance += 0.001  # Behavior 2 doesn't work with exact tolerance
