@@ -198,11 +198,11 @@ To run the tests locally you need to have *docker* and *docker-compose* installe
 - Install *docker-compose* using the [binaries](https://github.com/docker/compose/releases).
 - NOTE: [installing Docker](https://www.how2shout.com/how-to/how-to-install-docker-ce-on-ubuntu-20-04-lts-focal-fossa.html) on Ubuntu 20.04 is easier.
 
-Before running unit tests, you need to set these 2 environment variables (make sure you use your own repository's root path for the first one):
+Before running unit tests, you need to set these 2 environment variables (make sure you use your own repository's root path for the first one; the second one corresponds to an official QGIS Docker Hub's tag):
 
 ```sh
 export GITHUB_WORKSPACE=/home/Asistente-LADM-COL
-export QGIS_TEST_VERSION="release-3_16"
+export QGIS_TEST_VERSION="final-3_22_1"
 ```
 
 The command to execute unit tests is (execute from the repository's root folder):
