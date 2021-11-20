@@ -96,11 +96,14 @@
 <li class="toctree-l1"><a class="reference internal" href="administracion_de_datos.html">Administración de datos</a></li>
 <li class="toctree-l1"><a class="reference internal" href="captura_y_estructura_de_datos.html">Captura y estructuración de datos</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Barra de herramientas</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#construir-linderos">Construir linderos</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#mover-nodos">Mover nodos</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#llenar-puntosccl">Llenar PuntosCCL</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#llenar-mas-y-menos-ccl">Llenar más y menos CCL</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#llenar-relaciones-de-servidumbre-de-paso">Llenar relaciones de Servidumbre de paso</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sistema-de-transicion-1">Sistema de transición (1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#crear-objetos-de-levantamiento-2">Crear objetos de levantamiento (2)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cargar-capas-3">Cargar capas (3)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#construir-linderos-4">Construir linderos (4)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#mover-nodos-5">Mover nodos (5)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#llenar-puntosccl-6">Llenar PuntosCCL (6)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#llenar-mas-y-menos-ccl-7">Llenar más y menos CCL (7)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#configuracion-8">Configuración (8)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="cargar_capas.html">Cargar capas</a></li>
@@ -189,47 +192,59 @@
             
   <div class="tex2jax_ignore mathjax_ignore section" id="barra-de-herramientas">
 <h1>Barra de herramientas<a class="headerlink" href="#barra-de-herramientas" title="Enlazar permanentemente con este título">¶</a></h1>
-<p>Así es como se ve la barra de herramientas:</p>
-<img src="_static/barra_de_herramientas/ladm_col_toolbar.png" alt="Barra de herramientas Asistente LADM-COL" />
-<p>Si la barra de herramientas no aparece en la interfaz de QGIS, puedes hacer que se vea
-con la siguiente interacción: click derecho en la región gris en QGIS y clickeando
-en «Herramientas LADM-COL» o como en el siguiente gif:</p>
-<img src="_static/barra_de_herramientas/show_ladm_col_toolbar.gif" alt="Mostrar barra de herramientas Asistente LADM-COL" style="height:500px;width:800px" />
-<div class="section" id="construir-linderos">
-<h2>Construir linderos<a class="headerlink" href="#construir-linderos" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>La barra de herramientas del Asistente LADM-COL ofrece varios grupos de funcionalidades que se ordenan de acuerdo al módulo al que pertenecen.</p>
+<p>Así luce la barra de herramientas del Asistente LADM-COL (rol Avanzado):</p>
+<p><a class="" data-lightbox="Barra de herramientas para el rol avanzado" href="./_static/barra_de_herramientas/ladm_col_toolbar.png" title="Barra de herramientas para el rol avanzado" data-title="Barra de herramientas para el rol avanzado"><img src="./_static/barra_de_herramientas/ladm_col_toolbar.png" class="align-center" width="800px" alt="Barra de herramientas para el rol avanzado"/></a></p>
+<div class="seealso">
+<p class="admonition-title">TIP</p>
+<p>Si la barra de herramientas no aparece en la interfaz de QGIS, puedes hacer que se vea de la siguiente manera: dar clic derecho en una sección libre de las barras de herramientas de QGIS y seleccionar <i>Herramientas LADM-COL</i>, como se muestra en el siguiente GIF.</p>
 </div>
-<div class="section" id="mover-nodos">
-<h2>Mover nodos<a class="headerlink" href="#mover-nodos" title="Enlazar permanentemente con este título">¶</a></h2>
+<p><a class="" data-lightbox="Mostrar barra de herramientas Asistente LADM-COL" href="./_static/barra_de_herramientas/show_ladm_col_toolbar.gif" title=" Mostrar barra de herramientas Asistente LADM-COL " data-title=" Mostrar barra de herramientas Asistente LADM-COL "><img src="./_static/barra_de_herramientas/show_ladm_col_toolbar.gif" class="align-center" width="800px" alt=" Mostrar barra de herramientas Asistente LADM-COL "/></a></p>
+<div class="warning">
+<p class="admonition-title">ADVERTENCIA</p>
+<p>La barra de herramientas no es visible en la interfaz de QGIS si el Asistente LADM-COL no tiene una conexión válida a una base de datos.<br><br> Esto sucede justo después de la primera instalación del plugin, pero puede ocurrir incluso después de instalado. Por ejemplo, si se define una conexión a una base de datos GeoPackge, se cierra QGIS, se borra o mueve el archivo de base de datos y se vuelve a abrir QGIS. El Asistente reconocerá que no hay conexión válida y evitará mostrr la barra de herramientas.</p>
 </div>
-<div class="section" id="llenar-puntosccl">
-<h2>Llenar PuntosCCL<a class="headerlink" href="#llenar-puntosccl" title="Enlazar permanentemente con este título">¶</a></h2>
-<p>Puedes llenar la tabla de topología PuntosCCL usando el botón Llenar PuntosCCL en la barra
-de herramientas de LADM_COL el cual hace este trabajo de forma automática y más rápido.</p>
-<p>Estas son las tablas que se relacionan con esta función:</p>
-<ul class="simple">
-<li><p>puntosccl –&gt; puntolindero y lindero</p></li>
-</ul>
-<img src="_static/barra_de_herramientas/fill_points_bfs.gif" alt="Llenar puntos CCL" style="height:500px;width:800px" />
+<p>Los grupos de funcionalidades son los siguientes:</p>
+<div class="section" id="sistema-de-transicion-1">
+<h2>Sistema de transición (1)<a class="headerlink" href="#sistema-de-transicion-1" title="Enlazar permanentemente con este título">¶</a></h2>
+<p><a class="" data-lightbox="Sistema de Transición" href="./_static/barra_de_herramientas/toolbar_ST.png" title="Sistema de Transición" data-title="Sistema de Transición"><img src="./_static/barra_de_herramientas/toolbar_ST.png" class="align-center" width="200px" alt="Sistema de Transición"/></a></p>
 </div>
-<div class="section" id="llenar-mas-y-menos-ccl">
-<h2>Llenar más y menos CCL<a class="headerlink" href="#llenar-mas-y-menos-ccl" title="Enlazar permanentemente con este título">¶</a></h2>
-<p>Puedes llenar la tabla de topología más CCL y menos usando el botón Llenar más CCL y menos
-usando la barra de herramientas de LADM_COL el cual hace este trabajo de forma automática y más rápido.</p>
-<p>Estas son las tablas que se relacionan con esta función:</p>
-<ul class="simple">
-<li><p>masccl –&gt; terreno y lindero</p></li>
-<li><p>menos –&gt; terreno y lindero (agujeros o anillos internos)</p></li>
-</ul>
-<img src="_static/barra_de_herramientas/fill_more_and_less_bfs.gif" alt="Llenar más y menos CCL" style="height:500px;width:800px" />
+<div class="section" id="crear-objetos-de-levantamiento-2">
+<h2>Crear objetos de levantamiento (2)<a class="headerlink" href="#crear-objetos-de-levantamiento-2" title="Enlazar permanentemente con este título">¶</a></h2>
+<p><a class="" data-lightbox="Crear objetos de Levantamiento" href="./_static/barra_de_herramientas/crear_objetos_lev.png" title="Crear objetos de Levantamiento" data-title="Crear objetos de Levantamiento"><img src="./_static/barra_de_herramientas/crear_objetos_lev.png" class="align-center" width="200px" alt="Crear objetos de Levantamiento"/></a></p>
 </div>
-<div class="section" id="llenar-relaciones-de-servidumbre-de-paso">
-<h2>Llenar relaciones de Servidumbre de paso<a class="headerlink" href="#llenar-relaciones-de-servidumbre-de-paso" title="Enlazar permanentemente con este título">¶</a></h2>
-<p>Debes seleccionar una <strong>Servidumbre de Paso</strong>, uno o más <strong>Terreno(s)</strong> que serán beneficiados
-con la servidumbre de paso, y una o más <strong>Fuentes Administrativa(s)</strong> que soporte(n) la servidumbre de paso.
-El plugin automáticamente crea la relación entre los predios beneficados y las relaciones.
-Es importante saber que debes tener las relaciones entre los predios y
-los terrenos para evitar inconvenientes con esta función.</p>
-<img src="_static/barra_de_herramientas/fill_relations_right_of_way.gif" alt="Llenar relaciones de Servidumbre de paso" style="height:500px;width:800px" />
+<div class="section" id="cargar-capas-3">
+<h2>Cargar capas (3)<a class="headerlink" href="#cargar-capas-3" title="Enlazar permanentemente con este título">¶</a></h2>
+<p><a class="" data-lightbox="Cargar capas" href="./_static/barra_de_herramientas/cargar_capas.png" title="Cargar capas" data-title="Cargar capas"><img src="./_static/barra_de_herramientas/cargar_capas.png" class="align-center" width="60px" alt="Cargar capas"/></a></p>
+</div>
+<div class="section" id="construir-linderos-4">
+<h2>Construir linderos (4)<a class="headerlink" href="#construir-linderos-4" title="Enlazar permanentemente con este título">¶</a></h2>
+<p><a class="" data-lightbox="Construir linderos" href="./_static/barra_de_herramientas/build_boudaries.gif" title="Construir linderos" data-title="Construir linderos"><img src="./_static/barra_de_herramientas/build_boudaries.gif" class="align-center" width="800px" alt="Construir linderos"/></a></p>
+</div>
+<div class="section" id="mover-nodos-5">
+<h2>Mover nodos (5)<a class="headerlink" href="#mover-nodos-5" title="Enlazar permanentemente con este título">¶</a></h2>
+<p><a class="" data-lightbox="Mover nodos" href="./_static/barra_de_herramientas/mover_nodos.gif" title="Mover nodos" data-title="Mover nodos"><img src="./_static/barra_de_herramientas/mover_nodos.gif" class="align-center" width="800px" alt="Mover nodos"/></a></p>
+</div>
+<div class="section" id="llenar-puntosccl-6">
+<h2>Llenar PuntosCCL (6)<a class="headerlink" href="#llenar-puntosccl-6" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>La tabla de topología <code class="docutils literal notranslate"><span class="pre">PuntosCCL</span></code> puede llenarse de forma automática usando el botón <code class="docutils literal notranslate"><span class="pre">Llenar</span> <span class="pre">PuntosCCL</span></code>  de la barra de herramientas del Asistente LADM-COL.</p>
+<p>La tabla <code class="docutils literal notranslate"><span class="pre">PuntosCCL</span></code> relaciona Puntos de Lindero con sus Linderos correspondientes.</p>
+<p><a class="" data-lightbox="Llenar puntos CCL" href="./_static/barra_de_herramientas/fill_points_bfs.gif" title="Llenar puntos CCL" data-title="Llenar puntos CCL"><img src="./_static/barra_de_herramientas/fill_points_bfs.gif" class="align-center" width="800px" alt="Llenar puntos CCL"/></a></p>
+</div>
+<div class="section" id="llenar-mas-y-menos-ccl-7">
+<h2>Llenar más y menos CCL (7)<a class="headerlink" href="#llenar-mas-y-menos-ccl-7" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Las tablas de topología <code class="docutils literal notranslate"><span class="pre">Más</span> <span class="pre">CCL</span></code> y <code class="docutils literal notranslate"><span class="pre">Menos</span></code> pueden ser llenadas de forma automática usando el botón <code class="docutils literal notranslate"><span class="pre">Llenar</span> <span class="pre">más</span> <span class="pre">CCL</span> <span class="pre">y</span> <span class="pre">menos</span></code> de la barra de herramientas del Asistente LADM-COL.</p>
+<p>La tabla <code class="docutils literal notranslate"><span class="pre">MásCCL</span></code> relaciona un Terreno con sus Linderos (externos) correspondientes, mientras que la tabla <code class="docutils literal notranslate"><span class="pre">Menos</span></code> relaciona los agujeros de un Terreno con sus Linderos (internos) correspondientes.</p>
+<p><a class="" data-lightbox="Llenar más y menos CCL" href="./_static/barra_de_herramientas/fill_more_and_less_bfs.gif" title="Llenar más y menos CCL" data-title="Llenar más y menos CCL"><img src="./_static/barra_de_herramientas/fill_more_and_less_bfs.gif" class="align-center" width="800px" alt="Llenar más y menos CCL"/></a></p>
+</div>
+<div class="section" id="configuracion-8">
+<h2>Configuración (8)<a class="headerlink" href="#configuracion-8" title="Enlazar permanentemente con este título">¶</a></h2>
+<p><a class="" data-lightbox="Configuración" href="./_static/barra_de_herramientas/configuracion.png" title="Configuración" data-title="Configuración"><img src="./_static/barra_de_herramientas/configuracion.png" class="align-center" width="60px" alt="Configuración"/></a></p>
+<p>Al dar clic en este botón tendrás acceso a la ventana de <a class="reference external" href="configuracion.html#configuracion">Configuración</a> del Asistente LADM-COL.</p>
+<div class="note">
+<p class="admonition-title">IMPORTANTE</p>
+    <p>La barra de herramientas depende del rol activo del Asistente LADM-COL, que se puede definir en la pestaña "Avanzado" de la ventana de configuración.</p> La sección <a href="configuracion.html#funcionalidades-por-rol">Funcionalidades por rol</a> muestra las diferentes configuraciones de la barra de herramientas según el rol activo.
+</div>
 </div>
 </div>
 
