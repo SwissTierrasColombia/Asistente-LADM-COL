@@ -70,7 +70,7 @@ To use the LADM-COL Assistant you need:
 
 ## Functionalities
 
-The current version ([3.1.9](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/3.1.9)) of the LADM-COL Assistant depends on [QGIS Model Baker v6.1.1.5](https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.5/QgisModelBaker_6115.zip) and allows users to:
+The current version ([3.1.10](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/3.1.10)) of the LADM-COL Assistant depends on [QGIS Model Baker v6.1.1.5](https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.5/QgisModelBaker_6115.zip) and allows users to:
 
  - Integration with the Transitional System:
    - Authentication
@@ -145,7 +145,7 @@ The current version ([3.1.9](https://github.com/SwissTierrasColombia/Asistente-L
  - Select in a dialog layers to load from any model in the database or schema:
    - Use the 'QGIS Model Baker' plugin (a prerequisite) to load layers with configured forms, relations and domains.
    - Load preconfigured layer sets.
- - Check quality rules (topology):
+ - Check quality rules (topology), optionally setting a tolerance:
    - Check overlaps in `Boundary Points`.
    - Check overlaps in `Control Points`.
    - Check overlaps in `Boundary`.
