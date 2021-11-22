@@ -72,7 +72,16 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.conn_manager = conn_manager
         self.app = AppInterface()
 
+        self.sbx_tolerance.setToolTip("")
         self.sbx_tolerance.setMaximum(TOLERANCE_MAX_VALUE)
+
+        if Qgis.QGIS_VERSION_INT < 32200:
+            # Tolerance got dramatic optimizations in 3.22, we discourage its usage in older versions
+            self.sbx_tolerance.setEnabled(False)
+            self.sbx_tolerance.setToolTip(
+                QCoreApplication.translate("SettingsDialog",
+                                           "QGIS >= v3.22 is needed to set a tolerance different than 0."))
+
         self._valid_document_repository = False  # Needs to be True if users want to enable doc repo (using test button)
 
         context = context if context else SettingsContext()

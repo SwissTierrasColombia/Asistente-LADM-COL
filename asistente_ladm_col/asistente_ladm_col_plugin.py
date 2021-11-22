@@ -225,6 +225,10 @@ class AsistenteLADMCOLPlugin(QObject):
         self.app.set_core_interface(AppCoreInterface())
         self.app.set_gui_interface(AppGUIInterface(self.iface))
 
+        # Tolerance got dramatic optimizations in 3.22, we discourage its usage in older versions
+        if Qgis.QGIS_VERSION_INT < 32200:
+            self.app.settings.tolerance = 0
+
         self.right_of_way = RightOfWay()
         self.toolbar = ToolBar(self.iface)
         self.ladm_data = LADMData()
