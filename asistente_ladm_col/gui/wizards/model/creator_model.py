@@ -69,8 +69,8 @@ class CreatorModel(QObject, metaclass=AbstractQObjectMeta):
 
         self.refactor_field_mapping = self.__common_operations.get_field_mappings_file_names()
 
-        self.__layer_remove_manager = LayerRemovedSignalsManager(self._wizard_config[WIZARD_LAYERS])
-        self.__layer_remove_manager.layer_removed.connect(self.layer_removed)
+        self._layer_remove_manager = LayerRemovedSignalsManager(self._wizard_config[WIZARD_LAYERS])
+        self._layer_remove_manager.layer_removed.connect(self.layer_removed)
 
     def _finish_feature_creation(self, layerId, features):
         fid = features[0].id()
@@ -101,11 +101,11 @@ class CreatorModel(QObject, metaclass=AbstractQObjectMeta):
         self.__feature_creator_from_refactor.create(selected_layer, self._editing_layer_name, field_mapping)
 
     def create_feature_manually(self):
-        self.__layer_remove_manager.reconnect_signals()
+        self._layer_remove_manager.reconnect_signals()
         self.__manual_feature_creator.create()
 
     def dispose(self):
-        self.__layer_remove_manager.disconnect_signals()
+        self._layer_remove_manager.disconnect_signals()
         self.__manual_feature_creator.disconnect_signals()
         self.__common_operations.rollback_in_layers_with_empty_editing_buffer()
         self.__common_operations.set_ready_only_field(False)

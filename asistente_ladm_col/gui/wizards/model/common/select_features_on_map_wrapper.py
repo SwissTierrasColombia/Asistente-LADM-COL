@@ -31,7 +31,7 @@ from qgis.PyQt.QtWidgets import QMessageBox
 from asistente_ladm_col.utils.select_map_tool import SelectMapTool
 
 
-class SelectFeaturesOnMapWrapper(QObject):  # (SignalDisconnectable):
+class SelectFeaturesOnMapWrapper(QObject):
     features_selected = pyqtSignal()
     map_tool_changed = pyqtSignal()
 

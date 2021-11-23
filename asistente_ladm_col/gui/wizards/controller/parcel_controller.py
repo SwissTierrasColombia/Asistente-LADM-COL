@@ -26,6 +26,7 @@
  *                                                                         *
  ***************************************************************************/
  """
+from qgis.PyQt.QtCore import QCoreApplication
 from asistente_ladm_col.config.enums import EnumLayerCreationMode, EnumFeatureSelectionType
 from asistente_ladm_col.config.general_config import (WIZARD_QSETTINGS,
                                                       WIZARD_QSETTINGS_PATH,
@@ -49,6 +50,13 @@ class ParcelController(SingleWizardController):
         self.__model.feature_selection_by_expression_changed.connect(self.feature_selection_by_expression_changed)
         # QSetings
         self.__settings_manager = WizardQSettingsManager(self.wizard_config[WIZARD_QSETTINGS][WIZARD_QSETTINGS_PATH])
+
+    def map_tool_changed(self):
+        message = QCoreApplication.translate("WizardTranslations",
+                                             "'{}' tool has been closed because the map tool change.").format(
+            self.WIZARD_TOOL_NAME)
+        self.logger.info_msg(__name__, message)
+        self.close_wizard()
 
     def _restore_settings(self):
         settings = self.__settings_manager.get_settings()

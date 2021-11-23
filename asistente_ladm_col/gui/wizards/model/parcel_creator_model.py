@@ -26,6 +26,9 @@
  *                                                                         *
  ***************************************************************************/
  """
+from qgis.PyQt.QtCore import (QObject,
+                             pyqtSignal)
+
 from asistente_ladm_col.config.enums import EnumRelatableLayers
 from asistente_ladm_col.config.general_config import (WIZARD_FEATURE_NAME,
                                                       WIZARD_LAYERS)
@@ -37,10 +40,16 @@ from asistente_ladm_col.gui.wizards.model.common.association_utils import Associ
 from asistente_ladm_col.gui.wizards.model.common.manual_feature_creator import (ManualFeatureCreator,
                                                                                 AlphaFeatureCreator)
 from asistente_ladm_col.gui.wizards.model.common.feature_selector_manager import FeatureSelectorManager
+from asistente_ladm_col.gui.wizards.model.common.select_features_by_expression_dialog_wrapper import \
+    SelectFeatureByExpressionDialogWrapper
+from asistente_ladm_col.gui.wizards.model.common.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
 from asistente_ladm_col.gui.wizards.model.creator_model import CreatorModel
 
 
-class ParcelCreatorModel(CreatorModel, FeatureSelectorManager):
+class ParcelCreatorModel(CreatorModel):
+    features_selected = pyqtSignal()
+    map_tool_changed = pyqtSignal()
+    feature_selection_by_expression_changed = pyqtSignal()
 
     def __init__(self, iface, db, wiz_config):
         CreatorModel.__init__(self, iface, db, wiz_config)
@@ -51,11 +60,44 @@ class ParcelCreatorModel(CreatorModel, FeatureSelectorManager):
         self.__relatable_layers = dict()
         self.__init_selectable_layer_by_type()
 
-        # parent constructor
-        FeatureSelectorManager.__init__(self, self.__relatable_layers, iface, self._logger)
-
+        # FeatureSelectorManager
         self.parcel_type_ili_code = None
         self.__constraint_types_of_parcels = LayerConfig.get_constraint_types_of_parcels(self.db.names)
+
+        self.__features_on_map_observer_list = list()
+        self.__feature_selector_by_expression_observers = list()
+
+        self.__feature_selector_on_map = SelectFeaturesOnMapWrapper(self._iface, self._logger)
+        self.__feature_selector_on_map.features_selected.connect(self.features_selected)
+        self.__feature_selector_on_map.map_tool_changed.connect(self.map_tool_changed)
+
+        self.__feature_selector_by_expression = SelectFeatureByExpressionDialogWrapper(self._iface)
+        self.__feature_selector_by_expression.feature_selection_by_expression_changed.connect(
+            self.feature_selection_by_expression_changed)
+
+        self.type_of_selected_layer_to_associate = None
+
+    def select_features_on_map(self):
+        # TODO Exception if layer does not exist
+        layer = self.__relatable_layers[self.type_of_selected_layer_to_associate]
+        self.__feature_selector_on_map.select_features_on_map(layer)
+
+    def select_features_by_expression(self):
+        # TODO Check if layer exists in self._layers
+        layer = self.__relatable_layers[self.type_of_selected_layer_to_associate]
+        self.__feature_selector_by_expression.select_features_by_expression(layer)
+
+    def dispose(self):
+        self.__feature_selector_on_map.init_map_tool()
+        self.__feature_selector_on_map.disconnect_signals()
+
+    def get_number_of_selected_features(self):
+        feature_count = dict()
+
+        for layer in self.__relatable_layers:
+            feature_count[layer] = self.__relatable_layers[layer].selectedFeatureCount()
+
+        return feature_count
 
     def __init_selectable_layer_by_type(self):
         # TODO Change the name
@@ -75,16 +117,16 @@ class ParcelCreatorModel(CreatorModel, FeatureSelectorManager):
         args.layer.changeAttributeValue(fid, parcel_condition_field_idx,
                                         self.__get_ili_code_id_dict()[self.parcel_type_ili_code])
 
-    def finish_feature_creation(self, layerId, features):
+    def _finish_feature_creation(self, layerId, features):
         if len(features) != 1:
             # TODO send this info to controller
             # message = QCoreApplication.translate("WizardTranslations", "'{}' tool has been closed. We should have got only one {} by we have {}").format(self.WIZARD_TOOL_NAME, self.WIZARD_FEATURE_NAME, len(features))
             # self.logger.warning(__name__, "We should have got only one {}, but we have {}".format(self.WIZARD_FEATURE_NAME, len(features)))
-            self._notify_finish_feature_creation(ParcelFinishFeatureCreationArgs(added_features_amount=len(features)))
+            self.finish_feature_creation.emit(ParcelFinishFeatureCreationArgs(added_features_amount=len(features)))
             return
 
         if not self.is_each_layer_valid():
-            self._notify_finish_feature_creation(ParcelFinishFeatureCreationArgs(valid_constraints=False))
+            self.finish_feature_creation.emit(ParcelFinishFeatureCreationArgs(valid_constraints=False))
             return
 
         feature = features[0]
@@ -92,7 +134,7 @@ class ParcelCreatorModel(CreatorModel, FeatureSelectorManager):
         if not feature.isValid():
             # TODO send this info to controller
             # self.logger.warning(__name__, "Feature not found in layer Spatial Source...")
-            self._notify_finish_feature_creation(ParcelFinishFeatureCreationArgs(is_valid=False))
+            self.finish_feature_creation.emit(ParcelFinishFeatureCreationArgs(is_valid=False))
             return
 
         # TODO What is the difference?
@@ -150,7 +192,7 @@ class ParcelCreatorModel(CreatorModel, FeatureSelectorManager):
                                                        building_unit_ids, self.db.names.COL_UE_BAUNIT_T_PARCEL_F,
                                                        feature_tid)
 
-        self._notify_finish_feature_creation(
+        self.finish_feature_creation.emit(
             # TODO associated features is missing
             ParcelFinishFeatureCreationArgs(True, feature_tid, 1, None)
         )

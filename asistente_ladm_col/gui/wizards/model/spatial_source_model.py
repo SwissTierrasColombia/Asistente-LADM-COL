@@ -99,7 +99,7 @@ class SpatialSourceModel(SingleWizardModel):
         if not feature.isValid():
             # TODO send this info to controller
             # self.logger.warning(__name__, "Feature not found in layer Spatial Source...")
-            self._notify_finish_feature_creation(
+            self.finish_feature_creation.emit(
                 SpacialSourceFinishFeatureCreationArgs(is_valid=False))
             return
 

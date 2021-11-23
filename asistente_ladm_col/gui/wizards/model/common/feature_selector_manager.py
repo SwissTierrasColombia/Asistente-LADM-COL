@@ -16,8 +16,6 @@
  *                                                                         *
  ***************************************************************************/
  """
-from abc import ABC
-
 from qgis.PyQt.QtCore import (QObject,
                              pyqtSignal)
 

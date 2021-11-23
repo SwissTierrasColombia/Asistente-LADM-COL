@@ -82,7 +82,7 @@ class ExtAddressModel(SingleSpatialWizardModel):
 
     def select_features_on_map(self):
         # TODO is this execution right?
-        self.__layer_remove_manager.reconnect_signals()
+        self._layer_remove_manager.reconnect_signals()
         # TODO Exception if layer does not exist
         layer = self.__relatable_layers[self.type_of_selected_layer_to_associate]
         self.__feature_selector_on_map.select_features_on_map(layer)

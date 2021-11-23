@@ -26,6 +26,7 @@
  *                                                                         *
  ***************************************************************************/
  """
+from qgis.PyQt.QtCore import QCoreApplication
 from asistente_ladm_col.config.enums import EnumRelatableLayers, EnumFeatureSelectionType
 from asistente_ladm_col.config.general_config import (CSS_COLOR_OKAY_LABEL,
                                                       CSS_COLOR_ERROR_LABEL)
@@ -46,6 +47,13 @@ class ExtAddressController(SingleSpatialWizardController):
         self.__model.feature_selection_by_expression_changed.connect(self.feature_selection_by_expression_changed)
         self.__model.features_selected.connect(self.features_selected)
         self.__model.map_tool_changed.connect(self.map_tool_changed)
+
+    def map_tool_changed(self):
+        message = QCoreApplication.translate("WizardTranslations",
+                                             "'{}' tool has been closed because the map tool change.").format(
+            self.WIZARD_TOOL_NAME)
+        self.logger.info_msg(__name__, message)
+        self.close_wizard()
 
     def _create_view(self):
         self.__view = ExtAddressView(self, self._get_view_config())

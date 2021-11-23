@@ -48,7 +48,7 @@ class SingleSpatialWizardModel(CreatorModel):
     def _create_feature_creator(self) -> ManualFeatureCreator:
         self._manual_feature_creator = SpatialFeatureCreator(self._iface, self.app, self._logger,
                                                              self._editing_layer, self._wizard_config[WIZARD_FEATURE_NAME], 9)
-        self._manual_feature_creator.valid_features_digitized.connect(self.valid_features_digitized)
+        self._manual_feature_creator.valid_features_digitized.connect(self._valid_features_digitized_invoker)
         self._manual_feature_creator.unexpected_features_digitized.connect(self.unexpected_features_digitized)
 
         return self._manual_feature_creator
@@ -64,3 +64,6 @@ class SingleSpatialWizardModel(CreatorModel):
         # stop edition in close_wizard crash qgis
         if layer.isEditable():
             layer.rollBack()
+
+    def _valid_features_digitized_invoker(self, args: ValidFeaturesDigitizedArgs):
+        self.valid_features_digitized.emit(args)

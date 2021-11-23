@@ -65,7 +65,9 @@ class RightOfWayModel(SingleSpatialWizardModel):
 
         super().create_feature_manually()
 
-    def valid_features_digitized(self, args: ValidFeaturesDigitizedArgs):
+    def _valid_features_digitized_invoker(self, args: ValidFeaturesDigitizedArgs):
+        super()._valid_features_digitized_invoker(args)
+
         if not self.digitizing_polygon:
             layer = args.layer
 
