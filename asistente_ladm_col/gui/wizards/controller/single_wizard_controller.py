@@ -73,6 +73,7 @@ class SingleWizardController(QObject, metaclass=AbstractQObjectMeta):
         self.__model = model
         self.__model.finish_feature_creation.connect(self.finish_feature_creation)
         self.__model.form_rejected.connect(self.form_rejected)
+        self.__model.layer_removed.connect(self.layer_removed)
 
         self.__model.set_ready_only_fields(True)
 
@@ -177,6 +178,13 @@ class SingleWizardController(QObject, metaclass=AbstractQObjectMeta):
     def form_rejected(self):
         message = QCoreApplication.translate("WizardTranslations",
                                        "'{}' tool has been closed because you just closed the form.").format(
+            self.WIZARD_TOOL_NAME)
+        self.logger.info_msg(__name__, message)
+        self.close_wizard()
+
+    def layer_removed(self):
+        message = QCoreApplication.translate("WizardTranslations",
+                                             "'{}' tool has been closed because you just removed a required layer.").format(
             self.WIZARD_TOOL_NAME)
         self.logger.info_msg(__name__, message)
         self.close_wizard()

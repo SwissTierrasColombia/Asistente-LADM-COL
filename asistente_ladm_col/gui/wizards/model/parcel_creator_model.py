@@ -78,6 +78,7 @@ class ParcelCreatorModel(CreatorModel):
         self.type_of_selected_layer_to_associate = None
 
     def select_features_on_map(self):
+        self._layer_remove_manager.reconnect_signals()
         # TODO Exception if layer does not exist
         layer = self.__relatable_layers[self.type_of_selected_layer_to_associate]
         self.__feature_selector_on_map.select_features_on_map(layer)

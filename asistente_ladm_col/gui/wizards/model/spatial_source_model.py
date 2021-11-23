@@ -68,6 +68,7 @@ class SpatialSourceModel(SingleWizardModel):
         self.__relatable_layers[EnumRelatableLayers.CONTROL_POINT] = self._layers[self.names.LC_CONTROL_POINT_T]
 
     def select_features_on_map(self, option_type: EnumRelatableLayers):
+        self._layer_remove_manager.reconnect_signals()
         # TODO is this execution right?
         self.__layer_remove_manager.reconnect_signals()
         # TODO Exception if layer does not exist
