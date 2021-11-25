@@ -76,7 +76,7 @@ class QualityRuleLayerManager(QObject):
         # First go for ladm-col layers
         ladm_layers = dict()
         for rule_key, rule_layers_config in self.__quality_rule_layers_config.items():
-            for layer_name in rule_layers_config[QUALITY_RULE_LADM_COL_LAYERS]:
+            for layer_name in rule_layers_config.get(QUALITY_RULE_LADM_COL_LAYERS, list()):
                 ladm_layers[layer_name] = None
 
         self.logger.debug(__name__, QCoreApplication.translate("QualityRuleLayerManager", "Getting {} LADM-COL layers...").format(len(ladm_layers)))
@@ -136,7 +136,7 @@ class QualityRuleLayerManager(QObject):
         # in a single member dict of layers per rule (preserving original LADM-COL layers)
         self.__layers = {rule_key:{QUALITY_RULE_LAYERS: dict(), QUALITY_RULE_LADM_COL_LAYERS: dict()} for rule_key in self.__rules}
         for rule_key, rule_layers_config in self.__quality_rule_layers_config.items():
-            for layer_name in rule_layers_config[QUALITY_RULE_LADM_COL_LAYERS]:
+            for layer_name in rule_layers_config.get(QUALITY_RULE_LADM_COL_LAYERS, list()):
                 # Fill both subdicts
                 # In LADM-COL layers we send all original layers
                 self.__layers[rule_key][QUALITY_RULE_LADM_COL_LAYERS][layer_name] = ladm_layers[layer_name] if layer_name in ladm_layers else None

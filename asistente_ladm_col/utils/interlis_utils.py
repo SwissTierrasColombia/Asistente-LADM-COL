@@ -1,5 +1,11 @@
+import os.path
 import re
 import xml.etree.cElementTree as et
+
+from qgis.PyQt.QtCore import QVariant
+from qgis.core import (QgsVectorLayer,
+                       QgsField,
+                       QgsFeature)
 
 
 def get_models_from_xtf(xtf_path):
@@ -37,3 +43,69 @@ def get_models_from_xtf(xtf_path):
                     model_names.append(sub_element.attrib["NAME"])
 
     return sorted(model_names)
+
+
+def get_layer_from_xtflog(xtf_path):
+    # Parse an XTFLog (which is the result of a --validate operation and follows iliVErrors model).
+    # Adapted from
+    # https://github.com/GeoWerkstatt/qgis-xtf-log-checker/ (XTFLog_Checker_dialog.py#L75)
+
+    if not os.path.exists(xtf_path):
+        return None
+
+    tree = et.parse(xtf_path)  # TODO try except
+    root = tree.getroot()
+
+    xtf_layer = QgsVectorLayer("NoGeometry", os.path.basename(xtf_path), "memory")
+    provider = xtf_layer.dataProvider()
+
+    # See https://github.com/claeis/ilivalidator/blob/master/docs/IliVErrors.ili
+    provider.addAttributes([QgsField("ErrorId", QVariant.String),
+                            QgsField("Type", QVariant.String),
+                            QgsField("Message", QVariant.String),
+                            QgsField("Tid", QVariant.String),
+                            QgsField("ObjTag", QVariant.String),
+                            QgsField("TechId", QVariant.String),
+                            QgsField("UserId", QVariant.String),
+                            QgsField("IliQName", QVariant.String),
+                            QgsField("DataSource", QVariant.String),
+                            QgsField("Line", QVariant.String),
+                            QgsField("TechDetails", QVariant.String),
+                            QgsField("CoordX", QVariant.Double),
+                            QgsField("CoordY", QVariant.Double)])
+    xtf_layer.updateFields()
+
+    features = list()
+
+    xmlns = '{http://www.interlis.ch/INTERLIS2.3}'
+    for child in root.iter(xmlns + 'IliVErrors.ErrorLog.Error'):
+        error_id = child.attrib["TID"]  # Sequential number for records
+
+        attrs_dict = dict()
+        for attr in  ["Type", "Message", "Tid", "ObjTag", "TechId", "UserId", "IliQName", "DataSource", "Line", "TechDetails"]:
+            element = child.find(xmlns + attr)
+            attrs_dict[attr] = element.text if element != None else None
+
+        if not attrs_dict["Tid"]:  # Since we need to identify individual records
+            continue
+
+        if attrs_dict["Type"] == 'Error':  # Other values: 'Warning', 'Info', 'DetailInfo'
+            feature = QgsFeature()
+            attrs = [error_id]
+            attrs.extend(list(attrs_dict.values()))
+
+            geometry_element = child.find(xmlns + 'Geometry')
+            if geometry_element:
+                coords = geometry_element.find(xmlns + 'COORD');
+                if coords:
+                    x = coords.find(xmlns + 'C1')
+                    y = coords.find(xmlns + 'C2')
+                    if x is not None and y is not None:
+                        attrs.extend([float(x.text), float(y.text)])
+
+            feature.setAttributes(attrs)
+            features.append(feature)
+
+    provider.addFeatures(features)
+
+    return xtf_layer

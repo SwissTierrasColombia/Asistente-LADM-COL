@@ -21,6 +21,7 @@ from qgis.PyQt.QtCore import (pyqtSignal,
                               QObject)
 
 from asistente_ladm_col.app_interface import AppInterface
+from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.abstract_class import AbstractQObjectMeta
 from asistente_ladm_col.utils.quality_error_db_utils import save_errors
 
@@ -35,6 +36,7 @@ class AbstractQualityRule(QObject, metaclass=AbstractQObjectMeta):
         QObject.__init__(self)
 
         self.app = AppInterface()
+        self.logger = Logger()
 
         self._id = ""  # E.g., "IGAC-R1001"
         self._name = ""  # E.g., "Los puntos de lindero no deben superponerse"

@@ -34,5 +34,5 @@ class Ili2DBValidator(IliExecutable):
         return ValidateDataConfiguration()
 
     def _search_custom_pattern(self, text):
-        if self.__done_with_validation_errors == text.strip():
+        if text.strip().endswith(self.__done_with_validation_errors):
             self._result = self.SUCCESS_WITH_VALIDATION_ERRORS

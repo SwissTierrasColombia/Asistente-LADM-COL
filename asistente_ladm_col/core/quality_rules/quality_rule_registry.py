@@ -19,6 +19,7 @@ from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.core.quality_rules.abstract_quality_rule import AbstractQualityRule
 from asistente_ladm_col.logic.quality_rules.qr_overlapping_boundary_points import QROverlappingBoundaryPoints
+from asistente_ladm_col.logic.quality_rules.qr_validate_data_against_model import QRValidateDataAgainstModel
 from asistente_ladm_col.utils.singleton import Singleton
 
 
@@ -32,8 +33,8 @@ class QualityRuleRegistry(metaclass=Singleton):
         self.__quality_rules = dict()  # {quality_rule_key1: QualityRule1, ...}
 
         # Register default quality rules
+        self.register_quality_rule(QRValidateDataAgainstModel())
         self.register_quality_rule(QROverlappingBoundaryPoints())
-        # self.register_quality_rule(Survey11To10Converter())
 
     def register_quality_rule(self, quality_rule):
         """

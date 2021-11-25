@@ -35,7 +35,7 @@ app = AppInterface()
 logger = Logger()
 
 
-def get_quality_error_connector(output_path, timestamp):
+def get_quality_error_connector(output_path, timestamp, load_layers=False):
     output_path = _get_valid_output_path(output_path, timestamp)
     if output_path is None:
         return False, "", None
@@ -53,6 +53,19 @@ def get_quality_error_connector(output_path, timestamp):
             if not res_xtf:
                 logger.warning(__name__,
                                "There was a problem importing catalog '{}'! Skipping...".format(catalog_key))
+
+    if getattr(db.names, "T_ID_F", None) is None or db.names.T_ID_F is None:
+        db.test_connection()  # Just to build the names object
+
+    if load_layers:
+        names = db.names
+        layers = {names.ERR_QUALITY_ERROR_T: None,
+                  names.ERR_RULE_TYPE_T: None,
+                  names.ERR_ERROR_TYPE_T: None,
+                  names.ERR_POINT_T: None,
+                  names.ERR_LINE_T: None,
+                  names.ERR_POLYGON_T: None}
+        app.core.get_layers(db, layers, load=True)
 
     return res, msg, None if not res else db
 

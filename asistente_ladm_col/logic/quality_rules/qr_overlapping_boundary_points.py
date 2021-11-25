@@ -26,6 +26,8 @@ from asistente_ladm_col.config.keys.common import (QUALITY_RULE_LAYERS,
                                                    ADJUSTED_INPUT_LAYER,
                                                    ADJUSTED_REFERENCE_LAYER)
 from asistente_ladm_col.config.layer_config import LADMNames
+from asistente_ladm_col.config.quality_rule_config import (QR_IGACR1001,
+                                                           QRE_IGACR1001E01)
 from asistente_ladm_col.core.quality_rules.abstract_quality_rule import AbstractQualityRule
 from asistente_ladm_col.core.quality_rules.quality_rule_execution_result import QualityRuleExecutionResult
 from asistente_ladm_col.lib.geometry import GeometryUtils
@@ -35,12 +37,12 @@ class QROverlappingBoundaryPoints(AbstractQualityRule):
     """
     Check that boundary points do not overlap
     """
-    _ERROR_01 = "IGAC-R1001-E01"
+    _ERROR_01 = QRE_IGACR1001E01
 
     def __init__(self):
         AbstractQualityRule.__init__(self)
 
-        self._id = "IGAC-R1001"
+        self._id = QR_IGACR1001
         self._name = "Los puntos de lindero no deben superponerse"
         self._type = EnumQualityRuleType.POINT
         self._tags = ["igac", "instituto geográfico agustín codazzi", "puntos", "punto lindero", "superposición"]

@@ -105,7 +105,7 @@ class QualityRuleEngine(QObject):
         if self.__rules:
             # First, create the error db and fill its metadata...
             self.__timestamp = time.strftime('%Y%m%d_%H%M%S')
-            res_db, msg_db, self.__db_qr = get_quality_error_connector(self.__output_path, self.__timestamp)
+            res_db, msg_db, self.__db_qr = get_quality_error_connector(self.__output_path, self.__timestamp, True)
 
             if not res_db:
                 self.logger.warning_msg(__name__, QCoreApplication.translate("QualityRuleEngine",

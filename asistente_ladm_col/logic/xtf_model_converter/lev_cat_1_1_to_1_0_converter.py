@@ -62,7 +62,7 @@ class Survey11To10Converter(LADMColModelConverter):
 
     def convert(self, source_xtf, target_xtf, params):
         num_lines = get_number_of_lines_in_file(source_xtf)
-        dict_percentages = {0 if k == 0 else int(num_lines * k / 100): k for k in range(0, 100, 10)} # {val: percentage}
+        dict_percentages = {0 if k == 0 else int(num_lines * k / 100): k for k in range(0, 100, 10)}  # {val: percentage}
         list_percentages = list(dict_percentages.keys())
 
         count = 0
