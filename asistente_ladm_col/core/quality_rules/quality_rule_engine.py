@@ -30,7 +30,9 @@ from asistente_ladm_col.core.quality_rules.quality_rule_registry import QualityR
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.quality_rule.quality_rule_manager import QualityRuleManager
 from asistente_ladm_col.utils.decorators import _log_quality_rule_validations
-from asistente_ladm_col.utils.quality_error_db_utils import get_quality_error_connector
+from asistente_ladm_col.utils.quality_error_db_utils import (get_quality_error_connector,
+                                                             get_quality_validation_output_path)
+from asistente_ladm_col.utils.qt_utils import export_title_text_to_pdf
 from asistente_ladm_col.utils.utils import Utils
 
 
@@ -140,6 +142,8 @@ class QualityRuleEngine(QObject):
             msg = "Success!"
             self.quality_rule_logger.generate_log_button()
             self.__layer_manager.clean_temporary_layers()
+
+            self.export_result_to_pdf()
         else:
             self.logger.warning(__name__, QCoreApplication.translate("QualityRuleEngine", "No rules to validate!"))
 
@@ -163,6 +167,18 @@ class QualityRuleEngine(QObject):
 
     def get_db_quality(self):
         return self.__db_qr
+
+    def export_result_to_pdf(self):
+        output_path = get_quality_validation_output_path(self.__output_path, self.__timestamp)
+        if output_path is None:
+            self.logger.critical(__name__, QCoreApplication.translate("QualityRuleEngine",
+                                                                      "PDF report could not be exported, there were problems with the output path '{}'!").format(
+                self.__output_path))
+            return
+
+        pdf_path = os.path.join(output_path, "Reglas_de_Calidad_{}.pdf".format(self.__timestamp))
+        log = self.quality_rule_logger.get_log_result()
+        export_title_text_to_pdf(pdf_path, log.title, log.text)
 
 
 class QualityRuleLogger(QObject):

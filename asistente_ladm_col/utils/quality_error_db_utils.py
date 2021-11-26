@@ -36,7 +36,7 @@ logger = Logger()
 
 
 def get_quality_error_connector(output_path, timestamp, load_layers=False):
-    output_path = _get_valid_output_path(output_path, timestamp)
+    output_path = get_quality_validation_output_path(output_path, timestamp)
     if output_path is None:
         return False, "", None
 
@@ -70,7 +70,7 @@ def get_quality_error_connector(output_path, timestamp, load_layers=False):
     return res, msg, None if not res else db
 
 
-def _get_valid_output_path(output_path, timestamp):
+def get_quality_validation_output_path(output_path, timestamp):
     if not os.path.exists(output_path):
         output_path = tempfile.gettempdir()
         logger.warning(__name__, QCoreApplication.translate("QualityRuleEngine",
@@ -78,13 +78,14 @@ def _get_valid_output_path(output_path, timestamp):
             OUTPUT_DIR))
 
     output_path = os.path.join(output_path, "Reglas_de_Calidad_{}".format(timestamp))
-    try:
-        os.makedirs(output_path)
-    except PermissionError as e:
-        logger.critical_msg(__name__, QCoreApplication.translate("QualityRuleEngine",
-                                                                 "Output dir '{}' is read-only!").format(
-            output_path))
-        output_path = None
+    if not os.path.exists(output_path):
+        try:
+            os.makedirs(output_path)
+        except PermissionError as e:
+            logger.critical_msg(__name__, QCoreApplication.translate("QualityRuleEngine",
+                                                                     "Output dir '{}' is read-only!").format(
+                output_path))
+            output_path = None
 
     return output_path
 
