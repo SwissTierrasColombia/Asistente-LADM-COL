@@ -698,15 +698,6 @@ class QualityRuleConfig:
                         ADJUSTED_REFERENCE_LAYER: names.LC_BOUNDARY_POINT_T
                     }
                 }
-            }, EnumQualityRule.Line.OVERLAPS_IN_BOUNDARIES: {
-                QUALITY_RULE_LADM_COL_LAYERS: [names.LC_BOUNDARY_T],
-                QUALITY_RULE_ADJUSTED_LAYERS: {
-                    names.LC_BOUNDARY_T: {
-                        ADJUSTED_INPUT_LAYER: names.LC_BOUNDARY_T,
-                        ADJUSTED_REFERENCE_LAYER: names.LC_BOUNDARY_T,
-                        FIX_ADJUSTED_LAYER: True
-                    }
-                }
             }, EnumQualityRule.Line.BOUNDARIES_ARE_NOT_SPLIT: {
                 QUALITY_RULE_LADM_COL_LAYERS: [names.LC_BOUNDARY_T],
                 QUALITY_RULE_ADJUSTED_LAYERS: {

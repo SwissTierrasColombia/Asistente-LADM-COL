@@ -65,6 +65,7 @@ class QRValidateDataAgainstModel(AbstractQualityRule):
         return dict()
 
     def validate(self, db, db_qr, layer_dict, tolerance, **kwargs):
+        # TODO: emit progress values
         # First, run an ili2db --validate on the data
         model = LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY)
         res, msg = Ili2DB().validate(db, [model.full_name()], self._xtf_log)
@@ -96,4 +97,4 @@ class QRValidateDataAgainstModel(AbstractQualityRule):
             else:
                 return QualityRuleExecutionResult(Qgis.Success,
                                                   QCoreApplication.translate("QualityRules",
-                                                                             "The data comply with their model!"))
+                                                                             "The data comply with their model."))

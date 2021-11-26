@@ -64,19 +64,16 @@ class QROverlappingBoundaryPoints(AbstractQualityRule):
         }
 
     def validate(self, db, db_qr, layer_dict, tolerance, **kwargs):
-        layer_name = list(layer_dict[QUALITY_RULE_LAYERS].keys())[0] if layer_dict[QUALITY_RULE_LAYERS] else None
         point_layer = list(layer_dict[QUALITY_RULE_LAYERS].values())[0] if layer_dict[QUALITY_RULE_LAYERS] else None
         if not point_layer:
             return QualityRuleExecutionResult(Qgis.Critical,
                                               QCoreApplication.translate("QualityRules",
-                                                                         "'{}' layer not found!").format(
-                                                  layer_name))
+                                                                         "'Boundary point' layer not found!"))
 
         if point_layer.featureCount() == 0:
             return QualityRuleExecutionResult(Qgis.Warning,
                                               QCoreApplication.translate("QualityRules",
-                                                                         "There are no points in layer '{}' to check for overlaps!").format(
-                                                  layer_name))
+                                                                         "There are no points in layer 'Boundary point' to check for overlaps!"))
 
         else:
             overlapping = GeometryUtils.get_overlapping_points(point_layer)
@@ -99,14 +96,12 @@ class QROverlappingBoundaryPoints(AbstractQualityRule):
 
             self._save_errors(db_qr, self._ERROR_01, errors)
 
-            if len(errors) > 0:
+            if len(flat_overlapping) > 0:
                 return QualityRuleExecutionResult(Qgis.Critical,
                                                   QCoreApplication.translate("QualityRules",
-                                                                             "{} overlapping points were found in '{}'!").format(
-                                                      len(flat_overlapping), layer_name),
-                                                  )
+                                                                             "{} overlapping boundary points were found!").format(
+                                                      len(flat_overlapping)))
             else:
                 return QualityRuleExecutionResult(Qgis.Success,
                                                   QCoreApplication.translate("QualityRules",
-                                                                             "There are no overlapping points in layer '{}'!").format(
-                                                      layer_name))
+                                                                             "There are no overlapping boundary points."))
