@@ -118,6 +118,12 @@ MODULE_HELP_MAPPING = {
 
 QGIS_REQUIRED_VERSION = '3.16.0 Hannover'
 QGIS_REQUIRED_VERSION_INT = 31600
+
+QR_METADATA_TOOL_NAME = "{} v{}; QGIS v{}.".format(
+    PLUGIN_NAME,
+    PLUGIN_VERSION,
+    Qgis.QGIS_VERSION)
+
 JAVA_REQUIRED_VERSION = 1.8
 
 KEY_JAVA_OS_VERSION = platform.system() + '_' + platform.architecture()[0]

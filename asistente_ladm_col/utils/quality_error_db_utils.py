@@ -17,14 +17,23 @@
 """
 import os.path
 import tempfile
+import time
 import uuid
 
-from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import (Qt,
+                              QCoreApplication,
+                              QDateTime)
 from qgis.core import QgsVectorLayerUtils
 
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.enums import EnumQualityRuleType
 from asistente_ladm_col.config.layer_config import LADMNames
+from asistente_ladm_col.config.quality_rule_config import (QR_METADATA_TOOL,
+                                                           QR_METADATA_DATA_SOURCE,
+                                                           QR_METADATA_TOLERANCE,
+                                                           QR_METADATA_TIMESTAMP,
+                                                           QR_METADATA_RULES,
+                                                           QR_METADATA_PERSON)
 from asistente_ladm_col.core.ili2db import Ili2DB
 from asistente_ladm_col.lib.db.gpkg_connector import GPKGConnector
 from asistente_ladm_col.lib.logger import Logger
@@ -53,6 +62,8 @@ def get_quality_error_connector(output_path, timestamp, load_layers=False):
             if not res_xtf:
                 logger.warning(__name__,
                                "There was a problem importing catalog '{}'! Skipping...".format(catalog_key))
+    else:
+        return False, "There were errors creating the 'Errores Calidad' structure!", None
 
     if getattr(db.names, "T_ID_F", None) is None or db.names.T_ID_F is None:
         db.test_connection()  # Just to build the names object
@@ -75,7 +86,7 @@ def get_quality_validation_output_path(output_path, timestamp):
         output_path = tempfile.gettempdir()
         logger.warning(__name__, QCoreApplication.translate("QualityRuleEngine",
                                                             "Output dir doesn't exist! Using now '{}'").format(
-            OUTPUT_DIR))
+            output_path))
 
     output_path = os.path.join(output_path, "Reglas_de_Calidad_{}".format(timestamp))
     if not os.path.exists(output_path):
@@ -205,4 +216,56 @@ def save_errors(db_qr, rule_code, error_code, error_data, target_layer, ili_name
 
 
 def save_metadata(db_qr, metadata):
+    """
+    :param db_qr: DBConnector
+    :param metadata: Dict with the following information:
+                        QR_METADATA_TOOL
+                        QR_METADATA_DATA_SOURCE
+                        QR_METADATA_TOLERANCE
+                        QR_METADATA_TIMESTAMP
+                        QR_METADATA_RULES
+                        QR_METADATA_PERSON
+    :return: tuple (bool with the result, string with a descriptive message)
+    """
+    if not hasattr(db_qr.names, "T_ID_F"):
+        db_qr.test_connection()
+
+    names = db_qr.names
+    layers = {names.ERR_METADATA_T: None,
+              names.ERR_RULE_TYPE_T: None}
+
+    app.core.get_layers(db_qr, layers, load=True)
+
+    if not layers:
+        return False, "At least one layer was not found in the QR DB!"
+
+    metadata_layer = layers[names.ERR_METADATA_T]
+
+    idx_t_ili_tid = metadata_layer.fields().indexOf(names.T_ILI_TID_F)
+    idx_date = metadata_layer.fields().indexOf(names.ERR_METADATA_T_VALIDATION_DATE_F)
+    idx_data_source = metadata_layer.fields().indexOf(names.ERR_METADATA_T_DATA_SOURCE_F)
+    idx_tool = metadata_layer.fields().indexOf(names.ERR_METADATA_T_TOOL_F)
+    idx_person = metadata_layer.fields().indexOf(names.ERR_METADATA_T_PERSON_F)
+    idx_tolerance = metadata_layer.fields().indexOf(names.ERR_METADATA_T_TOLERANCE_F)
+    idx_rules = metadata_layer.fields().indexOf(names.ERR_METADATA_T_RULES_F)
+
+    # Initially, the metadata table had references to QR types, but as soon as we
+    # wanted to save them as ARRAYs in GPKG or PG, ili2db said "no, I cannot handle that."
+    #dict_rules = {f[names.ERR_ERROR_TYPE_T_CODE_F]:f[names.T_ID_F] for f in layers[names.ERR_RULE_TYPE_T].getFeatures()}
+    #list_rules = str([dict_rules[qr_key] for qr_key in metadata[QR_METADATA_RULES] if qr_key in dict_rules])
+
+    time_structure = time.strptime(metadata[QR_METADATA_TIMESTAMP], '%Y%m%d_%H%M%S')
+    iso_timestamp = time.strftime('%Y-%m-%dT%H:%M:%S', time_structure)
+
+    attr_map = {idx_t_ili_tid: str(uuid.uuid4()),
+                idx_date: QDateTime().fromString(iso_timestamp, Qt.ISODate),
+                idx_data_source: metadata[QR_METADATA_DATA_SOURCE],
+                idx_tool: metadata[QR_METADATA_TOOL],
+                idx_person: metadata[QR_METADATA_PERSON],
+                idx_tolerance: metadata[QR_METADATA_TOLERANCE],
+                idx_rules: "{}: {}".format(len(metadata[QR_METADATA_RULES]), str(metadata[QR_METADATA_RULES]))}
+
+    metadata_layer.dataProvider().addFeature(QgsVectorLayerUtils().createFeature(metadata_layer, attributes=attr_map))
+
+    logger.info(__name__, "Quality rules metadata successfully saved!")
     return True, "Success!"

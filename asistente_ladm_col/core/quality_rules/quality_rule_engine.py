@@ -16,13 +16,21 @@
 """
 import os.path
 import time
+import getpass
 
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QObject,
-                              pyqtSignal,
-                              QSettings)
+                              pyqtSignal)
+from qgis.core import Qgis
 
 from asistente_ladm_col.app_interface import AppInterface
+from asistente_ladm_col.config.general_config import QR_METADATA_TOOL_NAME
+from asistente_ladm_col.config.quality_rule_config import (QR_METADATA_TOOL,
+                                                           QR_METADATA_DATA_SOURCE,
+                                                           QR_METADATA_TOLERANCE,
+                                                           QR_METADATA_TIMESTAMP,
+                                                           QR_METADATA_RULES,
+                                                           QR_METADATA_PERSON)
 from asistente_ladm_col.core.quality_rules.quality_rule_layer_manager import QualityRuleLayerManager
 from asistente_ladm_col.core.quality_rules.quality_rule_execution_result import (QualityRulesExecutionResult,
                                                                                  QualityRuleExecutionResult)
@@ -31,7 +39,8 @@ from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.quality_rule.quality_rule_manager import QualityRuleManager
 from asistente_ladm_col.utils.decorators import _log_quality_rule_validations
 from asistente_ladm_col.utils.quality_error_db_utils import (get_quality_error_connector,
-                                                             get_quality_validation_output_path)
+                                                             get_quality_validation_output_path,
+                                                             save_metadata)
 from asistente_ladm_col.utils.qt_utils import export_title_text_to_pdf
 from asistente_ladm_col.utils.utils import Utils
 
@@ -137,6 +146,14 @@ class QualityRuleEngine(QObject):
                         rule_key)
                     qr_res[rule_key] = QualityRuleExecutionResult(Qgis.NoLevel, qr_msg)
                     self.logger.warning(__name__, qr_msg)
+
+            metadata = {QR_METADATA_TOOL: QR_METADATA_TOOL_NAME,
+                        QR_METADATA_DATA_SOURCE: self.__db.get_description_conn_string(),
+                        QR_METADATA_TOLERANCE: self.__tolerance/1000,
+                        QR_METADATA_TIMESTAMP: self.__timestamp,
+                        QR_METADATA_RULES: list(self.__rules.keys()),  # QR keys
+                        QR_METADATA_PERSON: getpass.getuser()}
+            save_metadata(self.__db_qr, metadata)
 
             res = True
             msg = "Success!"
