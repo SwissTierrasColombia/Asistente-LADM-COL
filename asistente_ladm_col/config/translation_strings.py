@@ -241,7 +241,7 @@ class TranslatableConfigStrings(QObject):
             QUALITY_RULE_ERROR_CODE_E400801: QCoreApplication.translate("TranslatableConfigStrings", "Razón social debe estar diligenciada"),
             QUALITY_RULE_ERROR_CODE_E400802: QCoreApplication.translate("TranslatableConfigStrings", "Primer apellido no debe estar diligenciado"),
             QUALITY_RULE_ERROR_CODE_E400803: QCoreApplication.translate("TranslatableConfigStrings", "Primer nombre no debe estar diligenciado"),
-            QUALITY_RULE_ERROR_CODE_E400804: QCoreApplication.translate("TranslatableConfigStrings", "Tipo de documento debe ser NIT o Secuencial IGAC o Secuencial SNR"),
+            QUALITY_RULE_ERROR_CODE_E400804: QCoreApplication.translate("TranslatableConfigStrings", "Tipo de documento debe ser NIT o Secuencial"),
             QUALITY_RULE_ERROR_CODE_E400805: QCoreApplication.translate("TranslatableConfigStrings", "Segundo apellido no debe estar diligenciado"),
             QUALITY_RULE_ERROR_CODE_E400806: QCoreApplication.translate("TranslatableConfigStrings", "Segundo nombre no debe estar diligenciado"),
             QUALITY_RULE_ERROR_CODE_E400807: QCoreApplication.translate("TranslatableConfigStrings", "Campo Sexo no debe estar diligenciado"),

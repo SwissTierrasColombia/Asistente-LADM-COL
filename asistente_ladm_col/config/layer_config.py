@@ -142,7 +142,7 @@ class LayerConfig:
                                                 WHEN  "{LC_PARTY_T_TYPE_F}" = get_domain_code_from_value('{LC_PARTY_TYPE_D}', '{LC_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V}', True, False) THEN
                                                      "{LC_PARTY_T_DOCUMENT_TYPE_F}" !=  get_domain_code_from_value('{LC_PARTY_DOCUMENT_TYPE_D}', '{LC_PARTY_DOCUMENT_TYPE_D_ILICODE_F_NIT_V}', True, False)
                                                 WHEN  "{LC_PARTY_T_TYPE_F}" = get_domain_code_from_value('{LC_PARTY_TYPE_D}', '{LC_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V}', True, False) THEN
-                                                     "{LC_PARTY_T_DOCUMENT_TYPE_F}" = get_domain_code_from_value('{LC_PARTY_DOCUMENT_TYPE_D}', '{LC_PARTY_DOCUMENT_TYPE_D_ILICODE_F_NIT_V}', True, False)
+                                                     "{LC_PARTY_T_DOCUMENT_TYPE_F}" IN (get_domain_code_from_value('{LC_PARTY_DOCUMENT_TYPE_D}', '{LC_PARTY_DOCUMENT_TYPE_D_ILICODE_F_NIT_V}', True, False), get_domain_code_from_value('{LC_PARTY_DOCUMENT_TYPE_D}', '{LC_PARTY_DOCUMENT_TYPE_D_ILICODE_F_SEQUENTIAL_V}', True, False))
                                                 ELSE
                                                     TRUE
                                             END""".format(LC_PARTY_T_TYPE_F=names.LC_PARTY_T_TYPE_F,
@@ -151,8 +151,9 @@ class LayerConfig:
                                                           LC_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V=LADMNames.LC_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V,
                                                           LC_PARTY_DOCUMENT_TYPE_D=names.LC_PARTY_DOCUMENT_TYPE_D,
                                                           LC_PARTY_DOCUMENT_TYPE_D_ILICODE_F_NIT_V=LADMNames.LC_PARTY_DOCUMENT_TYPE_D_ILICODE_F_NIT_V,
+                                                          LC_PARTY_DOCUMENT_TYPE_D_ILICODE_F_SEQUENTIAL_V=LADMNames.LC_PARTY_DOCUMENT_TYPE_D_ILICODE_F_SEQUENTIAL_V,
                                                           LC_PARTY_T_DOCUMENT_TYPE_F=names.LC_PARTY_T_DOCUMENT_TYPE_F),
-                            'description': 'Si el tipo de interesado es "Persona Natural" entonces el tipo de documento debe ser diferente de \'NIT\'. Pero si el tipo de interesado es "Persona No Natural" entonces el tipo de documento debe ser \'NIT\' o \'Secuencial IGAC\' o \'Secuencial SNR\'. '
+                            'description': 'Si el tipo de interesado es "Persona Natural" entonces el tipo de documento debe ser diferente de \'NIT\'. Pero si el tipo de interesado es "Persona No Natural" entonces el tipo de documento debe ser \'NIT\' o \'Secuencial\'.'
                         },
                         names.LC_PARTY_T_FIRST_NAME_1_F: {
                             'expression': """
