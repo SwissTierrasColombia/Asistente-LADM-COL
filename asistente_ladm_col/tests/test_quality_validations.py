@@ -1439,7 +1439,7 @@ class TesQualityValidations(unittest.TestCase):
 
         res, records = query_manager.get_invalid_col_party_type_natural(db)
         self.assertTrue(res)
-        self.assertEqual(len(records), 5)
+        self.assertEqual(len(records), 33)
 
         res, records = query_manager.get_invalid_col_party_type_no_natural(db)
         self.assertTrue(res)

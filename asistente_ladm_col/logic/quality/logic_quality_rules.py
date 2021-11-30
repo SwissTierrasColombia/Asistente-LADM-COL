@@ -37,6 +37,7 @@ from asistente_ladm_col.config.quality_rules_config import (QUALITY_RULE_ERROR_C
                                                             QUALITY_RULE_ERROR_CODE_E400702,
                                                             QUALITY_RULE_ERROR_CODE_E400703,
                                                             QUALITY_RULE_ERROR_CODE_E400704,
+                                                            QUALITY_RULE_ERROR_CODE_E400705,
                                                             QUALITY_RULE_ERROR_CODE_E400801,
                                                             QUALITY_RULE_ERROR_CODE_E400802,
                                                             QUALITY_RULE_ERROR_CODE_E400803,
@@ -237,6 +238,13 @@ class LogicQualityRules:
                                                                        1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E400704),
                                                                        2: QUALITY_RULE_ERROR_CODE_E400704})
                     new_features.append(new_feature)
+                if record[db.names.LC_PARTY_T_GENRE_F] > 0:
+                    new_feature = QgsVectorLayerUtils().createFeature(error_layer, QgsGeometry(),
+                                                                      {0: record[db.names.T_ILI_TID_F],
+                                                                       1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E400705),
+                                                                       2: QUALITY_RULE_ERROR_CODE_E400705})
+                    new_features.append(new_feature)
+
             error_layer.dataProvider().addFeatures(new_features)
         else:
             self.logger.error_msg(__name__, "Error executing query for rule {}: {}".format(rule.rule_name, records))

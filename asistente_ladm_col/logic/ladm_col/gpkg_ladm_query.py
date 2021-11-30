@@ -61,11 +61,13 @@ class GPKGLADMQuery(QGISLADMQuery):
                           CASE WHEN {lc_party_t_business_name_f} IS NOT NULL THEN 1 ELSE 0 END AS {lc_party_t_business_name_f},
                           CASE WHEN {lc_party_t_surname_1_f} IS NULL OR length(trim({lc_party_t_surname_1_f})) > 0 = 0 THEN 1 ELSE 0 END AS {lc_party_t_surname_1_f},
                           CASE WHEN {lc_party_t_first_name_1_f} IS NULL OR length(trim({lc_party_t_first_name_1_f})) > 0 = 0 THEN 1 ELSE 0 END AS {lc_party_t_first_name_1_f},
-                          CASE WHEN {lc_party_t_document_type_f} = (select {t_id} from {lc_party_document_type_d} where {ilicode} = '{lc_party_document_type_d_ilicode_f_nit_v}') THEN 1 ELSE 0 END AS {lc_party_t_document_type_f}
+                          CASE WHEN {lc_party_t_document_type_f} = (select {t_id} from {lc_party_document_type_d} where {ilicode} = '{lc_party_document_type_d_ilicode_f_nit_v}') THEN 1 ELSE 0 END AS {lc_party_t_document_type_f},
+                          CASE WHEN {lc_party_t_genre_f} IS NULL THEN 1 ELSE 0 END AS {lc_party_t_genre_f}
                    FROM {lc_party_t}
                    WHERE {lc_party_t_type_f} = (select {t_id} from {lc_party_type_d} where {ilicode} = '{lc_party_type_d_ilicode_f_natural_party_v}')
                          AND ({lc_party_t_business_name_f} IS NOT NULL OR {lc_party_t_surname_1_f} IS NULL OR length(trim({lc_party_t_surname_1_f})) > 0 = 0
                          OR {lc_party_t_first_name_1_f} IS NULL OR length(trim({lc_party_t_first_name_1_f})) > 0 = 0
+                         OR {lc_party_t_genre_f} IS NULL
                          OR {lc_party_t_document_type_f} = (select {t_id} from {lc_party_document_type_d} where {ilicode} = '{lc_party_document_type_d_ilicode_f_nit_v}'))
                """.format(t_id=db.names.T_ID_F,
                           t_ili_tid=db.names.T_ILI_TID_F,
@@ -79,7 +81,8 @@ class GPKGLADMQuery(QGISLADMQuery):
                           lc_party_type_d=db.names.LC_PARTY_TYPE_D,
                           lc_party_document_type_d=db.names.LC_PARTY_DOCUMENT_TYPE_D,
                           lc_party_document_type_d_ilicode_f_nit_v=LADMNames.LC_PARTY_DOCUMENT_TYPE_D_ILICODE_F_NIT_V,
-                          lc_party_type_d_ilicode_f_natural_party_v=LADMNames.LC_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V)
+                          lc_party_type_d_ilicode_f_natural_party_v=LADMNames.LC_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V,
+                          lc_party_t_genre_f=db.names.LC_PARTY_T_GENRE_F)
         return db.execute_sql_query(query)
 
     @staticmethod

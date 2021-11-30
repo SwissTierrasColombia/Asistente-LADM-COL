@@ -215,8 +215,23 @@ class LayerConfig:
                                                     TRUE
                                             END""".format(LC_PARTY_T_DOCUMENT_ID_F=names.LC_PARTY_T_DOCUMENT_ID_F),
                             'description': 'El campo es obligatorio.'
-
-                        }
+                        },
+                        names.LC_PARTY_T_GENRE_F: {
+                            'expression': """
+                                            CASE
+                                                WHEN  "{LC_PARTY_T_TYPE_F}" =  get_domain_code_from_value('{LC_PARTY_TYPE_D}', '{LC_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V}', True, False) THEN
+                                                     "{LC_PARTY_T_GENRE_F}" IS NULL
+                                                WHEN  "{LC_PARTY_T_TYPE_F}" = get_domain_code_from_value('{LC_PARTY_TYPE_D}', '{LC_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V}', True, False) THEN
+                                                     "{LC_PARTY_T_GENRE_F}" IS NOT NULL
+                                                ELSE
+                                                    TRUE
+                                            END""".format(LC_PARTY_T_TYPE_F=names.LC_PARTY_T_TYPE_F,
+                                                          LC_PARTY_TYPE_D=names.LC_PARTY_TYPE_D,
+                                                          LC_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V=LADMNames.LC_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V,
+                                                          LC_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V=LADMNames.LC_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V,
+                                                          LC_PARTY_T_GENRE_F=names.LC_PARTY_T_GENRE_F),
+                            'description': 'Si el tipo de interesado es "Persona Natural" se debe diligenciar el campo "Sexo"; si el tipo de interesado es "Persona Jurídica" el campo "Sexo" debe ser NULL.'
+                        },
                     },
                     names.LC_PLOT_T: {
                         names.LC_PLOT_T_PLOT_AREA_F: {
