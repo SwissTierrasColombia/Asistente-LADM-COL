@@ -68,8 +68,8 @@ class RrrModel(CreatorModel):
 
     def _finish_feature_creation(self, layerId, features):
         if len(features) != 1:
-            self._notify_finish_feature_creation(
-                SpacialSourceFinishFeatureCreationArgs(added_features_amount=len(features)))
+            args = SpacialSourceFinishFeatureCreationArgs(added_features_amount=len(features))
+            self.finish_feature_creation.emit(args)
             return
 
         fid = features[0].id()
@@ -77,8 +77,8 @@ class RrrModel(CreatorModel):
         if not self.__editing_layer_name.getFeature(fid).isValid():
             # self.logger.warning(__name__, "Feature not found in layer {}...".format(self.__editing_layer_name))
             # TODO send this info to controller
-            self._notify_finish_feature_creation(
-                SpacialSourceFinishFeatureCreationArgs(is_valid=False))
+            args = SpacialSourceFinishFeatureCreationArgs(SpacialSourceFinishFeatureCreationArgs(is_valid=False))
+            self.finish_feature_creation.emit(args)
             return
 
         # feature_rrr_id: generic name used for represent id for right, restriction
@@ -99,10 +99,8 @@ class RrrModel(CreatorModel):
         new_features = AssociationUtils.save_relations(self._layers[self.names.self.names.COL_RRR_SOURCE_T],
                                                        self.names.COL_POINT_SOURCE_T_LC_CONTROL_POINT_F,
                                                        administrative_source_ids, attr_fk, feature_tid)
-        self._notify_finish_feature_creation(
-            # TODO associated features is missing
-            SpacialSourceFinishFeatureCreationArgs(True, feature_tid, 1, None)
-        )
+        args = SpacialSourceFinishFeatureCreationArgs(True, feature_tid, 1, None)
+        self.finish_feature_creation.emit(args)
         # TODO log messages is missing
 
     def exec_form_advanced(self, args: ExecFormAdvancedArgs):

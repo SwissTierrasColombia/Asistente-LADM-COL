@@ -91,8 +91,8 @@ class SpatialSourceModel(SingleWizardModel):
             # TODO send this info to controller
             # message = QCoreApplication.translate("WizardTranslations", "'{}' tool has been closed. We should have got only one {} by we have {}").format(self.WIZARD_TOOL_NAME, self.WIZARD_FEATURE_NAME, len(features))
             # self.logger.warning(__name__, "We should have got only one {}, but we have {}".format(self.WIZARD_FEATURE_NAME, len(features)))
-            self._notify_finish_feature_creation(
-                SpacialSourceFinishFeatureCreationArgs(added_features_amount=len(features)))
+            args = SpacialSourceFinishFeatureCreationArgs(added_features_amount=len(features))
+            self.finish_feature_creation.emit(args)
             return
 
         feature = features[0]
@@ -133,10 +133,8 @@ class SpatialSourceModel(SingleWizardModel):
                                                        self.names.COL_POINT_SOURCE_T_LC_CONTROL_POINT_F, feature_ids,
                                                        self.names.COL_POINT_SOURCE_T_SOURCE_F, feature_tid)
 
-        self._notify_finish_feature_creation(
-            # TODO associated features is missing       1774700
-            SpacialSourceFinishFeatureCreationArgs(True, feature_tid, 1, None)
-        )
+        args = SpacialSourceFinishFeatureCreationArgs(True, feature_tid, 1, None)
+        self.finish_feature_creation.emit(args)
         # TODO These message
         # if all_new_features:
         #    message = QCoreApplication.translate("WizardTranslations",
