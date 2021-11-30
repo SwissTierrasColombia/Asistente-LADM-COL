@@ -81,6 +81,7 @@ QUALITY_RULE_ERROR_CODE_E400701 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.
 QUALITY_RULE_ERROR_CODE_E400702 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.COL_PARTY_NATURAL_TYPE.value) + '02'
 QUALITY_RULE_ERROR_CODE_E400703 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.COL_PARTY_NATURAL_TYPE.value) + '03'
 QUALITY_RULE_ERROR_CODE_E400704 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.COL_PARTY_NATURAL_TYPE.value) + '04'
+QUALITY_RULE_ERROR_CODE_E400705 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.COL_PARTY_NATURAL_TYPE.value) + '05'
 QUALITY_RULE_ERROR_CODE_E400801 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.COL_PARTY_NOT_NATURAL_TYPE.value) + '01'
 QUALITY_RULE_ERROR_CODE_E400802 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.COL_PARTY_NOT_NATURAL_TYPE.value) + '02'
 QUALITY_RULE_ERROR_CODE_E400803 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.COL_PARTY_NOT_NATURAL_TYPE.value) + '03'
@@ -478,7 +479,8 @@ class QualityRuleConfig:
                             QUALITY_RULE_ERROR_CODE_E400701,
                             QUALITY_RULE_ERROR_CODE_E400702,
                             QUALITY_RULE_ERROR_CODE_E400703,
-                            QUALITY_RULE_ERROR_CODE_E400704
+                            QUALITY_RULE_ERROR_CODE_E400704,
+                            QUALITY_RULE_ERROR_CODE_E400705
                         ]
                     },
                     EnumQualityRule.Logic.COL_PARTY_NOT_NATURAL_TYPE: {
