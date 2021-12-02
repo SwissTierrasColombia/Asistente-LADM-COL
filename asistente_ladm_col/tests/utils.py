@@ -26,6 +26,7 @@ import psycopg2
 import pyodbc
 import qgis.utils
 from qgis.core import (QgsApplication,
+                       Qgis,
                        edit)
 from qgis.analysis import QgsNativeAlgorithms
 
@@ -54,6 +55,7 @@ DB_PASSWORD = "clave_ladm_col"
 iface = get_iface()
 asistente_ladm_col_plugin = AsistenteLADMCOLPlugin(iface, True)
 asistente_ladm_col_plugin.initGui()
+asistente_ladm_col_plugin.app.core.initialize_ctm12() # We need to initialize CTM12
 refactor_fields = RefactorFieldsMappings()
 
 MODELS_PATH = '../../resources/models/'
@@ -179,18 +181,17 @@ def get_test_copy_path(path):
     return dst_path
 
 def import_asistente_ladm_col():
-    global iface
     plugin_found = "asistente_ladm_col" in qgis.utils.plugins
     if not plugin_found:
         qgis.utils.plugins["asistente_ladm_col"] = asistente_ladm_col_plugin
 
 def import_qgis_model_baker():
-    global iface
     plugin_found = "QgisModelBaker" in qgis.utils.plugins
     if not plugin_found:
         import QgisModelBaker
         pg = QgisModelBaker.classFactory(iface)
         qgis.utils.plugins["QgisModelBaker"] = pg
+        qgis.utils.active_plugins.append("QgisModelBaker")
 
 def import_processing():
     if not "processing" in qgis.utils.plugins:
@@ -198,10 +199,12 @@ def import_processing():
         import processing
         from processing.core.Processing import Processing
         Processing.initialize()
-        QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
+        if Qgis.QGIS_VERSION_INT < 31605:
+            QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
+        qgis.utils.plugins["processing"] = processing.classFactory(iface)
+        qgis.utils.active_plugins.append("processing")
 
 def unload_qgis_model_baker():
-    global iface
     plugin_found = "QgisModelBaker" in qgis.utils.plugins
     if plugin_found:
         del(qgis.utils.plugins["QgisModelBaker"])
