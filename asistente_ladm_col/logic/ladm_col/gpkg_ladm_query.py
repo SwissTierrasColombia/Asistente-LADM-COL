@@ -13,7 +13,7 @@ class GPKGLADMQuery(QGISLADMQuery):
         query = """SELECT {t_id}, {t_ili_tid}
                    FROM {lc_parcel_t}
                    WHERE length({lc_parcel_t_department_f}) !=2 OR
-                         {lc_parcel_t_department_f} NOT REGEXP '^[0-9]*$'
+                         {lc_parcel_t_department_f} GLOB '*[^0-9]*'
                 """.format(t_id=db.names.T_ID_F,
                            t_ili_tid=db.names.T_ILI_TID_F,
                            lc_parcel_t=db.names.LC_PARCEL_T,
@@ -26,7 +26,7 @@ class GPKGLADMQuery(QGISLADMQuery):
         query = """SELECT {t_id}, {t_ili_tid}
                    FROM {lc_parcel_t}
                    WHERE length({lc_parcel_t_municipality_f}) !=3 OR
-                         {lc_parcel_t_municipality_f} NOT REGEXP '^[0-9]*$'
+                         {lc_parcel_t_municipality_f} GLOB '*[^0-9]*'
                 """.format(t_id=db.names.T_ID_F,
                            t_ili_tid=db.names.T_ILI_TID_F,
                            lc_parcel_t=db.names.LC_PARCEL_T,
@@ -38,7 +38,8 @@ class GPKGLADMQuery(QGISLADMQuery):
         query = """SELECT {t_id}, {t_ili_tid}
                    FROM {lc_parcel_t}
                    WHERE length({lc_parcel_t_parcel_number_f}) !=30 OR
-                         {lc_parcel_t_parcel_number_f} NOT REGEXP '^[0-9]*$'
+                         {lc_parcel_t_parcel_number_f} GLOB '*[^0-9]*' OR
+                         {lc_parcel_t_parcel_number_f} IS NULL
                 """.format(t_id=db.names.T_ID_F,
                            t_ili_tid=db.names.T_ILI_TID_F,
                            lc_parcel_t=db.names.LC_PARCEL_T,
@@ -50,7 +51,7 @@ class GPKGLADMQuery(QGISLADMQuery):
         query = """SELECT {t_id}, {t_ili_tid}
                    FROM {lc_parcel_t}
                    WHERE ({lc_parcel_t_previous_parcel_number_f} IS NOT NULL AND (length({lc_parcel_t_previous_parcel_number_f}) !=20
-                   OR ({lc_parcel_t_previous_parcel_number_f} NOT REGEXP '^[0-9]*$')))
+                   OR ({lc_parcel_t_previous_parcel_number_f} GLOB '*[^0-9]*')))
                 """.format(t_id=db.names.T_ID_F,
                            t_ili_tid=db.names.T_ILI_TID_F,
                            lc_parcel_t=db.names.LC_PARCEL_T,
