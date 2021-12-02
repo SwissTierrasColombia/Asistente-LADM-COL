@@ -1,4 +1,6 @@
-from asistente_ladm_col.config.ladm_names import LADMNames
+from asistente_ladm_col.config.ladm_names import (LADMNames,
+                                                  SPECIAL_CHARACTERS,
+                                                  DIGITS)
 from asistente_ladm_col.logic.ladm_col.qgis_ladm_query import QGISLADMQuery
 
 
@@ -63,7 +65,15 @@ class MSSQLLADMQuery(QGISLADMQuery):
         query = """SELECT {t_id}, {t_ili_tid},
                           CASE WHEN {lc_party_t_business_name_f} IS NOT NULL THEN 1 ELSE 0 END AS {lc_party_t_business_name_f},
                           CASE WHEN {lc_party_t_surname_1_f} IS NULL OR len(trim({lc_party_t_surname_1_f})) = 0 THEN 1 ELSE 0 END AS {lc_party_t_surname_1_f},
+                          0 AS {lc_party_t_surname_1_f_special_characters},
+                          0 AS {lc_party_t_surname_1_f_digits},
                           CASE WHEN {lc_party_t_first_name_1_f} IS NULL OR len(trim({lc_party_t_first_name_1_f})) = 0 THEN 1 ELSE 0 END AS {lc_party_t_first_name_1_f},
+                          0 AS {lc_party_t_first_name_1_f_special_characters},
+                          0 AS {lc_party_t_first_name_1_f_digits},
+                          0 AS {lc_party_t_surname_2_f_special_characters},
+                          0 AS {lc_party_t_surname_2_f_digits},
+                          0 AS {lc_party_t_first_name_2_f_special_characters},
+                          0 AS {lc_party_t_first_name_2_f_digits},
                           CASE WHEN {lc_party_t_document_type_f} = (select {t_id} from {schema}.{lc_party_document_type_d} where {ilicode} = '{lc_party_document_type_d_ilicode_f_nit_v}') THEN 1 ELSE 0 END AS {lc_party_t_document_type_f},
                           CASE WHEN {lc_party_t_genre_f} IS NULL THEN 1 ELSE 0 END AS {lc_party_t_genre_f}
                    FROM {schema}.{lc_party_t}
@@ -79,7 +89,15 @@ class MSSQLLADMQuery(QGISLADMQuery):
                           lc_party_t=db.names.LC_PARTY_T,
                           lc_party_t_business_name_f=db.names.LC_PARTY_T_BUSINESS_NAME_F,
                           lc_party_t_surname_1_f=db.names.LC_PARTY_T_SURNAME_1_F,
+                          lc_party_t_surname_1_f_special_characters=db.names.LC_PARTY_T_SURNAME_1_F + '_' + SPECIAL_CHARACTERS,
+                          lc_party_t_surname_1_f_digits=db.names.LC_PARTY_T_SURNAME_1_F + '_' + DIGITS,
+                          lc_party_t_surname_2_f_special_characters=db.names.LC_PARTY_T_SURNAME_2_F + '_' + SPECIAL_CHARACTERS,
+                          lc_party_t_surname_2_f_digits=db.names.LC_PARTY_T_SURNAME_2_F + '_' + DIGITS,
                           lc_party_t_first_name_1_f=db.names.LC_PARTY_T_FIRST_NAME_1_F,
+                          lc_party_t_first_name_1_f_special_characters=db.names.LC_PARTY_T_FIRST_NAME_1_F + '_' + SPECIAL_CHARACTERS,
+                          lc_party_t_first_name_1_f_digits=db.names.LC_PARTY_T_FIRST_NAME_1_F + '_' + DIGITS,
+                          lc_party_t_first_name_2_f_special_characters=db.names.LC_PARTY_T_FIRST_NAME_2_F + '_' + SPECIAL_CHARACTERS,
+                          lc_party_t_first_name_2_f_digits=db.names.LC_PARTY_T_FIRST_NAME_2_F + '_' + DIGITS,
                           lc_party_t_document_type_f=db.names.LC_PARTY_T_DOCUMENT_TYPE_F,
                           lc_party_t_type_f=db.names.LC_PARTY_T_TYPE_F,
                           lc_party_type_d=db.names.LC_PARTY_TYPE_D,
