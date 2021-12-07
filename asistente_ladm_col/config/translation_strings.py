@@ -99,7 +99,13 @@ from asistente_ladm_col.config.quality_rules_config import (QUALITY_RULE_ERROR_C
                                                             QUALITY_RULE_ERROR_CODE_E401901,
                                                             QUALITY_RULE_ERROR_CODE_E402001,
                                                             QUALITY_RULE_ERROR_CODE_E402101,
-                                                            QUALITY_RULE_ERROR_CODE_E402201)
+                                                            QUALITY_RULE_ERROR_CODE_E402201,
+                                                            QUALITY_RULE_ERROR_CODE_E402301,
+                                                            QUALITY_RULE_ERROR_CODE_E402302,
+                                                            QUALITY_RULE_ERROR_CODE_E402303,
+                                                            QUALITY_RULE_ERROR_CODE_E402304,
+                                                            QUALITY_RULE_ERROR_CODE_E402305,
+                                                            QUALITY_RULE_ERROR_CODE_E402306)
 
 ERROR_LAYER_GROUP = "ERROR_LAYER_GROUP"
 RIGHT_OF_WAY_LINE_LAYER = "RIGHT_OF_WAY_LINE_LAYER"
@@ -188,6 +194,7 @@ class TranslatableConfigStrings(QObject):
             EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_RIGHT: QCoreApplication.translate("TranslatableConfigStrings", "Right should not have duplicate records"),
             EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_RESTRICTION: QCoreApplication.translate("TranslatableConfigStrings", "Restriction should not have duplicate records"),
             EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_ADMINISTRATIVE_SOURCE: QCoreApplication.translate("TranslatableConfigStrings", "Administrative source should not have duplicate records"),
+            EnumQualityRule.Logic.INCONSISTENT_BUILDING_UNIT: QCoreApplication.translate("TranslatableConfigStrings", "Building unit data should be consistent"),
 
             # Domain errors message
             # ERROR CODES FOR POINT QUALITY RULES
@@ -294,6 +301,12 @@ class TranslatableConfigStrings(QObject):
             QUALITY_RULE_ERROR_CODE_E402001: QCoreApplication.translate("TranslatableConfigStrings", "Derecho no debe tener registros repetidos"),
             QUALITY_RULE_ERROR_CODE_E402101: QCoreApplication.translate("TranslatableConfigStrings", "Restricción no debe tener registros repetidos"),
             QUALITY_RULE_ERROR_CODE_E402201: QCoreApplication.translate("TranslatableConfigStrings", "Fuente Administrativa no debe tener registros repetidos"),
+            QUALITY_RULE_ERROR_CODE_E402301: QCoreApplication.translate("TranslatableConfigStrings", "Si el tipo de construcción es Convencional, el tipo de unidad de construcción no puede ser Anexo"),
+            QUALITY_RULE_ERROR_CODE_E402302: QCoreApplication.translate("TranslatableConfigStrings", "Si el tipo de construcción es 'No Convencional', el tipo de unidad de construcción debe ser Anexo"),
+            QUALITY_RULE_ERROR_CODE_E402303: QCoreApplication.translate("TranslatableConfigStrings", "El tipo de unidad de construcción debe corresponder al dominio general del uso"),
+            QUALITY_RULE_ERROR_CODE_E402304: QCoreApplication.translate("TranslatableConfigStrings", "El área construida debe ser igual a cero para usos de unidades de construcción relacionados con PH"),
+            QUALITY_RULE_ERROR_CODE_E402305: QCoreApplication.translate("TranslatableConfigStrings", "El área construida debe ser mayor que cero para usos de unidades de construcción que no estén relacionados con PH"),
+            QUALITY_RULE_ERROR_CODE_E402306: QCoreApplication.translate("TranslatableConfigStrings", "El área privada construida debe ser mayor que cero para usos de unidades de construcción relacionados con PH"),
             ERROR_LAYER_GROUP: QCoreApplication.translate("TranslatableConfigStrings", "Validation errors"),
             RIGHT_OF_WAY_LINE_LAYER: QCoreApplication.translate("TranslatableConfigStrings", "Right of way line")
         }
