@@ -148,6 +148,8 @@ class QualityRules:
             msg, level = self.__check_duplicate_records_in_table(db, db.names.LC_RESTRICTION_T, id_quality_rule)
         elif id_quality_rule == EnumQualityRule.Logic.DUPLICATE_RECORDS_IN_ADMINISTRATIVE_SOURCE:
             msg, level = self.__check_duplicate_records_in_table(db, db.names.LC_ADMINISTRATIVE_SOURCE_T, id_quality_rule)
+        elif id_quality_rule == EnumQualityRule.Logic.INCONSISTENT_BUILDING_UNIT:
+            msg, level = self.logic_quality_rules.check_inconsistent_building_units(db)
 
         return msg, level
 

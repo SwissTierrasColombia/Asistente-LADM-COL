@@ -303,3 +303,31 @@ class MSSQLLADMQuery(QGISLADMQuery):
                            lc_right_t_type_f=db.names.LC_RIGHT_T_TYPE_F,
                            lc_right_type_d_ilicode_f_ownership_v=LADMNames.LC_RIGHT_TYPE_D_ILICODE_F_OWNERSHIP_V)
         return db.execute_sql_query(query)
+
+    @staticmethod
+    def get_inconsistent_building_units(db):
+        query = """select uc.{t_ili_tid},
+                    0 as convencional,
+                    0 as no_convencional,
+                    0 as dominio_general_uso,
+                    0 as acons_ph,
+                    0 as acons_not_ph,
+                    0 as a_priv_cons_ph
+                from {schema}.{lc_building_unit_t} uc
+        """.format(schema=db.schema,
+                   t_id=db.names.T_ID_F,
+                   t_ili_tid=db.names.T_ILI_TID_F,
+                   ilicode=db.names.ILICODE_F,
+                   lc_building_unit_t=db.names.LC_BUILDING_UNIT_T,
+                   lc_building_type_d=db.names.LC_BUILDING_TYPE_D,
+                   lc_building_unit_t_use_f=db.names.LC_BUILDING_UNIT_T_USE_F,
+                   lc_building_unit_t_building_type_f=db.names.LC_BUILDING_UNIT_T_BUILDING_TYPE_F,
+                   lc_building_unit_t_building_unit_type_f=db.names.LC_BUILDING_UNIT_T_BUILDING_UNIT_TYPE_F,
+                   lc_building_unit_type_d=db.names.LC_BUILDING_UNIT_TYPE_D,
+                   lc_building_unit_use_d=db.names.LC_BUILDING_UNIT_USE_D,
+                   lc_building_type_d_ilicode_f_conventional_v=LADMNames.LC_BUILDING_TYPE_D_ILICODE_F_CONVENTIONAL_V,
+                   lc_building_type_d_ilicode_f_non_conventional_v=LADMNames.LC_BUILDING_TYPE_D_ILICODE_F_NON_CONVENTIONAL_V,
+                   lc_building_unit_type_d_ilicode_f_annex_v=LADMNames.LC_BUILDING_UNIT_TYPE_D_ILICODE_F_ANNEX_V,
+                   lc_building_unit_t_built_area_f=db.names.LC_BUILDING_UNIT_T_BUILT_AREA_F,
+                   lc_building_unit_t_built_private_area_f=db.names.LC_BUILDING_UNIT_T_BUILT_PRIVATE_AREA_F)
+        return db.execute_sql_query(query)

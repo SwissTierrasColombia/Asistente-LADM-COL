@@ -295,3 +295,42 @@ class GPKGLADMQuery(QGISLADMQuery):
                            lc_right_t_type_f=db.names.LC_RIGHT_T_TYPE_F,
                            lc_right_type_d_ilicode_f_ownership_v=LADMNames.LC_RIGHT_TYPE_D_ILICODE_F_OWNERSHIP_V)
         return db.execute_sql_query(query)
+
+    @staticmethod
+    def get_inconsistent_building_units(db):
+        query = """select uc.{t_ili_tid},
+                    case when ct.{ilicode} = '{lc_building_type_d_ilicode_f_conventional_v}' and uct.{ilicode} = '{lc_building_unit_type_d_ilicode_f_annex_v}' then 1 else 0 end as convencional,
+                    case when ct.{ilicode} = '{lc_building_type_d_ilicode_f_non_conventional_v}' and uct.{ilicode} != '{lc_building_unit_type_d_ilicode_f_annex_v}' then 1 else 0 end as no_convencional,
+                    case when ut.split_ilicode != uct.{ilicode} then 1 else 0 end as dominio_general_uso,
+                    case when uc.{lc_building_unit_t_built_area_f} != 0 and ut.{ilicode} like '%_PH' then 1 else 0 end as acons_ph,
+                    case when ((uc.{lc_building_unit_t_built_area_f} <= 0 or uc.{lc_building_unit_t_built_area_f} is NULL) and ut.{ilicode} not like '%_PH') then 1 else 0 end as acons_not_ph,
+                    case when (uc.{lc_building_unit_t_built_private_area_f} <= 0 or uc.{lc_building_unit_t_built_private_area_f} is NULL) and ut.{ilicode} like '%_PH' then 1 else 0 end as a_priv_cons_ph
+                from {lc_building_unit_t} uc
+                join {lc_building_type_d} ct on uc.{lc_building_unit_t_building_type_f} = ct.{t_id}
+                join {lc_building_unit_type_d} uct on uc.{lc_building_unit_t_building_unit_type_f} = uct.{t_id}
+                join ( -- See http://www.npap.me/blog/sqlite-split-string
+                    SELECT {t_id}, substr({ilicode}, 1, pos-1) AS split_ilicode, {ilicode}
+                    FROM (SELECT *, instr({ilicode},'.') AS pos FROM {lc_building_unit_use_d})
+                ) ut on uc.{lc_building_unit_t_use_f} = ut.{t_id}
+                where
+                    ct.{ilicode} = '{lc_building_type_d_ilicode_f_conventional_v}' and uct.{ilicode} = '{lc_building_unit_type_d_ilicode_f_annex_v}'
+                    or ct.{ilicode} = 'No_Convencional' and uct.{ilicode} != '{lc_building_unit_type_d_ilicode_f_annex_v}'
+                    or ut.split_ilicode != uct.{ilicode}
+                    or ((uc.{lc_building_unit_t_built_area_f} != 0 or uc.{lc_building_unit_t_built_private_area_f} <= 0 or uc.{lc_building_unit_t_built_private_area_f} is NULL) and ut.{ilicode} like '%_PH')
+                    or ((uc.{lc_building_unit_t_built_area_f} <= 0 or uc.{lc_building_unit_t_built_area_f} is NULL) and ut.{ilicode} not like '%_PH')
+        """.format(t_id=db.names.T_ID_F,
+                   t_ili_tid=db.names.T_ILI_TID_F,
+                   ilicode=db.names.ILICODE_F,
+                   lc_building_unit_t=db.names.LC_BUILDING_UNIT_T,
+                   lc_building_type_d=db.names.LC_BUILDING_TYPE_D,
+                   lc_building_unit_t_use_f=db.names.LC_BUILDING_UNIT_T_USE_F,
+                   lc_building_unit_t_building_type_f=db.names.LC_BUILDING_UNIT_T_BUILDING_TYPE_F,
+                   lc_building_unit_t_building_unit_type_f=db.names.LC_BUILDING_UNIT_T_BUILDING_UNIT_TYPE_F,
+                   lc_building_unit_type_d=db.names.LC_BUILDING_UNIT_TYPE_D,
+                   lc_building_unit_use_d=db.names.LC_BUILDING_UNIT_USE_D,
+                   lc_building_type_d_ilicode_f_conventional_v=LADMNames.LC_BUILDING_TYPE_D_ILICODE_F_CONVENTIONAL_V,
+                   lc_building_type_d_ilicode_f_non_conventional_v=LADMNames.LC_BUILDING_TYPE_D_ILICODE_F_NON_CONVENTIONAL_V,
+                   lc_building_unit_type_d_ilicode_f_annex_v=LADMNames.LC_BUILDING_UNIT_TYPE_D_ILICODE_F_ANNEX_V,
+                   lc_building_unit_t_built_area_f=db.names.LC_BUILDING_UNIT_T_BUILT_AREA_F,
+                   lc_building_unit_t_built_private_area_f=db.names.LC_BUILDING_UNIT_T_BUILT_PRIVATE_AREA_F)
+        return db.execute_sql_query(query)
