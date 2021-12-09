@@ -77,7 +77,9 @@ from asistente_ladm_col.config.quality_rules_config import (QUALITY_RULE_ERROR_C
                                                             QUALITY_RULE_ERROR_CODE_E402303,
                                                             QUALITY_RULE_ERROR_CODE_E402304,
                                                             QUALITY_RULE_ERROR_CODE_E402305,
-                                                            QUALITY_RULE_ERROR_CODE_E402306)
+                                                            QUALITY_RULE_ERROR_CODE_E402306,
+                                                            QUALITY_RULE_ERROR_CODE_E402307,
+                                                            QUALITY_RULE_ERROR_CODE_E402308)
 from asistente_ladm_col.config.enums import EnumQualityRule
 from asistente_ladm_col.config.ladm_names import (LADMNames,
                                                   SPECIAL_CHARACTERS,
@@ -489,38 +491,64 @@ class LogicQualityRules:
                 if record['convencional'] > 0:
                     new_feature = QgsVectorLayerUtils().createFeature(error_layer, QgsGeometry(),
                                                                       {0: record[db.names.T_ILI_TID_F],
-                                                                       1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E402301),
-                                                                       2: QUALITY_RULE_ERROR_CODE_E402301})
+                                                                       2: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E402301),
+                                                                       3: QUALITY_RULE_ERROR_CODE_E402301})
                     new_features.append(new_feature)
                 if record['no_convencional'] > 0:
                     new_feature = QgsVectorLayerUtils().createFeature(error_layer, QgsGeometry(),
                                                                       {0: record[db.names.T_ILI_TID_F],
-                                                                       1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E402302),
-                                                                       2: QUALITY_RULE_ERROR_CODE_E402302})
+                                                                       2: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E402302),
+                                                                       3: QUALITY_RULE_ERROR_CODE_E402302})
                     new_features.append(new_feature)
                 if record['dominio_general_uso'] > 0:
                     new_feature = QgsVectorLayerUtils().createFeature(error_layer, QgsGeometry(),
                                                                       {0: record[db.names.T_ILI_TID_F],
-                                                                       1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E402303),
-                                                                       2: QUALITY_RULE_ERROR_CODE_E402303})
+                                                                       2: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E402303),
+                                                                       3: QUALITY_RULE_ERROR_CODE_E402303})
                     new_features.append(new_feature)
                 if record['acons_ph'] > 0:
                     new_feature = QgsVectorLayerUtils().createFeature(error_layer, QgsGeometry(),
                                                                       {0: record[db.names.T_ILI_TID_F],
-                                                                       1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E402304),
-                                                                       2: QUALITY_RULE_ERROR_CODE_E402304})
+                                                                       2: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E402304),
+                                                                       3: QUALITY_RULE_ERROR_CODE_E402304})
                     new_features.append(new_feature)
                 if record['acons_not_ph'] > 0:
                     new_feature = QgsVectorLayerUtils().createFeature(error_layer, QgsGeometry(),
                                                                       {0: record[db.names.T_ILI_TID_F],
-                                                                       1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E402305),
-                                                                       2: QUALITY_RULE_ERROR_CODE_E402305})
+                                                                       2: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E402305),
+                                                                       3: QUALITY_RULE_ERROR_CODE_E402305})
                     new_features.append(new_feature)
                 if record['a_priv_cons_ph'] > 0:
                     new_feature = QgsVectorLayerUtils().createFeature(error_layer, QgsGeometry(),
                                                                       {0: record[db.names.T_ILI_TID_F],
-                                                                       1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E402306),
-                                                                       2: QUALITY_RULE_ERROR_CODE_E402306})
+                                                                       2: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E402306),
+                                                                       3: QUALITY_RULE_ERROR_CODE_E402306})
+                    new_features.append(new_feature)
+
+            error_layer.dataProvider().addFeatures(new_features)
+        else:
+            self.logger.error_msg(__name__, "Error executing query for rule {}: {}".format(rule.rule_name, records))
+
+        # Let's go for more cases
+        res, records = self.get_ladm_queries(db.engine).get_inconsistent_building_units_parcel(db)
+
+        new_features = list()
+        if res:
+            for record in records:
+                if record['ph_condominio'] > 0:
+                    new_feature = QgsVectorLayerUtils().createFeature(error_layer, QgsGeometry(),
+                                                                      {0: record['ucons_' + db.names.T_ILI_TID_F],
+                                                                       1: record['predio_' + db.names.T_ILI_TID_F],
+                                                                       2: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E402307),
+                                                                       3: QUALITY_RULE_ERROR_CODE_E402307})
+                    new_features.append(new_feature)
+
+                if record['no_ph_no_condominio'] > 0:
+                    new_feature = QgsVectorLayerUtils().createFeature(error_layer, QgsGeometry(),
+                                                                      {0: record['ucons_' + db.names.T_ILI_TID_F],
+                                                                       1: record['predio_' + db.names.T_ILI_TID_F],
+                                                                       2: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E402308),
+                                                                       3: QUALITY_RULE_ERROR_CODE_E402308})
                     new_features.append(new_feature)
 
             error_layer.dataProvider().addFeatures(new_features)

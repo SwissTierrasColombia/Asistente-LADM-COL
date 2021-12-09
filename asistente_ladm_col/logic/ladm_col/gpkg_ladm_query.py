@@ -334,3 +334,41 @@ class GPKGLADMQuery(QGISLADMQuery):
                    lc_building_unit_t_built_area_f=db.names.LC_BUILDING_UNIT_T_BUILT_AREA_F,
                    lc_building_unit_t_built_private_area_f=db.names.LC_BUILDING_UNIT_T_BUILT_PRIVATE_AREA_F)
         return db.execute_sql_query(query)
+
+    @staticmethod
+    def get_inconsistent_building_units_parcel(db):
+        query = """ select uc.{t_ili_tid} as ucons_t_ili_tid,
+                           lp.{t_ili_tid} as predio_t_ili_tid,
+                           case when ut.{ilicode} not like '%_PH' then 1 else 0 end as ph_condominio,
+                           case when ut.{ilicode} like '%_PH' then 1 else 0 end as no_ph_no_condominio
+                    from {lc_parcel_t} lp
+                    join {lc_condition_parcel_type_d} cp ON lp.{lc_parcel_t_condition_f} = cp.{t_id}
+                    join {lc_ue_baunit_t} ub on lp.{t_id} = ub.{lc_ue_baunit_t_parcel_f} and ub.{lc_ue_baunit_t_building_unit_f} is not null
+                    join {lc_building_unit_t} uc on uc.{t_id} = ub.{lc_ue_baunit_t_building_unit_f}
+                    join ( -- See http://www.npap.me/blog/sqlite-split-string
+                             SELECT {t_id}, substr({ilicode}, 1, pos-1) AS split_ilicode, {ilicode}
+                             FROM (SELECT *, instr({ilicode}, '.') AS pos FROM {lc_building_unit_use_d})
+                         ) ut on uc.{lc_building_unit_t_use_f} = ut.{t_id}
+                    where ut.split_ilicode != '{lc_building_unit_type_d_ilicode_f_annex_v}'
+                        and ((cp.{ilicode} in ('{lc_parcel_type_ph_parent}', '{lc_parcel_type_ph_parcel_unit}', '{lc_parcel_type_ph_condominium_parent}', '{lc_parcel_type_ph_condominium_parcel_unit}')
+                         and ut.{ilicode} not like '%_PH')
+                        or (cp.{ilicode} not in ('{lc_parcel_type_ph_parent}', '{lc_parcel_type_ph_parcel_unit}', '{lc_parcel_type_ph_condominium_parent}', '{lc_parcel_type_ph_condominium_parcel_unit}')
+                         and ut.{ilicode} like '%_PH'));
+        """.format(t_id=db.names.T_ID_F,
+                   t_ili_tid=db.names.T_ILI_TID_F,
+                   ilicode=db.names.ILICODE_F,
+                   lc_parcel_t=db.names.LC_PARCEL_T,
+                   lc_parcel_t_condition_f=db.names.LC_PARCEL_T_PARCEL_TYPE_F,
+                   lc_condition_parcel_type_d=db.names.LC_CONDITION_PARCEL_TYPE_D,
+                   lc_ue_baunit_t=db.names.COL_UE_BAUNIT_T,
+                   lc_ue_baunit_t_parcel_f=db.names.COL_UE_BAUNIT_T_PARCEL_F,
+                   lc_ue_baunit_t_building_unit_f=db.names.COL_UE_BAUNIT_T_LC_BUILDING_UNIT_F,
+                   lc_building_unit_t=db.names.LC_BUILDING_UNIT_T,
+                   lc_building_unit_t_use_f=db.names.LC_BUILDING_UNIT_T_USE_F,
+                   lc_building_unit_use_d=db.names.LC_BUILDING_UNIT_USE_D,
+                   lc_building_unit_type_d_ilicode_f_annex_v=LADMNames.LC_BUILDING_UNIT_TYPE_D_ILICODE_F_ANNEX_V,
+                   lc_parcel_type_ph_parent=LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARENT,
+                   lc_parcel_type_ph_parcel_unit=LADMNames.PARCEL_TYPE_HORIZONTAL_PROPERTY_PARCEL_UNIT,
+                   lc_parcel_type_ph_condominium_parent=LADMNames.PARCEL_TYPE_CONDOMINIUM_PARENT,
+                   lc_parcel_type_ph_condominium_parcel_unit=LADMNames.PARCEL_TYPE_CONDOMINIUM_PARCEL_UNIT)
+        return db.execute_sql_query(query)

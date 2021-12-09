@@ -134,6 +134,8 @@ QUALITY_RULE_ERROR_CODE_E402303 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.
 QUALITY_RULE_ERROR_CODE_E402304 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.INCONSISTENT_BUILDING_UNIT.value) + '04'
 QUALITY_RULE_ERROR_CODE_E402305 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.INCONSISTENT_BUILDING_UNIT.value) + '05'
 QUALITY_RULE_ERROR_CODE_E402306 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.INCONSISTENT_BUILDING_UNIT.value) + '06'
+QUALITY_RULE_ERROR_CODE_E402307 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.INCONSISTENT_BUILDING_UNIT.value) + '07'
+QUALITY_RULE_ERROR_CODE_E402308 = PREFIX_ERROR_CODE + str(EnumQualityRule.Logic.INCONSISTENT_BUILDING_UNIT.value) + '08'
 
 
 class QualityRuleConfig:
@@ -713,7 +715,8 @@ class QualityRuleConfig:
                         QUALITY_RULE_NAME: translated_strings[EnumQualityRule.Logic.INCONSISTENT_BUILDING_UNIT],
                         QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "unidad_construccion_no_consistente"),
                         QUALITY_RULE_TABLE_FIELDS: [
-                            QgsField(QCoreApplication.translate("QualityRulesConfig", "id_unidad_construccion"), QVariant.String, 'string')
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "id_unidad_construccion"), QVariant.String, 'string'),
+                            QgsField(QCoreApplication.translate("QualityRulesConfig", "id_relacionado"), QVariant.String, 'string')
                         ],
                         QUALITY_RULE_DOMAIN_ERROR_CODES: [
                             QUALITY_RULE_ERROR_CODE_E402301,
@@ -721,7 +724,9 @@ class QualityRuleConfig:
                             QUALITY_RULE_ERROR_CODE_E402303,
                             QUALITY_RULE_ERROR_CODE_E402304,
                             QUALITY_RULE_ERROR_CODE_E402305,
-                            QUALITY_RULE_ERROR_CODE_E402306
+                            QUALITY_RULE_ERROR_CODE_E402306,
+                            QUALITY_RULE_ERROR_CODE_E402307,
+                            QUALITY_RULE_ERROR_CODE_E402308
                         ]
                     }
                 }

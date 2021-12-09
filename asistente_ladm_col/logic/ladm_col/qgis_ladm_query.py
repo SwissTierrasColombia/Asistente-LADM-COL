@@ -445,3 +445,7 @@ class QGISLADMQuery:
     @staticmethod
     def get_inconsistent_building_units(db):
         raise NotImplementedError
+
+    @staticmethod
+    def get_inconsistent_building_units_parcel(db):
+        raise NotImplementedError
