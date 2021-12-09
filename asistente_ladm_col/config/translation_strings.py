@@ -105,7 +105,9 @@ from asistente_ladm_col.config.quality_rules_config import (QUALITY_RULE_ERROR_C
                                                             QUALITY_RULE_ERROR_CODE_E402303,
                                                             QUALITY_RULE_ERROR_CODE_E402304,
                                                             QUALITY_RULE_ERROR_CODE_E402305,
-                                                            QUALITY_RULE_ERROR_CODE_E402306)
+                                                            QUALITY_RULE_ERROR_CODE_E402306,
+                                                            QUALITY_RULE_ERROR_CODE_E402307,
+                                                            QUALITY_RULE_ERROR_CODE_E402308)
 
 ERROR_LAYER_GROUP = "ERROR_LAYER_GROUP"
 RIGHT_OF_WAY_LINE_LAYER = "RIGHT_OF_WAY_LINE_LAYER"
@@ -307,6 +309,8 @@ class TranslatableConfigStrings(QObject):
             QUALITY_RULE_ERROR_CODE_E402304: QCoreApplication.translate("TranslatableConfigStrings", "El área construida debe ser igual a cero para usos de unidades de construcción relacionados con PH"),
             QUALITY_RULE_ERROR_CODE_E402305: QCoreApplication.translate("TranslatableConfigStrings", "El área construida debe ser mayor que cero para usos de unidades de construcción que no estén relacionados con PH"),
             QUALITY_RULE_ERROR_CODE_E402306: QCoreApplication.translate("TranslatableConfigStrings", "El área privada construida debe ser mayor que cero para usos de unidades de construcción relacionados con PH"),
+            QUALITY_RULE_ERROR_CODE_E402307: QCoreApplication.translate("TranslatableConfigStrings", "Si la condición del predio es 'PH' o 'Condominio', entonces, los usos 'Residencial', 'Comercial', 'Institucional' o 'Industrial' de la Unidad de Construcción correspondiente, deben ser usos asociados a 'PH'."),
+            QUALITY_RULE_ERROR_CODE_E402308: QCoreApplication.translate("TranslatableConfigStrings", "Si la condición del predio no es 'PH' ni 'Condominio', entonces, los usos 'Residencial', 'Comercial', 'Institucional' o 'Industrial' de la Unidad de Construcción correspondiente, no pueden ser usos asociados a 'PH'."),
             ERROR_LAYER_GROUP: QCoreApplication.translate("TranslatableConfigStrings", "Validation errors"),
             RIGHT_OF_WAY_LINE_LAYER: QCoreApplication.translate("TranslatableConfigStrings", "Right of way line")
         }
