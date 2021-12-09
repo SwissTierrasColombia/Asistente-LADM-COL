@@ -2,6 +2,7 @@ from asistente_ladm_col.config.ladm_names import (LADMNames,
                                                   SPECIAL_CHARACTERS,
                                                   DIGITS)
 from asistente_ladm_col.logic.ladm_col.qgis_ladm_query import QGISLADMQuery
+from asistente_ladm_col.lib.logger import Logger
 
 
 class MSSQLLADMQuery(QGISLADMQuery):
@@ -62,6 +63,8 @@ class MSSQLLADMQuery(QGISLADMQuery):
 
     @staticmethod
     def get_invalid_col_party_type_natural(db):
+        Logger().critical(__name__, "MSSQL does not support 8 error codes in rule 4007! Contact the developers if you want to fund their implementation.")
+
         query = """SELECT {t_id}, {t_ili_tid},
                           CASE WHEN {lc_party_t_business_name_f} IS NOT NULL THEN 1 ELSE 0 END AS {lc_party_t_business_name_f},
                           CASE WHEN {lc_party_t_surname_1_f} IS NULL OR len(trim({lc_party_t_surname_1_f})) = 0 THEN 1 ELSE 0 END AS {lc_party_t_surname_1_f},
@@ -306,6 +309,8 @@ class MSSQLLADMQuery(QGISLADMQuery):
 
     @staticmethod
     def get_inconsistent_building_units(db):
+        Logger().critical(__name__, "MSSQL does not support the rule 4023! Contact the developers if you want to fund its implementation.")
+
         query = """select uc.{t_ili_tid},
                     0 as convencional,
                     0 as no_convencional,
