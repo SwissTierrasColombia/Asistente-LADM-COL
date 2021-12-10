@@ -527,6 +527,8 @@ class GeometryUtils(QObject):
                                                                          feedback.msg)))
             return fixed  # Return the fixed one, which should work 99.99% of times anyways
 
+        self.create_spatial_index(res)
+
         return res
 
     def difference_plot_boundary(self, names, plots_as_lines_layer, boundary_layer, id_field):
