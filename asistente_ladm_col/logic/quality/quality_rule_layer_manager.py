@@ -86,9 +86,35 @@ class QualityRuleLayerManager(QObject):
             self.logger.critical(__name__, QCoreApplication.translate("QualityRuleLayerManager", "Couldn't finish preparing required layers!"))
             return False
 
-        for name, layer in ladm_layers.items():
+        self.__fixed_ladm_layers = list()
+        for name in ladm_layers:
+            layer = ladm_layers[name]
+
             if layer.isSpatial():
+                # Check if we have invalid geometries and fix them to
+                # have valid geometries as basis (note it does not modify
+                # the original data; fixed geometries are only used for QRs)
+                res_dict = processing.run("qgis:checkvalidity", {'INPUT_LAYER': layer,
+                                                                 'METHOD': 2,  # GEOS
+                                                                 'IGNORE_RING_SELF_INTERSECTION': False,  # Important
+                                                                 'VALID_OUTPUT': 'TEMPORARY_OUTPUT',
+                                                                 'INVALID_OUTPUT': 'TEMPORARY_OUTPUT',
+                                                                 'ERROR_OUTPUT': 'TEMPORARY_OUTPUT'})
+                if res_dict['INVALID_COUNT'] + res_dict['ERROR_COUNT'] > 0:
+                    self.logger.warning(__name__, "Fixing '{}' layer, which has {} invalid geometries".format(name,
+                                                                                                              res_dict[
+                                                                                                                  'INVALID_COUNT']))
+                    layer = processing.run("native:fixgeometries", {'INPUT': layer,
+                                                                    'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
+                    ladm_layers[name] = layer
+                    self.__fixed_ladm_layers.append(layer)
+
                 GeometryUtils.create_spatial_index(layer)  # To improve performance of quality rules
+
+        # If any LADM layer was fixed, register them
+        # in the project, so that Processing can find it
+        self.logger.debug(__name__, "{} fixed LADM layers loaded to QGIS registry...".format(len(self.__fixed_ladm_layers)))
+        QgsProject.instance().addMapLayers(self.__fixed_ladm_layers, False)
 
         # If tolerance > 0, prepare adjusted layers
         #   We create an adjusted_layers dict to override ladm_layers per rule.
@@ -184,7 +210,10 @@ class QualityRuleLayerManager(QObject):
         return self.__layers[rule_key]
 
     def clean_temporary_layers(self):
-        # Removes adjusted layers from registry
+        # Remove fixed LADM layers from registry
+        QgsProject.instance().removeMapLayers([layer.id() for layer in self.__fixed_ladm_layers])
+
+        # Remove adjusted layers from registry
         unload_from_registry = [layer.id() for key, layer in self.__adjusted_layers_cache.items() if layer is not None]
         self.logger.debug(__name__, "{} adjusted layers removed from QGIS registry...".format(len(unload_from_registry)))
         QgsProject.instance().removeMapLayers(unload_from_registry)
