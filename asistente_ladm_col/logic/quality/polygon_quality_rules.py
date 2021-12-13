@@ -249,50 +249,7 @@ class PolygonQualityRules:
                                  "There are no Right of Way-Building overlaps."), Qgis.Success, [error_layer])
 
     def check_gaps_in_plots(self, db, dict_layer):
-        rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.GAPS_IN_PLOTS)
-        use_roads = bool(QSettings().value('Asistente-LADM-COL/quality/use_roads', DEFAULT_USE_ROADS_VALUE, bool))
-
-        plot_layer = list(dict_layer[QUALITY_RULE_LAYERS].values())[0] if dict_layer[QUALITY_RULE_LAYERS] else None
-
-        if not plot_layer:
-            return QCoreApplication.translate("PolygonQualityRules", "'Plot' layer not found!"), Qgis.Critical, list()
-
-        if plot_layer.featureCount() == 0:
-            return (QCoreApplication.translate("PolygonQualityRules",
-                             "There are no Plot features to check 'Plot should not have gaps'."), Qgis.Warning, list())
-        else:
-            error_layer = QgsVectorLayer("MultiPolygon?crs={}".format(plot_layer.sourceCrs().authid()),
-                                         rule.error_table_name, "memory")
-            data_provider = error_layer.dataProvider()
-            data_provider.addAttributes(rule.error_table_fields)
-            error_layer.updateFields()
-
-            gaps = self.geometry.get_gaps_in_polygon_layer(plot_layer, use_roads)
-            fids_list = GeometryUtils.get_intersection_features(plot_layer, gaps)  # List of lists of qgis ids
-
-            uuids_list = list()
-            for fids in fids_list:
-                uuids_list.append([f[db.names.T_ILI_TID_F] for f in plot_layer.getFeatures(fids)])
-
-            if gaps is not None:
-                new_features = list()
-                for geom, id_serial in zip(gaps, range(0, len(gaps))):
-                    feature = QgsVectorLayerUtils().createFeature(error_layer,
-                                                                  geom,
-                                                                  {0: id_serial,
-                                                                   1: ', '.join(uuids_list[id_serial]),  # Order of geometry and id correspond in their lists
-                                                                   2: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E300601),
-                                                                   3: QUALITY_RULE_ERROR_CODE_E300601})
-                    new_features.append(feature)
-                data_provider.addFeatures(new_features)
-
-            if error_layer.featureCount() > 0:
-                return (QCoreApplication.translate("PolygonQualityRules",
-                                 "A memory layer with {} gaps in layer Plots has been added to the map!").format(
-                    error_layer.featureCount()), Qgis.Critical, [error_layer])
-            else:
-                return (QCoreApplication.translate("PolygonQualityRules",
-                                 "There are no gaps in layer Plot."), Qgis.Success, [error_layer])
+        pass
 
     def check_multiparts_in_right_of_way(self, db, layer_dict):
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.MULTIPART_IN_RIGHT_OF_WAY)

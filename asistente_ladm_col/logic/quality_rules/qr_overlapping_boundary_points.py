@@ -64,6 +64,7 @@ class QROverlappingBoundaryPoints(AbstractQualityRule):
         }
 
     def validate(self, db, db_qr, layer_dict, tolerance, **kwargs):
+        # TODO: emit progress values
         point_layer = list(layer_dict[QUALITY_RULE_LAYERS].values())[0] if layer_dict[QUALITY_RULE_LAYERS] else None
         if not point_layer:
             return QualityRuleExecutionResult(Qgis.Critical,

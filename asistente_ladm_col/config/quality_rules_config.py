@@ -304,18 +304,6 @@ class QualityRuleConfig:
                             QUALITY_RULE_ERROR_CODE_E300501
                         ]
                     },
-                    EnumQualityRule.Polygon.GAPS_IN_PLOTS: {
-                        QUALITY_RULE_ID: EnumQualityRule.Polygon.GAPS_IN_PLOTS,
-                        QUALITY_RULE_NAME: translated_strings[EnumQualityRule.Polygon.GAPS_IN_PLOTS],
-                        QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "terrenos_huecos_entre_ellos"),
-                        QUALITY_RULE_TABLE_FIELDS: [
-                            QgsField(QCoreApplication.translate("QualityRulesConfig", "id_hueco"), QVariant.Int),
-                            QgsField(QCoreApplication.translate("QualityRulesConfig", "ids_terrenos"), QVariant.String)
-                        ],
-                        QUALITY_RULE_DOMAIN_ERROR_CODES: [
-                            QUALITY_RULE_ERROR_CODE_E300601
-                        ]
-                    },
                     EnumQualityRule.Polygon.MULTIPART_IN_RIGHT_OF_WAY: {
                         QUALITY_RULE_ID: EnumQualityRule.Polygon.MULTIPART_IN_RIGHT_OF_WAY,
                         QUALITY_RULE_NAME: translated_strings[EnumQualityRule.Polygon.MULTIPART_IN_RIGHT_OF_WAY],
@@ -786,15 +774,6 @@ class QualityRuleConfig:
                     names.LC_RIGHT_OF_WAY_T: {
                         ADJUSTED_INPUT_LAYER: names.LC_RIGHT_OF_WAY_T,
                         ADJUSTED_REFERENCE_LAYER: names.LC_BUILDING_T
-                    }
-                }
-            }, EnumQualityRule.Polygon.GAPS_IN_PLOTS: {
-                QUALITY_RULE_LADM_COL_LAYERS: [names.LC_PLOT_T],
-                QUALITY_RULE_ADJUSTED_LAYERS: {
-                    names.LC_PLOT_T: {
-                        ADJUSTED_INPUT_LAYER: names.LC_PLOT_T,
-                        ADJUSTED_REFERENCE_LAYER: names.LC_PLOT_T,
-                        FIX_ADJUSTED_LAYER: True
                     }
                 }
             }, EnumQualityRule.Polygon.MULTIPART_IN_RIGHT_OF_WAY: {

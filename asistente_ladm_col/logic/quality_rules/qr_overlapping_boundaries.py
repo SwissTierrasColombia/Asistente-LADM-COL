@@ -95,8 +95,8 @@ class QROverlappingBoundaries(AbstractQualityRule):
         lines_intersected = overlapping['native:extractbyexpression_3:Intersected_Lines']
         point_errors, line_errors = dict(), dict()
 
-        from qgis.core import QgsProject
-        QgsProject.instance().addMapLayers([points_intersected, lines_intersected])
+        #from qgis.core import QgsProject
+        #QgsProject.instance().addMapLayers([points_intersected, lines_intersected])
         if isinstance(points_intersected, QgsVectorLayer):
             if points_intersected.featureCount() > 0:
                 point_errors = self._get_error_dict(db, points_intersected)

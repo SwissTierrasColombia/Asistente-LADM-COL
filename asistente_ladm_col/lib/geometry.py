@@ -383,7 +383,7 @@ class GeometryUtils(QObject):
         gc.collect()
         return ids, QgsGeometry.collectGeometry(list_overlapping) if len(list_overlapping) > 0 else None
 
-    def get_gaps_in_polygon_layer(self, layer, include_roads):
+    def get_gaps_in_polygon_layer(layer, include_roads):
         """
         Find gaps in a continuous layer in space.
 
@@ -414,7 +414,7 @@ class GeometryUtils(QObject):
         diff_geoms = buffer_extent.difference(union_geom).difference(buffer_diff)  # The negative of original polys cut by extent
 
         if not diff_geoms:
-            self.logger.debug(__name__, "Gaps in polygon layer: no difference result, no errors...")
+            Logger().debug(__name__, "Gaps in polygon layer: no difference result, no errors...")
             return list()
 
         feature_error = list()
@@ -437,10 +437,10 @@ class GeometryUtils(QObject):
 
                 feature_error.append(conflict_geom)
         except TypeError as e:
-            self.logger.warning_msg(__name__,
-                                    QCoreApplication.translate("Geometry",
-                                                               "Checking polygon gaps we found a '{}' geometry, which is not supported! Please report the issue.").format(
-                                        QgsWkbTypes.displayString(diff_geoms.wkbType())))
+            Logger().warning_msg(__name__,
+                                 QCoreApplication.translate("Geometry",
+                                                            "Checking polygon gaps we found a '{}' geometry, which is not supported! Please report the issue.").format(
+                                     QgsWkbTypes.displayString(diff_geoms.wkbType())))
 
         unified_error = QgsGeometry.collectGeometry(feature_error)
         feature_error.clear()
@@ -449,7 +449,7 @@ class GeometryUtils(QObject):
         aux_convex_hull = union_geom.convexHull()
         clean_errors = unified_error.intersection(aux_convex_hull)
 
-        return self.extract_geoms_by_type(clean_errors, [QgsWkbTypes.PolygonGeometry])
+        return GeometryUtils.extract_geoms_by_type(clean_errors, [QgsWkbTypes.PolygonGeometry])
 
     def add_topological_vertices(self, layer1, layer2, tolerance=0):
         """
@@ -571,7 +571,7 @@ class GeometryUtils(QObject):
 
         return difference_features
 
-    def extract_geoms_by_type(self, geometry_collection, geometry_types):
+    def extract_geoms_by_type(geometry_collection, geometry_types):
         """
         Get a list of geometries with type in geometry_types from a geometry
         collection
@@ -1033,7 +1033,7 @@ class GeometryUtils(QObject):
     def get_intersection_features(layer, geometries, id_field=None):
         """
         Return a list of lists, every list has the feature ids of features
-        that intersect with every geometry. If id_field is None return QGIS id.
+        that intersect with every geometry. If id_field is None, we return the QGIS id.
 
         layer: QgsVectorLayer
         geometries: list of QgsGeometries (Order is not modified)
