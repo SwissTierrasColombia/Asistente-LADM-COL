@@ -66,43 +66,37 @@ class QROverlappingBoundaryPoints(AbstractQualityRule):
     def validate(self, db, db_qr, layer_dict, tolerance, **kwargs):
         # TODO: emit progress values
         point_layer = list(layer_dict[QUALITY_RULE_LAYERS].values())[0] if layer_dict[QUALITY_RULE_LAYERS] else None
-        if not point_layer:
+
+        pre_res = self._check_prerrequisite_layer(QCoreApplication.translate("QualityRules", "Boundary point"), point_layer)
+        if pre_res:
+            return pre_res
+
+        overlapping = GeometryUtils.get_overlapping_points(point_layer)
+        flat_overlapping = [fid for items in overlapping for fid in items]  # Build a flat list of ids
+
+        dict_uuids = {f.id(): f[db.names.T_ILI_TID_F] for f in point_layer.getFeatures(flat_overlapping)}
+
+        errors = {'geometries': list(), 'data': list()}
+        for items in overlapping:
+            # We need a feature geometry, pick the first id to get it
+            feature = point_layer.getFeature(items[0])
+            errors['geometries'].append(feature.geometry())
+
+            error_data = [  # [obj_uuids, rel_obj_uuids, values, details]
+                [str(dict_uuids.get(i)) for i in items],
+                None,
+                len(items),
+                None]
+            errors['data'].append(error_data)
+
+        self._save_errors(db_qr, self._ERROR_01, errors)
+
+        if len(flat_overlapping) > 0:
             return QualityRuleExecutionResult(Qgis.Critical,
                                               QCoreApplication.translate("QualityRules",
-                                                                         "'Boundary point' layer not found!"))
-
-        if point_layer.featureCount() == 0:
-            return QualityRuleExecutionResult(Qgis.Warning,
-                                              QCoreApplication.translate("QualityRules",
-                                                                         "There are no points in layer 'Boundary point' to check for overlaps!"))
-
+                                                                         "{} overlapping boundary points were found!").format(
+                                                  len(flat_overlapping)))
         else:
-            overlapping = GeometryUtils.get_overlapping_points(point_layer)
-            flat_overlapping = [fid for items in overlapping for fid in items]  # Build a flat list of ids
-
-            dict_uuids = {f.id(): f[db.names.T_ILI_TID_F] for f in point_layer.getFeatures(flat_overlapping)}
-
-            errors = {'geometries': list(), 'data': list()}
-            for items in overlapping:
-                # We need a feature geometry, pick the first id to get it
-                feature = point_layer.getFeature(items[0])
-                errors['geometries'].append(feature.geometry())
-
-                error_data = [  # [obj_uuids, rel_obj_uuids, values, details]
-                    [str(dict_uuids.get(i)) for i in items],
-                    None,
-                    len(items),
-                    None]
-                errors['data'].append(error_data)
-
-            self._save_errors(db_qr, self._ERROR_01, errors)
-
-            if len(flat_overlapping) > 0:
-                return QualityRuleExecutionResult(Qgis.Critical,
-                                                  QCoreApplication.translate("QualityRules",
-                                                                             "{} overlapping boundary points were found!").format(
-                                                      len(flat_overlapping)))
-            else:
-                return QualityRuleExecutionResult(Qgis.Success,
-                                                  QCoreApplication.translate("QualityRules",
-                                                                             "There are no overlapping boundary points."))
+            return QualityRuleExecutionResult(Qgis.Success,
+                                              QCoreApplication.translate("QualityRules",
+                                                                         "There are no overlapping boundary points."))

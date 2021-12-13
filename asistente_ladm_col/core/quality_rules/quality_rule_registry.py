@@ -22,6 +22,7 @@ from asistente_ladm_col.logic.quality_rules.qr_overlapping_boundary_points impor
 from asistente_ladm_col.logic.quality_rules.qr_overlapping_boundaries import QROverlappingBoundaries
 from asistente_ladm_col.logic.quality_rules.qr_validate_data_against_model import QRValidateDataAgainstModel
 from asistente_ladm_col.logic.quality_rules.qr_gaps_in_plots import QRGapsInPlots
+from asistente_ladm_col.logic.quality_rules.qr_parcel_right_relationship import QRParcelRightRelationship
 from asistente_ladm_col.utils.singleton import Singleton
 
 
@@ -39,6 +40,7 @@ class QualityRuleRegistry(metaclass=Singleton):
         self.register_quality_rule(QROverlappingBoundaryPoints())
         self.register_quality_rule(QROverlappingBoundaries())
         self.register_quality_rule(QRGapsInPlots())
+        self.register_quality_rule(QRParcelRightRelationship())
 
     def register_quality_rule(self, quality_rule):
         """

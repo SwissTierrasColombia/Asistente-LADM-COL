@@ -370,18 +370,6 @@ class QualityRuleConfig:
             EnumQualityRule.Logic: {
                 QUALITY_GROUP_NAME: QCoreApplication.translate("QualityDialog", "Logic consistency rules"),
                 QUALITY_RULES: {
-                    EnumQualityRule.Logic.PARCEL_RIGHT_RELATIONSHIP: {
-                        QUALITY_RULE_ID: EnumQualityRule.Logic.PARCEL_RIGHT_RELATIONSHIP,
-                        QUALITY_RULE_NAME: translated_strings[EnumQualityRule.Logic.PARCEL_RIGHT_RELATIONSHIP],
-                        QUALITY_RULE_TABLE_NAME: QCoreApplication.translate("QualityRulesConfig", "predio_error_derecho"),
-                        QUALITY_RULE_TABLE_FIELDS: [
-                            QgsField(QCoreApplication.translate("QualityRulesConfig", "id_predio"), QVariant.String)
-                        ],
-                        QUALITY_RULE_DOMAIN_ERROR_CODES: [
-                            QUALITY_RULE_ERROR_CODE_E400101,
-                            QUALITY_RULE_ERROR_CODE_E400102
-                        ]
-                    },
                     # 4002 could be taken if needed, we used it in early stages of the model, but then discarded it
                     EnumQualityRule.Logic.FRACTION_SUM_FOR_PARTY_GROUPS: {
                         QUALITY_RULE_ID: EnumQualityRule.Logic.FRACTION_SUM_FOR_PARTY_GROUPS,

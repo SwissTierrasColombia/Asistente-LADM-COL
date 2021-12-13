@@ -18,9 +18,14 @@
 from abc import abstractmethod
 
 from qgis.PyQt.QtCore import (pyqtSignal,
-                              QObject)
+                              QObject,
+                              QCoreApplication)
+
+from qgis.core import Qgis
 
 from asistente_ladm_col.app_interface import AppInterface
+from asistente_ladm_col.config.keys.common import QUALITY_RULE_LAYERS
+from asistente_ladm_col.core.quality_rules.quality_rule_execution_result import QualityRuleExecutionResult
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.abstract_class import AbstractQObjectMeta
 from asistente_ladm_col.utils.quality_error_db_utils import save_errors
@@ -115,3 +120,23 @@ class AbstractQualityRule(QObject, metaclass=AbstractQObjectMeta):
         target_layer = self._type if target_layer is None else target_layer
         res, msg = save_errors(db_qr, self._id, error_code, error_data, target_layer, ili_name=None)
         print(res, msg)
+
+    def _check_prerrequisite_layers(self, layer_dict):
+        for layer_name, layer in layer_dict[QUALITY_RULE_LAYERS].items():
+            res = self._check_prerrequisite_layer(layer_name, layer)
+            if res:
+                return res
+
+        return None
+
+    def _check_prerrequisite_layer(self, layer_name, layer):
+        if not layer:
+            return QualityRuleExecutionResult(Qgis.Critical,
+                                              QCoreApplication.translate("QualityRules",
+                                                                         "'{}' layer not found!").format(
+                                                  layer_name))
+        if layer.featureCount() == 0:
+            return QualityRuleExecutionResult(Qgis.Warning,
+                                              QCoreApplication.translate("QualityRules",
+                                                                         "There are no records in layer '{}' to validate the quality rule!").format(
+                                                  layer.name()))

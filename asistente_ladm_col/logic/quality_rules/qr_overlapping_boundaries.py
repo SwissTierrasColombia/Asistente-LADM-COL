@@ -73,16 +73,9 @@ class QROverlappingBoundaries(AbstractQualityRule):
         #       nor common intermediate segmenr's vertices (between line A and B).
         boundary_layer = list(layer_dict[QUALITY_RULE_LAYERS].values())[0] if layer_dict[QUALITY_RULE_LAYERS] else None
 
-        if not boundary_layer:
-            return QualityRuleExecutionResult(Qgis.Critical,
-                                              QCoreApplication.translate("QualityRules",
-                                                                         "'Boundary' layer not found!").format(
-                                                  layer_name))
-
-        if boundary_layer.featureCount() == 0:
-            return QualityRuleExecutionResult(Qgis.Warning,
-                                              QCoreApplication.translate("QualityRules",
-                                                                         "There are no boundaries in layer 'Boundary' to check for overlaps!"))
+        pre_res = self._check_prerrequisite_layer(QCoreApplication.translate("QualityRules", "Boundary"), boundary_layer)
+        if pre_res:
+            return pre_res
 
         res, overlapping, msg = GeometryUtils.get_overlapping_lines(boundary_layer)
         if not res:

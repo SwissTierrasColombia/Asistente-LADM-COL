@@ -30,88 +30,90 @@ from asistente_ladm_col.config.keys.common import (QUALITY_RULE_LAYERS,
                                                    FIX_ADJUSTED_LAYER)
 from asistente_ladm_col.config.general_config import DEFAULT_USE_ROADS_VALUE
 from asistente_ladm_col.config.layer_config import LADMNames
-from asistente_ladm_col.config.quality_rule_config import (QR_IGACR3006,
-                                                           QRE_IGACR3006E01)
-from asistente_ladm_col.core.quality_rules.abstract_quality_rule import AbstractQualityRule
+from asistente_ladm_col.config.quality_rule_config import (QR_IGACR4001,
+                                                           QRE_IGACR4001E01,
+                                                           QRE_IGACR4001E02)
+from asistente_ladm_col.core.quality_rules.abstract_logic_quality_rule import AbstractLogicQualityRule
 from asistente_ladm_col.core.quality_rules.quality_rule_execution_result import QualityRuleExecutionResult
 from asistente_ladm_col.lib.geometry import GeometryUtils
 
 
-class QRGapsInPlots(AbstractQualityRule):
+class QRParcelRightRelationship(AbstractLogicQualityRule):
     """
-    Check that there are no gaps in plots
+    Check that parcels and right relationship is consistent
     """
-    _ERROR_01 = QRE_IGACR3006E01
+    _ERROR_01 = QRE_IGACR4001E01  # Parcel with no rights
+    _ERROR_02 = QRE_IGACR4001E02  # More than one 'domain' right
 
     def __init__(self):
-        AbstractQualityRule.__init__(self)
+        AbstractLogicQualityRule.__init__(self)
 
-        self._id = QR_IGACR3006
-        self._name = "No deben haber huecos entre terrenos"
-        self._type = EnumQualityRuleType.POLYGON
-        self._tags = ["igac", "instituto geográfico agustín codazzi", "polígonos", "terrenos", "huecos", "agujeros"]
+        self._id = QR_IGACR4001
+        self._name = "La relación entre predio y derecho debe ser consistente"
+        self._tags = ["igac", "instituto geográfico agustín codazzi", "lógica", "negocio", "predio", "derecho"]
         self._models = [LADMNames.SURVEY_MODEL_KEY]
 
-        self._errors = {self._ERROR_01: "No deben haber huecos entre terrenos"}
+        self._errors = {self._ERROR_01: "El predio no tiene derecho asociado",
+                        self._ERROR_02: "El predio tiene más de un derecho de dominio asociado"}
 
         # Optional. Only useful for display purposes.
         self._field_mapping = dict()  # E.g., {'id_objetos': 'ids_punto_lindero', 'valores': 'conteo'}
 
     def layers_config(self, names):
-        return {
-            QUALITY_RULE_LADM_COL_LAYERS: [names.LC_PLOT_T],
-            QUALITY_RULE_ADJUSTED_LAYERS: {
-                names.LC_PLOT_T: {
-                    ADJUSTED_INPUT_LAYER: names.LC_PLOT_T,
-                    ADJUSTED_REFERENCE_LAYER: names.LC_PLOT_T,
-                    FIX_ADJUSTED_LAYER: True
-                }
-            }
-        }
+        return {QUALITY_RULE_LADM_COL_LAYERS: [names.LC_PARCEL_T,
+                                               names.LC_RIGHT_T]}
 
     def validate(self, db, db_qr, layer_dict, tolerance, **kwargs):
         self.progress_changed.emit(5)
-        use_roads = bool(QSettings().value('Asistente-LADM-COL/quality/use_roads', DEFAULT_USE_ROADS_VALUE, bool))
-        plot_layer = list(layer_dict[QUALITY_RULE_LAYERS].values())[0] if layer_dict[QUALITY_RULE_LAYERS] else None
+        ladm_queries = self._get_ladm_queries(db.engine)
 
-        pre_res = self._check_prerrequisite_layer(QCoreApplication.translate("QualityRules", "Plot"), plot_layer)
+        pre_res = self._check_prerrequisite_layers(layer_dict)
         if pre_res:
             return pre_res
 
-        self.progress_changed.emit(10)
-        gaps = GeometryUtils.get_gaps_in_polygon_layer(plot_layer, use_roads)
-        self.progress_changed.emit(60)
+        # First error type: parcel with no rights
+        res, records = ladm_queries.get_parcels_with_no_right(db)
+        count_e01_records = len(records)
+        self.progress_changed.emit(40)
 
-        res_type, msg = Qgis.NoLevel, ""
-        if gaps:
-            fids_list = GeometryUtils.get_intersection_features(plot_layer, gaps)  # List of lists of qgis ids
-            self.progress_changed.emit(80)
-
-            uuids_list = list()
-            for fids in fids_list:
-                # Note this preserve order from gaps list, so we are able
-                # to get gap geometry and its correspondant t_ili_tid list
-                uuids_list.append([f[db.names.T_ILI_TID_F] for f in plot_layer.getFeatures(fids)])
-
+        if res:
             errors = {'geometries': list(), 'data': list()}
-            for serial, geometry in enumerate(gaps):
-                errors['geometries'].append(geometry)
-
+            for record in records:
                 error_data = [  # [obj_uuids, rel_obj_uuids, values, details]
-                    uuids_list[serial],
+                    [record[db.names.T_ILI_TID_F]],
                     None,
                     None,
                     None]
                 errors['data'].append(error_data)
 
             self._save_errors(db_qr, self._ERROR_01, errors)
-            self.progress_changed.emit(90)
+            self.progress_changed.emit(50)
 
+        # Second error type: parcel with more than one domain right
+        res, records = ladm_queries.get_parcels_with_repeated_domain_right(db)
+        count_e02_records = len(records)
+        self.progress_changed.emit(85)
+
+        if res:
+            errors = {'geometries': list(), 'data': list()}
+            for record in records:
+                error_data = [  # [obj_uuids, rel_obj_uuids, values, details]
+                    [record[db.names.T_ILI_TID_F]],
+                    None,
+                    None,
+                    None]
+                errors['data'].append(error_data)
+
+            self._save_errors(db_qr, self._ERROR_02, errors)
+            self.progress_changed.emit(95)
+
+        if count_e01_records + count_e02_records > 0:
             res_type = Qgis.Critical
-            msg = QCoreApplication.translate("QualityRules", "{} gaps were found in 'Plot' layer.").format(len(gaps))
+            msg = QCoreApplication.translate("QualityRules", "{} parcels with inconsistent rights were found.").format(
+                count_e01_records + count_e02_records)
         else:
             res_type = Qgis.Success
-            msg = QCoreApplication.translate("QualityRules", "There are no gaps in layer Plot.")
+            msg = QCoreApplication.translate("QualityRules", "All parcels have valid right relationships.")
 
         self.progress_changed.emit(100)
         return QualityRuleExecutionResult(res_type, msg)

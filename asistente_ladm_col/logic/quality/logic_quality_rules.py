@@ -81,35 +81,7 @@ class LogicQualityRules:
         return self._ladm_queries[engine]
 
     def check_parcel_right_relationship(self, db):
-        rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Logic.PARCEL_RIGHT_RELATIONSHIP)
-        error_layer = QgsVectorLayer("NoGeometry", rule.error_table_name, "memory")
-        pr = error_layer.dataProvider()
-        pr.addAttributes(rule.error_table_fields)
-        error_layer.updateFields()
-
-        new_features = list()
-        res, records = self.get_ladm_queries(db.engine).get_parcels_with_no_right(db)
-        if res:
-            for record in records:
-                new_feature = QgsVectorLayerUtils().createFeature(error_layer,
-                                                                  QgsGeometry(),
-                                                                  {0: record[db.names.T_ILI_TID_F],
-                                                                   1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E400102),
-                                                                   2: QUALITY_RULE_ERROR_CODE_E400102})
-                new_features.append(new_feature)
-
-        res, records = self.get_ladm_queries(db.engine).get_parcels_with_repeated_domain_right(db)
-        if res:
-            for record in records:
-                new_feature = QgsVectorLayerUtils().createFeature(error_layer,
-                                                                  QgsGeometry(),
-                                                                  {0: record[db.names.T_ILI_TID_F],
-                                                                   1: self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E400101),
-                                                                   2: QUALITY_RULE_ERROR_CODE_E400101})
-                new_features.append(new_feature)
-
-        error_layer.dataProvider().addFeatures(new_features)
-        return self.return_message(db, rule.error_table_name, error_layer)
+        pass
 
     def check_duplicate_records_in_a_table(self, db, table, fields, rule_code):
         rule = self.quality_rules_manager.get_quality_rule(rule_code)
