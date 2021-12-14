@@ -122,6 +122,10 @@ class AbstractQualityRule(QObject, metaclass=AbstractQObjectMeta):
         print(res, msg)
 
     def _check_prerrequisite_layers(self, layer_dict):
+        """
+        Use it when you don't need the layers themselves,
+        but just to verify if the layers are valid and have features.
+        """
         for layer_name, layer in layer_dict[QUALITY_RULE_LAYERS].items():
             res = self._check_prerrequisite_layer(layer_name, layer)
             if res:
@@ -140,3 +144,18 @@ class AbstractQualityRule(QObject, metaclass=AbstractQObjectMeta):
                                               QCoreApplication.translate("QualityRules",
                                                                          "There are no records in layer '{}' to validate the quality rule!").format(
                                                   layer.name()))
+
+    def _get_layer(self, layer_dict, layer_name=''):
+        """
+        Get layer from layer_dict based on a layer name.
+
+        If layer_name is not passed, the first layer in layer_dict will be returned,
+        so this option is suitable for getting a layer when there is only one in the dict.
+        """
+        if layer_name:
+            return layer_dict[QUALITY_RULE_LAYERS][layer_name]
+        else:
+            for layer_name, layer in layer_dict[QUALITY_RULE_LAYERS].items():
+                return layer  # Get the first one
+
+        return None

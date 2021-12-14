@@ -21,9 +21,7 @@ from qgis.PyQt.QtCore import (QCoreApplication,
 from qgis.core import (Qgis,
                        QgsVectorLayer)
 
-from asistente_ladm_col.config.enums import EnumQualityRuleType
-from asistente_ladm_col.config.keys.common import (QUALITY_RULE_LAYERS,
-                                                   QUALITY_RULE_LADM_COL_LAYERS,
+from asistente_ladm_col.config.keys.common import (QUALITY_RULE_LADM_COL_LAYERS,
                                                    QUALITY_RULE_ADJUSTED_LAYERS,
                                                    ADJUSTED_INPUT_LAYER,
                                                    ADJUSTED_REFERENCE_LAYER,
@@ -32,23 +30,22 @@ from asistente_ladm_col.config.general_config import DEFAULT_USE_ROADS_VALUE
 from asistente_ladm_col.config.layer_config import LADMNames
 from asistente_ladm_col.config.quality_rule_config import (QR_IGACR3006,
                                                            QRE_IGACR3006E01)
-from asistente_ladm_col.core.quality_rules.abstract_quality_rule import AbstractQualityRule
+from asistente_ladm_col.core.quality_rules.abstract_polygon_quality_rule import AbstractPolygonQualityRule
 from asistente_ladm_col.core.quality_rules.quality_rule_execution_result import QualityRuleExecutionResult
 from asistente_ladm_col.lib.geometry import GeometryUtils
 
 
-class QRGapsInPlots(AbstractQualityRule):
+class QRGapsInPlots(AbstractPolygonQualityRule):
     """
     Check that there are no gaps in plots
     """
     _ERROR_01 = QRE_IGACR3006E01
 
     def __init__(self):
-        AbstractQualityRule.__init__(self)
+        AbstractPolygonQualityRule.__init__(self)
 
         self._id = QR_IGACR3006
         self._name = "No deben haber huecos entre terrenos"
-        self._type = EnumQualityRuleType.POLYGON
         self._tags = ["igac", "instituto geográfico agustín codazzi", "polígonos", "terrenos", "huecos", "agujeros"]
         self._models = [LADMNames.SURVEY_MODEL_KEY]
 
@@ -58,22 +55,19 @@ class QRGapsInPlots(AbstractQualityRule):
         self._field_mapping = dict()  # E.g., {'id_objetos': 'ids_punto_lindero', 'valores': 'conteo'}
 
     def layers_config(self, names):
-        return {
-            QUALITY_RULE_LADM_COL_LAYERS: [names.LC_PLOT_T],
-            QUALITY_RULE_ADJUSTED_LAYERS: {
-                names.LC_PLOT_T: {
-                    ADJUSTED_INPUT_LAYER: names.LC_PLOT_T,
-                    ADJUSTED_REFERENCE_LAYER: names.LC_PLOT_T,
-                    FIX_ADJUSTED_LAYER: True
-                }
-            }
-        }
+        return {QUALITY_RULE_LADM_COL_LAYERS: [names.LC_PLOT_T],
+                QUALITY_RULE_ADJUSTED_LAYERS: {
+                    names.LC_PLOT_T: {
+                        ADJUSTED_INPUT_LAYER: names.LC_PLOT_T,
+                        ADJUSTED_REFERENCE_LAYER: names.LC_PLOT_T,
+                        FIX_ADJUSTED_LAYER: True
+                    }}}
 
     def validate(self, db, db_qr, layer_dict, tolerance, **kwargs):
         self.progress_changed.emit(5)
         use_roads = bool(QSettings().value('Asistente-LADM-COL/quality/use_roads', DEFAULT_USE_ROADS_VALUE, bool))
-        plot_layer = list(layer_dict[QUALITY_RULE_LAYERS].values())[0] if layer_dict[QUALITY_RULE_LAYERS] else None
 
+        plot_layer = self._get_layer(layer_dict)
         pre_res = self._check_prerrequisite_layer(QCoreApplication.translate("QualityRules", "Plot"), plot_layer)
         if pre_res:
             return pre_res

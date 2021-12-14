@@ -21,8 +21,7 @@ from qgis.core import (Qgis,
                        QgsVectorLayer)
 
 from asistente_ladm_col.config.enums import EnumQualityRuleType
-from asistente_ladm_col.config.keys.common import (QUALITY_RULE_LAYERS,
-                                                   QUALITY_RULE_LADM_COL_LAYERS,
+from asistente_ladm_col.config.keys.common import (QUALITY_RULE_LADM_COL_LAYERS,
                                                    QUALITY_RULE_ADJUSTED_LAYERS,
                                                    ADJUSTED_INPUT_LAYER,
                                                    ADJUSTED_REFERENCE_LAYER,
@@ -30,23 +29,22 @@ from asistente_ladm_col.config.keys.common import (QUALITY_RULE_LAYERS,
 from asistente_ladm_col.config.layer_config import LADMNames
 from asistente_ladm_col.config.quality_rule_config import (QR_IGACR2001,
                                                            QRE_IGACR2001E01)
-from asistente_ladm_col.core.quality_rules.abstract_quality_rule import AbstractQualityRule
+from asistente_ladm_col.core.quality_rules.abstract_line_quality_rule import AbstractLineQualityRule
 from asistente_ladm_col.core.quality_rules.quality_rule_execution_result import QualityRuleExecutionResult
 from asistente_ladm_col.lib.geometry import GeometryUtils
 
 
-class QROverlappingBoundaries(AbstractQualityRule):
+class QROverlappingBoundaries(AbstractLineQualityRule):
     """
     Check that boundaries do not overlap
     """
     _ERROR_01 = QRE_IGACR2001E01
 
     def __init__(self):
-        AbstractQualityRule.__init__(self)
+        AbstractLineQualityRule.__init__(self)
 
         self._id = QR_IGACR2001
         self._name = "Los linderos no deben superponerse"
-        self._type = EnumQualityRuleType.LINE
         self._tags = ["igac", "instituto geográfico agustín codazzi", "líneas", "linderos", "superposición"]
         self._models = [LADMNames.SURVEY_MODEL_KEY]
 
@@ -56,22 +54,19 @@ class QROverlappingBoundaries(AbstractQualityRule):
         self._field_mapping = dict()  # E.g., {'id_objetos': 'ids_punto_lindero', 'valores': 'conteo'}
 
     def layers_config(self, names):
-        return {
-            QUALITY_RULE_LADM_COL_LAYERS: [names.LC_BOUNDARY_T],
-            QUALITY_RULE_ADJUSTED_LAYERS: {
-                names.LC_BOUNDARY_T: {
-                    ADJUSTED_INPUT_LAYER: names.LC_BOUNDARY_T,
-                    ADJUSTED_REFERENCE_LAYER: names.LC_BOUNDARY_T,
-                    FIX_ADJUSTED_LAYER: True
-                }
-            }
-        }
+        return {QUALITY_RULE_LADM_COL_LAYERS: [names.LC_BOUNDARY_T],
+                QUALITY_RULE_ADJUSTED_LAYERS: {
+                    names.LC_BOUNDARY_T: {
+                        ADJUSTED_INPUT_LAYER: names.LC_BOUNDARY_T,
+                        ADJUSTED_REFERENCE_LAYER: names.LC_BOUNDARY_T,
+                        FIX_ADJUSTED_LAYER: True
+                    }}}
 
     def validate(self, db, db_qr, layer_dict, tolerance, **kwargs):
         # TODO: emit progress values
         # TODO: Check that overlapping points are what we expect. We won't consider end-points as overlapping points
         #       nor common intermediate segmenr's vertices (between line A and B).
-        boundary_layer = list(layer_dict[QUALITY_RULE_LAYERS].values())[0] if layer_dict[QUALITY_RULE_LAYERS] else None
+        boundary_layer = self._get_layer(layer_dict)
 
         pre_res = self._check_prerrequisite_layer(QCoreApplication.translate("QualityRules", "Boundary"), boundary_layer)
         if pre_res:
@@ -100,8 +95,8 @@ class QROverlappingBoundaries(AbstractQualityRule):
                 line_errors = self._get_error_dict(db, lines_intersected)
                 self._save_errors(db_qr, self._ERROR_01, line_errors)
 
-        len_point_errors = len(point_errors['data'])
-        len_line_errors = len(line_errors['data'])
+        len_point_errors = len(point_errors.get('data', dict()))
+        len_line_errors = len(line_errors.get('data', dict()))
 
         if len(point_errors) == 0 and len(line_errors) == 0:
             return QualityRuleExecutionResult(Qgis.Success, QCoreApplication.translate("QualityRules",
