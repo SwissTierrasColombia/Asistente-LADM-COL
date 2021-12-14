@@ -197,7 +197,7 @@ class TesQualityValidations(unittest.TestCase):
         test_plots_layer = QgsVectorLayer(uri, 'check_gaps_in_plots', 'ogr')
 
         print('\nINFO: Validating Gaps in Plots using roads and multiple geometries...')
-        gaps = self.geometry.get_gaps_in_polygon_layer(test_plots_layer, include_roads=True)
+        gaps = GeometryUtils.get_gaps_in_polygon_layer(test_plots_layer, True)
         geometries = [g.asWkt() for g in gaps]
 
         expected_list = [
@@ -215,7 +215,7 @@ class TesQualityValidations(unittest.TestCase):
         print('\nINFO: Validating Gaps in Plots using roads for one geometry...')
         test_plots_layer.startEditing()
         test_plots_layer.deleteFeature(2)
-        gaps = self.geometry.get_gaps_in_polygon_layer(test_plots_layer, include_roads=True)
+        gaps = GeometryUtils.get_gaps_in_polygon_layer(test_plots_layer, True)
         geometries = [g.asWkt() for g in gaps]
         self.assertIn(
             'Polygon ((1001895.43752562382724136 1013467.22283697873353958, 1001907.30677810893394053 1013464.25552385742776096, 1001907.67769224906805903 1013454.2408420731080696, 1001895.43752562382724136 1013454.2408420731080696, 1001895.43752562382724136 1013467.22283697873353958))',
@@ -227,7 +227,7 @@ class TesQualityValidations(unittest.TestCase):
         test_plots_layer.rollBack()
 
         print('\nINFO: Validating Gaps in Plots without using roads and multiple geometries...')
-        gaps = self.geometry.get_gaps_in_polygon_layer(test_plots_layer, include_roads=False)
+        gaps = GeometryUtils.get_gaps_in_polygon_layer(test_plots_layer, False)
         geometries = [g.asWkt() for g in gaps]
         self.assertIn(
             'Polygon ((1001895.43752562382724136 1013467.22283697873353958, 1001907.30677810893394053 1013464.25552385742776096, 1001907.67769224906805903 1013454.2408420731080696, 1001895.43752562382724136 1013454.2408420731080696, 1001895.43752562382724136 1013467.22283697873353958))',
@@ -240,7 +240,7 @@ class TesQualityValidations(unittest.TestCase):
         print('\nINFO: Validating Gaps in Plots without using roads for one geometry...')
         test_plots_layer.startEditing()
         test_plots_layer.deleteFeature(2)
-        gaps = self.geometry.get_gaps_in_polygon_layer(test_plots_layer, include_roads=False)
+        gaps = GeometryUtils.get_gaps_in_polygon_layer(test_plots_layer, False)
         geometries = [g.asWkt() for g in gaps]
         self.assertIn(
             'Polygon ((1001895.43752562382724136 1013467.22283697873353958, 1001907.30677810893394053 1013464.25552385742776096, 1001907.67769224906805903 1013454.2408420731080696, 1001895.43752562382724136 1013454.2408420731080696, 1001895.43752562382724136 1013467.22283697873353958))',
@@ -256,7 +256,7 @@ class TesQualityValidations(unittest.TestCase):
         test_plots_layer.deleteFeature(1)
         test_plots_layer.deleteFeature(2)
         test_plots_layer.deleteFeature(3)
-        gaps = self.geometry.get_gaps_in_polygon_layer(test_plots_layer, include_roads=True)
+        gaps = GeometryUtils.get_gaps_in_polygon_layer(test_plots_layer, True)
         geometries = [g.asWkt() for g in gaps]
         self.assertEqual([], geometries)
         self.assertEqual(len(geometries), 0)
@@ -268,7 +268,7 @@ class TesQualityValidations(unittest.TestCase):
         test_plots_layer.deleteFeature(1)
         test_plots_layer.deleteFeature(2)
         test_plots_layer.deleteFeature(3)
-        gaps = self.geometry.get_gaps_in_polygon_layer(test_plots_layer, include_roads=False)
+        gaps = GeometryUtils.get_gaps_in_polygon_layer(test_plots_layer, False)
         geometries = [g.asWkt() for g in gaps]
         self.assertEqual([], geometries)
         self.assertEqual(len(geometries), 0)
@@ -279,7 +279,7 @@ class TesQualityValidations(unittest.TestCase):
         test_plots_layer.startEditing()
         test_plots_layer.deleteFeature(1)
         test_plots_layer.deleteFeature(3)
-        gaps = self.geometry.get_gaps_in_polygon_layer(test_plots_layer, include_roads=True)
+        gaps = GeometryUtils.get_gaps_in_polygon_layer(test_plots_layer, True)
         geometries = [g.asWkt() for g in gaps]
         self.assertIn(
             'Polygon ((1001889.87381352134980261 1013447.93530169036239386, 1001885.42284383939113468 1013430.87325124291237444, 1001901.72405463655013591 1013411.57209242216777056, 1001845.19794039404951036 1013415.08188382943626493, 1001851.47861975431442261 1013424.31817700632382184, 1001833.74493685469496995 1013433.92392191023100168, 1001889.87381352134980261 1013447.93530169036239386))',
@@ -292,7 +292,7 @@ class TesQualityValidations(unittest.TestCase):
         test_plots_layer.startEditing()
         test_plots_layer.deleteFeature(1)
         test_plots_layer.deleteFeature(3 )
-        gaps = self.geometry.get_gaps_in_polygon_layer(test_plots_layer, include_roads=False)
+        gaps = GeometryUtils.get_gaps_in_polygon_layer(test_plots_layer, False)
         geometries = [g.asWkt() for g in gaps]
         self.assertEqual([], geometries)
         self.assertEqual(len(geometries), 0)
