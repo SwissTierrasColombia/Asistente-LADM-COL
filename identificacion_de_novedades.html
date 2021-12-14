@@ -104,8 +104,12 @@
 <li class="toctree-l1"><a class="reference internal" href="reportes.html">Reportes</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Identificación de novedades</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#configuracion-identificacion-de-novedades">Configuración identificación de novedades</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#consulta-por-predio">Consulta por predio</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#consulta-masiva">Consulta masiva</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#uso-de-identificacion-de-novedades">Uso de identificación de novedades</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#consulta-por-predio">Consulta por predio</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#consulta-masiva">Consulta masiva</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tipos-de-novedades">Tipos de Novedades</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="sistema_de_transicion.html">Sistema de transición</a></li>
@@ -187,15 +191,72 @@
             
   <div class="tex2jax_ignore mathjax_ignore section" id="identificacion-de-novedades">
 <h1>Identificación de novedades<a class="headerlink" href="#identificacion-de-novedades" title="Enlazar permanentemente con este título">¶</a></h1>
-<img src="_static/identificacion_de_novedades/change_detections.gif" alt="Identificación de novedades" style="height:500px;width:800px" />
+<p>El Asistente LADM-COL permite comparar la información oficial de la autoridad catastral (insumos) frente a la información producto del levantamiento catastral.</p>
+<div class="note">
+<p class="admonition-title">IMPORTANTE</p>
+<p>Para usar esta funcionalidad es necesario disponer tanto de los datos oficiales (insumos) como de los datos producto del levantamiento catastral, bien sea en la misma base de datos (o esquema) o en dos bases de datos (o esquemas) diferentes.</p>
+</div>
 <div class="section" id="configuracion-identificacion-de-novedades">
 <h2>Configuración identificación de novedades<a class="headerlink" href="#configuracion-identificacion-de-novedades" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>En el menú LADM-COL de QGIS, selecciona <code class="docutils literal notranslate"><span class="pre">Identificación</span> <span class="pre">de</span> <span class="pre">novedades</span></code> y luego haz clic en <code class="docutils literal notranslate"><span class="pre">Configurar</span> <span class="pre">identificación</span> <span class="pre">de</span> <span class="pre">novedades</span></code> como se apecia en la imagen. Una vez allí, diligencia los parámetros y selecciona la base de datos en donde se encuentra el conjunto de datos del levantamiento catastral.</p>
+<p><a class="" data-lightbox="Configuración identificación de novedades" href="./_static/identificacion_de_novedades/configuracion_identificacion_novedades.gif" title="Configuración identificación de novedades" data-title="Configuración identificación de novedades"><img src="./_static/identificacion_de_novedades/configuracion_identificacion_novedades.gif" class="align-center" width="800px" alt="Configuración identificación de novedades"/></a></p>
 </div>
+<div class="section" id="uso-de-identificacion-de-novedades">
+<h2>Uso de identificación de novedades<a class="headerlink" href="#uso-de-identificacion-de-novedades" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>En el menú de <code class="docutils literal notranslate"><span class="pre">Identificación</span> <span class="pre">de</span> <span class="pre">novedades</span></code> se encuentran dos funcionalidades: <code class="docutils literal notranslate"><span class="pre">Consulta</span> <span class="pre">por</span> <span class="pre">predio</span></code> y <code class="docutils literal notranslate"><span class="pre">Consulta</span> <span class="pre">masiva</span></code>. En la primera opción se pueden consultar las novedades de un predio especifico, mientras que en la segunda opción se puede obtener un reporte en pantalla de las novedades presentadas en el total de los datos consultados.</p>
+<p>A continuación se explican ambas opciones con más detalle.</p>
 <div class="section" id="consulta-por-predio">
-<h2>Consulta por predio<a class="headerlink" href="#consulta-por-predio" title="Enlazar permanentemente con este título">¶</a></h2>
+<h3>Consulta por predio<a class="headerlink" href="#consulta-por-predio" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>Al ejecutar esta funcionalidad, automáticamente se cargan al mapa de QGIS las dos fuentes de datos a comparar y se abre un panel en la parte derecha de la interfaz, que permite realizar la consulta de un predio de manera espacial (esto es, haciendo clic sobre uno de los terrenos del mapa) o por alguno de los tres siguientes atributos:</p>
+<ul class="simple">
+<li><p>Número predial.</p></li>
+<li><p>Número predial anterior..</p></li>
+<li><p>Folio de Matrícula Inmobiliaria.</p></li>
+</ul>
+<p>Una vez realizada la consulta, se abre una tabla comparativa que muestra tanto el dato oficial (insumos) como el dato producto del levantamiento catastral.</p>
+<p>Además, en la vista del mapa se habilita de forma automática una herramienta de comparación gráfica, que permite identificar cambios de forma de la geometría de un terreno.</p>
+<p><a class="" data-lightbox="Consulta por predio" href="./_static/identificacion_de_novedades/consulta_predio.gif" title="Consulta por predio" data-title="Consulta por predio"><img src="./_static/identificacion_de_novedades/consulta_predio.gif" class="align-center" width="800px" alt="Consulta por predio"/></a></p>
+<p>La tabla comparativa del panel de identificación de novedades se compone de cuatro columnas:</p>
+<ul class="simple">
+<li><p>Atributo por el cual se hace la comparación.</p></li>
+<li><p>Dato de la fuente oficial (insumos).</p></li>
+<li><p>Dato del levantamiento catastral.</p></li>
+<li><p>Estado</p></li>
+</ul>
+<p>El estado corresponde a un color verde si el dato no presenta cambios y a un color rojo si se encuentran cambios entre las dos fuentes de datos.</p>
+<div class="seealso">
+<p class="admonition-title">TIP</p>
+<p>En la parte superior de la tabla de resultados se encuentra una caja de selección que permite alternar entre visualizar todos los predios de la fuente de datos o únicamente el predio consultado.</p>
+</div>
 </div>
 <div class="section" id="consulta-masiva">
-<h2>Consulta masiva<a class="headerlink" href="#consulta-masiva" title="Enlazar permanentemente con este título">¶</a></h2>
+<h3>Consulta masiva<a class="headerlink" href="#consulta-masiva" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>Al ejecutar esta funcionalidad se abre un panel en la parte derecha de la interfaz de QGIS, en donde se despliegan diferentes tipos de novedades que se pueden encontrar al realizar la comparación masiva entre las datos oficiales (insumos) y los datos de levantamiento catastral.</p>
+<p>Para cada tipo de novedad se muestra el conteo de cambios identificados en los dos conjuntos de datos, acompañado de un botón para ver la información de los predios que presentan ese tipo de novedad.</p>
+<p>Al hacer clic en el botón <code class="docutils literal notranslate"><span class="pre">Ver</span> <span class="pre">predios</span></code> se carga un listado de números prediales y su estado. Se puede hacer doble clic sobre alguno de los resultados para observar una tabla comparativa para ese predio.</p>
+<div class="note">
+<p class="admonition-title">IMPORTANTE</p>
+<p>La herramienta de comparación gráfica solo se activa cuando se encuentre el mismo predio tanto en los datos oficiales (insumos) como en los datos de levantamiento catastral, lo cual excluye, por ejemplo, a los tipos de novedad "Altas" y "Bajas".</p>
+</div>
+<p><a class="" data-lightbox="Consulta masiva" href="./_static/identificacion_de_novedades/consulta_masiva.gif" title="Consulta masiva" data-title="Consulta masiva"><img src="./_static/identificacion_de_novedades/consulta_masiva.gif" class="align-center" width="800px" alt="Consulta masiva"/></a></p>
+</div>
+<div class="section" id="tipos-de-novedades">
+<h3>Tipos de Novedades<a class="headerlink" href="#tipos-de-novedades" title="Enlazar permanentemente con este título">¶</a></h3>
+<p>A continuación se describe cada tipo de novedad:</p>
+<ul class="simple">
+<li><p><strong>Altas</strong>: Son predios incorporados en el levantamiento catastral y que no estaban en los datos oficiales (insumos).</p></li>
+<li><p><strong>Bajas</strong>: Son predios que no aparecen en el levantamiento catastral pero si se encuentran en los datos oficiales (insumos).</p></li>
+<li><p><strong>Predios con cambios</strong>: Son predios que reportan algún cambio en los datos alfanuméricos o en su forma geométrica (cambios físicos).</p></li>
+<li><p><strong>Predios sin cambios</strong>: Predios que no reportaron cambios alfanuméricos ni físicos en el levantamiento catastral en comparación a lo registrado en los datos oficiales (insumos).</p></li>
+</ul>
+<p>Se identifican además dos grupos de predios para facilitar el análisis de cambios y/o inconsistencias:</p>
+<ul class="simple">
+<li><p><strong>Números prediales duplicados</strong>: Identificación de números prediales asignados a predios diferentes en el levantamiento catastral.</p></li>
+<li><p><strong>Números prediales nulos</strong>: Predios a los cuales no se les asignó un número predial.</p></li>
+</ul>
+<p>Finalmente, se muestra un <strong>Total de novedades</strong>, que permite obtener un listado de todos los predios de la base de datos y su correspondiente estado.</p>
+<p><a class="" data-lightbox="Tipos de novedades" href="./_static/identificacion_de_novedades/resumen_novedades_masivo.png" title="Tipos de novedades" data-title="Tipos de novedades"><img src="./_static/identificacion_de_novedades/resumen_novedades_masivo.png" class="align-center" width="400px" alt="Tipos de novedades"/></a></p>
+</div>
 </div>
 </div>
 
