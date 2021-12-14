@@ -97,10 +97,11 @@ class QRParcelRightRelationship(AbstractLogicQualityRule):
         if res:
             errors = {'geometries': list(), 'data': list()}
             for record in records:
+                related_objects = record['dominios'].split(";")
                 error_data = [  # [obj_uuids, rel_obj_uuids, values, details]
                     [record[db.names.T_ILI_TID_F]],
-                    None,
-                    None,
+                    related_objects,
+                    len(related_objects),
                     None]
                 errors['data'].append(error_data)
 

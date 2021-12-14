@@ -5,7 +5,9 @@
         begin           : 2021-12-13
         git sha         : :%H$
         copyright       : (C) 2021 by Germán Carrillo (SwissTierras Colombia)
+                          (C) 2018 by Fernando Pineda (SwissTierras Colombia)
         email           : gcarrillo@linuxmail.org
+                          wfpinedar@gmail.com
  ***************************************************************************/
 /***************************************************************************
  *                                                                         *
