@@ -7,12 +7,16 @@ from asistente_ladm_col.app_interface import AppInterface
 
 start_app()  # need to start before asistente_ladm_col.tests.utils
 
+from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 from asistente_ladm_col.tests.resources.expected_results.change_detections.supplies.parcel_data_to_compare_changes_all_data import parcel_data_to_compare_changes_all_data
 from asistente_ladm_col.tests.resources.expected_results.change_detections.supplies.parcel_data_to_compare_changes_parcel_number_253940000000000230099335131315 import parcel_data_to_compare_changes_parcel_number_253940000000000230099335131315
 from asistente_ladm_col.tests.resources.expected_results.change_detections.supplies.parcel_data_to_compare_changes_fmi_760ab38 import parcel_data_to_compare_changes_fmi_760ab38
 from asistente_ladm_col.tests.utils import (get_pg_conn,
                                             normalize_response,
+                                            restore_pg_db,
+                                            get_test_path,
                                             standardize_query_results,
                                             get_field_values_by_key_values,
                                             restore_schema,
@@ -26,8 +30,14 @@ class TestChangeDetectionSupplies(unittest.TestCase):
     def setUpClass(cls):
         print("INFO: Restoring databases to be used")
         import_qgis_model_baker()
-        restore_schema('test_change_detections')
-        cls.db_pg = get_pg_conn('test_change_detections')
+
+        schema = 'test_change_detections'
+        models = [LADMColModelRegistry().model(LADMNames.LADM_COL_MODEL_KEY).full_name(),
+                  LADMColModelRegistry().model(LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY).full_name(),
+                  LADMColModelRegistry().model(LADMNames.SUPPLIES_MODEL_KEY).full_name(),
+                  LADMColModelRegistry().model(LADMNames.SUPPLIES_INTEGRATION_MODEL_KEY).full_name(),
+                  LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).full_name()]
+        cls.db_pg = restore_pg_db(schema, models, get_test_path("db/ladm/test_change_detections_v1_1.xtf"), True)
         res, code, msg = cls.db_pg.test_connection()
         cls.assertTrue(res, msg)
 

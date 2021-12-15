@@ -11,15 +11,16 @@ from asistente_ladm_col.app_interface import AppInterface
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
+from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             run_etl_model,
                                             import_asistente_ladm_col,
                                             unload_qgis_model_baker,
                                             import_processing,
-                                            get_pg_conn,
+                                            restore_pg_db,
                                             delete_features,
                                             get_test_path,
-                                            restore_schema,
                                             clean_table,
                                             reproject_to_ctm12)
 from asistente_ladm_col.lib.geometry import GeometryUtils
@@ -28,7 +29,7 @@ from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 
 import_processing()
 
-SCHEMA_LADM_COL_EMPTY = 'test_ladm_col_empty'
+SCHEMA_LADM_COL_EMPTY = 'test_copy_csv_empty'
 
 
 class TestCopy(unittest.TestCase):
@@ -43,9 +44,7 @@ class TestCopy(unittest.TestCase):
         cls.app.core.initialize_ctm12()  # We need to initialize CTM12
 
     def setUp(self):
-        restore_schema(SCHEMA_LADM_COL_EMPTY, True)
-        self.db_pg = get_pg_conn(SCHEMA_LADM_COL_EMPTY)
-
+        self.db_pg = restore_pg_db(SCHEMA_LADM_COL_EMPTY, [LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).full_name()])
         self.names = self.db_pg.names
         self.ladm_data = LADMData()
         self.geometry = GeometryUtils()
@@ -53,6 +52,12 @@ class TestCopy(unittest.TestCase):
         res, code, msg = self.db_pg.test_connection()
         self.assertTrue(res, msg)
         self.assertIsNotNone(self.names.LC_BOUNDARY_POINT_T, 'Names is None')
+
+        self.layers = {
+            self.db_pg.names.LC_AGREEMENT_TYPE_D: None,
+            self.db_pg.names.COL_POINT_TYPE_D: None,
+            self.db_pg.names.COL_PRODUCTION_METHOD_TYPE_D: None
+        }
 
     def test_copy_csv_to_db(self):
         print("\nINFO: Validating copy CSV points to DB...")
@@ -177,14 +182,20 @@ class TestCopy(unittest.TestCase):
             if row[colnames['id_punto_lindero']] == '50':
                 break
 
+        # Values used to check import data in ladm
+        self.app.core.get_layers(self.db_pg, self.layers, load=True)
+        agreement_type_value = list(self.layers[self.db_pg.names.LC_AGREEMENT_TYPE_D].getFeatures("ilicode like 'Acuerdo'"))[0]['t_id']
+        point_type_value = list(self.layers[self.db_pg.names.COL_POINT_TYPE_D].getFeatures("ilicode like 'Catastro.Construccion'"))[0]['t_id']
+        production_method_type_value = list(self.layers[self.db_pg.names.COL_PRODUCTION_METHOD_TYPE_D].getFeatures("ilicode like 'Metodo_Directo'"))[0]['t_id']
+
         self.assertEqual(row[colnames['id_punto_lindero']], '50')
-        self.assertEqual(row[colnames['puntotipo']], 17)
-        self.assertEqual(row[colnames['acuerdo']], 596)
+        self.assertEqual(row[colnames['puntotipo']], point_type_value)
+        self.assertEqual(row[colnames['acuerdo']], agreement_type_value)
         self.assertEqual(row[colnames['fotoidentificacion']], None)
         self.assertEqual(row[colnames['exactitud_horizontal']], 1.000)
         self.assertEqual(row[colnames['exactitud_vertical']], None)
         self.assertEqual(row[colnames['posicion_interpolacion']], None)
-        self.assertEqual(row[colnames['metodoproduccion']], 1)
+        self.assertEqual(row[colnames['metodoproduccion']], production_method_type_value)
         self.assertEqual(row[colnames['espacio_de_nombres']], 'LC_PUNTOLINDERO')
         self.assertIsNotNone(row[colnames['local_id']])
         self.assertIsNone(row[colnames['ue_lc_servidumbretransito']])
