@@ -457,6 +457,21 @@ def _map_swipe_tool_required(func_to_decorate):
 
     return decorated_function
 
+
+def _qgis_3_22_required(func_to_decorate):
+    @wraps(func_to_decorate)
+    def decorated_function(*args, **kwargs):
+        inst = args[0]
+        if Qgis.QGIS_VERSION_INT >= 32200:
+            func_to_decorate(*args, **kwargs)
+        else:
+            inst.logger.warning_msg(__name__,
+                                    QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                               "QGIS 3.22.0 or higher is required to run quality rules, but you have '{}' installed.".format(
+                                                                   Qgis.QGIS_VERSION)))
+    return decorated_function
+
+
 def _validate_if_wizard_is_open(func_to_decorate):
     @wraps(func_to_decorate)
     def decorated_function(*args, **kwargs):

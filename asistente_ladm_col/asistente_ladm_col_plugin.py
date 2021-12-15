@@ -141,6 +141,7 @@ from asistente_ladm_col.lib.processing.ladm_col_provider import LADMCOLAlgorithm
 from asistente_ladm_col.logic.quality.quality_rule_engine import QualityRuleEngine
 from asistente_ladm_col.utils.decorators import (_db_connection_required,
                                                  _validate_if_wizard_is_open,
+                                                 _qgis_3_22_required,
                                                  _qgis_model_baker_required,
                                                  _activate_processing_plugin,
                                                  _map_swipe_tool_required,
@@ -1356,6 +1357,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self.app.core.upload_source_files(self.get_db_connection())
 
     @_validate_if_wizard_is_open
+    @_qgis_3_22_required
     @_qgis_model_baker_required
     @_db_connection_required
     @_survey_model_required
