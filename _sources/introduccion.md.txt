@@ -25,7 +25,7 @@ Un proyecto de: <a href="https://swisstierrascolombia.com" target="_blank">Swiss
 
 ### Soporte de funcionalidades por motor de base de datos
 
-La versión actual (<a href="https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/3.1.10" target="_blank">3.1.10</a>) del Asistente LADM-COL depende del plugin <a href="https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.5/QgisModelBaker_6115.zip" target="_blank">QGIS Model Baker v6.1.1.5</a> y soporta los motores de Base de Datos PostgreSQL/PostGIS, GeoPackage y SQL Server.
+La versión actual (<a href="https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/3.1.11" target="_blank">3.1.11</a>) del Asistente LADM-COL depende del plugin <a href="https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.5/QgisModelBaker_6115.zip" target="_blank">QGIS Model Baker v6.1.1.5</a> y soporta los motores de Base de Datos PostgreSQL/PostGIS, GeoPackage y SQL Server.
 
 Este es el soporte funcional para cada motor:
 
@@ -181,6 +181,7 @@ Este es el soporte funcional para cada motor:
    - Revisar que los atributos son apropiados para interesados jurídicos.
    - Revisar que el tipo de Predio corresponde a la posición 22 del número_predial.
    - Revisar que las Unidades Espaciales asociadas a Predios correspondan al tipo de predio.
+   - Revisar que los datos de Unidades de Construcción sean consistentes.
  - Generar reporte de revisiones de calidad.
 
 #### Consultas
