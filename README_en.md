@@ -12,7 +12,7 @@ Links of interest: [Documentation](https://swisstierrascolombia.github.io/Asiste
 A project of: [SwissTierras Colombia](https://swisstierrascolombia.com/) ([BSF-Swissphoto AG](http://bsf-swissphoto.com/) - [INCIGE SAS](http://www.incige.com/))
 
 
-:arrow_right: With the current version of LADM-COL Assistant, we suggest you to use QGIS v3.14.16, available at https://qgis.org/downloads/
+:arrow_right: With the current version of LADM-COL Assistant, we suggest you to use QGIS v3.22.1, available at https://qgis.org/downloads/
 
 ## Support per DB engine
 
@@ -70,7 +70,7 @@ To use the LADM-COL Assistant you need:
 
 ## Functionalities
 
-The current version ([3.1.10](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/3.1.10)) of the LADM-COL Assistant depends on [QGIS Model Baker v6.1.1.5](https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.5/QgisModelBaker_6115.zip) and allows users to:
+The current version ([3.1.11](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/3.1.11)) of the LADM-COL Assistant depends on [QGIS Model Baker v6.1.1.5](https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.5/QgisModelBaker_6115.zip) and allows users to:
 
  - Integration with the Transitional System:
    - Authentication
@@ -176,6 +176,7 @@ The current version ([3.1.10](https://github.com/SwissTierrasColombia/Asistente-
    - Check that attributes are appropriate for parties of type legal.
    - Check that the type of parcel corresponds to position 22 of the numero_predial.
    - Check that Spatial Units associated with Parcels correspond to the parcel type.
+   - Check that Building Unit data are consistent.
  - Generate report of the quality checks.
  - Generate reports based on selected `Plots` (Annex 17).
  - Generate reports based on selected `Plots` (ANT map).

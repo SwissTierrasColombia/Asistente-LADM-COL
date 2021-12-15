@@ -14,11 +14,11 @@ Enlaces de interés: [Documentación](https://swisstierrascolombia.github.io/Asi
 Un proyecto de: [SwissTierras Colombia](https://swisstierrascolombia.com/) ([BSF-Swissphoto AG](http://bsf-swissphoto.com/) - [INCIGE S.A.S](http://www.incige.com/))
 
 
-:arrow_right: Con la versión actual del Asistente LADM-COL, te sugerimos utilizar QGIS v3.14.16, disponible en https://qgis.org/downloads/
+:arrow_right: Con la versión actual del Asistente LADM-COL, te sugerimos utilizar QGIS v3.22.1, disponible en https://qgis.org/downloads/
 
 ## Soporte de funcionalidades por motor de base de datos
 
-La versión actual ([3.1.10](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/3.1.10)) del Asistente LADM-COL depende del plugin [QGIS Model Baker v6.1.1.5](https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.5/QgisModelBaker_6115.zip) y soporta los motores de Base de Datos PostgreSQL/PostGIS, GeoPackage y SQL Server.
+La versión actual ([3.1.11](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/3.1.11)) del Asistente LADM-COL depende del plugin [QGIS Model Baker v6.1.1.5](https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.5/QgisModelBaker_6115.zip) y soporta los motores de Base de Datos PostgreSQL/PostGIS, GeoPackage y SQL Server.
 
 Este es el soporte funcional para cada motor: 
 
@@ -207,6 +207,7 @@ Para usar el Asistente LADM-COL se requiere:
    - Revisar que los atributos son apropiados para interesados jurídicos.
    - Revisar que el tipo de Predio corresponde a la posición 22 del número_predial.
    - Revisar que las Unidades Espaciales asociadas a Predios correspondan al tipo de predio.
+   - Revisar que los datos de Unidades de Construcción sean consistentes.
  - Generar reporte de revisiones de calidad.
 
 #### Consultas
