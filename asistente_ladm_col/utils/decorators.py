@@ -467,8 +467,8 @@ def _qgis_3_22_required(func_to_decorate):
         else:
             inst.logger.warning_msg(__name__,
                                     QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                               "QGIS 3.22.0 or higher is required to run quality rules, but you have '{}' installed.".format(
-                                                                   Qgis.QGIS_VERSION)))
+                                                               "QGIS 3.22.0 or higher is required to run quality rules, but you have '{}' installed.").format(
+                                                                   Qgis.QGIS_VERSION))
     return decorated_function
 
 

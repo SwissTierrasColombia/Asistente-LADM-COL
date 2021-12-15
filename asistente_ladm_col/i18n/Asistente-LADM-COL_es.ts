@@ -321,12 +321,12 @@
         <translation>Interesado</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="503"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="504"/>
         <source>Create Party</source>
         <translation>Crear Interesado</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="507"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="508"/>
         <source>Create Group Party</source>
         <translation>Crear Agrupación de Interesados</translation>
     </message>
@@ -398,7 +398,7 @@
         <translation type="vanished">Crear objetos de Operación</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="477"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="478"/>
         <source>Create Plot</source>
         <translation>Crear Terreno</translation>
     </message>
@@ -407,7 +407,7 @@
         <translation type="vanished">Pre-procesamiento</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="641"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="642"/>
         <source>Queries</source>
         <translation>Consultar datos</translation>
     </message>
@@ -425,59 +425,59 @@
         <translation>Topografía y Representación</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="327"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="328"/>
         <source>&apos;Origen Nacional&apos; projection could not be configured. Therefore you cannot use this version of the LADM-COL Assistant.</source>
         <translation>No se pudo configurar la proyeccion &apos;Origen Nacional&apos;. Por lo tanto no puedes utilizar esta versión del Asistente LADM-COL.</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="426"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="427"/>
         <source>Run supplies ETL</source>
         <translation>Ejecutar ETL de insumos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="431"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="432"/>
         <source>Omissions and Commissions Report - COBOL</source>
         <translation>Reporte Omisiones y Comisiones - COBOL</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="436"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="437"/>
         <source>Omissions and Commissions Report - SNC</source>
         <translation>Reporte Omisiones y Comisiones - SNC</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="451"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="452"/>
         <source>Allocate parcels</source>
         <translation>Asignar predios</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="456"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="457"/>
         <source>Synchronize field data</source>
         <translation>Sincronizar datos de campo</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="469"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="470"/>
         <source>Create Point</source>
         <translation>Crear Punto</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="473"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="474"/>
         <source>Create Boundary</source>
         <translation>Crear Lindero</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="481"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="482"/>
         <source>Create Building</source>
         <translation>Crear Construcción</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="485"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="596"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="486"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="597"/>
         <source>Create Building Unit</source>
         <translation>Crear Unidad de Construcción</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="498"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="592"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="499"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="593"/>
         <source>Create Parcel</source>
         <translation>Crear Predio</translation>
     </message>
@@ -490,17 +490,17 @@
         <translation type="vanished">Crear Interesado Jurídico</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="519"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="520"/>
         <source>Upload Pending Source Files</source>
         <translation>Subir Archivos Fuente Pendientes</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="525"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="526"/>
         <source>Create Right</source>
         <translation>Crear Derecho</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="529"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="530"/>
         <source>Create Restriction</source>
         <translation>Crear Restricción</translation>
     </message>
@@ -513,17 +513,17 @@
         <translation type="vanished">Revisar Reglas de Calidad</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="512"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="513"/>
         <source>Create Administrative Source</source>
         <translation>Crear Fuente Administrativa</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="516"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="517"/>
         <source>Create Spatial Source</source>
         <translation>Crear Fuente Espacial</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="534"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="535"/>
         <source>Quality</source>
         <translation>Calidad</translation>
     </message>
@@ -560,12 +560,12 @@
         <translation type="vanished">Revisar todo</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="639"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="640"/>
         <source>Load layers</source>
         <translation>Cargar capas</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="661"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="662"/>
         <location filename="../utils/decorators.py" line="87"/>
         <location filename="../utils/decorators.py" line="247"/>
         <location filename="../utils/decorators.py" line="282"/>
@@ -576,12 +576,12 @@
         <translation>Configuración</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="664"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="665"/>
         <source>Help</source>
         <translation>Ayuda</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="666"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="667"/>
         <source>About</source>
         <translation>Acerca de</translation>
     </message>
@@ -634,17 +634,17 @@
         <translation type="vanished">Administración de datos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="652"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="653"/>
         <source>Create LADM-COL structure</source>
         <translation>Crear estructura LADM-COL</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="655"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="656"/>
         <source>Import data</source>
         <translation>Importar datos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="658"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="659"/>
         <source>Export data</source>
         <translation>Exportar datos</translation>
     </message>
@@ -656,22 +656,22 @@
         <translation>Reportes</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="644"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="645"/>
         <source>Annex 17</source>
         <translation>Anexo 17</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="648"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="649"/>
         <source>ANT Map</source>
         <translation>Plano ANT</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="489"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="490"/>
         <source>Create Right of Way</source>
         <translation>Crear Servidumbre de Paso</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="310"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="311"/>
         <source>LADM-COL Assistant - Warning</source>
         <translation>Asistente LADM-COL - Advertencia</translation>
     </message>
@@ -680,17 +680,17 @@
         <translation type="vanished">No se pudo configurar la proyección CTM12. Por tanto, no se puede usar esta versión del Asistente LADM-COL.</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="355"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="356"/>
         <source>Refreshing GUI for the LADM-COL Assistant...</source>
         <translation>Refrescando la interfaz del Asistente LADM-COL...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="408"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="409"/>
         <source>Login...</source>
         <translation>Autenticarse...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="412"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="413"/>
         <source>Logout</source>
         <translation>Salir</translation>
     </message>
@@ -703,37 +703,37 @@
         <translation type="vanished">Omisiones y Comisiones</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="493"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="494"/>
         <source>Associate Address</source>
         <translation>Relacionar Dirección</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="539"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="540"/>
         <source>Fix LADM-COL relations</source>
         <translation>Arreglar relaciones LADM-COL</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="625"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="626"/>
         <source>Change detection settings</source>
         <translation>Configurar identificación de novedades</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1606"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1608"/>
         <source>Downloading {} file from ST...</source>
         <translation>Descargando archivo {} desde el Sistema de Transición...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1614"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1616"/>
         <source>A file location was not chosen. File download cancelled.</source>
         <translation>No se eligió una ubicación para el archivo. Se ha cancelado la descarga.</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1618"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1620"/>
         <source>The {} file was successfully downloaded to &apos;{}&apos;!</source>
         <translation>Se ha descargado el archivo {} a &apos;{}&apos;!</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1667"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1669"/>
         <source>Connecting to remote db...</source>
         <translation>Conectándose a base de datos remota...</translation>
     </message>
@@ -754,22 +754,22 @@
         <translation type="vanished">Exportar datos (Insumos)</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1419"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1421"/>
         <source>Opening Query Changes per Parcel panel...</source>
         <translation>Abriendo panel de novedades por predio...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1430"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1432"/>
         <source>Opening Query Changes for All Parcels panel...</source>
         <translation>Abriendo panel de novedades masivas...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1538"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1540"/>
         <source>Continue?</source>
         <translation>¿Continuar?</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1539"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1541"/>
         <source>Are you sure you want to log out from the Transitional System?</source>
         <translation>¿Estás segura/o que quieres salir del Sistema de Transición?</translation>
     </message>
@@ -778,7 +778,7 @@
         <translation type="vanished">Ficha predial</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="583"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="584"/>
         <source>Create Property Record Card</source>
         <translation>Crear Ficha Predial</translation>
     </message>
@@ -803,17 +803,17 @@
         <translation type="vanished">Crear Equipamiento Comunal</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="600"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="601"/>
         <source>Create Building Unit Qualification</source>
         <translation>Crear Calificación de Unidad de Construcción</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="604"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="605"/>
         <source>Create Geoeconomic Zone</source>
         <translation>Crear Zona Homogénea Geoeconómica</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="608"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="609"/>
         <source>Create Physical Zone</source>
         <translation>Crear Zona Homogénea Física</translation>
     </message>
@@ -823,14 +823,14 @@
         <translation>Identificación de novedades</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="621"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="820"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="622"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="821"/>
         <source>Query per parcel</source>
         <translation>Consulta por predio</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="623"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="825"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="624"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="826"/>
         <source>Query all parcels</source>
         <translation>Consulta masiva</translation>
     </message>
@@ -839,7 +839,7 @@
         <translation type="vanished">Configuración de datos oficiales</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="809"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="810"/>
         <source>Open About Dialog</source>
         <translation>Abrir diálogo Acerca de</translation>
     </message>
@@ -964,7 +964,7 @@
         <translation type="vanished">No se pudo ejecutar una funcionalidad, no se encontró QField Sync.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="483"/>
+        <location filename="../utils/decorators.py" line="498"/>
         <source>The action could not be executed because {} layer(s) is/are in editing session. Please finish editing session before trying to execute the action again.</source>
         <translation>No se pudo ejecutar la herramienta porque la(s) capa(s) {} está(n) en sesión de edición. Finaliza la sesión de edición antes de intentar ejecutar la herramienta.</translation>
     </message>
@@ -1031,12 +1031,17 @@
         <translation>No se pudo abrir/ejecutar un diálogo/herramienta, no se encontró el plugin MapSwipe Tool.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="465"/>
+        <location filename="../utils/decorators.py" line="469"/>
+        <source>QGIS 3.22.0 or higher is required to run quality rules, but you have &apos;{}&apos; installed.</source>
+        <translation>Se requiere QGIS 3.22.0 o superior para ejecutar las reglas de calidad, pero tienes instalado &apos;{}&apos;.</translation>
+    </message>
+    <message>
+        <location filename="../utils/decorators.py" line="480"/>
         <source>There is a wizard open, you need to close it before continuing with another tool.</source>
         <translation>Hay un wizard abierto, debes cerrarlo antes de continuar con otra herramienta.</translation>
     </message>
     <message>
-        <location filename="../utils/decorators.py" line="467"/>
+        <location filename="../utils/decorators.py" line="482"/>
         <source>Close the open wizard</source>
         <translation>Cerrar el wizard abierto</translation>
     </message>
@@ -2061,12 +2066,12 @@
 <context>
     <name>CreateGroupPartySurvey</name>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1315"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1316"/>
         <source>First enable automatic values for namespace, local_id and t_ili_tid fields before creating group parties. Click the button to open the settings dialog.</source>
         <translation>Primero habilita los valores automáticos para los campos &apos;espacio de nombres&apos;, &apos;local_id&apos; y &apos;t_ili_tid&apos; antes de crear agrupaciones de interesados. Haz clic en el botón para abrir el diálogo de configuración.</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="1317"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="1318"/>
         <source>Open Settings</source>
         <translation>Abrir Configuración</translation>
     </message>
@@ -6192,12 +6197,12 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
 <context>
     <name>ImportFromExcelDialog</name>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="920"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="921"/>
         <source>Some errors were found while importing from the intermediate Excel file into LADM-COL!</source>
         <translation>¡Se encontraron errores importando desde la estructura intermedia de Excel a LADM-COL!</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="924"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="925"/>
         <source>Show errors found</source>
         <translation>Mostrar errores encontrados</translation>
     </message>
@@ -6998,17 +7003,17 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
 <context>
     <name>LogQualityDialog</name>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="887"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="888"/>
         <source>Show Results</source>
         <translation>Mostrar Resultados</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="895"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="896"/>
         <source>Checking {} out of {}: &apos;{}&apos;</source>
         <translation>Revisando {} de {}: &apos;{}&apos;</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="907"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="908"/>
         <source>All the {} quality rules were checked! Click the button at the right-hand side to see a report.</source>
         <translation>¡Se terminaron de revisar las {} reglas de calidad! Haz clic en el botón de la derecha para ver un reporte.</translation>
     </message>
@@ -7217,17 +7222,17 @@ Esta formada por el terreno y puede o no tener construcciones asociadas.</transl
 <context>
     <name>LogicQualityRules</name>
     <message>
-        <location filename="../logic/quality/logic_quality_rules.py" line="148"/>
+        <location filename="../logic/quality/logic_quality_rules.py" line="170"/>
         <source>At least one required layer (members, group party) was not found!</source>
         <translation>¡Por lo menos una de las tablas requeridas no fue encontrada (Miembros o Asociación de Interesados)!</translation>
     </message>
     <message>
-        <location filename="../logic/quality/logic_quality_rules.py" line="416"/>
+        <location filename="../logic/quality/logic_quality_rules.py" line="593"/>
         <source>A memory layer with {} errors has been added to the map after checking the &apos;{}&apos; logic consistency rule.</source>
         <translation>Una capa temporal con {} errores ha sido agregada al mapa luego de validar la regla de consistencia lógica &apos;{}&apos;.</translation>
     </message>
     <message>
-        <location filename="../logic/quality/logic_quality_rules.py" line="420"/>
+        <location filename="../logic/quality/logic_quality_rules.py" line="597"/>
         <source>No errors were found checking the &apos;{}&apos; logic consistency rule!</source>
         <translation>¡No se encontraron errores al validar la regla de consistencia lógica &apos;{}&apos;!</translation>
     </message>
@@ -8728,22 +8733,22 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
 <context>
     <name>QualityDialog</name>
     <message>
-        <location filename="../config/quality_rules_config.py" line="129"/>
+        <location filename="../config/quality_rules_config.py" line="149"/>
         <source>Rules for Points</source>
         <translation>Reglas para Puntos</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="183"/>
+        <location filename="../config/quality_rules_config.py" line="203"/>
         <source>Rules for Lines</source>
         <translation>Reglas para Líneas</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="253"/>
+        <location filename="../config/quality_rules_config.py" line="273"/>
         <source>Rules for Polygons</source>
         <translation>Reglas para Polígonos</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="395"/>
+        <location filename="../config/quality_rules_config.py" line="415"/>
         <source>Logic consistency rules</source>
         <translation>Reglas de Consistencia Lógica</translation>
     </message>
@@ -8792,17 +8797,17 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation>¡No se pudo terminar de preparar las capas requeridas!</translation>
     </message>
     <message>
-        <location filename="../logic/quality/quality_rule_layer_manager.py" line="103"/>
+        <location filename="../logic/quality/quality_rule_layer_manager.py" line="129"/>
         <source>Tolerance &gt; 0, adjusting layers...</source>
         <translation>Tolerancia &gt; 0, ajustando las capas...</translation>
     </message>
     <message>
-        <location filename="../logic/quality/quality_rule_layer_manager.py" line="108"/>
+        <location filename="../logic/quality/quality_rule_layer_manager.py" line="134"/>
         <source>Preparing tolerance on layers...</source>
         <translation>Preparando tolerancia sobre las capas...</translation>
     </message>
     <message>
-        <location filename="../logic/quality/quality_rule_layer_manager.py" line="113"/>
+        <location filename="../logic/quality/quality_rule_layer_manager.py" line="139"/>
         <source>Preparing tolerance on layers... ({} out of {})</source>
         <translation>Preparando tolerancia sobre las capas... ({} de {})</translation>
     </message>
@@ -8811,7 +8816,7 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation type="vanished">Preparando tolerancia sobre las capas... {}%</translation>
     </message>
     <message>
-        <location filename="../logic/quality/quality_rule_layer_manager.py" line="137"/>
+        <location filename="../logic/quality/quality_rule_layer_manager.py" line="163"/>
         <source>Layers adjusted...</source>
         <translation>Capas ajustadas...</translation>
     </message>
@@ -8819,386 +8824,397 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
 <context>
     <name>QualityRulesConfig</name>
     <message>
-        <location filename="../config/quality_rules_config.py" line="134"/>
+        <location filename="../config/quality_rules_config.py" line="154"/>
         <source>punto_lindero_superposicion</source>
         <translation>punto_lindero_superposicion</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="136"/>
+        <location filename="../config/quality_rules_config.py" line="156"/>
         <source>ids_punto_lindero</source>
         <translation>ids_punto_lindero</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="137"/>
-        <location filename="../config/quality_rules_config.py" line="149"/>
-        <location filename="../config/quality_rules_config.py" line="543"/>
-        <location filename="../config/quality_rules_config.py" line="555"/>
-        <location filename="../config/quality_rules_config.py" line="567"/>
-        <location filename="../config/quality_rules_config.py" line="579"/>
-        <location filename="../config/quality_rules_config.py" line="591"/>
-        <location filename="../config/quality_rules_config.py" line="603"/>
-        <location filename="../config/quality_rules_config.py" line="615"/>
-        <location filename="../config/quality_rules_config.py" line="627"/>
-        <location filename="../config/quality_rules_config.py" line="639"/>
-        <location filename="../config/quality_rules_config.py" line="651"/>
-        <location filename="../config/quality_rules_config.py" line="663"/>
-        <location filename="../config/quality_rules_config.py" line="675"/>
+        <location filename="../config/quality_rules_config.py" line="157"/>
+        <location filename="../config/quality_rules_config.py" line="169"/>
+        <location filename="../config/quality_rules_config.py" line="575"/>
+        <location filename="../config/quality_rules_config.py" line="587"/>
+        <location filename="../config/quality_rules_config.py" line="599"/>
+        <location filename="../config/quality_rules_config.py" line="611"/>
+        <location filename="../config/quality_rules_config.py" line="623"/>
+        <location filename="../config/quality_rules_config.py" line="635"/>
+        <location filename="../config/quality_rules_config.py" line="647"/>
+        <location filename="../config/quality_rules_config.py" line="659"/>
+        <location filename="../config/quality_rules_config.py" line="671"/>
+        <location filename="../config/quality_rules_config.py" line="683"/>
+        <location filename="../config/quality_rules_config.py" line="695"/>
+        <location filename="../config/quality_rules_config.py" line="707"/>
         <source>conteo</source>
         <translation>conteo</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="146"/>
+        <location filename="../config/quality_rules_config.py" line="166"/>
         <source>punto_control_superposicion</source>
         <translation>punto_control_superposicion</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="148"/>
+        <location filename="../config/quality_rules_config.py" line="168"/>
         <source>ids_punto_control</source>
         <translation>ids_punto_control</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="158"/>
+        <location filename="../config/quality_rules_config.py" line="178"/>
         <source>punto_lindero_no_cubierto_por_nodo_lindero</source>
         <translation>punto_lindero_no_cubierto_por_nodo_lindero</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="160"/>
-        <location filename="../config/quality_rules_config.py" line="174"/>
-        <location filename="../config/quality_rules_config.py" line="230"/>
+        <location filename="../config/quality_rules_config.py" line="180"/>
+        <location filename="../config/quality_rules_config.py" line="194"/>
+        <location filename="../config/quality_rules_config.py" line="250"/>
         <source>id_punto_lindero</source>
         <translation>id_punto_lindero</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="161"/>
-        <location filename="../config/quality_rules_config.py" line="190"/>
-        <location filename="../config/quality_rules_config.py" line="202"/>
-        <location filename="../config/quality_rules_config.py" line="213"/>
-        <location filename="../config/quality_rules_config.py" line="229"/>
-        <location filename="../config/quality_rules_config.py" line="243"/>
-        <location filename="../config/quality_rules_config.py" line="297"/>
+        <location filename="../config/quality_rules_config.py" line="181"/>
+        <location filename="../config/quality_rules_config.py" line="210"/>
+        <location filename="../config/quality_rules_config.py" line="222"/>
+        <location filename="../config/quality_rules_config.py" line="233"/>
+        <location filename="../config/quality_rules_config.py" line="249"/>
+        <location filename="../config/quality_rules_config.py" line="263"/>
+        <location filename="../config/quality_rules_config.py" line="317"/>
         <source>id_lindero</source>
         <translation>id_lindero</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="172"/>
+        <location filename="../config/quality_rules_config.py" line="192"/>
         <source>punto_lindero_no_cubierto_por_nodo_terreno</source>
         <translation>punto_lindero_no_cubierto_por_nodo_terreno</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="188"/>
+        <location filename="../config/quality_rules_config.py" line="208"/>
         <source>lindero_superposicion</source>
         <translation>lindero_superposicion</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="191"/>
+        <location filename="../config/quality_rules_config.py" line="211"/>
         <source>id_lindero_superpone</source>
         <translation>id_lindero_superpone</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="200"/>
+        <location filename="../config/quality_rules_config.py" line="220"/>
         <source>lindero_no_cambio_colindancia</source>
         <translation>lindero_no_cambio_colindancia</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="211"/>
+        <location filename="../config/quality_rules_config.py" line="231"/>
         <source>lindero_no_cubierto_por_limite_terreno</source>
         <translation>lindero_no_cubierto_por_limite_terreno</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="214"/>
-        <location filename="../config/quality_rules_config.py" line="260"/>
-        <location filename="../config/quality_rules_config.py" line="296"/>
-        <location filename="../config/quality_rules_config.py" line="347"/>
+        <location filename="../config/quality_rules_config.py" line="234"/>
+        <location filename="../config/quality_rules_config.py" line="280"/>
+        <location filename="../config/quality_rules_config.py" line="316"/>
+        <location filename="../config/quality_rules_config.py" line="367"/>
         <location filename="../logic/quality/polygon_quality_rules.py" line="168"/>
         <source>id_terreno</source>
         <translation>id_terreno</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="227"/>
+        <location filename="../config/quality_rules_config.py" line="247"/>
         <source>nodo_lindero_no_cubierto_por_punto_lindero</source>
         <translation>nodo_lindero_no_cubierto_por_punto_lindero</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="241"/>
+        <location filename="../config/quality_rules_config.py" line="261"/>
         <source>lindero_nodos_no_conectados</source>
         <translation>lindero_nodos_no_conectados</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="258"/>
+        <location filename="../config/quality_rules_config.py" line="278"/>
         <source>terreno_superposicion</source>
         <translation>terreno_superposicion</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="261"/>
+        <location filename="../config/quality_rules_config.py" line="281"/>
         <source>id_terreno_superpone</source>
         <translation>id_terreno_superpone</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="270"/>
+        <location filename="../config/quality_rules_config.py" line="290"/>
         <source>construccion_superposicion</source>
         <translation>construccion_superposicion</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="272"/>
-        <location filename="../config/quality_rules_config.py" line="313"/>
-        <location filename="../config/quality_rules_config.py" line="358"/>
+        <location filename="../config/quality_rules_config.py" line="292"/>
+        <location filename="../config/quality_rules_config.py" line="333"/>
+        <location filename="../config/quality_rules_config.py" line="378"/>
         <source>id_construccion</source>
         <translation>id_construccion</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="273"/>
+        <location filename="../config/quality_rules_config.py" line="293"/>
         <source>id_construccion_superpone</source>
         <translation>id_construccion_superpone</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="282"/>
+        <location filename="../config/quality_rules_config.py" line="302"/>
         <source>servidumbre_de_paso_superposicion</source>
         <translation>servidumbre_de_paso_superposicion</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="284"/>
+        <location filename="../config/quality_rules_config.py" line="304"/>
         <source>id_servidumbre</source>
         <translation>id_servidumbre</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="285"/>
+        <location filename="../config/quality_rules_config.py" line="305"/>
         <source>id_servidumbre_superpone</source>
         <translation>id_servidumbre_superpone</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="294"/>
+        <location filename="../config/quality_rules_config.py" line="314"/>
         <source>limite_terreno_no_cubierto_por_lindero</source>
         <translation>limite_terreno_no_cubierto_por_lindero</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="310"/>
+        <location filename="../config/quality_rules_config.py" line="330"/>
         <source>servidumbre_de_paso_no_superposicion_construccion</source>
         <translation>servidumbre_de_paso_no_superposicion_construccion</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="312"/>
-        <location filename="../config/quality_rules_config.py" line="336"/>
+        <location filename="../config/quality_rules_config.py" line="332"/>
+        <location filename="../config/quality_rules_config.py" line="356"/>
         <source>id_servidumbre_paso</source>
         <translation>id_servidumbre_paso</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="322"/>
+        <location filename="../config/quality_rules_config.py" line="342"/>
         <source>terrenos_huecos_entre_ellos</source>
         <translation>terrenos_huecos_entre_ellos</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="324"/>
+        <location filename="../config/quality_rules_config.py" line="344"/>
         <source>id_hueco</source>
         <translation>id_hueco</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="325"/>
+        <location filename="../config/quality_rules_config.py" line="345"/>
         <source>ids_terrenos</source>
         <translation>ids_terrenos</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="334"/>
+        <location filename="../config/quality_rules_config.py" line="354"/>
         <source>servidumbre_de_paso_multiparte</source>
         <translation>servidumbre_de_paso_multiparte</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="345"/>
+        <location filename="../config/quality_rules_config.py" line="365"/>
         <source>nodo_terreno_no_cubierto_por_punto_lindero</source>
         <translation>nodo_terreno_no_cubierto_por_punto_lindero</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="356"/>
+        <location filename="../config/quality_rules_config.py" line="376"/>
         <source>construccion_no_contenida_por_terreno_asociado</source>
         <translation>construccion_no_contenida_por_terreno_asociado</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="368"/>
+        <location filename="../config/quality_rules_config.py" line="388"/>
         <source>unidades_construccion_no_contenida_por_terreno_asociado</source>
         <translation>unidades_construccion_no_contenida_por_terreno_asociado</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="370"/>
-        <location filename="../config/quality_rules_config.py" line="383"/>
+        <location filename="../config/quality_rules_config.py" line="390"/>
+        <location filename="../config/quality_rules_config.py" line="403"/>
+        <location filename="../config/quality_rules_config.py" line="718"/>
         <source>id_unidad_construccion</source>
         <translation>id_unidad_construccion</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="381"/>
+        <location filename="../config/quality_rules_config.py" line="401"/>
         <source>unidades_construccion_no_contenida_por_construccion_asociada</source>
         <translation>unidades_construccion_no_contenida_por_construccion_asociada</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="400"/>
+        <location filename="../config/quality_rules_config.py" line="420"/>
         <source>predio_error_derecho</source>
         <translation>predio_error_derecho</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="402"/>
-        <location filename="../config/quality_rules_config.py" line="428"/>
-        <location filename="../config/quality_rules_config.py" line="439"/>
-        <location filename="../config/quality_rules_config.py" line="450"/>
-        <location filename="../config/quality_rules_config.py" line="461"/>
-        <location filename="../config/quality_rules_config.py" line="500"/>
-        <location filename="../config/quality_rules_config.py" line="518"/>
+        <location filename="../config/quality_rules_config.py" line="422"/>
+        <location filename="../config/quality_rules_config.py" line="448"/>
+        <location filename="../config/quality_rules_config.py" line="459"/>
+        <location filename="../config/quality_rules_config.py" line="470"/>
+        <location filename="../config/quality_rules_config.py" line="481"/>
+        <location filename="../config/quality_rules_config.py" line="532"/>
+        <location filename="../config/quality_rules_config.py" line="550"/>
         <source>id_predio</source>
         <translation>id_predio</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="413"/>
+        <location filename="../config/quality_rules_config.py" line="433"/>
         <source>participaciones_agrupacion_no_suman_1</source>
         <translation>participaciones_agrupacion_no_suman_1</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="415"/>
+        <location filename="../config/quality_rules_config.py" line="435"/>
         <source>id_agrupacion</source>
         <translation>id_agrupacion</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="416"/>
+        <location filename="../config/quality_rules_config.py" line="436"/>
         <source>miembros</source>
         <translation>miembros</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="417"/>
+        <location filename="../config/quality_rules_config.py" line="437"/>
         <source>suma_participaciones</source>
         <translation>suma_participaciones</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="426"/>
+        <location filename="../config/quality_rules_config.py" line="446"/>
         <source>predio_error_codigo_departamento</source>
         <translation>predio_error_codigo_departamento</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="437"/>
+        <location filename="../config/quality_rules_config.py" line="457"/>
         <source>predio_error_codigo_municipio</source>
         <translation>predio_error_codigo_municipio</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="448"/>
+        <location filename="../config/quality_rules_config.py" line="468"/>
         <source>predio_error_numero_predial</source>
         <translation>predio_error_numero_predial</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="459"/>
+        <location filename="../config/quality_rules_config.py" line="479"/>
         <source>predio_error_numero_predial_anterior</source>
         <translation>predio_error_numero_predial_anterior</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="470"/>
+        <location filename="../config/quality_rules_config.py" line="490"/>
         <source>interesado_natural_inconsistente</source>
         <translation>interesado_natural_inconsistente</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="472"/>
-        <location filename="../config/quality_rules_config.py" line="486"/>
+        <location filename="../config/quality_rules_config.py" line="492"/>
+        <location filename="../config/quality_rules_config.py" line="515"/>
         <source>id_interesado</source>
         <translation>id_interesado</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="484"/>
+        <location filename="../config/quality_rules_config.py" line="513"/>
         <source>interesado_juridico_inconsistente</source>
         <translation>interesado_juridico_inconsistente</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="498"/>
+        <location filename="../config/quality_rules_config.py" line="530"/>
         <source>predio_error_condicion_predio</source>
         <translation>predio_error_condicion_predio</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="516"/>
+        <location filename="../config/quality_rules_config.py" line="548"/>
         <source>unidad_espacial_no_corresponde_a_predio</source>
         <translation>unidad_espacial_no_corresponde_a_predio</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="519"/>
+        <location filename="../config/quality_rules_config.py" line="551"/>
         <source>numero_terrenos_asociados</source>
         <translation>numero_terrenos_asociados</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="520"/>
+        <location filename="../config/quality_rules_config.py" line="552"/>
         <source>numero_construcciones_asociadas</source>
         <translation>numero_construcciones_asociadas</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="521"/>
+        <location filename="../config/quality_rules_config.py" line="553"/>
         <source>numero_unidades_construccion_asociadas</source>
         <translation>numero_unidades_construccion_asociadas</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="540"/>
+        <location filename="../config/quality_rules_config.py" line="572"/>
         <source>punto_lindero_con_registro_repetido</source>
         <translation>punto_lindero_con_registro_repetido</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="542"/>
-        <location filename="../config/quality_rules_config.py" line="554"/>
-        <location filename="../config/quality_rules_config.py" line="566"/>
-        <location filename="../config/quality_rules_config.py" line="578"/>
-        <location filename="../config/quality_rules_config.py" line="590"/>
-        <location filename="../config/quality_rules_config.py" line="602"/>
-        <location filename="../config/quality_rules_config.py" line="614"/>
-        <location filename="../config/quality_rules_config.py" line="626"/>
-        <location filename="../config/quality_rules_config.py" line="638"/>
-        <location filename="../config/quality_rules_config.py" line="650"/>
-        <location filename="../config/quality_rules_config.py" line="662"/>
-        <location filename="../config/quality_rules_config.py" line="674"/>
+        <location filename="../config/quality_rules_config.py" line="574"/>
+        <location filename="../config/quality_rules_config.py" line="586"/>
+        <location filename="../config/quality_rules_config.py" line="598"/>
+        <location filename="../config/quality_rules_config.py" line="610"/>
+        <location filename="../config/quality_rules_config.py" line="622"/>
+        <location filename="../config/quality_rules_config.py" line="634"/>
+        <location filename="../config/quality_rules_config.py" line="646"/>
+        <location filename="../config/quality_rules_config.py" line="658"/>
+        <location filename="../config/quality_rules_config.py" line="670"/>
+        <location filename="../config/quality_rules_config.py" line="682"/>
+        <location filename="../config/quality_rules_config.py" line="694"/>
+        <location filename="../config/quality_rules_config.py" line="706"/>
         <source>ids_duplicados</source>
         <translation>ids_duplicados</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="552"/>
+        <location filename="../config/quality_rules_config.py" line="584"/>
         <source>punto_levantamiento_con_registro_repetido</source>
         <translation>punto_levantamiento_con_registro_repetido</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="564"/>
+        <location filename="../config/quality_rules_config.py" line="596"/>
         <source>punto_control_con_registro_repetido</source>
         <translation>punto_control_con_registro_repetido</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="576"/>
+        <location filename="../config/quality_rules_config.py" line="608"/>
         <source>lindero_con_registro_repetido</source>
         <translation>lindero_con_registro_repetido</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="588"/>
+        <location filename="../config/quality_rules_config.py" line="620"/>
         <source>terreno_con_registro_repetido</source>
         <translation>terreno_con_registro_repetido</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="600"/>
+        <location filename="../config/quality_rules_config.py" line="632"/>
         <source>construccion_con_registro_repetido</source>
         <translation>construccion_con_registro_repetido</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="612"/>
+        <location filename="../config/quality_rules_config.py" line="644"/>
         <source>unidad_construccion_con_registro_repetido</source>
         <translation>unidad_construccion_con_registro_repetido</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="624"/>
+        <location filename="../config/quality_rules_config.py" line="656"/>
         <source>predio_con_registro_repetido</source>
         <translation>predio_con_registro_repetido</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="636"/>
+        <location filename="../config/quality_rules_config.py" line="668"/>
         <source>interesado_con_registro_repetido</source>
         <translation>interesado_con_registro_repetido</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="648"/>
+        <location filename="../config/quality_rules_config.py" line="680"/>
         <source>derecho_con_registro_repetido</source>
         <translation>derecho_con_registro_repetido</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="660"/>
+        <location filename="../config/quality_rules_config.py" line="692"/>
         <source>restriccion_con_registro_repetido</source>
         <translation>restriccion_con_registro_repetido</translation>
     </message>
     <message>
-        <location filename="../config/quality_rules_config.py" line="672"/>
+        <location filename="../config/quality_rules_config.py" line="704"/>
         <source>fuente_administrativa_con_registro_repetido</source>
         <translation>fuente_administrativa_con_registro_repetido</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="716"/>
+        <source>unidad_construccion_no_consistente</source>
+        <translation>unidad_construccion_no_consistente</translation>
+    </message>
+    <message>
+        <location filename="../config/quality_rules_config.py" line="719"/>
+        <source>id_relacionado</source>
+        <translation>id_relacionado</translation>
     </message>
 </context>
 <context>
@@ -10704,37 +10720,37 @@ Rol: {}</translation>
         <translation type="vanished">Herramientas LADM-COL</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="95"/>
+        <location filename="../config/translation_strings.py" line="115"/>
         <source>Build boundaries...</source>
         <translation>Construir linderos...</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="96"/>
+        <location filename="../config/translation_strings.py" line="116"/>
         <source>Move nodes...</source>
         <translation>Mover nodos...</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="97"/>
+        <location filename="../config/translation_strings.py" line="117"/>
         <source>Fill Point BFS</source>
         <translation>Llenar PuntosCCL</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="98"/>
+        <location filename="../config/translation_strings.py" line="118"/>
         <source>Fill More BFS and Less</source>
         <translation>Llenar más CCL y menos</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="99"/>
+        <location filename="../config/translation_strings.py" line="119"/>
         <source>Fill Right of Way Relations</source>
         <translation>Llenar relaciones de Servidumbre de Paso</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="100"/>
+        <location filename="../config/translation_strings.py" line="120"/>
         <source>Import from intermediate structure</source>
         <translation>Importar desde estructura intermedia</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="101"/>
+        <location filename="../config/translation_strings.py" line="121"/>
         <source>Finalize geometry creation</source>
         <translation>Terminar la creación de geometrías</translation>
     </message>
@@ -10743,42 +10759,42 @@ Rol: {}</translation>
         <translation type="vanished">LADM COL</translation>
     </message>
     <message>
-        <location filename="../config/ladm_names.py" line="180"/>
+        <location filename="../config/ladm_names.py" line="187"/>
         <source>SNR data</source>
         <translation>Submodelo de Insumos de la SNR</translation>
     </message>
     <message>
-        <location filename="../config/ladm_names.py" line="173"/>
+        <location filename="../config/ladm_names.py" line="180"/>
         <source>Supplies</source>
         <translation>Submodelo de Insumos del Gestor Catastral</translation>
     </message>
     <message>
-        <location filename="../config/ladm_names.py" line="159"/>
+        <location filename="../config/ladm_names.py" line="166"/>
         <source>LADM-COL</source>
         <translation>Modelo LADM-COL</translation>
     </message>
     <message>
-        <location filename="../config/ladm_names.py" line="166"/>
+        <location filename="../config/ladm_names.py" line="173"/>
         <source>Survey</source>
         <translation>Modelo de aplicación de Levantamiento Catastral</translation>
     </message>
     <message>
-        <location filename="../config/ladm_names.py" line="187"/>
+        <location filename="../config/ladm_names.py" line="194"/>
         <source>Supplies integration data</source>
         <translation>Submodelo de Integración de Insumos</translation>
     </message>
     <message>
-        <location filename="../config/ladm_names.py" line="194"/>
+        <location filename="../config/ladm_names.py" line="201"/>
         <source>Reference cadastral cartography</source>
         <translation>Submodelo de Cartografía Catastral</translation>
     </message>
     <message>
-        <location filename="../config/ladm_names.py" line="208"/>
+        <location filename="../config/ladm_names.py" line="215"/>
         <source>ISO19107</source>
         <translation>Modelo ISO 19107</translation>
     </message>
     <message>
-        <location filename="../config/ladm_names.py" line="215"/>
+        <location filename="../config/ladm_names.py" line="222"/>
         <source>Field data capture</source>
         <translation>Modelo de Captura de Datos en Campo</translation>
     </message>
@@ -10799,7 +10815,7 @@ Rol: {}</translation>
         <translation type="vanished">Cartografía de referencia</translation>
     </message>
     <message>
-        <location filename="../config/ladm_names.py" line="201"/>
+        <location filename="../config/ladm_names.py" line="208"/>
         <source>Valuation</source>
         <translation>Submodelo de Avalúos</translation>
     </message>
@@ -10894,22 +10910,22 @@ Rol: {}</translation>
         <translation>Interesados</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="273"/>
+        <location filename="../config/translation_strings.py" line="314"/>
         <source>Validation errors</source>
         <translation>Errores de validación</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="137"/>
+        <location filename="../config/translation_strings.py" line="157"/>
         <source>Boundary Points should not overlap</source>
         <translation>Los Puntos de Lindero no deben superponerse</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="138"/>
+        <location filename="../config/translation_strings.py" line="158"/>
         <source>Control Points should not overlap</source>
         <translation>Los Puntos de Control no deben superponerse</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="139"/>
+        <location filename="../config/translation_strings.py" line="159"/>
         <source>Boundary Points should be covered by Boundary nodes</source>
         <translation>Los Puntos de Lindero deben estar cubiertos por nodos de Lindero</translation>
     </message>
@@ -10918,269 +10934,349 @@ Rol: {}</translation>
         <translation type="vanished">Las Unidades de Construcción deben estar dentro de sus terrenos y construcciones correspondientes</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="155"/>
+        <location filename="../config/translation_strings.py" line="175"/>
         <source>Building Units should be within corresponding plots</source>
         <translation>Las Unidades de Construcción deben estar dentro de sus terrenos correspondientes</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="156"/>
+        <location filename="../config/translation_strings.py" line="176"/>
         <source>Building Units should be within corresponding buildings</source>
         <translation>Las Unidades de Construcción deben estar dentro de sus construcciones correspondientes</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="163"/>
+        <location filename="../config/translation_strings.py" line="183"/>
         <source>Check that parties of type natural cannot include data of a legal party</source>
         <translation>Revisar que los interesados naturales no incluyan datos de interesados jurídicos</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="164"/>
+        <location filename="../config/translation_strings.py" line="184"/>
         <source>Check that parties of type legal cannot include data of a natural party</source>
         <translation>Revisar que los interesados jurídicos no incluyan datos de interesados naturales</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="167"/>
+        <location filename="../config/translation_strings.py" line="187"/>
         <source>Boundary point should not have duplicate records</source>
         <translation>Punto Lindero no debe tener registros duplicados</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="168"/>
+        <location filename="../config/translation_strings.py" line="188"/>
         <source>Survey point should not have duplicate records</source>
         <translation>Punto de Levantamiento no debe tener registros duplicados</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="169"/>
+        <location filename="../config/translation_strings.py" line="189"/>
         <source>Control point should not have duplicate records</source>
         <translation>Punto Control no debe tener registros duplicados</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="170"/>
+        <location filename="../config/translation_strings.py" line="190"/>
         <source>Boundary should not have duplicate records</source>
         <translation>Lindero no debe tener registros duplicados</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="171"/>
+        <location filename="../config/translation_strings.py" line="191"/>
         <source>Plot should not have duplicate records</source>
         <translation>Terreno no debe tener registros duplicados</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="172"/>
+        <location filename="../config/translation_strings.py" line="192"/>
         <source>Building should not have duplicate records</source>
         <translation>Construcción no debe tener registros duplicados</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="173"/>
+        <location filename="../config/translation_strings.py" line="193"/>
         <source>Building unit should not have duplicate records</source>
         <translation>Unidad de construcción no debe tener registros duplicados</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="174"/>
+        <location filename="../config/translation_strings.py" line="194"/>
         <source>Parcel should not have duplicate records</source>
         <translation>Predio no debe tener registros duplicados</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="175"/>
+        <location filename="../config/translation_strings.py" line="195"/>
         <source>Party should not have duplicate records</source>
         <translation>Interesado no debe tener registros duplicados</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="176"/>
+        <location filename="../config/translation_strings.py" line="196"/>
         <source>Right should not have duplicate records</source>
         <translation>Derecho no debe tener registros duplicados</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="177"/>
+        <location filename="../config/translation_strings.py" line="197"/>
         <source>Restriction should not have duplicate records</source>
         <translation>Restricción no debe tener registros duplicados</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="178"/>
+        <location filename="../config/translation_strings.py" line="198"/>
         <source>Administrative source should not have duplicate records</source>
         <translation>Fuente administrativa no debe tener registros duplicados</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="182"/>
+        <location filename="../config/translation_strings.py" line="199"/>
+        <source>Building unit data should be consistent</source>
+        <translation>Los datos de Unidades de Construcción deben ser consistentes</translation>
+    </message>
+    <message>
+        <location filename="../config/translation_strings.py" line="203"/>
         <source>Los puntos de lindero no deben superponerse</source>
         <translation>Los puntos de lindero no deben superponerse</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="183"/>
+        <location filename="../config/translation_strings.py" line="204"/>
         <source>Los puntos de control no deben superponerse</source>
         <translation>Los puntos de control no deben superponerse</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="184"/>
+        <location filename="../config/translation_strings.py" line="205"/>
         <source>Punto lindero no esta cubierto por un nodo de lindero</source>
         <translation>Punto lindero no esta cubierto por un nodo de lindero</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="185"/>
-        <location filename="../config/translation_strings.py" line="198"/>
+        <location filename="../config/translation_strings.py" line="206"/>
+        <location filename="../config/translation_strings.py" line="219"/>
         <source>La relación topológica entre el punto lindero y el nodo de un lindero no está registra en la tabla puntoccl</source>
         <translation>La relación topológica entre el punto lindero y el nodo de un lindero no está registra en la tabla puntoccl</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="186"/>
-        <location filename="../config/translation_strings.py" line="199"/>
+        <location filename="../config/translation_strings.py" line="207"/>
+        <location filename="../config/translation_strings.py" line="220"/>
         <source>La relación topológica entre el punto lindero y el nodo de un lindero está duplicada en la tabla puntoccl</source>
         <translation>La relación topológica entre el punto lindero y el nodo de un lindero está duplicada en la tabla puntoccl</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="187"/>
+        <location filename="../config/translation_strings.py" line="208"/>
         <source>El punto de lindero no está cubierto por un nodo de un terreno</source>
         <translation>El punto de lindero no está cubierto por un nodo de un terreno</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="190"/>
+        <location filename="../config/translation_strings.py" line="211"/>
         <source>Los linderos no deben superponerse</source>
         <translation>Los linderos no deben superponerse</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="191"/>
+        <location filename="../config/translation_strings.py" line="212"/>
         <source>El lindero debe terminar en cambio de colindancia</source>
         <translation>El lindero debe terminar en cambio de colindancia</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="192"/>
+        <location filename="../config/translation_strings.py" line="213"/>
         <source>El lindero no está cubierto por terreno</source>
         <translation>El lindero no está cubierto por terreno</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="193"/>
+        <location filename="../config/translation_strings.py" line="214"/>
         <source>La relación topológica entre lindero y terreno está duplicada en la tabla masccl</source>
         <translation>La relación topológica entre lindero y terreno está duplicada en la tabla masccl</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="194"/>
+        <location filename="../config/translation_strings.py" line="215"/>
         <source>La relación topológica entre lindero y terreno está duplicada en la tabla menosccl</source>
         <translation>La relación topológica entre lindero y terreno está duplicada en la tabla menosccl</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="195"/>
+        <location filename="../config/translation_strings.py" line="216"/>
         <source>La relación topológica entre lindero y terreno no está registrada en la tabla masccl</source>
         <translation>La relación topológica entre lindero y terreno no está registrada en la tabla masccl</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="196"/>
+        <location filename="../config/translation_strings.py" line="217"/>
         <source>La relación topológica entre lindero y terreno no está registrada en la tabla menosccl</source>
         <translation>La relación topológica entre lindero y terreno no está registrada en la tabla menosccl</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="197"/>
+        <location filename="../config/translation_strings.py" line="218"/>
         <source>Nodo lindero no está cubierto por un punto lindero</source>
         <translation>Nodo lindero no está cubierto por un punto lindero</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="200"/>
+        <location filename="../config/translation_strings.py" line="221"/>
         <source>El lindero no debe tener nodos sin conectar</source>
         <translation>El lindero no debe tener nodos sin conectar</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="203"/>
+        <location filename="../config/translation_strings.py" line="224"/>
         <source>Los terrenos no deben superponerse</source>
         <translation>Los terrenos no deben superponerse</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="204"/>
+        <location filename="../config/translation_strings.py" line="225"/>
         <source>Las construcciones no deben superponerse</source>
         <translation>Las construcciones no deben superponerse</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="205"/>
+        <location filename="../config/translation_strings.py" line="226"/>
         <source>Las servidumbres de paso no deben superponerse</source>
         <translation>Las servidumbres de paso no deben superponerse</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="206"/>
+        <location filename="../config/translation_strings.py" line="227"/>
         <source>El terreno no está cubierto por linderos</source>
         <translation>El terreno no está cubierto por linderos</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="207"/>
+        <location filename="../config/translation_strings.py" line="228"/>
         <source>La relación topológica entre terreno y lindero está duplicada en la tabla masccl</source>
         <translation>La relación topológica entre terreno y lindero está duplicada en la tabla masccl</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="208"/>
+        <location filename="../config/translation_strings.py" line="229"/>
         <source>La relación topológica entre terreno y lindero está duplicada en la tabla menosccl</source>
         <translation>La relación topológica entre terreno y lindero está duplicada en la tabla menosccl</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="209"/>
+        <location filename="../config/translation_strings.py" line="230"/>
         <source>La relación topológica entre terreno y lindero no está registrada en la tabla masccl</source>
         <translation>La relación topológica entre terreno y lindero no está registrada en la tabla masccl</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="210"/>
+        <location filename="../config/translation_strings.py" line="231"/>
         <source>La relación topológica entre terreno y lindero no está registrada en la tabla menosccl</source>
         <translation>La relación topológica entre terreno y lindero no está registrada en la tabla menosccl</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="211"/>
+        <location filename="../config/translation_strings.py" line="232"/>
         <source>La servidumbre de paso no se debe superponer con la construcción</source>
         <translation>La servidumbre de paso no se debe superponer con la construcción</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="212"/>
+        <location filename="../config/translation_strings.py" line="233"/>
         <source>No debe haber hueco entre terrenos</source>
         <translation>No debe haber hueco entre terrenos</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="213"/>
+        <location filename="../config/translation_strings.py" line="234"/>
         <source>Servidumbre de paso no debe tener geometría multiparte</source>
         <translation>Servidumbre de paso no debe tener geometría multiparte</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="214"/>
+        <location filename="../config/translation_strings.py" line="235"/>
         <source>El nodo del terreno no está cubierto por un punto lindero</source>
         <translation>El nodo del terreno no está cubierto por un punto lindero</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="215"/>
+        <location filename="../config/translation_strings.py" line="236"/>
         <source>La construcción no está dentro de ningún terreno</source>
         <translation>La construcción no está dentro de ningún terreno</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="216"/>
+        <location filename="../config/translation_strings.py" line="237"/>
         <source>La construcción cruza los límites de un terreno</source>
         <translation>La construcción cruza los límites de un terreno</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="217"/>
+        <location filename="../config/translation_strings.py" line="238"/>
         <source>La construcción está dentro de un terreno pero no dentro de su terreno correspondiente</source>
         <translation>La construcción está dentro de un terreno pero no dentro de su terreno correspondiente</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="218"/>
+        <location filename="../config/translation_strings.py" line="239"/>
         <source>La unidad de construcción no está dentro de ningún terreno</source>
         <translation>La unidad de construcción no está dentro de ningún terreno</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="219"/>
+        <location filename="../config/translation_strings.py" line="240"/>
         <source>La unidad de construcción cruza los límites de un terreno</source>
         <translation>La unidad de construcción cruza los límites de un terreno</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="220"/>
+        <location filename="../config/translation_strings.py" line="241"/>
         <source>La unidad de construcción está dentro de un terreno pero no dentro de su terreno correspondiente</source>
         <translation>La unidad de construcción está dentro de un terreno pero no dentro de su terreno correspondiente</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="221"/>
+        <location filename="../config/translation_strings.py" line="242"/>
         <source>La unidad de construcción no está dentro de ninguna construcción</source>
         <translation>La unidad de construcción no está dentro de ninguna construcción</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="222"/>
+        <location filename="../config/translation_strings.py" line="243"/>
         <source>La unidad de construcción cruza los límites de una construcción</source>
         <translation>La unidad de construcción cruza los límites de una construcción</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="232"/>
+        <location filename="../config/translation_strings.py" line="253"/>
         <source>El número predial debe tener 30 caracteres numéricos</source>
         <translation>El número predial debe tener 30 caracteres numéricos</translation>
     </message>
     <message>
+        <location filename="../config/translation_strings.py" line="259"/>
+        <source>El campo &apos;Sexo&apos; debe estar diligenciado</source>
+        <translation>El campo &apos;Sexo&apos; debe estar diligenciado</translation>
+    </message>
+    <message>
         <location filename="../config/translation_strings.py" line="260"/>
+        <source>El primer apellido no puede contener caracteres especiales</source>
+        <translation>El primer apellido no puede contener caracteres especiales</translation>
+    </message>
+    <message>
+        <location filename="../config/translation_strings.py" line="261"/>
+        <source>El primer apellido no puede contener digitos</source>
+        <translation>El primer apellido no puede contener digitos</translation>
+    </message>
+    <message>
+        <location filename="../config/translation_strings.py" line="262"/>
+        <source>El primer nombre no puede contener caracteres especiales</source>
+        <translation>El primer nombre no puede contener caracteres especiales</translation>
+    </message>
+    <message>
+        <location filename="../config/translation_strings.py" line="263"/>
+        <source>El primer nombre no puede contener digitos</source>
+        <translation>El primer nombre no puede contener digitos</translation>
+    </message>
+    <message>
+        <location filename="../config/translation_strings.py" line="264"/>
+        <source>El segundo apellido no puede contener caracteres especiales</source>
+        <translation>El segundo apellido no puede contener caracteres especiales</translation>
+    </message>
+    <message>
+        <location filename="../config/translation_strings.py" line="265"/>
+        <source>El segundo apellido no puede contener digitos</source>
+        <translation>El segundo apellido no puede contener digitos</translation>
+    </message>
+    <message>
+        <location filename="../config/translation_strings.py" line="266"/>
+        <source>El segundo nombre no puede contener caracteres especiales</source>
+        <translation>El segundo nombre no puede contener caracteres especiales</translation>
+    </message>
+    <message>
+        <location filename="../config/translation_strings.py" line="267"/>
+        <source>El segundo nombre no puede contener digitos</source>
+        <translation>El segundo nombre no puede contener digitos</translation>
+    </message>
+    <message>
+        <location filename="../config/translation_strings.py" line="269"/>
+        <source>Primer apellido no debe estar diligenciado</source>
+        <translation>Primer apellido no debe estar diligenciado</translation>
+    </message>
+    <message>
+        <location filename="../config/translation_strings.py" line="270"/>
+        <source>Primer nombre no debe estar diligenciado</source>
+        <translation>Primer nombre no debe estar diligenciado</translation>
+    </message>
+    <message>
+        <location filename="../config/translation_strings.py" line="271"/>
+        <source>Tipo de documento debe ser NIT o Secuencial</source>
+        <translation>Tipo de documento debe ser NIT o Secuencial</translation>
+    </message>
+    <message>
+        <location filename="../config/translation_strings.py" line="272"/>
+        <source>Segundo apellido no debe estar diligenciado</source>
+        <translation>Segundo apellido no debe estar diligenciado</translation>
+    </message>
+    <message>
+        <location filename="../config/translation_strings.py" line="273"/>
+        <source>Segundo nombre no debe estar diligenciado</source>
+        <translation>Segundo nombre no debe estar diligenciado</translation>
+    </message>
+    <message>
+        <location filename="../config/translation_strings.py" line="274"/>
+        <source>El campo &apos;Sexo&apos; no debe estar diligenciado</source>
+        <translation>El campo &apos;Sexo&apos; no debe estar diligenciado</translation>
+    </message>
+    <message>
+        <location filename="../config/translation_strings.py" line="293"/>
         <source>Cuando la condición del predio es &apos;NPH&apos;, el predio debe tener asociado 1 terreno</source>
         <translation>Cuando la condición del predio es &apos;NPH&apos;, el predio debe tener asociado 1 terreno</translation>
     </message>
@@ -11193,32 +11289,32 @@ Rol: {}</translation>
         <translation type="vanished">La unidad de construcción cruza los límites de un construcción</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="223"/>
+        <location filename="../config/translation_strings.py" line="244"/>
         <source>La unidad de construcción está dentro de una construcción pero no dentro de su construcción correspondiente</source>
         <translation>La unidad de construcción está dentro de una construcción pero no dentro de su construcción correspondiente</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="226"/>
+        <location filename="../config/translation_strings.py" line="247"/>
         <source>El predio tiene más de un derecho de dominio asociado</source>
         <translation>El predio tiene más de un derecho de dominio asociado</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="227"/>
+        <location filename="../config/translation_strings.py" line="248"/>
         <source>El predio no tiene derecho asociado</source>
         <translation>El predio no tiene derecho asociado</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="229"/>
+        <location filename="../config/translation_strings.py" line="250"/>
         <source>Los porcentajes de participación de la agrupación de interesados deben sumar uno (1)</source>
         <translation>Los porcentajes de participación de la agrupación de interesados deben sumar uno (1)</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="230"/>
+        <location filename="../config/translation_strings.py" line="251"/>
         <source>El código de departamento debe tener dos caracteres numéricos</source>
         <translation>El código de departamento debe tener dos caracteres numéricos</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="231"/>
+        <location filename="../config/translation_strings.py" line="252"/>
         <source>El código de municipio debe tener tres caracteres numéricos</source>
         <translation>El código de municipio debe tener tres caracteres numéricos</translation>
     </message>
@@ -11227,137 +11323,134 @@ Rol: {}</translation>
         <translation type="vanished">El número predial debe tiener 30 caracteres numéricos</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="233"/>
+        <location filename="../config/translation_strings.py" line="254"/>
         <source>El número predial anterior debe tener 20 caracteres numéricos</source>
         <translation>El número predial anterior debe tener 20 caracteres numéricos</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="234"/>
+        <location filename="../config/translation_strings.py" line="255"/>
         <source>La razón social no debe estar diligenciada</source>
         <translation>La razón social no debe estar diligenciada</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="235"/>
+        <location filename="../config/translation_strings.py" line="256"/>
         <source>El primer apellido es obligatorio y debe estar diligenciado</source>
         <translation>El primer apellido es obligatorio y debe estar diligenciado</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="236"/>
+        <location filename="../config/translation_strings.py" line="257"/>
         <source>El primer nombre es obligatorio y debe estar diligenciado</source>
         <translation>El primer nombre es obligatorio y debe estar diligenciado</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="237"/>
+        <location filename="../config/translation_strings.py" line="258"/>
         <source>El tipo de documento debe ser diferente de NIT</source>
         <translation>El tipo de documento debe ser diferente de NIT</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="238"/>
+        <location filename="../config/translation_strings.py" line="268"/>
         <source>Razón social debe estar diligenciada</source>
         <translation>Razón social debe estar diligenciada</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="239"/>
         <source>Primer apellido no debe estar diligenciada</source>
-        <translation>Primer apellido no debe estar diligenciado</translation>
+        <translation type="vanished">Primer apellido no debe estar diligenciado</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="240"/>
         <source>Primer nombre no debe estar diligenciada</source>
-        <translation>Primer nombre no debe estar diligenciado</translation>
+        <translation type="vanished">Primer nombre no debe estar diligenciado</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="241"/>
         <source>Tipo de documento debe ser NIT o Secuencial IGAC o Secuencial SNR</source>
-        <translation>Tipo de documento debe ser NIT o Secuencial IGAC o Secuencial SNR</translation>
+        <translation type="vanished">Tipo de documento debe ser NIT o Secuencial IGAC o Secuencial SNR</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="242"/>
+        <location filename="../config/translation_strings.py" line="275"/>
         <source>Cuando la condicion del predio es &apos;Bien de uso publico&apos; la posición 22 del número predial debe ser 3</source>
         <translation>Cuando la condicion del predio es &apos;Bien de uso publico&apos; la posición 22 del número predial debe ser 3</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="243"/>
+        <location filename="../config/translation_strings.py" line="276"/>
         <source>Cuando la condicion del predio es &apos;Condominio Matriz&apos; o &apos;Condominio Unidad Predial&apos; la posición 22 del número predial debe ser 8</source>
         <translation>Cuando la condicion del predio es &apos;Condominio Matriz&apos; o &apos;Condominio Unidad Predial&apos; la posición 22 del número predial debe ser 8</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="244"/>
+        <location filename="../config/translation_strings.py" line="277"/>
         <source>Cuando la condicion del predio es &apos;Mejora en NPH&apos; la posición 22 del número predial debe ser 5</source>
         <translation>Cuando la condicion del predio es &apos;Mejora en NPH&apos; la posición 22 del número predial debe ser 5</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="245"/>
+        <location filename="../config/translation_strings.py" line="278"/>
         <source>Cuando la condicion del predio es &apos;Mejora en PH&apos; la posición 22 del número predial debe ser 5</source>
         <translation>Cuando la condicion del predio es &apos;Mejora en PH&apos; la posición 22 del número predial debe ser 5</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="246"/>
+        <location filename="../config/translation_strings.py" line="279"/>
         <source>Cuando la condicion del predio es &apos;NPH&apos; la posición 22 del número predial debe ser 0</source>
         <translation>Cuando la condicion del predio es &apos;NPH&apos; la posición 22 del número predial debe ser 0</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="247"/>
+        <location filename="../config/translation_strings.py" line="280"/>
         <source>Cuando la condición del predio es &apos;Parque Cementerio Matriz&apos; o &apos;Parque Cementerio Unidad Predial&apos; la posición 22 del número predial debe ser 7</source>
         <translation>Cuando la condición del predio es &apos;Parque Cementerio Matriz&apos; o &apos;Parque Cementerio Unidad Predial&apos; la posición 22 del número predial debe ser 7</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="248"/>
+        <location filename="../config/translation_strings.py" line="281"/>
         <source>Cuando la condicion del predio es &apos;PH Matriz&apos; o &apos;PH Unidad Predial&apos; la posición 22 del número predial debe ser 9</source>
         <translation>Cuando la condicion del predio es &apos;PH Matriz&apos; o &apos;PH Unidad Predial&apos; la posición 22 del número predial debe ser 9</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="249"/>
+        <location filename="../config/translation_strings.py" line="282"/>
         <source>Cuando la condicion del predio es &apos;Vía&apos; la posición 22 del número predial debe ser 4</source>
         <translation>Cuando la condicion del predio es &apos;Vía&apos; la posición 22 del número predial debe ser 4</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="250"/>
+        <location filename="../config/translation_strings.py" line="283"/>
         <source>Cuando la condición del predio es &apos;Bien de Uso Publico&apos;, el predio debe tener asociado 1 terreno y 0 unidades de construcción</source>
         <translation>Cuando la condición del predio es &apos;Bien de Uso Publico&apos;, el predio debe tener asociado 1 terreno y 0 unidades de construcción</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="251"/>
+        <location filename="../config/translation_strings.py" line="284"/>
         <source>Cuando la condición del predio es &apos;Condominio Matriz&apos;, el predio debe tener asociado 1 terreno y 0 unidades de construcción</source>
         <translation>Cuando la condición del predio es &apos;Condominio Matriz&apos;, el predio debe tener asociado 1 terreno y 0 unidades de construcción</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="252"/>
+        <location filename="../config/translation_strings.py" line="285"/>
         <source>Cuando la condición del predio es &apos;Condominio Unidad Predial&apos;, el predio debe tener asociado 1 terreno y 0 unidades de construcción</source>
         <translation>Cuando la condición del predio es &apos;Condominio Unidad Predial&apos;, el predio debe tener asociado 1 terreno y 0 unidades de construcción</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="253"/>
+        <location filename="../config/translation_strings.py" line="286"/>
         <source>Cuando la condición del predio es &apos;Mejora en NPH&apos;, el predio debe tener asociado 0 terrenos y 1 construcción y 0 unidades de construcción</source>
         <translation>Cuando la condición del predio es &apos;Mejora en NPH&apos;, el predio debe tener asociado 0 terrenos y 1 construcción y 0 unidades de construcción</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="254"/>
+        <location filename="../config/translation_strings.py" line="287"/>
         <source>Cuando la condición del predio es &apos;Mejora en PH&apos;, el predio debe tener asociado 0 terrenos y 1 construcción y 0 unidades de construcción</source>
         <translation>Cuando la condición del predio es &apos;Mejora en PH&apos;, el predio debe tener asociado 0 terrenos y 1 construcción y 0 unidades de construcción</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="255"/>
+        <location filename="../config/translation_strings.py" line="288"/>
         <source>Cuando la condición del predio es &apos;Parque Cementerio Matriz&apos;, el predio debe tener asociado 1 terreno y 0 unidades de construcción</source>
         <translation>Cuando la condición del predio es &apos;Parque Cementerio Matriz&apos;, el predio debe tener asociado 1 terreno y 0 unidades de construcción</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="256"/>
+        <location filename="../config/translation_strings.py" line="289"/>
         <source>Cuando la condición del predio es &apos;Parque Cementerio Unidad Predial&apos;, el predio debe tener asociado 1 terreno y 0 construcciones y 0 unidades de construcción</source>
         <translation>Cuando la condición del predio es &apos;Parque Cementerio Unidad Predial&apos;, el predio debe tener asociado 1 terreno y 0 construcciones y 0 unidades de construcción</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="257"/>
+        <location filename="../config/translation_strings.py" line="290"/>
         <source>Cuando la condición del predio es &apos;PH Matriz&apos;, el predio debe tener asociado 1 terreno y 0 unidades de construcción</source>
         <translation>Cuando la condición del predio es &apos;PH Matriz&apos;, el predio debe tener asociado 1 terreno y 0 unidades de construcción</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="258"/>
+        <location filename="../config/translation_strings.py" line="291"/>
         <source>Cuando la condición del predio es &apos;PH Unidad Predial&apos;, el predio debe tener asociado 0 terrenos y 0 construcciones y 1 unidad de construcción</source>
         <translation>Cuando la condición del predio es &apos;PH Unidad Predial&apos;, el predio debe tener asociado 0 terrenos y 0 construcciones y 1 unidad de construcción</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="259"/>
+        <location filename="../config/translation_strings.py" line="292"/>
         <source>Cuando la condición del predio es &apos;Vía&apos;, el predio debe tener asociado 1 terreno y 0 construcciones y 0 unidades de construcción</source>
         <translation>Cuando la condición del predio es &apos;Vía&apos;, el predio debe tener asociado 1 terreno y 0 construcciones y 0 unidades de construcción</translation>
     </message>
@@ -11366,72 +11459,112 @@ Rol: {}</translation>
         <translation type="vanished">Cuando la condición del predio es &apos;NPH&apos;, el predio debe tener asociado 1 terreno y 0 unidades de construcción</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="261"/>
+        <location filename="../config/translation_strings.py" line="294"/>
         <source>Punto Lindero no debe tener registros repetidos</source>
         <translation>Punto Lindero no debe tener registros repetidos</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="262"/>
+        <location filename="../config/translation_strings.py" line="295"/>
         <source>Punto Levantamiento no debe tener registros repetidos</source>
         <translation>Punto Levantamiento no debe tener registros repetidos</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="263"/>
+        <location filename="../config/translation_strings.py" line="296"/>
         <source>Punto Control no debe tener registros repetidos</source>
         <translation>Punto Control no debe tener registros repetidos</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="264"/>
+        <location filename="../config/translation_strings.py" line="297"/>
         <source>Lindero no debe tener registros repetidos</source>
         <translation>Lindero no debe tener registros repetidos</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="265"/>
+        <location filename="../config/translation_strings.py" line="298"/>
         <source>Terreno no debe tener registros repetidos</source>
         <translation>Terreno no debe tener registros repetidos</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="266"/>
+        <location filename="../config/translation_strings.py" line="299"/>
         <source>Construcción no debe tener registros repetidos</source>
         <translation>Construcción no debe tener registros repetidos</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="267"/>
+        <location filename="../config/translation_strings.py" line="300"/>
         <source>Unidad de Construcción no debe tener registros repetidos</source>
         <translation>Unidad de Construcción no debe tener registros repetidos</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="268"/>
+        <location filename="../config/translation_strings.py" line="301"/>
         <source>Predio no debe tener registros repetidos</source>
         <translation>Predio no debe tener registros repetidos</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="269"/>
+        <location filename="../config/translation_strings.py" line="302"/>
         <source>Interesado no debe tener registros repetidos</source>
         <translation>Interesado no debe tener registros repetidos</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="270"/>
+        <location filename="../config/translation_strings.py" line="303"/>
         <source>Derecho no debe tener registros repetidos</source>
         <translation>Derecho no debe tener registros repetidos</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="271"/>
+        <location filename="../config/translation_strings.py" line="304"/>
         <source>Restricción no debe tener registros repetidos</source>
         <translation>Restricción no debe tener registros repetidos</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="272"/>
+        <location filename="../config/translation_strings.py" line="305"/>
         <source>Fuente Administrativa no debe tener registros repetidos</source>
         <translation>Fuente Administrativa no debe tener registros repetidos</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="274"/>
+        <location filename="../config/translation_strings.py" line="306"/>
+        <source>Si el tipo de construcción es Convencional, el tipo de unidad de construcción no puede ser Anexo</source>
+        <translation>Si el tipo de construcción es Convencional, el tipo de unidad de construcción no puede ser Anexo</translation>
+    </message>
+    <message>
+        <location filename="../config/translation_strings.py" line="307"/>
+        <source>Si el tipo de construcción es &apos;No Convencional&apos;, el tipo de unidad de construcción debe ser Anexo</source>
+        <translation>Si el tipo de construcción es &apos;No Convencional&apos;, el tipo de unidad de construcción debe ser Anexo</translation>
+    </message>
+    <message>
+        <location filename="../config/translation_strings.py" line="308"/>
+        <source>El tipo de unidad de construcción debe corresponder al dominio general del uso</source>
+        <translation>El tipo de unidad de construcción debe corresponder al dominio general del uso</translation>
+    </message>
+    <message>
+        <location filename="../config/translation_strings.py" line="309"/>
+        <source>El área construida debe ser igual a cero para usos de unidades de construcción relacionados con PH</source>
+        <translation>El área construida debe ser igual a cero para usos de unidades de construcción relacionados con PH</translation>
+    </message>
+    <message>
+        <location filename="../config/translation_strings.py" line="310"/>
+        <source>El área construida debe ser mayor que cero para usos de unidades de construcción que no estén relacionados con PH</source>
+        <translation>El área construida debe ser mayor que cero para usos de unidades de construcción que no estén relacionados con PH</translation>
+    </message>
+    <message>
+        <location filename="../config/translation_strings.py" line="311"/>
+        <source>El área privada construida debe ser mayor que cero para usos de unidades de construcción relacionados con PH</source>
+        <translation>El área privada construida debe ser mayor que cero para usos de unidades de construcción relacionados con PH</translation>
+    </message>
+    <message>
+        <location filename="../config/translation_strings.py" line="312"/>
+        <source>Si la condición del predio es &apos;PH&apos; o &apos;Condominio&apos;, entonces, los usos &apos;Residencial&apos;, &apos;Comercial&apos;, &apos;Institucional&apos; o &apos;Industrial&apos; de la Unidad de Construcción correspondiente, deben ser usos asociados a &apos;PH&apos;.</source>
+        <translation>Si la condición del predio es &apos;PH&apos; o &apos;Condominio&apos;, entonces, los usos &apos;Residencial&apos;, &apos;Comercial&apos;, &apos;Institucional&apos; o &apos;Industrial&apos; de la Unidad de Construcción correspondiente, deben ser usos asociados a &apos;PH&apos;.</translation>
+    </message>
+    <message>
+        <location filename="../config/translation_strings.py" line="313"/>
+        <source>Si la condición del predio no es &apos;PH&apos; ni &apos;Condominio&apos;, entonces, los usos &apos;Residencial&apos;, &apos;Comercial&apos;, &apos;Institucional&apos; o &apos;Industrial&apos; de la Unidad de Construcción correspondiente, no pueden ser usos asociados a &apos;PH&apos;.</source>
+        <translation>Si la condición del predio no es &apos;PH&apos; ni &apos;Condominio&apos;, entonces, los usos &apos;Residencial&apos;, &apos;Comercial&apos;, &apos;Institucional&apos; o &apos;Industrial&apos; de la Unidad de Construcción correspondiente, no pueden ser usos asociados a &apos;PH&apos;.</translation>
+    </message>
+    <message>
+        <location filename="../config/translation_strings.py" line="315"/>
         <source>Right of way line</source>
         <translation>Linea de Servidumbre de Paso</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="140"/>
+        <location filename="../config/translation_strings.py" line="160"/>
         <source>Boundary Points should be covered by plot nodes</source>
         <translation>Los Puntos de Lindero deben estar cubiertos por nodos de Terrenos</translation>
     </message>
@@ -11440,117 +11573,117 @@ Rol: {}</translation>
         <translation type="vanished">Los segmentos de Linderos no deben ser más largos que {}m.</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="105"/>
+        <location filename="../config/translation_strings.py" line="125"/>
         <source>Gets the t_id that corresponds to a domain value</source>
         <translation>Obtiene el t_id que corresponde a un valor de dominio</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="106"/>
+        <location filename="../config/translation_strings.py" line="126"/>
         <source>&lt;h4&gt;Syntax&lt;/h4&gt;</source>
         <translation>&lt;h4&gt;Syntaxis&lt;/h4&gt;</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="112"/>
+        <location filename="../config/translation_strings.py" line="132"/>
         <source>&lt;h4&gt;Arguments&lt;/h4&gt;</source>
         <translation>&lt;h4&gt;Argumentos&lt;/h4&gt;</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="113"/>
+        <location filename="../config/translation_strings.py" line="133"/>
         <source>Domain table name or layer obj</source>
         <translation>Nombre de la tabla del dominio u objeto capa</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="114"/>
+        <location filename="../config/translation_strings.py" line="134"/>
         <source>Domain value to look for</source>
         <translation>Valor del dominio a buscar</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="115"/>
+        <location filename="../config/translation_strings.py" line="135"/>
         <source>Whether value is iliCode or dispName</source>
         <translation>Indica si el valor es iliCode o no (dispName)</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="116"/>
+        <location filename="../config/translation_strings.py" line="136"/>
         <source>Whether validate connection or not</source>
         <translation>Indica si validar conexión o no</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="117"/>
+        <location filename="../config/translation_strings.py" line="137"/>
         <source>&lt;h4&gt;Examples&lt;/h4&gt;</source>
         <translation>&lt;h4&gt;Ejemplos&lt;/h4&gt;</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="130"/>
+        <location filename="../config/translation_strings.py" line="150"/>
         <source>COLLECTED</source>
         <translation>BARRIDO PREDIAL</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="132"/>
+        <location filename="../config/translation_strings.py" line="152"/>
         <source>SUPPLIES</source>
         <translation>INSUMOS</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="141"/>
+        <location filename="../config/translation_strings.py" line="161"/>
         <source>Boundaries should not overlap</source>
         <translation>Los Linderos no deben superponerse</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="142"/>
+        <location filename="../config/translation_strings.py" line="162"/>
         <source>Boundaries should not be split</source>
         <translation>Los Linderos deben terminar en cambio de colindancia</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="143"/>
+        <location filename="../config/translation_strings.py" line="163"/>
         <source>Boundaries should be covered by Plots</source>
         <translation>Los Linderos deben estar cubiertos por límites de Terrenos</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="144"/>
+        <location filename="../config/translation_strings.py" line="164"/>
         <source>Boundary nodes should be covered by Boundary Points</source>
         <translation>Los nodos de Linderos deben estar cubiertos por Puntos de Lindero</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="145"/>
+        <location filename="../config/translation_strings.py" line="165"/>
         <source>Boundaries should not have dangles</source>
         <translation>Los Linderos no deben tener nodos sin conectar</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="146"/>
+        <location filename="../config/translation_strings.py" line="166"/>
         <source>Plots should not overlap</source>
         <translation>Los Terrenos no deben superponerse</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="147"/>
+        <location filename="../config/translation_strings.py" line="167"/>
         <source>Buildings should not overlap</source>
         <translation>Las Construcciones no deben superponerse</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="148"/>
+        <location filename="../config/translation_strings.py" line="168"/>
         <source>Rights of Way should not overlap</source>
         <translation>Las Servidumbres de Paso no deben superponerse</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="149"/>
+        <location filename="../config/translation_strings.py" line="169"/>
         <source>Plots should be covered by Boundaries</source>
         <translation>Los límites de Terreno deben estar cubiertos por Linderos</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="151"/>
+        <location filename="../config/translation_strings.py" line="171"/>
         <source>Right of Way should not overlap Buildings</source>
         <translation>Las Servidumbres no se deben superponer con Construcciones</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="152"/>
+        <location filename="../config/translation_strings.py" line="172"/>
         <source>Plots should not have gaps</source>
         <translation>No deben haber huecos entre Terrenos</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="153"/>
+        <location filename="../config/translation_strings.py" line="173"/>
         <source>Right of Way should not have multipart geometries</source>
         <translation>Las Servidumbres de Paso no deben tener geometrías multiparte</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="154"/>
+        <location filename="../config/translation_strings.py" line="174"/>
         <source>Buildings should be within Plots</source>
         <translation>Las Construcciones deben estar dentro de su Terreno correspondiente</translation>
     </message>
@@ -11559,12 +11692,12 @@ Rol: {}</translation>
         <translation type="vanished">Las Unidades de Construcción deben estar dentro de su Terreno correspondiente</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="157"/>
+        <location filename="../config/translation_strings.py" line="177"/>
         <source>Parcel should have one and only one Right</source>
         <translation>Los predios deben tener derecho asociado y pueden tener máximo un derecho de tipo Dominio asociado</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="158"/>
+        <location filename="../config/translation_strings.py" line="178"/>
         <source>Group Party Fractions should sum 1</source>
         <translation>Las fracciones de las agrupaciones de interesados deben sumar uno (1)</translation>
     </message>
@@ -11573,27 +11706,27 @@ Rol: {}</translation>
         <translation type="vanished">No deben haber registros duplicados</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="159"/>
+        <location filename="../config/translation_strings.py" line="179"/>
         <source>Check that the department field of the parcel table has two numerical characters</source>
         <translation>Revisar que el campo departmento de la tabla predio tiene dos caracteres numéricos</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="160"/>
+        <location filename="../config/translation_strings.py" line="180"/>
         <source>Check that the municipality field of the parcel table has three numerical characters</source>
         <translation>Revisar que el campo municipio de la tabla predio tiene tres caracteres numéricos</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="161"/>
+        <location filename="../config/translation_strings.py" line="181"/>
         <source>Check that the parcel number has 30 numerical characters</source>
         <translation>Revisar que el número predial tiene 30 caracteres numéricos</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="162"/>
+        <location filename="../config/translation_strings.py" line="182"/>
         <source>Check that the parcel number before has 20 numerical characters</source>
         <translation>Revisar que el número predial anterior tiene 20 caracteres numéricos</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="165"/>
+        <location filename="../config/translation_strings.py" line="185"/>
         <source>Check that the type of parcel corresponds to position 22 of the parcel number</source>
         <translation>Revisar que el tipo de predio corresponde a la posición 22 del número predial</translation>
     </message>
@@ -11654,7 +11787,7 @@ Rol: {}</translation>
         <translation type="vanished">Revisar que el tipo de Predio corresponde a la posición 22 del {parcel_number}</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="166"/>
+        <location filename="../config/translation_strings.py" line="186"/>
         <source>Check that Spatial Units associated with Parcels correspond to the parcel type</source>
         <translation>Revisar que las Unidades Espaciales asociadas a Predios correspondan al tipo de predio</translation>
     </message>
@@ -11667,7 +11800,7 @@ Rol: {}</translation>
         <translation type="vanished">El Predio tiene más de un Derecho de dominio asociado</translation>
     </message>
     <message>
-        <location filename="../config/translation_strings.py" line="150"/>
+        <location filename="../config/translation_strings.py" line="170"/>
         <source>Plot nodes should be covered by boundary points</source>
         <translation>Los nodos de Terrenos deben estar cubiertos por Puntos de Lindero</translation>
     </message>
