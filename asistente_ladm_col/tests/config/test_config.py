@@ -35,5 +35,10 @@ TEST_SCHEMAS_MAPPING = {
     'no_interlis_gpkg': 'no_interlis.gpkg',
     'test_logic_quality_rules_gpkg': 'test_logic_quality_rules_v1_0.gpkg',
     'test_valid_quality_rules_gpkg': 'test_valid_quality_rules_v1_0.gpkg',
+    'tests_quality_validations_gpkg': 'quality_validations.gpkg',
+    'test_build_boundaries_gpkg': 'test_build_boundaries_v1_0.gpkg',
+    'test_build_boundaries_invalid_geom_gpkg': 'test_build_boundaries_invalid_geom_v1_0.gpkg',
+    'test_build_boundaries_empty_geom_gpkg': 'test_build_boundaries_empty_geom_v1_0.gpkg',
+    'test_build_boundaries_fix_geoms_gpkg': 'test_build_boundaries_fix_geoms_v1_0.gpkg',
     'interlis_no_ladm_col_models_gpkg': 'interlis_no_ladm_col_models.gpkg'
 }

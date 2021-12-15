@@ -40,7 +40,6 @@ class TestCopy(unittest.TestCase):
         import_qgis_model_baker()
         import_asistente_ladm_col()
         cls.app = AppInterface()
-        cls.app.core.initialize_ctm12()  # We need to initialize CTM12
 
     def setUp(self):
         restore_schema(SCHEMA_LADM_COL_EMPTY, True)

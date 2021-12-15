@@ -1,3 +1,20 @@
+"""
+/***************************************************************************
+                              Asistente LADM-COL
+                             --------------------
+        begin                : 2017-10-31
+        git sha              : :%H$
+        copyright            : (C) 2017 by Germán Carrillo (SwissTierras Col)
+        email                : gcarrillo@linuxmail.org
+ ***************************************************************************/
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License v3.0 as          *
+ *   published by the Free Software Foundation.                            *
+ *                                                                         *
+ ***************************************************************************/
+"""
 import time
 from copy import deepcopy
 from functools import (wraps,
@@ -128,6 +145,7 @@ def _db_connection_required(func_to_decorate):
 
     return decorated_function
 
+
 def _qgis_model_baker_required(func_to_decorate):
     @wraps(func_to_decorate)
     def decorated_function(*args, **kwargs):
@@ -166,6 +184,20 @@ def _qgis_model_baker_required(func_to_decorate):
 
     return decorated_function
 
+
+def _grass_required(func_to_decorate):
+    @wraps(func_to_decorate)
+    def decorated_function(*args, **kwargs):
+        try:
+            import processing
+            grass = processing.algs.grass7.Grass7Utils.Grass7Utils
+            Logger().info(__name__, "GRASS version installed: {}".format(grass.installedVersion()))
+            return func_to_decorate(*args, **kwargs)
+        except AttributeError:
+            Logger().warning(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin", "GRASS not found."))
+    return decorated_function
+
+
 def _activate_processing_plugin(func_to_decorate):
     @wraps(func_to_decorate)
     def decorated_function(*args, **kwargs):
@@ -182,6 +214,7 @@ def _activate_processing_plugin(func_to_decorate):
         return func_to_decorate(*args, **kwargs)
 
     return decorated_function
+
 
 def _log_quality_rule_validations(func_to_decorate):
     @wraps(func_to_decorate)
@@ -226,6 +259,7 @@ def _log_quality_rule_validations(func_to_decorate):
 
     return add_format_to_text
 
+
 def _survey_model_required(func_to_decorate):
     """Requires list of sources. Example: [COLLECTED_DB_SOURCE, SUPPLIES_DB_SOURCE]"""
     @wraps(func_to_decorate)
@@ -263,6 +297,7 @@ def _survey_model_required(func_to_decorate):
 
     return decorated_function
 
+
 def _supplies_model_required(func_to_decorate):
     @wraps(func_to_decorate)
     def decorated_function(*args, **kwargs):
@@ -298,6 +333,7 @@ def _supplies_model_required(func_to_decorate):
         func_to_decorate(*args, **kwargs)
 
     return decorated_function
+
 
 # TODO: Unify all model required decorators into one with model_key as argument
 def _field_data_capture_model_required(func_to_decorate):
@@ -456,6 +492,7 @@ def _map_swipe_tool_required(func_to_decorate):
                 "A dialog/tool couldn't be opened/executed, MapSwipe Tool not found."))
 
     return decorated_function
+
 
 def _validate_if_wizard_is_open(func_to_decorate):
     @wraps(func_to_decorate)
