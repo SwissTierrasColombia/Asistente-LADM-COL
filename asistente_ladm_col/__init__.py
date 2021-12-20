@@ -54,7 +54,7 @@ def classFactory(iface):
             from qgistester.tests import addTestModule
             addTestModule(gui_tests_model_baker, PLUGIN_NAME)
         except:
-            Logger().warning(__name__, "QGIS Tester plugin was not found. Therefore, no GUI tests could be registered!")
+            Logger().debug(__name__, "QGIS Tester plugin was not found. Therefore, no GUI tests could be registered!")
 
         return AsistenteLADMCOLPlugin(iface)
     else:
