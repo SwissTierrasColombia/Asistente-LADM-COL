@@ -26,91 +26,119 @@
  *                                                                         *
  ***************************************************************************/
  """
-from qgis.PyQt.QtCore import QCoreApplication
-from asistente_ladm_col.config.enums import EnumLayerCreationMode, EnumFeatureSelectionType
-from asistente_ladm_col.config.general_config import (WIZARD_QSETTINGS,
-                                                      WIZARD_QSETTINGS_PATH,
-                                                      WIZARD_CREATION_MODE_KEY,
-                                                      WIZARD_SELECTED_TYPE_KEY)
-from asistente_ladm_col.gui.wizards.controller.single_wizard_controller import SingleWizardController
-from asistente_ladm_col.gui.wizards.model.common.wizard_q_settings_manager import WizardQSettingsManager
-from asistente_ladm_col.gui.wizards.model.parcel_creator_model import ParcelCreatorModel
+from asistente_ladm_col.config.enums import EnumLayerCreationMode
+from asistente_ladm_col.gui.wizards.controller.controller_args import CreateFeatureArgs
+from asistente_ladm_col.gui.wizards.model.common.args.model_args import ExecFormAdvancedArgs
+from asistente_ladm_col.gui.wizards.model.common.manual_feature_creator import AlphaFeatureCreator
+from asistente_ladm_col.gui.wizards.model.common.select_features_by_expression_dialog_wrapper import \
+    SelectFeatureByExpressionDialogWrapper
+from asistente_ladm_col.gui.wizards.model.common.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
+from asistente_ladm_col.gui.wizards.controller.common.abstract_wizard_controller import (AbstractWizardController,
+                                                                                         ProductFactory)
+from asistente_ladm_col.gui.wizards.controller.common.wizard_messages_manager import WizardMessagesManager
+
+from asistente_ladm_col.gui.wizards.view.pages.features_selector_view import EnumFeatureSelectionType
+from asistente_ladm_col.gui.wizards.model.parcel_creator_model import ParcelCreatorManager
 from asistente_ladm_col.gui.wizards.view.common.view_args import PickFeaturesSelectedArgs
+
 from asistente_ladm_col.gui.wizards.view.parcel_view import ParcelView
 
 
-class ParcelController(SingleWizardController):
+class ParcelProductFactory(ProductFactory):
 
-    def __init__(self, model: ParcelCreatorModel, db, wizard_settings):
-        self.__model = model
-        SingleWizardController.__init__(self, model, db, wizard_settings)
+    def create_manual_feature_creator(self, iface, app, logger, layer, feature_name):
+        return AlphaFeatureCreator(iface, app, logger, layer, feature_name)
 
-        self.__model.features_selected.connect(self.features_selected)
-        self.__model.map_tool_changed.connect(self.map_tool_changed)
-        self.__model.feature_selection_by_expression_changed.connect(self.feature_selection_by_expression_changed)
-        # QSetings
-        self.__settings_manager = WizardQSettingsManager(self.wizard_config[WIZARD_QSETTINGS][WIZARD_QSETTINGS_PATH])
+    def create_feature_selector_on_map(self, iface, logger, multiple_features=True):
+        return SelectFeaturesOnMapWrapper(iface, logger)
 
-    def map_tool_changed(self):
-        message = QCoreApplication.translate("WizardTranslations",
-                                             "'{}' tool has been closed because the map tool change.").format(
-            self.WIZARD_TOOL_NAME)
-        self.logger.info_msg(__name__, message)
-        self.close_wizard()
+    def create_feature_selector_by_expression(self, iface):
+        return SelectFeatureByExpressionDialogWrapper(iface)
 
-    def _restore_settings(self):
-        settings = self.__settings_manager.get_settings()
+    def create_wizard_messages_manager(self, wizard_tool_name, editing_layer_name, logger):
+        return WizardMessagesManager(wizard_tool_name, editing_layer_name, logger)
 
-        if WIZARD_CREATION_MODE_KEY not in settings or settings[WIZARD_CREATION_MODE_KEY] is None:
-            settings[WIZARD_CREATION_MODE_KEY] = EnumLayerCreationMode.MANUALLY
+    def create_feature_manager(self, db, layers, editing_layer):
+        return ParcelCreatorManager(db, layers, editing_layer)
 
-        if WIZARD_SELECTED_TYPE_KEY not in settings:
-            settings[WIZARD_SELECTED_TYPE_KEY] = None
 
-        self.__view.restore_settings(settings)
+class ParcelController(AbstractWizardController):
+
+    def __init__(self, iface, db, wizard_config):
+        AbstractWizardController.__init__(self, iface, db, wizard_config, ParcelProductFactory())
+        self.__manual_feature_creator = None
+
+        self._initialize()
+
+    def close_wizard(self):
+        self.dispose()
+        self.update_wizard_is_open_flag.emit(False)
+        self.__view.close()
+
+    def _create_feature_selector_by_expression(self):
+        self.__feature_selector_by_expression = SelectFeatureByExpressionDialogWrapper(self._iface)
+        return self.__feature_selector_by_expression
+
+    # manual feature creator
+    def exec_form_advanced(self, args: ExecFormAdvancedArgs):
+        # TODO
+        self._feature_manager.exec_form_advanced(args)
+
+    # method called from the view
+    def create_feature(self, args: CreateFeatureArgs):
+        self._save_settings()
+        if args.layer_creation_mode == EnumLayerCreationMode.REFACTOR_FIELDS:
+            self.create_feature_from_refactor_fields()
+        else:
+            self._manual_feature_creator.create()
 
     def _create_view(self):
         self.__view = ParcelView(self, self._get_view_config())
-        parcel_types = self.__model.get_type_parcel_conditions()
+        parcel_types = self._feature_manager.get_type_parcel_conditions()
         self.__view.load_parcel_types(parcel_types)
         return self.__view
 
-    # Called from view
+    # methods called from the view
     def next_clicked(self):
         self.__show_number_of_selected_features()
+        self.__enable_finish_button()
 
     def pick_features_selected(self, args: PickFeaturesSelectedArgs):
-        self.__model.type_of_selected_layer_to_associate = args.selected_type
+        layer = self._feature_manager.get_layer_by_type(args.selected_type)
+
         if args.feature_selection_type == EnumFeatureSelectionType.SELECTION_ON_MAP:
             self.__view.set_visible(False)  # Make wizard disappear
-            self.__model.select_features_on_map()
+            self._layer_remove_manager.reconnect_signals()
+            self._feature_selector_on_map.select_features_on_map(layer)
         elif args.feature_selection_type == EnumFeatureSelectionType.SELECTION_BY_EXPRESSION:
-            self.__model.select_features_by_expression()
+            self.__feature_selector_by_expression.select_features_by_expression(layer)
 
     def parcel_type_changed(self, parcel_type_ili_code):
-        self.__model.parcel_type_ili_code = parcel_type_ili_code
+        self._feature_manager.parcel_type_ili_code = parcel_type_ili_code
 
-        spatial_units_options_status = self.__model.get_layer_status()
+        spatial_units_options_status = self._feature_manager.get_layer_status()
         self.__view.set_spatial_units_options_status(spatial_units_options_status)
         self.__enable_finish_button()
+    # from view |<-
 
     def feature_selection_by_expression_changed(self):
+        self.__update_spatial_units_status()
+
+    def __update_spatial_units_status(self):
         self.__show_number_of_selected_features()
-        spatial_units_options_status = self.__model.get_layer_status()
+        spatial_units_options_status = self._feature_manager.get_layer_status()
         self.__view.set_spatial_units_options_status(spatial_units_options_status)
         self.__enable_finish_button()
 
+    # feature selector on map
     def features_selected(self):
         self.__view.set_visible(True)
-        self.__show_number_of_selected_features()
-        spatial_units_options_status = self.__model.get_layer_status()
-        self.__view.set_spatial_units_options_status(spatial_units_options_status)
-        self.__enable_finish_button()
+        self.__update_spatial_units_status()
 
     def __show_number_of_selected_features(self):
-        feature_count = self.__model.get_number_of_selected_features()
+        feature_count = self._feature_manager.get_number_of_selected_features()
         self.__view.show_number_of_selected_features(feature_count)
 
     def __enable_finish_button(self):
-        will_enable_finish_button = self.__model.is_each_layer_valid()
+        will_enable_finish_button = self._feature_manager.is_each_layer_valid()
         self.__view.enable_finish_button(will_enable_finish_button)

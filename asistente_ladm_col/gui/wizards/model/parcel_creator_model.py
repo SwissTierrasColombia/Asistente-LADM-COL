@@ -26,121 +26,60 @@
  *                                                                         *
  ***************************************************************************/
  """
-from qgis.PyQt.QtCore import (QObject,
-                             pyqtSignal)
-
-from asistente_ladm_col.config.enums import EnumRelatableLayers
-from asistente_ladm_col.config.general_config import (WIZARD_FEATURE_NAME,
-                                                      WIZARD_LAYERS)
-from asistente_ladm_col.config.layer_config import (LayerConfig,
-                                                    EnumRelationshipType)
+from asistente_ladm_col.config.enums import (EnumRelatableLayers,
+                                             EnumRelationshipType)
+from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.gui.wizards.model.common.args.model_args import (ExecFormAdvancedArgs,
                                                                          ParcelFinishFeatureCreationArgs)
 from asistente_ladm_col.gui.wizards.model.common.association_utils import AssociationUtils
-from asistente_ladm_col.gui.wizards.model.common.manual_feature_creator import (ManualFeatureCreator,
-                                                                                AlphaFeatureCreator)
-from asistente_ladm_col.gui.wizards.model.common.feature_selector_manager import FeatureSelectorManager
-from asistente_ladm_col.gui.wizards.model.common.select_features_by_expression_dialog_wrapper import \
-    SelectFeatureByExpressionDialogWrapper
-from asistente_ladm_col.gui.wizards.model.common.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
-from asistente_ladm_col.gui.wizards.model.creator_model import CreatorModel
 
 
-class ParcelCreatorModel(CreatorModel):
-    features_selected = pyqtSignal()
-    map_tool_changed = pyqtSignal()
-    feature_selection_by_expression_changed = pyqtSignal()
+class ParcelCreatorManager:
 
-    def __init__(self, iface, db, wiz_config):
-        CreatorModel.__init__(self, iface, db, wiz_config)
+    def __init__(self, db, layers, editing_layer):
+        self.__db = db
+        self.__layers = layers
 
-        self.db = db
-        self._layers = wiz_config[WIZARD_LAYERS]
+        self.__editing_layer = editing_layer
+
+        self.__constraint_types_of_parcels = LayerConfig.get_constraint_types_of_parcels(self.__db.names)
+
+        self.parcel_type_ili_code = None
 
         self.__relatable_layers = dict()
         self.__init_selectable_layer_by_type()
 
-        # FeatureSelectorManager
-        self.parcel_type_ili_code = None
-        self.__constraint_types_of_parcels = LayerConfig.get_constraint_types_of_parcels(self.db.names)
-
-        self.__features_on_map_observer_list = list()
-        self.__feature_selector_by_expression_observers = list()
-
-        self.__feature_selector_on_map = SelectFeaturesOnMapWrapper(self._iface, self._logger)
-        self.__feature_selector_on_map.features_selected.connect(self.features_selected)
-        self.__feature_selector_on_map.map_tool_changed.connect(self.map_tool_changed)
-
-        self.__feature_selector_by_expression = SelectFeatureByExpressionDialogWrapper(self._iface)
-        self.__feature_selector_by_expression.feature_selection_by_expression_changed.connect(
-            self.feature_selection_by_expression_changed)
-
-        self.type_of_selected_layer_to_associate = None
-
-    def select_features_on_map(self):
-        self._layer_remove_manager.reconnect_signals()
-        # TODO Exception if layer does not exist
-        layer = self.__relatable_layers[self.type_of_selected_layer_to_associate]
-        self.__feature_selector_on_map.select_features_on_map(layer)
-
-    def select_features_by_expression(self):
-        # TODO Check if layer exists in self._layers
-        layer = self.__relatable_layers[self.type_of_selected_layer_to_associate]
-        self.__feature_selector_by_expression.select_features_by_expression(layer)
-
-    def dispose(self):
-        self.__feature_selector_on_map.init_map_tool()
-        self.__feature_selector_on_map.disconnect_signals()
-
-    def get_number_of_selected_features(self):
-        feature_count = dict()
-
-        for layer in self.__relatable_layers:
-            feature_count[layer] = self.__relatable_layers[layer].selectedFeatureCount()
-
-        return feature_count
-
-    def __init_selectable_layer_by_type(self):
-        # TODO Change the name
-        self.__relatable_layers[EnumRelatableLayers.PLOT] = self._layers[self._db.names.LC_PLOT_T]
-        self.__relatable_layers[EnumRelatableLayers.BUILDING] = self._layers[self._db.names.LC_BUILDING_T]
-        self.__relatable_layers[EnumRelatableLayers.BUILDING_UNIT] = self._layers[self._db.names.LC_BUILDING_UNIT_T]
-
-    def _create_feature_creator(self) -> ManualFeatureCreator:
-        return AlphaFeatureCreator(self._iface, self.app, self._logger,
-                                   self._editing_layer, self._wizard_config[WIZARD_FEATURE_NAME])
-
+    # TODO ref2 Cambiar el nombre
     def exec_form_advanced(self, args: ExecFormAdvancedArgs):
         fid = args.feature.id()
 
         # assigns the type of parcel before to creating it
-        parcel_condition_field_idx = args.layer.getFeature(fid).fieldNameIndex(self._db.names.LC_PARCEL_T_PARCEL_TYPE_F)
+        parcel_condition_field_idx = args.layer.getFeature(fid).fieldNameIndex(
+            self.__db.names.LC_PARCEL_T_PARCEL_TYPE_F)
         args.layer.changeAttributeValue(fid, parcel_condition_field_idx,
                                         self.__get_ili_code_id_dict()[self.parcel_type_ili_code])
 
-    def _finish_feature_creation(self, layerId, features):
+    # TODO ref2 Cambiar el nombre
+    def finish_feature_creation(self, layerId, features):
         if len(features) != 1:
             # TODO send this info to controller
             # message = QCoreApplication.translate("WizardTranslations", "'{}' tool has been closed. We should have got only one {} by we have {}").format(self.WIZARD_TOOL_NAME, self.WIZARD_FEATURE_NAME, len(features))
             # self.logger.warning(__name__, "We should have got only one {}, but we have {}".format(self.WIZARD_FEATURE_NAME, len(features)))
-            self.finish_feature_creation.emit(ParcelFinishFeatureCreationArgs(added_features_amount=len(features)))
-            return
+            return ParcelFinishFeatureCreationArgs(added_features_amount=len(features))
 
         if not self.is_each_layer_valid():
-            self.finish_feature_creation.emit(ParcelFinishFeatureCreationArgs(valid_constraints=False))
-            return
+            return ParcelFinishFeatureCreationArgs(valid_constraints=False)
 
         feature = features[0]
 
         if not feature.isValid():
             # TODO send this info to controller
             # self.logger.warning(__name__, "Feature not found in layer Spatial Source...")
-            self.finish_feature_creation.emit(ParcelFinishFeatureCreationArgs(is_valid=False))
-            return
+            return ParcelFinishFeatureCreationArgs(is_valid=False)
 
         # TODO What is the difference?
-        # feature_tid = feature[self.db.names.T_ID_F]
-        feature_tid = self._editing_layer.getFeature(feature.id())[self.db.names.T_ID_F]
+        # feature_tid = feature[self.__db.names.T_ID_F]
+        feature_tid = self.__editing_layer.getFeature(feature.id())[self.__db.names.T_ID_F]
 
         plot_ids = list()
         building_ids = list()
@@ -149,69 +88,68 @@ class ParcelCreatorModel(CreatorModel):
         # Apply restriction to the selection
 
         # add plot associated
-        if self.db.names.LC_PLOT_T in self.__constraint_types_of_parcels[self.parcel_type_ili_code]:
-            add_features = self.__constraint_types_of_parcels[self.parcel_type_ili_code][self.db.names.LC_PLOT_T] is not None
+        if self.__db.names.LC_PLOT_T in self.__constraint_types_of_parcels[self.parcel_type_ili_code]:
+            add_features = self.__constraint_types_of_parcels[self.parcel_type_ili_code][
+                               self.__db.names.LC_PLOT_T] is not None
         else:
             add_features = True
 
         if add_features:
-            plot_ids = AssociationUtils.get_list_of_features_ids(self._layers[self.db.names.LC_PLOT_T],
-                                                                 self.db.names.T_ID_F)
+            plot_ids = AssociationUtils.get_list_of_features_ids(self.__layers[self.__db.names.LC_PLOT_T],
+                                                                 self.__db.names.T_ID_F)
 
-        new_features = AssociationUtils.save_relations(self._layers[self.db.names.COL_UE_BAUNIT_T],
-                                                       self.db.names.COL_UE_BAUNIT_T_LC_PLOT_F, plot_ids,
-                                                       self.db.names.COL_UE_BAUNIT_T_PARCEL_F, feature_tid)
+        new_features = AssociationUtils.save_relations(self.__layers[self.__db.names.COL_UE_BAUNIT_T],
+                                                       self.__db.names.COL_UE_BAUNIT_T_LC_PLOT_F, plot_ids,
+                                                       self.__db.names.COL_UE_BAUNIT_T_PARCEL_F, feature_tid)
 
         # add building associated
-        if self.db.names.LC_BUILDING_T in self.__constraint_types_of_parcels[self.parcel_type_ili_code]:
+        if self.__db.names.LC_BUILDING_T in self.__constraint_types_of_parcels[self.parcel_type_ili_code]:
             add_features = self.__constraint_types_of_parcels[self.parcel_type_ili_code][
-                               self.db.names.LC_BUILDING_T] is not None
+                               self.__db.names.LC_BUILDING_T] is not None
         else:
             add_features = True
 
         if add_features:
-            building_ids = AssociationUtils.get_list_of_features_ids(self._layers[self.db.names.LC_BUILDING_T],
-                                                                     self.db.names.T_ID_F)
+            building_ids = AssociationUtils.get_list_of_features_ids(self.__layers[self.__db.names.LC_BUILDING_T],
+                                                                     self.__db.names.T_ID_F)
 
-        new_features = AssociationUtils.save_relations(self._layers[self.db.names.COL_UE_BAUNIT_T],
-                                                       self.db.names.COL_UE_BAUNIT_T_LC_BUILDING_F, building_ids,
-                                                       self.db.names.COL_UE_BAUNIT_T_PARCEL_F, feature_tid)
+        new_features = AssociationUtils.save_relations(self.__layers[self.__db.names.COL_UE_BAUNIT_T],
+                                                       self.__db.names.COL_UE_BAUNIT_T_LC_BUILDING_F, building_ids,
+                                                       self.__db.names.COL_UE_BAUNIT_T_PARCEL_F, feature_tid)
 
         # add building unit associated
-        if self.db.names.LC_BUILDING_UNIT_T in self.__constraint_types_of_parcels[self.parcel_type_ili_code]:
+        if self.__db.names.LC_BUILDING_UNIT_T in self.__constraint_types_of_parcels[self.parcel_type_ili_code]:
             add_features = self.__constraint_types_of_parcels[self.parcel_type_ili_code][
-                               self.db.names.LC_BUILDING_UNIT_T] is not None
+                               self.__db.names.LC_BUILDING_UNIT_T] is not None
         else:
             add_features = True
 
         if add_features:
-            building_unit_ids = AssociationUtils.get_list_of_features_ids(self._layers[self.db.names.LC_BUILDING_UNIT_T],
-                                                                     self.db.names.T_ID_F)
+            building_unit_ids = AssociationUtils.get_list_of_features_ids(
+                self.__layers[self.__db.names.LC_BUILDING_UNIT_T],
+                self.__db.names.T_ID_F)
 
-        new_features = AssociationUtils.save_relations(self._layers[self.db.names.COL_UE_BAUNIT_T],
-                                                       self.db.names.COL_UE_BAUNIT_T_LC_BUILDING_UNIT_F,
-                                                       building_unit_ids, self.db.names.COL_UE_BAUNIT_T_PARCEL_F,
+        new_features = AssociationUtils.save_relations(self.__layers[self.__db.names.COL_UE_BAUNIT_T],
+                                                       self.__db.names.COL_UE_BAUNIT_T_LC_BUILDING_UNIT_F,
+                                                       building_unit_ids, self.__db.names.COL_UE_BAUNIT_T_PARCEL_F,
                                                        feature_tid)
 
-        self.finish_feature_creation.emit(
-            # TODO associated features is missing
-            ParcelFinishFeatureCreationArgs(True, feature_tid, 1, None)
-        )
+        return ParcelFinishFeatureCreationArgs(True, feature_tid, 1, None)
 
-    # parcel
+    # TODO rev2 PARCEL PARCEL PARCEL -------------------------------
     def get_type_parcel_conditions(self):
         result = dict()
 
-        for feature in self._layers[self._db.names.LC_CONDITION_PARCEL_TYPE_D].getFeatures():
-            if feature[self._db.names.ILICODE_F] in self.__constraint_types_of_parcels:
-                result[feature[self._db.names.ILICODE_F]] = feature[self._db.names.DISPLAY_NAME_F]
+        for feature in self.__layers[self.__db.names.LC_CONDITION_PARCEL_TYPE_D].getFeatures():
+            if feature[self.__db.names.ILICODE_F] in self.__constraint_types_of_parcels:
+                result[feature[self.__db.names.ILICODE_F]] = feature[self.__db.names.DISPLAY_NAME_F]
         return result
 
     def __get_ili_code_id_dict(self):
         result = dict()
-        for feature in self._layers[self._db.names.LC_CONDITION_PARCEL_TYPE_D].getFeatures():
-            if feature[self._db.names.ILICODE_F] in self.__constraint_types_of_parcels:
-                result[feature[self._db.names.ILICODE_F]] = feature[self._db.names.T_ID_F]
+        for feature in self.__layers[self.__db.names.LC_CONDITION_PARCEL_TYPE_D].getFeatures():
+            if feature[self.__db.names.ILICODE_F] in self.__constraint_types_of_parcels:
+                result[feature[self.__db.names.ILICODE_F]] = feature[self.__db.names.T_ID_F]
 
         return result
 
@@ -227,9 +165,12 @@ class ParcelCreatorModel(CreatorModel):
         return result
 
     def __is_layer_valid(self, spatial_unit_enum: EnumRelatableLayers):
-        constraint = self.__constraint_types_of_parcels[self.parcel_type_ili_code][spatial_unit_enum.get_db_name(self.db.names)]
+        constraint = \
+            self.__constraint_types_of_parcels[self.parcel_type_ili_code][
+                spatial_unit_enum.get_db_name(self.__db.names)]
         layer = self.__relatable_layers[spatial_unit_enum]
         is_valid = None
+
         if constraint == EnumRelationshipType.ONE:
             is_valid = layer.selectedFeatureCount() == 1
         elif constraint == EnumRelationshipType.ONE_OR_MANY:
@@ -239,12 +180,27 @@ class ParcelCreatorModel(CreatorModel):
 
         return is_valid
 
+    def get_number_of_selected_features(self):
+        feature_count = dict()
+
+        for layer in self.__relatable_layers:
+            feature_count[layer] = self.__relatable_layers[layer].selectedFeatureCount()
+
+        return feature_count
+
+    def __init_selectable_layer_by_type(self):
+        # TODO Change the name
+        self.__relatable_layers[EnumRelatableLayers.PLOT] = self.__layers[self.__db.names.LC_PLOT_T]
+        self.__relatable_layers[EnumRelatableLayers.BUILDING] = self.__layers[self.__db.names.LC_BUILDING_T]
+        self.__relatable_layers[EnumRelatableLayers.BUILDING_UNIT] = self.__layers[self.__db.names.LC_BUILDING_UNIT_T]
+
     def is_each_layer_valid(self):
         result = True
-        for layer_status in self.get_layer_status():
+        for key, layer_status in self.get_layer_status().items():
             if not layer_status:
                 result = False
                 break
         return result
 
-
+    def get_layer_by_type(self, layer_type: EnumRelatableLayers):
+        return self.__relatable_layers[layer_type] if layer_type in self.__relatable_layers else None

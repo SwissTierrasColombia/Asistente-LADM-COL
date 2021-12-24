@@ -27,6 +27,16 @@ from qgis.PyQt.QtCore import (QObject,
 from qgis.gui import QgsExpressionSelectionDialog
 
 
+class NullSelectorByExpression(QObject):
+    feature_selection_by_expression_changed = pyqtSignal()
+
+    def __init__(self):
+        QObject.__init__(self)
+
+    def select_features_by_expression(self, layer):
+        pass
+
+
 class SelectFeatureByExpressionDialogWrapper(QObject):
     """
     Wrapper class that extends selecting by expression.

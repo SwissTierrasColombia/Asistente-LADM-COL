@@ -33,6 +33,18 @@ from asistente_ladm_col.gui.wizards.model.common.args.model_args import (ValidFe
 from asistente_ladm_col.config.enums import EnumDigitizedFeatureStatus
 
 
+class NullFeatureCreator(QObject):
+    finish_feature_creation = pyqtSignal(str, list)
+    form_rejected = pyqtSignal()
+    exec_form_advanced = pyqtSignal(ExecFormAdvancedArgs)
+
+    def create(self):
+        pass
+
+    def disconnect_signals(self):
+        pass
+
+
 class ManualFeatureCreator(QObject, metaclass=AbstractQObjectMeta):
     finish_feature_creation = pyqtSignal(str, list)
     form_rejected = pyqtSignal()

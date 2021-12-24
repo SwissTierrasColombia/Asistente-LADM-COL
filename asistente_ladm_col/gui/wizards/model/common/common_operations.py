@@ -30,7 +30,7 @@ class CommonOperationsModel:
         self.__read_only_fields = read_only_fields
 
     # (absWizardFactory)
-    def set_ready_only_field(self, read_only=True):
+    def set_read_only_fields(self, read_only=True):
         if self.__layers[self.__EDITING_LAYER_NAME] is None:
             return
 

@@ -31,6 +31,24 @@ from qgis.PyQt.QtWidgets import QMessageBox
 from asistente_ladm_col.utils.select_map_tool import SelectMapTool
 
 
+class NullFeatureSelectorOnMap(QObject):
+    features_selected = pyqtSignal()
+    map_tool_changed = pyqtSignal()
+
+    def __init__(self):
+        QObject.__init__(self)
+        self.multiple_features = True
+
+    def select_features_on_map(self, layer):
+        pass
+
+    def disconnect_signals(self):
+        pass
+
+    def init_map_tool(self):
+        pass
+
+
 class SelectFeaturesOnMapWrapper(QObject):
     features_selected = pyqtSignal()
     map_tool_changed = pyqtSignal()

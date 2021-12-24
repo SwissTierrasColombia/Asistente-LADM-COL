@@ -84,7 +84,7 @@ class PlotModel(FeatureSelectorManager):
         self.__feature_creator_from_refactor.create(selected_layer, self._editing_layer_name, field_mapping)
 
     def set_ready_only_fields(self, read_only):
-        self.__common_operations.set_ready_only_field(read_only)
+        self.__common_operations.set_read_only_fields(read_only)
 
     def edit_feature(self) -> EnumPlotCreationResult:
         if self._layers[self.names.LC_BOUNDARY_T].selectedFeatureCount() == 0:
@@ -128,7 +128,7 @@ class PlotModel(FeatureSelectorManager):
     def dispose(self):
         self.__layer_remove_manager.disconnect_signals()
         self.__common_operations.rollback_in_layers_with_empty_editing_buffer()
-        self.__common_operations.set_ready_only_field(False)
+        self.__common_operations.set_read_only_fields(False)
         super().dispose()
 
     # features selectors

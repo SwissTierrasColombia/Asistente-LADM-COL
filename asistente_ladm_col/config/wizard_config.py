@@ -32,21 +32,20 @@ from asistente_ladm_col.config.general_config import (WIZARD_FEATURE_NAME,
                                                       WIZARD_QSETTINGS_PATH)
 
 from asistente_ladm_col.config.help_strings import HelpStrings
+from asistente_ladm_col.gui.wizards.new_implementation.SingleController import SingleController
+from asistente_ladm_col.gui.wizards.controller.parcel_controller import ParcelController
 from asistente_ladm_col.gui.wizards.controller.plot_controller import PlotController
 from asistente_ladm_col.gui.wizards.controller.right_of_way_controller import RightOfWayController
 from asistente_ladm_col.gui.wizards.controller.ext_address_controller import ExtAddressController
-from asistente_ladm_col.gui.wizards.controller.parcel_controller import ParcelController
+
 from asistente_ladm_col.gui.wizards.controller.rrr_controller import RrrController
 from asistente_ladm_col.gui.wizards.controller.single_spatial_wizard_controller import SingleSpatialWizardController
-from asistente_ladm_col.gui.wizards.controller.single_wizard_controller import SingleWizardController
 from asistente_ladm_col.gui.wizards.controller.spatial_source_controller import SpatialSourceController
 from asistente_ladm_col.gui.wizards.model.plot_model import PlotModel
 from asistente_ladm_col.gui.wizards.model.right_of_way_model import RightOfWayModel
 from asistente_ladm_col.gui.wizards.model.ext_address_model import ExtAddressModel
-from asistente_ladm_col.gui.wizards.model.parcel_creator_model import ParcelCreatorModel
 from asistente_ladm_col.gui.wizards.model.rrr_model import RrrModel
 from asistente_ladm_col.gui.wizards.model.single_spatial_wizard_model import SingleSpatialWizardModel
-from asistente_ladm_col.gui.wizards.model.single_wizard_model import SingleWizardModel
 from asistente_ladm_col.gui.wizards.model.spatial_source_model import SpatialSourceModel
 
 help_strings = HelpStrings()
@@ -65,8 +64,7 @@ class WizardFactory:
         wizard_result = None
 
         if wizard_name == WIZARD_CREATE_COL_PARTY_CADASTRAL or wizard_name == WIZARD_CREATE_ADMINISTRATIVE_SOURCE_SURVEY:
-            model = SingleWizardModel(iface, db, wizard_config)
-            wizard_result = SingleWizardController(model, db, wizard_config)
+            wizard_result = SingleController(iface, db, wizard_config)
 
         elif wizard_name == WIZARD_CREATE_BOUNDARY_SURVEY or wizard_name == WIZARD_CREATE_BUILDING_SURVEY or \
                 wizard_name == WIZARD_CREATE_BUILDING_UNIT_SURVEY:
@@ -98,8 +96,7 @@ class WizardFactory:
             wizard_result = PlotController(model, db, wizard_config)
 
         elif wizard_name == WIZARD_CREATE_PARCEL_SURVEY:
-            model = ParcelCreatorModel(iface, db, wizard_config)
-            wizard_result = ParcelController(model, db, wizard_config)
+            wizard_result = ParcelController(iface, db, wizard_config)
 
         self.__connect_signals(wizard_result, observer)
 

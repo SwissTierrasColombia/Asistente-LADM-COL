@@ -95,7 +95,7 @@ class CreatorModel(QObject, metaclass=AbstractQObjectMeta):
         pass
 
     def set_ready_only_fields(self, read_only):
-        self.__common_operations.set_ready_only_field(read_only)
+        self.__common_operations.set_read_only_fields(read_only)
 
     def create_feature_from_refactor(self, selected_layer, field_mapping):
         self.__feature_creator_from_refactor.create(selected_layer, self._editing_layer_name, field_mapping)
@@ -108,4 +108,4 @@ class CreatorModel(QObject, metaclass=AbstractQObjectMeta):
         self._layer_remove_manager.disconnect_signals()
         self.__manual_feature_creator.disconnect_signals()
         self.__common_operations.rollback_in_layers_with_empty_editing_buffer()
-        self.__common_operations.set_ready_only_field(False)
+        self.__common_operations.set_read_only_fields(False)
