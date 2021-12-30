@@ -26,21 +26,23 @@
  *                                                                         *
  ***************************************************************************/
  """
-from asistente_ladm_col.config.general_config import WIZARD_FEATURE_NAME
-from asistente_ladm_col.gui.wizards.model.common.args.model_args import ExecFormAdvancedArgs
-from asistente_ladm_col.gui.wizards.model.common.manual_feature_creator import (AlphaFeatureCreator,
-                                                                                ManualFeatureCreator)
-from asistente_ladm_col.gui.wizards.model.creator_model import CreatorModel
+from asistente_ladm_col.gui.wizards.model.common.args.model_args import FinishFeatureCreationArgs
 
 
-class SingleWizardModel(CreatorModel):
+class SingleManager:
 
-    def __init__(self, iface, db, wiz_config):
-        CreatorModel.__init__(self, iface, db, wiz_config)
+    def __init__(self, db, layers, editing_layer):
+        self._db = db
+        self._editing_layer = editing_layer
+        self._layers = layers
 
-    def exec_form_advanced(self, args: ExecFormAdvancedArgs):
-        pass
+    def finish_feature_creation(self, layerId, features):
+        fid = features[0].id()
+        is_valid = False
+        feature_tid = None
 
-    def _create_feature_creator(self) -> ManualFeatureCreator:
-        return AlphaFeatureCreator(self._iface, self.app, self._logger,
-                                   self._editing_layer, self._wizard_config[WIZARD_FEATURE_NAME])
+        if self._editing_layer.getFeature(fid).isValid():
+            is_valid = True
+            feature_tid = self._editing_layer.getFeature(fid)[self._db.names.T_ID_F]
+
+        return FinishFeatureCreationArgs(is_valid, feature_tid)

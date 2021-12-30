@@ -18,123 +18,78 @@
  *                                                                         *
  ***************************************************************************/
  """
-from qgis.PyQt.QtCore import (QObject,
-                             pyqtSignal)
-
 from asistente_ladm_col.config.enums import EnumRelatableLayers
-from asistente_ladm_col.config.general_config import WIZARD_LAYERS
 from asistente_ladm_col.gui.wizards.model.common.args.model_args import SpacialSourceFinishFeatureCreationArgs
 from asistente_ladm_col.gui.wizards.model.common.association_utils import AssociationUtils
-from asistente_ladm_col.gui.wizards.model.common.layer_remove_signals_manager import LayerRemovedSignalsManager
-from asistente_ladm_col.gui.wizards.model.common.select_features_by_expression_dialog_wrapper import \
-    SelectFeatureByExpressionDialogWrapper
-from asistente_ladm_col.gui.wizards.model.common.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
-from asistente_ladm_col.gui.wizards.model.single_wizard_model import SingleWizardModel
 
 
-class SpatialSourceModel(SingleWizardModel):
-    features_selected = pyqtSignal()
-    map_tool_changed = pyqtSignal()
-    feature_selection_by_expression_changed = pyqtSignal()
+class SpatialSourceCreatorManager:
 
-    def __init__(self, iface, db, wiz_config):
-        super().__init__(iface, db, wiz_config)
+    def __init__(self, db, layers, editing_layer):
+        self.__db = db
+        self.__layers = layers
 
-        self._layers = wiz_config[WIZARD_LAYERS]
+        self.__editing_layer = editing_layer
         self.names = db.names
-
-        self.__iface = iface
-
-        self.__feature_selector_on_map = SelectFeaturesOnMapWrapper(self.__iface, self._logger)
-        self.__feature_selector_on_map.features_selected.connect(self.features_selected)
-        self.__feature_selector_on_map.map_tool_changed.connect(self.map_tool_changed)
-
-        self.__feature_selector_by_expression = SelectFeatureByExpressionDialogWrapper(self.__iface)
-        self.__feature_selector_by_expression.feature_selection_by_expression_changed.connect(
-            self.feature_selection_by_expression_changed)
 
         self.__relatable_layers = dict()
         self.__init_selectable_layer_by_type()
 
-        self.__layer_remove_manager = LayerRemovedSignalsManager(self._layers)
-        self.__layer_remove_manager.layer_removed.connect(self.layer_removed)
-
     def __init_selectable_layer_by_type(self):
         # TODO Change the name
-        self.__relatable_layers[EnumRelatableLayers.PLOT] = self._layers[self.names.LC_PLOT_T]
-        self.__relatable_layers[EnumRelatableLayers.BOUNDARY] = self._layers[self.names.LC_BOUNDARY_T]
-        self.__relatable_layers[EnumRelatableLayers.BOUNDARY_POINT] = self._layers[self.names.LC_BOUNDARY_POINT_T]
-        self.__relatable_layers[EnumRelatableLayers.SURVEY_POINT] = self._layers[self.names.LC_SURVEY_POINT_T]
-        self.__relatable_layers[EnumRelatableLayers.CONTROL_POINT] = self._layers[self.names.LC_CONTROL_POINT_T]
+        self.__relatable_layers[EnumRelatableLayers.PLOT] = self.__layers[self.names.LC_PLOT_T]
+        self.__relatable_layers[EnumRelatableLayers.BOUNDARY] = self.__layers[self.names.LC_BOUNDARY_T]
+        self.__relatable_layers[EnumRelatableLayers.BOUNDARY_POINT] = self.__layers[self.names.LC_BOUNDARY_POINT_T]
+        self.__relatable_layers[EnumRelatableLayers.SURVEY_POINT] = self.__layers[self.names.LC_SURVEY_POINT_T]
+        self.__relatable_layers[EnumRelatableLayers.CONTROL_POINT] = self.__layers[self.names.LC_CONTROL_POINT_T]
 
-    def select_features_on_map(self, option_type: EnumRelatableLayers):
-        self._layer_remove_manager.reconnect_signals()
-        # TODO is this execution right?
-        self.__layer_remove_manager.reconnect_signals()
-        # TODO Exception if layer does not exist
-        layer = self.__relatable_layers[option_type]
-        self.__feature_selector_on_map.select_features_on_map(layer)
+    def get_layer_by_type(self, layer_type: EnumRelatableLayers):
+        return self.__relatable_layers[layer_type] if layer_type in self.__relatable_layers else None
 
-    def select_features_by_expression(self, option_type: EnumRelatableLayers):
-        # TODO Check if layer exists in self._layers
-        layer = self.__relatable_layers[option_type]
-        self.__feature_selector_by_expression.select_features_by_expression(layer)
-
-    def dispose(self):
-        self.__layer_remove_manager.disconnect_signals()
-        self.__feature_selector_on_map.init_map_tool()
-        super().dispose()
-        self.__feature_selector_on_map.disconnect_signals()
-
-    def _finish_feature_creation(self, layerId, features):
+    def finish_feature_creation(self, layerId, features):
         if len(features) != 1:
             # TODO send this info to controller
             # message = QCoreApplication.translate("WizardTranslations", "'{}' tool has been closed. We should have got only one {} by we have {}").format(self.WIZARD_TOOL_NAME, self.WIZARD_FEATURE_NAME, len(features))
             # self.logger.warning(__name__, "We should have got only one {}, but we have {}".format(self.WIZARD_FEATURE_NAME, len(features)))
-            args = SpacialSourceFinishFeatureCreationArgs(added_features_amount=len(features))
-            self.finish_feature_creation.emit(args)
-            return
+            return SpacialSourceFinishFeatureCreationArgs(added_features_amount=len(features))
 
         feature = features[0]
 
         if not feature.isValid():
             # TODO send this info to controller
             # self.logger.warning(__name__, "Feature not found in layer Spatial Source...")
-            self.finish_feature_creation.emit(
-                SpacialSourceFinishFeatureCreationArgs(is_valid=False))
-            return
+            return SpacialSourceFinishFeatureCreationArgs(is_valid=False)
 
         feature_tid = feature[self.names.T_ID_F]
 
-        feature_ids = AssociationUtils.get_list_of_features_ids(self._layers[self.names.LC_PLOT_T], self.names.T_ID_F)
-        new_features = AssociationUtils.save_relations(self._layers[self.names.COL_UE_SOURCE_T],
+        feature_ids = AssociationUtils.get_list_of_features_ids(self.__layers[self.names.LC_PLOT_T], self.names.T_ID_F)
+        new_features = AssociationUtils.save_relations(self.__layers[self.names.COL_UE_SOURCE_T],
                                                        self.names.COL_UE_SOURCE_T_LC_PLOT_F, feature_ids,
                                                        self.names.COL_UE_SOURCE_T_SOURCE_F, feature_tid)
         # all_new_features.extend(new_features)
-        feature_ids = AssociationUtils.get_list_of_features_ids(self._layers[self.names.LC_BOUNDARY_T], self.names.T_ID_F)
+        feature_ids = AssociationUtils.get_list_of_features_ids(self.__layers[self.names.LC_BOUNDARY_T], self.names.T_ID_F)
 
-        new_features = AssociationUtils.save_relations(self._layers[self.names.COL_CCL_SOURCE_T],
+        new_features = AssociationUtils.save_relations(self.__layers[self.names.COL_CCL_SOURCE_T],
                                                        self.names.COL_CCL_SOURCE_T_BOUNDARY_F, feature_ids,
                                                        self.names.COL_CCL_SOURCE_T_SOURCE_F, feature_tid)
 
-        feature_ids = AssociationUtils.get_list_of_features_ids(self._layers[self.names.LC_BOUNDARY_POINT_T], self.names.T_ID_F)
-        new_features = AssociationUtils.save_relations(self._layers[self.names.COL_POINT_SOURCE_T],
+        feature_ids = AssociationUtils.get_list_of_features_ids(self.__layers[self.names.LC_BOUNDARY_POINT_T], self.names.T_ID_F)
+        new_features = AssociationUtils.save_relations(self.__layers[self.names.COL_POINT_SOURCE_T],
                                                        self.names.COL_POINT_SOURCE_T_LC_BOUNDARY_POINT_F, feature_ids,
                                                        self.names.COL_POINT_SOURCE_T_SOURCE_F, feature_tid)
 
-        feature_ids = AssociationUtils.get_list_of_features_ids(self._layers[self.names.LC_SURVEY_POINT_T], self.names.T_ID_F)
-        new_features = AssociationUtils.save_relations(self._layers[self.names.COL_POINT_SOURCE_T],
+        feature_ids = AssociationUtils.get_list_of_features_ids(self.__layers[self.names.LC_SURVEY_POINT_T], self.names.T_ID_F)
+        new_features = AssociationUtils.save_relations(self.__layers[self.names.COL_POINT_SOURCE_T],
                                                        self.names.COL_POINT_SOURCE_T_LC_SURVEY_POINT_F, feature_ids,
                                                        self.names.COL_POINT_SOURCE_T_SOURCE_F, feature_tid)
 
-        feature_ids = AssociationUtils.get_list_of_features_ids(self._layers[self.names.LC_CONTROL_POINT_T], self.names.T_ID_F)
+        feature_ids = AssociationUtils.get_list_of_features_ids(self.__layers[self.names.LC_CONTROL_POINT_T], self.names.T_ID_F)
 
-        new_features = AssociationUtils.save_relations(self._layers[self.names.COL_POINT_SOURCE_T],
+        new_features = AssociationUtils.save_relations(self.__layers[self.names.COL_POINT_SOURCE_T],
                                                        self.names.COL_POINT_SOURCE_T_LC_CONTROL_POINT_F, feature_ids,
                                                        self.names.COL_POINT_SOURCE_T_SOURCE_F, feature_tid)
 
-        args = SpacialSourceFinishFeatureCreationArgs(True, feature_tid, 1, None)
-        self.finish_feature_creation.emit(args)
+        return SpacialSourceFinishFeatureCreationArgs(True, feature_tid, 1, None)
         # TODO These message
         # if all_new_features:
         #    message = QCoreApplication.translate("WizardTranslations",

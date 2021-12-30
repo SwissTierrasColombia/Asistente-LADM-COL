@@ -68,6 +68,7 @@ class AbstractWizardController(QObject, metaclass=AbstractQObjectMeta):
 
         self._feature_manager = None
         self._feature_selector_on_map = None
+        self._feature_selector_by_expression = None
 
         self.__product_factory = product_factory
 

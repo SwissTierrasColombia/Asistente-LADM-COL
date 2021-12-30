@@ -23,190 +23,117 @@
 from qgis.PyQt.QtCore import (QObject,
                               pyqtSignal,
                               QCoreApplication)
-from qgis.core import QgsMapLayerProxyModel
 
 from asistente_ladm_col import Logger
-from asistente_ladm_col.config.general_config import (WIZARD_STRINGS,
-                                                      WIZARD_HELP_PAGES,
-                                                      WIZARD_HELP,
-                                                      WIZARD_HELP1,
-                                                      WIZARD_QSETTINGS,
-                                                      WIZARD_LAYERS,
-                                                      WIZARD_EDITING_LAYER_NAME,
-                                                      WIZARD_TOOL_NAME,
-                                                      WIZARD_HELP2,
-                                                      WIZARD_QSETTINGS_PATH,
-                                                      WIZARD_CREATION_MODE_KEY,
-                                                      WIZARD_REFACTOR_FIELDS_RECENT_MAPPING_OPTIONS,
-                                                      WIZARD_REFACTOR_FIELDS_LAYER_FILTERS,
-                                                      WIZARD_FINISH_BUTTON_TEXT,
-                                                      WIZARD_SELECT_SOURCE_HELP)
+from asistente_ladm_col.app_interface import AppInterface
+from asistente_ladm_col.config.general_config import (WIZARD_HELP_PAGES,
+                                                      WIZARD_HELP2)
 from asistente_ladm_col.config.enums import EnumLayerCreationMode, EnumFeatureSelectionType
-from asistente_ladm_col.config.help_strings import HelpStrings
+from asistente_ladm_col.gui.wizards.controller.common.abstract_wizard_controller import ProductFactory, \
+    AbstractWizardController
+from asistente_ladm_col.gui.wizards.controller.common.wizard_messages_manager import WizardMessagesManager
 from asistente_ladm_col.gui.wizards.controller.controller_args import CreateFeatureArgs
-from asistente_ladm_col.gui.wizards.model.common.wizard_q_settings_manager import WizardQSettingsManager
-from asistente_ladm_col.gui.wizards.model.plot_model import (PlotModel,
-                                                             EnumPlotCreationResult)
+from asistente_ladm_col.gui.wizards.model.common.args.model_args import ExecFormAdvancedArgs
+from asistente_ladm_col.gui.wizards.model.common.manual_feature_creator import NullFeatureCreator
+from asistente_ladm_col.gui.wizards.model.common.select_features_by_expression_dialog_wrapper import \
+    SelectFeatureByExpressionDialogWrapper
+from asistente_ladm_col.gui.wizards.model.common.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
+from asistente_ladm_col.gui.wizards.model.plot_model import (EnumPlotCreationResult,
+                                                             PlotCreatorManager)
 from asistente_ladm_col.gui.wizards.view.pages.features_selector_view import PlotSelectorView
 from asistente_ladm_col.gui.wizards.view.spatial_source_view import SpatialSourceView
 from asistente_ladm_col.gui.wizards.view.common.view_args import PickFeaturesSelectedArgs
 
 
-class PlotController(QObject):
-    update_wizard_is_open_flag = pyqtSignal(bool)
+class PlotProductFactory(ProductFactory):
 
-    def __init__(self, model: PlotModel, db, wizard_settings):
-        QObject.__init__(self)
+    def __init__(self, iface, app, logger):
+        self.__iface = iface
+        self.__app = app
+        # TODO Logger can be moved
+        self.__logger = logger
 
-        self.wizard_config = wizard_settings
-        self.__layers = self.wizard_config[WIZARD_LAYERS]
-        self.__db = db
-        self.EDITING_LAYER_NAME = self.wizard_config[WIZARD_EDITING_LAYER_NAME]
-        self.WIZARD_TOOL_NAME = self.wizard_config[WIZARD_TOOL_NAME]
-        self.logger = Logger()
+    def create_feature_manager(self, db, layers, editing_layer):
+        return PlotCreatorManager(db, layers, editing_layer, self.__iface, self.__app, self.__logger)
 
-        # ----- model section
-        self.__model = model
-        self.__model.features_selected.connect(self.features_selected)
-        self.__model.map_tool_changed.connect(self.map_tool_changed)
-        self.__model.feature_selection_by_expression_changed.connect(self.feature_selection_by_expression_changed)
+    def create_manual_feature_creator(self, iface, app, logger, layer, feature_name):
+        return NullFeatureCreator()
 
-        self.__model.layer_removed.connect(self.layer_removed)
+    def create_feature_selector_on_map(self, iface, logger, multiple_features=True):
+        return SelectFeaturesOnMapWrapper(iface, logger)
 
-        self.__model.set_ready_only_fields(True)
-        # ------ view section
-        self.__view = self._create_view()
+    def create_feature_selector_by_expression(self, iface):
+        return SelectFeatureByExpressionDialogWrapper(iface)
 
-        # QSetings
-        self.__settings_manager = WizardQSettingsManager(self.wizard_config[WIZARD_QSETTINGS][WIZARD_QSETTINGS_PATH])
+    def create_wizard_messages_manager(self, wizard_tool_name, editing_layer_name, logger):
+        return WizardMessagesManager(wizard_tool_name, editing_layer_name, logger)
 
-    def _create_view(self):
-        wizard_page2 = PlotSelectorView(self, self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP2])
-        self.__view = SpatialSourceView(self, self._get_view_config(), wizard_page2)
-        return self.__view
 
-    def exec_(self):
-        self._restore_settings()
-        self.__view.exec_()
+class PlotController(AbstractWizardController):
+    def __init__(self, iface, db, wizard_config):
+        product_factory = PlotProductFactory(iface, AppInterface(), Logger())
+        AbstractWizardController.__init__(self, iface, db, wizard_config, product_factory)
+        self.__manual_feature_creator = None
 
-    #  view
-    def _get_view_config(self):
-        # TODO Load help_strings from wizard_config
-        help_strings = HelpStrings()
-        return {
-            WIZARD_STRINGS: self.wizard_config[WIZARD_STRINGS],
-            WIZARD_REFACTOR_FIELDS_RECENT_MAPPING_OPTIONS: self.__model.refactor_field_mapping,
-            WIZARD_REFACTOR_FIELDS_LAYER_FILTERS: QgsMapLayerProxyModel.Filter(QgsMapLayerProxyModel.NoGeometry),
-            WIZARD_HELP_PAGES: self.wizard_config[WIZARD_HELP_PAGES],
-            WIZARD_HELP: self.wizard_config[WIZARD_HELP],
-            WIZARD_FINISH_BUTTON_TEXT: {
-                EnumLayerCreationMode.REFACTOR_FIELDS: QCoreApplication.translate("WizardTranslations", "Import"),
-                EnumLayerCreationMode.MANUALLY: QCoreApplication.translate("WizardTranslations", "Create")
-            },
-            WIZARD_SELECT_SOURCE_HELP: {
-                EnumLayerCreationMode.REFACTOR_FIELDS:
-                    help_strings.get_refactor_help_string(self.__db, self.__layers[self.EDITING_LAYER_NAME]),
-                EnumLayerCreationMode.MANUALLY:
-                    self.wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP1]
-            }
-        }
-
-    # QSettings
-    def _restore_settings(self):
-        settings = self.__settings_manager.get_settings()
-
-        if WIZARD_CREATION_MODE_KEY not in settings or settings[WIZARD_CREATION_MODE_KEY] is None:
-            settings[WIZARD_CREATION_MODE_KEY] = EnumLayerCreationMode.MANUALLY
-
-        self.__view.restore_settings(settings)
-
-    def __save_settings(self):
-        self.__settings_manager.save_settings(self.__view.get_settings())
-
-    def wizard_rejected(self):
-        message = QCoreApplication.translate("WizardTranslations", "'{}' tool has been closed.").format(
-            self.WIZARD_TOOL_NAME)
-        self.logger.info_msg(__name__, message)
-        self.close_wizard()
-
-    #  TODO name?
-    def close_wizard(self):
-        self.__model.dispose()
-        self.update_wizard_is_open_flag.emit(False)
-        self.__view.close()
+        self._initialize()
 
     def create_feature(self, args: CreateFeatureArgs):
-        self.__save_settings()
+        self._save_settings()
         if args.layer_creation_mode == EnumLayerCreationMode.REFACTOR_FIELDS:
-            self.__feature_from_refactor()
+            self.create_feature_from_refactor_fields()
         else:
-            edit_feature_result = self.__model.edit_feature()
+            edit_feature_result = self._feature_manager.edit_feature()
 
             if edit_feature_result == EnumPlotCreationResult.NO_BOUNDARIES_SELECTED:
-                self.logger.warning_msg(__name__, QCoreApplication.translate("WizardTranslations", "First select boundaries!"))
+                self._logger.warning_msg(__name__,
+                                        QCoreApplication.translate("WizardTranslations", "First select boundaries!"))
             elif edit_feature_result == EnumPlotCreationResult.NO_PLOTS_CREATED:
-                message = QCoreApplication.translate("WizardTranslations", "No plot could be created. Make sure selected boundaries are closed!")
-                self.logger.info_msg(__name__, message)
+                message = QCoreApplication.translate("WizardTranslations",
+                                                     "No plot could be created. Make sure selected boundaries are closed!")
+                self._logger.info_msg(__name__, message)
                 self.close_wizard()
             elif edit_feature_result == EnumPlotCreationResult.CREATED:
                 self.close_wizard()
 
-    def __feature_from_refactor(self):
-        selected_layer = self.__view.get_selected_layer_refactor()
+    def exec_form_advanced(self, args: ExecFormAdvancedArgs):
+        pass
 
-        if selected_layer is not None:
-            field_mapping = self.__view.get_field_mapping_refactor()
-            self.__model.create_feature_from_refactor(selected_layer, field_mapping)
-        else:
-            self.logger.warning_msg(__name__, QCoreApplication.translate("WizardTranslations",
-                                                                         "Select a source layer to set the field mapping to '{}'.").format(
-                self.wizard_config[WIZARD_EDITING_LAYER_NAME]))
+    def features_selected(self):
+        self.__view.set_visible(True)
+        self.__update_selected_feature_info_view()
 
-        message = QCoreApplication.translate("WizardTranslations", "'{}' tool has been closed.").format(
-            self.WIZARD_TOOL_NAME)
-        self.logger.info_msg(__name__, message)
-        self.close_wizard()
+    def feature_selection_by_expression_changed(self):
+        self.__update_selected_feature_info_view()
 
-    def form_rejected(self):
-        message = QCoreApplication.translate("WizardTranslations",
-                                             "'{}' tool has been closed because you just closed the form.").format(
-            self.WIZARD_TOOL_NAME)
-        self.logger.info_msg(__name__, message)
-        self.close_wizard()
+    def _create_view(self):
+        wizard_page2 = PlotSelectorView(self, self._wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP2])
+        self.__view = SpatialSourceView(self, self._get_view_config(), wizard_page2)
+        return self.__view
+
+    def close_wizard(self):
+        self.dispose()
+        self.update_wizard_is_open_flag.emit(False)
+        self.__view.close()
 
     # events notified from VIEW
     def next_clicked(self):
         self.__update_selected_feature_info_view()
 
     def pick_features_selected(self, args: PickFeaturesSelectedArgs):
+        layer = self._feature_manager.get_layer_by_type(args.selected_type)
+
         if args.feature_selection_type == EnumFeatureSelectionType.SELECTION_ON_MAP:
             self.__view.set_visible(False)  # Make wizard disappear
-            self.__model.select_features_on_map()
+            self._layer_remove_manager.reconnect_signals()
+            self._feature_selector_on_map.select_features_on_map(layer)
         elif args.feature_selection_type == EnumFeatureSelectionType.SELECTION_BY_EXPRESSION:
-            self.__model.select_features_by_expression()
+            self._feature_selector_by_expression.select_features_by_expression(layer)
         elif args.feature_selection_type == EnumFeatureSelectionType.ALL_FEATURES:
-            self.__model.select_all_features()
+            self._feature_manager.select_all_features()
             self.__update_selected_feature_info_view()
 
-    # events notified from MODEL
-    # on map
-    def map_tool_changed(self):
-        message = QCoreApplication.translate("WizardTranslations",
-                                             "'{}' tool has been closed because the map tool change.").format(
-            self.WIZARD_TOOL_NAME)
-        self.logger.info_msg(__name__, message)
-        self.close_wizard()
-
-    def features_selected(self):
-        self.__view.set_visible(True)
-        self.__update_selected_feature_info_view()
-
-    # by expression
-    def feature_selection_by_expression_changed(self):
-        self.__update_selected_feature_info_view()
-
     def __update_selected_feature_info_view(self):
-        feature_count = self.__model.get_number_of_selected_features()
+        feature_count = self._feature_manager.get_number_of_selected_features()
         self.__view.show_number_of_selected_features(feature_count)
 
         enable_finish_button = self.__is_any_feature_selected(feature_count)
@@ -219,10 +146,3 @@ class PlotController(QObject):
                 return True
 
         return False
-
-    def layer_removed(self):
-        message = QCoreApplication.translate("WizardTranslations",
-                                             "'{}' tool has been closed because you just removed a required layer.").format(
-            self.WIZARD_TOOL_NAME)
-        self.logger.info_msg(__name__, message)
-        self.close_wizard()
