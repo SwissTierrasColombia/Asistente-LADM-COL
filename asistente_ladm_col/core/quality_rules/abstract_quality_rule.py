@@ -53,7 +53,7 @@ class AbstractQualityRule(QObject, metaclass=AbstractQObjectMeta):
         # Dict with error codes (keys) and error messages (values)
         self._errors = dict()
 
-        self._options = self._initialize_option_definition()
+        self.options = self._initialize_option_definition()
 
         # Optional. Only useful for display purposes.
         self._field_mapping = dict()  # E.g., {'id_objetos': 'ids_punto_lindero', 'valores': 'conteo'}
@@ -110,8 +110,8 @@ class AbstractQualityRule(QObject, metaclass=AbstractQObjectMeta):
 
     def _read_option_values(self, option_values):
         # Create member variables per option to ease value access
-        for k,v in self._options.get_options().items():
-            setattr(self._options, k, option_values.get(k, v.default_value()))
+        for k,v in self.options.get_options().items():
+            setattr(self.options, k, option_values.get(k, v.default_value()))
 
     def _save_errors(self, db_qr, error_code, error_data, target_layer=None, ili_name=None):
         """
@@ -162,13 +162,13 @@ class AbstractQualityRule(QObject, metaclass=AbstractQObjectMeta):
         return True, None
 
     def _check_qr_options(self, params):
-        if self._options.get_num_mandatory_options():
-            mandatory_option_keys = [o.id() for o in self._options.get_mandatory_option_list()]
+        if self.options.get_num_mandatory_options():
+            mandatory_option_keys = [o.id() for o in self.options.get_mandatory_option_list()]
             if 'options' not in params:  # No options at all
                 return False, QualityRuleExecutionResult(Qgis.Critical,
                                                          QCoreApplication.translate("QualityRules",
                                                                                     "No options were given to the quality rule, but it requires {} mandatory options ({})!").format(
-                                                             self._options.get_num_mandatory_options(),
+                                                             self.options.get_num_mandatory_options(),
                                                              ", ".join(mandatory_option_keys)))
 
             # Now check that we've got all mandatory options

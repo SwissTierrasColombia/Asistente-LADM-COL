@@ -93,7 +93,7 @@ class QRGapsInPlots(AbstractPolygonQualityRule):
             return res_obj
 
         self.progress_changed.emit(10)
-        gaps = GeometryUtils.get_gaps_in_polygon_layer(plot_layer, self._options.use_roads)
+        gaps = GeometryUtils.get_gaps_in_polygon_layer(plot_layer, self.options.use_roads)
         self.progress_changed.emit(60)
 
         res_type, msg = Qgis.NoLevel, ""

@@ -38,7 +38,9 @@ from asistente_ladm_col.config.general_config import (QGIS_MODEL_BAKER_REQUIRED_
                                                       LOG_QUALITY_LIST_ITEM_OPEN,
                                                       LOG_QUALITY_LIST_ITEM_CLOSE,
                                                       LOG_QUALITY_LIST_ITEM_CRITICAL_OPEN,
-                                                      LOG_QUALITY_LIST_ITEM_CRITICAL_CLOSE)
+                                                      LOG_QUALITY_LIST_ITEM_CRITICAL_CLOSE,
+                                                      LOG_QUALITY_OPTIONS_OPEN,
+                                                      LOG_QUALITY_OPTIONS_CLOSE)
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.config.translation_strings import TranslatableConfigStrings as Tr
 
@@ -226,13 +228,25 @@ def _log_quality_rule_validations(func_to_decorate):
 
         self.quality_rule_logger.log_total_time = self.quality_rule_logger.log_total_time + (end_time - start_time)
 
-        # TODO: Log QR options
-
         log_text_content += LOG_QUALITY_LIST_CONTAINER_CLOSE
         log_text_content += LOG_QUALITY_CONTENT_SEPARATOR
 
         self.quality_rule_logger.log_text += "{}{} [{}]{}".format(LOG_QUALITY_PREFIX_TOPOLOGICAL_RULE_TITLE,
                                                               rule.name(), Utils().set_time_format(end_time - start_time), LOG_QUALITY_SUFFIX_TOPOLOGICAL_RULE_TITLE)
+
+        if options:
+            # Try to get option titles instead of keys
+            option_texts = list()
+            for k, v in options.items():
+                obj = rule.options.get_options().get(k, None)
+                option_texts.append("{}: {}".format(obj.title() if obj else k, v))
+
+            self.quality_rule_logger.log_text += "{}{} {}{}".format(LOG_QUALITY_OPTIONS_OPEN,
+                                                                    QCoreApplication.translate("QualityRules",
+                                                                                               "(Options)"),
+                                                                    "; ".join(option_texts),
+                                                                    LOG_QUALITY_OPTIONS_CLOSE)
+
         self.quality_rule_logger.log_text += log_text_content
 
         self.quality_rule_logger.set_final_progress_emitted.emit(rule.name())

@@ -225,10 +225,12 @@ LOG_QUALITY_LIST_ITEM_ERROR_OPEN = "<li style='color:red;'>"
 LOG_QUALITY_LIST_ITEM_ERROR_CLOSE = "</li>"
 LOG_QUALITY_LIST_ITEM_CORRECT_OPEN = "<li style='color:green;'>"
 LOG_QUALITY_LIST_ITEM_CORRECT_CLOSE = "</li>"
-LOG_QUALITY_LIST_ITEM_OPEN = "<li style='color:#ffd356;'>"
+LOG_QUALITY_LIST_ITEM_OPEN = "<li style='color:#f7b907;'>"
 LOG_QUALITY_LIST_ITEM_CLOSE = "</li>"
 LOG_QUALITY_LIST_ITEM_CRITICAL_OPEN = "<li style='color:#d611ac;'>"
 LOG_QUALITY_LIST_ITEM_CRITICAL_CLOSE = "</li>"
+LOG_QUALITY_OPTIONS_OPEN = "<span style='color:#949494;font-style: italic'>"
+LOG_QUALITY_OPTIONS_CLOSE = "</span>"
 
 # Wizards
 WIZARD_CLASS = "wizard_class"
