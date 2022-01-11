@@ -33,6 +33,7 @@ from asistente_ladm_col.config.quality_rule_config import (QR_METADATA_TOOL,
                                                            QR_METADATA_TOLERANCE,
                                                            QR_METADATA_TIMESTAMP,
                                                            QR_METADATA_RULES,
+                                                           QR_METADATA_OPTIONS,
                                                            QR_METADATA_PERSON)
 from asistente_ladm_col.core.ili2db import Ili2DB
 from asistente_ladm_col.lib.db.gpkg_connector import GPKGConnector
@@ -224,6 +225,7 @@ def save_metadata(db_qr, metadata):
                         QR_METADATA_TOLERANCE
                         QR_METADATA_TIMESTAMP
                         QR_METADATA_RULES
+                        QR_METADATA_OPTIONS
                         QR_METADATA_PERSON
     :return: tuple (bool with the result, string with a descriptive message)
     """
@@ -248,6 +250,7 @@ def save_metadata(db_qr, metadata):
     idx_person = metadata_layer.fields().indexOf(names.ERR_METADATA_T_PERSON_F)
     idx_tolerance = metadata_layer.fields().indexOf(names.ERR_METADATA_T_TOLERANCE_F)
     idx_rules = metadata_layer.fields().indexOf(names.ERR_METADATA_T_RULES_F)
+    idx_options = metadata_layer.fields().indexOf(names.ERR_METADATA_T_RULE_OPTIONS_F)
 
     # Initially, the metadata table had references to QR types, but as soon as we
     # wanted to save them as ARRAYs in GPKG or PG, ili2db said "no, I cannot handle that."
@@ -263,7 +266,8 @@ def save_metadata(db_qr, metadata):
                 idx_tool: metadata[QR_METADATA_TOOL],
                 idx_person: metadata[QR_METADATA_PERSON],
                 idx_tolerance: metadata[QR_METADATA_TOLERANCE],
-                idx_rules: "{}: {}".format(len(metadata[QR_METADATA_RULES]), str(metadata[QR_METADATA_RULES]))}
+                idx_rules: "{}: {}".format(len(metadata[QR_METADATA_RULES]), str(metadata[QR_METADATA_RULES])),
+                idx_options: str(metadata[QR_METADATA_OPTIONS])}
 
     metadata_layer.dataProvider().addFeature(QgsVectorLayerUtils().createFeature(metadata_layer, attributes=attr_map))
 

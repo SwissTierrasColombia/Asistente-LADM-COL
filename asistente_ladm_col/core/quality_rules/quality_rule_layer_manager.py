@@ -50,7 +50,7 @@ class QualityRuleLayerManager(QObject):
         self.__rules = rules
         self.__tolerance = tolerance
 
-        self.__quality_rule_layers_config = {k: qr.layers_config(self.__db.names) for k, qr in self.__rules.items()}
+        self.__quality_rule_layers_config = {k: qr.layers_config(self.__db.names) if qr else dict() for k, qr in self.__rules.items()}
 
         # {rule_key: {QUALITY_RULE_LAYERS: {layer_name: layer},
         #             QUALITY_RULE_LADM_COL_LAYERS: {layer_name: layer}}
@@ -66,7 +66,7 @@ class QualityRuleLayerManager(QObject):
         self.__tolerance = tolerance
         self.__layers = dict()
 
-        self.__quality_rule_layers_config = {k: qr.layer_dict(self.__db.names) for k, qr in self.__rules.items()}
+        self.__quality_rule_layers_config = {k: qr.layers_config(self.__db.names) if qr else dict() for k, qr in self.__rules.items()}
 
     def __prepare_layers(self):
         """

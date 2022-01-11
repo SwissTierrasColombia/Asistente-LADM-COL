@@ -30,6 +30,7 @@ from asistente_ladm_col.config.quality_rule_config import (QR_METADATA_TOOL,
                                                            QR_METADATA_TOLERANCE,
                                                            QR_METADATA_TIMESTAMP,
                                                            QR_METADATA_RULES,
+                                                           QR_METADATA_OPTIONS,
                                                            QR_METADATA_PERSON)
 from asistente_ladm_col.core.quality_rules.quality_rule_layer_manager import QualityRuleLayerManager
 from asistente_ladm_col.core.quality_rules.quality_rule_execution_result import (QualityRulesExecutionResult,
@@ -155,6 +156,7 @@ class QualityRuleEngine(QObject):
                         QR_METADATA_TOLERANCE: self.__tolerance/1000,
                         QR_METADATA_TIMESTAMP: self.__timestamp,
                         QR_METADATA_RULES: list(self.__rules.keys()),  # QR keys
+                        QR_METADATA_OPTIONS: self.__normalize_options(options),
                         QR_METADATA_PERSON: getpass.getuser()}
             save_metadata(self.__db_qr, metadata)
 
@@ -201,6 +203,17 @@ class QualityRuleEngine(QObject):
         log = self.quality_rule_logger.get_log_result()
         export_title_text_to_pdf(pdf_path, log.title, log.text)
 
+    def __normalize_options(self, options):
+        # Get rid of options that do not correspond to validated QRs
+        normalized_options = dict()
+        for k, v in options.items():
+            for kv, vv in v.items():
+                if k in list(self.__rules.keys()):
+                    if k in normalized_options:
+                        normalized_options[k][kv] = vv
+                    else:
+                        normalized_options[k] = {kv: vv}
+        return normalized_options
 
 class QualityRuleLogger(QObject):
     """

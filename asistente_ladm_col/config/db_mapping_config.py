@@ -645,7 +645,8 @@ class DBMappingConfig:
                     "Errores_Calidad.Topic_Errores.Metadatos.Herramienta_Validacion": "ERR_METADATA_T_TOOL_F",
                     "Errores_Calidad.Topic_Errores.Metadatos.Persona_Que_Valido": "ERR_METADATA_T_PERSON_F",
                     "Errores_Calidad.Topic_Errores.Metadatos.Tolerancia": "ERR_METADATA_T_TOLERANCE_F",
-                    "Errores_Calidad.Topic_Errores.Metadatos.Reglas_Validadas": "ERR_METADATA_T_RULES_F"
+                    "Errores_Calidad.Topic_Errores.Metadatos.Reglas_Validadas": "ERR_METADATA_T_RULES_F",
+                    "Errores_Calidad.Topic_Errores.Metadatos.Opciones_Reglas": "ERR_METADATA_T_RULE_OPTIONS_F"
                 }},
             "Errores_Calidad.Topic_Errores.ErrorCalidad": {
                 QueryNames.VARIABLE_NAME: "ERR_QUALITY_ERROR_T", QueryNames.FIELDS_DICT: {

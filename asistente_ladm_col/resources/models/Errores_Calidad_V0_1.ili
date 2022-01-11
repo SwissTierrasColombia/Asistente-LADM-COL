@@ -61,11 +61,11 @@ VERSION "2021-09-21"  =
     CLASS Metadatos =
       /** Nombre del archivo fuente (ej. XTF) o nombre de la base de datos (ej. GeoPackage o PostgreSQL/PostGIS) y/o esquema desde la cual se validaron los datos.
        */
-      !!@ ili2db.dispName = "Fuente de Datos"
+      !!@ ili2db.dispName = "Fuente de datos"
       Fuente_Datos : MANDATORY TEXT*1024;
       /** Fecha y hora local en la que se validaron los datos.
        */
-      !!@ ili2db.dispName = "Fecha de Validación"
+      !!@ ili2db.dispName = "Fecha de validación"
       Fecha_Validacion : MANDATORY FORMAT INTERLIS.XMLDateTime "2020-1-1T0:0:0.0" .. "2050-12-31T11:59:0.0";
       /** Valor de tolerancia empleado para la validación (topológica). Este valor se especifica en metros.
        */
@@ -75,9 +75,13 @@ VERSION "2021-09-21"  =
        */
       !!@ ili2db.dispName = "Reglas de calidad validadas"
       Reglas_Validadas : TEXT*9999;
+      /** Cadena con las opciones o parámetros para cada regla validada.
+       */
+      !!@ ili2db.dispName = "Opciones por regla"
+      Opciones_Reglas : TEXT*9999;
       /** Nombre de la herramienta empleada para realizar la validación de los datos. Por ejemplo: Asistente LADM-COL.
        */
-      !!@ ili2db.dispName = "Herramienta de Validación"
+      !!@ ili2db.dispName = "Herramienta de validación"
       Herramienta_Validacion : TEXT*1024;
       /** Nombre de la persona que validó los datos.
        */
