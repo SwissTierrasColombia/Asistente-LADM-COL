@@ -55,7 +55,7 @@ import processing
 
 
 @unittest.skip("Until we've finished with the refactor...")
-class TesQualityRules(unittest.TestCase):
+class TestQualityRules(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):

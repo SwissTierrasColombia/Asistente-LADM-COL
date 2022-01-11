@@ -227,6 +227,8 @@ LOG_QUALITY_LIST_ITEM_CORRECT_OPEN = "<li style='color:green;'>"
 LOG_QUALITY_LIST_ITEM_CORRECT_CLOSE = "</li>"
 LOG_QUALITY_LIST_ITEM_OPEN = "<li style='color:#ffd356;'>"
 LOG_QUALITY_LIST_ITEM_CLOSE = "</li>"
+LOG_QUALITY_LIST_ITEM_CRITICAL_OPEN = "<li style='color:#d611ac;'>"
+LOG_QUALITY_LIST_ITEM_CRITICAL_CLOSE = "</li>"
 
 # Wizards
 WIZARD_CLASS = "wizard_class"

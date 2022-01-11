@@ -63,9 +63,9 @@ class QROverlappingBoundaryPoints(AbstractPointQualityRule):
     def validate(self, db, db_qr, layer_dict, tolerance, **kwargs):
         # TODO: emit progress values
         point_layer = self._get_layer(layer_dict)
-        pre_res = self._check_prerrequisite_layer(QCoreApplication.translate("QualityRules", "Boundary point"), point_layer)
-        if pre_res:
-            return pre_res
+        pre_res, res_obj = self._check_prerrequisite_layer(QCoreApplication.translate("QualityRules", "Boundary point"), point_layer)
+        if not pre_res:
+            return res_obj
 
         overlapping = GeometryUtils.get_overlapping_points(point_layer)
         flat_overlapping = [fid for items in overlapping for fid in items]  # Build a flat list of ids
@@ -88,7 +88,7 @@ class QROverlappingBoundaryPoints(AbstractPointQualityRule):
         self._save_errors(db_qr, self._ERROR_01, errors)
 
         if len(flat_overlapping) > 0:
-            return QualityRuleExecutionResult(Qgis.Critical,
+            return QualityRuleExecutionResult(Qgis.Warning,
                                               QCoreApplication.translate("QualityRules",
                                                                          "{} overlapping boundary points were found!").format(
                                                   len(flat_overlapping)))

@@ -109,7 +109,10 @@ class QualityRuleEngine(QObject):
         # If rules is a list, we need to retrieve the quality rule names from the QRRegistry
         return {rule_key: self.__qr_registry.get_quality_rule(rule_key) for rule_key in rules}
 
-    def validate_quality_rules(self):
+    def validate_quality_rules(self, options=dict()):
+        """
+        :param options: Dict of dicts with of options per rule. {qr1_key: {qr1_opt1: value1, ...}, ...}
+        """
         res = False
         msg = ""
         qr_res = dict()  # {rule_key: QualityRuleExecutionResult}
@@ -132,19 +135,19 @@ class QualityRuleEngine(QObject):
                 if rule is not None:
                     layers = self.__layer_manager.get_layers(rule_key)
                     if layers:
-                        qr_res[rule_key] = self.__validate_quality_rule(rule, layers)
+                        qr_res[rule_key] = self.__validate_quality_rule(rule, layers, options.get(rule_key, dict()))
                         # if self.__with_gui:
                         #     self.add_error_layers(qr_res[rule_key].error_layers)
                     else:
                         qr_msg = QCoreApplication.translate("QualityRuleEngine",
                                 "Couldn't execute '{}' quality rule! Required layers are not available. Skipping...").format(rule.name())
-                        qr_res[rule_key] = QualityRuleExecutionResult(Qgis.NoLevel, qr_msg)
+                        qr_res[rule_key] = QualityRuleExecutionResult(Qgis.Critical, qr_msg)
                         self.logger.warning(__name__, qr_msg)
                 else:
                     qr_msg = QCoreApplication.translate("QualityRuleEngine",
                                                      "Quality rule with key '{}' does not exist or is not registered! Skipping...").format(
                         rule_key)
-                    qr_res[rule_key] = QualityRuleExecutionResult(Qgis.NoLevel, qr_msg)
+                    qr_res[rule_key] = QualityRuleExecutionResult(Qgis.Critical, qr_msg)
                     self.logger.warning(__name__, qr_msg)
 
             metadata = {QR_METADATA_TOOL: QR_METADATA_TOOL_NAME,
@@ -167,15 +170,16 @@ class QualityRuleEngine(QObject):
         return res, msg, QualityRulesExecutionResult(qr_res)
 
     @_log_quality_rule_validations
-    def __validate_quality_rule(self, rule, layers):
+    def __validate_quality_rule(self, rule, layers, options):
         """
         Intermediate function to log quality rule execution.
 
         :param rule: Quality rule instance
         :param layers: Layer dict with the layers the quality rule needs (ready to use for tolerance > 0 scenarios)
+        :param options: Dict of options per rule. {qr1_opt1: value1, ...}
         :return: An instance of QualityRuleExecutionResult
         """
-        return rule.validate(self.__db, self.__db_qr, layers, self.__tolerance)
+        return rule.validate(self.__db, self.__db_qr, layers, self.__tolerance, options=options)
 
     def add_error_layers(self, error_layers):
         for error_layer in error_layers:

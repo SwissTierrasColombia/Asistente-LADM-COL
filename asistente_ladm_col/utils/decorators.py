@@ -36,7 +36,9 @@ from asistente_ladm_col.config.general_config import (QGIS_MODEL_BAKER_REQUIRED_
                                                       LOG_QUALITY_LIST_ITEM_CORRECT_OPEN,
                                                       LOG_QUALITY_LIST_ITEM_CORRECT_CLOSE,
                                                       LOG_QUALITY_LIST_ITEM_OPEN,
-                                                      LOG_QUALITY_LIST_ITEM_CLOSE)
+                                                      LOG_QUALITY_LIST_ITEM_CLOSE,
+                                                      LOG_QUALITY_LIST_ITEM_CRITICAL_OPEN,
+                                                      LOG_QUALITY_LIST_ITEM_CRITICAL_CLOSE)
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.config.translation_strings import TranslatableConfigStrings as Tr
 
@@ -191,33 +193,40 @@ def activate_processing_plugin(func_to_decorate):
 
 def _log_quality_rule_validations(func_to_decorate):
     @wraps(func_to_decorate)
-    def add_format_to_text(self, rule, layers):
+    def add_format_to_text(self, rule, layers, options):
         """
         Decorator used for registering log quality info
         :param self: QualityRuleEngine instance
         :param rule: Quality rule instance
         :param layers: layers
+        :param options: Options for the quality rule
         """
         self.quality_rule_logger.set_initial_progress_emitted.emit(rule.name())
         log_text_content = LOG_QUALITY_LIST_CONTAINER_OPEN
 
         start_time = time.time()
         with OverrideCursor(Qt.WaitCursor):
-            qr_result = func_to_decorate(self, rule, layers)
+            qr_result = func_to_decorate(self, rule, layers, options)
         end_time = time.time()
 
-        if qr_result.level == Qgis.Critical:
+        if qr_result.level == Qgis.Warning:
             prefix = LOG_QUALITY_LIST_ITEM_ERROR_OPEN
             suffix = LOG_QUALITY_LIST_ITEM_ERROR_CLOSE
         elif qr_result.level == Qgis.Success:
             prefix = LOG_QUALITY_LIST_ITEM_CORRECT_OPEN
             suffix = LOG_QUALITY_LIST_ITEM_CORRECT_CLOSE
-        else:  # Qgis.Warning
+        elif qr_result.level == Qgis.Critical:
+            prefix = LOG_QUALITY_LIST_ITEM_CRITICAL_OPEN
+            suffix = LOG_QUALITY_LIST_ITEM_CRITICAL_CLOSE
+        else:  # Qgis.NoLevel
             prefix = LOG_QUALITY_LIST_ITEM_OPEN
             suffix = LOG_QUALITY_LIST_ITEM_CLOSE
+
         log_text_content += "{}{}{}".format(prefix, qr_result.msg, suffix)
 
         self.quality_rule_logger.log_total_time = self.quality_rule_logger.log_total_time + (end_time - start_time)
+
+        # TODO: Log QR options
 
         log_text_content += LOG_QUALITY_LIST_CONTAINER_CLOSE
         log_text_content += LOG_QUALITY_CONTENT_SEPARATOR

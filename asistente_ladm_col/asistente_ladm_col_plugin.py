@@ -53,6 +53,7 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       PLUGIN_VERSION,
                                                       RELEASE_URL,
                                                       COLLECTED_DB_SOURCE,
+                                                      DEFAULT_USE_ROADS_VALUE,
                                                       WIZARD_CLASS,
                                                       WIZARD_TOOL_NAME,
                                                       WIZARD_TYPE,
@@ -82,6 +83,7 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       MAP_SWIPE_TOOL_EXACT_REQUIRED_VERSION,
                                                       MAP_SWIPE_TOOL_REQUIRED_VERSION_URL)
 from asistente_ladm_col.config.layer_tree_indicator_config import LayerTreeIndicatorConfig
+from asistente_ladm_col.config.quality_rule_config import QR_IGACR3006
 from asistente_ladm_col.config.task_steps_config import TaskStepsConfig
 from asistente_ladm_col.config.translation_strings import (TOOLBAR_FINALIZE_GEOMETRY_CREATION,
                                                            TOOLBAR_BUILD_BOUNDARY,
@@ -1296,7 +1298,11 @@ class AsistenteLADMCOLPlugin(QObject):
         self.quality_rule_engine.quality_rule_logger.show_button_emitted.connect(self.show_log_quality_button)
         self.quality_rule_engine.quality_rule_logger.set_initial_progress_emitted.connect(self.set_log_quality_initial_progress)
         self.quality_rule_engine.quality_rule_logger.set_final_progress_emitted.connect(self.set_log_quality_final_progress)
-        self.quality_rule_engine.validate_quality_rules()
+
+        use_roads = bool(QSettings().value('Asistente-LADM-COL/quality/use_roads', DEFAULT_USE_ROADS_VALUE, bool))
+        options = {QR_IGACR3006: {'use_roads': use_roads}}
+
+        self.quality_rule_engine.validate_quality_rules(options)
 
     def show_wiz_property_record_card(self):
         # TODO: Remove

@@ -28,7 +28,6 @@ from asistente_ladm_col.config.keys.common import (QUALITY_RULE_LAYERS,
                                                    ADJUSTED_INPUT_LAYER,
                                                    ADJUSTED_REFERENCE_LAYER,
                                                    FIX_ADJUSTED_LAYER)
-from asistente_ladm_col.config.general_config import DEFAULT_USE_ROADS_VALUE
 from asistente_ladm_col.config.layer_config import LADMNames
 from asistente_ladm_col.config.quality_rule_config import (QR_IGACR4001,
                                                            QRE_IGACR4001E01,
@@ -109,7 +108,7 @@ class QRParcelRightRelationship(AbstractLogicQualityRule):
             self.progress_changed.emit(95)
 
         if count_e01_records + count_e02_records > 0:
-            res_type = Qgis.Critical
+            res_type = Qgis.Warning
             msg = QCoreApplication.translate("QualityRules", "{} parcels with inconsistent rights were found.").format(
                 count_e01_records + count_e02_records)
         else:

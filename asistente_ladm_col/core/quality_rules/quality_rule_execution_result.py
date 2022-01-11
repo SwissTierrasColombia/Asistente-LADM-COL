@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 /***************************************************************************
                               Asistente LADM-COL
@@ -38,11 +37,13 @@ class QualityRuleExecutionResult:
         """
         Stores the result of a single quality rule.
 
-        :param level: Indicates whether the rule was successful (Qgis.Success), couldn't be validated (Qgis.Warning),
-                      or was not successful (Qgis.Critical).
+        :param level: Indicates whether the rule:
+                        + Was successful (Qgis.Success),
+                        + Couldn't be validated because no features were found (Qgis.NoLevel),
+                        + Couldn't be validated because a requirement was not met, e.g., the layer was not found or
+                          a mandatory option was not given (Qgis.Critical),
+                        + Or was not successful (Qgis.Warning).
         :param msg: Message describing the obtained result.
-        :param error_layers: List of QgsVectorLayers. They may be spatial or not and they might be empty if no error is
-                             found.
         """
         self.level = level
         self.msg = msg

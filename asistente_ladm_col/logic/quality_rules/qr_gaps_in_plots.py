@@ -34,6 +34,8 @@ from asistente_ladm_col.config.quality_rule_config import (QR_IGACR3006,
                                                            QRE_IGACR3006E01)
 from asistente_ladm_col.core.quality_rules.abstract_polygon_quality_rule import AbstractPolygonQualityRule
 from asistente_ladm_col.core.quality_rules.quality_rule_execution_result import QualityRuleExecutionResult
+from asistente_ladm_col.core.quality_rules.quality_rule_option import (QualityRuleOption,
+                                                                       QualityRuleOptions)
 from asistente_ladm_col.lib.geometry import GeometryUtils
 
 
@@ -65,17 +67,33 @@ class QRGapsInPlots(AbstractPolygonQualityRule):
                         FIX_ADJUSTED_LAYER: True
                     }}}
 
+    def _initialize_option_definition(self):
+        dict_options = [
+            QualityRuleOption('use_roads',
+                              QCoreApplication.translate("QualityRules", "Use roads"),
+                              QCoreApplication.translate("QualityRules",
+                                                         "Take roads into account when checking for gaps in plots"),
+                              True,
+                              DEFAULT_USE_ROADS_VALUE)
+        ]
+        return QualityRuleOptions(dict_options)
+
     def validate(self, db, db_qr, layer_dict, tolerance, **kwargs):
         self.progress_changed.emit(5)
-        use_roads = bool(QSettings().value('Asistente-LADM-COL/quality/use_roads', DEFAULT_USE_ROADS_VALUE, bool))
+
+        option_check_res, res_obj = self._check_qr_options(kwargs)
+        if not option_check_res:
+            return res_obj
+
+        self._read_option_values(kwargs['options'])
 
         plot_layer = self._get_layer(layer_dict)
-        pre_res = self._check_prerrequisite_layer(QCoreApplication.translate("QualityRules", "Plot"), plot_layer)
-        if pre_res:
-            return pre_res
+        pre_res, res_obj = self._check_prerrequisite_layer(QCoreApplication.translate("QualityRules", "Plot"), plot_layer)
+        if not pre_res:
+            return res_obj
 
         self.progress_changed.emit(10)
-        gaps = GeometryUtils.get_gaps_in_polygon_layer(plot_layer, use_roads)
+        gaps = GeometryUtils.get_gaps_in_polygon_layer(plot_layer, self._options.use_roads)
         self.progress_changed.emit(60)
 
         res_type, msg = Qgis.NoLevel, ""
@@ -103,7 +121,7 @@ class QRGapsInPlots(AbstractPolygonQualityRule):
             self._save_errors(db_qr, self._ERROR_01, errors)
             self.progress_changed.emit(90)
 
-            res_type = Qgis.Critical
+            res_type = Qgis.Warning
             msg = QCoreApplication.translate("QualityRules", "{} gaps were found in 'Plot' layer.").format(len(gaps))
         else:
             res_type = Qgis.Success

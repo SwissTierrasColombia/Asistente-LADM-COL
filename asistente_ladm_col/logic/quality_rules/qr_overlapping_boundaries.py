@@ -68,13 +68,13 @@ class QROverlappingBoundaries(AbstractLineQualityRule):
         #       nor common intermediate segmenr's vertices (between line A and B).
         boundary_layer = self._get_layer(layer_dict)
 
-        pre_res = self._check_prerrequisite_layer(QCoreApplication.translate("QualityRules", "Boundary"), boundary_layer)
-        if pre_res:
-            return pre_res
+        pre_res, res_obj = self._check_prerrequisite_layer(QCoreApplication.translate("QualityRules", "Boundary"), boundary_layer)
+        if not pre_res:
+            return res_obj
 
         res, overlapping, msg = GeometryUtils.get_overlapping_lines(boundary_layer)
         if not res:
-            return QualityRuleExecutionResult(Qgis.Warning,
+            return QualityRuleExecutionResult(Qgis.Critical,
                                               QCoreApplication.translate("QualityRules",
                                                                          "There was an error checking for boundary overlaps! Details: {}").format(
                                                   msg))
@@ -116,7 +116,7 @@ class QROverlappingBoundaries(AbstractLineQualityRule):
                                                  "{} overlaps of type line were found in boundaries.").format(
                     len_line_errors)
 
-            return QualityRuleExecutionResult(Qgis.Critical, msg)
+            return QualityRuleExecutionResult(Qgis.Warning, msg)
 
     def _get_error_dict(self, db, layer):
         errors = {'geometries': list(), 'data': list()}

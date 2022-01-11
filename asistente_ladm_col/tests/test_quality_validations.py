@@ -21,7 +21,7 @@ import_processing()
 import processing
 
 
-class TesQualityValidations(unittest.TestCase):
+class TestQualityValidations(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):

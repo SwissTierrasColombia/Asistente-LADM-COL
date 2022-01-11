@@ -71,7 +71,7 @@ class QRValidateDataAgainstModel(AbstractQualityRule):
         res, msg = Ili2DB().validate(db, [model.full_name()], self._xtf_log)
 
         if not res:
-            return QualityRuleExecutionResult(Qgis.NoLevel,
+            return QualityRuleExecutionResult(Qgis.Critical,
                                               QCoreApplication.translate("QualityRules",
                                                                          "There was an error running the quality rule '{}'! Details: '{}'.").format(
                 self._id, msg))
@@ -83,14 +83,14 @@ class QRValidateDataAgainstModel(AbstractQualityRule):
         res, msg = IliVErrorsToErroresCalidad01Converter().convert(self._xtf_log, db_qr, params=dict())
 
         if not res:
-            return QualityRuleExecutionResult(Qgis.NoLevel,
+            return QualityRuleExecutionResult(Qgis.Critical,
                                               QCoreApplication.translate("QualityRules",
                                                                          "There was an error running the quality rule '{}'! Details: '{}'.")).format(
                 self._id, msg)
         else:
             count = error_layer.featureCount() - count_before
             if count:
-                return QualityRuleExecutionResult(Qgis.Critical,
+                return QualityRuleExecutionResult(Qgis.Warning,
                                                   QCoreApplication.translate("QualityRules",
                                                                              "There were {} errors validating the data against their model!").format(
                                                       count))
