@@ -33,7 +33,7 @@ from asistente_ladm_col.gui.wizards.model.common.args.model_args import (ExecFor
 
 class ExtAddressManager:
 
-    def __init__(self, db, layers, editing_layer, iface):   # , app, logger):
+    def __init__(self, db, layers, editing_layer, iface):
         self.__db = db
         self.__layers = layers
 

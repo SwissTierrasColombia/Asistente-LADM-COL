@@ -110,9 +110,18 @@ class SourceSelector(QObject):
         self.__qwizard_page.mMapLayerComboBox.layerChanged.connect(self.layer_changed)
 
     def disconnect_signals(self):
-        self.__qwizard_page.rad_create_manually.toggled.disconnect(self._controls_changed)
-        self.__qwizard_page.rad_refactor.toggled.disconnect(self._controls_changed)
-        self.__qwizard_page.mMapLayerComboBox.layerChanged.disconnect(self.layer_changed)
+        try:
+            self.__qwizard_page.rad_create_manually.toggled.disconnect(self._controls_changed)
+        except TypeError:
+            pass
+        try:
+            self.__qwizard_page.rad_refactor.toggled.disconnect(self._controls_changed)
+        except TypeError:
+            pass
+        try:
+            self.__qwizard_page.mMapLayerComboBox.layerChanged.disconnect(self.layer_changed)
+        except TypeError:
+            pass
 
     def _controls_changed(self, checked):
         if not checked:
