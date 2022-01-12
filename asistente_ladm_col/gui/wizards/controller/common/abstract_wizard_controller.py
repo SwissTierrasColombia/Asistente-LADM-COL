@@ -5,18 +5,33 @@ from qgis.PyQt.QtCore import (QObject,
                               pyqtSignal,
                               QCoreApplication)
 
+from qgis.PyQt.QtWidgets import QMessageBox
 from asistente_ladm_col import Logger
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.enums import EnumLayerCreationMode
-from asistente_ladm_col.config.general_config import WIZARD_EDITING_LAYER_NAME, WIZARD_STRINGS, \
-    WIZARD_REFACTOR_FIELDS_RECENT_MAPPING_OPTIONS, WIZARD_REFACTOR_FIELDS_LAYER_FILTERS, WIZARD_HELP_PAGES, WIZARD_HELP, \
-    WIZARD_FINISH_BUTTON_TEXT, WIZARD_SELECT_SOURCE_HELP, WIZARD_HELP1, WIZARD_LAYERS, WIZARD_READ_ONLY_FIELDS, \
-    WIZARD_TOOL_NAME, WIZARD_CREATION_MODE_KEY, WIZARD_SELECTED_TYPE_KEY, WIZARD_QSETTINGS, WIZARD_QSETTINGS_PATH, \
-    WIZARD_FEATURE_NAME
+from asistente_ladm_col.config.general_config import (WIZARD_EDITING_LAYER_NAME,
+                                                      WIZARD_STRINGS,
+                                                      WIZARD_REFACTOR_FIELDS_RECENT_MAPPING_OPTIONS,
+                                                      WIZARD_REFACTOR_FIELDS_LAYER_FILTERS,
+                                                      WIZARD_HELP_PAGES,
+                                                      WIZARD_HELP,
+                                                      WIZARD_FINISH_BUTTON_TEXT,
+                                                      WIZARD_SELECT_SOURCE_HELP,
+                                                      WIZARD_HELP1,
+                                                      WIZARD_LAYERS,
+                                                      WIZARD_READ_ONLY_FIELDS,
+                                                      WIZARD_TOOL_NAME,
+                                                      WIZARD_CREATION_MODE_KEY,
+                                                      WIZARD_SELECTED_TYPE_KEY,
+                                                      WIZARD_QSETTINGS,
+                                                      WIZARD_QSETTINGS_PATH,
+                                                      WIZARD_FEATURE_NAME)
 from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.gui.wizards.controller.controller_args import CreateFeatureArgs
 from asistente_ladm_col.gui.wizards.model.common.abstract_qobject_meta import AbstractQObjectMeta
-from asistente_ladm_col.gui.wizards.model.common.args.model_args import ExecFormAdvancedArgs, FinishFeatureCreationArgs
+from asistente_ladm_col.gui.wizards.model.common.args.model_args import (ExecFormAdvancedArgs,
+                                                                         FinishFeatureCreationArgs,
+                                                                         MapToolChangedArgs)
 from asistente_ladm_col.gui.wizards.model.common.common_operations import CommonOperationsModel
 from asistente_ladm_col.gui.wizards.model.common.layer_remove_signals_manager import LayerRemovedSignalsManager
 from asistente_ladm_col.gui.wizards.model.common.refactor_fields_feature_creator import RefactorFieldsFeatureCreator
@@ -48,7 +63,7 @@ class ProductFactory(ABC):
 class AbstractWizardController(QObject, metaclass=AbstractQObjectMeta):
     update_wizard_is_open_flag = pyqtSignal(bool)
 
-    def __init__(self, iface, db, wizard_config, product_factory: ProductFactory):
+    def __init__(self, iface, db, wizard_config, product_factory: ProductFactory, observer):
         QObject.__init__(self)
 
         self._app = AppInterface()
@@ -71,6 +86,8 @@ class AbstractWizardController(QObject, metaclass=AbstractQObjectMeta):
         self._feature_selector_by_expression = None
 
         self.__product_factory = product_factory
+
+        self._observer = observer
 
     def _initialize(self):
         self._feature_manager = self.__product_factory.create_feature_manager(
@@ -116,9 +133,18 @@ class AbstractWizardController(QObject, metaclass=AbstractQObjectMeta):
         self._wizard_messages = self.__product_factory.create_wizard_messages_manager(
             self._WIZARD_TOOL_NAME, self._editing_layer_name, self._logger)
 
-    @abstractmethod
+        self._connect_external_signals()
+
     def create_feature(self, args: CreateFeatureArgs):
-        pass
+        self._save_settings()
+        if args.layer_creation_mode == EnumLayerCreationMode.REFACTOR_FIELDS:
+            self.create_feature_from_refactor_fields()
+        else:
+            self._create_manually()
+
+    def _create_manually(self):
+        self._layer_remove_manager.reconnect_signals()
+        self._manual_feature_creator.create()
 
     # called from manual feature creator
     @abstractmethod
@@ -168,9 +194,10 @@ class AbstractWizardController(QObject, metaclass=AbstractQObjectMeta):
     def _create_view(self):
         pass
 
-    @abstractmethod
     def close_wizard(self):
-        pass
+        self.update_wizard_is_open_flag.emit(False)
+        self.dispose()
+        self.__view.close()
 
     def _get_view_config(self):
         # TODO Load help_strings from wizard_config
@@ -216,9 +243,21 @@ class AbstractWizardController(QObject, metaclass=AbstractQObjectMeta):
         self._wizard_messages.show_form_closed_msg()
         self.close_wizard()
 
-    def _map_tool_changed(self):
-        self._wizard_messages.show_map_tool_changed_msg()
-        self.close_wizard()
+    def _map_tool_changed(self, args: MapToolChangedArgs):
+        # TODO parent was removed
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Question)
+        msg.setText(QCoreApplication.translate("WizardTranslations", "Do you really want to change the map tool?"))
+        msg.setWindowTitle(QCoreApplication.translate("WizardTranslations", "CHANGING MAP TOOL?"))
+        msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        msg.button(QMessageBox.Yes).setText(QCoreApplication.translate("WizardTranslations", "Yes, and close the wizard"))
+        msg.button(QMessageBox.No).setText(QCoreApplication.translate("WizardTranslations", "No, continue editing"))
+        reply = msg.exec_()
+
+        if reply == QMessageBox.Yes:
+            args.change_map_tool = True
+            self._wizard_messages.show_map_tool_changed_msg()
+            self.close_wizard()
 
     def layer_removed(self):
         self._wizard_messages.show_layer_removed_msg()
@@ -235,3 +274,10 @@ class AbstractWizardController(QObject, metaclass=AbstractQObjectMeta):
         self._common_operations.set_read_only_fields(False)
 
         self._feature_selector_on_map.disconnect_signals()
+        self._disconnect_external_signals()
+
+    def _connect_external_signals(self):
+        self.update_wizard_is_open_flag.connect(self._observer.set_wizard_is_open_flag)
+
+    def _disconnect_external_signals(self):
+        self.update_wizard_is_open_flag.disconnect(self._observer.set_wizard_is_open_flag)

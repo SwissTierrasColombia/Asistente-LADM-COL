@@ -26,8 +26,7 @@ from qgis.PyQt.QtCore import (QCoreApplication,
                               QObject,
                              pyqtSignal)
 
-from qgis.PyQt.QtWidgets import QMessageBox
-
+from asistente_ladm_col.gui.wizards.model.common.args.model_args import MapToolChangedArgs
 from asistente_ladm_col.utils.select_map_tool import SelectMapTool
 
 
@@ -51,7 +50,7 @@ class NullFeatureSelectorOnMap(QObject):
 
 class SelectFeaturesOnMapWrapper(QObject):
     features_selected = pyqtSignal()
-    map_tool_changed = pyqtSignal()
+    map_tool_changed = pyqtSignal(MapToolChangedArgs)
 
     def __init__(self, iface, logger, multiple_features=True):
         QObject.__init__(self)
@@ -67,21 +66,13 @@ class SelectFeaturesOnMapWrapper(QObject):
     def __map_tool_changed(self, new_tool, old_tool):
         self.__canvas.mapToolSet.disconnect(self.__map_tool_changed)
 
-        # TODO parent was removed
-        msg = QMessageBox()
-        msg.setIcon(QMessageBox.Question)
-        msg.setText(QCoreApplication.translate("WizardTranslations", "Do you really want to change the map tool?"))
-        msg.setWindowTitle(QCoreApplication.translate("WizardTranslations", "CHANGING MAP TOOL?"))
-        msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-        msg.button(QMessageBox.Yes).setText(QCoreApplication.translate("WizardTranslations", "Yes, and close the wizard"))
-        msg.button(QMessageBox.No).setText(QCoreApplication.translate("WizardTranslations", "No, continue editing"))
-        reply = msg.exec_()
+        args = MapToolChangedArgs()
 
-        if reply == QMessageBox.No:
+        self.map_tool_changed.emit(args)
+
+        if not args.change_map_tool:
             self.__canvas.setMapTool(old_tool)
             self.__canvas.mapToolSet.connect(self.__map_tool_changed)
-        else:
-            self.map_tool_changed.emit()
 
     def select_features_on_map(self, layer):
         self.__iface.setActiveLayer(layer)

@@ -18,8 +18,7 @@
  *                                                                         *
  ***************************************************************************/
  """
-from abc import (abstractmethod,
-                 ABC)
+from abc import abstractmethod
 
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QObject,
@@ -159,26 +158,28 @@ class SpatialFeatureCreator(ManualFeatureCreator):
                                .format(self._feature_name))
 
     def save_created_geometry(self):
-        if self.editing_layer.editBuffer():
-            feature_count = len(self.editing_layer.editBuffer().addedFeatures())
+        # TODO check if it's correct
+        editing_layer = self._get_editing_layer()
+        if editing_layer.editBuffer():
+            feature_count = len(editing_layer.editBuffer().addedFeatures())
             if feature_count == 0:
                 self.unexpected_features_digitized.emit(
-                    UnexpectedFeaturesDigitizedArgs(self.editing_layer, EnumDigitizedFeatureStatus.ZERO_FEATURES,
+                    UnexpectedFeaturesDigitizedArgs(editing_layer, EnumDigitizedFeatureStatus.ZERO_FEATURES,
                                                     feature_count))
 
             elif self.is_a_valid_amount_of_features(feature_count):
-                feature = [value for index, value in self.editing_layer.editBuffer().addedFeatures().items()][0]
+                feature = [value for index, value in editing_layer.editBuffer().addedFeatures().items()][0]
 
                 if feature.geometry().isGeosValid():
                     feature = self.__pre_exe_form()
                     self._exec_form(self._layer, feature)
                 else:
                     self.unexpected_features_digitized.emit(
-                        UnexpectedFeaturesDigitizedArgs(self.editing_layer, EnumDigitizedFeatureStatus.INVALID,
+                        UnexpectedFeaturesDigitizedArgs(editing_layer, EnumDigitizedFeatureStatus.INVALID,
                                                         feature_count))
             else:
                 self.unexpected_features_digitized.emit(
-                    UnexpectedFeaturesDigitizedArgs(self.editing_layer, EnumDigitizedFeatureStatus.OTHER,
+                    UnexpectedFeaturesDigitizedArgs(editing_layer, EnumDigitizedFeatureStatus.OTHER,
                                                     feature_count))
         # TODO check case: editBuffer=false
 
@@ -187,7 +188,7 @@ class SpatialFeatureCreator(ManualFeatureCreator):
         return feature_count == 1
 
     def __pre_exe_form(self):
-        args = ValidFeaturesDigitizedArgs(self.editing_layer, self.__get_added_feature())
+        args = ValidFeaturesDigitizedArgs(self._get_editing_layer(), self.__get_added_feature())
         self.valid_features_digitized.emit(args)
         return args.feature
 
@@ -195,7 +196,7 @@ class SpatialFeatureCreator(ManualFeatureCreator):
     def __get_added_feature(self):
         # [value for index, value in layer.editBuffer().addedFeatures().items()][0]
         feature = None
-        for id, added_feature in self.editing_layer.editBuffer().addedFeatures().items():
+        for id, added_feature in self._get_editing_layer().editBuffer().addedFeatures().items():
             feature = added_feature
             break
 
@@ -203,10 +204,3 @@ class SpatialFeatureCreator(ManualFeatureCreator):
 
     def _get_editing_layer(self):
         return self.editing_layer if self.editing_layer and self.editing_layer != self._layer else self._layer
-
-    def disconnect_signals(self):
-        super(SpatialFeatureCreator, self).disconnect_signals()
-        # TODO this code does not disconnect signals
-        if self.editing_layer != self._layer:
-            self.editing_layer.rollBack()
-            QgsProject.instance().removeMapLayer(self.editing_layer)

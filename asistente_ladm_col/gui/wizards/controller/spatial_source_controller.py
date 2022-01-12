@@ -18,13 +18,12 @@
  *                                                                         *
  ***************************************************************************/
  """
-from asistente_ladm_col.config.enums import EnumFeatureSelectionType, EnumLayerCreationMode
+from asistente_ladm_col.config.enums import EnumFeatureSelectionType
 from asistente_ladm_col.config.general_config import (WIZARD_HELP_PAGES,
                                                       WIZARD_HELP2)
-from asistente_ladm_col.gui.wizards.controller.common.abstract_wizard_controller import ProductFactory, \
-    AbstractWizardController
+from asistente_ladm_col.gui.wizards.controller.common.abstract_wizard_controller import (ProductFactory,
+                                                                                         AbstractWizardController)
 from asistente_ladm_col.gui.wizards.controller.common.wizard_messages_manager import WizardMessagesManager
-from asistente_ladm_col.gui.wizards.controller.controller_args import CreateFeatureArgs
 from asistente_ladm_col.gui.wizards.model.common.args.model_args import ExecFormAdvancedArgs
 from asistente_ladm_col.gui.wizards.model.common.manual_feature_creator import AlphaFeatureCreator
 from asistente_ladm_col.gui.wizards.model.common.select_features_by_expression_dialog_wrapper import \
@@ -56,18 +55,11 @@ class SpatialSourceFactory(ProductFactory):
 
 class SpatialSourceController(AbstractWizardController):
 
-    def __init__(self, iface, db, wizard_config):
-        AbstractWizardController.__init__(self, iface, db, wizard_config, SpatialSourceFactory())
+    def __init__(self, iface, db, wizard_config, observer):
+        AbstractWizardController.__init__(self, iface, db, wizard_config, SpatialSourceFactory(), observer)
         self.__manual_feature_creator = None
 
         self._initialize()
-
-    def create_feature(self, args: CreateFeatureArgs):
-        self._save_settings()
-        if args.layer_creation_mode == EnumLayerCreationMode.REFACTOR_FIELDS:
-            self.create_feature_from_refactor_fields()
-        else:
-            self._manual_feature_creator.create()
 
     def exec_form_advanced(self, args: ExecFormAdvancedArgs):
         pass
@@ -83,11 +75,6 @@ class SpatialSourceController(AbstractWizardController):
         wizard_page2 = SpatialSourceFeaturesSelectorView(self, self._wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP2])
         self.__view = SpatialSourceView(self, self._get_view_config(), wizard_page2)
         return self.__view
-
-    def close_wizard(self):
-        self.dispose()
-        self.update_wizard_is_open_flag.emit(False)
-        self.__view.close()
 
     # method from view
     def next_clicked(self):

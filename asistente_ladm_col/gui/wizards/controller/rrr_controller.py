@@ -22,12 +22,11 @@
  *                                                                         *
  ***************************************************************************/
  """
-from asistente_ladm_col.config.enums import EnumFeatureSelectionType, EnumLayerCreationMode
+from asistente_ladm_col.config.enums import EnumFeatureSelectionType
 from asistente_ladm_col.config.general_config import WIZARD_EDITING_LAYER_NAME
-from asistente_ladm_col.gui.wizards.controller.common.abstract_wizard_controller import ProductFactory, \
-    AbstractWizardController
+from asistente_ladm_col.gui.wizards.controller.common.abstract_wizard_controller import (ProductFactory,
+                                                                                         AbstractWizardController)
 from asistente_ladm_col.gui.wizards.controller.common.wizard_messages_manager import WizardMessagesManager
-from asistente_ladm_col.gui.wizards.controller.controller_args import CreateFeatureArgs
 from asistente_ladm_col.gui.wizards.model.common.args.model_args import ExecFormAdvancedArgs
 from asistente_ladm_col.gui.wizards.model.common.manual_feature_creator import AlphaFeatureCreator
 from asistente_ladm_col.gui.wizards.model.common.select_features_by_expression_dialog_wrapper import \
@@ -62,19 +61,12 @@ class RrrProductFactory(ProductFactory):
 
 class RrrController(AbstractWizardController):
 
-    def __init__(self, iface, db, wizard_config):
+    def __init__(self, iface, db, wizard_config, observer):
         product_factory = RrrProductFactory(wizard_config[WIZARD_EDITING_LAYER_NAME])
-        AbstractWizardController.__init__(self, iface, db, wizard_config, product_factory)
+        AbstractWizardController.__init__(self, iface, db, wizard_config, product_factory, observer)
         self.__manual_feature_creator = None
 
         self._initialize()
-
-    def create_feature(self, args: CreateFeatureArgs):
-        self._save_settings()
-        if args.layer_creation_mode == EnumLayerCreationMode.REFACTOR_FIELDS:
-            self.create_feature_from_refactor_fields()
-        else:
-            self._manual_feature_creator.create()
 
     # TODO OK
     def exec_form_advanced(self, args: ExecFormAdvancedArgs):
@@ -91,11 +83,6 @@ class RrrController(AbstractWizardController):
         wizard_page2 = RrrSelectorView(self, self._get_view_config())
         self.__view = SpatialSourceView(self, self._get_view_config(), wizard_page2)
         return self.__view
-
-    def close_wizard(self):
-        self.dispose()
-        self.update_wizard_is_open_flag.emit(False)
-        self.__view.close()
 
     # events notified from VIEW
     def next_clicked(self):

@@ -26,76 +26,35 @@
  *                                                                         *
  ***************************************************************************/
  """
-from qgis.PyQt.QtCore import (QObject,
-                             pyqtSignal)
-
-from asistente_ladm_col import Logger
 from asistente_ladm_col.config.enums import EnumRelatableLayers
-from asistente_ladm_col.config.general_config import WIZARD_LAYERS
-from asistente_ladm_col.gui.wizards.model.common.args.model_args import ExecFormAdvancedArgs
-from asistente_ladm_col.gui.wizards.model.common.select_features_by_expression_dialog_wrapper import \
-    SelectFeatureByExpressionDialogWrapper
-from asistente_ladm_col.gui.wizards.model.common.select_features_on_map_wrapper import SelectFeaturesOnMapWrapper
-from asistente_ladm_col.gui.wizards.model.single_spatial_wizard_model import SingleSpatialWizardModel
+from asistente_ladm_col.gui.wizards.model.common.args.model_args import (ExecFormAdvancedArgs,
+                                                                         FinishFeatureCreationArgs)
 
 
-class ExtAddressModel(SingleSpatialWizardModel):
-    features_selected = pyqtSignal()
-    map_tool_changed = pyqtSignal()
-    feature_selection_by_expression_changed = pyqtSignal()
+class ExtAddressManager:
 
-    def __init__(self, iface, db, wiz_config):
-        super().__init__(iface, db, wiz_config)
+    def __init__(self, db, layers, editing_layer, iface):   # , app, logger):
+        self.__db = db
+        self.__layers = layers
 
-        self.__association_failed_observers = list()
+        self.__editing_layer = editing_layer
 
-        self.__relatable_layers = dict()
-
-        self._layers = wiz_config[WIZARD_LAYERS]
         self.__iface = iface
 
-        self._logger = Logger()
-
-        self.__feature_selector_on_map = SelectFeaturesOnMapWrapper(self.__iface, self._logger)
-        self.__feature_selector_on_map.features_selected.connect(self.features_selected)
-        self.__feature_selector_on_map.map_tool_changed.connect(self.map_tool_changed)
-
-        self.__feature_selector_by_expression = SelectFeatureByExpressionDialogWrapper(self.__iface)
-        self.__feature_selector_by_expression.feature_selection_by_expression_changed.connect(
-            self.feature_selection_by_expression_changed)
-
-        self.type_of_selected_layer_to_associate = None
+        self.__relatable_layers = dict()
         self.__init_selectable_layer_by_type()
+        self.type_of_selected_layer_to_associate = None
 
-    def __init_selectable_layer_by_type(self):
-        # TODO Change the name
-        self.__relatable_layers[EnumRelatableLayers.PLOT] = self._layers[self._db.names.LC_PLOT_T]
-        self.__relatable_layers[EnumRelatableLayers.BUILDING] = self._layers[self._db.names.LC_BUILDING_T]
-        self.__relatable_layers[EnumRelatableLayers.BUILDING_UNIT] = self._layers[self._db.names.LC_BUILDING_UNIT_T]
+    def finish_feature_creation(self, layerId, features):
+        fid = features[0].id()
+        is_valid = False
+        feature_tid = None
 
-    def get_active_layer_type(self):
-        for item_type in self.__relatable_layers:
-            if self.__relatable_layers[item_type] == self.__iface.activeLayer():
-                return item_type
+        if self.__editing_layer.getFeature(fid).isValid():
+            is_valid = True
+            feature_tid = self.__editing_layer.getFeature(fid)[self.__db.names.T_ID_F]
 
-        return None
-
-    def select_features_on_map(self):
-        # TODO is this execution right?
-        self._layer_remove_manager.reconnect_signals()
-        # TODO Exception if layer does not exist
-        layer = self.__relatable_layers[self.type_of_selected_layer_to_associate]
-        self.__feature_selector_on_map.select_features_on_map(layer)
-
-    def select_features_by_expression(self):
-        # TODO Check if layer exists in self._layers
-        layer = self.__relatable_layers[self.type_of_selected_layer_to_associate]
-        self.__feature_selector_by_expression.select_features_by_expression(layer)
-
-    def dispose(self):
-        self.__feature_selector_on_map.init_map_tool()
-        super().dispose()
-        self.__feature_selector_on_map.disconnect_signals()
+        return FinishFeatureCreationArgs(is_valid, feature_tid)
 
     def exec_form_advanced(self, args: ExecFormAdvancedArgs):
         layer = args.layer
@@ -112,15 +71,15 @@ class ExtAddressModel(SingleSpatialWizardModel):
             selected_layer_to_pick_features =\
                 self.__relatable_layers[self.type_of_selected_layer_to_associate]
 
-            feature_id = selected_layer_to_pick_features.selectedFeatures()[0][self._db.names.T_ID_F]
+            feature_id = selected_layer_to_pick_features.selectedFeatures()[0][self.__db.names.T_ID_F]
             fid = feature.id()
 
             if self.type_of_selected_layer_to_associate == EnumRelatableLayers.PLOT:
-                spatial_unit_field_idx = layer.getFeature(fid).fieldNameIndex(self._db.names.EXT_ADDRESS_S_LC_PLOT_F)
+                spatial_unit_field_idx = layer.getFeature(fid).fieldNameIndex(self.__db.names.EXT_ADDRESS_S_LC_PLOT_F)
             elif self.type_of_selected_layer_to_associate == EnumRelatableLayers.BUILDING:
-                spatial_unit_field_idx = layer.getFeature(fid).fieldNameIndex(self._db.names.EXT_ADDRESS_S_LC_BUILDING_F)
+                spatial_unit_field_idx = layer.getFeature(fid).fieldNameIndex(self.__db.names.EXT_ADDRESS_S_LC_BUILDING_F)
             elif self.type_of_selected_layer_to_associate == EnumRelatableLayers.BUILDING_UNIT:
-                spatial_unit_field_idx = layer.getFeature(fid).fieldNameIndex(self._db.names.EXT_ADDRESS_S_LC_BUILDING_UNIT_F)
+                spatial_unit_field_idx = layer.getFeature(fid).fieldNameIndex(self.__db.names.EXT_ADDRESS_S_LC_BUILDING_UNIT_F)
 
         if spatial_unit_field_idx:
             # assign the relation with the spatial unit
@@ -129,7 +88,21 @@ class ExtAddressModel(SingleSpatialWizardModel):
             # if the field of the spatial unit does not exist
             layer.rollBack()
 
-            self.__notify_association_failed()
+            # TODO Association failed
+            # self.__notify_association_failed()
+
+    def __init_selectable_layer_by_type(self):
+        # TODO Change the name
+        self.__relatable_layers[EnumRelatableLayers.PLOT] = self.__layers[self.__db.names.LC_PLOT_T]
+        self.__relatable_layers[EnumRelatableLayers.BUILDING] = self.__layers[self.__db.names.LC_BUILDING_T]
+        self.__relatable_layers[EnumRelatableLayers.BUILDING_UNIT] = self.__layers[self.__db.names.LC_BUILDING_UNIT_T]
+
+    def get_active_layer_type(self):
+        for item_type in self.__relatable_layers:
+            if self.__relatable_layers[item_type] == self.__iface.activeLayer():
+                return item_type
+
+        return None
 
     def get_number_of_selected_features(self):
         feature_count = dict()
@@ -139,13 +112,5 @@ class ExtAddressModel(SingleSpatialWizardModel):
 
         return feature_count
 
-    #       OBSERVERS
-    def register_association_failed_observer(self, observer):
-        self.__association_failed_observers.append(observer)
-
-    def remove_association_failed_observer(self, observer):
-        self.__association_failed_observers.remove(observer)
-
-    def __notify_association_failed(self):
-        for item in self.__association_failed_observers:
-           item.association_failed()
+    def get_layer_by_type(self, layer_type: EnumRelatableLayers):
+        return self.__relatable_layers[layer_type] if layer_type in self.__relatable_layers else None

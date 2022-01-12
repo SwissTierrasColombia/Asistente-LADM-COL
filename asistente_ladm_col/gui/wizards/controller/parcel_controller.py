@@ -26,8 +26,6 @@
  *                                                                         *
  ***************************************************************************/
  """
-from asistente_ladm_col.config.enums import EnumLayerCreationMode
-from asistente_ladm_col.gui.wizards.controller.controller_args import CreateFeatureArgs
 from asistente_ladm_col.gui.wizards.model.common.args.model_args import ExecFormAdvancedArgs
 from asistente_ladm_col.gui.wizards.model.common.manual_feature_creator import AlphaFeatureCreator
 from asistente_ladm_col.gui.wizards.model.common.select_features_by_expression_dialog_wrapper import \
@@ -64,16 +62,11 @@ class ParcelProductFactory(ProductFactory):
 
 class ParcelController(AbstractWizardController):
 
-    def __init__(self, iface, db, wizard_config):
-        AbstractWizardController.__init__(self, iface, db, wizard_config, ParcelProductFactory())
+    def __init__(self, iface, db, wizard_config, observer):
+        AbstractWizardController.__init__(self, iface, db, wizard_config, ParcelProductFactory(), observer)
         self.__manual_feature_creator = None
 
         self._initialize()
-
-    def close_wizard(self):
-        self.dispose()
-        self.update_wizard_is_open_flag.emit(False)
-        self.__view.close()
 
     def _create_feature_selector_by_expression(self):
         self.__feature_selector_by_expression = SelectFeatureByExpressionDialogWrapper(self._iface)
@@ -83,14 +76,6 @@ class ParcelController(AbstractWizardController):
     def exec_form_advanced(self, args: ExecFormAdvancedArgs):
         # TODO
         self._feature_manager.exec_form_advanced(args)
-
-    # method called from the view
-    def create_feature(self, args: CreateFeatureArgs):
-        self._save_settings()
-        if args.layer_creation_mode == EnumLayerCreationMode.REFACTOR_FIELDS:
-            self.create_feature_from_refactor_fields()
-        else:
-            self._manual_feature_creator.create()
 
     def _create_view(self):
         self.__view = ParcelView(self, self._get_view_config())
@@ -111,7 +96,7 @@ class ParcelController(AbstractWizardController):
             self._layer_remove_manager.reconnect_signals()
             self._feature_selector_on_map.select_features_on_map(layer)
         elif args.feature_selection_type == EnumFeatureSelectionType.SELECTION_BY_EXPRESSION:
-            self.__feature_selector_by_expression.select_features_by_expression(layer)
+            self._feature_selector_by_expression.select_features_by_expression(layer)
 
     def parcel_type_changed(self, parcel_type_ili_code):
         self._feature_manager.parcel_type_ili_code = parcel_type_ili_code

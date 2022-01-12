@@ -28,9 +28,10 @@ from asistente_ladm_col import Logger
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.general_config import (WIZARD_HELP_PAGES,
                                                       WIZARD_HELP2)
-from asistente_ladm_col.config.enums import EnumLayerCreationMode, EnumFeatureSelectionType
-from asistente_ladm_col.gui.wizards.controller.common.abstract_wizard_controller import ProductFactory, \
-    AbstractWizardController
+from asistente_ladm_col.config.enums import (EnumLayerCreationMode,
+                                             EnumFeatureSelectionType)
+from asistente_ladm_col.gui.wizards.controller.common.abstract_wizard_controller import (ProductFactory,
+                                                                                         AbstractWizardController)
 from asistente_ladm_col.gui.wizards.controller.common.wizard_messages_manager import WizardMessagesManager
 from asistente_ladm_col.gui.wizards.controller.controller_args import CreateFeatureArgs
 from asistente_ladm_col.gui.wizards.model.common.args.model_args import ExecFormAdvancedArgs
@@ -70,9 +71,9 @@ class PlotProductFactory(ProductFactory):
 
 
 class PlotController(AbstractWizardController):
-    def __init__(self, iface, db, wizard_config):
+    def __init__(self, iface, db, wizard_config, observer):
         product_factory = PlotProductFactory(iface, AppInterface(), Logger())
-        AbstractWizardController.__init__(self, iface, db, wizard_config, product_factory)
+        AbstractWizardController.__init__(self, iface, db, wizard_config, product_factory, observer)
         self.__manual_feature_creator = None
 
         self._initialize()
@@ -109,11 +110,6 @@ class PlotController(AbstractWizardController):
         wizard_page2 = PlotSelectorView(self, self._wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP2])
         self.__view = SpatialSourceView(self, self._get_view_config(), wizard_page2)
         return self.__view
-
-    def close_wizard(self):
-        self.dispose()
-        self.update_wizard_is_open_flag.emit(False)
-        self.__view.close()
 
     # events notified from VIEW
     def next_clicked(self):

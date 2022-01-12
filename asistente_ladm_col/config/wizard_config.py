@@ -32,18 +32,15 @@ from asistente_ladm_col.config.general_config import (WIZARD_FEATURE_NAME,
                                                       WIZARD_QSETTINGS_PATH)
 
 from asistente_ladm_col.config.help_strings import HelpStrings
+from asistente_ladm_col.gui.wizards.controller.ext_address_controller import ExtAddressController
 from asistente_ladm_col.gui.wizards.controller.parcel_controller import ParcelController
 from asistente_ladm_col.gui.wizards.controller.plot_controller import PlotController
 from asistente_ladm_col.gui.wizards.controller.right_of_way_controller import RightOfWayController
-from asistente_ladm_col.gui.wizards.controller.ext_address_controller import ExtAddressController
 
 from asistente_ladm_col.gui.wizards.controller.rrr_controller import RrrController
-from asistente_ladm_col.gui.wizards.controller.single_spatial_wizard_controller import SingleSpatialWizardController
+from asistente_ladm_col.gui.wizards.controller.single_spatial_wizard_controller import SingleSpatialController
 from asistente_ladm_col.gui.wizards.controller.single_wizard_controller import SingleController
 from asistente_ladm_col.gui.wizards.controller.spatial_source_controller import SpatialSourceController
-from asistente_ladm_col.gui.wizards.model.right_of_way_model import RightOfWayModel
-from asistente_ladm_col.gui.wizards.model.ext_address_model import ExtAddressModel
-from asistente_ladm_col.gui.wizards.model.single_spatial_wizard_model import SingleSpatialWizardModel
 
 help_strings = HelpStrings()
 
@@ -61,47 +58,43 @@ class WizardFactory:
         wizard_result = None
 
         if wizard_name == WIZARD_CREATE_COL_PARTY_CADASTRAL or wizard_name == WIZARD_CREATE_ADMINISTRATIVE_SOURCE_SURVEY:
-            wizard_result = SingleController(iface, db, wizard_config)
+            wizard_result = SingleController(iface, db, wizard_config, observer)
 
         elif wizard_name == WIZARD_CREATE_BOUNDARY_SURVEY or wizard_name == WIZARD_CREATE_BUILDING_SURVEY or \
                 wizard_name == WIZARD_CREATE_BUILDING_UNIT_SURVEY:
-            model = SingleSpatialWizardModel(iface, db, wizard_config)
-            wizard_result = SingleSpatialWizardController(model, iface, db, wizard_config)
 
-            self.__connect_spatial_signals(wizard_result, model, observer)
+            wizard_result = SingleSpatialController(iface, db, wizard_config, observer)
 
         elif wizard_name == WIZARD_CREATE_RIGHT_OF_WAY_SURVEY:
-            model = RightOfWayModel(iface, db, wizard_config)
-            wizard_result = RightOfWayController(model, iface, db, wizard_config)
-            self.__connect_spatial_signals(wizard_result, model, observer)
+            wizard_result = RightOfWayController(iface, db, wizard_config, observer)
+            self.__connect_spatial_signals(wizard_result, observer)
 
         elif wizard_name == WIZARD_CREATE_SPATIAL_SOURCE_SURVEY:
-            wizard_result = SpatialSourceController(iface, db, wizard_config)
+            wizard_result = SpatialSourceController(iface, db, wizard_config, observer)
 
         elif wizard_name == WIZARD_CREATE_RIGHT_SURVEY or wizard_name == WIZARD_CREATE_RESTRICTION_SURVEY:
-            wizard_result = RrrController(iface, db, wizard_config)
+            wizard_result = RrrController(iface, db, wizard_config, observer)
 
         elif wizard_name == WIZARD_CREATE_EXT_ADDRESS_SURVEY:
-            model = ExtAddressModel(iface, db, wizard_config)
-            wizard_result = ExtAddressController(model, iface, db, wizard_config)
-            self.__connect_spatial_signals(wizard_result, model, observer)
+            wizard_result = ExtAddressController(iface, db, wizard_config, observer)
 
         elif wizard_name == WIZARD_CREATE_PLOT_SURVEY:
-            wizard_result = PlotController(iface, db, wizard_config)
+            wizard_result = PlotController(iface, db, wizard_config, observer)
 
         elif wizard_name == WIZARD_CREATE_PARCEL_SURVEY:
-            wizard_result = ParcelController(iface, db, wizard_config)
+            wizard_result = ParcelController(iface, db, wizard_config, observer)
 
         self.__connect_signals(wizard_result, observer)
 
         return wizard_result
 
     @staticmethod
-    def __connect_spatial_signals(wizard, model, observer):
+    def __connect_spatial_signals(wizard, observer):
         # Required signal for wizard geometry creating
         wizard.enable_save_geometry_button.connect(
             observer.set_enable_finalize_geometry_creation_action)
-        observer.wiz_geometry_creation_finished.connect(model.save_created_geometry)
+
+        observer.wiz_geometry_creation_finished.connect(wizard.save_created_geometry)
 
     @staticmethod
     def __connect_signals(wizard, observer):

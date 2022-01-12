@@ -26,15 +26,13 @@
  *                                                                         *
  ***************************************************************************/
  """
-from asistente_ladm_col.config.enums import EnumLayerCreationMode
-from asistente_ladm_col.gui.wizards.controller.controller_args import CreateFeatureArgs
 from asistente_ladm_col.gui.wizards.model.common.args.model_args import ExecFormAdvancedArgs
 from asistente_ladm_col.gui.wizards.model.common.manual_feature_creator import AlphaFeatureCreator
 from asistente_ladm_col.gui.wizards.model.common.select_features_by_expression_dialog_wrapper import \
     NullSelectorByExpression
 from asistente_ladm_col.gui.wizards.model.common.select_features_on_map_wrapper import NullFeatureSelectorOnMap
-from asistente_ladm_col.gui.wizards.controller.common.abstract_wizard_controller import AbstractWizardController, \
-    ProductFactory
+from asistente_ladm_col.gui.wizards.controller.common.abstract_wizard_controller import (AbstractWizardController,
+                                                                                         ProductFactory)
 from asistente_ladm_col.gui.wizards.controller.common.wizard_messages_manager import WizardMessagesManager
 from asistente_ladm_col.gui.wizards.model.single_wizard_model import SingleManager
 from asistente_ladm_col.gui.wizards.view.single_wizard_view import SingleWizardView
@@ -60,18 +58,11 @@ class SingleProductFactory(ProductFactory):
 
 class SingleController(AbstractWizardController):
 
-    def __init__(self, iface, db, wizard_config):
-        AbstractWizardController.__init__(self, iface, db, wizard_config, SingleProductFactory())
+    def __init__(self, iface, db, wizard_config, observer):
+        AbstractWizardController.__init__(self, iface, db, wizard_config, SingleProductFactory(), observer)
         self.__manual_feature_creator = None
 
         self._initialize()
-
-    def create_feature(self, args: CreateFeatureArgs):
-        self._save_settings()
-        if args.layer_creation_mode == EnumLayerCreationMode.REFACTOR_FIELDS:
-            self.create_feature_from_refactor_fields()
-        else:
-            self._manual_feature_creator.create()
 
     # ok
     def exec_form_advanced(self, args: ExecFormAdvancedArgs):
@@ -89,9 +80,3 @@ class SingleController(AbstractWizardController):
     def _create_view(self):
         self.__view = SingleWizardView(self, self._get_view_config())
         return self.__view
-
-    # TODO se puede implementar como un default
-    def close_wizard(self):
-        self.dispose()
-        self.update_wizard_is_open_flag.emit(False)
-        self.__view.close()

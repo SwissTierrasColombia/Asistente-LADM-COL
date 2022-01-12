@@ -21,6 +21,11 @@ from qgis.core import QgsVectorLayer
 from asistente_ladm_col.config.enums import EnumDigitizedFeatureStatus
 
 
+class MapToolChangedArgs:
+    def __init__(self, change_map_tool=False):
+        self.change_map_tool = change_map_tool
+
+
 class FinishFeatureCreationArgs:
     def __init__(self, is_valid, feature_tid):
         self.is_valid = is_valid

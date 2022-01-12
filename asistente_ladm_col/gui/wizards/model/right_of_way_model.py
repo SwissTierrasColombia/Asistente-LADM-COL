@@ -32,70 +32,45 @@ from qgis.core import (QgsProject,
                        QgsVectorLayerUtils,
                        QgsVectorLayer)
 
-from asistente_ladm_col.config.general_config import (WIZARD_EDITING_LAYER_NAME,
-                                                      WIZARD_LAYERS)
 from asistente_ladm_col.config.translation_strings import (TranslatableConfigStrings,
                                                            RIGHT_OF_WAY_LINE_LAYER)
-from asistente_ladm_col.gui.wizards.model.common.args.model_args import ValidFeaturesDigitizedArgs
-from asistente_ladm_col.gui.wizards.model.common.layer_remove_signals_manager import LayerRemovedSignalsManager
-from asistente_ladm_col.gui.wizards.model.single_spatial_wizard_model import SingleSpatialWizardModel
+from asistente_ladm_col.gui.wizards.model.common.args.model_args import FinishFeatureCreationArgs
 from asistente_ladm_col.utils.crs_utils import get_crs_authid
 
 
-class RightOfWayModel(SingleSpatialWizardModel):
+class RightOfWayManager:
 
-    def __init__(self, iface, db, wiz_config):
-        super().__init__(iface, db, wiz_config)
-        self.__wizard_config = wiz_config
-        self.__editing_layer_name = self.__wizard_config[WIZARD_EDITING_LAYER_NAME]
-        self.__editing_layer = self.__wizard_config[WIZARD_LAYERS][self.__editing_layer_name]
-
-        self.__temporal_layer = {"memory_line_layer": None}
+    def __init__(self, db, layers, editing_layer):
+        self._db = db
+        self.__layers = layers
         self.__translatable_config_strings = TranslatableConfigStrings()
-
-        self.digitizing_polygon = True
         self.width_line = 1.0
-        self.__layer_removed_signal_manager = None
 
-    def create_feature_manually(self):
-        if not self.digitizing_polygon:
-            self.__add_memory_line_layer()
-        else:
-            self._manual_feature_creator.editing_layer = None
+        self._editing_layer = editing_layer
+        self.app = None
 
-        super().create_feature_manually()
+    def finish_feature_creation(self, layerId, features):
+        fid = features[0].id()
+        is_valid = False
+        feature_tid = None
 
-    def _valid_features_digitized_invoker(self, args: ValidFeaturesDigitizedArgs):
-        super()._valid_features_digitized_invoker(args)
+        if self._editing_layer.getFeature(fid).isValid():
+            is_valid = True
+            feature_tid = self._editing_layer.getFeature(fid)[self._db.names.T_ID_F]
 
-        if not self.digitizing_polygon:
-            layer = args.layer
+        return FinishFeatureCreationArgs(is_valid, feature_tid)
 
-            # Get temporal right of way geometry
-            feature = self.__get_feature_with_buffer_right_of_way(layer)
-            layer.commitChanges()
+    def get_memory_line_layer(self, base_layer):
+        translated_strings = self.__translatable_config_strings.get_translatable_config_strings()
+        # Add Memory line layer
+        temporal_layer = QgsVectorLayer(
+            "MultiLineString?crs={}".format(get_crs_authid(base_layer.sourceCrs())),
+            translated_strings[RIGHT_OF_WAY_LINE_LAYER], "memory")
 
-            # Change target layer (temporal by db layer)
-            layer = self.__editing_layer
+        return temporal_layer
 
-            # Add temporal geometry create
-            if not layer.isEditable():
-                layer.startEditing()
-
-            self.app.core.suppress_form(layer, True)
-            args.feature = feature
-            layer.addFeature(feature)
-
-    def dispose(self):
-        super().dispose()
-        if self.__layer_removed_signal_manager:
-            self.__layer_removed_signal_manager.disconnect_signals()
-        if self.__temporal_layer["memory_line_layer"]:
-            self.rollback_layer(self.__temporal_layer["memory_line_layer"])
-            QgsProject.instance().removeMapLayer(self.__temporal_layer["memory_line_layer"])
-
-    def __get_feature_with_buffer_right_of_way(self, layer):
-        params = {'INPUT': layer,
+    def get_feature_with_buffer_right_of_way(self, tmp_layer, layer):
+        params = {'INPUT': tmp_layer,
                   'DISTANCE': self.width_line,
                   'SEGMENTS': 5,
                   'END_CAP_STYLE': 1,  # Flat
@@ -105,21 +80,16 @@ class RightOfWayModel(SingleSpatialWizardModel):
                   'OUTPUT': 'memory:'}
         buffered_right_of_way_layer = processing.run("native:buffer", params)['OUTPUT']
         buffer_geometry = buffered_right_of_way_layer.getFeature(1).geometry()
-        feature = QgsVectorLayerUtils().createFeature(self.__editing_layer, buffer_geometry)
+        feature = QgsVectorLayerUtils().createFeature(layer, buffer_geometry)
+        tmp_layer.commitChanges()
+
         return feature
 
-    def __add_memory_line_layer(self):
-        translated_strings = self.__translatable_config_strings.get_translatable_config_strings()
-        # Add Memory line layer
-        temporal_layer = QgsVectorLayer(
-            "MultiLineString?crs={}".format(get_crs_authid(self.__editing_layer.sourceCrs())),
-            translated_strings[RIGHT_OF_WAY_LINE_LAYER], "memory")
-        QgsProject.instance().addMapLayer(temporal_layer, True)
+    def add_tmp_feature_to_layer(self, layer, tmp_feature):
+        # Add temporal geometry create
+        if not layer.isEditable():
+            layer.startEditing()
 
-        self.__temporal_layer["memory_line_layer"] = temporal_layer
-        self.__layer_removed_signal_manager = LayerRemovedSignalsManager(self.__temporal_layer)
-        self.__layer_removed_signal_manager.layer_removed.connect(self.layer_removed)
+        self.app.core.suppress_form(layer, True)
 
-        self.__layer_removed_signal_manager.connect_signals()
-
-        self._manual_feature_creator.editing_layer = temporal_layer
+        layer.addFeature(tmp_feature)
