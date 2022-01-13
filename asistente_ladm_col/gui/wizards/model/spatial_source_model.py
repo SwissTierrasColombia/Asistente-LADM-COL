@@ -20,7 +20,7 @@
  """
 from asistente_ladm_col.config.enums import EnumRelatableLayers
 from asistente_ladm_col.gui.wizards.model.common.args.model_args import SpacialSourceFinishFeatureCreationArgs
-from asistente_ladm_col.gui.wizards.model.common.association_utils import AssociationUtils
+from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 
 
 class SpatialSourceCreatorManager:
@@ -62,30 +62,30 @@ class SpatialSourceCreatorManager:
 
         feature_tid = feature[self.names.T_ID_F]
 
-        feature_ids = AssociationUtils.get_list_of_features_ids(self.__layers[self.names.LC_PLOT_T], self.names.T_ID_F)
-        new_features = AssociationUtils.save_relations(self.__layers[self.names.COL_UE_SOURCE_T],
+        feature_ids = LADMData.get_list_of_features_ids(self.__layers[self.names.LC_PLOT_T], self.names.T_ID_F)
+        new_features = LADMData.save_relations(self.__layers[self.names.COL_UE_SOURCE_T],
                                                        self.names.COL_UE_SOURCE_T_LC_PLOT_F, feature_ids,
                                                        self.names.COL_UE_SOURCE_T_SOURCE_F, feature_tid)
         # all_new_features.extend(new_features)
-        feature_ids = AssociationUtils.get_list_of_features_ids(self.__layers[self.names.LC_BOUNDARY_T], self.names.T_ID_F)
+        feature_ids = LADMData.get_list_of_features_ids(self.__layers[self.names.LC_BOUNDARY_T], self.names.T_ID_F)
 
-        new_features = AssociationUtils.save_relations(self.__layers[self.names.COL_CCL_SOURCE_T],
+        new_features = LADMData.save_relations(self.__layers[self.names.COL_CCL_SOURCE_T],
                                                        self.names.COL_CCL_SOURCE_T_BOUNDARY_F, feature_ids,
                                                        self.names.COL_CCL_SOURCE_T_SOURCE_F, feature_tid)
 
-        feature_ids = AssociationUtils.get_list_of_features_ids(self.__layers[self.names.LC_BOUNDARY_POINT_T], self.names.T_ID_F)
-        new_features = AssociationUtils.save_relations(self.__layers[self.names.COL_POINT_SOURCE_T],
+        feature_ids = LADMData.get_list_of_features_ids(self.__layers[self.names.LC_BOUNDARY_POINT_T], self.names.T_ID_F)
+        new_features = LADMData.save_relations(self.__layers[self.names.COL_POINT_SOURCE_T],
                                                        self.names.COL_POINT_SOURCE_T_LC_BOUNDARY_POINT_F, feature_ids,
                                                        self.names.COL_POINT_SOURCE_T_SOURCE_F, feature_tid)
 
-        feature_ids = AssociationUtils.get_list_of_features_ids(self.__layers[self.names.LC_SURVEY_POINT_T], self.names.T_ID_F)
-        new_features = AssociationUtils.save_relations(self.__layers[self.names.COL_POINT_SOURCE_T],
+        feature_ids = LADMData.get_list_of_features_ids(self.__layers[self.names.LC_SURVEY_POINT_T], self.names.T_ID_F)
+        new_features = LADMData.save_relations(self.__layers[self.names.COL_POINT_SOURCE_T],
                                                        self.names.COL_POINT_SOURCE_T_LC_SURVEY_POINT_F, feature_ids,
                                                        self.names.COL_POINT_SOURCE_T_SOURCE_F, feature_tid)
 
-        feature_ids = AssociationUtils.get_list_of_features_ids(self.__layers[self.names.LC_CONTROL_POINT_T], self.names.T_ID_F)
+        feature_ids = LADMData.get_list_of_features_ids(self.__layers[self.names.LC_CONTROL_POINT_T], self.names.T_ID_F)
 
-        new_features = AssociationUtils.save_relations(self.__layers[self.names.COL_POINT_SOURCE_T],
+        new_features = LADMData.save_relations(self.__layers[self.names.COL_POINT_SOURCE_T],
                                                        self.names.COL_POINT_SOURCE_T_LC_CONTROL_POINT_F, feature_ids,
                                                        self.names.COL_POINT_SOURCE_T_SOURCE_F, feature_tid)
 

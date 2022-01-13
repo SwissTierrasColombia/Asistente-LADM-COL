@@ -82,7 +82,7 @@ class ExtAddressController(AbstractSpatialWizardController):
     def exec_form_advanced(self, args: ExecFormAdvancedArgs):
         self._feature_manager.exec_form_advanced(args)
 
-    def features_selected(self):
+    def selected_features_on_map_changed(self):
         self.__view.set_visible(True)
         self.__show_number_of_selected_features()
         self.__enable_finish_button()

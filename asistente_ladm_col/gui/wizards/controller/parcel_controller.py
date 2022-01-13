@@ -115,7 +115,7 @@ class ParcelController(AbstractWizardController):
         self.__enable_finish_button()
 
     # feature selector on map
-    def features_selected(self):
+    def selected_features_on_map_changed(self):
         self.__view.set_visible(True)
         self.__update_spatial_units_status()
 

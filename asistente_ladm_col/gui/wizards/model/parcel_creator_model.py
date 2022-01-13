@@ -31,7 +31,7 @@ from asistente_ladm_col.config.enums import (EnumRelatableLayers,
 from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.gui.wizards.model.common.args.model_args import (ExecFormAdvancedArgs,
                                                                          ParcelFinishFeatureCreationArgs)
-from asistente_ladm_col.gui.wizards.model.common.association_utils import AssociationUtils
+from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 
 
 class ParcelCreatorManager:
@@ -95,10 +95,10 @@ class ParcelCreatorManager:
             add_features = True
 
         if add_features:
-            plot_ids = AssociationUtils.get_list_of_features_ids(self.__layers[self.__db.names.LC_PLOT_T],
+            plot_ids = LADMData.get_list_of_features_ids(self.__layers[self.__db.names.LC_PLOT_T],
                                                                  self.__db.names.T_ID_F)
 
-        new_features = AssociationUtils.save_relations(self.__layers[self.__db.names.COL_UE_BAUNIT_T],
+        new_features = LADMData.save_relations(self.__layers[self.__db.names.COL_UE_BAUNIT_T],
                                                        self.__db.names.COL_UE_BAUNIT_T_LC_PLOT_F, plot_ids,
                                                        self.__db.names.COL_UE_BAUNIT_T_PARCEL_F, feature_tid)
 
@@ -110,10 +110,10 @@ class ParcelCreatorManager:
             add_features = True
 
         if add_features:
-            building_ids = AssociationUtils.get_list_of_features_ids(self.__layers[self.__db.names.LC_BUILDING_T],
+            building_ids = LADMData.get_list_of_features_ids(self.__layers[self.__db.names.LC_BUILDING_T],
                                                                      self.__db.names.T_ID_F)
 
-        new_features = AssociationUtils.save_relations(self.__layers[self.__db.names.COL_UE_BAUNIT_T],
+        new_features = LADMData.save_relations(self.__layers[self.__db.names.COL_UE_BAUNIT_T],
                                                        self.__db.names.COL_UE_BAUNIT_T_LC_BUILDING_F, building_ids,
                                                        self.__db.names.COL_UE_BAUNIT_T_PARCEL_F, feature_tid)
 
@@ -125,11 +125,11 @@ class ParcelCreatorManager:
             add_features = True
 
         if add_features:
-            building_unit_ids = AssociationUtils.get_list_of_features_ids(
+            building_unit_ids = LADMData.get_list_of_features_ids(
                 self.__layers[self.__db.names.LC_BUILDING_UNIT_T],
                 self.__db.names.T_ID_F)
 
-        new_features = AssociationUtils.save_relations(self.__layers[self.__db.names.COL_UE_BAUNIT_T],
+        new_features = LADMData.save_relations(self.__layers[self.__db.names.COL_UE_BAUNIT_T],
                                                        self.__db.names.COL_UE_BAUNIT_T_LC_BUILDING_UNIT_F,
                                                        building_unit_ids, self.__db.names.COL_UE_BAUNIT_T_PARCEL_F,
                                                        feature_tid)

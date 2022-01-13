@@ -95,7 +95,7 @@ class PlotController(AbstractWizardController):
             elif edit_feature_result == EnumPlotCreationResult.CREATED:
                 self.close_wizard()
 
-    def features_selected(self):
+    def selected_features_on_map_changed(self):
         self.__view.set_visible(True)
         self.__update_selected_feature_info_view()
 

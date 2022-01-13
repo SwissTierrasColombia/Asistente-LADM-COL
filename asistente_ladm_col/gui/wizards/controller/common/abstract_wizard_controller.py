@@ -116,7 +116,7 @@ class AbstractWizardController(QObject, metaclass=AbstractQObjectMeta):
         self._feature_selector_on_map = \
             self.__product_factory.create_feature_selector_on_map(self._iface, self._logger)
 
-        self._feature_selector_on_map.features_selected.connect(self.features_selected)
+        self._feature_selector_on_map.features_selected.connect(self.selected_features_on_map_changed)
         self._feature_selector_on_map.map_tool_changed.connect(self._map_tool_changed)
 
         # features selector by expression
@@ -151,7 +151,7 @@ class AbstractWizardController(QObject, metaclass=AbstractQObjectMeta):
         pass
 
     # called from selector on map
-    def features_selected(self):
+    def selected_features_on_map_changed(self):
         pass
 
     # called from feature selection by expression
