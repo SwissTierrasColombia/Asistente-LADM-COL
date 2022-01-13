@@ -89,13 +89,13 @@ class GeometryUtils(QObject):
                     single_polygon = None
 
                     if is_multipart:
-                        multi_polygon = polygon_geom.get()
+                        multi_polygon = polygon_geom.constGet()
                         for part in range(multi_polygon.numGeometries()):
                             if multi_polygon.ringCount(part) > 1:
                                 has_inner_rings = True
                                 break
                     else:
-                        single_polygon = polygon_geom.get()
+                        single_polygon = polygon_geom.constGet()
                         if single_polygon.numInteriorRings() > 0:
                             has_inner_rings = True
 
