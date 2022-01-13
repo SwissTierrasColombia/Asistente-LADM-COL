@@ -1,3 +1,5 @@
+from abc import abstractmethod
+
 from qgis.PyQt.QtCore import (QObject,
                               pyqtSignal,
                               QCoreApplication)
@@ -18,6 +20,10 @@ class AbstractSpatialWizardController(AbstractWizardController):
 
     def __init__(self, iface, db, wizard_config, product_factory: ProductFactory, observer):
         AbstractWizardController.__init__(self, iface, db, wizard_config, product_factory, observer)
+
+    @abstractmethod
+    def _create_view(self):
+        pass
 
     def _initialize(self):
         super()._initialize()

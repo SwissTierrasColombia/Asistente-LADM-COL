@@ -37,8 +37,7 @@ from asistente_ladm_col.gui.wizards.controller.common.abstract_spatial_wizard_co
 from asistente_ladm_col.gui.wizards.controller.common.abstract_wizard_controller import ProductFactory
 from asistente_ladm_col.gui.wizards.controller.common.wizard_messages_manager import WizardMessagesManager
 from asistente_ladm_col.gui.wizards.controller.controller_args import CreateFeatureArgs
-from asistente_ladm_col.gui.wizards.model.common.args.model_args import (ExecFormAdvancedArgs,
-                                                                         ValidFeaturesDigitizedArgs)
+from asistente_ladm_col.gui.wizards.model.common.args.model_args import ValidFeaturesDigitizedArgs
 from asistente_ladm_col.gui.wizards.model.common.layer_remove_signals_manager import LayerRemovedSignalsManager
 from asistente_ladm_col.gui.wizards.model.common.manual_feature_creator import SpatialFeatureCreator
 from asistente_ladm_col.gui.wizards.model.common.select_features_by_expression_dialog_wrapper import \
@@ -80,18 +79,6 @@ class RightOfWayController(AbstractSpatialWizardController):
         self._feature_manager.app = self._app
         self.digitizing_polygon = None
         self.__layer_removed_signal_manager = None
-
-    # OK
-    def exec_form_advanced(self, args: ExecFormAdvancedArgs):
-        pass
-
-    # NA
-    def features_selected(self):
-        pass
-
-    # NA
-    def feature_selection_by_expression_changed(self):
-        pass
 
     def _create_view(self):
         self.__view = RightOfWayView(self, self._get_view_config())

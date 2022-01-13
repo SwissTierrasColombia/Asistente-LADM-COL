@@ -147,17 +147,14 @@ class AbstractWizardController(QObject, metaclass=AbstractQObjectMeta):
         self._manual_feature_creator.create()
 
     # called from manual feature creator
-    @abstractmethod
     def exec_form_advanced(self, args: ExecFormAdvancedArgs):
         pass
 
     # called from selector on map
-    @abstractmethod
     def features_selected(self):
         pass
 
     # called from feature selection by expression
-    @abstractmethod
     def feature_selection_by_expression_changed(self):
         pass
 

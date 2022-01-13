@@ -66,8 +66,6 @@ class PlotCreatorManager:
         self.__app.core.active_snapping_all_layers()
 
         return self.create_plots_from_boundaries()
-        # else:
-        #   self._logger.warning_msg(__name__, QCoreApplication.translate("WizardTranslations", "First select boundaries!"))
 
     def create_plots_from_boundaries(self):
         selected_boundaries = self.__layers[self.names.LC_BOUNDARY_T].selectedFeatures()

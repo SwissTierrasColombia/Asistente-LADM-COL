@@ -34,7 +34,6 @@ from asistente_ladm_col.gui.wizards.controller.common.abstract_wizard_controller
                                                                                          AbstractWizardController)
 from asistente_ladm_col.gui.wizards.controller.common.wizard_messages_manager import WizardMessagesManager
 from asistente_ladm_col.gui.wizards.controller.controller_args import CreateFeatureArgs
-from asistente_ladm_col.gui.wizards.model.common.args.model_args import ExecFormAdvancedArgs
 from asistente_ladm_col.gui.wizards.model.common.manual_feature_creator import NullFeatureCreator
 from asistente_ladm_col.gui.wizards.model.common.select_features_by_expression_dialog_wrapper import \
     SelectFeatureByExpressionDialogWrapper
@@ -95,9 +94,6 @@ class PlotController(AbstractWizardController):
                 self.close_wizard()
             elif edit_feature_result == EnumPlotCreationResult.CREATED:
                 self.close_wizard()
-
-    def exec_form_advanced(self, args: ExecFormAdvancedArgs):
-        pass
 
     def features_selected(self):
         self.__view.set_visible(True)

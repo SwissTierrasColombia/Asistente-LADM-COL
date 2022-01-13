@@ -26,7 +26,6 @@
  *                                                                         *
  ***************************************************************************/
  """
-from asistente_ladm_col.gui.wizards.model.common.args.model_args import ExecFormAdvancedArgs
 from asistente_ladm_col.gui.wizards.model.common.manual_feature_creator import AlphaFeatureCreator
 from asistente_ladm_col.gui.wizards.model.common.select_features_by_expression_dialog_wrapper import \
     NullSelectorByExpression
@@ -63,18 +62,6 @@ class SingleController(AbstractWizardController):
         self.__manual_feature_creator = None
 
         self._initialize()
-
-    # ok
-    def exec_form_advanced(self, args: ExecFormAdvancedArgs):
-        pass
-
-    # NA
-    def features_selected(self):
-        pass
-
-    # NA
-    def feature_selection_by_expression_changed(self):
-        pass
 
     # Single wizard view
     def _create_view(self):

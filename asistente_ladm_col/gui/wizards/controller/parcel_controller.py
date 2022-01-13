@@ -74,7 +74,6 @@ class ParcelController(AbstractWizardController):
 
     # manual feature creator
     def exec_form_advanced(self, args: ExecFormAdvancedArgs):
-        # TODO
         self._feature_manager.exec_form_advanced(args)
 
     def _create_view(self):

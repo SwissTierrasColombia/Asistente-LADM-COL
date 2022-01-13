@@ -136,7 +136,6 @@ class ParcelCreatorManager:
 
         return ParcelFinishFeatureCreationArgs(True, feature_tid, 1, None)
 
-    # TODO rev2 PARCEL PARCEL PARCEL -------------------------------
     def get_type_parcel_conditions(self):
         result = dict()
 

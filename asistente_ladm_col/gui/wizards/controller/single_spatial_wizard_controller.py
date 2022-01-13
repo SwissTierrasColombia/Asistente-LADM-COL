@@ -30,7 +30,6 @@ from asistente_ladm_col.gui.wizards.controller.common.abstract_spatial_wizard_co
     AbstractSpatialWizardController
 from asistente_ladm_col.gui.wizards.controller.common.abstract_wizard_controller import ProductFactory
 from asistente_ladm_col.gui.wizards.controller.common.wizard_messages_manager import WizardMessagesManager
-from asistente_ladm_col.gui.wizards.model.common.args.model_args import ExecFormAdvancedArgs
 from asistente_ladm_col.gui.wizards.model.common.manual_feature_creator import SpatialFeatureCreator
 from asistente_ladm_col.gui.wizards.model.common.select_features_by_expression_dialog_wrapper import \
     NullSelectorByExpression
@@ -64,15 +63,6 @@ class SingleSpatialController(AbstractSpatialWizardController):
         self.__manual_feature_creator = None
 
         self._initialize()
-
-    def exec_form_advanced(self, args: ExecFormAdvancedArgs):
-        pass
-
-    def features_selected(self):
-        pass
-
-    def feature_selection_by_expression_changed(self):
-        pass
 
     def _create_view(self):
         return SingleWizardView(self, self._get_view_config())
