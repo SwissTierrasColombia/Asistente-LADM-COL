@@ -53,7 +53,6 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       PLUGIN_VERSION,
                                                       RELEASE_URL,
                                                       COLLECTED_DB_SOURCE,
-                                                      DEFAULT_USE_ROADS_VALUE,
                                                       WIZARD_CLASS,
                                                       WIZARD_TOOL_NAME,
                                                       WIZARD_TYPE,
@@ -83,7 +82,6 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       MAP_SWIPE_TOOL_EXACT_REQUIRED_VERSION,
                                                       MAP_SWIPE_TOOL_REQUIRED_VERSION_URL)
 from asistente_ladm_col.config.layer_tree_indicator_config import LayerTreeIndicatorConfig
-from asistente_ladm_col.config.quality_rule_config import QR_IGACR3006
 from asistente_ladm_col.config.task_steps_config import TaskStepsConfig
 from asistente_ladm_col.config.translation_strings import (TOOLBAR_FINALIZE_GEOMETRY_CREATION,
                                                            TOOLBAR_BUILD_BOUNDARY,
@@ -102,6 +100,7 @@ from asistente_ladm_col.core.app_core_interface import AppCoreInterface
 from asistente_ladm_col.core.app_processing_interface import AppProcessingInterface
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.gui.app_gui_interface import AppGUIInterface
+from asistente_ladm_col.gui.quality_rules.dockwidget_quality_rules import DockWidgetQualityRules
 from asistente_ladm_col.gui.supplies.wiz_supplies_etl import SuppliesETLWizard
 from asistente_ladm_col.gui.transitional_system.dlg_login_st import LoginSTDialog
 from asistente_ladm_col.gui.gui_builder.gui_builder import GUIBuilder
@@ -115,7 +114,6 @@ from asistente_ladm_col.gui.change_detection.dockwidget_change_detection import 
 from asistente_ladm_col.gui.dialogs.dlg_about import AboutDialog
 from asistente_ladm_col.gui.dialogs.dlg_import_from_excel import ImportFromExcelDialog
 from asistente_ladm_col.gui.dialogs.dlg_load_layers import LoadLayersDialog
-from asistente_ladm_col.gui.dialogs.dlg_log_excel import LogExcelDialog
 from asistente_ladm_col.gui.supplies.dlg_missing_cobol_supplies import MissingCobolSuppliesDialog
 from asistente_ladm_col.gui.supplies.dlg_missing_snc_supplies import MissingSncSuppliesDialog
 from asistente_ladm_col.gui.dialogs.dlg_log_quality import LogQualityDialog
@@ -545,7 +543,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._administrative_source_survey_action.triggered.connect(partial(self.show_wiz_administrative_source_cad, self._context_collected))
         self._spatial_source_survey_action.triggered.connect(partial(self.show_wiz_spatial_source_cad, self._context_collected))
         self._upload_source_files_survey_action.triggered.connect(partial(self.upload_source_files, self._context_collected))
-        self._quality_survey_action.triggered.connect(partial(self.show_dlg_quality, self._context_collected))
+        self._quality_survey_action.triggered.connect(partial(self.show_quality_rules_dock_widget, self._context_collected))
         self._fix_ladm_col_relations_action.triggered.connect(partial(self.call_fix_ladm_col_relations, self._context_collected))
 
         self.gui_builder.register_actions({
@@ -775,66 +773,6 @@ class AsistenteLADMCOLPlugin(QObject):
                                                QColor(255, 0, 0, 0),
                                                flashes=1,
                                                duration=duration)
-
-    def show_log_quality_message(self, msg, count):
-        self.progress_message_bar = self.iface.messageBar().createMessage("Asistente LADM-COL", msg)
-        self.log_quality_validation_progress = QProgressBar()
-        self.log_quality_validation_progress.setFixedWidth(80)
-        self.log_quality_total_rule_count = count
-        self.log_quality_validation_progress.setMaximum(self.log_quality_total_rule_count * 10)
-        self.progress_message_bar.layout().addWidget(self.log_quality_validation_progress)
-        self.iface.messageBar().pushWidget(self.progress_message_bar, Qgis.Info)
-        self.log_quality_validation_progress_count = 0
-        self.log_quality_current_rule_count = 0
-
-    def show_log_quality_button(self):
-        self.button = QPushButton(self.progress_message_bar)
-        self.button.pressed.connect(self.show_log_quality_dialog)
-        self.button.setText(QCoreApplication.translate("LogQualityDialog", "Show Results"))
-        self.progress_message_bar.layout().addWidget(self.button)
-        QCoreApplication.processEvents()
-
-    def set_log_quality_initial_progress(self, msg):
-        self.log_quality_validation_progress_count += 2  # 20% of the current rule
-        self.log_quality_validation_progress.setValue(self.log_quality_validation_progress_count)
-        self.progress_message_bar.setText(
-            QCoreApplication.translate("LogQualityDialog",
-                                       "Checking {} out of {}: '{}'").format(
-                                        self.log_quality_current_rule_count + 1,
-                                        self.log_quality_total_rule_count,
-                                        msg))
-        QCoreApplication.processEvents()
-
-    def set_log_quality_final_progress(self, msg):
-        self.log_quality_validation_progress_count += 8  # 80% of the current rule
-        self.log_quality_validation_progress.setValue(self.log_quality_validation_progress_count)
-        self.log_quality_current_rule_count += 1
-        if self.log_quality_current_rule_count ==  self.log_quality_total_rule_count:
-            self.progress_message_bar.setText(QCoreApplication.translate("LogQualityDialog",
-                "All the {} quality rules were checked! Click the button at the right-hand side to see a report.").format(self.log_quality_total_rule_count))
-        else:
-            self.progress_message_bar.setText(msg)
-        QCoreApplication.processEvents()
-
-    def show_log_quality_dialog(self):
-        log_result = self.quality_rule_engine.quality_rule_logger.get_log_result()
-        dlg = LogQualityDialog(self.conn_manager.get_db_connector_from_source(), log_result, self.main_window)
-        dlg.exec_()
-
-    def show_log_excel_button(self, text):
-        self.progress_message_bar = self.iface.messageBar().createMessage("Import from Excel",
-                                                                          QCoreApplication.translate("ImportFromExcelDialog",
-                                       "Some errors were found while importing from the intermediate Excel file into LADM-COL!"))
-        self.button = QPushButton(self.progress_message_bar)
-        self.button.pressed.connect(self.show_log_excel_dialog)
-        self.button.setText(QCoreApplication.translate("ImportFromExcelDialog", "Show errors found"))
-        self.progress_message_bar.layout().addWidget(self.button)
-        self.iface.messageBar().pushWidget(self.progress_message_bar, Qgis.Warning)
-        self.log_excel_text = text
-
-    def show_log_excel_dialog(self):
-        dlg = LogExcelDialog(self.log_excel_text, self.main_window)
-        dlg.exec_()
 
     @db_connection_required
     @supplies_model_required
@@ -1287,22 +1225,14 @@ class AsistenteLADMCOLPlugin(QObject):
     @validate_if_wizard_is_open
     @qgis_model_baker_required
     @db_connection_required
-    @survey_model_required
     @activate_processing_plugin
-    def show_dlg_quality(self, *args):
-        quality_dialog = QualityDialog(self.main_window)
-        quality_dialog.exec_()
+    def show_quality_rules_dock_widget(self, *args):
+        self.gui_builder.close_dock_widgets([DOCK_WIDGET_QUALITY_RULES])
 
-        self.quality_rule_engine = QualityRuleEngine(self.get_db_connection(), quality_dialog.selected_rules, self.app.settings.tolerance)
-        self.quality_rule_engine.quality_rule_logger.show_message_emitted.connect(self.show_log_quality_message)
-        self.quality_rule_engine.quality_rule_logger.show_button_emitted.connect(self.show_log_quality_button)
-        self.quality_rule_engine.quality_rule_logger.set_initial_progress_emitted.connect(self.set_log_quality_initial_progress)
-        self.quality_rule_engine.quality_rule_logger.set_final_progress_emitted.connect(self.set_log_quality_final_progress)
-
-        use_roads = bool(QSettings().value('Asistente-LADM-COL/quality/use_roads', DEFAULT_USE_ROADS_VALUE, bool))
-        options = {QR_IGACR3006: {'use_roads': use_roads}}
-
-        self.quality_rule_engine.validate_quality_rules(options)
+        dock_widget_qrs = DockWidgetQualityRules(self.get_db_connection(), self.main_window)
+        self.gui_builder.register_dock_widget(DOCK_WIDGET_QUALITY_RULES, dock_widget_qrs)
+        self.conn_manager.db_connection_changed.connect(dock_widget_qrs.update_db_connection)
+        self.app.gui.add_tabified_dock_widget(Qt.RightDockWidgetArea, dock_widget_qrs)
 
     def show_wiz_property_record_card(self):
         # TODO: Remove

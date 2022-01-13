@@ -10,7 +10,6 @@ FORMS = ../ui/change_detection/changes_all_parcels_panel_widget.ui \
         ../ui/dialogs/dlg_get_db_or_schema_name.ui \
         ../ui/dialogs/dlg_import_from_excel.ui \
         ../ui/dialogs/dlg_load_layers.ui \
-        ../ui/dialogs/dlg_log_excel.ui \
         ../ui/dialogs/dlg_log_quality.ui \
         ../ui/dialogs/dlg_quality.ui \
         ../ui/dialogs/dlg_settings.ui \
@@ -95,7 +94,6 @@ SOURCES = ../__init__.py \
           ../gui/dialogs/dlg_get_db_or_schema_name.py \
           ../gui/dialogs/dlg_import_from_excel.py \
           ../gui/dialogs/dlg_load_layers.py \
-          ../gui/dialogs/dlg_log_excel.py \
           ../gui/dialogs/dlg_log_quality.py \
           ../gui/dialogs/dlg_quality.py \
           ../gui/dialogs/dlg_settings.py \

@@ -72,7 +72,7 @@ class QualityRuleEngine(QObject):
         self.app.settings.tolerance = tolerance  # Tolerance must be given, we don't want anything implicit about it
         self.__tolerance = self.app.settings.tolerance  # Tolerance input might be altered (e.g., if it comes negative)
         self.__layer_manager = QualityRuleLayerManager(db, self.__rules, self.__tolerance)
-        self.quality_rule_logger = QualityRuleLogger(self.__db, self.__tolerance)
+        self.qr_logger = QualityRuleLogger(self.__db, self.__tolerance)
 
         # Clear informality cache before executing QRs.
         # Note: between creating an object of this class and calling validate_quality_rules() a lot
@@ -95,7 +95,7 @@ class QualityRuleEngine(QObject):
         self.app.settings.tolerance = tolerance
         self.__tolerance = self.app.settings.tolerance  # Tolerance input might be altered (e.g., if it comes negative)
         self.__layer_manager.initialize(self.__rules, self.__tolerance)
-        self.quality_rule_logger.initialize(self.__db, self.__tolerance)
+        self.qr_logger.initialize(self.__db, self.__tolerance)
 
         # This time, (initializing an existing object) we give you the chance to avoid
         # rebuilding the informality cache. It is handy if you're executing validations
@@ -127,7 +127,7 @@ class QualityRuleEngine(QObject):
                                                                              "There was a problem creating the quality error DB! Details:").format(msg_db))
                 return False, msg_db, None
 
-            self.quality_rule_logger.set_count_topology_rules(len(self.__rules))
+            self.qr_logger.set_count_topology_rules(len(self.__rules))
             self.logger.info(__name__,
                              QCoreApplication.translate("QualityRuleEngine",
                                 "Validating {} quality rules (tolerance: {}).").format(len(self.__rules), self.__tolerance))
@@ -162,7 +162,7 @@ class QualityRuleEngine(QObject):
 
             res = True
             msg = "Success!"
-            self.quality_rule_logger.generate_log_button()
+            self.qr_logger.generate_log_button()
             self.__layer_manager.clean_temporary_layers()
 
             self.export_result_to_pdf()
@@ -200,7 +200,7 @@ class QualityRuleEngine(QObject):
             return
 
         pdf_path = os.path.join(output_path, "Reglas_de_Calidad_{}.pdf".format(self.__timestamp))
-        log = self.quality_rule_logger.get_log_result()
+        log = self.qr_logger.get_log_result()
         export_title_text_to_pdf(pdf_path, log.title, log.text)
 
     def __normalize_options(self, options):

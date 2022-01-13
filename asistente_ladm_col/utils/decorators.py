@@ -203,7 +203,7 @@ def _log_quality_rule_validations(func_to_decorate):
         :param layers: layers
         :param options: Options for the quality rule
         """
-        self.quality_rule_logger.set_initial_progress_emitted.emit(rule.name())
+        self.qr_logger.set_initial_progress_emitted.emit(rule.name())
         log_text_content = LOG_QUALITY_LIST_CONTAINER_OPEN
 
         start_time = time.time()
@@ -226,13 +226,13 @@ def _log_quality_rule_validations(func_to_decorate):
 
         log_text_content += "{}{}{}".format(prefix, qr_result.msg, suffix)
 
-        self.quality_rule_logger.log_total_time = self.quality_rule_logger.log_total_time + (end_time - start_time)
+        self.qr_logger.log_total_time = self.qr_logger.log_total_time + (end_time - start_time)
 
         log_text_content += LOG_QUALITY_LIST_CONTAINER_CLOSE
         log_text_content += LOG_QUALITY_CONTENT_SEPARATOR
 
-        self.quality_rule_logger.log_text += "{}{} [{}]{}".format(LOG_QUALITY_PREFIX_TOPOLOGICAL_RULE_TITLE,
-                                                              rule.name(), Utils().set_time_format(end_time - start_time), LOG_QUALITY_SUFFIX_TOPOLOGICAL_RULE_TITLE)
+        self.qr_logger.log_text += "{}{} [{}]{}".format(LOG_QUALITY_PREFIX_TOPOLOGICAL_RULE_TITLE,
+                                                        rule.name(), Utils().set_time_format(end_time - start_time), LOG_QUALITY_SUFFIX_TOPOLOGICAL_RULE_TITLE)
 
         if options:
             # Try to get option titles instead of keys
@@ -241,15 +241,15 @@ def _log_quality_rule_validations(func_to_decorate):
                 obj = rule.options.get_options().get(k, None)
                 option_texts.append("{}: {}".format(obj.title() if obj else k, v))
 
-            self.quality_rule_logger.log_text += "{}{} {}{}".format(LOG_QUALITY_OPTIONS_OPEN,
-                                                                    QCoreApplication.translate("QualityRules",
+            self.qr_logger.log_text += "{}{} {}{}".format(LOG_QUALITY_OPTIONS_OPEN,
+                                                          QCoreApplication.translate("QualityRules",
                                                                                                "(Options)"),
                                                                     "; ".join(option_texts),
-                                                                    LOG_QUALITY_OPTIONS_CLOSE)
+                                                          LOG_QUALITY_OPTIONS_CLOSE)
 
-        self.quality_rule_logger.log_text += log_text_content
+        self.qr_logger.log_text += log_text_content
 
-        self.quality_rule_logger.set_final_progress_emitted.emit(rule.name())
+        self.qr_logger.set_final_progress_emitted.emit(rule.name())
 
         return qr_result
 
