@@ -27,11 +27,11 @@ from qgis.core import QgsProject
 
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.app_interface import AppInterface
-from asistente_ladm_col.gui.wizards.model.common.abstract_qobject_meta import AbstractQObjectMeta
 from asistente_ladm_col.gui.wizards.model.common.args.model_args import (ValidFeaturesDigitizedArgs,
                                                                          ExecFormAdvancedArgs,
                                                                          UnexpectedFeaturesDigitizedArgs)
 from asistente_ladm_col.config.enums import EnumDigitizedFeatureStatus
+from asistente_ladm_col.utils.abstract_class import AbstractQObjectMeta
 
 
 class NullFeatureCreator(QObject):

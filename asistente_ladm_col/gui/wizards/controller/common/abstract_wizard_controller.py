@@ -28,7 +28,6 @@ from asistente_ladm_col.config.general_config import (WIZARD_EDITING_LAYER_NAME,
                                                       WIZARD_FEATURE_NAME)
 from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.gui.wizards.controller.controller_args import CreateFeatureArgs
-from asistente_ladm_col.gui.wizards.model.common.abstract_qobject_meta import AbstractQObjectMeta
 from asistente_ladm_col.gui.wizards.model.common.args.model_args import (ExecFormAdvancedArgs,
                                                                          FinishFeatureCreationArgs,
                                                                          MapToolChangedArgs)
@@ -36,6 +35,7 @@ from asistente_ladm_col.gui.wizards.model.common.common_operations import ModelC
 from asistente_ladm_col.gui.wizards.model.common.layer_remove_signals_manager import LayerRemovedSignalsManager
 from asistente_ladm_col.gui.wizards.model.common.refactor_fields_feature_creator import RefactorFieldsFeatureCreator
 from asistente_ladm_col.gui.wizards.model.common.wizard_q_settings_manager import WizardQSettingsManager
+from asistente_ladm_col.utils.abstract_class import AbstractQObjectMeta
 
 
 class ProductFactory(ABC):
