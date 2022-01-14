@@ -1,11 +1,13 @@
 from qgis.PyQt.QtCore import QCoreApplication
 
+from asistente_ladm_col import Logger
+
 
 class WizardMessagesManager:
 
-    def __init__(self, wizard_tool_name, editing_layer_name, logger):
+    def __init__(self, wizard_tool_name, editing_layer_name):
         self.__WIZARD_TOOL_NAME = wizard_tool_name
-        self.__logger = logger
+        self.__logger = Logger()
         self.__editing_layer_name = editing_layer_name
 
     def show_wizard_closed_msg(self):

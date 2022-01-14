@@ -44,11 +44,11 @@ class ProductFactory(ABC):
         pass
 
     @abstractmethod
-    def create_manual_feature_creator(self, iface, app, logger, layer, feature_name):
+    def create_manual_feature_creator(self, iface, layer, feature_name):
         pass
 
     @abstractmethod
-    def create_feature_selector_on_map(self, iface, logger, multiple_features=True):
+    def create_feature_selector_on_map(self, iface, multiple_features=True):
         pass
 
     @abstractmethod
@@ -56,7 +56,7 @@ class ProductFactory(ABC):
         pass
 
     @abstractmethod
-    def create_wizard_messages_manager(self, wizard_tool_name, editing_layer_name, logger):
+    def create_wizard_messages_manager(self, wizard_tool_name, editing_layer_name):
         pass
 
 
@@ -93,7 +93,7 @@ class AbstractWizardController(QObject, metaclass=AbstractQObjectMeta):
         self._feature_manager = self.__product_factory.create_feature_manager(
             self._db, self._wizard_config[WIZARD_LAYERS], self._editing_layer)
         self._common_operations = \
-            CommonOperationsModel(self._wizard_config[WIZARD_LAYERS], self._editing_layer_name, self._app,
+            CommonOperationsModel(self._wizard_config[WIZARD_LAYERS], self._editing_layer_name,
                                   self._wizard_config[WIZARD_READ_ONLY_FIELDS])
 
         self._common_operations.set_read_only_fields(True)
@@ -101,11 +101,11 @@ class AbstractWizardController(QObject, metaclass=AbstractQObjectMeta):
         self.__view = self._create_view()  # view
 
         # REFACTOR FEATURE CREATOR
-        self._feature_creator_from_refactor = RefactorFieldsFeatureCreator(self._app, self._db)
+        self._feature_creator_from_refactor = RefactorFieldsFeatureCreator(self._db)
 
         # Manual
         self._manual_feature_creator = self.__product_factory.create_manual_feature_creator(
-            self._iface, self._app, self._logger, self._editing_layer, self._wizard_config[WIZARD_FEATURE_NAME])
+            self._iface, self._editing_layer, self._wizard_config[WIZARD_FEATURE_NAME])
 
         self._manual_feature_creator.form_rejected.connect(self._form_rejected)
 
@@ -114,7 +114,7 @@ class AbstractWizardController(QObject, metaclass=AbstractQObjectMeta):
 
         # features selector on map
         self._feature_selector_on_map = \
-            self.__product_factory.create_feature_selector_on_map(self._iface, self._logger)
+            self.__product_factory.create_feature_selector_on_map(self._iface)
 
         self._feature_selector_on_map.features_selected.connect(self.selected_features_on_map_changed)
         self._feature_selector_on_map.map_tool_changed.connect(self._map_tool_changed)
@@ -131,7 +131,7 @@ class AbstractWizardController(QObject, metaclass=AbstractQObjectMeta):
         self._layer_remove_manager.layer_removed.connect(self.layer_removed)
 
         self._wizard_messages = self.__product_factory.create_wizard_messages_manager(
-            self._WIZARD_TOOL_NAME, self._editing_layer_name, self._logger)
+            self._WIZARD_TOOL_NAME, self._editing_layer_name)
 
         self._connect_external_signals()
 

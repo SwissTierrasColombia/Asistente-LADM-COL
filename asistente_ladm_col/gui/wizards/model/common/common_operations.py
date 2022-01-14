@@ -21,12 +21,15 @@
 
 
 #  TODO Rename this class
+from asistente_ladm_col.app_interface import AppInterface
+
+
 class CommonOperationsModel:
 
-    def __init__(self, layers, editing_layer_name, app, read_only_fields: list):
+    def __init__(self, layers, editing_layer_name, read_only_fields: list):
         self.__layers = layers
         self.__EDITING_LAYER_NAME = editing_layer_name
-        self.__app = app
+        self.__app = AppInterface()
         self.__read_only_fields = read_only_fields
 
     # (absWizardFactory)

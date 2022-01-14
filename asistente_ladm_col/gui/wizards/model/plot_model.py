@@ -25,23 +25,25 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsVectorLayerUtils,
                        QgsGeometry)
 
+from asistente_ladm_col import Logger
+from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.enums import (EnumRelatableLayers,
                                              EnumPlotCreationResult)
 
 
 class PlotCreatorManager:
 
-    def __init__(self, db, layers, editing_layer, iface, app, logger):
+    def __init__(self, db, layers, editing_layer, iface):
         self.__db = db
         self.__layers = layers
 
         self.__editing_layer = editing_layer
 
         self.__iface = iface
-        self.__app = app
+        self.__app = AppInterface()
 
         # TODO Logger can be moved
-        self.__logger = logger
+        self.__logger = Logger()
 
         self.names = db.names
 

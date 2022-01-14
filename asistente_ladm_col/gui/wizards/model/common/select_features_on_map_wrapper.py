@@ -26,6 +26,7 @@ from qgis.PyQt.QtCore import (QCoreApplication,
                               QObject,
                              pyqtSignal)
 
+from asistente_ladm_col import Logger
 from asistente_ladm_col.gui.wizards.model.common.args.model_args import MapToolChangedArgs
 from asistente_ladm_col.utils.select_map_tool import SelectMapTool
 
@@ -52,14 +53,14 @@ class SelectFeaturesOnMapWrapper(QObject):
     features_selected = pyqtSignal()
     map_tool_changed = pyqtSignal(MapToolChangedArgs)
 
-    def __init__(self, iface, logger, multiple_features=True):
+    def __init__(self, iface, multiple_features=True):
         QObject.__init__(self)
         self.__iface = iface
         self.__canvas = self.__iface.mapCanvas()
         self.__map_tool = self.__canvas.mapTool()
         self.__select_maptool = None
 
-        self.__logger = logger
+        self.__logger = Logger()
 
         self.multiple_features = multiple_features
 

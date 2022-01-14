@@ -47,31 +47,28 @@ from asistente_ladm_col.gui.wizards.view.common.view_args import PickFeaturesSel
 
 class PlotProductFactory(ProductFactory):
 
-    def __init__(self, iface, app, logger):
+    def __init__(self, iface):
         self.__iface = iface
-        self.__app = app
-        # TODO Logger can be moved
-        self.__logger = logger
 
     def create_feature_manager(self, db, layers, editing_layer):
-        return PlotCreatorManager(db, layers, editing_layer, self.__iface, self.__app, self.__logger)
+        return PlotCreatorManager(db, layers, editing_layer, self.__iface)
 
-    def create_manual_feature_creator(self, iface, app, logger, layer, feature_name):
+    def create_manual_feature_creator(self, iface, layer, feature_name):
         return NullFeatureCreator()
 
-    def create_feature_selector_on_map(self, iface, logger, multiple_features=True):
-        return SelectFeaturesOnMapWrapper(iface, logger)
+    def create_feature_selector_on_map(self, iface, multiple_features=True):
+        return SelectFeaturesOnMapWrapper(iface)
 
     def create_feature_selector_by_expression(self, iface):
         return SelectFeatureByExpressionDialogWrapper(iface)
 
-    def create_wizard_messages_manager(self, wizard_tool_name, editing_layer_name, logger):
-        return WizardMessagesManager(wizard_tool_name, editing_layer_name, logger)
+    def create_wizard_messages_manager(self, wizard_tool_name, editing_layer_name):
+        return WizardMessagesManager(wizard_tool_name, editing_layer_name)
 
 
 class PlotController(AbstractWizardController):
     def __init__(self, iface, db, wizard_config, observer):
-        product_factory = PlotProductFactory(iface, AppInterface(), Logger())
+        product_factory = PlotProductFactory(iface)
         AbstractWizardController.__init__(self, iface, db, wizard_config, product_factory, observer)
         self.__manual_feature_creator = None
 

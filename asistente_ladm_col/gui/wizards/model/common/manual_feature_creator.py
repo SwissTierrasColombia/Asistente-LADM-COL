@@ -25,6 +25,8 @@ from qgis.PyQt.QtCore import (QCoreApplication,
                              pyqtSignal)
 from qgis.core import QgsProject
 
+from asistente_ladm_col import Logger
+from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.gui.wizards.model.common.abstract_qobject_meta import AbstractQObjectMeta
 from asistente_ladm_col.gui.wizards.model.common.args.model_args import (ValidFeaturesDigitizedArgs,
                                                                          ExecFormAdvancedArgs,
@@ -49,13 +51,13 @@ class ManualFeatureCreator(QObject, metaclass=AbstractQObjectMeta):
     form_rejected = pyqtSignal()
     exec_form_advanced = pyqtSignal(ExecFormAdvancedArgs)
 
-    def __init__(self, iface, app, logger, layer, feature_name):
+    def __init__(self, iface, layer, feature_name):
         QObject.__init__(self)
         self._iface = iface
-        self._app = app
+        self._app = AppInterface()
         self._layer = layer
 
-        self._logger = logger
+        self._logger = Logger()
         self._feature_name = feature_name
 
     def create(self):
@@ -120,8 +122,8 @@ class ManualFeatureCreator(QObject, metaclass=AbstractQObjectMeta):
 
 class AlphaFeatureCreator(ManualFeatureCreator):
 
-    def __init__(self, iface, app, logger, layer, feature_name):
-        ManualFeatureCreator.__init__(self, iface, app, logger, layer, feature_name)
+    def __init__(self, iface, layer, feature_name):
+        ManualFeatureCreator.__init__(self, iface, layer, feature_name)
 
     def _add_feature(self, layer):
         feature = self._app.core.get_new_feature(layer)
@@ -135,8 +137,8 @@ class SpatialFeatureCreator(ManualFeatureCreator):
     valid_features_digitized = pyqtSignal(ValidFeaturesDigitizedArgs)
     unexpected_features_digitized = pyqtSignal(UnexpectedFeaturesDigitizedArgs)
 
-    def __init__(self, iface, app, logger, layer, feature_name, tolerance=None):
-        ManualFeatureCreator.__init__(self, iface, app, logger, layer, feature_name)
+    def __init__(self, iface, layer, feature_name, tolerance=None):
+        ManualFeatureCreator.__init__(self, iface, layer, feature_name)
         self.__tolerance = tolerance
         self.editing_layer = layer
 

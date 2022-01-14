@@ -18,11 +18,12 @@
  *                                                                         *
  ***************************************************************************/
  """
+from asistente_ladm_col.app_interface import AppInterface
 
 
 class RefactorFieldsFeatureCreator:
-    def __init__(self, app, db):
-        self.__app = app
+    def __init__(self, db):
+        self.__app = AppInterface()
         self.__db = db
 
     def create(self, selected_layer, editing_layer_name, field_mapping):

@@ -45,17 +45,17 @@ class RrrProductFactory(ProductFactory):
     def create_feature_manager(self, db, layers, editing_layer):
         return RrrCreatorManager(db, layers, editing_layer, self.__editing_layer_name)
 
-    def create_manual_feature_creator(self, iface, app, logger, layer, feature_name):
-        return AlphaFeatureCreator(iface, app, logger, layer, feature_name)
+    def create_manual_feature_creator(self, iface, layer, feature_name):
+        return AlphaFeatureCreator(iface, layer, feature_name)
 
-    def create_feature_selector_on_map(self, iface, logger, multiple_features=True):
+    def create_feature_selector_on_map(self, iface, multiple_features=True):
         return NullFeatureSelectorOnMap()
 
     def create_feature_selector_by_expression(self, iface):
         return SelectFeatureByExpressionDialogWrapper(iface)
 
-    def create_wizard_messages_manager(self, wizard_tool_name, editing_layer_name, logger):
-        return WizardMessagesManager(wizard_tool_name, editing_layer_name, logger)
+    def create_wizard_messages_manager(self, wizard_tool_name, editing_layer_name):
+        return WizardMessagesManager(wizard_tool_name, editing_layer_name)
 
 
 class RrrController(AbstractWizardController):
