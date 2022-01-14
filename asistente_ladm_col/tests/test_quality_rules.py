@@ -108,6 +108,7 @@ class TesQualityRules(unittest.TestCase):
             self.assertIn(item, result, 'Error in: Boundary point {} is not covered by plot node'.format(item['id']))
 
     def test_topology_boundary_nodes_must_be_covered_by_boundary_points(self):
+        print('\nINFO: Validating boundary nodes must be covered by boundary points...')
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Line.BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS)
         schema_name = 'test_ladm_validations_topology_tables'
         self.db_pg = get_pg_conn(schema_name)
@@ -209,6 +210,7 @@ class TesQualityRules(unittest.TestCase):
             self.assertIn(item, result, 'Error in {}: {}'.format(item, self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E200402)))
 
     def test_topology_boundary_points_must_be_covered_by_boundary_nodes(self):
+        print('\nINFO: Validating boundary points must be covered by boundary nodes...')
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES)
         schema_name = 'test_ladm_validations_topology_tables'
         self.db_pg = get_pg_conn(schema_name)
@@ -339,6 +341,7 @@ class TesQualityRules(unittest.TestCase):
             self.assertIn(item, result, 'Error in {}: {}'.format(item, self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E100302)))
 
     def test_topology_plot_must_be_covered_by_boundary(self):
+        print('\nINFO: Validating plots must be covered by boundaries...')
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.PLOTS_COVERED_BY_BOUNDARIES)
         schema_name = 'test_ladm_validations_topology_tables'
         self.db_pg = get_pg_conn(schema_name)
@@ -393,21 +396,33 @@ class TesQualityRules(unittest.TestCase):
 
         result = [{'id': f['id_terreno'], 'geom': f.geometry().asWkt()} for f in error_layer.selectedFeatures()]
 
-        # test_result = [{'id': '1a972c2b-c4b1-4e7d-8b4a-5d88398e774a', 'geom': 'MultiLineStringZ ((894639.00399999995715916 1544574.38599999994039536 0, 894648.56400000001303852 1544485.16100000008009374 0, 894723.67700000002514571 1544488.34799999999813735 0, 894715.02700000000186265 1544590.31899999990127981 0, 894639.00399999995715916 1544574.38599999994039536 0))'},
-        #                {'id': '4fbe53ea-4ca6-46ff-ba7e-feba78bef27b', 'geom': 'MultiLineStringZ ((894715.02700000000186265 1544590.31899999990127981 0, 894732.84299999999348074 1544594.1229999999050051 0),(894770.40800000005401671 1544602.14299999992363155 0, 894779.66099999996367842 1544604.11800000001676381 0),(894788.15800000005401671 1544496.48799999989569187 0, 894723.67700000002514571 1544488.34799999999813735 0, 894715.02700000000186265 1544590.31899999990127981 0))'},
-        #                {'id': 'd1181ee8-a259-4d9f-87f6-d1f9912cc581', 'geom': 'MultiLineStringZ ((894856.60699999995995313 1544597.51000000000931323 0, 894860.856000000028871 1544572.962000000057742 0, 894879.26599999994505197 1544575.79499999992549419 0, 894882.57099999999627471 1544602.70200000004842877 0, 894856.60699999995995313 1544597.51000000000931323 0),(894810.34499999997206032 1544519.14700000011362135 0, 894837.25300000002607703 1544520.56300000008195639 0, 894833.94799999997485429 1544542.75 0, 894822.14000000001396984 1544541.38800000003539026 0))'},
-        #                {'id': '5445a5f0-f453-4516-98de-7831fcef5718', 'geom': 'MultiLineStringZ ((894634.73699999996460974 1544430.39899999997578561 0, 894638.04099999996833503 1544358.17299999995157123 0, 894773.52399999997578561 1544367.14199999999254942 0, 894768.33100000000558794 1544443.6159999999217689 0, 894634.73699999996460974 1544430.39899999997578561 0))'},
-        #                {'id': '3879a544-66b3-4284-8132-d88ce6b11fc3', 'geom': 'MultiLineStringZ ((894768.33100000000558794 1544443.6159999999217689 0, 894696.625 1544436.52200000011362135 0, 894702.99199999996926636 1544362.47299999999813735 0, 894773.52399999997578561 1544367.14199999999254942 0, 894768.33100000000558794 1544443.6159999999217689 0))'},
-        #                {'id': 'a83e2386-2ab3-4540-ae1f-79df1a393267', 'geom': 'MultiLineStringZ ((894702.99199999996926636 1544362.47299999999813735 0, 894696.625 1544436.52200000011362135 0, 894634.73699999996460974 1544430.39899999997578561 0, 894638.04099999996833503 1544358.17299999995157123 0, 894702.99199999996926636 1544362.47299999999813735 0))'},
-        #                {'id': '0a34acb7-c9d2-4439-a79e-ee4131eb6e67', 'geom': 'MultiLineStringZ ((894847.40200000000186265 1544448.57300000009126961 0, 894852.59499999997206032 1544369.26600000006146729 0),(894986.66099999996367842 1544377.29099999996833503 0, 894972.97100000001955777 1544459.43100000009872019 0, 894904.21900145395193249 1544453.48598809260874987 0),(894904.21900145395193249 1544453.48598809260874987 0, 894847.40200000000186265 1544448.57300000009126961 0))'},
-        #                {'id': '303bffab-c8b6-4859-ab75-2179ec29a9e1', 'geom': 'MultiLineStringZ ((894847.40200000000186265 1544448.57300000009126961 0, 894852.59499999997206032 1544369.26600000006146729 0),(894852.59499999997206032 1544369.26600000006146729 0, 894914.05400000000372529 1544372.94500000006519258 0, 894911.74499999999534339 1544391.85100000002421439 0),(894904.21900000004097819 1544453.48600000003352761 0, 894847.40200000000186265 1544448.57300000009126961 0))'},
-        #                {'id': '65a3e94f-8ae6-4aa1-b4b4-25bb45596056', 'geom': 'MultiLineStringZ ((894904.21900000004097819 1544453.48600000003352761 0, 894972.97100000001955777 1544459.43100000009872019 0, 894986.66099999996367842 1544377.29099999996833503 0),(894986.66099999996367842 1544377.29099999996833503 0, 894914.05400000000372529 1544372.94500000006519258 0, 894911.74499999999534339 1544391.85100000002421439 0))'},
-        #                {'id': '76cc3820-e993-4c05-8ef9-c680dcb826dd', 'geom': 'MultiLineStringZ ((894863.92399999999906868 1544306.01000000000931323 0, 894862.50800000003073364 1544287.59899999992921948 0, 894910.65899999998509884 1544288.07099999999627471 0, 894905.93799999996554106 1544314.50699999998323619 0, 894863.92399999999906868 1544306.01000000000931323 0))'},
-        #                {'id': 'dc922aaf-bbd1-425d-9527-1026ac380a4d', 'geom': 'MultiLineStringZ ((895053.2219999999506399 1544435.35499999998137355 0, 895076.28099999995902181 1544438.87899999995715916 0),(895076.28099999995902181 1544438.87899999995715916 0, 895119.085573127027601 1544445.42050326871685684 0),(895119.085573127027601 1544445.42050326871685684 0, 895126.55500278458930552 1544446.56200782209634781 0),(895126.55500278458930552 1544446.56200782209634781 0, 895126.55500278470572084 1544446.56200782209634781 0),(895126.55500278470572084 1544446.56200782209634781 0, 895150.11300000001210719 1544450.162999999942258 0))'},
-        #                {'id': '7b13e43d-598c-4aae-a529-1aa2c51aafa9', 'geom': 'MultiLineStringZ ((871581.97699999995529652 1554559.162999999942258 0, 871583.06900000001769513 1554559.11199999996460974 0, 871586.15099999995436519 1554558.96699999994598329 0))'}]
-        #
-        # for item in test_result:
-        #     self.assertIn(item, result, 'geometrical error in the polygon with id {}'.format(item['id']))
+        test_result = [{'id': '1a972c2b-c4b1-4e7d-8b4a-5d88398e774a',
+                        'geom': 'MultiLineStringZ ((894639.00399999995715916 1544574.38599999994039536 0, 894648.56400000001303852 1544485.16100000008009374 0, 894723.67700000002514571 1544488.34799999999813735 0, 894715.02700000000186265 1544590.31899999990127981 0, 894639.00399999995715916 1544574.38599999994039536 0))'},
+                       {'id': '4fbe53ea-4ca6-46ff-ba7e-feba78bef27b',
+                        'geom': 'MultiLineStringZ ((894715.02700000000186265 1544590.31899999990127981 0, 894779.66099999996367842 1544604.11800000001676381 0),(894788.15800000005401671 1544496.48799999989569187 0, 894723.67700000002514571 1544488.34799999999813735 0, 894715.02700000000186265 1544590.31899999990127981 0))'},
+                       {'id': 'd1181ee8-a259-4d9f-87f6-d1f9912cc581',
+                        'geom': 'MultiLineStringZ ((894856.60699999995995313 1544597.51000000000931323 0, 894860.856000000028871 1544572.962000000057742 0, 894879.26599999994505197 1544575.79499999992549419 0, 894882.57099999999627471 1544602.70200000004842877 0, 894856.60699999995995313 1544597.51000000000931323 0),(894810.34499999997206032 1544519.14700000011362135 0, 894837.25300000002607703 1544520.56300000008195639 0, 894833.94799999997485429 1544542.75 0, 894809.40099999995436519 1544539.91800000006332994 0))'},
+                       {'id': '5445a5f0-f453-4516-98de-7831fcef5718',
+                        'geom': 'MultiLineStringZ ((894634.73699999996460974 1544430.39899999997578561 0, 894638.04099999996833503 1544358.17299999995157123 0, 894773.52399999997578561 1544367.14199999999254942 0, 894768.33100000000558794 1544443.6159999999217689 0, 894634.73699999996460974 1544430.39899999997578561 0))'},
+                       {'id': '3879a544-66b3-4284-8132-d88ce6b11fc3',
+                        'geom': 'MultiLineStringZ ((894768.33100000000558794 1544443.6159999999217689 0, 894696.625 1544436.52200000011362135 0, 894702.99199999996926636 1544362.47299999999813735 0, 894773.52399999997578561 1544367.14199999999254942 0, 894768.33100000000558794 1544443.6159999999217689 0))'},
+                       {'id': 'a83e2386-2ab3-4540-ae1f-79df1a393267',
+                        'geom': 'MultiLineStringZ ((894702.99199999996926636 1544362.47299999999813735 0, 894696.625 1544436.52200000011362135 0, 894634.73699999996460974 1544430.39899999997578561 0, 894638.04099999996833503 1544358.17299999995157123 0, 894702.99199999996926636 1544362.47299999999813735 0))'},
+                       {'id': '0a34acb7-c9d2-4439-a79e-ee4131eb6e67',
+                        'geom': 'MultiLineStringZ ((894847.40200000000186265 1544448.57300000009126961 0, 894852.59499999997206032 1544369.26600000006146729 0),(894986.66099999996367842 1544377.29099999996833503 0, 894972.97100000001955777 1544459.43100000009872019 0, 894904.21900145395193249 1544453.48598809260874987 0),(894904.21900145395193249 1544453.48598809260874987 0, 894847.40200000000186265 1544448.57300000009126961 0))'},
+                       {'id': '303bffab-c8b6-4859-ab75-2179ec29a9e1',
+                        'geom': 'MultiLineStringZ ((894847.40200000000186265 1544448.57300000009126961 0, 894852.59499999997206032 1544369.26600000006146729 0),(894852.59499999997206032 1544369.26600000006146729 0, 894914.05400000000372529 1544372.94500000006519258 0, 894904.21900000004097819 1544453.48600000003352761 0),(894904.21900000004097819 1544453.48600000003352761 0, 894847.40200000000186265 1544448.57300000009126961 0))'},
+                       {'id': '65a3e94f-8ae6-4aa1-b4b4-25bb45596056',
+                        'geom': 'MultiLineStringZ ((894904.21900000004097819 1544453.48600000003352761 0, 894972.97100000001955777 1544459.43100000009872019 0, 894986.66099999996367842 1544377.29099999996833503 0),(894986.66099999996367842 1544377.29099999996833503 0, 894914.05400000000372529 1544372.94500000006519258 0, 894904.21900000004097819 1544453.48600000003352761 0))'},
+                       {'id': '76cc3820-e993-4c05-8ef9-c680dcb826dd',
+                        'geom': 'MultiLineStringZ ((894863.92399999999906868 1544306.01000000000931323 0, 894862.50800000003073364 1544287.59899999992921948 0, 894910.65899999998509884 1544288.07099999999627471 0, 894905.93799999996554106 1544314.50699999998323619 0, 894863.92399999999906868 1544306.01000000000931323 0))'},
+                       {'id': 'dc922aaf-bbd1-425d-9527-1026ac380a4d',  # Duplicated vertices
+                        'geom': 'MultiLineStringZ ((895053.2219999999506399 1544435.35499999998137355 0, 895119.085573127027601 1544445.42050326871685684 0),(895119.085573127027601 1544445.42050326871685684 0, 895126.55500278470572084 1544446.56200782209634781 0),(895126.55500278470572084 1544446.56200782209634781 0, 895195.31400000001303852 1544457.07000000006519258 0))'},
+                       {'id': '7b13e43d-598c-4aae-a529-1aa2c51aafa9',
+                        'geom': 'MultiLineStringZ ((871581.97699999995529652 1554559.162999999942258 0, 871583.06900000001769513 1554559.11199999996460974 0, 871586.15099999995436519 1554558.96699999994598329 0))'}]
+
+        for item in test_result:
+            self.assertIn(item, result, 'Geometric error in the polygon with id {}'.format(item['id']))
 
         exp = "\"codigo_error\" = '{}'".format(QUALITY_RULE_ERROR_CODE_E300402)
         error_layer.selectByExpression(exp)
@@ -437,7 +452,8 @@ class TesQualityRules(unittest.TestCase):
         test_result = [{'id_lindero': 'a49ef87f-1fa1-4528-96ff-0332e7e0d0ea', 'id_terreno': 'bbd2469c-ba49-4e7e-b294-68aaafe3c6f0'}]
         self.assertEqual(result, test_result, 'Error in: {}'.format(self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E300405)))
 
-    def __test_topology_boundary_must_be_covered_by_plot(self):
+    def test_topology_boundary_must_be_covered_by_plot(self):
+        print('\nINFO: Validating boundaries must be covered by plots...')
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Line.BOUNDARIES_COVERED_BY_PLOTS)
         schema_name = 'test_ladm_validations_topology_tables'
         self.db_pg = get_pg_conn(schema_name)
@@ -481,19 +497,22 @@ class TesQualityRules(unittest.TestCase):
         features = self.quality_rules.line_quality_rules.get_boundary_features_not_covered_by_plots(self.db_pg, plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer, names.T_ID_F)
 
         # the algorithm was successfully executed
-        self.assertEqual(len(features), 11)
+        self.assertEqual(len(features), 14)
 
         error_layer.dataProvider().addFeatures(features)
         exp = "\"codigo_error\" = '{}'".format(QUALITY_RULE_ERROR_CODE_E200301)
         error_layer.selectByExpression(exp)
-        self.assertEqual(error_layer.selectedFeatureCount(), 3)
+        self.assertEqual(error_layer.selectedFeatureCount(), 6)
 
         result = [{'id': f['id_lindero'], 'id_plot': f['id_terreno'], 'geom': f.geometry().asWkt()} for f in error_layer.selectedFeatures()]
 
         test_result = [
             {'id': '67d2a8da-5f83-470b-b09c-97e97cff8ab0', 'id_plot': '7b13e43d-598c-4aae-a529-1aa2c51aafa9', 'geom': 'LineStringZ (871560.6650000000372529 1554564.43599999998696148 0, 871564.08799999998882413 1554562.86700000008568168 0, 871564.11399999994318932 1554562.17299999995157123 0, 871581.97699999995529652 1554559.162999999942258 0, 871586.15099999995436519 1554558.96699999994598329 0)'},
             {'id': '9d439543-9d1b-4df2-af32-82e11eccc15a', 'id_plot': None, 'geom': 'MultiLineStringZ ((895120.1720000000204891 1544364.95600000000558794 0, 895070.0779999999795109 1544331.15500000002793968 0, 895121.96699999994598329 1544243.82499999995343387 0, 895178.80000000004656613 1544283.712000000057742 0, 895120.1720000000204891 1544364.95600000000558794 0))'},
-            {'id': 'edd15986-68f1-4cab-a6be-5455d6d1ee76', 'id_plot': None, 'geom': 'MultiLineStringZ ((895053.2219999999506399 1544435.35499999998137355 0, 895065.96799999999348074 1544460.84700000006705523 0, 895076.28099999995902181 1544438.87899999995715916 0),(895126.55500000005122274 1544446.56199999991804361 0, 895126.55500278470572084 1544446.56200782209634781 0),(895126.55500278470572084 1544446.56200782209634781 0, 895138.19400000001769513 1544479.25699999998323619 0, 895150.11300000001210719 1544450.162999999942258 0))'}
+            {'id': 'edd15986-68f1-4cab-a6be-5455d6d1ee76', 'id_plot': None, 'geom': 'MultiLineStringZ ((895053.2219999999506399 1544435.35499999998137355 0, 895065.96799999999348074 1544460.84700000006705523 0, 895076.28099999995902181 1544438.87899999995715916 0, 895119.085573127027601 1544445.42050326871685684 0),(895119.085573127027601 1544445.42050326871685684 0, 895126.55500000005122274 1544446.56199999991804361 0, 895126.55500278470572084 1544446.56200782209634781 0),(895126.55500278470572084 1544446.56200782209634781 0, 895138.19400000001769513 1544479.25699999998323619 0, 895150.11300000001210719 1544450.162999999942258 0, 895195.31400000001303852 1544457.07000000006519258 0))'},
+            {'id': '539f19b2-c8d1-45b0-a256-44d6147196eb', 'id_plot': None, 'geom': 'MultiLineStringZ ((894732.84299999999348074 1544594.1229999999050051 0, 894770.40800000005401671 1544602.14299999992363155 0))'},
+            {'id': 'bf962a29-773e-4bf2-9cf3-99781cd5c46a', 'id_plot': None, 'geom': 'MultiLineStringZ ((894822.14000000001396984 1544541.38800000003539026 0, 894809.40099999995436519 1544539.91800000006332994 0))'},
+            {'id': 'f38d0673-2d84-43a3-bb4d-0eb5ddaec02c', 'id_plot': None, 'geom': 'MultiLineStringZ ((894904.21900000004097819 1544453.48600000003352761 0, 894904.21900145395193249 1544453.48598809260874987 0),(894904.21900145395193249 1544453.48598809260874987 0, 894911.74499999999534339 1544391.85100000002421439 0))'}
         ]
 
         for item in test_result:
@@ -682,6 +701,7 @@ class TesQualityRules(unittest.TestCase):
                           'Error in: Plot node {} is not covered by boundary point'.format(item['id']))
 
     def test_no_error_quality_rule(self):
+        print('\nINFO: Validating no errors in quality rules...')
         gpkg_path = get_test_copy_path('db/ladm/gpkg/test_valid_quality_rules_v1_1.gpkg')
         self.db_gpkg = get_gpkg_conn_from_path(gpkg_path)
         res, code, msg = self.db_gpkg.test_connection()
@@ -778,6 +798,7 @@ class TesQualityRules(unittest.TestCase):
         self.assertEqual(len(records), 0)
 
     def test_logic_quality_rules_pg(self):
+        print('\nINFO: Validating logic quality rules PG...')
         restore_schema('test_logic_quality_rules')
         db_pg = get_pg_conn('test_logic_quality_rules')
         names = db_pg.names
@@ -789,6 +810,7 @@ class TesQualityRules(unittest.TestCase):
         self.check_logic_quality_rules(db_pg)
 
     def test_logic_quality_rules_gpkg(self):
+        print('\nINFO: Validating logic quality rules GPKG...')
         db_gpkg = get_gpkg_conn('test_logic_quality_rules_gpkg')
         res, code, msg = db_gpkg.test_connection()
         self.assertTrue(res, msg)
@@ -858,16 +880,19 @@ class TesQualityRules(unittest.TestCase):
         error_layer = res.result(rule_key).error_layer
         self.assertEqual(error_layer.featureCount(), 27)
         features = [f for f in error_layer.getFeatures("codigo_error = '{}'".format(QUALITY_RULE_ERROR_CODE_E300902))]
-        expected_t_ili_tids = ['a468fa02-6cf6-4f20-986b-ccdfb4c201d2',
-                               'b29a2af5-39f0-46ed-badb-84bd3c0b704d',
-                               '117f44fd-5485-4560-9708-911e88e03c15',
-                               'c8ef8b15-c776-42ef-a30c-822001be7460']
-        self.assertEqual(len(features), len(expected_t_ili_tids))  # 4
-        self.assertEqual(sorted(expected_t_ili_tids), sorted([f['id_construccion'] for f in features]))
+        expected_t_ili_tids = ['117f44fd-5485-4560-9708-911e88e03c15', '1b0d4d48-6f42-40f6-a196-947bf43ec708',
+                               '1b1bfc0d-eaaf-4635-bc19-90daa1d9bd87', '1d0c1b12-cead-413c-b38c-de9a423cdc66',
+                               '2d323bb9-19d7-41f7-8894-e9c62f80ceb5', '2e11e7f9-1209-4d8b-9bd2-84f268ac6faf',
+                               '72567696-053c-4f78-8db6-17084bbce012', 'a468fa02-6cf6-4f20-986b-ccdfb4c201d2',
+                               'b311be43-50e5-46ac-9e13-bc6730be36b6', 'c1b53a98-c3b0-4de1-8293-b3455c4bd517',
+                               'c8ef8b15-c776-42ef-a30c-822001be7460', 'e5e60bc6-132a-4428-9b32-9046278e0bd2',
+                               'e912cb4f-f76f-45d7-be83-702624db1ea0']
+        self.assertEqual(len(features), len(expected_t_ili_tids))  # 13
+        self.assertEqual(expected_t_ili_tids, sorted([f['id_construccion'] for f in features]))
 
         # Tolerance: 1mm
         print("INFO: Testing with 1mm of tolerance...")
-        quality_rule_engine.initialize(db_gpkg, list_rules, 1)
+        quality_rule_engine.initialize(db_gpkg, list_rules, 1, False)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res.result(rule_key).level, Qgis.Critical)
@@ -877,12 +902,12 @@ class TesQualityRules(unittest.TestCase):
                     error_layer.getFeatures("codigo_error = '{}'".format(QUALITY_RULE_ERROR_CODE_E300902))]
         expected_t_ili_tids = ['117f44fd-5485-4560-9708-911e88e03c15',
                                'c8ef8b15-c776-42ef-a30c-822001be7460']
-        self.assertEqual(len(features), len(expected_t_ili_tids))
-        self.assertEqual(sorted(expected_t_ili_tids), sorted([f['id_construccion'] for f in features]))
+        self.assertEqual(len(features), len(expected_t_ili_tids))  # 2
+        self.assertEqual(expected_t_ili_tids, sorted([f['id_construccion'] for f in features]))
 
         # Tolerance: 2mm
         print("INFO: Testing with 2mm of tolerance...")
-        quality_rule_engine.initialize(db_gpkg, list_rules, 2)
+        quality_rule_engine.initialize(db_gpkg, list_rules, 2, False)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res.result(rule_key).level, Qgis.Critical)
@@ -912,19 +937,22 @@ class TesQualityRules(unittest.TestCase):
         error_layer = res.result(rule_key).error_layer
         self.assertEqual(error_layer.featureCount(), 49)
         features = [f for f in error_layer.getFeatures("codigo_error = '{}'".format(QUALITY_RULE_ERROR_CODE_E301002))]
-        expected_t_ili_tids = ['1dcfd30f-ea16-4afb-9050-f09199b08162',
-                               'e2002bad-c64c-4b47-a00a-d62a565ea339',
-                               'faafc505-6943-429c-8350-b5d4402199c4',
-                               'ebc11cf4-53a1-4f8a-80ff-c7fc271bad90',
-                               '6cf8733a-38b7-4923-8ccf-edd4b20c173f',
-                               '3d8cfa50-5b16-4806-ade3-bbeb2e62a38f',
-                               '48ee9a5a-027b-4f7c-85f9-7d05abe990f9']
-        self.assertEqual(len(features), len(expected_t_ili_tids))  # 7
-        self.assertEqual(sorted(expected_t_ili_tids), sorted([f['id_unidad_construccion'] for f in features]))
+        expected_t_ili_tids = ['0af93cab-1989-4b44-ad8d-0f3a1fb8dbd5', '14c31044-de9d-4797-83c9-7b40c44a6a15',
+                               '1cf7ee73-4d06-4134-bd3c-00d6c5dbab46', '1dcfd30f-ea16-4afb-9050-f09199b08162',
+                               '27272d59-1635-4ce6-babf-efc1122815ad', '284415e7-5a71-49f6-af8c-6a8fab6f6e68',
+                               '297870c1-063b-4e56-917e-ea2ed86e8cf7', '55988f7b-3b05-438c-8a2a-34948096cd63',
+                               '6cf8733a-38b7-4923-8ccf-edd4b20c173f', '710bcff9-3b47-4ba9-a430-fcc6532092e3',
+                               '8e043e1f-ab9c-47fd-9702-bb2301863a17', 'da374f95-4674-4e47-b0af-8780c7d2c94b',
+                               'dcfbb7af-e211-48b4-b421-2a3b7d70b5ce', 'df24bc58-84f0-4fb1-9e3f-5ee1f961e63b',
+                               'e2002bad-c64c-4b47-a00a-d62a565ea339', 'e3692ae7-0df9-4473-a6da-836539dcc077',
+                               'ebc11cf4-53a1-4f8a-80ff-c7fc271bad90', 'f145a235-4eb9-476a-be73-64d33d5101d7',
+                               'faafc505-6943-429c-8350-b5d4402199c4']
+        self.assertEqual(len(features), len(expected_t_ili_tids))  # 19
+        self.assertEqual(expected_t_ili_tids, sorted([f['id_unidad_construccion'] for f in features]))
 
         # Tolerance: 1mm
         print("INFO: Testing with 1mm of tolerance...")
-        quality_rule_engine.initialize(db_gpkg, dict_rules, 1)
+        quality_rule_engine.initialize(db_gpkg, dict_rules, 1, False)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res.result(rule_key).level, Qgis.Critical)
@@ -939,7 +967,7 @@ class TesQualityRules(unittest.TestCase):
 
         # Tolerance: 2mm
         print("INFO: Testing with 2mm of tolerance...")
-        quality_rule_engine.initialize(db_gpkg, dict_rules, 2)
+        quality_rule_engine.initialize(db_gpkg, dict_rules, 2, False)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res.result(rule_key).level, Qgis.Critical)
@@ -971,17 +999,13 @@ class TesQualityRules(unittest.TestCase):
         features = [f for f in error_layer.getFeatures("codigo_error = '{}'".format(QUALITY_RULE_ERROR_CODE_E301102))]
         expected_t_ili_tids = ['1dcfd30f-ea16-4afb-9050-f09199b08162',
                                '7504133f-9a00-40fa-9e8d-4ab64a3543aa',
-                               '8e043e1f-ab9c-47fd-9702-bb2301863a17',
-                               '48ee9a5a-027b-4f7c-85f9-7d05abe990f9',
-                               '6cf8733a-38b7-4923-8ccf-edd4b20c173f',
-                               'faafc505-6943-429c-8350-b5d4402199c4',
-                               'e2002bad-c64c-4b47-a00a-d62a565ea339']
-        self.assertEqual(len(features), len(expected_t_ili_tids))  # 7
-        self.assertEqual(sorted(expected_t_ili_tids), sorted([f['id_unidad_construccion'] for f in features]))
+                               '8e043e1f-ab9c-47fd-9702-bb2301863a17']
+        self.assertEqual(len(features), len(expected_t_ili_tids))  # 3
+        self.assertEqual(expected_t_ili_tids, sorted([f['id_unidad_construccion'] for f in features]))
 
         # Tolerance: 1mm
         print("INFO: Testing with 1mm of tolerance...")
-        quality_rule_engine.initialize(db_gpkg, dict_rules, 1)
+        quality_rule_engine.initialize(db_gpkg, dict_rules, 1, False)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res.result(rule_key).level, Qgis.Critical)
@@ -995,7 +1019,7 @@ class TesQualityRules(unittest.TestCase):
 
         # Tolerance: 2mm
         print("INFO: Testing with 2mm of tolerance...")
-        quality_rule_engine.initialize(db_gpkg, dict_rules, 2)
+        quality_rule_engine.initialize(db_gpkg, dict_rules, 2, False)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res.result(rule_key).level, Qgis.Critical)
@@ -1006,8 +1030,8 @@ class TesQualityRules(unittest.TestCase):
         self.assertEqual(len(features), len(expected_t_ili_tids))
         self.assertEqual(expected_t_ili_tids, [f['id_unidad_construccion'] for f in features])
 
-    def test_validate_inexistent_rule_key(self):
-        print('\nINFO: Validating inexistent rule key...')
+    def test_validate_nonexistent_rule_key(self):
+        print('\nINFO: Validating nonexistent rule key...')
 
         db_gpkg = get_gpkg_conn('tests_quality_rules_tolerance_gpkg')
         db_gpkg.test_connection()  # To generate DBMappingRegistry object
@@ -1017,10 +1041,9 @@ class TesQualityRules(unittest.TestCase):
         res = quality_rule_engine.validate_quality_rules()
         self.assertIsNone(res.result(rule_key).level)
 
-
     @classmethod
     def tearDownClass(cls):
-        print("INFO: Resetting tolerance value to {}...".format(DEFAULT_TOLERANCE_VALUE))
+        print("\nINFO: Resetting tolerance value to {}...".format(DEFAULT_TOLERANCE_VALUE))
         cls.app.settings.tolerance = DEFAULT_TOLERANCE_VALUE
 
         print("INFO: Unloading Model Baker...")

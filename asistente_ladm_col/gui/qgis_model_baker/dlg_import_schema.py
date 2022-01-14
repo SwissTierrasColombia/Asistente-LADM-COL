@@ -38,22 +38,21 @@ from qgis.PyQt.QtWidgets import (QDialog,
 from qgis.core import Qgis
 from qgis.gui import QgsMessageBar
 
-from asistente_ladm_col.config.general_config import (DEFAULT_SRS_AUTH,
+from asistente_ladm_col.config.general_config import (DEFAULT_ILI2DB_DEBUG_MODE,
+                                                      DEFAULT_SRS_AUTH,
                                                       DEFAULT_SRS_CODE,
                                                       COLLECTED_DB_SOURCE,
                                                       SETTINGS_CONNECTION_TAB_INDEX,
                                                       JAVA_REQUIRED_VERSION,
                                                       TOML_FILE_DIR,
                                                       SETTINGS_MODELS_TAB_INDEX,
-                                                      DEFAULT_USE_CUSTOM_MODELS,
-                                                      DEFAULT_MODELS_DIR,
                                                       CTM12_PG_SCRIPT_PATH,
                                                       CTM12_GPKG_SCRIPT_PATH, DEFAULT_SRS_AUTHID)
 from asistente_ladm_col.config.ili2db_names import ILI2DBNames
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.keys.ili2db_keys import *
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
-from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
+from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.crs_utils import get_crs_from_auth_and_code, get_crs_authid
 from asistente_ladm_col.lib.dependency.java_dependency import JavaDependency
@@ -359,9 +358,9 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
         # set model repository
         # if there is no option  by default use online model repository
-        self.use_local_models = settings.value('Asistente-LADM-COL/models/custom_model_directories_is_checked', DEFAULT_USE_CUSTOM_MODELS, type=bool)
+        self.use_local_models = self.app.settings.custom_models
         if self.use_local_models:
-            self.custom_model_directories = settings.value('Asistente-LADM-COL/models/custom_models', DEFAULT_MODELS_DIR)
+            self.custom_model_directories = self.app.settings.custom_model_dirs
 
     def crs_changed(self):
         self.srs_auth, self.srs_code = get_crs_authid(self.crsSelector.crs()).split(":")
@@ -401,9 +400,13 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         if full_java_exe_path:
             self.base_configuration.java_path = full_java_exe_path
 
+        # Debug mode
+        self.base_configuration.debugging_enabled = QSettings().value('Asistente-LADM-COL/models/debug', DEFAULT_ILI2DB_DEBUG_MODE, type=bool)
+        self.base_configuration.logfile_path = QSettings().value('Asistente-LADM-COL/models/log_file_path', '')
+
         # User could have changed the default values
-        self.use_local_models = QSettings().value('Asistente-LADM-COL/models/custom_model_directories_is_checked', DEFAULT_USE_CUSTOM_MODELS, type=bool)
-        self.custom_model_directories = QSettings().value('Asistente-LADM-COL/models/custom_models', DEFAULT_MODELS_DIR)
+        self.use_local_models = self.app.settings.custom_models
+        self.custom_model_directories = self.app.settings.custom_model_dirs
 
         # Check custom model directories
         if self.use_local_models:
@@ -438,7 +441,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
                 for param in params[ILI2DB_SCHEMAIMPORT]:  # List of tuples
                     if param[0] == ILI2DB_CREATE_BASKET_COL_KEY:  # param: (option, value)
                         configuration.create_basket_col = True
-                        self.logger.debug(__name__, "Schema Import createBasketCol enabled! (taken from role config)")
+                        self.logger.debug(__name__, "Schema Import createBasketCol enabled (model '{}')! (taken from role config)".format(model.id()))
 
         return configuration
 

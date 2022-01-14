@@ -2,7 +2,7 @@ from qgis.PyQt.QtCore import (QObject,
                               QCoreApplication)
 
 from asistente_ladm_col.config.general_config import SUPPLIES_DB_SOURCE
-from asistente_ladm_col.config.gui.common_keys import ACTION_RUN_ETL_SUPPLIES
+from asistente_ladm_col.config.keys.common import ACTION_RUN_ETL_SUPPLIES
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.config.enums import (EnumSTStepType,
                                              EnumUserLevel)

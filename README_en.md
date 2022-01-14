@@ -12,7 +12,7 @@ Links of interest: [Documentation](https://swisstierrascolombia.github.io/Asiste
 A project of: [SwissTierras Colombia](https://swisstierrascolombia.com/) ([BSF-Swissphoto AG](http://bsf-swissphoto.com/) - [INCIGE SAS](http://www.incige.com/))
 
 
-:arrow_right: With the current version of LADM-COL Assistant, we suggest you to use QGIS v3.14.16, available at https://qgis.org/downloads/
+:arrow_right: With the current version of LADM-COL Assistant, we suggest you to use QGIS v3.20.x, available at https://qgis.org/downloads/
 
 ## Support per DB engine
 
@@ -37,13 +37,13 @@ To use the LADM-COL Assistant you need:
    - GNU/Linux
    - macOS
  - Base software:
-   - QGIS v3.10.0-A Coruña or higher.
+   - QGIS v3.16.x-Hannover or higher.
    - Java v1.8.
    - PostgreSQL 9.5 or higher (PostgreSQL 10, 11 or 12 work as well).
    - PostGIS 2.4 or higher.
    - (Optional) SQL Server 2012 or higher.
  - QGIS plugins (installing LADM-COL Assistant using QGIS Plugin Manager will also install these automatically):
-   - QGIS Model Baker v6.1.1.5
+   - QGIS Model Baker v6.3.2
    - MapSwipe Tool v1.2
 
 ## Gallery
@@ -70,7 +70,7 @@ To use the LADM-COL Assistant you need:
 
 ## Functionalities
 
-The current version ([3.1.4](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/3.1.4)) of the LADM-COL Assistant depends on [QGIS Model Baker v6.1.1.5](https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.4/QgisModelBaker_6115.zip) and allows users to:
+The current version ([3.2.0-beta-1](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/3.1.4)) of the LADM-COL Assistant depends on [QGIS Model Baker v6.3.2](https://github.com/opengisch/QgisModelBaker/releases/download/v6.3.2/QgisModelBaker.v6.3.2.zip) and allows users to:
 
  - Integration with the Transitional System:
    - Authentication
@@ -181,7 +181,6 @@ The current version ([3.1.4](https://github.com/SwissTierrasColombia/Asistente-L
  - Generate reports of missing supplies.
  - Detect parcel changes:
    - Compare a collected database versus the supplies database and show differences by batch or per parcel.
- - Import data from [intermediate structure in Excel](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/blob/master/asistente_ladm_col/resources/excel/datos_estructura_excel.xlsx).
  - Configure automatic values for `namespace` and `local_id` attributes.
  - Load styles for newly added layers from preconfigured QML files.
  - Online/offline help.

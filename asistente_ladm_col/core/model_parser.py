@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 /***************************************************************************
     begin                :    28/08/18
@@ -21,24 +20,31 @@ from qgis.PyQt.QtCore import (QObject,
 
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
+from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
 from asistente_ladm_col.utils.utils import is_version_valid
 
 
 class ModelParser(QObject):
+    """
+    Assembles both plugin's registered models and models found in the DB to
+    answer questions about the existence of a registered model in the DB.
+
+    Note: Some info in the LADMColModelRegistry depends on the active role.
+          Have a look at its documentation.
+    """
     def __init__(self, db):
         QObject.__init__(self)
         self.logger = Logger()
 
         ladmcol_models = LADMColModelRegistry()
-        self.current_model_version = {model_id: None for model_id in ladmcol_models.model_ids()}
-        self.model_version_is_supported = {model_id: False for model_id in ladmcol_models.model_ids()}
+        self.current_model_version = {model_id: None for model_id in ladmcol_models.model_keys()}
+        self.model_version_is_supported = {model_id: False for model_id in ladmcol_models.model_keys()}
 
         self._db = db
 
         # Fill versions for each model found
         for current_model_name in self._get_models():
-            for model_key,v in self.current_model_version.items():
+            for model_key, v in self.current_model_version.items():
                 if current_model_name.startswith(model_key):
                     parts = current_model_name.split(model_key)
                     if len(parts) > 1:
@@ -78,10 +84,30 @@ class ModelParser(QObject):
         return self.model_version_is_supported[LADMNames.SUPPLIES_MODEL_KEY]
 
     def ladm_col_model_exists(self, model_prefix):
-        return self.model_version_is_supported[model_prefix] if model_prefix in self.model_version_is_supported else False
+        return self.model_version_is_supported.get(model_prefix, False)
 
     def at_least_one_ladm_col_model_exists(self):
-        return True in self.model_version_is_supported.values()
+        """
+        Check that all hidden_and_supported models (hidden models are supposed to be the building blocks
+        of extended ones) are also supported in the DB and that there is at least one non-hidden_and_supported
+        model that is supported in the DB.
+
+        Note: Both hidden/non hidden and supported models depend on the active role,
+              which is already taken into account by LADMColModelRegistry().
+        """
+        hidden_model_ids = [model.id() for model in LADMColModelRegistry().hidden_and_supported_models()]
+        non_hidden_model_ids = [model.id() for model in LADMColModelRegistry().non_hidden_and_supported_models()]
+
+        hidden_models_supported = list()
+        non_hidden_models_supported = list()
+
+        for model_id, is_supported in self.model_version_is_supported.items():
+            if model_id in hidden_model_ids:
+                hidden_models_supported.append(is_supported)
+            elif model_id in non_hidden_model_ids:
+                non_hidden_models_supported.append(is_supported)
+
+        return not (False in hidden_models_supported) and any(non_hidden_models_supported)
 
     def _get_models(self):
         return self._db.get_models()

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 /***************************************************************************
                               Asistente LADM-COL
@@ -173,7 +172,6 @@ print("[INFO] Model Baker initialized!")
 from asistente_ladm_col.asistente_ladm_col_plugin import AsistenteLADMCOLPlugin
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.logic.quality.quality_rule_engine import QualityRuleEngine
-from asistente_ladm_col.logic.quality.quality_rule_layer_manager import QualityRuleLayerManager
 from asistente_ladm_col.config.enums import EnumQualityRule
 from asistente_ladm_col.utils.qt_utils import export_title_text_to_pdf
 
@@ -247,4 +245,3 @@ pdf_filepath = os.path.join(OUTPUT_DIR,
 export_title_text_to_pdf(pdf_filepath, log_result.title, log_result.text)
 
 print("\n[INFO] Done!")
-

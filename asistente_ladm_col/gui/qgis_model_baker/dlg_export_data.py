@@ -42,16 +42,14 @@ from qgis.core import Qgis
 from qgis.gui import QgsGui
 from qgis.gui import QgsMessageBar
 
-from asistente_ladm_col.config.ladm_names import LADMNames
-from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
+from asistente_ladm_col.config.general_config import (DEFAULT_ILI2DB_DEBUG_MODE,
+                                                      COLLECTED_DB_SOURCE,
                                                       JAVA_REQUIRED_VERSION,
                                                       SETTINGS_CONNECTION_TAB_INDEX,
-                                                      SETTINGS_MODELS_TAB_INDEX,
-                                                      DEFAULT_USE_CUSTOM_MODELS,
-                                                      DEFAULT_MODELS_DIR)
+                                                      SETTINGS_MODELS_TAB_INDEX)
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
-from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
+from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.dependency.java_dependency import JavaDependency
 from asistente_ladm_col.utils import get_ui_class
@@ -315,6 +313,14 @@ class DialogExportData(QDialog, DIALOG_UI):
                     self._running_tool = False
                     self.show_message(QCoreApplication.translate("DialogExportData", "An error occurred when exporting the data. For more information see the log..."), Qgis.Warning)
                     self.on_result.emit(False)  # Inform other classes that the execution was not successful
+
+                    # Since the export was not successful, we'll try to remove any temp XTF generated
+                    if os.path.exists(configuration.xtffile):
+                        try:
+                            os.remove(configuration.xtffile)
+                        except:
+                            pass
+
                     return
             except JavaNotFoundError:
                 self._running_tool = False
@@ -356,9 +362,9 @@ class DialogExportData(QDialog, DIALOG_UI):
 
         # set model repository
         # if there is no option by default use online model repository
-        custom_model_is_checked =  settings.value('Asistente-LADM-COL/models/custom_model_directories_is_checked', DEFAULT_USE_CUSTOM_MODELS, type=bool)
+        custom_model_is_checked = self.app.settings.custom_models
         if custom_model_is_checked:
-            self.custom_model_directories = settings.value('Asistente-LADM-COL/models/custom_models', DEFAULT_MODELS_DIR)
+            self.custom_model_directories = self.app.settings.custom_model_dirs
 
     def update_configuration(self):
         """
@@ -376,9 +382,13 @@ class DialogExportData(QDialog, DIALOG_UI):
         if full_java_exe_path:
             self.base_configuration.java_path = full_java_exe_path
 
+        # Debug mode
+        self.base_configuration.debugging_enabled = QSettings().value('Asistente-LADM-COL/models/debug', DEFAULT_ILI2DB_DEBUG_MODE, type=bool)
+        self.base_configuration.logfile_path = QSettings().value('Asistente-LADM-COL/models/log_file_path', '')
+
         # User could have changed the default values
-        self.use_local_models = QSettings().value('Asistente-LADM-COL/models/custom_model_directories_is_checked', DEFAULT_USE_CUSTOM_MODELS, type=bool)
-        self.custom_model_directories = QSettings().value('Asistente-LADM-COL/models/custom_models', DEFAULT_MODELS_DIR)
+        self.use_local_models = self.app.settings.custom_models
+        self.custom_model_directories = self.app.settings.custom_model_dirs
 
         # Check custom model directories
         if self.use_local_models:

@@ -1,11 +1,13 @@
+from copy import deepcopy
+
 from qgis.PyQt.QtCore import *
 
 from asistente_ladm_col.config.general_config import (FDC_DATASET_NAME,
                                                       SUPPLIES_DB_SOURCE)
-from asistente_ladm_col.config.gui.common_keys import *
+from asistente_ladm_col.config.keys.common import *
 from asistente_ladm_col.config.gui.gui_config import GUI_Config
 from asistente_ladm_col.config.keys.ili2db_keys import *
-from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
+
 
 basic_role_gui = GUI_Config().get_gui_dict(TEMPLATE_GUI)
 basic_role_gui[TOOLBAR] = [{  # Overwrite list of toolbars
@@ -130,7 +132,7 @@ field_coordinator_role_gui[TOOLBAR] = [{  # Overwrite list of toolbars
     ]
 }]
 
-operator_role_gui = {}  # Let the gui builder use the template GUI config.
+operator_role_gui = GUI_Config().get_gui_dict(TEMPLATE_GUI)  # Just use the template GUI config.
 
 manager_role_gui = GUI_Config().get_gui_dict(TEMPLATE_GUI)
 manager_role_gui[TOOLBAR] = [{  # Overwrite list of toolbars
@@ -238,6 +240,8 @@ def get_field_admin_role_models():
     Function to delay configuration for admin role models, since it
     needs to overwrite ili2db params from the main model config
     """
+    from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
+
     field_admin_role_models = COMMON_ROLE_MODELS.copy()
     field_admin_role_models[ROLE_SUPPORTED_MODELS] = COMMON_SUPPORTED_MODELS + [LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY]
     field_admin_role_models[ROLE_CHECKED_MODELS] = [LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY]
@@ -260,7 +264,7 @@ advanced_role_models[ROLE_CHECKED_MODELS] = COMMON_CHECKED_MODELS
 
 
 def get_role_config():
-    return {
+    return deepcopy({
         BASIC_ROLE: {
             ROLE_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Basic"),
             ROLE_DESCRIPTION: QCoreApplication.translate("AsistenteLADMCOLPlugin",
@@ -300,7 +304,7 @@ def get_role_config():
                 EnumQualityRule.Polygon.OVERLAPS_IN_PLOTS,
                 EnumQualityRule.Logic.PARCEL_TYPE_AND_22_POSITION_OF_PARCEL_NUMBER,
             ],
-            ROLE_GUI_CONFIG: basic_role_gui
+            ROLE_GUI_CONFIG: {TEMPLATE_GUI: basic_role_gui}
         },
         SUPPLIES_PROVIDER_ROLE: {
             ROLE_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Supplies Provider"),
@@ -326,7 +330,7 @@ def get_role_config():
                 ACTION_ST_LOGOUT
             ],
             ROLE_QUALITY_RULES: list(),
-            ROLE_GUI_CONFIG: supplies_provider_role_gui
+            ROLE_GUI_CONFIG: {TEMPLATE_GUI: supplies_provider_role_gui}
         },
         FIELD_ADMIN_ROLE: {
             ROLE_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Field administrator"),
@@ -335,13 +339,14 @@ def get_role_config():
             ROLE_ENABLED: False,
             ROLE_MODELS: get_field_admin_role_models(),
             ROLE_ACTIONS: [
+                ACTION_XTF_MODEL_CONVERTER,
                 ACTION_ALLOCATE_PARCELS_FIELD_DATA_CAPTURE,
                 #  ACTION_SYNCHRONIZE_FIELD_DATA,
                 ACTION_INTEGRATE_SUPPLIES,
                 ACTION_PARCEL_QUERY,
                 ACTION_CHECK_QUALITY_RULES],
             ROLE_QUALITY_RULES: COMMON_QUALITY_RULES,
-            ROLE_GUI_CONFIG: field_admin_role_gui
+            ROLE_GUI_CONFIG: {TEMPLATE_GUI: field_admin_role_gui}
         },
         FIELD_COORDINATOR_ROLE: {
             ROLE_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Field coordinator"),
@@ -350,11 +355,12 @@ def get_role_config():
             ROLE_ENABLED: False,
             ROLE_MODELS: field_coordinator_role_models,
             ROLE_ACTIONS: [
+                ACTION_XTF_MODEL_CONVERTER,
                 ACTION_ALLOCATE_PARCELS_FIELD_DATA_CAPTURE
                 #  ACTION_SYNCHRONIZE_FIELD_DATA],
             ],
             ROLE_QUALITY_RULES: list(),
-            ROLE_GUI_CONFIG: field_coordinator_role_gui
+            ROLE_GUI_CONFIG: {TEMPLATE_GUI: field_coordinator_role_gui}
         },
         OPERATOR_ROLE: {
             ROLE_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Operator"),
@@ -363,6 +369,7 @@ def get_role_config():
             ROLE_ENABLED: True,
             ROLE_MODELS: COMMON_ROLE_MODELS,
             ROLE_ACTIONS: [
+                ACTION_XTF_MODEL_CONVERTER,
                 ACTION_CREATE_POINT,
                 ACTION_CREATE_BOUNDARY,
                 ACTION_CREATE_PLOT,
@@ -394,7 +401,7 @@ def get_role_config():
                 ACTION_PARCEL_QUERY,
                 ACTION_CHECK_QUALITY_RULES],
             ROLE_QUALITY_RULES: COMMON_QUALITY_RULES,
-            ROLE_GUI_CONFIG: operator_role_gui
+            ROLE_GUI_CONFIG: {TEMPLATE_GUI: operator_role_gui}
         },
         MANAGER_ROLE: {
             ROLE_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Manager"),
@@ -403,6 +410,7 @@ def get_role_config():
             ROLE_ENABLED: True,
             ROLE_MODELS: COMMON_ROLE_MODELS,
             ROLE_ACTIONS: [
+                ACTION_XTF_MODEL_CONVERTER,
                 ACTION_CHANGE_DETECTION_SETTINGS,
                 ACTION_CHANGE_DETECTION_ALL_PARCELS,
                 ACTION_CHANGE_DETECTION_PER_PARCEL,
@@ -414,7 +422,7 @@ def get_role_config():
                 ACTION_PARCEL_QUERY,
                 ACTION_CHECK_QUALITY_RULES],
             ROLE_QUALITY_RULES: COMMON_QUALITY_RULES,
-            ROLE_GUI_CONFIG: manager_role_gui
+            ROLE_GUI_CONFIG: {TEMPLATE_GUI: manager_role_gui}
         },
         ADVANCED_ROLE: {
             ROLE_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Advanced"),
@@ -424,6 +432,6 @@ def get_role_config():
             ROLE_MODELS: COMMON_ROLE_MODELS,  # advanced_role_models,
             ROLE_ACTIONS: [ALL_ACTIONS],
             ROLE_QUALITY_RULES: COMMON_QUALITY_RULES,
-            ROLE_GUI_CONFIG: advanced_role_gui
+            ROLE_GUI_CONFIG: {TEMPLATE_GUI: advanced_role_gui}
         }
-    }
+    })

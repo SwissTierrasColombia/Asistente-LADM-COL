@@ -3,7 +3,7 @@ from copy import deepcopy
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QObject)
 
-from asistente_ladm_col.config.gui.common_keys import *
+from asistente_ladm_col.config.keys.common import *
 
 
 class GUI_Config(QObject):
@@ -11,10 +11,10 @@ class GUI_Config(QObject):
     Holds common GUI dict definitions. These are independent of roles.
 
     Each dict found here can be used as a GUI (both toolbar and menus) configuration. The GUI Builder takes such
-    configuration is taken as the basis to start showing or hiding actions depending on the active role, actions
-    supported  by the active DB engine,
+    configuration as the basis to start showing or hiding actions depending on the active role and on actions
+    supported by the active DB engine.
     """
-    DEFAULT_GUI_CONFIG_DICT = {
+    DEFAULT_GUI_CONFIG_DICT = {  # For DB connections that don't pass a test_connection
         MAIN_MENU: [{  # List of main menus
             WIDGET_TYPE: MENU,
             WIDGET_NAME: "LAD&M-COL",
@@ -55,6 +55,7 @@ class GUI_Config(QObject):
         }]
     }
 
+    # Roles can use the template to adjust their own GUI configuration.
     TEMPLATE_GUI_CONFIG_DICT = {
         MAIN_MENU: [{  # List of main menus
             WIDGET_TYPE: MENU,
@@ -71,7 +72,9 @@ class GUI_Config(QObject):
                     ACTIONS: [
                         ACTION_SCHEMA_IMPORT,
                         ACTION_IMPORT_DATA,
-                        ACTION_EXPORT_DATA
+                        ACTION_EXPORT_DATA,
+                        SEPARATOR,
+                        ACTION_XTF_MODEL_CONVERTER
                     ]
                 }, {
                     WIDGET_TYPE: MENU,
@@ -215,6 +218,13 @@ class GUI_Config(QObject):
                               ACTION_ST_LOGOUT]
                 },
                 SEPARATOR,
+                {
+                    WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Add-ons"),
+                    OBJECT_NAME: LADM_COL_ADD_ON_MENU,
+                    ICON: ADD_ON_ICON,
+                    ACTIONS: []  # This should be changed using RoleRegistry.add_actions_to_roles()
+                },
+                SEPARATOR,
                 ACTION_SETTINGS,
                 SEPARATOR,
                 ACTION_HELP,
@@ -278,7 +288,7 @@ class GUI_Config(QObject):
     def __init__(self):
         QObject.__init__(self)
 
-    def get_gui_dict(self, name):
+    def get_gui_dict(self, name=TEMPLATE_GUI):
         """
         Gets a GUI config dict for both Toolbars and Menus.
 

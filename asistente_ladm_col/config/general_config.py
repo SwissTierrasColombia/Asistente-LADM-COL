@@ -29,6 +29,7 @@ PLUGIN_VERSION = get_plugin_metadata('asistente_ladm_col', 'version')
 PLUGIN_NAME = get_plugin_metadata('asistente_ladm_col', 'name')
 PLUGINS_DIR = os.path.dirname(PLUGIN_DIR)
 
+DEFAULT_ILI2DB_DEBUG_MODE = False
 DEFAULT_USE_ROADS_VALUE = False
 DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE = True
 HELP_URL = "https://swisstierrascolombia.github.io/Asistente-LADM-COL"
@@ -40,6 +41,8 @@ MAXIMUM_FIELD_MAPPING_FILES_PER_TABLE = 10
 HELP_DIR_NAME = 'help'
 DEFAULT_USE_CUSTOM_MODELS = True
 DEFAULT_MODELS_DIR = os.path.join(PLUGIN_DIR, 'resources', 'models')
+PROCESSING_MODELS_DIR = os.path.join(PLUGIN_DIR, 'lib', 'processing', 'models')
+PROCESSING_SCRIPTS_DIR = os.path.join(PLUGIN_DIR, 'lib', 'processing', 'scripts')
 STYLES_DIR = os.path.join(PLUGIN_DIR, 'resources', 'styles')
 CTM12_PG_SCRIPT_PATH = os.path.join(PLUGIN_DIR, 'resources', 'sql', 'insert_ctm12_pg.sql')
 CTM12_GPKG_SCRIPT_PATH = os.path.join(PLUGIN_DIR, 'resources', 'sql', 'insert_ctm12_gpkg.sql')
@@ -147,12 +150,12 @@ QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION = "6.3.2"
 
 # If Asistente LADM-COL depends on a specific version of QGIS Model Baker
 #  (and only on that one), set to True
-QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION = False
+QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION = True
 
 # If Asistente LADM-COL depends on a specific version of QGIS Model Baker
 #  (and only on that one), and it is not the latest release, then you can
 #  specify a download URL. If that's not the case, pass an empty string below
-QGIS_MODEL_BAKER_REQUIRED_VERSION_URL = ''  # 'https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.5/QgisModelBaker_6115.zip'  # ''
+QGIS_MODEL_BAKER_REQUIRED_VERSION_URL = 'https://github.com/opengisch/QgisModelBaker/releases/download/v6.3.2/QgisModelBaker.v6.3.2.zip'  # 'https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.5/QgisModelBaker_6115.zip'  # ''
 
 # Configure Map Swipe Tool Dependency
 MAP_SWIPE_TOOL_PLUGIN_NAME = "mapswipetool_plugin"
@@ -196,8 +199,10 @@ SUFFIX_GET_THUMBNAIL = "&thumbnail=true&size=large"
 HELP_DOWNLOAD = 'https://github.com/SwissTierrasColombia/Asistente-LADM-COL-docs/releases/download'
 HELP_ASSET_NAME = "Asistente-LADM-COL-docs.zip"
 
-DEFAULT_DATASET_NAME = "Default dataset"
-FDC_DATASET_NAME = "Captura en campo"
+DEFAULT_DATASET_NAME = "Default_dataset"
+FDC_DATASET_NAME = "Captura_en_campo"
+# Basket t_id to be used for all new features capured in the field, where we have no function expression
+FDC_WILD_CARD_BASKET_ID = 9999
 
 TOLERANCE_MAX_VALUE = 5000  # In millimeters
 DEFAULT_TOLERANCE_VALUE = 0  # In millimeters

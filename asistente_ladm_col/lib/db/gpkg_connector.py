@@ -115,6 +115,7 @@ class GPKGConnector(FileDB):
         dict_names[DISPLAY_NAME_KEY] = "dispName"
         dict_names[ILICODE_KEY] = "iliCode"
         dict_names[DESCRIPTION_KEY] = "description"
+        dict_names[THIS_CLASS_KEY] = "thisClass"
         dict_names[T_BASKET_KEY] = "T_basket"
         dict_names[T_ILI2DB_BASKET_KEY] = "T_ILI2DB_BASKET"
         dict_names[T_ILI2DB_DATASET_KEY] = "T_ILI2DB_DATASET"
@@ -140,7 +141,7 @@ class GPKGConnector(FileDB):
     def _metadata_exists(self):
         return self._table_exists(ILI2DBNames.INTERLIS_TEST_METADATA_TABLE_PG)
 
-    def _has_basket_col(self):
+    def has_basket_col(self):
         if self.conn is None:
             res, msg = self.open_connection()
             if not res:
@@ -153,7 +154,6 @@ class GPKGConnector(FileDB):
                           WHERE tag='{}' AND setting='{}';""".format(ILI2DBNames.BASKET_COL_TAG, ILI2DBNames.BASKET_COL_VALUE))
 
         return bool(cursor.fetchall())
-
 
     def get_uri_for_layer(self, layer_name):
         return (True, '{uri}|layername={table}'.format(
@@ -184,14 +184,30 @@ class GPKGConnector(FileDB):
                 self.logger.warning_msg(__name__, msg)
                 return list()
 
+        # First go for all models registered in t_ili2db_model
         cursor = self.conn.cursor()
-        result = cursor.execute("""SELECT distinct substr(iliname, 1, pos-1) AS modelname from 
-                                    (SELECT *, instr(iliname,'.') AS pos FROM t_ili2db_trafo)""")
-        lst_models = list()
+        result = cursor.execute("""SELECT modelname FROM t_ili2db_model;""")
+        model_hierarchy = dict()
         if result is not None:
-            lst_models = [db_model['modelname'] for db_model in result]
-        self.logger.debug(__name__, "Models found: {}".format(lst_models))
-        return lst_models
+            all_models = [db_model['modelname'] for db_model in result]
+            model_hierarchy = self._parse_models_from_db_meta_attrs(all_models)
+
+        # Now go for all models listed in t_ili2db_trafo
+        result = cursor.execute("""SELECT distinct substr(iliname, 1, pos-1) AS modelname from 
+                                   (SELECT *, instr(iliname,'.') AS pos FROM t_ili2db_trafo)""")
+        trafo_models = list()
+        if result is not None:
+            trafo_models = [db_model['modelname'] for db_model in result]
+
+        # Finally, using those obtained from t_ili2db_trafo, go for dependencies found in t_ili2db_model
+        dependencies = list()
+        for model in trafo_models:
+            dependencies.extend(model_hierarchy.get(model, list()))
+
+        res_models = list(set(dependencies + trafo_models))
+        self.logger.debug(__name__, "Models found: {}".format(res_models))
+
+        return res_models
 
     def is_ladm_layer(self, layer):
         result = False
@@ -286,7 +302,7 @@ class GPKGConnector(FileDB):
         else:
             return False, EnumTestConnectionMsg.CONNECTION_COULD_NOT_BE_OPEN, msg
 
-    def _test_connection_to_ladm(self, required_models):
+    def _test_connection_to_ladm(self, models):
         database = os.path.basename(self._dict_conn_params['dbfile'])
         if not self._metadata_exists():
             return False, EnumTestConnectionMsg.INTERLIS_META_ATTRIBUTES_NOT_FOUND, QCoreApplication.translate(
@@ -299,15 +315,15 @@ class GPKGConnector(FileDB):
                                                                                                    "The database '{}' was created with an old version of ili2db (v3), which is no longer supported. You need to migrate it to ili2db4.").format(
                 database)
 
-        if self.model_parser is None:
+        if self._model_parser is None:
             self.model_parser = ModelParser(self)
 
-        res, code, msg = self.check_db_models(required_models)
+        res, code, msg = self.check_db_models(models)
         if not res:
             return res, code, msg
 
         basket_required, model_name = self._db_should_have_basket_support()
-        if basket_required and not self._has_basket_col():
+        if basket_required and not self.has_basket_col():
             return False, EnumTestConnectionMsg.BASKET_COLUMN_NOT_FOUND, \
                    QCoreApplication.translate("GPKGConnector", "Basket column not found, but it is required by model '{}'!.").format(model_name)
 
@@ -315,7 +331,7 @@ class GPKGConnector(FileDB):
         if self._should_update_db_mapping_values:
             self._initialize_names()
 
-        res, msg = self.names.test_names(self._get_flat_table_and_field_names_for_testing_names())
+        res, msg = self.names.test_names()
         if not res:
             return False, EnumTestConnectionMsg.DB_NAMES_INCOMPLETE, QCoreApplication.translate("PGConnector",
                                                                                                 "Table/field names from the DB are not correct. Details: {}.").format(

@@ -59,6 +59,7 @@ from asistente_ladm_col.config.enums import EnumQualityRule
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.quality_rule.quality_rule_manager import QualityRuleManager
+from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 from asistente_ladm_col.utils.utils import get_uuid_dict, remove_keys_from_dict
 from asistente_ladm_col.lib.geometry import GeometryUtils
 
@@ -105,21 +106,36 @@ class PolygonQualityRules:
             flat_overlapping = list(set(flat_overlapping))  # unique values
 
             if type(polygon_layer) == QgsVectorLayer: # A string might come from processing for empty layers
-                dict_uuids = {f.id(): f[db.names.T_ILI_TID_F] for f in polygon_layer.getFeatures() if f.id() in flat_overlapping}
+                dict_uuids = {f.id(): (f[db.names.T_ILI_TID_F], f[db.names.T_ID_F]) for f in polygon_layer.getFeatures(flat_overlapping)}
+
+            informal_spatial_unit_tids = list()
+            if overlapping:
+                ladm_data = LADMData()
+                if polygon_layer_name == db.names.LC_PLOT_T:
+                    # Informality checks only make sense for overlaps among Plots
+                    informal_spatial_unit_tids = ladm_data.get_informal_plot_tids(db)
 
             features = []
 
             for overlapping_item in overlapping:
-                polygon_id_field = overlapping_item[0]
-                overlapping_id_field = overlapping_item[1]
-                polygon_intersection = self.geometry.get_intersection_polygons(polygon_layer, polygon_id_field, overlapping_id_field)
+                polygon_fid = overlapping_item[0]
+                overlapping_fid = overlapping_item[1]
+
+                if informal_spatial_unit_tids:
+                    # If (for thematic reasons) the overlap is not considered an error, we skip it from the result
+                    is_1_informal = dict_uuids.get(polygon_fid, (None, -1))[1] in informal_spatial_unit_tids
+                    is_2_informal = dict_uuids.get(overlapping_fid, (None, -1))[1] in informal_spatial_unit_tids
+                    if is_1_informal != is_2_informal:  # Overlap for T-F and F-T combinations is allowed (not an error)
+                        continue
+
+                polygon_intersection = self.geometry.get_intersection_polygons(polygon_layer, polygon_fid, overlapping_fid)
 
                 if polygon_intersection is not None:
                     new_feature = QgsVectorLayerUtils().createFeature(
                         error_layer,
                         polygon_intersection,
-                        {0: dict_uuids.get(polygon_id_field),
-                         1: dict_uuids.get(overlapping_id_field),
+                        {0: dict_uuids.get(polygon_fid, (None,))[0],  # t_ili_tid
+                         1: dict_uuids.get(overlapping_fid, (None,))[0],  # t_ili_tid
                          2: self.quality_rules_manager.get_error_message(error_code),
                          3: error_code})
                     features.append(new_feature)
@@ -390,9 +406,8 @@ class PolygonQualityRules:
 
         # Sometimes, nodes of the building that lie on plot boundaries but do not match a plot vertex, might break
         # the contains function, so we make sure to have those building nodes on the plots to guarantee the contains
-        # works as expected. Of course, we don't touch the original plots layer, so we make a copy first.
-        topological_plots = self.app.core.get_layer_copy(layers[names.LC_PLOT_T])
-        self.geometry.add_topological_vertices(topological_plots, layers[names.LC_BUILDING_T])
+        # works as expected. Of course, we don't touch the original plots layer, changes are made on a copy.
+        topological_plots = self.geometry.add_topological_vertices(layers[names.LC_PLOT_T], layers[names.LC_BUILDING_T])
 
         # Now that we have a copy of the plot layer, we register it in the project, so that Processing can find it
         self.app.core.register_layers_to_project([topological_plots])
@@ -610,9 +625,8 @@ class PolygonQualityRules:
 
         # Sometimes, nodes of the b. unit that lie on plot boundaries but do not match a plot vertex, might break
         # the contains function, so we make sure to have those b. unit nodes on the plots to guarantee the contains
-        # works as expected. Of course, we don't touch the original plots layer, so we make a copy first.
-        topological_plots = self.app.core.get_layer_copy(layers[names.LC_PLOT_T])
-        self.geometry.add_topological_vertices(topological_plots, layers[names.LC_BUILDING_UNIT_T])
+        # works as expected. Of course, we don't touch the original plots layer, changes are made on a copy.
+        topological_plots = self.geometry.add_topological_vertices(layers[names.LC_PLOT_T], layers[names.LC_BUILDING_UNIT_T])
 
         # Now that we have a copy of the plot layer, we register it in the project, so that Processing can find it
         self.app.core.register_layers_to_project([topological_plots])
@@ -733,9 +747,8 @@ class PolygonQualityRules:
 
         # Sometimes, nodes of the b. unit that lie on building boundaries but do not match a building vertex, might
         # break the contains function, so we make sure to have those b. unit nodes on the buildings to guarantee the
-        # contains works as expected. Of course, we don't touch the original building layer, so we make a copy first.
-        topological_buildings = self.app.core.get_layer_copy(layers[names.LC_BUILDING_T])
-        self.geometry.add_topological_vertices(topological_buildings, layers[names.LC_BUILDING_UNIT_T])
+        # contains works as expected. Of course, we don't touch the original building layer, changes are made on a copy.
+        topological_buildings = self.geometry.add_topological_vertices(layers[names.LC_BUILDING_T], layers[names.LC_BUILDING_UNIT_T])
 
         # Now that we have a copy of the building layer, we register it in the project, so that Processing can find it
         self.app.core.register_layers_to_project([topological_buildings])
@@ -1107,7 +1120,7 @@ class PolygonQualityRules:
         # Identify plots with geometry problems and remove coincidence in spatial join between plot as line and boundary
         # and inner_rings and boundary. No need to check further topological rules for plots
 
-        errors_plot_boundary_diffs = self.geometry.difference_plot_boundary(db.names, plot_as_lines_layer, boundary_layer, db.names.T_ID_F)
+        errors_plot_boundary_diffs = self.geometry.difference_plot_boundary(plot_as_lines_layer, boundary_layer, db.names.T_ID_F)
         for error_diff in errors_plot_boundary_diffs:
             plot_id = error_diff['id']
             # All plots with geometric errors are eliminated. It is not necessary check more

@@ -105,9 +105,9 @@ class TranslatableConfigStrings(QObject):
     help_get_domain_code_from_value = QCoreApplication.translate("TranslatableConfigStrings", "Gets the t_id that corresponds to a domain value") + \
                                          QCoreApplication.translate("TranslatableConfigStrings", "<h4>Syntax</h4>") + \
                                          "<span class=\"functionname\">get_domain_code_from_value</span>(" \
-                                         "<span class=\"argument\">domain_table</span>," \
-                                         "<span class=\"argument\">value</span>," \
-                                         "<span class=\"argument\">value_is_ilicode</span>," \
+                                         "<span class=\"argument\">domain_table</span>, " \
+                                         "<span class=\"argument\">value</span>, " \
+                                         "<span class=\"argument\">value_is_ilicode</span>, " \
                                          "<span class=\"argument\">validate_conn</span>)" + \
                                          QCoreApplication.translate("TranslatableConfigStrings", "<h4>Arguments</h4>") + \
                                          "<span class=\"argument\">domain_table</span> " + QCoreApplication.translate("TranslatableConfigStrings", "Domain table name or layer obj") + \
@@ -120,6 +120,34 @@ class TranslatableConfigStrings(QObject):
   'NPH',
   True,
   False) → {}</pre>""".format(QCoreApplication.translate("TranslatableConfigStrings", "Gets the t_id of NPH in\n  domain lc_condicionprediotipo"))
+
+    help_get_default_basket = QCoreApplication.translate("TranslatableConfigStrings",
+                                                       "Gets the t_id of the default basket in the current DB. This function creates the basket if it does not exist yet. If the DB does not support baskets, it returns None.") + \
+                                      QCoreApplication.translate("TranslatableConfigStrings", "<h4>Syntax</h4>") + \
+                                      "<span class=\"functionname\">get_default_basket()</span>" + \
+                                      QCoreApplication.translate("TranslatableConfigStrings", "<h4>Examples</h4>") + \
+                                      """<pre>get_default_basket() → {}</pre>""".format(QCoreApplication.translate("TranslatableConfigStrings",
+                                                       "\nGets the t_id of\nthe default basket"))
+
+    help_get_multi_domain_code_from_value = QCoreApplication.translate("TranslatableConfigStrings", "Gets the t_id that corresponds to a (child) domain value") + \
+                                      QCoreApplication.translate("TranslatableConfigStrings", "<h4>Syntax</h4>") + \
+                                      "<span class=\"functionname\">get_multi_domain_code_from_value</span>(" \
+                                      "<span class=\"argument\">domain_table</span>, " \
+                                      "<span class=\"argument\">value</span>, " \
+                                      "<span class=\"argument\">child_domain_table</span>)" +  \
+                                      QCoreApplication.translate("TranslatableConfigStrings", "<h4>Arguments</h4>") + \
+                                      "<span class=\"argument\">domain_table</span> " + QCoreApplication.translate(
+        "TranslatableConfigStrings", "Domain table name or layer obj") + \
+                                      "<br><span class=\"argument\">value</span> " + QCoreApplication.translate(
+        "TranslatableConfigStrings", "Domain value to look for") + \
+                                      "<br><span class=\"argument\">child_domain_table</span> " + QCoreApplication.translate(
+        "TranslatableConfigStrings", "Name of the child domain to disambiguate with other duplicated ilicodes from other models") + \
+                                      QCoreApplication.translate("TranslatableConfigStrings", "<h4>Examples</h4>") + \
+                                      """<pre>get_multi_domain_code_from_value( 
+  'col_fuenteadministrativatipo',
+  'Documento_Publico.Acto_Administrativo',
+  'Ambiente_V0_1.MA_FuenteAdministrativaTipo')<br> → {}</pre>""".format(QCoreApplication.translate("TranslatableConfigStrings",
+                                                         "Gets the t_id of Acto_Administrativo in\n  domain col_fuenteadministrativatipo\n and child domain MA_FuenteAdministrativaTipo."))
 
     def __init__(self):
         pass
@@ -257,7 +285,7 @@ class TranslatableConfigStrings(QObject):
             QUALITY_RULE_ERROR_CODE_E401008: QCoreApplication.translate("TranslatableConfigStrings", "Cuando la condición del predio es 'PH Matriz', el predio debe tener asociado 1 terreno y 0 unidades de construcción"),
             QUALITY_RULE_ERROR_CODE_E401009: QCoreApplication.translate("TranslatableConfigStrings", "Cuando la condición del predio es 'PH Unidad Predial', el predio debe tener asociado 0 terrenos y 0 construcciones y 1 unidad de construcción"),
             QUALITY_RULE_ERROR_CODE_E401010: QCoreApplication.translate("TranslatableConfigStrings", "Cuando la condición del predio es 'Vía', el predio debe tener asociado 1 terreno y 0 construcciones y 0 unidades de construcción"),
-            QUALITY_RULE_ERROR_CODE_E401011: QCoreApplication.translate("TranslatableConfigStrings", "Cuando la condición del predio es 'NPH', el predio debe tener asociado 1 terreno y 0 unidades de construcción"),
+            QUALITY_RULE_ERROR_CODE_E401011: QCoreApplication.translate("TranslatableConfigStrings", "Cuando la condición del predio es 'NPH', el predio debe tener asociado 1 terreno"),
             QUALITY_RULE_ERROR_CODE_E401101: QCoreApplication.translate("TranslatableConfigStrings", "Punto Lindero no debe tener registros repetidos"),
             QUALITY_RULE_ERROR_CODE_E401201: QCoreApplication.translate("TranslatableConfigStrings", "Punto Levantamiento no debe tener registros repetidos"),
             QUALITY_RULE_ERROR_CODE_E401301: QCoreApplication.translate("TranslatableConfigStrings", "Punto Control no debe tener registros repetidos"),

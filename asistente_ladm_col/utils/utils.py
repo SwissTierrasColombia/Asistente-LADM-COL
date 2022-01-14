@@ -262,3 +262,16 @@ def remove_keys_from_dict(keys, dictionary):
 
 def get_key_for_quality_rule_adjusted_layer(input, reference, fix=False):
     return "{}..{}{}".format(input, reference, '..fix' if fix else '')
+
+
+def get_number_of_lines_in_file(file_path):
+    # Borrowed from https://stackoverflow.com/a/68385697/1073148
+    def _make_gen(reader):
+        b = reader(2 ** 16)
+        while b:
+            yield b
+            b = reader(2 ** 16)
+
+    with open(file_path, "rb") as f:
+        count = sum(buf.count(b"\n") for buf in _make_gen(f.raw.read))
+    return count

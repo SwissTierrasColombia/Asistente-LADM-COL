@@ -47,7 +47,7 @@ from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.config.query_names import QueryNames
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.lib.db.db_connector import DBConnector
-from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
+from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
 from asistente_ladm_col.lib.logger import Logger
 
 
@@ -796,7 +796,7 @@ class LADMData(QObject):
             names.LC_PLOT_T_PLOT_AREA_F: DICT_KEY_PLOT_T_AREA_F
         }
 
-    def get_domain_code_from_value(self, db, domain_table, value, value_is_ilicode=True):
+    def get_domain_code_from_value(self, db, domain_table, value, value_is_ilicode=True, child_domain_table=''):
         """
         Get the t_id corresponding to a domain value. First look at the response in a cache.
 
@@ -804,6 +804,8 @@ class LADMData(QObject):
         :param domain_table: Table name or QgsVectorLayer
         :param value: Value to search in the domain.
         :param value_is_ilicode: Whether is an iliCode or a display name.
+        :param child_domain_table: (Optional) Name of the child domain table (may be required to disambiguate duplicate
+                                   ilicodes, which occurs when the DB has multiple child domains).
         :return: The t_id corresponding to the given value or None.
         """
         res = None
@@ -821,12 +823,16 @@ class LADMData(QObject):
             domain_table_name = domain_table.name()
 
         # Try to get it from cache
-        found_in_cache, cached_value = db.names.get_domain_code(domain_table_name, value, value_is_ilicode)
+        found_in_cache, cached_value = db.names.get_domain_code(domain_table_name,
+                                                                value,
+                                                                value_is_ilicode,
+                                                                child_domain_table)
 
         if found_in_cache:
             if DEFAULT_LOG_MODE == EnumLogMode.DEV:
                 self.logger.debug(__name__, "(From cache!) Get domain ({}) code from {} ({}): {}".format(
-                    domain_table_name, db.names.ILICODE_F if value_is_ilicode else db.names.DISPLAY_NAME_F, value, cached_value))
+                    child_domain_table if child_domain_table else domain_table_name,
+                    db.names.ILICODE_F if value_is_ilicode else db.names.DISPLAY_NAME_F, value, cached_value))
             return cached_value
 
         # Not in cache, let's go for the value and cache it
@@ -837,6 +843,10 @@ class LADMData(QObject):
 
         if domain_table is not None:
             expression = "\"{}\" = '{}'".format(db.names.ILICODE_F if value_is_ilicode else db.names.DISPLAY_NAME_F, value)
+
+            if child_domain_table:  # We add another field:value expression to disambiguate multiple results
+                expression = "{} AND \"{}\" = '{}'".format(expression, db.names.THIS_CLASS_F, child_domain_table)
+
             request = QgsFeatureRequest(QgsExpression(expression))
             request.setSubsetOfAttributes([db.names.T_ID_F], domain_table.fields())
 
@@ -845,18 +855,19 @@ class LADMData(QObject):
             if features.nextFeature(feature):
                 res = feature[db.names.T_ID_F]
                 if res is not None:
-                    db.names.cache_domain_value(domain_table_name, res, value, value_is_ilicode)
+                    db.names.cache_domain_value(domain_table_name, res, value, value_is_ilicode, child_domain_table)
             else:
                 value_not_found = True
         else:
             value_not_found = True
 
         if value_not_found:
-            db.names.cache_wrong_query(QueryNames.VALUE_KEY, domain_table_name, None, value, value_is_ilicode)
+            db.names.cache_wrong_query(QueryNames.VALUE_KEY, domain_table_name, None, value, value_is_ilicode, child_domain_table)
 
         if DEFAULT_LOG_MODE == EnumLogMode.DEV:
             self.logger.debug(__name__, "Get domain ({}) code from {} ({}): {}".format(
-                domain_table_name, db.names.ILICODE_F if value_is_ilicode else db.names.DISPLAY_NAME_F, value, res))
+                child_domain_table if child_domain_table else domain_table_name,
+                db.names.ILICODE_F if value_is_ilicode else db.names.DISPLAY_NAME_F, value, res))
 
         return res
 
@@ -1358,16 +1369,20 @@ class LADMData(QObject):
         return QgsVectorLayer(db.get_qgis_layer_uri(db.names.T_ILI2DB_DATASET_T), 'datasets', db.provider)
 
     @staticmethod
-    def get_or_create_ili2db_basket(db, dataset_name, topic_name, get_feature=False):
+    def get_or_create_ili2db_basket(db, dataset_name, topic_name, get_feature=False, basket_t_id=None):
         """
         Get or create an ili2db basket by dataset name.
         If you need to find several baskets, or if you need a specific basket from a dataset, this is not the function
         for you; either use create_ili2db_basket() or get the baskets table and do it by yourself :)
 
+        In the get mode, this function gets only the first basket found in the dataset, so it's better suited for
+        datasets that will have a single basket (like the default field data capture dataset).
+
         :param db: DB connector object
         :param dataset_name: name of the dataset to be searched or to be used as new dataset name
         :param topic_name: name of the topic the basket applies to...
         :param get_feature: Whether to get the whole feature or just its t_id
+        :param basket_t_id: Pass it if you want your basket t_id to have an specific t_id
         :return: Tuple: t_id (or None), message (useful in case of failure)
         """
         basket_table = LADMData.get_basket_table(db)
@@ -1383,18 +1398,23 @@ class LADMData(QObject):
             return baskets[0] if get_feature else baskets[0][db.names.T_ID_F], "Success!"
 
         # Create basket since we didn't find it
-        basket_feature, msg = LADMData.create_ili2db_basket(db, dataset_t_id, topic_name, basket_table)
+        basket_feature, msg = LADMData.create_ili2db_basket(db, dataset_t_id, topic_name, basket_table, basket_t_id)
 
         return basket_feature if get_feature else basket_feature[db.names.T_ID_F], "Success!"
 
     @staticmethod
-    def create_ili2db_basket(db, dataset_t_id, topic_name, basket_table=None):
+    def create_ili2db_basket(db, dataset_t_id, topic_name, basket_table=None, basket_t_id=None):
         if not basket_table:
             basket_table = LADMData.get_basket_table(db)
 
         t_id_idx = basket_table.fields().indexOf(db.names.T_ID_F)
-        max_value = basket_table.maximumValue(t_id_idx) or 0
-        new_basket_t_id = max_value + 1  # Basket t_id is not a serial, we need to create it manually...
+
+        if basket_t_id:
+            new_basket_t_id = basket_t_id
+        else:
+            max_value = basket_table.maximumValue(t_id_idx) or 0
+            new_basket_t_id = max_value + 1  # Basket t_id is not a serial, we need to create it manually...
+
         attrs = {
             t_id_idx: new_basket_t_id,
             basket_table.fields().indexOf(db.names.BASKET_T_DATASET_F): dataset_t_id,
@@ -1409,8 +1429,9 @@ class LADMData(QObject):
             Logger().warning(__name__, msg)
             return None, msg
 
-        return basket_feature, "Success!"
+        Logger().info(__name__, "Basket for topic '{}' created!".format(topic_name))
 
+        return basket_feature, "Success!"
 
     @staticmethod
     def get_or_create_ili2db_dataset_t_id(db, dataset_name):
@@ -1444,13 +1465,47 @@ class LADMData(QObject):
             return new_dataset_t_id, "Success!"
 
     @staticmethod
-    def get_or_create_default_ili2db_basket(db):
-        fdc_model = LADMColModelRegistry().model(LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY).full_name()
+    def get_or_create_default_ili2db_basket(db, basket_t_id=None):
+        # Should only be called if the db has basket cols
+
+        # Iterate supported models in the DB looking for a TOPIC_NAME. If absent, the basket won't be well defined.
+        topic_name = '-'
+        db_model_names = db.get_models()
+        for model in LADMColModelRegistry().non_hidden_and_supported_models():
+            if model.has_basket_info() and model.full_name() in db_model_names:
+                topic_name = model.basket_topic_name()
+                if model.is_basket_topic_name_preferred():
+                    break  # As soon as we reach this flag, we are done, no other topic_model should be preferred
+
         default_basket_id, msg = LADMData.get_or_create_ili2db_basket(db,
                                                                       DEFAULT_DATASET_NAME,
-                                                                      "{}.{}".format(fdc_model, LADMNames.FDC_TOPIC_NAME))
+                                                                      topic_name,
+                                                                      basket_t_id=basket_t_id)
         Logger().info(__name__, "Default basket_id: {}".format(default_basket_id))
         return default_basket_id, msg
+
+    @staticmethod
+    def get_default_basket_id(db):
+        """
+        To be used by QGIS expressions.
+        We have additional logic here to handle cached values.
+
+        :param db: DBConnector object
+        :return: Default basket's t_id (int)
+        """
+        # Try to get it from cache
+        found_in_cache, cached_value = db.names.get_default_basket()
+        if found_in_cache:
+            if DEFAULT_LOG_MODE == EnumLogMode.DEV:
+                Logger().debug(__name__, "(From cache!) Default basket is '{}'".format(cached_value))
+            return cached_value
+
+        default_basket_id = None
+        if db.has_basket_col():
+            default_basket_id, msg = LADMData.get_or_create_default_ili2db_basket(db)
+            db.names.cache_default_basket(default_basket_id)
+
+        return default_basket_id
 
     @staticmethod
     def get_list_of_features_ids(layer, t_id_f):

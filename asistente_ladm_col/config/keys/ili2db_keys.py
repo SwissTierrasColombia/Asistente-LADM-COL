@@ -3,6 +3,7 @@ T_ILI_TID_KEY = 't_ili_tid'
 DESCRIPTION_KEY = 'description'
 ILICODE_KEY = 'ilicode'
 DISPLAY_NAME_KEY = 'display_name'
+THIS_CLASS_KEY = 'this_class'
 
 T_BASKET_KEY = 't_basket'
 T_ILI2DB_DATASET_KEY = 't_ili2db_dataset'
@@ -23,4 +24,5 @@ ILI2DB_DELETE = 'ili2db_delete'
 # ili2db parameters
 ILI2DB_CREATE_BASKET_COL_KEY = 'create_basket_col_key'
 ILI2DB_DATASET_KEY = 'dataset_key'
+ILI2DB_DATASET = 'dataset'
 

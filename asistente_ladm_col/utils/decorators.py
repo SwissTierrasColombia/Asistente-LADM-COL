@@ -14,7 +14,7 @@ from qgis.utils import (isPluginLoaded,
 
 from asistente_ladm_col.lib.context import (SettingsContext,
                                             TaskContext)
-from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
+from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qt_utils import OverrideCursor
 from asistente_ladm_col.utils.utils import Utils
@@ -53,11 +53,14 @@ to my_method(), I need to be sure that ALL calls to my_method() are like this:
 
 If you don't do that, Python errors are likely to appear when the decorator @_db_connection_required
 for my_method() is called.
+
+Note that add-ons don't pass an AsistenteLADMCOLPlugin object as first argument. However, the LADM-
+COL Assistant is gentle enough to go and search in the ladmcol variable member for a proper object!
 ****************************************************************************************************
 """
 
 
-def _db_connection_required(func_to_decorate):
+def db_connection_required(func_to_decorate):
     @wraps(func_to_decorate)
     def decorated_function(*args, **kwargs):
         """
@@ -67,7 +70,7 @@ def _db_connection_required(func_to_decorate):
            message with two buttons "Use DB from QSettings" and "Use the current connection".
         """
         # Check if current connection is valid and disable access if not
-        inst = args[0]
+        inst = args[0] if type(args[0]).__name__ == 'AsistenteLADMCOLPlugin' else args[0].ladmcol
         context = args[1]
         db_connections_in_conflict = list()
         invalid_db_connections = list()
@@ -128,10 +131,11 @@ def _db_connection_required(func_to_decorate):
 
     return decorated_function
 
-def _qgis_model_baker_required(func_to_decorate):
+
+def qgis_model_baker_required(func_to_decorate):
     @wraps(func_to_decorate)
     def decorated_function(*args, **kwargs):
-        inst = args[0]
+        inst = args[0] if type(args[0]).__name__ == 'AsistenteLADMCOLPlugin' else args[0].ladmcol
         # Check if QGIS Model Baker is installed and active, disable access if not
         if inst.qmb_plugin.check_if_dependency_is_valid():
             func_to_decorate(*args, **kwargs)
@@ -166,7 +170,8 @@ def _qgis_model_baker_required(func_to_decorate):
 
     return decorated_function
 
-def _activate_processing_plugin(func_to_decorate):
+
+def activate_processing_plugin(func_to_decorate):
     @wraps(func_to_decorate)
     def decorated_function(*args, **kwargs):
 
@@ -182,6 +187,7 @@ def _activate_processing_plugin(func_to_decorate):
         return func_to_decorate(*args, **kwargs)
 
     return decorated_function
+
 
 def _log_quality_rule_validations(func_to_decorate):
     @wraps(func_to_decorate)
@@ -228,11 +234,12 @@ def _log_quality_rule_validations(func_to_decorate):
 
     return add_format_to_text
 
-def _survey_model_required(func_to_decorate):
+
+def survey_model_required(func_to_decorate):
     """Requires list of sources. Example: [COLLECTED_DB_SOURCE, SUPPLIES_DB_SOURCE]"""
     @wraps(func_to_decorate)
     def decorated_function(*args, **kwargs):
-        inst = args[0]
+        inst = args[0] if type(args[0]).__name__ == 'AsistenteLADMCOLPlugin' else args[0].ladmcol
         context = args[1]
 
         for db_source in context.get_db_sources():
@@ -242,9 +249,10 @@ def _survey_model_required(func_to_decorate):
             if not db.survey_model_exists():
                 widget = inst.iface.messageBar().createMessage("Asistente LADM-COL",
                                                             QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                                                        "Check your {} database connection. The '{}' model is required for this functionality, but could not be found in your current database. Click the button to go to Settings.").format(
+                                                                                        "Check your {} database connection. The '{} {}' model is required for this functionality, but could not be found in your current database. Click the button to go to Settings.").format(
                                                                 Tr.tr_db_source(db_source),
-                                                                LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).alias()))
+                                                                LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).alias(),
+                                                                LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).supported_version()))
                 button = QPushButton(widget)
                 button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"))
 
@@ -265,10 +273,11 @@ def _survey_model_required(func_to_decorate):
 
     return decorated_function
 
-def _supplies_model_required(func_to_decorate):
+
+def supplies_model_required(func_to_decorate):
     @wraps(func_to_decorate)
     def decorated_function(*args, **kwargs):
-        inst = args[0]
+        inst = args[0] if type(args[0]).__name__ == 'AsistenteLADMCOLPlugin' else args[0].ladmcol
         context = args[1]
 
         for db_source in context.get_db_sources():
@@ -277,9 +286,10 @@ def _supplies_model_required(func_to_decorate):
             if not db.supplies_model_exists():
                 widget = inst.iface.messageBar().createMessage("Asistente LADM-COL",
                                                             QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                                                        "Check your {} database connection. The '{}' model is required for this functionality, but could not be found in your current database. Click the button to go to Settings.").format(
+                                                                                        "Check your {} database connection. The '{} {}' model is required for this functionality, but could not be found in your current database. Click the button to go to Settings.").format(
                                                                 Tr.tr_db_source(db_source),
-                                                                LADMColModelRegistry().model(LADMNames.SUPPLIES_MODEL_KEY).alias()))
+                                                                LADMColModelRegistry().model(LADMNames.SUPPLIES_MODEL_KEY).alias(),
+                                                                LADMColModelRegistry().model(LADMNames.SUPPLIES_MODEL_KEY).supported_version()))
                 button = QPushButton(widget)
                 button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"))
 
@@ -301,24 +311,26 @@ def _supplies_model_required(func_to_decorate):
 
     return decorated_function
 
+
 # TODO: Unify all model required decorators into one with model_key as argument
-def _field_data_capture_model_required(func_to_decorate):
+def field_data_capture_model_required(func_to_decorate):
     """Requires list of sources. Example: [COLLECTED_DB_SOURCE, SUPPLIES_DB_SOURCE]"""
     @wraps(func_to_decorate)
     def decorated_function(*args, **kwargs):
-        inst = args[0]
+        inst = args[0] if type(args[0]).__name__ == 'AsistenteLADMCOLPlugin' else args[0].ladmcol
         context = args[1]
         model_key = LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY
 
         for db_source in context.get_db_sources():
             db = inst.conn_manager.get_db_connector_from_source(db_source=db_source)
             db.test_connection()
-            if not db.model_parser.model_version_is_supported[model_key]:
+            if not db.ladm_col_model_exists(model_key):
                 widget = inst.iface.messageBar().createMessage("Asistente LADM-COL",
                                                                QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                                                          "Check your {} database connection. The '{}' model is required for this functionality, but could not be found in your current database. Click the button to go to Settings.").format(
+                                                                                          "Check your {} database connection. The '{} {}' model is required for this functionality, but could not be found in your current database. Click the button to go to Settings.").format(
                                                                    Tr.tr_db_source(db_source),
-                                                                   LADMColModelRegistry().model(model_key).alias()))
+                                                                   LADMColModelRegistry().model(model_key).alias(),
+                                                                   LADMColModelRegistry().model(model_key).supported_version()))
                 button = QPushButton(widget)
                 button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"))
 
@@ -342,10 +354,11 @@ def _field_data_capture_model_required(func_to_decorate):
 
     return decorated_function
 
-def _valuation_model_required(func_to_decorate):
+
+def valuation_model_required(func_to_decorate):
     @wraps(func_to_decorate)
     def decorated_function(*args, **kwargs):
-        inst = args[0]
+        inst = args[0] if type(args[0]).__name__ == 'AsistenteLADMCOLPlugin' else args[0].ladmcol
         context = args[1]
 
         for db_source in context.get_db_sources():
@@ -355,9 +368,10 @@ def _valuation_model_required(func_to_decorate):
         if not db.valuation_model_exists():
             widget = inst.iface.messageBar().createMessage("Asistente LADM-COL",
                                                            QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                                                      "Check your {} database connection. The '{}' model is required for this functionality, but could not be found in your current database. Click the button to go to Settings.").format(
+                                                                                      "Check your {} database connection. The '{} {}' model is required for this functionality, but could not be found in your current database. Click the button to go to Settings.").format(
                                                                Tr.tr_db_source(db_source),
-                                                               LADMColModelRegistry().model(LADMNames.VALUATION_MODEL_KEY).alias()))
+                                                               LADMColModelRegistry().model(LADMNames.VALUATION_MODEL_KEY).alias(),
+                                                               LADMColModelRegistry().model(LADMNames.VALUATION_MODEL_KEY).supported_version()))
             button = QPushButton(widget)
             button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"))
 
@@ -381,12 +395,12 @@ def _valuation_model_required(func_to_decorate):
 
 
 # TODO: Unify all model required decorators into one with model_key as argument
-def _cadastral_cartography_model_required(func_to_decorate):
+def cadastral_cartography_model_required(func_to_decorate):
     """Requires list of sources. Example: [COLLECTED_DB_SOURCE, SUPPLIES_DB_SOURCE]"""
 
     @wraps(func_to_decorate)
     def decorated_function(*args, **kwargs):
-        inst = args[0]
+        inst = args[0] if type(args[0]).__name__ == 'AsistenteLADMCOLPlugin' else args[0].ladmcol
         context = args[1]
 
         for db_source in context.get_db_sources():
@@ -395,10 +409,13 @@ def _cadastral_cartography_model_required(func_to_decorate):
             if not db.cadastral_cartography_model_exists():
                 widget = inst.iface.messageBar().createMessage("Asistente LADM-COL",
                                                                QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                                                          "Check your {} database connection. The '{}' model is required for this functionality, but could not be found in your current database. Click the button to go to Settings.").format(
+                                                                                          "Check your {} database connection. The '{} {}' model is required for this functionality, but could not be found in your current database. Click the button to go to Settings.").format(
                                                                    Tr.tr_db_source(db_source),
                                                                    LADMColModelRegistry().model(
-                                                                       LADMNames.CADASTRAL_CARTOGRAPHY_MODEL_KEY).alias()))
+                                                                       LADMNames.CADASTRAL_CARTOGRAPHY_MODEL_KEY).alias(),
+                                                                   LADMColModelRegistry().model(
+                                                                       LADMNames.CADASTRAL_CARTOGRAPHY_MODEL_KEY).alias()
+                                                               ))
                 button = QPushButton(widget)
                 button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"))
 
@@ -423,10 +440,10 @@ def _cadastral_cartography_model_required(func_to_decorate):
     return decorated_function
 
 
-def _map_swipe_tool_required(func_to_decorate):
+def map_swipe_tool_required(func_to_decorate):
     @wraps(func_to_decorate)
     def decorated_function(*args, **kwargs):
-        inst = args[0]
+        inst = args[0] if type(args[0]).__name__ == 'AsistenteLADMCOLPlugin' else args[0].ladmcol
         # Check if Map Swipe Tool is installed and active, disable access if not
         if inst.mst_plugin.check_if_dependency_is_valid():
             func_to_decorate(*args, **kwargs)
@@ -459,10 +476,11 @@ def _map_swipe_tool_required(func_to_decorate):
 
     return decorated_function
 
-def _validate_if_wizard_is_open(func_to_decorate):
+
+def validate_if_wizard_is_open(func_to_decorate):
     @wraps(func_to_decorate)
     def decorated_function(*args, **kwargs):
-        inst = args[0]
+        inst = args[0] if type(args[0]).__name__ == 'AsistenteLADMCOLPlugin' else args[0].ladmcol
         if inst.is_wizard_open:
             inst.show_message_with_close_wizard_button(QCoreApplication.translate("AsistenteLADMCOLPlugin",
                                                          "There is a wizard open, you need to close it before continuing with another tool."),
@@ -475,10 +493,10 @@ def _validate_if_wizard_is_open(func_to_decorate):
     return decorated_function
 
 
-def _validate_if_layers_in_editing_mode_with_changes(func_to_decorate):
+def validate_if_layers_in_editing_mode_with_changes(func_to_decorate):
     @wraps(func_to_decorate)
     def decorated_function(*args, **kwargs):
-        inst = args[0]
+        inst = args[0] if type(args[0]).__name__ == 'AsistenteLADMCOLPlugin' else args[0].ladmcol
         layers_modified = inst.app.core.get_ladm_layers_in_edit_mode_with_edit_buffer_is_modified(inst.get_db_connection())
         layers_names = [layer.name() for layer in layers_modified]
         if layers_modified:
@@ -491,7 +509,7 @@ def _validate_if_layers_in_editing_mode_with_changes(func_to_decorate):
     return decorated_function
 
 
-def _update_context_to_current_role(func_to_decorate):
+def update_context_to_current_role(func_to_decorate):
     """
     Requires list of sources. Example: [COLLECTED_DB_SOURCE, SUPPLIES_DB_SOURCE].
 
@@ -501,7 +519,7 @@ def _update_context_to_current_role(func_to_decorate):
 
     @wraps(func_to_decorate)
     def decorated_function(*args, **kwargs):
-        inst = args[0]
+        inst = args[0] if type(args[0]).__name__ == 'AsistenteLADMCOLPlugin' else args[0].ladmcol
         context = args[1]
 
         # TaskContext has prevalence, it is the more specific functionality
@@ -523,17 +541,17 @@ def _update_context_to_current_role(func_to_decorate):
     return decorated_function
 
 
-def _with_override_cursor(func_to_decorate):
+def with_override_cursor(func_to_decorate):
     @wraps(func_to_decorate)
     def decorated_function(*args, **kwargs):
 
         with OverrideCursor(Qt.WaitCursor):
-            func_to_decorate(*args, **kwargs)
+            return func_to_decorate(*args, **kwargs)
 
     return decorated_function
 
 
-def _qgis_gui_only(func_to_decorate):
+def qgis_gui_only(func_to_decorate):
 
     @wraps(func_to_decorate)
     def decorated_function(*args, **kwargs):
@@ -544,7 +562,7 @@ def _qgis_gui_only(func_to_decorate):
 
         Note: inst should be plugin's instance or at least have access to app member.
         """
-        inst = args[0]
+        inst = args[0] if type(args[0]).__name__ == 'AsistenteLADMCOLPlugin' else args[0].ladmcol
 
         if inst.app.settings.with_gui:
             func_to_decorate(*args, **kwargs)

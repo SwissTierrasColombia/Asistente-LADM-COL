@@ -19,6 +19,7 @@ SEPARATOR = 'separator'
 NO_MENU = 'no_menu'
 OPERATION_MENU = 'operation_menu'
 SUPPLIES_MENU = 'supplies_menu'
+LADM_COL_ADD_ON_MENU = 'ladm_col_add_on_menu'
 
 ROLE_ACTIONS = 'role_actions'
 ROLE_NAME = 'role_name'
@@ -29,6 +30,7 @@ ROLE_MODELS = 'role_models'
 ROLE_DB_SOURCE = 'role_db_source'
 ROLE_MODEL_ILI2DB_PARAMETERS = 'role_model_ili2db_parameters'
 ROLE_QUALITY_RULES = 'rule_quality_rules'
+ROLE_NEEDS_AUTOMATIC_VALUE_FOR_BASKETS = 'role_needs_automatic_value_for_baskets'
 BASIC_ROLE = 'basic_role'
 SUPPLIES_PROVIDER_ROLE = 'supplies_provider_role'
 FIELD_ADMIN_ROLE = 'field_admin_role'
@@ -38,17 +40,18 @@ MANAGER_ROLE = 'manager_role'
 ADVANCED_ROLE = 'advanced_role'
 ADMINISTRATOR_ROLE = 'administrator_role'
 
+REQUIRED_MODELS = "required_models"
 ROLE_SUPPORTED_MODELS = "role_supported_models"
 ROLE_HIDDEN_MODELS = "role_hidden_models"
 ROLE_CHECKED_MODELS = "role_checked_models"
 COMMON_SUPPORTED_MODELS = [LADMNames.LADM_COL_MODEL_KEY,
+                           LADMNames.ISO19107_MODEL_KEY,
                            LADMNames.SURVEY_MODEL_KEY,
                            LADMNames.SUPPLIES_MODEL_KEY,
                            LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY,
                            LADMNames.SUPPLIES_INTEGRATION_MODEL_KEY,
                            LADMNames.CADASTRAL_CARTOGRAPHY_MODEL_KEY,
-                           LADMNames.VALUATION_MODEL_KEY,
-                           LADMNames.ISO19107_MODEL_KEY]
+                           LADMNames.VALUATION_MODEL_KEY]
 COMMON_HIDDEN_MODELS = [LADMNames.LADM_COL_MODEL_KEY,
                         LADMNames.ISO19107_MODEL_KEY]
 COMMON_CHECKED_MODELS = [LADMNames.SURVEY_MODEL_KEY]
@@ -146,6 +149,7 @@ ACTION_UPLOAD_PENDING_SOURCE = 'action_upload_pending_source'
 ACTION_SCHEMA_IMPORT = 'action_schema_import'
 ACTION_IMPORT_DATA = 'action_import_data'
 ACTION_EXPORT_DATA = 'action_export_data'
+ACTION_XTF_MODEL_CONVERTER = 'action_xtf_model_converter'
 ACTION_LOAD_LAYERS = 'action_load_layers'
 ACTION_FIX_LADM_COL_RELATIONS = 'action_fix_ladm_col_relations'
 ACTION_REPORT_ANNEX_17 = 'action_report_annex_17'
@@ -176,12 +180,25 @@ PARTY_ICON = ":/Asistente-LADM-COL/resources/images/party.png"
 SOURCE_ICON = ":/Asistente-LADM-COL/resources/images/source.png"
 REPORTS_ICON = ":/Asistente-LADM-COL/resources/images/reports.svg"
 CHANGE_DETECTION_ICON = ":/Asistente-LADM-COL/resources/images/change_detection.svg"
+ADD_ON_ICON = ":/Asistente-LADM-COL/resources/images/add_on.png"
 
 # MENU OBJECTNAMES
 MENU_SURVEY_OBJECTNAME = "ladm_col_survey_menu"
 MENU_LADM_COL_OBJECTNAME = "ladm_col_menu"
 MENU_REPORTS_OBJECTNAME = "ladm_col_reports_menu"
 
+# MODEL KEYS
+MODEL_ALIAS = "MODEL_ALIAS"
+MODEL_IS_SUPPORTED = "MODEL_IS_SUPPORTED"
+MODEL_SUPPORTED_VERSION = "MODEL_SUPPORTED_VERSION"
+MODEL_HIDDEN_BY_DEFAULT = "MODEL_HIDDEN_BY_DEFAULT"
+MODEL_CHECKED_BY_DEFAULT = "MODEL_CHECKED_BY_DEFAULT"
+MODEL_ILI2DB_PARAMETERS = "MODEL_ILI2DB_PARAMETERS"
+MODEL_MAPPING = "MODEL_MAPPING"
+MODEL_DIR = "MODEL_DIR"
+MODEL_BASKET_INFO = "MODEL_BASKET_INFO"
+MODEL_BASKET_TOPIC_NAME = "MODEL_BASKET_TOPIC_NAME"
+MODEL_BASKET_TOPIC_NAME_PREFERRED = "MODEL_BASKET_TOPIC_NAME_PREFERRED"
 
 # Nowadays just an example, it is not being used, although initially planned
 MODELS_GUI_DICT = {

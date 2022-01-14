@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 """
 /***************************************************************************
-                              Asistente LADM_COL
+                              Asistente LADM-COL
                              --------------------
         begin                : 2017-11-14
         git sha              : :%H$
@@ -69,7 +68,7 @@ from asistente_ladm_col.logic.ladm_col.config.queries.qgis.ctm12_queries import 
                                                                                  get_insert_cm12_bounds_query,
                                                                                  get_ctm12_bounds_exist_query)
 from asistente_ladm_col.utils.crs_utils import get_ctm12_crs, get_crs_authid
-from asistente_ladm_col.utils.decorators import _activate_processing_plugin
+from asistente_ladm_col.utils.decorators import activate_processing_plugin
 from asistente_ladm_col.lib.geometry import GeometryUtils
 from asistente_ladm_col.utils.qgis_model_baker_utils import QgisModelBakerUtils
 from asistente_ladm_col.utils.qt_utils import (OverrideCursor,
@@ -731,12 +730,13 @@ class AppCoreInterface(QObject):
         # Relation reference are widgets for FKs, they shouldn't be applied on update
         res = layer.editorWidgetSetup(field_index).type() != 'RelationReference'
         if res and names:
-            # Additionally, begin_lifespan, t_ili_tid, local_id and namespace should not be applied on update
+            # Additionally, begin_lifespan, t_ili_tid, local_id, namespace and t_basket should not be applied on update
             # (Using getattr because some models do not have all these names)
             res = field_name not in [getattr(names, "T_ILI_TID_F", None),
                                      getattr(names, "OID_T_LOCAL_ID_F", None),
                                      getattr(names, "OID_T_NAMESPACE_F", None),
-                                     getattr(names, "VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F", None)]
+                                     getattr(names, "VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F", None),
+                                     getattr(names, "T_BASKET_F", None)]
 
         return res
 
@@ -755,6 +755,11 @@ class AppCoreInterface(QObject):
         blv_f = getattr(db.names, "VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F", None)
         if blv_f and layer.fields().indexFromName(blv_f) != -1:
             dict_field_expression[db.names.VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F] = "now()"
+
+        if RoleRegistry().active_role_needs_automatic_expression_for_baskets():
+            basket_f = getattr(db.names, "T_BASKET_F", None)
+            if basket_f and layer.fields().indexFromName(basket_f) != -1:
+                dict_field_expression[db.names.T_BASKET_F] = "get_default_basket()"
 
         dict_automatic_values = LayerConfig.get_dict_automatic_values(db, layer_name, models)
         if dict_automatic_values:
@@ -1016,7 +1021,7 @@ class AppCoreInterface(QObject):
 
         return mapping
 
-    @_activate_processing_plugin
+    @activate_processing_plugin
     def save_field_mapping(self, ladm_col_layer_name):
         if not os.path.exists(FIELD_MAPPING_PATH):
             os.makedirs(FIELD_MAPPING_PATH)
@@ -1108,7 +1113,7 @@ class AppCoreInterface(QObject):
 
         return csv_layer_export
 
-    @_activate_processing_plugin
+    @activate_processing_plugin
     def copy_csv_to_db(self, csv_layer, db, target_layer_name):
         QgsProject.instance().addMapLayer(csv_layer)
 
@@ -1151,7 +1156,7 @@ class AppCoreInterface(QObject):
 
         return True
 
-    @_activate_processing_plugin
+    @activate_processing_plugin
     def run_etl_model_in_backgroud_mode(self, db, input_layer, ladm_col_layer_name):
         output_layer = self.get_layer(db, ladm_col_layer_name, load=True)
         start_feature_count = output_layer.featureCount()
@@ -1192,7 +1197,7 @@ class AppCoreInterface(QObject):
                                                                       "Model '{}' was not found and cannot be opened!").format(model_name))
             return False
 
-    @_activate_processing_plugin
+    @activate_processing_plugin
     def show_etl_model(self, db, input_layer, ladm_col_layer_name, field_mapping=''):
         output = self.get_layer(db, ladm_col_layer_name, load=True)
         if not output:
@@ -1442,7 +1447,7 @@ class AppCoreInterface(QObject):
         if add_topological_points:
             self.logger.debug(__name__,
                               "Adding topological points to the adjusted layer ({})...".format(input_layer_name))
-            GeometryUtils().add_topological_vertices(res, res)  # Note: Topological points against the same result layer
+            res = GeometryUtils().add_topological_vertices(res, res, 0)  # Note: Topological points against the same result layer
 
         return res
 
@@ -1453,7 +1458,7 @@ class AppCoreInterface(QObject):
 
         :return: List of model keys that are in DB and are allowed for current role
         """
-        return [m_k for m_k in RoleRegistry().get_active_role_supported_models() if db.model_parser.model_version_is_supported[m_k]]
+        return [m_k for m_k in RoleRegistry().get_active_role_supported_models() if db.ladm_col_model_exists(m_k)]
 
     def get_layer_copy(self, layer):
         output = processing.run("ladm_col:copy_vector_layer",

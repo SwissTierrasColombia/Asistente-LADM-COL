@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 """
 /***************************************************************************
-                              Asistente LADM_COL
+                              Asistente LADM-COL
                              --------------------
         begin                : 2017-11-20
         git sha              : :%H$
@@ -30,12 +29,12 @@ from qgis.gui import QgsMessageBar
 
 from asistente_ladm_col.config.config_db_supported import ConfigDBsSupported
 from asistente_ladm_col.config.enums import EnumDbActionType
-from asistente_ladm_col.config.general_config import (DEFAULT_ENDPOINT_SOURCE_SERVICE,
+from asistente_ladm_col.config.general_config import (DEFAULT_ILI2DB_DEBUG_MODE,
+                                                      DEFAULT_ENDPOINT_SOURCE_SERVICE,
                                                       DEFAULT_USE_SOURCE_SERVICE_SETTING,
-                                                      DEFAULT_USE_CUSTOM_MODELS,
-                                                      DEFAULT_MODELS_DIR,
                                                       DEFAULT_AUTOMATIC_VALUES_IN_BATCH_MODE,
                                                       TOLERANCE_MAX_VALUE)
+from asistente_ladm_col.config.keys.common import REQUIRED_MODELS
 from asistente_ladm_col.config.transitional_system_config import TransitionalSystemConfig
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.gui.dialogs.dlg_custom_model_dir import CustomModelDirDialog
@@ -46,6 +45,7 @@ from asistente_ladm_col.lib.db.db_connector import (DBConnector,
                                                     EnumTestLevel)
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.transitional_system.st_session.st_session import STSession
+from asistente_ladm_col.utils.qt_utils import make_save_file_selector
 from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.utils import show_plugin_help
 
@@ -110,6 +110,13 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.btn_default_value_sources.clicked.connect(self.set_default_value_source_service)
         self.btn_default_value_transitional_system.clicked.connect(self.set_default_value_transitional_system_service)
 
+        log_file_selector = make_save_file_selector(
+            self.txt_log_file_path,
+            title=QCoreApplication.translate("SettingsDialog", "Create log file"),
+            file_filter=QCoreApplication.translate("SettingsDialog", "Plain text (*.txt)"),
+            extension='.txt')
+        self.btn_log_file_path.clicked.connect(log_file_selector)
+
         self.chk_use_roads.toggled.connect(self.update_images_state)
 
         self.bar = QgsMessageBar()
@@ -166,6 +173,31 @@ class SettingsDialog(QDialog, DIALOG_UI):
             for i in reversed(range(self.tabWidget.count())):
                 if i not in self._tab_pages_list:
                     self.tabWidget.removeTab(i)
+
+    def get_models_for_test_connection(self):
+        """
+        If required models have been set from context or via set_required_models(), we
+        respect them, they have the priority for the tests we do.
+
+        Otherwise, if selected role is not the current active role, we'll test if the DB has
+        the models that such a selected role supports. Because if we test against the active
+        role, we'll might say sth wrong to the user, like: Your current DB connection has no
+        LADM-COL models, just because the user is about to change the role from one that does
+        not have interest in the DB by one which is the proper one for the DB. Specially
+        useful for Add-ons that add new roles with access to specific models.
+
+        Note we don't modify the member variable at all, otherwise subsequent calls to this
+        method will never get into the first if clause.
+
+        :return: A dict of required key models or of role_supported and role_hidden model keys.
+        """
+        models = {REQUIRED_MODELS: self._required_models} if self._required_models else dict()
+        if not models:
+            selected_role = self.get_selected_role()
+            if self.roles.get_active_role() != selected_role:
+                models = self.roles.get_role_models(selected_role)
+
+        return models
 
     def load_roles(self):
         """
@@ -243,6 +275,12 @@ class SettingsDialog(QDialog, DIALOG_UI):
             self.show_message(msg_doc_repo, Qgis.Warning, 0)
             return  # Do not close the dialog
 
+        if self.chk_debug.isChecked() and not self.txt_log_file_path.text().strip():
+            self.show_message(
+                QCoreApplication.translate("SettingsDialog", "If the debug is enabled, a log file path has to be set."),
+                Qgis.Warning, 0)
+            return  # Do not close the dialog
+
         ladm_col_schema = False
 
         db = self._get_db_connector_from_gui()
@@ -253,14 +291,16 @@ class SettingsDialog(QDialog, DIALOG_UI):
             # Limit the validation (used in GeoPackage)
             test_level |= EnumTestLevel.SCHEMA_IMPORT
 
-        res, code, msg = db.test_connection(test_level)  # No need to pass required_models, we don't test that much
+        res, code, msg = db.test_connection(test_level)  # No need to pass models, we don't test that much
 
         if res:
             if self._action_type != EnumDbActionType.SCHEMA_IMPORT:
                 # Only check LADM-schema if we are not in an SCHEMA IMPORT.
                 # We know in an SCHEMA IMPORT, at this point the schema is still not LADM.
                 ladm_col_schema, code, msg = db.test_connection(EnumTestLevel.LADM,
-                                                                required_models=self._required_models)
+                                                                models=self.get_models_for_test_connection())
+                if not ladm_col_schema:
+                    self.logger.warning(__name__, "Test connection failed! Details: {}".format(msg))
 
             if not ladm_col_schema and self._action_type != EnumDbActionType.SCHEMA_IMPORT:
                 if self._blocking_mode:
@@ -292,7 +332,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
             msg_box = QMessageBox(self)
             msg_box.setIcon(QMessageBox.Question)
             msg_box.setText(QCoreApplication.translate("SettingsDialog",
-                "No LADM-COL DB has been configured! You'll continue with limited functionality until you configure a LADM-COL DB.\n\nDo you want to go to 'Create LADM-COL structure' dialog?"))
+                "No LADM-COL DB has been configured! You'll continue with limited functionality until you configure a LADM-COL DB with models supported by the active role.\n\nDo you want to go to 'Create LADM-COL structure' dialog?"))
             msg_box.setWindowTitle(QCoreApplication.translate("SettingsDialog", "Important"))
             msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.Ignore)
             msg_box.setDefaultButton(QMessageBox.Ignore)
@@ -389,14 +429,17 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
         self._lst_db[current_db_engine].save_parameters_conn(dict_conn=dict_conn, db_source=self.db_source)
 
-        settings.setValue('Asistente-LADM-COL/models/custom_model_directories_is_checked', self.offline_models_radio_button.isChecked())
+        self.app.settings.custom_models = self.offline_models_radio_button.isChecked()
         if self.offline_models_radio_button.isChecked():
-            settings.setValue('Asistente-LADM-COL/models/custom_models', self.custom_model_directories_line_edit.text())
+            self.app.settings.custom_model_dirs = self.custom_model_directories_line_edit.text()
 
         self.app.settings.tolerance = self.sbx_tolerance.value()
         settings.setValue('Asistente-LADM-COL/quality/use_roads', self.chk_use_roads.isChecked())
 
         settings.setValue('Asistente-LADM-COL/models/validate_data_importing_exporting', self.chk_validate_data_importing_exporting.isChecked())
+
+        settings.setValue('Asistente-LADM-COL/models/debug', self.chk_debug.isChecked())
+        settings.setValue('Asistente-LADM-COL/models/log_file_path', self.txt_log_file_path.text())
 
         endpoint_transitional_system = self.txt_service_transitional_system.text().strip()
         settings.setValue('Asistente-LADM-COL/sources/service_transitional_system', (endpoint_transitional_system[:-1] if endpoint_transitional_system.endswith('/') else endpoint_transitional_system) or TransitionalSystemConfig().ST_DEFAULT_DOMAIN)
@@ -451,10 +494,10 @@ class SettingsDialog(QDialog, DIALOG_UI):
         # Restore QSettings
         settings = QSettings()
 
-        custom_model_directories_is_checked = settings.value('Asistente-LADM-COL/models/custom_model_directories_is_checked', DEFAULT_USE_CUSTOM_MODELS, type=bool)
+        custom_model_directories_is_checked = self.app.settings.custom_models
         if custom_model_directories_is_checked:
             self.offline_models_radio_button.setChecked(True)
-            self.custom_model_directories_line_edit.setText(settings.value('Asistente-LADM-COL/models/custom_models', DEFAULT_MODELS_DIR))
+            self.custom_model_directories_line_edit.setText(self.app.settings.custom_model_dirs)
             self.custom_model_directories_line_edit.setVisible(True)
             self.custom_models_dir_button.setVisible(True)
         else:
@@ -476,6 +519,8 @@ class SettingsDialog(QDialog, DIALOG_UI):
         self.txt_namespace.setText(str(settings.value('Asistente-LADM-COL/automatic_values/namespace_prefix', "")))
 
         self.chk_validate_data_importing_exporting.setChecked(settings.value('Asistente-LADM-COL/models/validate_data_importing_exporting', True, bool))
+        self.chk_debug.setChecked(settings.value('Asistente-LADM-COL/models/debug', DEFAULT_ILI2DB_DEBUG_MODE, bool))
+        self.txt_log_file_path.setText(settings.value('Asistente-LADM-COL/models/log_file_path', ''))
 
         self.txt_service_transitional_system.setText(settings.value('Asistente-LADM-COL/sources/service_transitional_system', TransitionalSystemConfig().ST_DEFAULT_DOMAIN))
         self.txt_service_endpoint.setText(settings.value('Asistente-LADM-COL/sources/service_endpoint', DEFAULT_ENDPOINT_SOURCE_SERVICE))
@@ -500,7 +545,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
         if self._action_type == EnumDbActionType.SCHEMA_IMPORT:
             test_level |= EnumTestLevel.SCHEMA_IMPORT
 
-        res, code, msg = db.test_connection(test_level)  # No need to pass required_models, we don't test that much
+        res, code, msg = db.test_connection(test_level)  # No need to pass models, we don't test that much
 
         if db is not None:
             db.close_connection()
@@ -511,7 +556,7 @@ class SettingsDialog(QDialog, DIALOG_UI):
 
     def test_ladm_col_structure(self):
         db = self._get_db_connector_from_gui()
-        res, code, msg = db.test_connection(test_level=EnumTestLevel.LADM, required_models=self._required_models)
+        res, code, msg = db.test_connection(test_level=EnumTestLevel.LADM, models=self.get_models_for_test_connection())
 
         if db is not None:
             db.close_connection()

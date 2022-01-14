@@ -43,6 +43,7 @@ from qgis.core import (QgsField,
 
 import processing
 
+from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.processing.custom_processing_feedback import CustomFeedbackWithErrors
 from asistente_ladm_col.utils.crs_utils import get_crs_authid
@@ -448,9 +449,35 @@ class GeometryUtils(QObject):
 
         return self.extract_geoms_by_type(clean_errors, [QgsWkbTypes.PolygonGeometry])
 
-    def add_topological_vertices(self, layer1, layer2):
+    def add_topological_vertices(self, layer1, layer2, tolerance=0):
         """
-        Modify layer1 adding vertices that are in layer2 and not in layer1
+        Bring all vertices from layer2 to a copylayer1 if they are within a default tolerance.
+        Note: This generates a new layer based on layer1 and does not modify neither layer1 nor layer2.
+
+        :param layer1: QgsVectorLayer whose copy will be modified
+        :param layer2: QgsVectorLayer taken as reference (not modified)
+        :param tolerance: Must be given in meters
+        :return: QgsVectorLayer copied from layer1 with the modified geometries
+        """
+        if tolerance == 0:
+            return self.add_topological_vertices2(layer1, layer2)  # Use old method
+
+        adjusted = processing.run("native:snapgeometries",
+                                  {'INPUT': layer1,
+                                   'REFERENCE_LAYER': layer2,
+                                   'TOLERANCE': tolerance,
+                                   'BEHAVIOR': 0,  # Prefer aligning nodes, insert extra vertices when required
+                                   'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
+
+        # add_topological_vertices may produce invalid geometries, so we better play safe and fix them
+        return processing.run("native:fixgeometries",
+                              {'INPUT': adjusted,
+                               'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
+
+    def add_topological_vertices2(self, layer1, layer2):
+        """
+        Modify a copy of layer1 adding vertices that are in layer2 and not in layer1.
+        It returns a modified copy of layer1 that has its geometries fixed.
 
         Ideally, we could pass the whole layer2 as parameter for
         addTopologicalPoints or, at least, pass one multi-geometry containing
@@ -460,7 +487,13 @@ class GeometryUtils(QObject):
         work with multi-geometries. That's why we need to traverse the whole
         layer2 in search for its individual geometries. We do use a SpatialIndex
         nonetheless, to improve efficiency.
+
+        :param layer1: QgsVectorLayer that will be modified
+        :param layer2: QgsVectorLayer taken as reference (not modified)
+        :return: Copy of layer1 with geometry modified
         """
+        copy_layer1 = AppInterface().core.get_layer_copy(layer1)
+
         if QgsWkbTypes.isMultiType(layer2.wkbType()):
             layer2 = processing.run("native:multiparttosingleparts", {'INPUT': layer2, 'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
 
@@ -472,11 +505,11 @@ class GeometryUtils(QObject):
         dict_features_layer2 = None
         candidate_features = None
 
-        with edit(layer1):
-            edit_layer = QgsVectorLayerEditUtils(layer1)
+        with edit(copy_layer1):
+            edit_layer = QgsVectorLayerEditUtils(copy_layer1)
             dict_features_layer2 = {f.id(): f for f in layer2.getFeatures(QgsFeatureRequest().setNoAttributes())}
 
-            for feature in layer1.getFeatures(QgsFeatureRequest().setNoAttributes()):
+            for feature in copy_layer1.getFeatures(QgsFeatureRequest().setNoAttributes()):
                 bbox = feature.geometry().boundingBox()
                 candidate_ids = index.intersects(bbox)
                 candidate_features = [dict_features_layer2[candidate_id] for candidate_id in candidate_ids]
@@ -491,54 +524,48 @@ class GeometryUtils(QObject):
         del dict_features_layer2
         gc.collect()
 
-    def difference_plot_boundary(self, names, plots_as_lines_layer, boundary_layer, id_field):
+        # add_topological_vertices may produce invalid geometries, so we better play safe and fix them
+        fixed_layer1 = processing.run("native:fixgeometries",
+                                      {'INPUT': copy_layer1,
+                                       'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
+
+        return fixed_layer1
+
+    def difference_plot_boundary(self, plots_as_lines_layer, boundary_layer, id_field):
         """
         Advanced difference function that, unlike the traditional function,
         takes into account not shared vertices to build difference geometries.
         """
-        approx_diff_layer = processing.run("native:difference",
-                                           {'INPUT': plots_as_lines_layer,
-                                            'OVERLAY': boundary_layer,
-                                            'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
-        self.add_topological_vertices(approx_diff_layer, boundary_layer)
-
-        # add_topological_vertices may produce invalid geometries, so we better play safe and fix them
-        fixed_geometries = processing.run("native:fixgeometries",
-                                          {'INPUT': approx_diff_layer,
-                                           'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
+        adjusted_plots_as_lines = self.add_topological_vertices(plots_as_lines_layer, boundary_layer)
 
         diff_layer = processing.run("native:difference",
-                                    {'INPUT': fixed_geometries,
+                                    {'INPUT': adjusted_plots_as_lines,
                                      'OVERLAY': boundary_layer,
                                      'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
+
+        request = QgsFeatureRequest()
+        request.setSubsetOfAttributes([id_field], diff_layer.fields())
         difference_features = [{'geometry': feature.geometry(), 'id': feature[id_field]}
-                               for feature in diff_layer.getFeatures()]
+                               for feature in diff_layer.getFeatures(request)]
 
         return difference_features
 
-    def difference_boundary_plot(self, names, boundary_layer, plot_as_lines_layer, id_field):
+    def difference_boundary_plot(self, boundary_layer, plots_as_lines_layer, id_field):
         """
         Advanced difference function that, unlike the traditional function,
         takes into account not shared vertices to build difference geometries.
         """
-        approx_diff_layer = processing.run("native:difference",
-                                           {'INPUT': boundary_layer,
-                                            'OVERLAY': plot_as_lines_layer,
-                                            'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
-        self.add_topological_vertices(plot_as_lines_layer, approx_diff_layer)
-
-        # add_topological_vertices may produce invalid geometries, so we better play safe and fix them
-        fixed_geometries = processing.run("native:fixgeometries",
-                                          {'INPUT': plot_as_lines_layer,
-                                           'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
+        adjusted_plots_as_lines = self.add_topological_vertices(plots_as_lines_layer, boundary_layer)
 
         diff_layer = processing.run("native:difference",
-                                    {'INPUT': approx_diff_layer,
-                                     'OVERLAY': fixed_geometries,
+                                    {'INPUT': boundary_layer,
+                                     'OVERLAY': adjusted_plots_as_lines,
                                      'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
 
+        request = QgsFeatureRequest()
+        request.setSubsetOfAttributes([id_field], diff_layer.fields())
         difference_features = [{'geometry': feature.geometry(), 'id': feature[id_field]}
-                               for feature in diff_layer.getFeatures()]
+                               for feature in diff_layer.getFeatures(request)]
 
         return difference_features
 

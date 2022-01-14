@@ -141,7 +141,7 @@ class MSSQLConnector(ClientServerDB):
     def _metadata_exists(self):
         return self._table_exists(ILI2DBNames.INTERLIS_TEST_METADATA_TABLE_PG)
 
-    def _has_basket_col(self):
+    def has_basket_col(self):
         if self.schema:
             cur = self.conn.cursor()
             cur.execute("""
@@ -279,16 +279,33 @@ class MSSQLConnector(ClientServerDB):
                                                      "Could not connect to database '{}'!".format(db_name))
 
     def get_models(self, schema=None):
-        query = "SELECT distinct LEFT(iliname, CHARINDEX('.',iliname)-1) as modelname FROM {schema}.t_ili2db_trafo".format(schema=schema if schema else self.schema)
+        # First go for all models registered in t_ili2db_model
+        query = "SELECT modelname FROM {schema}.t_ili2db_model".format(schema=schema if schema else self.schema)
         res, result = self.execute_sql_query(query)
-
-        lst_models = list()
+        model_hierarchy = dict()
         if res:
-            lst_models = [db_model['modelname'] for db_model in result]
-            self.logger.debug(__name__, "Models found: {}".format(lst_models))
+            all_models = [db_model['modelname'] for db_model in result]
+            model_hierarchy = self._parse_models_from_db_meta_attrs(all_models)
         else:
             self.logger.error_msg(__name__, "Error getting models: {}".format(result))
-        return lst_models
+
+        # Now go for all models listed in t_ili2db_trafo
+        query = "SELECT distinct LEFT(iliname, CHARINDEX('.',iliname)-1) as modelname FROM {schema}.t_ili2db_trafo".format(
+            schema=schema if schema else self.schema)
+        res, result = self.execute_sql_query(query)
+        trafo_models = list()
+        if res:
+            trafo_models = [db_model['modelname'] for db_model in result]
+
+        # Finally, using those obtained from t_ili2db_trafo, go for dependencies found in t_ili2db_model
+        dependencies = list()
+        for model in trafo_models:
+            dependencies.extend(model_hierarchy.get(model, list()))
+
+        res_models = list(set(dependencies + trafo_models))
+        self.logger.debug(__name__, "Models found: {}".format(res_models))
+
+        return res_models
 
     def execute_sql_query(self, query):
         """
@@ -459,7 +476,7 @@ class MSSQLConnector(ClientServerDB):
         return True, EnumTestConnectionMsg.CONNECTION_TO_DB_SUCCESSFUL, QCoreApplication.translate("MSSQLConnector",
                                                                                                        "Connection to the database was successful.")
 
-    def _test_connection_to_ladm(self, required_models):
+    def _test_connection_to_ladm(self, models):
         if not self._metadata_exists():
             return False, EnumTestConnectionMsg.INTERLIS_META_ATTRIBUTES_NOT_FOUND, QCoreApplication.translate(
                 "MSSQLConnector",
@@ -471,15 +488,15 @@ class MSSQLConnector(ClientServerDB):
                                                                                                    "The DB schema '{}' was created with an old version of ili2db (v3), which is no longer supported. You need to migrate it to ili2db4.").format(
                 self.schema)
 
-        if self.model_parser is None:
+        if self._model_parser is None:
             self.model_parser = ModelParser(self)
 
-        res, code, msg = self.check_db_models(required_models)
+        res, code, msg = self.check_db_models(models)
         if not res:
             return res, code, msg
 
         basket_required, model_name = self._db_should_have_basket_support()
-        if basket_required and not self._has_basket_col():
+        if basket_required and not self.has_basket_col():
             return False, EnumTestConnectionMsg.BASKET_COLUMN_NOT_FOUND, \
                    QCoreApplication.translate("MSSQLConnector",
                                               "Basket column not found, but it is required by model '{}'!.").format(
@@ -489,7 +506,7 @@ class MSSQLConnector(ClientServerDB):
         if self._should_update_db_mapping_values:
             self._initialize_names()
 
-        res, msg = self.names.test_names(self._get_flat_table_and_field_names_for_testing_names())
+        res, msg = self.names.test_names()
         if not res:
             return False, EnumTestConnectionMsg.DB_NAMES_INCOMPLETE, QCoreApplication.translate("MSSQLConnector",
                                                                                                 "Table/field names from the DB are not correct. Details: {}.").format(
@@ -546,6 +563,7 @@ class MSSQLConnector(ClientServerDB):
         dict_names[DISPLAY_NAME_KEY] = "dispName"
         dict_names[ILICODE_KEY] = "iliCode"
         dict_names[DESCRIPTION_KEY] = "description"
+        dict_names[THIS_CLASS_KEY] = "thisClass"
         dict_names[T_BASKET_KEY] = "t_basket"
         dict_names[T_ILI2DB_BASKET_KEY] = "t_ili2db_basket"
         dict_names[T_ILI2DB_DATASET_KEY] = "t_ili2db_dataset"
