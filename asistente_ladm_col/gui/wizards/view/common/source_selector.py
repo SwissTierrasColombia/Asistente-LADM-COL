@@ -30,14 +30,14 @@ from qgis.PyQt.QtWidgets import QWizardPage
 from qgis.PyQt.QtCore import (pyqtSignal,
                               QObject)
 
-from asistente_ladm_col.config.enums import EnumLayerCreationMode
+from asistente_ladm_col.config.enums import EnumFeatureCreationMode
 from asistente_ladm_col.config.general_config import (WIZARD_SEL_SOURCE_TITLE,
                                                       WIZARD_SEL_SOURCE_ENTERING_DATA_MANUALLY)
 from asistente_ladm_col.utils.ui import load_ui
 
 
 class SourceSelector(QObject):
-    option_changed = pyqtSignal(EnumLayerCreationMode)
+    option_changed = pyqtSignal(EnumFeatureCreationMode)
     layer_changed = pyqtSignal(QgsMapLayer)
 
     def __init__(self, items=None, layer_filters=None, wizard_texts=None):
@@ -88,17 +88,17 @@ class SourceSelector(QObject):
         result = None
 
         if self.__qwizard_page.rad_create_manually.isChecked():
-            result = EnumLayerCreationMode.MANUALLY
+            result = EnumFeatureCreationMode.MANUALLY
         elif self.__qwizard_page.rad_refactor.isChecked():
-            result = EnumLayerCreationMode.REFACTOR_FIELDS
+            result = EnumFeatureCreationMode.REFACTOR_FIELDS
 
         return result
 
     @layer_creation_mode.setter
-    def layer_creation_mode(self, value: EnumLayerCreationMode):
-        if value == EnumLayerCreationMode.REFACTOR_FIELDS:
+    def layer_creation_mode(self, value: EnumFeatureCreationMode):
+        if value == EnumFeatureCreationMode.REFACTOR_FIELDS:
             self.__qwizard_page.rad_refactor.setChecked(True)
-        elif value == EnumLayerCreationMode.MANUALLY:
+        elif value == EnumFeatureCreationMode.MANUALLY:
             self.__qwizard_page.rad_create_manually.setChecked(True)
 
     def set_help_text(self, text):
@@ -157,13 +157,13 @@ class SourceSelectorExt(SourceSelector):
         result = super().layer_creation_mode
 
         if result is None and self.__qwizard_page.rad_digitizing_line.isChecked():
-            result = EnumLayerCreationMode.DIGITIZING_LINE
+            result = EnumFeatureCreationMode.DIGITIZING_LINE
 
         return result
 
     @layer_creation_mode.setter
-    def layer_creation_mode(self, value: EnumLayerCreationMode):
-        if value == EnumLayerCreationMode.DIGITIZING_LINE:
+    def layer_creation_mode(self, value: EnumFeatureCreationMode):
+        if value == EnumFeatureCreationMode.DIGITIZING_LINE:
             self.__qwizard_page.rad_digitizing_line.setChecked(True)
         else:
             SourceSelector.layer_creation_mode.fset(self, value)

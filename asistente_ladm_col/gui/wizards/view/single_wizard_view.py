@@ -20,7 +20,7 @@
  """
 from qgis.PyQt.QtWidgets import QWizard
 
-from asistente_ladm_col.config.enums import EnumLayerCreationMode
+from asistente_ladm_col.config.enums import EnumFeatureCreationMode
 from asistente_ladm_col.config.general_config import (WIZARD_STRINGS,
                                                       WIZARD_HELP,
                                                       WIZARD_REFACTOR_FIELDS_RECENT_MAPPING_OPTIONS,
@@ -73,7 +73,7 @@ class SingleWizardView:
     def __view_rejected(self):
         self.__controller.wizard_rejected()
 
-    def __option_changed(self, e: EnumLayerCreationMode):
+    def __option_changed(self, e: EnumFeatureCreationMode):
         self.__wp_select_source.set_help_text(self.__view_config[WIZARD_SELECT_SOURCE_HELP][e])
         finish_button_text = self.__view_config[WIZARD_FINISH_BUTTON_TEXT][e]
 

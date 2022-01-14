@@ -26,7 +26,7 @@ from qgis.PyQt.QtCore import (QCoreApplication,
                               QObject,
                              pyqtSignal)
 
-from asistente_ladm_col import Logger
+from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.gui.wizards.model.common.args.model_args import MapToolChangedArgs
 from asistente_ladm_col.utils.select_map_tool import SelectMapTool
 

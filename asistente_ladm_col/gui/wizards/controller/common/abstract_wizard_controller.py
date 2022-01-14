@@ -6,9 +6,9 @@ from qgis.PyQt.QtCore import (QObject,
                               QCoreApplication)
 
 from qgis.PyQt.QtWidgets import QMessageBox
-from asistente_ladm_col import Logger
+from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.app_interface import AppInterface
-from asistente_ladm_col.config.enums import EnumLayerCreationMode
+from asistente_ladm_col.config.enums import EnumFeatureCreationMode
 from asistente_ladm_col.config.general_config import (WIZARD_EDITING_LAYER_NAME,
                                                       WIZARD_STRINGS,
                                                       WIZARD_REFACTOR_FIELDS_RECENT_MAPPING_OPTIONS,
@@ -32,7 +32,7 @@ from asistente_ladm_col.gui.wizards.model.common.abstract_qobject_meta import Ab
 from asistente_ladm_col.gui.wizards.model.common.args.model_args import (ExecFormAdvancedArgs,
                                                                          FinishFeatureCreationArgs,
                                                                          MapToolChangedArgs)
-from asistente_ladm_col.gui.wizards.model.common.common_operations import CommonOperationsModel
+from asistente_ladm_col.gui.wizards.model.common.common_operations import ModelCommonOperations
 from asistente_ladm_col.gui.wizards.model.common.layer_remove_signals_manager import LayerRemovedSignalsManager
 from asistente_ladm_col.gui.wizards.model.common.refactor_fields_feature_creator import RefactorFieldsFeatureCreator
 from asistente_ladm_col.gui.wizards.model.common.wizard_q_settings_manager import WizardQSettingsManager
@@ -93,7 +93,7 @@ class AbstractWizardController(QObject, metaclass=AbstractQObjectMeta):
         self._feature_manager = self.__product_factory.create_feature_manager(
             self._db, self._wizard_config[WIZARD_LAYERS], self._editing_layer)
         self._common_operations = \
-            CommonOperationsModel(self._wizard_config[WIZARD_LAYERS], self._editing_layer_name,
+            ModelCommonOperations(self._wizard_config[WIZARD_LAYERS], self._editing_layer_name,
                                   self._wizard_config[WIZARD_READ_ONLY_FIELDS])
 
         self._common_operations.set_read_only_fields(True)
@@ -137,7 +137,7 @@ class AbstractWizardController(QObject, metaclass=AbstractQObjectMeta):
 
     def create_feature(self, args: CreateFeatureArgs):
         self._save_settings()
-        if args.layer_creation_mode == EnumLayerCreationMode.REFACTOR_FIELDS:
+        if args.layer_creation_mode == EnumFeatureCreationMode.REFACTOR_FIELDS:
             self.create_feature_from_refactor_fields()
         else:
             self._create_manually()
@@ -206,13 +206,13 @@ class AbstractWizardController(QObject, metaclass=AbstractQObjectMeta):
             WIZARD_HELP_PAGES: self._wizard_config[WIZARD_HELP_PAGES],
             WIZARD_HELP: self._wizard_config[WIZARD_HELP],
             WIZARD_FINISH_BUTTON_TEXT: {
-                EnumLayerCreationMode.REFACTOR_FIELDS: QCoreApplication.translate("WizardTranslations", "Import"),
-                EnumLayerCreationMode.MANUALLY: QCoreApplication.translate("WizardTranslations", "Create")
+                EnumFeatureCreationMode.REFACTOR_FIELDS: QCoreApplication.translate("WizardTranslations", "Import"),
+                EnumFeatureCreationMode.MANUALLY: QCoreApplication.translate("WizardTranslations", "Create")
             },
             WIZARD_SELECT_SOURCE_HELP: {
-                EnumLayerCreationMode.REFACTOR_FIELDS:
+                EnumFeatureCreationMode.REFACTOR_FIELDS:
                     help_strings.get_refactor_help_string(self._db, self._editing_layer),
-                EnumLayerCreationMode.MANUALLY:
+                EnumFeatureCreationMode.MANUALLY:
                     self._wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP1]
             }
         }
@@ -224,7 +224,7 @@ class AbstractWizardController(QObject, metaclass=AbstractQObjectMeta):
         settings = self.__settings_manager.get_settings()
 
         if WIZARD_CREATION_MODE_KEY not in settings or settings[WIZARD_CREATION_MODE_KEY] is None:
-            settings[WIZARD_CREATION_MODE_KEY] = EnumLayerCreationMode.MANUALLY
+            settings[WIZARD_CREATION_MODE_KEY] = EnumFeatureCreationMode.MANUALLY
 
         if WIZARD_SELECTED_TYPE_KEY not in settings:
             settings[WIZARD_SELECTED_TYPE_KEY] = None

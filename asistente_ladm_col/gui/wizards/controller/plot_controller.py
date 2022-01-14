@@ -23,12 +23,9 @@
 from qgis.PyQt.QtCore import (QObject,
                               pyqtSignal,
                               QCoreApplication)
-
-from asistente_ladm_col import Logger
-from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.general_config import (WIZARD_HELP_PAGES,
                                                       WIZARD_HELP2)
-from asistente_ladm_col.config.enums import (EnumLayerCreationMode,
+from asistente_ladm_col.config.enums import (EnumFeatureCreationMode,
                                              EnumFeatureSelectionType)
 from asistente_ladm_col.gui.wizards.controller.common.abstract_wizard_controller import (ProductFactory,
                                                                                          AbstractWizardController)
@@ -76,7 +73,7 @@ class PlotController(AbstractWizardController):
 
     def create_feature(self, args: CreateFeatureArgs):
         self._save_settings()
-        if args.layer_creation_mode == EnumLayerCreationMode.REFACTOR_FIELDS:
+        if args.layer_creation_mode == EnumFeatureCreationMode.REFACTOR_FIELDS:
             self.create_feature_from_refactor_fields()
         else:
             edit_feature_result = self._feature_manager.edit_feature()

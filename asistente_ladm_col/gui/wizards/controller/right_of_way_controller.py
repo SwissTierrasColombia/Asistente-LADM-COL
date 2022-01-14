@@ -27,7 +27,7 @@
  ***************************************************************************/
 """
 from qgis.core import QgsProject
-from asistente_ladm_col.config.enums import EnumLayerCreationMode
+from asistente_ladm_col.config.enums import EnumFeatureCreationMode
 from asistente_ladm_col.config.general_config import (WIZARD_HELP_PAGES,
                                                       WIZARD_HELP2,
                                                       WIZARD_FINISH_BUTTON_TEXT,
@@ -85,10 +85,10 @@ class RightOfWayController(AbstractSpatialWizardController):
         return self.__view
 
     def create_feature(self, args: CreateFeatureArgs):
-        if args.layer_creation_mode == EnumLayerCreationMode.MANUALLY:
+        if args.layer_creation_mode == EnumFeatureCreationMode.MANUALLY:
             self.digitizing_polygon = True
 
-        if args.layer_creation_mode == EnumLayerCreationMode.DIGITIZING_LINE:
+        if args.layer_creation_mode == EnumFeatureCreationMode.DIGITIZING_LINE:
             self._feature_manager.width_line = self.__view.get_with_line_edit()
             self.digitizing_polygon = False
 
@@ -105,9 +105,9 @@ class RightOfWayController(AbstractSpatialWizardController):
 
     def _get_view_config(self):
         view_config = super()._get_view_config()
-        view_config[WIZARD_FINISH_BUTTON_TEXT][EnumLayerCreationMode.DIGITIZING_LINE] = \
-            view_config[WIZARD_FINISH_BUTTON_TEXT][EnumLayerCreationMode.MANUALLY]
-        view_config[WIZARD_SELECT_SOURCE_HELP][EnumLayerCreationMode.DIGITIZING_LINE] = \
+        view_config[WIZARD_FINISH_BUTTON_TEXT][EnumFeatureCreationMode.DIGITIZING_LINE] = \
+            view_config[WIZARD_FINISH_BUTTON_TEXT][EnumFeatureCreationMode.MANUALLY]
+        view_config[WIZARD_SELECT_SOURCE_HELP][EnumFeatureCreationMode.DIGITIZING_LINE] = \
             self._wizard_config[WIZARD_HELP_PAGES][WIZARD_HELP2]
 
         return view_config

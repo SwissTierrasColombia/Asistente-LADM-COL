@@ -18,13 +18,10 @@
  *                                                                         *
  ***************************************************************************/
  """
-
-
-#  TODO Rename this class
 from asistente_ladm_col.app_interface import AppInterface
 
 
-class CommonOperationsModel:
+class ModelCommonOperations:
 
     def __init__(self, layers, editing_layer_name, read_only_fields: list):
         self.__layers = layers

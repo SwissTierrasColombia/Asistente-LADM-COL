@@ -25,7 +25,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsVectorLayerUtils,
                        QgsGeometry)
 
-from asistente_ladm_col import Logger
+from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.enums import (EnumRelatableLayers,
                                              EnumPlotCreationResult)

@@ -1,6 +1,6 @@
 from qgis.PyQt.QtCore import QCoreApplication
 
-from asistente_ladm_col import Logger
+from asistente_ladm_col.lib.logger import Logger
 
 
 class WizardMessagesManager:

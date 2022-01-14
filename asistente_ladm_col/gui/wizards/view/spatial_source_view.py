@@ -20,7 +20,7 @@
  """
 from qgis.PyQt.QtWidgets import QWizard
 
-from asistente_ladm_col.config.enums import EnumLayerCreationMode
+from asistente_ladm_col.config.enums import EnumFeatureCreationMode
 from asistente_ladm_col.config.general_config import (WIZARD_STRINGS, WIZARD_HELP,
                                                       WIZARD_REFACTOR_FIELDS_RECENT_MAPPING_OPTIONS,
                                                       WIZARD_REFACTOR_FIELDS_LAYER_FILTERS,
@@ -93,15 +93,15 @@ class SpatialSourceView:
     def __view_rejected(self):
         self.__controller.wizard_rejected()
 
-    def __option_changed(self, e: EnumLayerCreationMode):
+    def __option_changed(self, e: EnumFeatureCreationMode):
         self.__wp_select_source.set_help_text(self.__view_config[WIZARD_SELECT_SOURCE_HELP][e])
         finish_button_text = self.__view_config[WIZARD_FINISH_BUTTON_TEXT][e]
 
         self.__wizard.setButtonText(QWizard.FinishButton, finish_button_text)
 
         # new
-        self.__wp_select_source.get_wizard_page().setFinalPage(e == EnumLayerCreationMode.REFACTOR_FIELDS)
-        if e == EnumLayerCreationMode.REFACTOR_FIELDS:
+        self.__wp_select_source.get_wizard_page().setFinalPage(e == EnumFeatureCreationMode.REFACTOR_FIELDS)
+        if e == EnumFeatureCreationMode.REFACTOR_FIELDS:
             disable_next_wizard(self.__wizard)
         else:
             enable_next_wizard(self.__wizard)

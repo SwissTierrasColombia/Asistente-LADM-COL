@@ -224,7 +224,7 @@ class EnumRelatableLayers(Enum):
         return dict_result[self]
 
 
-class EnumLayerCreationMode(Enum):
+class EnumFeatureCreationMode(Enum):
     MANUALLY = 1,
     REFACTOR_FIELDS = 2,
     DIGITIZING_LINE = 3

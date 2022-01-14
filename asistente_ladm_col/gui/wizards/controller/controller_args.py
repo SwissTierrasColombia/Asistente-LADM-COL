@@ -16,10 +16,10 @@
  *                                                                         *
  ***************************************************************************/
  """
-from asistente_ladm_col.config.enums import EnumLayerCreationMode
+from asistente_ladm_col.config.enums import EnumFeatureCreationMode
 
 
 class CreateFeatureArgs:
 
-    def __init__(self, layer_creation_mode: EnumLayerCreationMode):
+    def __init__(self, layer_creation_mode: EnumFeatureCreationMode):
         self.layer_creation_mode = layer_creation_mode
