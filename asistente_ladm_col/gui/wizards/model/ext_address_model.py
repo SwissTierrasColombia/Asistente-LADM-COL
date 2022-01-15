@@ -27,7 +27,7 @@
  ***************************************************************************/
  """
 from asistente_ladm_col.config.enums import EnumRelatableLayers
-from asistente_ladm_col.gui.wizards.model.common.args.model_args import (ExecFormAdvancedArgs,
+from asistente_ladm_col.gui.wizards.model.common.args.model_args import (FeatureFormArgs,
                                                                          FinishFeatureCreationArgs)
 
 
@@ -56,7 +56,7 @@ class ExtAddressManager:
 
         return FinishFeatureCreationArgs(is_valid, feature_tid)
 
-    def exec_form_advanced(self, args: ExecFormAdvancedArgs):
+    def exec_form_advanced(self, args: FeatureFormArgs):
         layer = args.layer
         feature = None
         for f in layer.editBuffer().addedFeatures():

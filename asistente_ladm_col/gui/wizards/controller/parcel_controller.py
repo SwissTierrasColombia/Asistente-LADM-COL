@@ -26,7 +26,7 @@
  *                                                                         *
  ***************************************************************************/
  """
-from asistente_ladm_col.gui.wizards.model.common.args.model_args import ExecFormAdvancedArgs
+from asistente_ladm_col.gui.wizards.model.common.args.model_args import FeatureFormArgs
 from asistente_ladm_col.gui.wizards.model.common.manual_feature_creator import AlphaFeatureCreator
 from asistente_ladm_col.gui.wizards.model.common.select_features_by_expression_dialog_wrapper import \
     SelectFeatureByExpressionDialogWrapper
@@ -73,8 +73,11 @@ class ParcelController(AbstractWizardController):
         return self.__feature_selector_by_expression
 
     # manual feature creator
-    def exec_form_advanced(self, args: ExecFormAdvancedArgs):
+    def exec_form_advanced(self, args: FeatureFormArgs):
         self._feature_manager.exec_form_advanced(args)
+
+    def form_feature_showing(self, args: FeatureFormArgs):
+        self._feature_manager.set_parcel_type(args.feature)
 
     def _create_view(self):
         self.__view = ParcelView(self, self._get_view_config())

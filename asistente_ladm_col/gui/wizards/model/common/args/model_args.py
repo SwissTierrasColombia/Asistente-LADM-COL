@@ -61,7 +61,7 @@ class ValidFeaturesDigitizedArgs:
         self.feature = feature
 
 
-class ExecFormAdvancedArgs:
+class FeatureFormArgs:
     def __init__(self, layer: QgsVectorLayer, feature):
         self.layer = layer
         self.feature = feature

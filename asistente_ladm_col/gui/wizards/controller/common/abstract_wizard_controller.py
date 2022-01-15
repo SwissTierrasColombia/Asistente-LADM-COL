@@ -28,7 +28,7 @@ from asistente_ladm_col.config.general_config import (WIZARD_EDITING_LAYER_NAME,
                                                       WIZARD_FEATURE_NAME)
 from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.gui.wizards.controller.controller_args import CreateFeatureArgs
-from asistente_ladm_col.gui.wizards.model.common.args.model_args import (ExecFormAdvancedArgs,
+from asistente_ladm_col.gui.wizards.model.common.args.model_args import (FeatureFormArgs,
                                                                          FinishFeatureCreationArgs,
                                                                          MapToolChangedArgs)
 from asistente_ladm_col.gui.wizards.model.common.common_operations import ModelCommonOperations
@@ -111,6 +111,7 @@ class AbstractWizardController(QObject, metaclass=AbstractQObjectMeta):
 
         self._manual_feature_creator.exec_form_advanced.connect(self.exec_form_advanced)
         self._manual_feature_creator.finish_feature_creation.connect(self.__finish_feature_creation)
+        self._manual_feature_creator.form_feature_showing.connect(self.form_feature_showing)
 
         # features selector on map
         self._feature_selector_on_map = \
@@ -147,7 +148,10 @@ class AbstractWizardController(QObject, metaclass=AbstractQObjectMeta):
         self._manual_feature_creator.create()
 
     # called from manual feature creator
-    def exec_form_advanced(self, args: ExecFormAdvancedArgs):
+    def exec_form_advanced(self, args: FeatureFormArgs):
+        pass
+
+    def form_feature_showing(self, args: FeatureFormArgs):
         pass
 
     # called from selector on map

@@ -28,7 +28,7 @@ from qgis.core import QgsProject
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.gui.wizards.model.common.args.model_args import (ValidFeaturesDigitizedArgs,
-                                                                         ExecFormAdvancedArgs,
+                                                                         FeatureFormArgs,
                                                                          UnexpectedFeaturesDigitizedArgs)
 from asistente_ladm_col.config.enums import EnumDigitizedFeatureStatus
 from asistente_ladm_col.utils.abstract_class import AbstractQObjectMeta
@@ -37,7 +37,8 @@ from asistente_ladm_col.utils.abstract_class import AbstractQObjectMeta
 class NullFeatureCreator(QObject):
     finish_feature_creation = pyqtSignal(str, list)
     form_rejected = pyqtSignal()
-    exec_form_advanced = pyqtSignal(ExecFormAdvancedArgs)
+    exec_form_advanced = pyqtSignal(FeatureFormArgs)
+    form_feature_showing = pyqtSignal(FeatureFormArgs)
 
     def create(self):
         pass
@@ -49,7 +50,8 @@ class NullFeatureCreator(QObject):
 class ManualFeatureCreator(QObject, metaclass=AbstractQObjectMeta):
     finish_feature_creation = pyqtSignal(str, list)
     form_rejected = pyqtSignal()
-    exec_form_advanced = pyqtSignal(ExecFormAdvancedArgs)
+    exec_form_advanced = pyqtSignal(FeatureFormArgs)
+    form_feature_showing = pyqtSignal(FeatureFormArgs)
 
     def __init__(self, iface, layer, feature_name):
         QObject.__init__(self)
@@ -90,13 +92,15 @@ class ManualFeatureCreator(QObject, metaclass=AbstractQObjectMeta):
             layer.startEditing()
 
     def _exec_form(self, layer, feature):
+        form_feature_showing_args = FeatureFormArgs(layer, feature)
+        self.form_feature_showing.emit(form_feature_showing_args)
         dialog = self._iface.getFeatureForm(layer, feature)
 
         dialog.rejected.connect(self.form_rejected)
         dialog.setModal(True)
 
         if dialog.exec_():
-            args = ExecFormAdvancedArgs(layer, feature)
+            args = FeatureFormArgs(layer, feature)
             self.exec_form_advanced.emit(args)
             saved = layer.commitChanges()
 

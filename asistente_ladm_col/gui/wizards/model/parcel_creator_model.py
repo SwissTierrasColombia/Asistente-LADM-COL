@@ -29,7 +29,7 @@
 from asistente_ladm_col.config.enums import (EnumRelatableLayers,
                                              EnumRelationshipType)
 from asistente_ladm_col.config.layer_config import LayerConfig
-from asistente_ladm_col.gui.wizards.model.common.args.model_args import (ExecFormAdvancedArgs,
+from asistente_ladm_col.gui.wizards.model.common.args.model_args import (FeatureFormArgs,
                                                                          ParcelFinishFeatureCreationArgs)
 from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 
@@ -50,7 +50,7 @@ class ParcelCreatorManager:
         self.__init_selectable_layer_by_type()
 
     # TODO ref2 Cambiar el nombre
-    def exec_form_advanced(self, args: ExecFormAdvancedArgs):
+    def exec_form_advanced(self, args: FeatureFormArgs):
         fid = args.feature.id()
 
         # assigns the type of parcel before to creating it
@@ -58,6 +58,11 @@ class ParcelCreatorManager:
             self.__db.names.LC_PARCEL_T_PARCEL_TYPE_F)
         args.layer.changeAttributeValue(fid, parcel_condition_field_idx,
                                         self.__get_ili_code_id_dict()[self.parcel_type_ili_code])
+
+    def set_parcel_type(self, feature):
+        parcel_conditions = self.get_type_parcel_conditions()
+        value = parcel_conditions[self.parcel_type_ili_code]
+        feature[self.__db.names.LC_PARCEL_T_PARCEL_TYPE_F] = value
 
     # TODO ref2 Cambiar el nombre
     def finish_feature_creation(self, layerId, features):

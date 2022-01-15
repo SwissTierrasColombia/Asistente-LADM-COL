@@ -37,7 +37,7 @@ from asistente_ladm_col.gui.wizards.controller.common.abstract_spatial_wizard_co
     AbstractSpatialWizardController
 from asistente_ladm_col.gui.wizards.controller.common.abstract_wizard_controller import ProductFactory
 from asistente_ladm_col.gui.wizards.controller.common.wizard_messages_manager import WizardMessagesManager
-from asistente_ladm_col.gui.wizards.model.common.args.model_args import ExecFormAdvancedArgs
+from asistente_ladm_col.gui.wizards.model.common.args.model_args import FeatureFormArgs
 from asistente_ladm_col.gui.wizards.model.common.manual_feature_creator import SpatialFeatureCreator
 from asistente_ladm_col.gui.wizards.model.common.select_features_by_expression_dialog_wrapper import \
     SelectFeatureByExpressionDialogWrapper
@@ -79,7 +79,7 @@ class ExtAddressController(AbstractSpatialWizardController):
         super()._initialize()
         self.__initialize_selected_option()
 
-    def exec_form_advanced(self, args: ExecFormAdvancedArgs):
+    def exec_form_advanced(self, args: FeatureFormArgs):
         self._feature_manager.exec_form_advanced(args)
 
     def selected_features_on_map_changed(self):
