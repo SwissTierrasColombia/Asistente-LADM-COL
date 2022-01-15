@@ -75,9 +75,9 @@ class RrrCreatorManager:
         elif self.__editing_layer_name == self.names.LC_RESTRICTION_T:
             attr_fk = self.names.COL_RRR_SOURCE_T_LC_RESTRICTION_F
 
-        new_features = LADMData.save_relations(self.__layers[self.names.self.names.COL_RRR_SOURCE_T],
-                                                       self.names.COL_POINT_SOURCE_T_LC_CONTROL_POINT_F,
-                                                       administrative_source_ids, attr_fk, feature_tid)
+        new_features = LADMData.save_relations(self.__layers[self.names.COL_RRR_SOURCE_T],
+                                               self.names.COL_RRR_SOURCE_T_SOURCE_F,
+                                               administrative_source_ids, attr_fk, feature_tid)
         return SpacialSourceFinishFeatureCreationArgs(True, feature_tid, 1, None)
         # TODO log messages is missing
 
