@@ -165,3 +165,79 @@ class EnumQualityRule:
         DUPLICATE_RECORDS_IN_RIGHT = 4020
         DUPLICATE_RECORDS_IN_RESTRICTION = 4021
         DUPLICATE_RECORDS_IN_ADMINISTRATIVE_SOURCE = 4022
+
+
+class EnumRelationshipType(Enum):
+    # Operations:
+    # 1 = One and only one feature must be selected
+    # + = One or more features must be selected
+    # * = Optional, i.e., zero or more features could be selected
+    ONE = 1,
+    MANY = 2,
+    ONE_OR_MANY = 3
+
+
+class EnumDigitizedFeatureStatus(Enum):
+    INVALID = 1
+    ZERO_FEATURES = 2
+    OTHER = 3
+
+
+class EnumRelatableLayers(Enum):
+    PLOT = 1
+    BUILDING = 2
+    BUILDING_UNIT = 3
+
+    BOUNDARY = 4
+    BOUNDARY_POINT = 5
+    SURVEY_POINT = 6
+    CONTROL_POINT = 7
+
+    ADMINISTRATIVE_SOURCE = 8
+
+    @staticmethod
+    def enum_value_from_db_name(db_names, item_db_name):
+        dict_result = {
+            db_names.LC_PLOT_T: EnumRelatableLayers.PLOT,
+            db_names.LC_BUILDING_T: EnumRelatableLayers.BUILDING,
+            db_names.LC_BUILDING_UNIT_T: EnumRelatableLayers.BUILDING_UNIT,
+            db_names.LC_BOUNDARY_T: EnumRelatableLayers.BOUNDARY,
+            db_names.LC_BOUNDARY_POINT_T: EnumRelatableLayers.BOUNDARY_POINT,
+            db_names.LC_SURVEY_POINT_T: EnumRelatableLayers.SURVEY_POINT,
+            db_names.LC_CONTROL_POINT_T: EnumRelatableLayers.CONTROL_POINT,
+            db_names.LC_ADMINISTRATIVE_SOURCE_T: EnumRelatableLayers.ADMINISTRATIVE_SOURCE
+        }
+        return dict_result[item_db_name] if item_db_name in dict_result else None
+
+    def get_db_name(self, db_names):
+        dict_result = {
+            EnumRelatableLayers.PLOT: db_names.LC_PLOT_T,
+            EnumRelatableLayers.BUILDING: db_names.LC_BUILDING_T,
+            EnumRelatableLayers.BUILDING_UNIT: db_names.LC_BUILDING_UNIT_T,
+            EnumRelatableLayers.BOUNDARY: db_names.LC_BOUNDARY_T,
+            EnumRelatableLayers.BOUNDARY_POINT: db_names.LC_BOUNDARY_POINT_T,
+            EnumRelatableLayers.SURVEY_POINT: db_names.LC_SURVEY_POINT_T,
+            EnumRelatableLayers.CONTROL_POINT: db_names.LC_CONTROL_POINT_T,
+            EnumRelatableLayers.ADMINISTRATIVE_SOURCE: db_names.LC_ADMINISTRATIVE_SOURCE_T
+        }
+
+        return dict_result[self]
+
+
+class EnumFeatureCreationMode(Enum):
+    MANUALLY = 1,
+    REFACTOR_FIELDS = 2,
+    DIGITIZING_LINE = 3
+
+
+class EnumFeatureSelectionType(Enum):
+    SELECTION_BY_EXPRESSION = 1
+    SELECTION_ON_MAP = 2
+    ALL_FEATURES = 3
+
+
+class EnumPlotCreationResult(Enum):
+    CREATED = 1,
+    NO_BOUNDARIES_SELECTED = 2,
+    NO_PLOTS_CREATED = 3
+
