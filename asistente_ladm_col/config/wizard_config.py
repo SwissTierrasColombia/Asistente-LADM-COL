@@ -439,7 +439,6 @@ class WizardConfigFactory:
                 WIZARD_QSETTINGS: {
                     WIZARD_QSETTINGS_PATH: "wizards/parcel"
                 },
-                WIZARD_MAP_LAYER_PROXY_MODEL: QgsMapLayerProxyModel.NoGeometry,
                 # VIEW
                 WIZARD_TOOL_NAME: QCoreApplication.translate("CreateParcelSurveyWizard", "Create parcel"),
                 WIZARD_HELP: "create_parcel",

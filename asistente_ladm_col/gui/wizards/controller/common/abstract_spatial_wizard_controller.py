@@ -38,13 +38,6 @@ class AbstractSpatialWizardController(AbstractWizardController):
     def save_created_geometry(self):
         self._manual_feature_creator.save_created_geometry()
 
-    def _get_view_config(self):
-        result = super()._get_view_config()
-        result[WIZARD_REFACTOR_FIELDS_LAYER_FILTERS] = \
-            QgsMapLayerProxyModel.Filter(self._wizard_config[WIZARD_MAP_LAYER_PROXY_MODEL])
-
-        return result
-
     def close_wizard(self):
         ViewUtils.enable_digitize_actions(self._iface, True)
         self.enable_save_geometry_button.emit(False)

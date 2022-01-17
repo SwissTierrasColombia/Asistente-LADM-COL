@@ -25,7 +25,8 @@ from asistente_ladm_col.config.general_config import (WIZARD_EDITING_LAYER_NAME,
                                                       WIZARD_SELECTED_TYPE_KEY,
                                                       WIZARD_QSETTINGS,
                                                       WIZARD_QSETTINGS_PATH,
-                                                      WIZARD_FEATURE_NAME)
+                                                      WIZARD_FEATURE_NAME,
+                                                      WIZARD_MAP_LAYER_PROXY_MODEL)
 from asistente_ladm_col.config.help_strings import HelpStrings
 from asistente_ladm_col.gui.wizards.controller.controller_args import CreateFeatureArgs
 from asistente_ladm_col.gui.wizards.model.common.args.model_args import (FeatureFormArgs,
@@ -203,10 +204,15 @@ class AbstractWizardController(QObject, metaclass=AbstractQObjectMeta):
     def _get_view_config(self):
         # TODO Load help_strings from wizard_config
         help_strings = HelpStrings()
+
+        refactor_fields_filter = self._wizard_config[WIZARD_MAP_LAYER_PROXY_MODEL] \
+            if WIZARD_MAP_LAYER_PROXY_MODEL in self._wizard_config \
+            else QgsMapLayerProxyModel.Filter(QgsMapLayerProxyModel.NoGeometry)
+
         return {
             WIZARD_STRINGS: self._wizard_config[WIZARD_STRINGS],
             WIZARD_REFACTOR_FIELDS_RECENT_MAPPING_OPTIONS: self.refactor_field_mapping,
-            WIZARD_REFACTOR_FIELDS_LAYER_FILTERS: QgsMapLayerProxyModel.Filter(QgsMapLayerProxyModel.NoGeometry),
+            WIZARD_REFACTOR_FIELDS_LAYER_FILTERS: refactor_fields_filter,
             WIZARD_HELP_PAGES: self._wizard_config[WIZARD_HELP_PAGES],
             WIZARD_HELP: self._wizard_config[WIZARD_HELP],
             WIZARD_FINISH_BUTTON_TEXT: {
