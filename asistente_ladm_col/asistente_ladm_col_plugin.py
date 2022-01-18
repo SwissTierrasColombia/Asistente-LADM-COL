@@ -34,12 +34,12 @@ from qgis.core import (Qgis,
                        QgsApplication,
                        QgsExpression)
 
+from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.gui.db_engine_gui_config import DBEngineGUIConfig
 from asistente_ladm_col.gui.field_data_capture.dockwidget_field_data_capture_admin_coordinator import DockWidgetFieldDataCaptureAdminCoordinator
 from asistente_ladm_col.gui.field_data_capture.dockwidget_field_data_capture_coordinator_surveyor import DockWidgetFieldDataCaptureCoordinatorSurveyor
 from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
 from asistente_ladm_col.gui.queries.ladm_query_controller import LADMQueryController
-from asistente_ladm_col.core.xtf_model_converter.xtf_model_converter_controller import XTFModelConverterController
 from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
 from asistente_ladm_col.lib.dependency.plugin_dependency import PluginDependency
 from asistente_ladm_col.config.enums import (EnumDbActionType,
@@ -98,7 +98,8 @@ from asistente_ladm_col.config.expression_functions import (get_domain_code_from
 from asistente_ladm_col.config.keys.common import *
 from asistente_ladm_col.core.app_core_interface import AppCoreInterface
 from asistente_ladm_col.core.app_processing_interface import AppProcessingInterface
-from asistente_ladm_col.app_interface import AppInterface
+from asistente_ladm_col.core.quality_rules.quality_rule_controller import QualityRuleController
+from asistente_ladm_col.core.xtf_model_converter.xtf_model_converter_controller import XTFModelConverterController
 from asistente_ladm_col.gui.app_gui_interface import AppGUIInterface
 from asistente_ladm_col.gui.quality_rules.dockwidget_quality_rules import DockWidgetQualityRules
 from asistente_ladm_col.gui.supplies.wiz_supplies_etl import SuppliesETLWizard
@@ -1229,7 +1230,8 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_quality_rules_dock_widget(self, *args):
         self.gui_builder.close_dock_widgets([DOCK_WIDGET_QUALITY_RULES])
 
-        dock_widget_qrs = DockWidgetQualityRules(self.get_db_connection(), self.main_window)
+        qr_controller = QualityRuleController(self.get_db_connection())
+        dock_widget_qrs = DockWidgetQualityRules(qr_controller, self.main_window)
         self.gui_builder.register_dock_widget(DOCK_WIDGET_QUALITY_RULES, dock_widget_qrs)
         self.conn_manager.db_connection_changed.connect(dock_widget_qrs.update_db_connection)
         self.app.gui.add_tabified_dock_widget(Qt.RightDockWidgetArea, dock_widget_qrs)

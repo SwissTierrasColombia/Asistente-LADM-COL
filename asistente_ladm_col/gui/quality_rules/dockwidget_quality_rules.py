@@ -32,17 +32,17 @@ class DockWidgetQualityRules(QgsDockWidget, DOCKWIDGET_UI):
     """
     trigger_action_emitted = pyqtSignal(str)  # action tag
 
-    def __init__(self, db, parent):
+    def __init__(self, controller, parent):
         super(DockWidgetQualityRules, self).__init__(parent)
         self.setupUi(self)
         self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
 
-        self.__db = db
+        self.__controller = controller
 
         # Configure panels
         self.task_panel = None
 
-        self.main_panel = QualityRulesInitialPanelWidget(self)
+        self.main_panel = QualityRulesInitialPanelWidget(controller, self)
         self.widget.setMainPanel(self.main_panel)
         # self.main_panel.fill_data()
 
@@ -65,7 +65,7 @@ class DockWidgetQualityRules(QgsDockWidget, DOCKWIDGET_UI):
 
         self.close()  # The user needs to use the menus again, which will start everything from scratch
 
-    def show_task_panel(self, task_id):
+    def show_rule_validation_panel(self):
         with OverrideCursor(Qt.WaitCursor):
             if self.task_panel is not None:
                 try:
@@ -75,7 +75,7 @@ class DockWidgetQualityRules(QgsDockWidget, DOCKWIDGET_UI):
 
                 self.task_panel = None
 
-            self.task_panel = TaskPanelWidget(task_id, self)
+            self.task_panel = TaskPanelWidget(self)
             self.task_panel.trigger_action_emitted.connect(self.trigger_action_emitted)
             self.task_panel.panelAccepted.connect(self.reload_tasks)
             self.widget.showPanel(self.task_panel)

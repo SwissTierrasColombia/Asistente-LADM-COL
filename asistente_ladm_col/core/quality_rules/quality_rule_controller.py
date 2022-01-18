@@ -14,15 +14,21 @@
  *                                                                         *
  ***************************************************************************/
 """
+from qgis.PyQt.QtCore import QSettings
+
+from asistente_ladm_col.app_interface import AppInterface
+from asistente_ladm_col.config.general_config import DEFAULT_USE_ROADS_VALUE
 from asistente_ladm_col.core.quality_rules.quality_rule_engine import QualityRuleEngine
+from asistente_ladm_col.core.quality_rules.quality_rule_registry import QualityRuleRegistry
 
 
 class QualityRuleController:
-    def __init__(self):
-        pass
+    def __init__(self, db):
+        self.app = AppInterface()
+        self._db = db
 
-    def validate_qrs(self, selected_rules, tolerance, options=dict()):
-        self.qr_engine = QualityRuleEngine(self.get_db_connection(), quality_dialog.selected_rules, self.app.settings.tolerance)
+    def validate_qrs(self, selected_rules, options=dict()):
+        self.qr_engine = QualityRuleEngine(self._db, selected_rules, self.app.settings.tolerance)
         self.qr_engine.qr_logger.show_message_emitted.connect(self.show_log_quality_message)
         self.qr_engine.qr_logger.show_button_emitted.connect(self.show_log_quality_button)
         self.qr_engine.qr_logger.set_initial_progress_emitted.connect(self.set_log_quality_initial_progress)
@@ -35,6 +41,25 @@ class QualityRuleController:
 
     def all_error_layers(self):
         return [layer for qr_res in self.__res_dict.values() for layer in qr_res.error_layers if layer.featureCount()]
+
+    def get_qrs_per_role_and_models(self):
+        return QualityRuleRegistry().get_qrs_per_role_and_models(self._db)
+
+    def get_qrs_tree(self, qrs):
+        """
+        :param qrs: Dict of qr key and qr objects.
+
+        Returns a hierarchical dict by qr type: {qr_type1: {qr_key1: qr_obj1, ...}, ...}
+        """
+        tree = dict()
+        for qr_key, qr_obj in qrs.items():
+            type = qr_obj.type()
+            if type not in tree:
+                tree[type] = {qr_key: qr_obj}
+            else:
+                tree[type][qr_key] = qr_obj
+
+        return tree
 
     # def show_log_quality_message(self, msg, count):
     #     self.progress_message_bar = self.iface.messageBar().createMessage("Asistente LADM-COL", msg)

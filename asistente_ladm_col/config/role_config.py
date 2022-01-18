@@ -7,6 +7,7 @@ from asistente_ladm_col.config.general_config import (FDC_DATASET_NAME,
 from asistente_ladm_col.config.keys.common import *
 from asistente_ladm_col.config.gui.gui_config import GUI_Config
 from asistente_ladm_col.config.keys.ili2db_keys import *
+from asistente_ladm_col.config.quality_rule_config import *
 
 
 basic_role_gui = GUI_Config().get_gui_dict(TEMPLATE_GUI)
@@ -299,10 +300,11 @@ def get_role_config():
                 ACTION_PARCEL_QUERY,
                 ACTION_CHECK_QUALITY_RULES],
             ROLE_QUALITY_RULES: [
-                EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS,
-                EnumQualityRule.Line.BOUNDARIES_ARE_NOT_SPLIT,
-                EnumQualityRule.Polygon.OVERLAPS_IN_PLOTS,
-                EnumQualityRule.Logic.PARCEL_TYPE_AND_22_POSITION_OF_PARCEL_NUMBER,
+                QR_ILIVALIDATORR0001,
+                QR_IGACR1001,
+                #QR_IGACR2001,
+                #QR_IGACR3006,
+                QR_IGACR4001
             ],
             ROLE_GUI_CONFIG: {TEMPLATE_GUI: basic_role_gui}
         },
@@ -345,7 +347,7 @@ def get_role_config():
                 ACTION_INTEGRATE_SUPPLIES,
                 ACTION_PARCEL_QUERY,
                 ACTION_CHECK_QUALITY_RULES],
-            ROLE_QUALITY_RULES: COMMON_QUALITY_RULES,
+            ROLE_QUALITY_RULES: ALL_QUALITY_RULES,
             ROLE_GUI_CONFIG: {TEMPLATE_GUI: field_admin_role_gui}
         },
         FIELD_COORDINATOR_ROLE: {
@@ -400,7 +402,7 @@ def get_role_config():
                 ACTION_ST_LOGOUT,
                 ACTION_PARCEL_QUERY,
                 ACTION_CHECK_QUALITY_RULES],
-            ROLE_QUALITY_RULES: COMMON_QUALITY_RULES,
+            ROLE_QUALITY_RULES: ALL_QUALITY_RULES,
             ROLE_GUI_CONFIG: {TEMPLATE_GUI: operator_role_gui}
         },
         MANAGER_ROLE: {
@@ -421,7 +423,7 @@ def get_role_config():
                 ACTION_INTEGRATE_SUPPLIES,
                 ACTION_PARCEL_QUERY,
                 ACTION_CHECK_QUALITY_RULES],
-            ROLE_QUALITY_RULES: COMMON_QUALITY_RULES,
+            ROLE_QUALITY_RULES: ALL_QUALITY_RULES,
             ROLE_GUI_CONFIG: {TEMPLATE_GUI: manager_role_gui}
         },
         ADVANCED_ROLE: {
@@ -431,7 +433,7 @@ def get_role_config():
             ROLE_ENABLED: True,
             ROLE_MODELS: COMMON_ROLE_MODELS,  # advanced_role_models,
             ROLE_ACTIONS: [ALL_ACTIONS],
-            ROLE_QUALITY_RULES: COMMON_QUALITY_RULES,
+            ROLE_QUALITY_RULES: ALL_QUALITY_RULES,
             ROLE_GUI_CONFIG: {TEMPLATE_GUI: advanced_role_gui}
         }
     })

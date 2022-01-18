@@ -1,5 +1,20 @@
+import functools
 from enum import (Enum,
                   IntFlag)
+
+
+@functools.total_ordering
+class OrderedEnum(Enum):
+    @classmethod
+    @functools.lru_cache(None)
+    def _member_list(cls):
+        return list(cls)
+
+    def __lt__(self, other):
+        if self.__class__ is other.__class__:
+            member_list = self.__class__._member_list()
+            return member_list.index(self) < member_list.index(other)
+        return NotImplemented
 
 
 class EnumDbActionType(Enum):
@@ -114,10 +129,7 @@ class EnumLayerRegistryType(Enum):
     IN_LAYER_TREE = 2
 
 
-class EnumQualityRuleType(Enum):
-    """
-    Loaded layers in QGIS can be: 1) only in registry or 2) both in registry and in layer tree
-    """
+class EnumQualityRuleType(OrderedEnum):
     GENERIC = 0  # For instance, iliValidator errors, which may include all types
     POINT = 1
     LINE = 2

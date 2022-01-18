@@ -17,7 +17,10 @@
 """
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
+from asistente_ladm_col.config.keys.common import ALL_QUALITY_RULES
 from asistente_ladm_col.core.quality_rules.abstract_quality_rule import AbstractQualityRule
+from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
 from asistente_ladm_col.logic.quality_rules.qr_overlapping_boundary_points import QROverlappingBoundaryPoints
 from asistente_ladm_col.logic.quality_rules.qr_overlapping_boundaries import QROverlappingBoundaries
 from asistente_ladm_col.logic.quality_rules.qr_validate_data_against_model import QRValidateDataAgainstModel
@@ -91,3 +94,42 @@ class QualityRuleRegistry(metaclass=Singleton):
             self.logger.warning(__name__, "Quality rule '{}' is not registered, therefore it cannot be obtained!".format(quality_rule_id))
 
         return qr
+
+    def get_qrs_per_role_and_models(self, db, as_dict=True):
+        """
+        :param as_dict: Boolean. If False, the result is returned as a list or rule keys
+        """
+        qrs = dict()
+        role_registry = RoleRegistry()
+        role_qrs = role_registry.get_role_quality_rules(role_registry.get_active_role())
+        if role_qrs == ALL_QUALITY_RULES:
+            role_qrs = self.__quality_rules
+
+        if role_qrs:
+            db_models = db.get_models()
+            model_registry = LADMColModelRegistry()
+
+            for qr in role_qrs:
+                # First check if the role QR is registered
+                if qr in self.__quality_rules:
+                    # Then check if the models required by the QR are in the DB
+                    req_models = self.__quality_rules[qr].models()
+                    num_models = len(req_models)
+
+                    all_models_found = True
+                    if num_models:  # We don't check models if a QR has no required models (e.g., iliValidator)
+                        for req_model in req_models:
+                            model = model_registry.model(req_model)
+                            model_key = model.full_name()
+                            if model_key and model_key not in db_models:
+                                all_models_found = False
+                                self.logger.debug(__name__,
+                                                  "Model '{}' not found in the DB. QR '{}' cannot be listed.".format(
+                                                      model_key, qr
+                                                  ))
+                                break
+
+                    if all_models_found:
+                        qrs[qr] = self.__quality_rules[qr]
+
+        return qrs if as_dict else list(qrs.keys())

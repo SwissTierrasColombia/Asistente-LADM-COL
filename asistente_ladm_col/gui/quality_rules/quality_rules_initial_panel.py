@@ -16,9 +16,15 @@
  ***************************************************************************/
 """
 from PyQt5.uic import loadUi
-from qgis.PyQt.QtCore import (pyqtSignal,
+from qgis.PyQt.QtGui import (QFont,
+                             QIcon)
+from qgis.PyQt.QtCore import (Qt,
+                              pyqtSignal,
                               QCoreApplication)
-from qgis.PyQt.QtWidgets import QWidget
+from qgis.PyQt.QtWidgets import (QTreeWidgetItem,
+                                 QLineEdit,
+                                 QTreeWidgetItemIterator,
+                                 QComboBox)
 from qgis.gui import QgsPanelWidget
 
 from asistente_ladm_col.gui.transitional_system.tasks_widget import TasksWidget
@@ -26,6 +32,7 @@ from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.transitional_system.st_session.st_session import STSession
 from asistente_ladm_col.utils.ui import (get_ui_class,
                                          get_ui_file_path)
+from asistente_ladm_col.utils.utils import show_plugin_help
 
 WIDGET_UI = get_ui_class('quality_rules/quality_rules_initial_panel_widget.ui')
 
@@ -34,19 +41,183 @@ class QualityRulesInitialPanelWidget(QgsPanelWidget, WIDGET_UI):
     HOME_WIDGET = "home_widget"
     TASKS_WIDGET = "tasks_widget"
 
-    def __init__(self, parent=None):
+    def __init__(self, controller, parent=None):
         QgsPanelWidget.__init__(self, parent)
         self.setupUi(self)
+        self.__controller = controller
         self.parent = parent
         self.logger = Logger()
+
+        self.__qrs_tree = dict()  # Hierarquical dict of qrs and qr groups
+        self.__selected_items_list = list()
+        self.__icon_names = ['schema.png', 'points.png', 'lines.png', 'polygons.png', 'relationships.svg']
+
+        self.txt_search.addAction(QIcon(":/Asistente-LADM-COL/resources/images/search.png"),
+                                       QLineEdit.LeadingPosition)
 
         self.setDockMode(True)
         self.setPanelTitle(QCoreApplication.translate("QualityRulesInitialPanelWidget", "Quality Rules"))
 
-    def show_task_panel(self, task_id):
+        self.txt_search.textChanged.connect(self.__search_text_changed)
+        self.btn_validate.clicked.connect(self.__validate_clicked)
+        self.btn_help.clicked.connect(self.__show_help)
+
+        # Load available rules for current role and current db models
+        self.__load_available_rules()
+
+    def __load_available_rules(self):
+        qrs = self.__controller.get_qrs_per_role_and_models()
+        self.__qrs_tree = self.__controller.get_qrs_tree(qrs)
+        self.__update_available_rules()
+
+    def __update_available_rules(self):
+        self.trw_qrs.setUpdatesEnabled(False)  # Don't render until we're ready
+
+        # Grab some context data
+        top_level_items_expanded_info = dict()
+        for i in range(self.trw_qrs.topLevelItemCount()):
+            top_level_items_expanded_info[self.trw_qrs.topLevelItem(i).text(0)] = self.trw_qrs.topLevelItem(i).isExpanded()
+
+        # Save selection
+        self.__update_selected_items()
+
+        # Iterate qr types adding children
+        self.trw_qrs.blockSignals(True)  # We don't want to get itemSelectionChanged here
+        self.trw_qrs.clear()
+        self.trw_qrs.blockSignals(False)
+
+        bold_font = QFont()
+        bold_font.setBold(True)
+
+        sorted_types = sorted(self.__qrs_tree.keys())
+        for type_enum in sorted_types:
+            type = type_enum.name  # Get the type text from the enum
+            children = []
+            type_item = QTreeWidgetItem([type])
+
+            # Filter by search text
+            list_qrs = self.__filter_by_search_text(type_enum, self.txt_search.text())
+
+            for qr in list_qrs:
+                qr_item = QTreeWidgetItem([qr.name()])
+                qr_item.setData(0, Qt.UserRole, qr.id())
+                qr_item.setData(0, Qt.ToolTipRole, "{}\n{}".format(qr.name(), qr.id()))
+                children.append(qr_item)
+
+            if children:
+                icon_name = self.__icon_names[type_enum.value]
+                icon = QIcon(":/Asistente-LADM-COL/resources/images/{}".format(icon_name))
+                type_item.setData(0, Qt.DecorationRole, icon)
+                type_item.setData(0, Qt.FontRole, bold_font)
+                type_item.addChildren(children)
+                self.trw_qrs.addTopLevelItem(type_item)
+
+        # Set selection
+        iterator = QTreeWidgetItemIterator(self.trw_qrs, QTreeWidgetItemIterator.Selectable)
+        self.trw_qrs.blockSignals(True)  # We don't want to get itemSelectionChanged here
+        while iterator.value():
+            item = iterator.value()
+            if item.data(0, Qt.UserRole) in self.__selected_items_list:
+                item.setSelected(True)
+
+            iterator += 1
+
+        self.trw_qrs.blockSignals(False)
+
+        # Make type items non selectable
+        # Set expand taking previous states into account
+        for i in range(self.trw_qrs.topLevelItemCount()):
+            self.trw_qrs.topLevelItem(i).setFlags(Qt.ItemIsEnabled)  # Not selectable
+            self.trw_qrs.topLevelItem(i).setExpanded(top_level_items_expanded_info.get(self.trw_qrs.topLevelItem(i).text(0), True))
+
+        self.trw_qrs.setUpdatesEnabled(True)  # Now render!
+
+    def __filter_by_search_text(self, type, search_text):
+        res = list(self.__qrs_tree[type].values())
+
+        search_text = search_text.lower()
+        if len(search_text) > 1:
+            to_delete = list()
+            for qr_obj in res:
+                # First check in QR id
+                found = search_text in qr_obj.id().lower()
+
+                if not found:
+                    # Now search in QR tags
+                    for tag in qr_obj.tags():
+                        if search_text in tag:
+                            found = True
+                            continue
+
+                    if not found:
+                        to_delete.append(qr_obj)
+
+            for qr_obj in to_delete:
+                res.remove(qr_obj)
+
+        return res
+
+    def __update_selected_items(self):
+        iterator = QTreeWidgetItemIterator(self.trw_qrs, QTreeWidgetItemIterator.Selectable)
+        while iterator.value():
+            item = iterator.value()
+            qr_key = item.data(0, Qt.UserRole)
+
+            if item.isSelected():
+                self.__selected_items_list.append(qr_key)
+            else:
+                if qr_key in self.__selected_items_list:
+                    # It was selected before, but not anymore
+                    self.__selected_items_list.remove(qr_key)
+
+            iterator += 1
+
+    def __search_text_changed(self, text):
+        self.__update_available_rules()
+
+    def __validate_clicked(self):
+        self.__save_settings()
+        self.__update_selected_items() # Take latest selection into account
+
+        if len(self.__selected_items_list):
+            selected_qrs = self.__selected_items_list.copy()
+            self.__selected_items_list = list() # Reset
+            print(selected_qrs)
+            #self.__controller.validate_qrs(selected_qrs)
+
+    def __save_settings(self):
+        pass
+
+    def __restore_settings(self):
+        pass
+
+    def __select_predefined_changed(self, index):
+        pass
+
+    def __update_selected_count_label(self):
+        selected_count = len(self.__selected_items_list)
+        if selected_count == 0:
+            text = QCoreApplication.translate("QualityRules", "There are no selected rules to validate")
+        elif selected_count == 1:
+            text = QCoreApplication.translate("QualityRules", "There is 1 selected rule to validate")
+        else:
+            text = QCoreApplication.translate("QualityRules",
+                                              "There are {} selected rules to validate").format(selected_count)
+
+        self.lbl_selected_count.setText(text)
+
+    def __selection_changed(self):
+        # Update internal dict and dialog label
+        self.__update_selected_items()
+        self.__update_selected_count_label()
+
+    def show_rule_validation_panel(self):
         """
         Slot called to show the task panel based on a selected task.
 
         :param task_id: Id of the task that will be used to show the task panel.
         """
-        self.parent.show_task_panel(task_id)
+        self.parent.show_rule_validation_panel()
+
+    def __show_help(self):
+        show_plugin_help("quality_rules")

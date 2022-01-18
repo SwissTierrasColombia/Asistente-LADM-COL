@@ -71,7 +71,7 @@ class AbstractQualityRule(QObject, metaclass=AbstractQObjectMeta):
         return self._tags
 
     def models(self):
-        return self._models
+        return self._models.copy()
 
     def field_mapping(self):
         return self._field_mapping
