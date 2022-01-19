@@ -251,11 +251,11 @@ class GPKGLADMQuery(QGISLADMQuery):
     @staticmethod
     def get_group_party_fractions_that_do_not_make_one(db):
         query = """
-                    SELECT {members_t_group_party_f} as agrupacion, group_concat({t_id}) as miembros, SUM(parte) suma_fracciones  FROM (
+                    SELECT {members_t_group_party_f} as agrupacion, group_concat({t_id}) as miembros, round(SUM(parte),15) suma_fracciones  FROM (
                     SELECT CAST({fraction_s_numerator_f} AS FLOAT)/{fraction_s_denominator_f} AS parte, {fraction_s_member_f} FROM {fraction_s}
                     ) AS fraccion_parte join {members_t} on fraccion_parte.{fraction_s_member_f} = {members_t}.{t_id}
                     GROUP BY {members_t_group_party_f}
-                    HAVING SUM(parte) != 1
+                    HAVING round(SUM(parte),15) != 1
                 """.format(t_id=db.names.T_ID_F,
                            members_t=db.names.MEMBERS_T,
                            fraction_s_member_f=db.names.FRACTION_S_MEMBER_F,
