@@ -122,9 +122,9 @@ class RightOfWay(QObject):
                                                 {
                                                     'INPUT': layers[db.names.LC_PLOT_T],
                                                     'JOIN': QgsProcessingFeatureSourceDefinition(layers[db.names.LC_RIGHT_OF_WAY_T].id(), True),
-                                                    'PREDICATE': [0],
+                                                    'PREDICATE': [4],  # Overlaps
                                                     'JOIN_FIELDS': [db.names.T_ID_F],
-                                                    'METHOD': 0,
+                                                    'METHOD': 0,  # 1:M
                                                     'DISCARD_NONMATCHING': True,
                                                     'PREFIX': '',
                                                     'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
@@ -133,11 +133,16 @@ class RightOfWay(QObject):
             existing_restriction_pairs = [(restriction_feature[db.names.COL_BAUNIT_RRR_T_UNIT_F], restriction_feature[db.names.COL_RRR_T_DESCRIPTION_F]) for restriction_feature in restriction_features]
             existing_restriction_pairs = set(existing_restriction_pairs)
             id_pairs_restriction = list()
-            plot_ids = spatial_join_layer.getFeatures()
+            plots = [feature for feature in spatial_join_layer.getFeatures()]
 
-            for plot in plot_ids:
+            for plot in plots:
                 exp = "\"{uebaunit}\" = {plot}".format(uebaunit=db.names.COL_UE_BAUNIT_T_LC_PLOT_F, plot=plot.attribute(db.names.T_ID_F))
-                parcels = layers[db.names.COL_UE_BAUNIT_T].getFeatures(exp)
+                parcels = [feature for feature in layers[db.names.COL_UE_BAUNIT_T].getFeatures(exp)]
+
+                if not parcels:
+                    self.logger.warning(__name__, "The plot t_id {} overlapping with the right of way, has no related parcel!".format(
+                                    plot[db.names.T_ID_F]))
+
                 for parcel in parcels:
                     id_pair_restriction = (parcel.attribute(db.names.COL_UE_BAUNIT_T_PARCEL_F), QCoreApplication.translate("RightOfWay", "Right of way"))
                     id_pairs_restriction.append(id_pair_restriction)
