@@ -4,21 +4,10 @@
     <meta charset="UTF-8">
 </head>
 <body>
-<p>Cambios en la version <b>3.1.11</b></p>
+<p>Cambios en la version <b>3.1.12</b></p>
 <ul>
-    <li>Reglas de calidad:
-        <ul>
-            <li>Novedades en reglas de calidad para IGAC:
-                <ul>
-				    <li>1 nueva regla de calidad (4023) para unidades de construcción (8 tipos de errores).</li>
-				    <li>9 nuevos tipo de error para la regla de calidad 4007 (interesados naturales): el campo 'sexo' no puede ser nulo; no se permiten números ni caracteres especiales para nombres y apellidos.</li>
-				    <li>2 nuevos tipos de error para la regla de calidad 4008 (interesados jurídicos): el campo 'sexo' debe ser nulo; el segundo nombre y el segundo apellido deben ser nulos.</li>
-                </ul>
-            </li>
-            <li>Si existen geometrías de entrada no válidas (según la definición del OGC, y por tanto de GEOS), el Asistente LADM-COL las arregla antes de ejecutar una regla de calidad topológica. Los datos fuente no son alterados.</li>
-            <li>Arreglo para reglas de consistencia lógica en GeoPackage (usando GLOB en lugar de REGEXP para evaluar expresiones regulares).</li>
-        </ul>
-    </li>
+	<li>Simplificación de dependencia con Model Baker. Ya no se declara Model Baker como dependencia a QGIS, sino que se instala de forma automática en caso de no encontrarse.</li>
+    <li>Reglas de calidad: Ajuste a la regla de calidad 4002 (los porcentajes de participación de la agrupación de interesados deben sumar uno). Issue #521. </li>
 </ul>
 </body>
 </html>
