@@ -131,7 +131,6 @@ from asistente_ladm_col.gui.wizards.survey.dlg_create_group_party_survey import 
 from asistente_ladm_col.gui.wizards.survey.wiz_create_points_survey import CreatePointsSurveyWizard
 from asistente_ladm_col.lib.db.db_connection_manager import ConnectionManager
 from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.core.quality_rules.quality_rule_engine import QualityRuleEngine
 from asistente_ladm_col.utils.decorators import (db_connection_required,
                                                  validate_if_wizard_is_open,
                                                  qgis_model_baker_required,
@@ -1233,8 +1232,13 @@ class AsistenteLADMCOLPlugin(QObject):
         qr_controller = QualityRuleController(self.get_db_connection())
         dock_widget_qrs = DockWidgetQualityRules(qr_controller, self.main_window)
         self.gui_builder.register_dock_widget(DOCK_WIDGET_QUALITY_RULES, dock_widget_qrs)
+        qr_controller.open_report_called.connect(self.show_log_quality_dialog)
         self.conn_manager.db_connection_changed.connect(dock_widget_qrs.update_db_connection)
         self.app.gui.add_tabified_dock_widget(Qt.RightDockWidgetArea, dock_widget_qrs)
+
+    def show_log_quality_dialog(self, log_result):
+        dlg = LogQualityDialog(self.conn_manager.get_db_connector_from_source(), log_result, self.main_window)
+        dlg.exec_()
 
     def show_wiz_property_record_card(self):
         # TODO: Remove

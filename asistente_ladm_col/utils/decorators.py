@@ -242,9 +242,8 @@ def _log_quality_rule_validations(func_to_decorate):
                 option_texts.append("{}: {}".format(obj.title() if obj else k, v))
 
             self.qr_logger.log_text += "{}{} {}{}".format(LOG_QUALITY_OPTIONS_OPEN,
-                                                          QCoreApplication.translate("QualityRules",
-                                                                                               "(Options)"),
-                                                                    "; ".join(option_texts),
+                                                          QCoreApplication.translate("QualityRules", "(Options)"),
+                                                          "; ".join(option_texts),
                                                           LOG_QUALITY_OPTIONS_CLOSE)
 
         self.qr_logger.log_text += log_text_content

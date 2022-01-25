@@ -29,7 +29,7 @@ from asistente_ladm_col.core.quality_rules.quality_rule_execution_result import 
 from asistente_ladm_col.core.quality_rules.quality_rule_option import QualityRuleOptions
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.abstract_class import AbstractQObjectMeta
-from asistente_ladm_col.utils.quality_error_db_utils import save_errors
+from asistente_ladm_col.utils.quality_error_db_utils import QualityErrorDBUtils
 
 
 class AbstractQualityRule(QObject, metaclass=AbstractQObjectMeta):
@@ -37,6 +37,7 @@ class AbstractQualityRule(QObject, metaclass=AbstractQObjectMeta):
     Abstract class for LADM-COL quality rules
     """
     progress_changed = pyqtSignal(int)
+    validation_finished = pyqtSignal(QualityRuleExecutionResult)
 
     def __init__(self):
         QObject.__init__(self)
@@ -85,7 +86,6 @@ class AbstractQualityRule(QObject, metaclass=AbstractQObjectMeta):
     def is_valid(self):
         return bool(self.id().strip()) and bool(self.name().strip()) and len(self._errors) and self._type is not None
 
-    @abstractmethod
     def validate(self, db, db_qr, layer_dict, tolerance, **kwargs):
         """
         Validate the quality rule.
@@ -97,6 +97,13 @@ class AbstractQualityRule(QObject, metaclass=AbstractQObjectMeta):
         :param kwargs: Other parameters needed by the rule. Optional.
         :return: An instance of QualityRuleExecutionResult
         """
+        res_obj = self._validate(db, db_qr, layer_dict, tolerance, **kwargs)
+        self.validation_finished.emit(res_obj)
+
+        return res_obj
+
+    @abstractmethod
+    def _validate(self, db, db_qr, layer_dict, tolerance, **kwargs):
         raise NotImplementedError
 
     def validate_features(self, features=None, feature_ids=list()):
@@ -132,7 +139,7 @@ class AbstractQualityRule(QObject, metaclass=AbstractQObjectMeta):
         :return: Boolean, depending on whether the errors were saved or not.
         """
         target_layer = self._type if target_layer is None else target_layer
-        res, msg = save_errors(db_qr, self._id, error_code, error_data, target_layer, ili_name=None)
+        res, msg = QualityErrorDBUtils.save_errors(db_qr, self._id, error_code, error_data, target_layer, ili_name=None)
         print(res, msg)
 
     def _check_prerrequisite_layers(self, layer_dict):

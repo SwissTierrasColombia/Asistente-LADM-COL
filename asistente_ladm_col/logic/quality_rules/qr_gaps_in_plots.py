@@ -78,7 +78,7 @@ class QRGapsInPlots(AbstractPolygonQualityRule):
         ]
         return QualityRuleOptions(dict_options)
 
-    def validate(self, db, db_qr, layer_dict, tolerance, **kwargs):
+    def _validate(self, db, db_qr, layer_dict, tolerance, **kwargs):
         self.progress_changed.emit(5)
 
         option_check_res, res_obj = self._check_qr_options(kwargs)

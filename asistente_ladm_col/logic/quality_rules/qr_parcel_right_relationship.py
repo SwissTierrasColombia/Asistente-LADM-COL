@@ -62,13 +62,13 @@ class QRParcelRightRelationship(AbstractLogicQualityRule):
         return {QUALITY_RULE_LADM_COL_LAYERS: [names.LC_PARCEL_T,
                                                names.LC_RIGHT_T]}
 
-    def validate(self, db, db_qr, layer_dict, tolerance, **kwargs):
+    def _validate(self, db, db_qr, layer_dict, tolerance, **kwargs):
         self.progress_changed.emit(5)
         ladm_queries = self._get_ladm_queries(db.engine)
 
-        pre_res = self._check_prerrequisite_layers(layer_dict)
-        if pre_res:
-            return pre_res
+        pre_res, pre_obj = self._check_prerrequisite_layers(layer_dict)
+        if not pre_res:
+            return pre_obj
 
         # First error type: parcel with no rights
         res, records = ladm_queries.get_parcels_with_no_right(db)

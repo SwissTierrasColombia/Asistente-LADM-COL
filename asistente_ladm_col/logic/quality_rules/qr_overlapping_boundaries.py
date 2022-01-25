@@ -62,8 +62,10 @@ class QROverlappingBoundaries(AbstractLineQualityRule):
                         FIX_ADJUSTED_LAYER: True
                     }}}
 
-    def validate(self, db, db_qr, layer_dict, tolerance, **kwargs):
+    def _validate(self, db, db_qr, layer_dict, tolerance, **kwargs):
         # TODO: emit progress values
+        self.progress_changed.emit(5)
+
         # TODO: Check that overlapping points are what we expect. We won't consider end-points as overlapping points
         #       nor common intermediate segmenr's vertices (between line A and B).
         boundary_layer = self._get_layer(layer_dict)
@@ -97,6 +99,8 @@ class QROverlappingBoundaries(AbstractLineQualityRule):
 
         len_point_errors = len(point_errors.get('data', dict()))
         len_line_errors = len(line_errors.get('data', dict()))
+
+        self.progress_changed.emit(100)
 
         if len(point_errors) == 0 and len(line_errors) == 0:
             return QualityRuleExecutionResult(Qgis.Success, QCoreApplication.translate("QualityRules",

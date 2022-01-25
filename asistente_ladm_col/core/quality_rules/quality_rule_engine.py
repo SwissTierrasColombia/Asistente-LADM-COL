@@ -15,6 +15,7 @@
  ***************************************************************************/
 """
 import os.path
+from functools import partial
 import time
 import getpass
 
@@ -39,11 +40,15 @@ from asistente_ladm_col.core.quality_rules.quality_rule_registry import QualityR
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.quality_rule.quality_rule_manager import QualityRuleManager
 from asistente_ladm_col.utils.decorators import _log_quality_rule_validations
-from asistente_ladm_col.utils.quality_error_db_utils import (get_quality_error_connector,
-                                                             get_quality_validation_output_path,
-                                                             save_metadata)
+from asistente_ladm_col.utils.quality_error_db_utils import QualityErrorDBUtils
 from asistente_ladm_col.utils.qt_utils import export_title_text_to_pdf
 from asistente_ladm_col.utils.utils import Utils
+
+TOTAL_PROGRESS_ERROR_DB = 4  # Total percentage given to get the error DB
+TOTAL_PROGRESS_PREPARE_LAYERS = 20  # Total percentage given to prepare layers
+TOTAL_PROGRESS_PREPARE_LAYERS_NO_TOLERANCE = 10
+TOTAL_PROGRESS_QR = 70  # Total percentage given to all QRs
+TOTAL_PROGRESS_QR_NO_TOLERANCE = 80
 
 
 class QualityRuleEngine(QObject):
@@ -54,6 +59,8 @@ class QualityRuleEngine(QObject):
     :param rules: Either a dict {rule_key:rule_name} or a list [rule_key1, rule_key2]
     :param tolerance: Tolerance to be used when running the QRs, in millimeters
     """
+    progress_changed = pyqtSignal(int)  # Progress value
+
     def __init__(self, db, rules, tolerance, output_path=''):
         QObject.__init__(self)
         self.logger = Logger()
@@ -72,7 +79,11 @@ class QualityRuleEngine(QObject):
         self.app.settings.tolerance = tolerance  # Tolerance must be given, we don't want anything implicit about it
         self.__tolerance = self.app.settings.tolerance  # Tolerance input might be altered (e.g., if it comes negative)
         self.__layer_manager = QualityRuleLayerManager(db, self.__rules, self.__tolerance)
+        self.__layer_manager.progress_changed.connect(self.__emit_prepare_layers_progress)
         self.qr_logger = QualityRuleLogger(self.__db, self.__tolerance)
+        self.__current_progress = 0
+        self.__error_db_utils = QualityErrorDBUtils()
+        self.__error_db_utils.progress_changed.connect(self.__emit_error_db_progress)
 
         # Clear informality cache before executing QRs.
         # Note: between creating an object of this class and calling validate_quality_rules() a lot
@@ -96,6 +107,7 @@ class QualityRuleEngine(QObject):
         self.__tolerance = self.app.settings.tolerance  # Tolerance input might be altered (e.g., if it comes negative)
         self.__layer_manager.initialize(self.__rules, self.__tolerance)
         self.qr_logger.initialize(self.__db, self.__tolerance)
+        self.__current_progress = 0
 
         # This time, (initializing an existing object) we give you the chance to avoid
         # rebuilding the informality cache. It is handy if you're executing validations
@@ -117,10 +129,17 @@ class QualityRuleEngine(QObject):
         res = False
         msg = ""
         qr_res = dict()  # {rule_key: QualityRuleExecutionResult}
+
         if self.__rules:
+            self.__emit_progress_changed(1)
+
             # First, create the error db and fill its metadata...
             self.__timestamp = time.strftime('%Y%m%d_%H%M%S')
-            res_db, msg_db, self.__db_qr = get_quality_error_connector(self.__output_path, self.__timestamp, True)
+            res_db, msg_db, self.__db_qr = self.__error_db_utils.get_quality_error_connector(self.__output_path,
+                                                                                             self.__timestamp,
+                                                                                             True)
+
+            self.__emit_progress_changed(5)
 
             if not res_db:
                 self.logger.warning_msg(__name__, QCoreApplication.translate("QualityRuleEngine",
@@ -132,13 +151,21 @@ class QualityRuleEngine(QObject):
                              QCoreApplication.translate("QualityRuleEngine",
                                 "Validating {} quality rules (tolerance: {}).").format(len(self.__rules), self.__tolerance))
 
+            first_pass = True
+            count = 0
             for rule_key, rule in self.__rules.items():
+                count += 1
+
                 if rule is not None:
-                    layers = self.__layer_manager.get_layers(rule_key)
+                    layers = self.__layer_manager.get_layers(rule_key)  # Fist pass might be long if tolerance > 0
+                    if first_pass:
+                        first_pass = False
+                        self.__emit_progress_changed(25 if self.__tolerance else 15)
+
                     if layers:
+                        connect_obj = rule.progress_changed.connect(partial(self.__emit_qr_progress, count))
                         qr_res[rule_key] = self.__validate_quality_rule(rule, layers, options.get(rule_key, dict()))
-                        # if self.__with_gui:
-                        #     self.add_error_layers(qr_res[rule_key].error_layers)
+                        rule.progress_changed.disconnect(connect_obj)  # We no longer need the connection, so delete it
                     else:
                         qr_msg = QCoreApplication.translate("QualityRuleEngine",
                                 "Couldn't execute '{}' quality rule! Required layers are not available. Skipping...").format(rule.name())
@@ -146,10 +173,12 @@ class QualityRuleEngine(QObject):
                         self.logger.warning(__name__, qr_msg)
                 else:
                     qr_msg = QCoreApplication.translate("QualityRuleEngine",
-                                                     "Quality rule with key '{}' does not exist or is not registered! Skipping...").format(
+                                                        "Quality rule with key '{}' does not exist or is not registered! Skipping...").format(
                         rule_key)
                     qr_res[rule_key] = QualityRuleExecutionResult(Qgis.Critical, qr_msg)
                     self.logger.warning(__name__, qr_msg)
+
+            self.__emit_progress_changed(95)
 
             metadata = {QR_METADATA_TOOL: QR_METADATA_TOOL_NAME,
                         QR_METADATA_DATA_SOURCE: self.__db.get_description_conn_string(),
@@ -158,16 +187,18 @@ class QualityRuleEngine(QObject):
                         QR_METADATA_RULES: list(self.__rules.keys()),  # QR keys
                         QR_METADATA_OPTIONS: self.__normalize_options(options),
                         QR_METADATA_PERSON: getpass.getuser()}
-            save_metadata(self.__db_qr, metadata)
+            QualityErrorDBUtils.save_metadata(self.__db_qr, metadata)
+
+            self.__emit_progress_changed(99)
 
             res = True
             msg = "Success!"
-            self.qr_logger.generate_log_button()
             self.__layer_manager.clean_temporary_layers()
 
-            self.export_result_to_pdf()
         else:
             self.logger.warning(__name__, QCoreApplication.translate("QualityRuleEngine", "No rules to validate!"))
+
+        self.__emit_progress_changed(100)
 
         return res, msg, QualityRulesExecutionResult(qr_res)
 
@@ -183,10 +214,38 @@ class QualityRuleEngine(QObject):
         """
         return rule.validate(self.__db, self.__db_qr, layers, self.__tolerance, options=options)
 
-    def add_error_layers(self, error_layers):
-        for error_layer in error_layers:
-            if error_layer.featureCount():  # Only load error layers that have at least one feature
-                self.app.gui.add_error_layer(None, error_layer)
+    def __emit_progress_changed(self, value, save_value=True):
+        if value != self.__current_progress:  # Avoid emitting the same value twice
+            if save_value:
+                self.__current_progress = value
+            self.progress_changed.emit(value)
+
+    def __emit_error_db_progress(self, progress_value):
+        """
+        Add the normalized error db progress value to what we have already in the overall progress
+        """
+        value = self.__current_progress + (progress_value * TOTAL_PROGRESS_ERROR_DB / 100)
+        # print("...DB", self.__current_progress, progress_value, value)
+        self.__emit_progress_changed(int(value), progress_value == 100)  # Only save when the subprocess is finished
+
+    def __emit_prepare_layers_progress(self, progress_value):
+        """
+        Add the normalized prepare layers' progress value to what we have already in the overall progress
+        """
+        range = TOTAL_PROGRESS_PREPARE_LAYERS if self.__tolerance else TOTAL_PROGRESS_PREPARE_LAYERS_NO_TOLERANCE
+        value = self.__current_progress + (progress_value * range / 100)
+        # print("...PL", self.__current_progress, progress_value, value)
+        self.__emit_progress_changed(int(value), progress_value == 100)  # Only save when the subprocess is finished
+
+    def __emit_qr_progress(self, count, qr_progress_value):
+        """
+        Add the normalized current QR progress value to what we have already in the overall progress
+        """
+        num_rules = len(self.__rules)
+        step = (TOTAL_PROGRESS_QR if self.__tolerance else TOTAL_PROGRESS_QR_NO_TOLERANCE) / num_rules
+        value = self.__current_progress + (qr_progress_value * step / 100)
+        # print("...QR", self.__current_progress, qr_progress_value, value)
+        self.__emit_progress_changed(int(value), qr_progress_value == 100)  # Only save when the QR is finished
 
     def get_db_quality(self):
         return self.__db_qr
@@ -214,6 +273,7 @@ class QualityRuleEngine(QObject):
                     else:
                         normalized_options[k] = {kv: vv}
         return normalized_options
+
 
 class QualityRuleLogger(QObject):
     """
@@ -243,9 +303,6 @@ class QualityRuleLogger(QObject):
 
     def set_count_topology_rules(self, count):
         self.show_message_emitted.emit(QCoreApplication.translate("QualityDialog", ""), count)
-
-    def generate_log_button(self):
-        self.show_button_emitted.emit()
 
     def get_log_result(self):
         return QualityRuleResultLog(self.__db, self.log_text, self.tolerance, self.log_total_time)

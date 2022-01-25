@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
 """
 /***************************************************************************
-                              Asistente LADM_COL
+                              Asistente LADM-COL
                              --------------------
-        begin                : 2020-06-01
-        copyright            : (C) 2020 by Germán Carrillo (SwissTierras Colombia)
-        email                : gcarrillo@linuxmail.org
+        begin          : 2020-06-01
+        copyright      : (C) 2020 by Germán Carrillo (SwissTierras Colombia)
+        email          : gcarrillo@linuxmail.org
  ***************************************************************************/
 /***************************************************************************
  *                                                                         *
@@ -16,7 +15,8 @@
  ***************************************************************************/
 """
 from qgis.PyQt.QtCore import (QCoreApplication,
-                              QObject)
+                              QObject,
+                              pyqtSignal)
 from qgis.core import QgsProject
 
 from asistente_ladm_col.app_interface import AppInterface
@@ -34,6 +34,8 @@ from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.qt_utils import ProcessWithStatus
 from asistente_ladm_col.utils.utils import get_key_for_quality_rule_adjusted_layer
 
+MAX_PROGRESS_PREPARE_LAYERS = 70  # Total percentage given to layer iteration
+
 
 class QualityRuleLayerManager(QObject):
     """
@@ -41,6 +43,8 @@ class QualityRuleLayerManager(QObject):
     session. It goes for LADM-COL layers only once and also manages
     intermediate layers (after snapping).
     """
+    progress_changed = pyqtSignal(int)  # Progress changed
+
     def __init__(self, db, rules, tolerance):
         QObject.__init__(self)
         self.logger = Logger()
@@ -58,6 +62,8 @@ class QualityRuleLayerManager(QObject):
 
         self.__adjusted_layers_cache = dict()
 
+        self.__current_progress = 0
+
     def initialize(self, rules, tolerance):
         """
         Objects of this class are reusable calling initialize()
@@ -68,11 +74,15 @@ class QualityRuleLayerManager(QObject):
 
         self.__quality_rule_layers_config = {k: qr.layers_config(self.__db.names) if qr else dict() for k, qr in self.__rules.items()}
 
+        self.__current_progress = 0
+
     def __prepare_layers(self):
         """
         Get layers from DB and prepare snapped layers for all rules
         """
         self.logger.info(__name__, QCoreApplication.translate("QualityRuleLayerManager", "Preparing layers..."))
+        self.__emit_progress_changed(1)
+
         # First go for ladm-col layers
         ladm_layers = dict()
         for rule_key, rule_layers_config in self.__quality_rule_layers_config.items():
@@ -88,6 +98,7 @@ class QualityRuleLayerManager(QObject):
         for name,layer in ladm_layers.items():
             if layer.isSpatial():
                 GeometryUtils.create_spatial_index(layer)  # To improve performance of quality rules
+        self.__emit_progress_changed(15)
 
         # If tolerance > 0, prepare adjusted layers
         #   We create an adjusted_layers dict to override ladm_layers per rule.
@@ -101,17 +112,24 @@ class QualityRuleLayerManager(QObject):
         if self.__tolerance:
             self.logger.debug(__name__, QCoreApplication.translate("QualityRuleLayerManager", "Tolerance > 0 ({}mm), adjusting layers...").format(self.__tolerance))
             self.__adjusted_layers_cache = dict()  # adjusted_layers_key: layer
+
             count_rules = 0
             total_rules = len([k for k, layer_config in self.__quality_rule_layers_config.items() if layer_config])
+            count_layers = 0
+            total_layers = 0
+            for k, layer_config in self.__quality_rule_layers_config.items():
+                total_layers += len(layer_config.get(QUALITY_RULE_ADJUSTED_LAYERS, dict()))
 
             with ProcessWithStatus(QCoreApplication.translate("QualityRuleLayerManager",
                                                               "Preparing tolerance on layers...")):
                 for rule_key, rule_layers_config in self.__quality_rule_layers_config.items():
                     count_rules += 1
                     self.logger.status(QCoreApplication.translate("QualityRuleLayerManager",
-                                                                  "Preparing tolerance on layers... ({} out of {})").format(count_rules, total_rules))
+                                                                  "Preparing tolerance on layers... ({} quality rules out of {})").format(count_rules, total_rules))
 
                     for layer_name, snap_config in rule_layers_config.get(QUALITY_RULE_ADJUSTED_LAYERS, dict()).items():
+                        count_layers += 1
+
                         # Read from config
                         input_name = snap_config[ADJUSTED_INPUT_LAYER]  # input layer name
                         reference_name = snap_config[ADJUSTED_REFERENCE_LAYER]  # reference layer name
@@ -130,7 +148,11 @@ class QualityRuleLayerManager(QObject):
                             self.__adjusted_layers_cache[adjusted_layers_key] = self.app.core.adjust_layer(input, reference, self.__tolerance, behavior, fix, add_topological_points)
                         adjusted_layers[rule_key][layer_name] = self.__adjusted_layers_cache[adjusted_layers_key]
 
+                        self.__emit_layer_progress(total_layers, count_layers)
+
             self.logger.debug(__name__, QCoreApplication.translate("QualityRuleLayerManager", "Layers adjusted..."))
+
+        self.__emit_progress_changed(85)
 
         # Now that we have both ladm_layers and adjusted_layers, use them
         # in a single member dict of layers per rule (preserving original LADM-COL layers)
@@ -150,11 +172,15 @@ class QualityRuleLayerManager(QObject):
             # Let QRs know if they should switch between dicts looking for original geometries
             self.__layers[rule_key][HAS_ADJUSTED_LAYERS] = bool(self.__tolerance)
 
+        self.__emit_progress_changed(90)
+
         # Register adjusted layers so that Processing can properly find them
         if self.__adjusted_layers_cache:
             load_to_registry = [layer for key, layer in self.__adjusted_layers_cache.items() if layer is not None]
             self.logger.debug(__name__, "{} adjusted layers loaded to QGIS registry...".format(len(load_to_registry)))
             QgsProject.instance().addMapLayers(load_to_registry, False)
+
+        self.__emit_progress_changed(100)
 
         return True
 
@@ -177,6 +203,20 @@ class QualityRuleLayerManager(QObject):
                 return None
 
         return self.__layers[rule_key]
+
+    def __emit_progress_changed(self, value, save_value=True):
+        if value != self.__current_progress:  # Avoid emitting the same value twice
+            if save_value:
+                self.__current_progress = value
+            self.progress_changed.emit(value)
+
+    def __emit_layer_progress(self, total_layers, count_layers):
+        """
+        Add the normalized current layer progress value to what we have already in the overall progress
+        """
+        step = MAX_PROGRESS_PREPARE_LAYERS / total_layers
+        value = self.__current_progress + (count_layers * step)
+        self.__emit_progress_changed(int(value), count_layers == total_layers)  # Only save when all layers are done
 
     def clean_temporary_layers(self):
         # Removes adjusted layers from registry

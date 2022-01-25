@@ -16,9 +16,12 @@
  ***************************************************************************/
 """
 from qgis.PyQt.QtCore import (Qt,
-                              pyqtSignal)
+                              pyqtSignal,
+                              QCoreApplication)
 from qgis.gui import QgsDockWidget
 
+
+from asistente_ladm_col.gui.quality_rules.quality_rules_general_results_panel import QualityRulesGeneralResultsPanelWidget
 from asistente_ladm_col.gui.quality_rules.quality_rules_initial_panel import QualityRulesInitialPanelWidget
 from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.qt_utils import OverrideCursor
@@ -40,11 +43,11 @@ class DockWidgetQualityRules(QgsDockWidget, DOCKWIDGET_UI):
         self.__controller = controller
 
         # Configure panels
-        self.task_panel = None
+        self.__general_results_panel = None
 
-        self.main_panel = QualityRulesInitialPanelWidget(controller, self)
-        self.widget.setMainPanel(self.main_panel)
-        # self.main_panel.fill_data()
+        self.__main_panel = QualityRulesInitialPanelWidget(controller, self)
+        self.widget.setMainPanel(self.__main_panel)
+        # self.__main_panel.fill_data()
 
     def closeEvent(self, event):
         # closes open signals on panels
@@ -65,17 +68,36 @@ class DockWidgetQualityRules(QgsDockWidget, DOCKWIDGET_UI):
 
         self.close()  # The user needs to use the menus again, which will start everything from scratch
 
-    def show_rule_validation_panel(self):
+    def show_general_results_panel(self):
         with OverrideCursor(Qt.WaitCursor):
-            if self.task_panel is not None:
-                try:
-                    self.widget.closePanel(self.task_panel)
-                except RuntimeError as e:  # Panel in C++ could be already closed...
-                    pass
+            self.__delete_general_result_panel()
 
-                self.task_panel = None
+            self.__general_results_panel = QualityRulesGeneralResultsPanelWidget(self.__controller, self)
+            self.__controller.total_progress_changed.connect(self.__general_results_panel.update_total_progress)
+            self.widget.showPanel(self.__general_results_panel)
+            self.__controller.validate_qrs()
+            # self.__general_results_panel.panelAccepted.connect(self.__delete_general_result_panel)  # No way back
 
-            self.task_panel = TaskPanelWidget(self)
-            self.task_panel.trigger_action_emitted.connect(self.trigger_action_emitted)
-            self.task_panel.panelAccepted.connect(self.reload_tasks)
-            self.widget.showPanel(self.task_panel)
+    def __delete_general_result_panel(self):
+        if self.__general_results_panel is not None:
+            try:
+                self.widget.closePanel(self.__general_results_panel)
+            except RuntimeError as e:  # Panel in C++ could be already closed...
+                pass
+
+            self.__general_results_panel = None
+
+    def show_detailed_results_panel(self):
+        pass
+        # with OverrideCursor(Qt.WaitCursor):
+        #     if self.__general_results_panel is not None:
+        #         try:
+        #             self.widget.closePanel(self.__general_results_panel)
+        #         except RuntimeError as e:  # Panel in C++ could be already closed...
+        #             pass
+        #
+        #         self.__general_results_panel = None
+        #
+        #     self.__general_results_panel = QualityRulesGeneralResultsPanelWidget(self.__controller, self)
+        #     #self.__general_results_panel.panelAccepted.connect(self.reload_tasks)
+        #     self.widget.showPanel(self.__general_results_panel)
