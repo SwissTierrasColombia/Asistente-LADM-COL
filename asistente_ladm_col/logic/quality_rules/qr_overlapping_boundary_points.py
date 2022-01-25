@@ -17,8 +17,7 @@
 """
 from qgis.PyQt.QtCore import QCoreApplication
 
-from qgis.core import Qgis
-
+from asistente_ladm_col.config.enums import EnumQualityRuleResult
 from asistente_ladm_col.config.keys.common import (QUALITY_RULE_LADM_COL_LAYERS,
                                                    QUALITY_RULE_ADJUSTED_LAYERS,
                                                    ADJUSTED_INPUT_LAYER,
@@ -93,11 +92,12 @@ class QROverlappingBoundaryPoints(AbstractPointQualityRule):
         self.progress_changed.emit(100)
 
         if len(flat_overlapping) > 0:
-            return QualityRuleExecutionResult(Qgis.Warning,
+            return QualityRuleExecutionResult(EnumQualityRuleResult.ERRORS,
                                               QCoreApplication.translate("QualityRules",
                                                                          "{} overlapping boundary points were found!").format(
-                                                  len(flat_overlapping)))
+                                                  len(flat_overlapping)),
+                                              len(errors['data']))
         else:
-            return QualityRuleExecutionResult(Qgis.Success,
+            return QualityRuleExecutionResult(EnumQualityRuleResult.SUCCESS,
                                               QCoreApplication.translate("QualityRules",
                                                                          "There are no overlapping boundary points."))

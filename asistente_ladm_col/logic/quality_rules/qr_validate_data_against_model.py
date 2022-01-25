@@ -20,14 +20,14 @@ import time
 import tempfile
 
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (Qgis,
-                       QgsVectorLayer,
+from qgis.core import (QgsVectorLayer,
                        QgsProject,
                        QgsProcessingException,
                        QgsExpressionContextUtils)
 import processing
 
-from asistente_ladm_col.config.enums import EnumQualityRuleType
+from asistente_ladm_col.config.enums import (EnumQualityRuleType,
+                                             EnumQualityRuleResult)
 from asistente_ladm_col.config.layer_config import LADMNames
 from asistente_ladm_col.config.quality_rule_config import (QR_ILIVALIDATORR0001,
                                                            QRE_ILIVALIDATORR0001E01)
@@ -65,17 +65,18 @@ class QRValidateDataAgainstModel(AbstractQualityRule):
         return dict()
 
     def _validate(self, db, db_qr, layer_dict, tolerance, **kwargs):
-        # TODO: emit progress values
         self.progress_changed.emit(5)
         # First, run an ili2db --validate on the data
         model = LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY)
         res, msg = Ili2DB().validate(db, [model.full_name()], self._xtf_log)
 
         if not res:
-            return QualityRuleExecutionResult(Qgis.Critical,
+            return QualityRuleExecutionResult(EnumQualityRuleResult.CRITICAL,
                                               QCoreApplication.translate("QualityRules",
                                                                          "There was an error running the quality rule '{}'! Details: '{}'.").format(
                 self._id, msg))
+
+        self.progress_changed.emit(85)
 
         error_layer = self.app.core.get_layer(db_qr, db_qr.names.ERR_QUALITY_ERROR_T, load=True)
         count_before = error_layer.featureCount()
@@ -86,18 +87,19 @@ class QRValidateDataAgainstModel(AbstractQualityRule):
         self.progress_changed.emit(100)
 
         if not res:
-            return QualityRuleExecutionResult(Qgis.Critical,
+            return QualityRuleExecutionResult(EnumQualityRuleResult.CRITICAL,
                                               QCoreApplication.translate("QualityRules",
                                                                          "There was an error running the quality rule '{}'! Details: '{}'.")).format(
                 self._id, msg)
         else:
             count = error_layer.featureCount() - count_before
             if count:
-                return QualityRuleExecutionResult(Qgis.Warning,
+                return QualityRuleExecutionResult(EnumQualityRuleResult.ERRORS,
                                                   QCoreApplication.translate("QualityRules",
                                                                              "There were {} errors validating the data against their model!").format(
-                                                      count))
+                                                      count),
+                                                  count)
             else:
-                return QualityRuleExecutionResult(Qgis.Success,
+                return QualityRuleExecutionResult(EnumQualityRuleResult.SUCCESS,
                                                   QCoreApplication.translate("QualityRules",
                                                                              "The data comply with their model."))

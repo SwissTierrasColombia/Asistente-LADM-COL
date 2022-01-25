@@ -20,9 +20,9 @@
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QSettings)
 
-from qgis.core import (Qgis,
-                       QgsVectorLayer)
+from qgis.core import QgsVectorLayer
 
+from asistente_ladm_col.config.enums import EnumQualityRuleResult
 from asistente_ladm_col.config.keys.common import (QUALITY_RULE_LADM_COL_LAYERS,
                                                    QUALITY_RULE_ADJUSTED_LAYERS,
                                                    ADJUSTED_INPUT_LAYER,
@@ -96,7 +96,7 @@ class QRGapsInPlots(AbstractPolygonQualityRule):
         gaps = GeometryUtils.get_gaps_in_polygon_layer(plot_layer, self.options.use_roads)
         self.progress_changed.emit(60)
 
-        res_type, msg = Qgis.NoLevel, ""
+        res_type, msg = EnumQualityRuleResult.UNDEFINED, ""
         if gaps:
             fids_list = GeometryUtils.get_intersection_features(plot_layer, gaps)  # List of lists of qgis ids
             self.progress_changed.emit(80)
@@ -121,11 +121,14 @@ class QRGapsInPlots(AbstractPolygonQualityRule):
             self._save_errors(db_qr, self._ERROR_01, errors)
             self.progress_changed.emit(90)
 
-            res_type = Qgis.Warning
+            res_type = EnumQualityRuleResult.ERRORS
             msg = QCoreApplication.translate("QualityRules", "{} gaps were found in 'Plot' layer.").format(len(gaps))
+            count = len(errors['data'])
         else:
-            res_type = Qgis.Success
+            res_type = EnumQualityRuleResult.SUCCESS
             msg = QCoreApplication.translate("QualityRules", "There are no gaps in layer Plot.")
+            count = 0
 
         self.progress_changed.emit(100)
-        return QualityRuleExecutionResult(res_type, msg)
+
+        return QualityRuleExecutionResult(res_type, msg, count)

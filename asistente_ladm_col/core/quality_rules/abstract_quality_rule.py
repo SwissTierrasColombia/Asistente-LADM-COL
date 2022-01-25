@@ -24,6 +24,7 @@ from qgis.PyQt.QtCore import (pyqtSignal,
 from qgis.core import Qgis
 
 from asistente_ladm_col.app_interface import AppInterface
+from asistente_ladm_col.config.enums import EnumQualityRuleResult
 from asistente_ladm_col.config.keys.common import QUALITY_RULE_LAYERS
 from asistente_ladm_col.core.quality_rules.quality_rule_execution_result import QualityRuleExecutionResult
 from asistente_ladm_col.core.quality_rules.quality_rule_option import QualityRuleOptions
@@ -140,7 +141,6 @@ class AbstractQualityRule(QObject, metaclass=AbstractQObjectMeta):
         """
         target_layer = self._type if target_layer is None else target_layer
         res, msg = QualityErrorDBUtils.save_errors(db_qr, self._id, error_code, error_data, target_layer, ili_name=None)
-        print(res, msg)
 
     def _check_prerrequisite_layers(self, layer_dict):
         """
@@ -156,12 +156,12 @@ class AbstractQualityRule(QObject, metaclass=AbstractQObjectMeta):
 
     def _check_prerrequisite_layer(self, layer_name, layer):
         if not layer:
-            return False, QualityRuleExecutionResult(Qgis.Critical,
+            return False, QualityRuleExecutionResult(EnumQualityRuleResult.CRITICAL,
                                                      QCoreApplication.translate("QualityRules",
                                                                                 "'{}' layer not found!").format(
                                                          layer_name))
         if layer.featureCount() == 0:
-            return False, QualityRuleExecutionResult(Qgis.NoLevel,
+            return False, QualityRuleExecutionResult(EnumQualityRuleResult.UNDEFINED,
                                                      QCoreApplication.translate("QualityRules",
                                                                                 "There are no records in layer '{}' to validate the quality rule!").format(
                                                          layer.name()))
@@ -172,7 +172,7 @@ class AbstractQualityRule(QObject, metaclass=AbstractQObjectMeta):
         if self.options.get_num_mandatory_options():
             mandatory_option_keys = [o.id() for o in self.options.get_mandatory_option_list()]
             if 'options' not in params:  # No options at all
-                return False, QualityRuleExecutionResult(Qgis.Critical,
+                return False, QualityRuleExecutionResult(EnumQualityRuleResult.CRITICAL,
                                                          QCoreApplication.translate("QualityRules",
                                                                                     "No options were given to the quality rule, but it requires {} mandatory options ({})!").format(
                                                              self.options.get_num_mandatory_options(),
@@ -181,7 +181,7 @@ class AbstractQualityRule(QObject, metaclass=AbstractQObjectMeta):
             # Now check that we've got all mandatory options
             not_found = [k for k in mandatory_option_keys if k not in params['options']]
             if not_found:
-                return False, QualityRuleExecutionResult(Qgis.Critical,
+                return False, QualityRuleExecutionResult(EnumQualityRuleResult.CRITICAL,
                                                          QCoreApplication.translate("QualityRules",
                                                                                     "The following mandatory options were missing: '{}'!").format(
                                                              "', '".join(not_found)))

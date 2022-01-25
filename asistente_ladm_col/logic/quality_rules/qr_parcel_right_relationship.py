@@ -18,10 +18,10 @@
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QSettings)
 
-from qgis.core import (Qgis,
-                       QgsVectorLayer)
+from qgis.core import QgsVectorLayer
 
-from asistente_ladm_col.config.enums import EnumQualityRuleType
+from asistente_ladm_col.config.enums import (EnumQualityRuleType,
+                                             EnumQualityRuleResult)
 from asistente_ladm_col.config.keys.common import (QUALITY_RULE_LAYERS,
                                                    QUALITY_RULE_LADM_COL_LAYERS,
                                                    QUALITY_RULE_ADJUSTED_LAYERS,
@@ -73,6 +73,7 @@ class QRParcelRightRelationship(AbstractLogicQualityRule):
         # First error type: parcel with no rights
         res, records = ladm_queries.get_parcels_with_no_right(db)
         count_e01_records = len(records)
+
         self.progress_changed.emit(40)
 
         if res:
@@ -86,11 +87,13 @@ class QRParcelRightRelationship(AbstractLogicQualityRule):
                 errors['data'].append(error_data)
 
             self._save_errors(db_qr, self._ERROR_01, errors)
+
             self.progress_changed.emit(50)
 
         # Second error type: parcel with more than one domain right
         res, records = ladm_queries.get_parcels_with_repeated_domain_right(db)
         count_e02_records = len(records)
+
         self.progress_changed.emit(85)
 
         if res:
@@ -105,15 +108,18 @@ class QRParcelRightRelationship(AbstractLogicQualityRule):
                 errors['data'].append(error_data)
 
             self._save_errors(db_qr, self._ERROR_02, errors)
+
             self.progress_changed.emit(95)
 
-        if count_e01_records + count_e02_records > 0:
-            res_type = Qgis.Warning
+        count = count_e01_records + count_e02_records
+        if count > 0:
+            res_type = EnumQualityRuleResult.ERRORS
             msg = QCoreApplication.translate("QualityRules", "{} parcels with inconsistent rights were found.").format(
-                count_e01_records + count_e02_records)
+                count)
         else:
-            res_type = Qgis.Success
+            res_type = EnumQualityRuleResult.SUCCESS
             msg = QCoreApplication.translate("QualityRules", "All parcels have valid right relationships.")
 
         self.progress_changed.emit(100)
-        return QualityRuleExecutionResult(res_type, msg)
+
+        return QualityRuleExecutionResult(res_type, msg, count)

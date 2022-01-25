@@ -17,10 +17,10 @@
 """
 from qgis.PyQt.QtCore import QCoreApplication
 
-from qgis.core import (Qgis,
-                       QgsVectorLayer)
+from qgis.core import QgsVectorLayer
 
-from asistente_ladm_col.config.enums import EnumQualityRuleType
+from asistente_ladm_col.config.enums import (EnumQualityRuleType,
+                                             EnumQualityRuleResult)
 from asistente_ladm_col.config.keys.common import (QUALITY_RULE_LADM_COL_LAYERS,
                                                    QUALITY_RULE_ADJUSTED_LAYERS,
                                                    ADJUSTED_INPUT_LAYER,
@@ -63,7 +63,6 @@ class QROverlappingBoundaries(AbstractLineQualityRule):
                     }}}
 
     def _validate(self, db, db_qr, layer_dict, tolerance, **kwargs):
-        # TODO: emit progress values
         self.progress_changed.emit(5)
 
         # TODO: Check that overlapping points are what we expect. We won't consider end-points as overlapping points
@@ -76,10 +75,11 @@ class QROverlappingBoundaries(AbstractLineQualityRule):
 
         res, overlapping, msg = GeometryUtils.get_overlapping_lines(boundary_layer)
         if not res:
-            return QualityRuleExecutionResult(Qgis.Critical,
+            return QualityRuleExecutionResult(EnumQualityRuleResult.CRITICAL,
                                               QCoreApplication.translate("QualityRules",
                                                                          "There was an error checking for boundary overlaps! Details: {}").format(
                                                   msg))
+        self.progress_changed.emit(85)
 
         points_intersected = overlapping['native:deleteduplicategeometries_1:Intersected_Points']
         lines_intersected = overlapping['native:extractbyexpression_3:Intersected_Lines']
@@ -103,8 +103,9 @@ class QROverlappingBoundaries(AbstractLineQualityRule):
         self.progress_changed.emit(100)
 
         if len(point_errors) == 0 and len(line_errors) == 0:
-            return QualityRuleExecutionResult(Qgis.Success, QCoreApplication.translate("QualityRules",
-                                                                                       "There are no overlapping boundaries."))
+            return QualityRuleExecutionResult(EnumQualityRuleResult.SUCCESS,
+                                              QCoreApplication.translate("QualityRules",
+                                                                         "There are no overlapping boundaries."))
         else:
             msg = ""
             if len_point_errors and len_line_errors:
@@ -120,7 +121,7 @@ class QROverlappingBoundaries(AbstractLineQualityRule):
                                                  "{} overlaps of type line were found in boundaries.").format(
                     len_line_errors)
 
-            return QualityRuleExecutionResult(Qgis.Warning, msg)
+            return QualityRuleExecutionResult(EnumQualityRuleResult.ERRORS, msg, len_point_errors + len_line_errors)
 
     def _get_error_dict(self, db, layer):
         errors = {'geometries': list(), 'data': list()}

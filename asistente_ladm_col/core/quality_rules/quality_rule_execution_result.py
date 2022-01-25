@@ -33,17 +33,16 @@ class QualityRulesExecutionResult:
 
 
 class QualityRuleExecutionResult:
-    def __init__(self, level, msg):
+    def __init__(self, level, msg, record_count=0):
         """
         Stores the result of a single quality rule.
 
-        :param level: Indicates whether the rule:
-                        + Was successful (Qgis.Success),
-                        + Couldn't be validated because no features were found (Qgis.NoLevel),
-                        + Couldn't be validated because a requirement was not met, e.g., the layer was not found or
-                          a mandatory option was not given (Qgis.Critical),
-                        + Or was not successful (Qgis.Warning).
+        :param level: EnumQualityRuleResult value. Indicates the result of the QR validation.
         :param msg: Message describing the obtained result.
+        :param record_count: Number of invalid records generated. Note that this might differ from number of records in
+                             the original layer that are invalid; for instance, 2 overlapping points generate only 1
+                             record in the error DB.
         """
         self.level = level
         self.msg = msg
+        self.record_count = record_count

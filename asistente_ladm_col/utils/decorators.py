@@ -12,12 +12,7 @@ from qgis.utils import (isPluginLoaded,
                         loadPlugin,
                         startPlugin)
 
-from asistente_ladm_col.lib.context import (SettingsContext,
-                                            TaskContext)
-from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
-from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.utils.qt_utils import OverrideCursor
-from asistente_ladm_col.utils.utils import Utils
+from asistente_ladm_col.config.enums import EnumQualityRuleResult
 from asistente_ladm_col.config.general_config import (QGIS_MODEL_BAKER_REQUIRED_VERSION_URL,
                                                       QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
                                                       QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION,
@@ -33,8 +28,8 @@ from asistente_ladm_col.config.general_config import (QGIS_MODEL_BAKER_REQUIRED_
                                                       SETTINGS_CONNECTION_TAB_INDEX,
                                                       LOG_QUALITY_LIST_ITEM_ERROR_OPEN,
                                                       LOG_QUALITY_LIST_ITEM_ERROR_CLOSE,
-                                                      LOG_QUALITY_LIST_ITEM_CORRECT_OPEN,
-                                                      LOG_QUALITY_LIST_ITEM_CORRECT_CLOSE,
+                                                      LOG_QUALITY_LIST_ITEM_SUCCESS_OPEN,
+                                                      LOG_QUALITY_LIST_ITEM_SUCCESS_CLOSE,
                                                       LOG_QUALITY_LIST_ITEM_OPEN,
                                                       LOG_QUALITY_LIST_ITEM_CLOSE,
                                                       LOG_QUALITY_LIST_ITEM_CRITICAL_OPEN,
@@ -43,6 +38,12 @@ from asistente_ladm_col.config.general_config import (QGIS_MODEL_BAKER_REQUIRED_
                                                       LOG_QUALITY_OPTIONS_CLOSE)
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.config.translation_strings import TranslatableConfigStrings as Tr
+from asistente_ladm_col.lib.context import (SettingsContext,
+                                            TaskContext)
+from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
+from asistente_ladm_col.utils.qt_utils import OverrideCursor
+from asistente_ladm_col.utils.utils import Utils
 
 """
 Decorators to ensure requirements before calling a plugin method.
@@ -211,16 +212,16 @@ def _log_quality_rule_validations(func_to_decorate):
             qr_result = func_to_decorate(self, rule, layers, options)
         end_time = time.time()
 
-        if qr_result.level == Qgis.Warning:
+        if qr_result.level == EnumQualityRuleResult.ERRORS:
             prefix = LOG_QUALITY_LIST_ITEM_ERROR_OPEN
             suffix = LOG_QUALITY_LIST_ITEM_ERROR_CLOSE
-        elif qr_result.level == Qgis.Success:
-            prefix = LOG_QUALITY_LIST_ITEM_CORRECT_OPEN
-            suffix = LOG_QUALITY_LIST_ITEM_CORRECT_CLOSE
-        elif qr_result.level == Qgis.Critical:
+        elif qr_result.level == EnumQualityRuleResult.SUCCESS:
+            prefix = LOG_QUALITY_LIST_ITEM_SUCCESS_OPEN
+            suffix = LOG_QUALITY_LIST_ITEM_SUCCESS_CLOSE
+        elif qr_result.level == EnumQualityRuleResult.CRITICAL:
             prefix = LOG_QUALITY_LIST_ITEM_CRITICAL_OPEN
             suffix = LOG_QUALITY_LIST_ITEM_CRITICAL_CLOSE
-        else:  # Qgis.NoLevel
+        else:  # EnumQualityRuleResult.UNDEFINED
             prefix = LOG_QUALITY_LIST_ITEM_OPEN
             suffix = LOG_QUALITY_LIST_ITEM_CLOSE
 

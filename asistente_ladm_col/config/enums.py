@@ -137,6 +137,14 @@ class EnumQualityRuleType(OrderedEnum):
     LOGIC = 4
 
 
+class EnumQualityRuleResult(Enum):
+    SUCCESS = 1  # The QR was run and we didn't find any errors (i.e., the data comply with the QR)
+    ERRORS = 2  # The QR was run and we found some errors (i.e., the data is invalid according to the QR)
+    UNDEFINED = 3  # The QR couldn't be run because there were no features to validate it against
+    CRITICAL = 4  # There was an error running the QR (e.g., a requirement was not met, mandatory options were no given,
+                  # the layer was not found in the DB, etc.)
+
+
 # https://www.notinventedhere.org/articles/python/how-to-use-strings-as-name-aliases-in-python-enums.html
 class EnumQualityRule:
     class Point(Enum):

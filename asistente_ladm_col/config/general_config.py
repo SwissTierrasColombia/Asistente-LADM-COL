@@ -223,14 +223,45 @@ LOG_QUALITY_LIST_CONTAINER_CLOSE = "</ul>"
 LOG_QUALITY_CONTENT_SEPARATOR = "<HR>"
 LOG_QUALITY_LIST_ITEM_ERROR_OPEN = "<li style='color:red;'>"
 LOG_QUALITY_LIST_ITEM_ERROR_CLOSE = "</li>"
-LOG_QUALITY_LIST_ITEM_CORRECT_OPEN = "<li style='color:green;'>"
-LOG_QUALITY_LIST_ITEM_CORRECT_CLOSE = "</li>"
+LOG_QUALITY_LIST_ITEM_SUCCESS_OPEN = "<li style='color:green;'>"
+LOG_QUALITY_LIST_ITEM_SUCCESS_CLOSE = "</li>"
 LOG_QUALITY_LIST_ITEM_OPEN = "<li style='color:#f7b907;'>"
 LOG_QUALITY_LIST_ITEM_CLOSE = "</li>"
 LOG_QUALITY_LIST_ITEM_CRITICAL_OPEN = "<li style='color:#d611ac;'>"
 LOG_QUALITY_LIST_ITEM_CRITICAL_CLOSE = "</li>"
 LOG_QUALITY_OPTIONS_OPEN = "<span style='color:#949494;font-style: italic'>"
 LOG_QUALITY_OPTIONS_CLOSE = "</span>"
+
+WIDGET_STYLE_QUALITY_RULE_SUCCESS = """{color: black;
+                                        border: 2px solid White;
+                                        border-radius: 7px;
+                                        border-style: outset;
+                                        background: #AAE89E;
+                                        padding: 5px;}"""
+WIDGET_STYLE_QUALITY_RULE_ERRORS = """{color: #e1e1e1;
+                                       border: 2px solid White;
+                                       border-radius: 7px;
+                                       border-style: outset;
+                                       background: #FF521B;
+                                       padding: 5px;}"""
+WIDGET_STYLE_QUALITY_RULE_UNDEFINED = """{color: #495867;
+                                          border: 2px solid White;
+                                          border-radius: 7px;
+                                          border-style: outset;
+                                          background: #F2AF29;
+                                          padding: 5px;}"""
+WIDGET_STYLE_QUALITY_RULE_CRITICAL = """{color: black;
+                                         border: 2px solid White;
+                                         border-radius: 7px;
+                                         border-style: outset;
+                                         background: #B8B8D1;
+                                         padding: 5px;}"""
+WIDGET_STYLE_QUALITY_RULE_INITIAL_STATE = """{color: #495867;
+                                              border: 2px solid White;
+                                              border-radius: 7px;
+                                              border-style: outset;
+                                              background: #fbf5bd;
+                                              padding: 5px;}"""
 
 # Wizards
 WIZARD_CLASS = "wizard_class"

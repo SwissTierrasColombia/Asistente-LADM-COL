@@ -21,16 +21,22 @@ from PyQt5.uic import loadUi
 from qgis.PyQt.QtGui import (QFont,
                              QIcon)
 from qgis.PyQt.QtCore import (Qt,
-                              QCoreApplication)
+                              QCoreApplication,
+                              QSize)
 from qgis.PyQt.QtWidgets import (QTreeWidgetItem,
                                  QLineEdit,
                                  QTreeWidgetItemIterator,
                                  QComboBox,
                                  QHeaderView,
                                  QLabel)
-from qgis.core import Qgis
 from qgis.gui import QgsPanelWidget
 
+from asistente_ladm_col.config.enums import EnumQualityRuleResult
+from asistente_ladm_col.config.general_config import (WIDGET_STYLE_QUALITY_RULE_SUCCESS,
+                                                      WIDGET_STYLE_QUALITY_RULE_ERRORS,
+                                                      WIDGET_STYLE_QUALITY_RULE_UNDEFINED,
+                                                      WIDGET_STYLE_QUALITY_RULE_CRITICAL,
+                                                      WIDGET_STYLE_QUALITY_RULE_INITIAL_STATE)
 from asistente_ladm_col.gui.transitional_system.tasks_widget import TasksWidget
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.transitional_system.st_session.st_session import STSession
@@ -244,25 +250,33 @@ class QualityRulesGeneralResultsPanelWidget(QgsPanelWidget, WIDGET_UI):
     def __set_style_for_validation_result(self, item, qr_result):
         # Note this method considers when qr_result hasn't been set
         if qr_result:
-            item.setData(RESULT_COLUMN, Qt.ToolTipRole, qr_result.msg)
+            text = qr_result.msg
+            if qr_result.record_count:
+                text = "{} records generated in the error database.\n({})".format(qr_result.record_count, text)
+            item.setData(RESULT_COLUMN, Qt.ToolTipRole, text)
 
         self.trw_qrs.setItemWidget(item, RESULT_COLUMN, self.__get_custom_widget_item_for_result(qr_result))
 
     def __get_custom_widget_item_for_result(self, qr_result):
-        if not qr_result:
-            backcolor = "#fcde87"
-        elif qr_result.level == Qgis.Warning:
-            backcolor = "red"
-        elif qr_result.level == Qgis.Success:
-            backcolor = "green"
-        elif qr_result.level == Qgis.Critical:
-            backcolor = "#d611ac"
-        else:  # Qgis.NoLevel
-            backcolor = "#949494"
+        label = QLabel()
 
-        label = QLabel("0%" if not qr_result else "8")
+        if not qr_result:
+            style = WIDGET_STYLE_QUALITY_RULE_INITIAL_STATE
+            label.setText("0%")
+        elif qr_result.level == EnumQualityRuleResult.SUCCESS:
+            style = WIDGET_STYLE_QUALITY_RULE_SUCCESS
+            icon = QIcon(":/Asistente-LADM-COL/resources/images/qr_validation.svg")
+            label.setPixmap(icon.pixmap(QSize(16, 16)))
+        elif qr_result.level == EnumQualityRuleResult.ERRORS:
+            style = WIDGET_STYLE_QUALITY_RULE_ERRORS
+            label.setText(str(qr_result.record_count))
+        elif qr_result.level == EnumQualityRuleResult.UNDEFINED:
+            style = WIDGET_STYLE_QUALITY_RULE_UNDEFINED
+        else:  # EnumQualityRuleResult.CRITICAL
+            style = WIDGET_STYLE_QUALITY_RULE_CRITICAL
+
         label.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-        label.setStyleSheet("QLabel{{background-color: {}; color {};}}".format(backcolor, "black"))
+        label.setStyleSheet("QLabel{}".format(style))
 
         return label
 

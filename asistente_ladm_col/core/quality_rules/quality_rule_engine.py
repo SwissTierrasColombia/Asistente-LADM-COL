@@ -25,6 +25,7 @@ from qgis.PyQt.QtCore import (QCoreApplication,
 from qgis.core import Qgis
 
 from asistente_ladm_col.app_interface import AppInterface
+from asistente_ladm_col.config.enums import EnumQualityRuleResult
 from asistente_ladm_col.config.general_config import QR_METADATA_TOOL_NAME
 from asistente_ladm_col.config.quality_rule_config import (QR_METADATA_TOOL,
                                                            QR_METADATA_DATA_SOURCE,
@@ -169,13 +170,13 @@ class QualityRuleEngine(QObject):
                     else:
                         qr_msg = QCoreApplication.translate("QualityRuleEngine",
                                 "Couldn't execute '{}' quality rule! Required layers are not available. Skipping...").format(rule.name())
-                        qr_res[rule_key] = QualityRuleExecutionResult(Qgis.Critical, qr_msg)
+                        qr_res[rule_key] = QualityRuleExecutionResult(EnumQualityRuleResult.CRITICAL, qr_msg)
                         self.logger.warning(__name__, qr_msg)
                 else:
                     qr_msg = QCoreApplication.translate("QualityRuleEngine",
                                                         "Quality rule with key '{}' does not exist or is not registered! Skipping...").format(
                         rule_key)
-                    qr_res[rule_key] = QualityRuleExecutionResult(Qgis.Critical, qr_msg)
+                    qr_res[rule_key] = QualityRuleExecutionResult(EnumQualityRuleResult.CRITICAL, qr_msg)
                     self.logger.warning(__name__, qr_msg)
 
             self.__emit_progress_changed(95)
