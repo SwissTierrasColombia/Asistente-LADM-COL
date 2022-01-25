@@ -60,6 +60,7 @@ class QualityRulesGeneralResultsPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         self.__selected_item = None  # qr_key
         self.__icon_names = ['schema.png', 'points.png', 'lines.png', 'polygons.png', 'relationships.svg']
+        self.__block_control_updates = False
 
         self.txt_search.addAction(QIcon(":/Asistente-LADM-COL/resources/images/search.png"), QLineEdit.LeadingPosition)
 
@@ -79,6 +80,8 @@ class QualityRulesGeneralResultsPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         # Load available rules for current role and current db models
         self.__load_available_rules()
+
+        self.__enable_panel_controls(False)  # Panel controls should be enabled after all rules have validation results
 
     def __load_available_rules(self):
         self.__controller.load_general_results_tree_data()
@@ -178,7 +181,14 @@ class QualityRulesGeneralResultsPanelWidget(QgsPanelWidget, WIDGET_UI):
                             continue
 
                     if not found:
-                        to_delete.append(qr_obj)
+                        # Finally, if we search for 'errores', we should find failing rules
+                        if search_text in 'errores':
+                            qr_res = self.__controller.get_general_results_tree_data()[type][qr_obj]
+                            if qr_res and qr_res.level == EnumQualityRuleResult.ERRORS:
+                                found = True
+
+                        if not found:
+                            to_delete.append(qr_obj)
 
             for qr_obj in to_delete:
                 res.remove(qr_obj)
@@ -225,15 +235,22 @@ class QualityRulesGeneralResultsPanelWidget(QgsPanelWidget, WIDGET_UI):
     def __restore_settings(self):
         pass
 
-    def __select_predefined_changed(self, index):
-        pass
-
     def __selection_changed(self):
-        self.__update_controls_after_selection_update()
-
-    def __update_controls_after_selection_update(self):
         # Custom slot to refresh labels and button state
-        self.btn_view_details.setEnabled(len(self.trw_qrs.selectedItems()))
+        if not self.__block_control_updates:
+            self.btn_view_details.setEnabled(len(self.trw_qrs.selectedItems()))
+
+    def __enable_panel_controls(self, enable):
+        # Enble/disable "Accept panel"
+        self.blockSignals(not enable)
+        self.__block_control_updates = not enable
+
+        self.txt_search.setEnabled(enable)
+        self.btn_open_report.setEnabled(enable)
+        self.btn_save_gpkg.setEnabled(enable)
+
+        # Enable/disable view details button, which depends on a selection as well
+        self.btn_view_details.setEnabled(enable and len(self.trw_qrs.selectedItems()))
 
     def __set_qr_progress(self, qr_key, value):
         item = self.__get_item_by_qr_key(qr_key)
@@ -282,6 +299,8 @@ class QualityRulesGeneralResultsPanelWidget(QgsPanelWidget, WIDGET_UI):
 
     def update_total_progress(self, value):
         self.pbr_total_progress.setValue(value)
+        if value == 100:
+            self.__enable_panel_controls(True)
         print("T:", value)
 
     def show_detailed_results_panel(self):
