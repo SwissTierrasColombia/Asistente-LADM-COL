@@ -18,7 +18,7 @@ Un proyecto de: [SwissTierras Colombia](https://swisstierrascolombia.com/) ([BSF
 
 ## Soporte de funcionalidades por motor de base de datos
 
-La versión actual ([3.2.0-beta-1](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/3.2.0-beta-1)) del Asistente LADM-COL depende del plugin [QGIS Model Baker v6.3.2](https://github.com/opengisch/QgisModelBaker/releases/download/v6.3.2/QgisModelBaker.v6.3.2.zip) y soporta los motores de Base de Datos PostgreSQL/PostGIS, GeoPackage y SQL Server.
+La versión actual ([3.2.0-beta-1](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/3.2.0-beta-1)) del Asistente LADM-COL soporta los motores de Base de Datos PostgreSQL/PostGIS, GeoPackage y SQL Server.
 
 Este es el soporte funcional para cada motor: 
 
@@ -49,7 +49,7 @@ Para usar el Asistente LADM-COL se requiere:
    - PostGIS 2.4 o superior.
    - (Opcional) SQL Server 2012 o superior.
  - Complementos de QGIS (al instalar el Asistente LADM-COL usando el Administrador de Complementos de QGIS, las dependencias se instalarán automáticamente):
-   - QGIS Model Baker v6.3.2
+   - QGIS Model Baker v6.3.2.1
    - MapSwipe Tool v1.2
 
 ## Galería

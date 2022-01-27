@@ -43,7 +43,7 @@ To use the LADM-COL Assistant you need:
    - PostGIS 2.4 or higher.
    - (Optional) SQL Server 2012 or higher.
  - QGIS plugins (installing LADM-COL Assistant using QGIS Plugin Manager will also install these automatically):
-   - QGIS Model Baker v6.3.2
+   - QGIS Model Baker v6.3.2.1
    - MapSwipe Tool v1.2
 
 ## Gallery
@@ -70,7 +70,7 @@ To use the LADM-COL Assistant you need:
 
 ## Functionalities
 
-The current version ([3.2.0-beta-1](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/3.1.4)) of the LADM-COL Assistant depends on [QGIS Model Baker v6.3.2](https://github.com/opengisch/QgisModelBaker/releases/download/v6.3.2/QgisModelBaker.v6.3.2.zip) and allows users to:
+The current version ([3.2.0-beta-1](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/3.1.4)) of the LADM-COL Assistant allows users to:
 
  - Integration with the Transitional System:
    - Authentication
