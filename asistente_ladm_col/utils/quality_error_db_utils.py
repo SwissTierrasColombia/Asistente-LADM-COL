@@ -25,7 +25,8 @@ from qgis.PyQt.QtCore import (Qt,
                               QDateTime,
                               QObject,
                               pyqtSignal)
-from qgis.core import QgsVectorLayerUtils
+from qgis.core import (QgsProject,
+                       QgsVectorLayerUtils)
 
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.enums import EnumQualityRuleType
@@ -37,6 +38,8 @@ from asistente_ladm_col.config.quality_rule_config import (QR_METADATA_TOOL,
                                                            QR_METADATA_RULES,
                                                            QR_METADATA_OPTIONS,
                                                            QR_METADATA_PERSON)
+from asistente_ladm_col.config.translation_strings import (TranslatableConfigStrings,
+                                                           ERROR_LAYER_GROUP_PREFIX)
 from asistente_ladm_col.core.ili2db import Ili2DB
 from asistente_ladm_col.lib.db.gpkg_connector import GPKGConnector
 from asistente_ladm_col.lib.logger import Logger
@@ -92,7 +95,9 @@ class QualityErrorDBUtils(QObject):
                       names.ERR_POINT_T: None,
                       names.ERR_LINE_T: None,
                       names.ERR_POLYGON_T: None}
-            app.core.get_layers(db, layers, load=True)
+            app.core.get_layers(db, layers,
+                                load=True,
+                                group=QualityErrorDBUtils.get_quality_error_group(timestamp))
 
         self.progress_changed.emit(100)
 
@@ -292,3 +297,35 @@ class QualityErrorDBUtils(QObject):
 
         logger.info(__name__, "Quality rules metadata successfully saved!")
         return True, "Success!"
+
+    @staticmethod
+    def get_quality_error_group(timestamp):
+        root = QgsProject.instance().layerTreeRoot()
+        prefix = TranslatableConfigStrings.get_translatable_config_strings()[ERROR_LAYER_GROUP_PREFIX]
+        group_name = "{} {}".format(prefix, timestamp)
+
+        group = root.findGroup(group_name)
+        if group is None:
+            group = root.insertGroup(0, group_name)
+            group.setExpanded(False)
+
+        return group
+
+    @staticmethod
+    def get_quality_error_group_names():
+        root = QgsProject.instance().layerTreeRoot()
+        prefix = TranslatableConfigStrings.get_translatable_config_strings()[ERROR_LAYER_GROUP_PREFIX]
+        error_group_names = list()
+
+        for group in root.findGroups(False):
+            if group.name().startswith(prefix):
+                error_group_names.append(group.name())
+
+        return error_group_names
+
+    @staticmethod
+    def remove_quality_error_group(timestamp):
+        group = QualityErrorDBUtils.get_quality_error_group(timestamp)
+        if group:
+            parent = group.parent()
+            parent.removeChildNode(group)

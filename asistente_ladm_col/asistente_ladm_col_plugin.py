@@ -119,7 +119,6 @@ from asistente_ladm_col.gui.supplies.dlg_missing_cobol_supplies import MissingCo
 from asistente_ladm_col.gui.supplies.dlg_missing_snc_supplies import MissingSncSuppliesDialog
 from asistente_ladm_col.gui.dialogs.dlg_log_quality import LogQualityDialog
 from asistente_ladm_col.gui.change_detection.dlg_change_detection_settings import ChangeDetectionSettingsDialog
-from asistente_ladm_col.gui.dialogs.dlg_quality import QualityDialog
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
 from asistente_ladm_col.gui.dialogs.dlg_welcome_screen import WelcomeScreenDialog
 from asistente_ladm_col.gui.queries.dockwidget_queries import DockWidgetQueries
@@ -1488,9 +1487,6 @@ class AsistenteLADMCOLPlugin(QObject):
         db, res = self.get_db_connection_with_names()
         if res:
             self.app.add_indicators(db, node_name, node_type, payload)
-
-    def export_error_group(self):
-        self.app.gui.export_error_group()
 
     def show_informal_plots(self):
         db = self.get_db_connection()

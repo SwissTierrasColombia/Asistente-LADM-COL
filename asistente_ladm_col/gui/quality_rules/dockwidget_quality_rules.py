@@ -66,6 +66,8 @@ class DockWidgetQualityRules(QgsDockWidget, DOCKWIDGET_UI):
         # except:
         #     pass
 
+        # TODO: Remove error group when closing dock widget: QRDBUtils.remove_error_group(timestamp)
+
         self.close()  # The user needs to use the menus again, which will start everything from scratch
 
     def show_general_results_panel(self):

@@ -176,7 +176,7 @@ class AppCoreInterface(QObject):
 
         return layer[layer_name]
 
-    def get_layers(self, db, layers, load=False, emit_map_freeze=True, layer_modifiers=dict()):
+    def get_layers(self, db, layers, load=False, emit_map_freeze=True, layer_modifiers=dict(), group=None):
         """
         Load LADM-COL layers to QGIS.
 
@@ -191,6 +191,7 @@ class AppCoreInterface(QObject):
         one could be interested in handling the map_freeze from the outside
         :param layer_modifiers: dict with properties that modify default layer properties
                                 like prefix_layer_name, suffix_layer_name and symbology_group
+        :param group: QgsLayerTreeGroup that should be taken as parent for all loaded layers and subgroups
         """
         if not layers:
             return
@@ -226,7 +227,7 @@ class AppCoreInterface(QObject):
                     self.remove_registry_layers(db, all_layers_to_load)
 
                     self.logger.status(QCoreApplication.translate("AppCoreInterface", "Loading LADM-COL layers to QGIS and configuring their relations and forms..."))
-                    self.qgis_model_baker_utils.load_layers(db, all_layers_to_load)
+                    self.qgis_model_baker_utils.load_layers(db, all_layers_to_load, group)
                     ladm_layers = self.get_ladm_layers_from_qgis(db, EnumLayerRegistryType.IN_LAYER_TREE)  # Update
 
                     # Now that all layers are loaded, update response dict

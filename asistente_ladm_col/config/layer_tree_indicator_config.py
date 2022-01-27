@@ -4,8 +4,6 @@ from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import QgsLayerTreeNode
 
-from asistente_ladm_col.config.translation_strings import (TranslatableConfigStrings,
-                                                           ERROR_LAYER_GROUP)
 from asistente_ladm_col.utils.singleton import SingletonQObject
 
 INDICATOR_TOOLTIP = "INDICATOR_TOOLTIP"
@@ -35,20 +33,9 @@ class LayerTreeIndicatorConfig(QObject, metaclass=SingletonQObject):
                     INDICATOR_SLOT
         """
         indicators_config = []
-        translated_strings = TranslatableConfigStrings.get_translatable_config_strings()
 
         if node_type == QgsLayerTreeNode.NodeGroup:
-            if node_name == translated_strings[ERROR_LAYER_GROUP]:
-                indicators_config = [{
-                    INDICATOR_TOOLTIP: QCoreApplication.translate("LayerTreeIndicatorConfig", "<b>Export</b><br>Export quality errors to GeoPackage"),
-                    INDICATOR_ICON: QIcon(":/Asistente-LADM-COL/resources/images/save.svg"),
-                    INDICATOR_SLOT: self._slot_caller.export_error_group
-                }, {
-                    INDICATOR_TOOLTIP: QCoreApplication.translate("LayerTreeIndicatorConfig",
-                                                                  "<b>Export</b><br>Export quality errors to PDF"),
-                    INDICATOR_ICON: QIcon(":/Asistente-LADM-COL/resources/images/pdf.svg"),
-                    INDICATOR_SLOT: self._slot_caller.show_log_quality_dialog
-                }]
+            pass
         elif node_type == QgsLayerTreeNode.NodeLayer:
             if node_name == names.LC_PLOT_T:
                 indicators_config = [{

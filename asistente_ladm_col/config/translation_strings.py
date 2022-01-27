@@ -89,7 +89,7 @@ from asistente_ladm_col.config.quality_rules_config import (QUALITY_RULE_ERROR_C
                                                             QUALITY_RULE_ERROR_CODE_E402101,
                                                             QUALITY_RULE_ERROR_CODE_E402201)
 
-ERROR_LAYER_GROUP = "ERROR_LAYER_GROUP"
+ERROR_LAYER_GROUP_PREFIX = "ERROR_LAYER_GROUP_PREFIX"
 RIGHT_OF_WAY_LINE_LAYER = "RIGHT_OF_WAY_LINE_LAYER"
 
 TOOLBAR_BUILD_BOUNDARY = QCoreApplication.translate("TranslatableConfigStrings", "Build boundaries...")
@@ -298,6 +298,6 @@ class TranslatableConfigStrings(QObject):
             QUALITY_RULE_ERROR_CODE_E402001: QCoreApplication.translate("TranslatableConfigStrings", "Derecho no debe tener registros repetidos"),
             QUALITY_RULE_ERROR_CODE_E402101: QCoreApplication.translate("TranslatableConfigStrings", "Restricción no debe tener registros repetidos"),
             QUALITY_RULE_ERROR_CODE_E402201: QCoreApplication.translate("TranslatableConfigStrings", "Fuente Administrativa no debe tener registros repetidos"),
-            ERROR_LAYER_GROUP: QCoreApplication.translate("TranslatableConfigStrings", "Validation errors"),
+            ERROR_LAYER_GROUP_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "Quality errors"),
             RIGHT_OF_WAY_LINE_LAYER: QCoreApplication.translate("TranslatableConfigStrings", "Right of way line")
         }
