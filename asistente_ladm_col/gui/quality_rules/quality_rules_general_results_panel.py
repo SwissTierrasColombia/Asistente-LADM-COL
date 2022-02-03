@@ -73,8 +73,7 @@ class QualityRulesGeneralResultsPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         self.txt_search.textChanged.connect(self.__search_text_changed)
         self.btn_open_report.clicked.connect(self.__controller.open_report)
-        #self.btn_save_gpkg.clicked.connect(self.__view_details_clicked)
-        self.btn_view_details.clicked.connect(self.__view_details_clicked)
+        self.btn_view_error_results.clicked.connect(self.__view_error_results_clicked)
         self.btn_help.clicked.connect(self.__show_help)
         self.trw_qrs.itemSelectionChanged.connect(self.__selection_changed)
 
@@ -222,12 +221,17 @@ class QualityRulesGeneralResultsPanelWidget(QgsPanelWidget, WIDGET_UI):
     def __search_text_changed(self, text):
         self.__update_available_rules()
 
-    def __view_details_clicked(self):
+    def __view_error_results_clicked(self):
         self.__save_settings()
 
         if self.trw_qrs.selectedItems():
-            print(self.trw_qrs.selectedItems()[0].data(QR_COLUMN, Qt.UserRole))
-            self.show_detailed_results_panel()
+            qr_key = self.trw_qrs.selectedItems()[0].data(QR_COLUMN, Qt.UserRole)
+            res = self.__controller.set_selected_qr(qr_key)
+            if res:
+                self.show_error_results_panel()
+            else:
+                self.logger.warning_msg(__name__, QCoreApplication.translate("QualityRulesGeneralResultsPanelWidget",
+                                                                             "The quality rule '{}' couldn't be found! We cannot continue exploring errors.").format(qr_key))
 
     def __save_settings(self):
         pass
@@ -238,7 +242,7 @@ class QualityRulesGeneralResultsPanelWidget(QgsPanelWidget, WIDGET_UI):
     def __selection_changed(self):
         # Custom slot to refresh labels and button state
         if not self.__block_control_updates:
-            self.btn_view_details.setEnabled(len(self.trw_qrs.selectedItems()))
+            self.btn_view_error_results.setEnabled(len(self.trw_qrs.selectedItems()))
 
     def __enable_panel_controls(self, enable):
         # Enble/disable "Accept panel"
@@ -249,8 +253,8 @@ class QualityRulesGeneralResultsPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.btn_open_report.setEnabled(enable)
         self.btn_save_gpkg.setEnabled(enable)
 
-        # Enable/disable view details button, which depends on a selection as well
-        self.btn_view_details.setEnabled(enable and len(self.trw_qrs.selectedItems()))
+        # Enable/disable view error results button, which depends on a selection as well
+        self.btn_view_error_results.setEnabled(enable and len(self.trw_qrs.selectedItems()))
 
     def __set_qr_progress(self, qr_key, value):
         item = self.__get_item_by_qr_key(qr_key)
@@ -303,13 +307,13 @@ class QualityRulesGeneralResultsPanelWidget(QgsPanelWidget, WIDGET_UI):
             self.__enable_panel_controls(True)
         print("T:", value)
 
-    def show_detailed_results_panel(self):
+    def show_error_results_panel(self):
         """
         Slot called to show the task panel based on a selected task.
 
         :param task_id: Id of the task that will be used to show the task panel.
         """
-        self.parent.show_detailed_results_panel()
+        self.parent.show_error_results_panel()
 
     def __show_help(self):
         show_plugin_help("quality_rules")

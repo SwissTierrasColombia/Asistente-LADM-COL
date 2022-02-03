@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 """
 /***************************************************************************
-                              Asistente LADM_COL
+                              Asistente LADM-COL
                              --------------------
         begin                : 2020-03-30
         git sha              : :%H$
@@ -20,6 +19,7 @@ from qgis.PyQt.QtCore import (QObject,
                               pyqtSlot,
                               pyqtSignal,
                               QCoreApplication)
+from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtWidgets import (QFileDialog,
                                  QDockWidget)
 
@@ -183,3 +183,11 @@ class AppGUIInterface(QObject):
 
     def open_feature_form(self, layer, feature):
         self.iface.openFeatureForm(layer, feature)
+
+    def flash_features(self, layer, fids, duration=500):
+        self.iface.mapCanvas().flashFeatureIds(layer,
+                                               fids,
+                                               QColor(255, 0, 0, 255),
+                                               QColor(255, 0, 0, 0),
+                                               flashes=1,
+                                               duration=duration)

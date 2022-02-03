@@ -15,6 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 """
+import json
+
 from qgis.PyQt.QtCore import QCoreApplication
 
 from asistente_ladm_col.config.enums import EnumQualityRuleResult
@@ -83,7 +85,7 @@ class QROverlappingBoundaryPoints(AbstractPointQualityRule):
             error_data = [  # [obj_uuids, rel_obj_uuids, values, details]
                 [str(dict_uuids.get(i)) for i in items],
                 None,
-                len(items),
+                json.dumps({"conteo": len(items)}),
                 None]
             errors['data'].append(error_data)
 

@@ -94,7 +94,8 @@ class QualityErrorDBUtils(QObject):
                       names.ERR_ERROR_TYPE_T: None,
                       names.ERR_POINT_T: None,
                       names.ERR_LINE_T: None,
-                      names.ERR_POLYGON_T: None}
+                      names.ERR_POLYGON_T: None,
+                      names.ERR_METADATA_T: None}
             app.core.get_layers(db, layers,
                                 load=True,
                                 group=QualityErrorDBUtils.get_quality_error_group(timestamp))

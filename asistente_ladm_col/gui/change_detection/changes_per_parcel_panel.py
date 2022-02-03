@@ -36,6 +36,7 @@ from qgis.core import (QgsWkbTypes,
 from qgis.gui import (QgsPanelWidget,
                       QgsMapToolIdentifyFeature)
 
+from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.config.symbology import Symbology
 from asistente_ladm_col.config.general_config import (SUPPLIES_DB_SOURCE,
@@ -63,6 +64,7 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.parent = parent
         self.utils = utils
         self.logger = Logger()
+        self.app = AppInterface()
 
         self.setDockMode(True)
         self.setPanelTitle(QCoreApplication.translate("ChangesPerParcelPanelWidget", "Change detection per parcel"))
@@ -148,12 +150,8 @@ class ChangesPerParcelPanelWidget(QgsPanelWidget, WIDGET_UI):
         """
         plot_t_id = plot_feature[self.utils._supplies_db.names.T_ID_F]
 
-        self.utils.canvas.flashFeatureIds(self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T],
-                                    [plot_feature.id()],
-                                    QColor(255, 0, 0, 255),
-                                    QColor(255, 0, 0, 0),
-                                    flashes=1,
-                                    duration=500)
+        self.app.gui.flash_features(self.utils._supplies_layers[self.utils._supplies_db.names.GC_PLOT_T],
+                                    [plot_feature.id()])
 
         if not self.isVisible():
             self.show()

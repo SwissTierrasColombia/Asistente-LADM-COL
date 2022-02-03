@@ -21,6 +21,7 @@ from qgis.PyQt.QtCore import (Qt,
 from qgis.gui import QgsDockWidget
 
 
+from asistente_ladm_col.gui.quality_rules.quality_rules_error_results_panel import QualityRulesErrorResultsPanelWidget
 from asistente_ladm_col.gui.quality_rules.quality_rules_general_results_panel import QualityRulesGeneralResultsPanelWidget
 from asistente_ladm_col.gui.quality_rules.quality_rules_initial_panel import QualityRulesInitialPanelWidget
 from asistente_ladm_col.utils import get_ui_class
@@ -44,6 +45,7 @@ class DockWidgetQualityRules(QgsDockWidget, DOCKWIDGET_UI):
 
         # Configure panels
         self.__general_results_panel = None
+        self.__error_results_panel = None
 
         self.__main_panel = QualityRulesInitialPanelWidget(controller, self)
         self.widget.setMainPanel(self.__main_panel)
@@ -89,17 +91,16 @@ class DockWidgetQualityRules(QgsDockWidget, DOCKWIDGET_UI):
 
             self.__general_results_panel = None
 
-    def show_detailed_results_panel(self):
-        pass
-        # with OverrideCursor(Qt.WaitCursor):
-        #     if self.__general_results_panel is not None:
-        #         try:
-        #             self.widget.closePanel(self.__general_results_panel)
-        #         except RuntimeError as e:  # Panel in C++ could be already closed...
-        #             pass
-        #
-        #         self.__general_results_panel = None
-        #
-        #     self.__general_results_panel = QualityRulesGeneralResultsPanelWidget(self.__controller, self)
-        #     #self.__general_results_panel.panelAccepted.connect(self.reload_tasks)
-        #     self.widget.showPanel(self.__general_results_panel)
+    def show_error_results_panel(self):
+        with OverrideCursor(Qt.WaitCursor):
+            if self.__error_results_panel is not None:
+                try:
+                    self.widget.closePanel(self.__error_results_panel)
+                except RuntimeError as e:  # Panel in C++ could be already closed...
+                    pass
+
+                self.__error_results_panel = None
+
+            self.__error_results_panel = QualityRulesErrorResultsPanelWidget(self.__controller, self)
+            # self.__error_results_panel.panelAccepted.connect(self.reload_tasks)
+            self.widget.showPanel(self.__error_results_panel)
