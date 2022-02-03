@@ -20,6 +20,7 @@ from qgis.PyQt.QtCore import (QCoreApplication,
                               pyqtSignal,
                               QSettings,
                               QObject)
+from qgis.core import QgsRectangle
 
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.quality_rule_config import QR_IGACR3006
@@ -73,7 +74,7 @@ class QualityRuleController(QObject):
         options = {QR_IGACR3006: {'use_roads': use_roads}}
 
         res, msg, res_obj = self.__qr_engine.validate_quality_rules(options)
-        self.logger.info_msg(__name__, QCoreApplication.translate("QualityRuleController",
+        self.logger.info_msg(__name__, QCoreApplication.translate("QualityRules",
                                                                   "All the {} quality rules were checked!").format(
             len(self.__selected_qrs)), 15)
 
@@ -209,9 +210,9 @@ class QualityRuleController(QObject):
                                                     [feature[db.names.ERR_QUALITY_ERROR_T_ERROR_TYPE_F]])  # tid
 
         return features[0][names.ERR_ERROR_TYPE_T_CODE_F] if features else QCoreApplication.translate(
-            "QualityRuleController", "No error type found!"), features[0][
+            "QualityRules", "No error type found!"), features[0][
                    names.ERR_ERROR_TYPE_T_DESCRIPTION_F] if features else QCoreApplication.translate(
-            "QualityRuleController", "No error description found!")
+            "QualityRules", "No error description found!")
 
     def error_details_and_values(self, feature):
         res = ""
@@ -294,8 +295,29 @@ class QualityRuleController(QObject):
 
     def highlight_geometries(self, t_ids):
         res_geometries = self.__error_related_geometries(t_ids)
-        for geom_type, dict_layer_fids in res_geometries.items():
-            self.app.gui.flash_features(dict_layer_fids['layer'], dict_layer_fids['fids'])
+
+        if res_geometries:
+            # First zoom to geometries
+            if len(res_geometries) == 1:  # Only one geometry type related
+                for geom_type, dict_layer_fids in res_geometries.items():  # We know this will be called just once
+                    self.app.gui.zoom_to_feature_ids(dict_layer_fids['layer'], dict_layer_fids['fids'])
+            else:  # Multiple geometry types were found, so combine the extents and then zoom to it
+                combined_extent = QgsRectangle()
+                for geom_type, dict_layer_fids in res_geometries.items():
+                    combined_extent.combineExtentWith(
+                        self.app.core.get_extent_from_feature_ids(dict_layer_fids['layer'], dict_layer_fids['fids']))
+
+                self.app.gui.zoom_to_extent(combined_extent)
+
+            # Now highlight geometries
+            for geom_type, dict_layer_fids in res_geometries.items():
+                self.app.gui.flash_features(dict_layer_fids['layer'], dict_layer_fids['fids'], flashes=5)
+
+    def get_uuids_display_name(self):
+        names = self.__qr_engine.get_db_quality().names
+        res = self.__selected_qr.field_mapping(names).get(names.ERR_QUALITY_ERROR_T_OBJECT_IDS_F, '')
+
+        return res if res else QCoreApplication.translate("QualityRules", "UUIDs")
 
     # def show_log_quality_message(self, msg, count):
     #     self.progress_message_bar = self.iface.messageBar().createMessage("Asistente LADM-COL", msg)

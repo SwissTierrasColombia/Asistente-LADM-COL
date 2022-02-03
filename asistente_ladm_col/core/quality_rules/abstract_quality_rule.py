@@ -75,7 +75,10 @@ class AbstractQualityRule(QObject, metaclass=AbstractQObjectMeta):
     def models(self):
         return self._models.copy()
 
-    def field_mapping(self):
+    def field_mapping(self, names):
+        # Dictionary to overwrite display of quality error table fields
+        # For instance, I can rename ERR_QUALITY_ERROR_T_OBJECT_IDS_F by "Plots"
+        # so that a user is better informed of what is displayed
         return self._field_mapping
 
     @staticmethod

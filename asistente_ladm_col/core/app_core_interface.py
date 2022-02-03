@@ -52,6 +52,7 @@ from qgis.core import (Qgis,
                        QgsSnappingConfig,
                        QgsProperty,
                        QgsRelation,
+                       QgsRectangle,
                        QgsVectorLayer,
                        QgsCoordinateReferenceSystem,
                        QgsWkbTypes,
@@ -1469,3 +1470,10 @@ class AppCoreInterface(QObject):
             GeometryUtils.create_spatial_index(output)
 
         return output
+
+    def get_extent_from_feature_ids(layer, fids):
+        combined_extent = QgsRectangle()
+        for feature in layer.getFeatures(fids):
+            combined_extent.combineExtentWith(feture.geometry().boundingBox())
+
+        return combined_extent

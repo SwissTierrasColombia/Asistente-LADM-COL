@@ -155,6 +155,12 @@ class AppGUIInterface(QObject):
     def zoom_to_selected(self):
         self.iface.actionZoomToSelected().trigger()
 
+    def zoom_to_feature_ids(self, layer, fids):
+        self.iface.mapCanvas().zoomToFeatureIds(layer, fids)
+
+    def zoom_to_extent(self, extent):
+        self.iface.mapCanvas().zoomToFeatureExtent(extent)
+
     def show_message(self, msg, level, duration=5):
         self.clear_message_bar()  # Remove previous messages before showing a new one
         self.iface.messageBar().pushMessage("Asistente LADM-COL", msg, level, duration)
@@ -184,10 +190,10 @@ class AppGUIInterface(QObject):
     def open_feature_form(self, layer, feature):
         self.iface.openFeatureForm(layer, feature)
 
-    def flash_features(self, layer, fids, duration=500):
+    def flash_features(self, layer, fids, flashes=1, duration=500):
         self.iface.mapCanvas().flashFeatureIds(layer,
                                                fids,
                                                QColor(255, 0, 0, 255),
                                                QColor(255, 0, 0, 0),
-                                               flashes=1,
+                                               flashes=flashes,
                                                duration=duration)

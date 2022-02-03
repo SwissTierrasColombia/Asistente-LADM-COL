@@ -91,7 +91,7 @@ class QualityRulesErrorResultsPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.lbl_qr_name.setToolTip(qr.id())
 
         self.__column_labels = ["",
-                                QCoreApplication.translate("QualityRulesErrorResultsPanelWidget", "UUIDs"),
+                                self.__controller.get_uuids_display_name(),
                                 QCoreApplication.translate("QualityRulesErrorResultsPanelWidget", "Error"),
                                 QCoreApplication.translate("QualityRulesErrorResultsPanelWidget", "Details")]
 

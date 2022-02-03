@@ -51,6 +51,9 @@ class QROverlappingBoundaryPoints(AbstractPointQualityRule):
         # Optional. Only useful for display purposes.
         self._field_mapping = dict()  # E.g., {'id_objetos': 'ids_punto_lindero', 'valores': 'conteo'}
 
+    def field_mapping(self, names):
+        return {names.ERR_QUALITY_ERROR_T_OBJECT_IDS_F: QCoreApplication.translate("QualityRules", "Boundary Points")}
+
     def layers_config(self, names):
         return {
             QUALITY_RULE_LADM_COL_LAYERS: [names.LC_BOUNDARY_POINT_T],
