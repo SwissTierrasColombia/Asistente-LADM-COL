@@ -242,7 +242,7 @@ WIDGET_STYLE_QUALITY_RULE_ERRORS = """{color: #e1e1e1;
                                        border: 2px solid White;
                                        border-radius: 7px;
                                        border-style: outset;
-                                       background: #FF521B;
+                                       background: #F15156;
                                        padding: 5px;}"""
 WIDGET_STYLE_QUALITY_RULE_UNDEFINED = """{color: #495867;
                                           border: 2px solid White;

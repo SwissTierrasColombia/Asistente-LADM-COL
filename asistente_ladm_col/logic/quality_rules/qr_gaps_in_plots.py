@@ -37,6 +37,7 @@ from asistente_ladm_col.core.quality_rules.quality_rule_execution_result import 
 from asistente_ladm_col.core.quality_rules.quality_rule_option import (QualityRuleOption,
                                                                        QualityRuleOptions)
 from asistente_ladm_col.lib.geometry import GeometryUtils
+from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 
 
 class QRGapsInPlots(AbstractPolygonQualityRule):
@@ -107,15 +108,18 @@ class QRGapsInPlots(AbstractPolygonQualityRule):
                 # to get gap geometry and its correspondant t_ili_tid list
                 uuids_list.append([f[db.names.T_ILI_TID_F] for f in plot_layer.getFeatures(fids)])
 
+            error_state = LADMData().get_domain_code_from_value(db_qr, db_qr.names.ERR_ERROR_STATE_D,
+                                                                LADMNames.ERR_ERROR_STATE_D_ERROR_V)
             errors = {'geometries': list(), 'data': list()}
             for serial, geometry in enumerate(gaps):
                 errors['geometries'].append(geometry)
 
-                error_data = [  # [obj_uuids, rel_obj_uuids, values, details]
+                error_data = [  # [obj_uuids, rel_obj_uuids, values, details, state]
                     uuids_list[serial],
                     None,
                     None,
-                    None]
+                    None,
+                    error_state]
                 errors['data'].append(error_data)
 
             self._save_errors(db_qr, self._ERROR_01, errors)

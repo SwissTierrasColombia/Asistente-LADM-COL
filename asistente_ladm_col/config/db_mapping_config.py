@@ -635,6 +635,7 @@ class DBMappingConfig:
                     "Errores_Calidad.Catalogos_Errores.TipoRegla.Descripcion": "ERR_RULE_TYPE_T_DESCRIPTION_F",
                     "Errores_Calidad.Catalogos_Errores.TipoRegla.Entidad": "ERR_RULE_TYPE_T_ORGANIZATION_F"
                 }},
+            "Errores_Calidad.Topic_Errores.EstadoError": {QueryNames.VARIABLE_NAME: "ERR_ERROR_STATE_D", QueryNames.FIELDS_DICT: {}},
             "Errores_Calidad.Topic_Errores.Punto": {QueryNames.VARIABLE_NAME: "ERR_POINT_T", QueryNames.FIELDS_DICT: {}},
             "Errores_Calidad.Topic_Errores.Linea": {QueryNames.VARIABLE_NAME: "ERR_LINE_T", QueryNames.FIELDS_DICT: {}},
             "Errores_Calidad.Topic_Errores.Poligono": {QueryNames.VARIABLE_NAME: "ERR_POLYGON_T", QueryNames.FIELDS_DICT: {}},
@@ -657,6 +658,7 @@ class DBMappingConfig:
                     "Errores_Calidad.Topic_Errores.ErrorCalidad.Valores": "ERR_QUALITY_ERROR_T_VALUES_F",
                     "Errores_Calidad.Topic_Errores.ErrorCalidad.Tipo_Error..Errores_Calidad.Catalogos_Errores.TipoError": "ERR_QUALITY_ERROR_T_ERROR_TYPE_F",
                     "Errores_Calidad.Topic_Errores.ErrorCalidad.Tipo_Regla..Errores_Calidad.Catalogos_Errores.TipoRegla": "ERR_QUALITY_ERROR_T_RULE_TYPE_F",
+                    "Errores_Calidad.Topic_Errores.ErrorCalidad.EstadoError": "ERR_QUALITY_ERROR_T_ERROR_STATE_F",
                     "Errores_Calidad.Topic_Errores.Error_Linea.Linea_Relacionada..Errores_Calidad.Topic_Errores.Linea": "ERR_QUALITY_ERROR_T_LINE_F",
                     "Errores_Calidad.Topic_Errores.Error_Poligono.Poligono_Relacionado..Errores_Calidad.Topic_Errores.Poligono": "ERR_QUALITY_ERROR_T_POLYGON_F",
                     "Errores_Calidad.Topic_Errores.Error_Punto.Punto_Relacionado..Errores_Calidad.Topic_Errores.Punto": "ERR_QUALITY_ERROR_T_POINT_F"

@@ -28,6 +28,7 @@ from qgis.core import (QgsVectorLayer,
 import processing
 
 from asistente_ladm_col.app_interface import AppInterface
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.config.quality_rule_config import (QR_ILIVALIDATORR0001,
                                                            QRE_ILIVALIDATORR0001E01)
 from asistente_ladm_col.core.xtf_model_converter.ladm_col_model_converter import LADMColModelConverter
@@ -70,7 +71,8 @@ class IliVErrorsToErroresCalidad01Converter(LADMColModelConverter):
         layers = {names.ERR_QUALITY_ERROR_T: None,
                   names.ERR_RULE_TYPE_T: None,
                   names.ERR_ERROR_TYPE_T: None,
-                  names.ERR_POINT_T: None}
+                  names.ERR_POINT_T: None,
+                  names.ERR_ERROR_STATE_D: None}
         self.app.core.get_layers(db_qr, layers, load=True)
 
         if not layers:
@@ -155,6 +157,7 @@ class IliVErrorsToErroresCalidad01Converter(LADMColModelConverter):
         idx_object_ids = quality_error_layer_fields.indexOf(names.ERR_QUALITY_ERROR_T_OBJECT_IDS_F)
         idx_object_ili_name = quality_error_layer_fields.indexOf(names.ERR_QUALITY_ERROR_T_ILI_NAME_F)
         idx_details = quality_error_layer_fields.indexOf(names.ERR_QUALITY_ERROR_T_DETAILS_F)
+        idx_error_state = quality_error_layer_fields.indexOf(names.ERR_QUALITY_ERROR_T_ERROR_STATE_F)
         idx_related_point = quality_error_layer_fields.indexOf(names.ERR_QUALITY_ERROR_T_POINT_F)
 
         count = 0
@@ -176,6 +179,8 @@ class IliVErrorsToErroresCalidad01Converter(LADMColModelConverter):
                          idx_object_ids: [xtf_feature[idx_ili_t_ili_tid]],  # It's a JSON array
                          idx_object_ili_name: xtf_feature[idx_ili_obj_tag] if idx_ili_obj_tag != -1 else None,
                          idx_details: xtf_feature[idx_ili_message] if idx_ili_message != -1 else None,
+                         idx_error_state: LADMData().get_domain_code_from_value(db_qr, layers[names.ERR_ERROR_STATE_D],
+                                                                                LADMNames.ERR_ERROR_STATE_D_ERROR_V),
                          idx_related_point: xtf_feature['point_T_id']}
                 new_feature = QgsVectorLayerUtils().createFeature(quality_error_layer, attributes=attrs)
                 features.append(new_feature)

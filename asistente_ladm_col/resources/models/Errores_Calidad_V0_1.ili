@@ -51,6 +51,26 @@ VERSION "2021-09-21"  =
     OID AS INTERLIS.UUIDOID;
     DEPENDS ON Errores_Calidad_V0_1.Catalogos_Errores;
 
+    DOMAIN
+
+      /** Listado de opciones para definir estado de un error detectado. Se recomienda solo para propósitos de despliegue.
+       */
+      !!@ ili2db.dispName = "Estado del error (despliegue)"
+      EstadoError = (
+        /** Indica si un error ha sido corregido durante una sesión de corrección de errores. Solo usarlo para propósitos de despliegue, pues la corrección debe hacerse en los datos originales.
+         */
+        !!@ ili2db.dispName = "Corregido"
+        Corregido,
+        /** Indica un error que no ha sido corregido ni ha sido marcado como excepción.
+         */
+        !!@ ili2db.dispName = "Error"
+        Error,
+        /** Indica si un error se marcó como excepción. Esto permite visualizar excepciones aún cuando no se cuente con los datos originales. Solo usarlo para propósitos de despliegue, pues las excepciones se almacenan en su propio modelo.
+         */
+        !!@ ili2db.dispName = "Excepción"
+        Excepcion
+      );
+
     !!@ ili2db.dispName = "Errores Línea"
     CLASS Linea =
       !!@ ili2db.dispName = "Geometría"
@@ -126,16 +146,22 @@ VERSION "2021-09-21"  =
       !!@ ili2db.dispName = "Objetos relacionados"
       !!@ ili2db.mapping="ARRAY "
       Id_Objetos_Relacionados : BAG {0..*} OF Errores_Calidad_V0_1.Topic_Errores.UUIDs;
+      /** Datos adicionales a los detalles del error. Por ejemplo: Conteo de registros superpuestos. Se recomienda almacenarlos como JSON.
+       */
       !!@ ili2db.dispName = "Valores relacionados"
       Valores : TEXT;
-      /** Nombre calificado de clase o topic del modelo de INTERLIS
+      /** Nombre calificado de clase o topic del modelo de INTERLIS.
        */
       !!@ ili2db.dispName = "Nombre ili Objetos"
       Nombre_ili_Objetos : TEXT*1024;
-      /** Detalles técnicos del error
+      /** Detalles técnicos del error.
        */
       !!@ ili2db.dispName = "Detalles"
       Detalles : TEXT*9999;
+      /** Define el estado de un error detectado. Se recomienda solo para propósitos de despliegue.
+       */
+      !!@ ili2db.dispName = "Estado del error (despliegue)"
+      EstadoError : MANDATORY EstadoError;
     END ErrorCalidad;
 
     ASSOCIATION Error_Linea =

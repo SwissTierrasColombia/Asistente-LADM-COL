@@ -95,7 +95,8 @@ class QualityErrorDBUtils(QObject):
                       names.ERR_POINT_T: None,
                       names.ERR_LINE_T: None,
                       names.ERR_POLYGON_T: None,
-                      names.ERR_METADATA_T: None}
+                      names.ERR_METADATA_T: None,
+                      names.ERR_ERROR_STATE_D: None}
             app.core.get_layers(db, layers,
                                 load=True,
                                 group=QualityErrorDBUtils.get_quality_error_group(timestamp))
@@ -134,7 +135,7 @@ class QualityErrorDBUtils(QObject):
         :param rule_code: Rule code as specified in the external catalogs.
         :param error_code: Error code as specified in the external catalogs.
         :param error_data: Dict of lists:
-                               {'geometries': [geometries], 'data': [obj_uuids, rel_obj_uuids, values, details]}
+                               {'geometries': [geometries], 'data': [obj_uuids, rel_obj_uuids, values, details, state]}
                                Note: this dict will always have 2 elements.
                                Note 2: For geometry errors, this dict will always have the same number of elements in
                                        each of the two lists (and the element order matters!).
@@ -217,6 +218,7 @@ class QualityErrorDBUtils(QObject):
         idx_values = qr_error_layer.fields().indexOf(names.ERR_QUALITY_ERROR_T_VALUES_F)
         idx_ili_name = qr_error_layer.fields().indexOf(names.ERR_QUALITY_ERROR_T_ILI_NAME_F)
         idx_details = qr_error_layer.fields().indexOf(names.ERR_QUALITY_ERROR_T_DETAILS_F)
+        idx_error_state = qr_error_layer.fields().indexOf(names.ERR_QUALITY_ERROR_T_ERROR_STATE_F)
 
         features = list()
         for i, data in enumerate(error_data['data']):
@@ -227,7 +229,8 @@ class QualityErrorDBUtils(QObject):
                         idx_rel_object_ids: data[1],
                         idx_values: data[2],
                         idx_details: data[3],
-                        idx_ili_name: ili_name}
+                        idx_ili_name: ili_name,
+                        idx_error_state: data[4]}
             if geom_layer:
                 attr_map[idx_geometry_fk] = geom_t_ids[i]  # We take advantage of the preserved order here
 
@@ -235,7 +238,9 @@ class QualityErrorDBUtils(QObject):
 
         res_data, out_features = qr_error_layer.dataProvider().addFeatures(features)
         if not res_data:
-            return False, "There was a problem saving error alphanumeric data for error code '{}'!".format(error_code)
+            return False, "There was a problem saving error alphanumeric data for error code '{}'! Details from the provider: {}".format(
+                error_code,
+                qr_error_layer.dataProvider().lastError())
 
         return True, "Success!"
 

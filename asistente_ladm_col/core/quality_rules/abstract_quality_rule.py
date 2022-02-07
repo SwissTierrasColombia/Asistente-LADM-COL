@@ -131,7 +131,7 @@ class AbstractQualityRule(QObject, metaclass=AbstractQObjectMeta):
         :param db_qr: DBConnector of the target database
         :param error_code: Exactly as specified in error catalogs
         :param error_data: Dict of lists:
-                           {'geometries': [geometries], 'data': [obj_uuids, rel_obj_uuids, values, details]}
+                           {'geometries': [geometries], 'data': [obj_uuids, rel_obj_uuids, values, details, state]}
                            Note: this dict will always have 2 elements.
                            Note 2: For geometry errors, this dict will always have the same number of elements in
                                    each of the two lists (and the element order matters!).
@@ -144,6 +144,10 @@ class AbstractQualityRule(QObject, metaclass=AbstractQObjectMeta):
         """
         target_layer = self._type if target_layer is None else target_layer
         res, msg = QualityErrorDBUtils.save_errors(db_qr, self._id, error_code, error_data, target_layer, ili_name=None)
+        if not res:
+            self.logger.critical(__name__, msg)
+
+        return res
 
     def _check_prerrequisite_layers(self, layer_dict):
         """

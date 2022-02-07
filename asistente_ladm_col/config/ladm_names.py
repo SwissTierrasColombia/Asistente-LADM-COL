@@ -17,6 +17,7 @@ class LADMNames(metaclass=Singleton):
     CI_CODE_PRESENTATION_FORM_D_DOCUMENT_V = "Documento"
     FDC_PARTY_DOCUMENT_TYPE_D_ILICODE_F_CC_V = "Cedula_ciudadania"
     FDC_PARTY_DOCUMENT_TYPE_D_ILICODE_F_DOC_ID_V = "Tarjeta_identidad"
+    ERR_ERROR_STATE_D_ERROR_V = "Error"
 
     """
     PARCEL TYPE
