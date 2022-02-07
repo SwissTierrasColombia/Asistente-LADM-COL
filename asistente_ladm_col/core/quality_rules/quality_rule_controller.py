@@ -23,12 +23,13 @@ from qgis.PyQt.QtCore import (QCoreApplication,
 from qgis.core import QgsRectangle
 
 from asistente_ladm_col.app_interface import AppInterface
-from asistente_ladm_col.config.quality_rule_config import QR_IGACR3006
 from asistente_ladm_col.config.general_config import DEFAULT_USE_ROADS_VALUE
-from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.config.ladm_names import LADMNames
+from asistente_ladm_col.config.quality_rule_config import QR_IGACR3006
 from asistente_ladm_col.core.quality_rules.quality_rule_engine import (QualityRuleEngine,
                                                                        QualityRuleResultLog)
 from asistente_ladm_col.core.quality_rules.quality_rule_registry import QualityRuleRegistry
+from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 
 
@@ -61,6 +62,9 @@ class QualityRuleController(QObject):
         self.__point_layer = None
         self.__line_layer = None
         self.__polygon_layer = None
+
+        # Cache by t_id (built on demand): {t_id1: 'Error', t_id2: 'Corregido', t_id3: 'Exception'}
+        self.__error_state_dict = dict()
 
     def validate_qrs(self):
         self.__qr_engine = QualityRuleEngine(self.__db, self.__selected_qrs, self.app.settings.tolerance)
@@ -190,13 +194,19 @@ class QualityRuleController(QObject):
         return feature[self.__qr_engine.get_db_quality().names.T_ID_F]
 
     def is_fixed_error(self, feature):
-        return True  # self.get_error_results_data()[feature[db.names.T_ID_F]][db.names.T_ID_F]  # TODO
+        db = self.__qr_engine.get_db_quality()
+        state_t_id = feature[db.names.ERR_QUALITY_ERROR_T_ERROR_STATE_F]
+        return self.__get_error_state_value(state_t_id) == LADMNames.ERR_ERROR_STATE_D_FIXED_V
 
     def is_error(self, feature):
-        return not self.is_fixed_error(feature) and not self.is_exception(feature)
+        db = self.__qr_engine.get_db_quality()
+        state_t_id = feature[db.names.ERR_QUALITY_ERROR_T_ERROR_STATE_F]
+        return self.__get_error_state_value(state_t_id) == LADMNames.ERR_ERROR_STATE_D_ERROR_V
 
     def is_exception(self, feature):
-        return True  # TODO
+        db = self.__qr_engine.get_db_quality()
+        state_t_id = feature[db.names.ERR_QUALITY_ERROR_T_ERROR_STATE_F]
+        return self.__get_error_state_value(state_t_id) == LADMNames.ERR_ERROR_STATE_D_EXCEPTION_V
 
     def uuid_objs(self, feature):
         return "\n".join(feature[self.__qr_engine.get_db_quality().names.ERR_QUALITY_ERROR_T_OBJECT_IDS_F])
@@ -239,6 +249,20 @@ class QualityRuleController(QObject):
             res = res_values if not res else "{}\n\n{}".format(res, res_values)
 
         return res
+
+    def error_state(self, feature):
+        db = self.__qr_engine.get_db_quality()
+        state_t_id = feature[db.names.ERR_QUALITY_ERROR_T_ERROR_STATE_F]
+        return self.__get_error_state_value(state_t_id)
+
+    def __get_error_state_value(self, state_t_id):
+        if state_t_id not in self.__error_state_dict:
+            db = self.__qr_engine.get_db_quality()
+            self.__error_state_dict[state_t_id] = LADMData().get_domain_value_from_code(db,
+                                                                                        db.names.ERR_ERROR_STATE_D,
+                                                                                        state_t_id)
+
+        return self.__error_state_dict.get(state_t_id, "")
 
     def __get_point_error_layer(self):
         if not self.__point_layer:

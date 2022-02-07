@@ -263,6 +263,10 @@ WIDGET_STYLE_QUALITY_RULE_INITIAL_STATE = """{color: #495867;
                                               background: #fbf5bd;
                                               padding: 5px;}"""
 
+TABLE_ITEM_COLOR_ERROR = "#ebafb5"
+TABLE_ITEM_COLOR_EXCEPTION = "#F2AF29"
+TABLE_ITEM_COLOR_FIXED_ERROR = "#AAE89E"
+
 # Wizards
 WIZARD_CLASS = "wizard_class"
 WIZARD_FEATURE_NAME = "wizard_feature_name"

@@ -19,7 +19,9 @@ from functools import partial
 
 from PyQt5.uic import loadUi
 from qgis.PyQt.QtGui import (QFont,
-                             QIcon)
+                             QIcon,
+                             QBrush,
+                             QColor)
 from qgis.PyQt.QtCore import (Qt,
                               QCoreApplication,
                               QSize)
@@ -38,7 +40,11 @@ from asistente_ladm_col.config.general_config import (WIDGET_STYLE_QUALITY_RULE_
                                                       WIDGET_STYLE_QUALITY_RULE_ERRORS,
                                                       WIDGET_STYLE_QUALITY_RULE_UNDEFINED,
                                                       WIDGET_STYLE_QUALITY_RULE_CRITICAL,
-                                                      WIDGET_STYLE_QUALITY_RULE_INITIAL_STATE)
+                                                      WIDGET_STYLE_QUALITY_RULE_INITIAL_STATE,
+                                                      TABLE_ITEM_COLOR_ERROR,
+                                                      TABLE_ITEM_COLOR_EXCEPTION,
+                                                      TABLE_ITEM_COLOR_FIXED_ERROR)
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.gui.transitional_system.tasks_widget import TasksWidget
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.transitional_system.st_session.st_session import STSession
@@ -124,8 +130,8 @@ class QualityRulesErrorResultsPanelWidget(QgsPanelWidget, WIDGET_UI):
             # 1) Fixed error checkbox
             widget = QWidget()
             checkbox = QCheckBox()
-            # widget.checkState = checkbox.checkState  # Important to access status from the widget
             checkbox.setCheckState(Qt.Checked if self.__controller.is_fixed_error(feature) else Qt.Unchecked)
+            checkbox.setStyleSheet('background: white;')
             layout = QHBoxLayout(widget)
             layout.addWidget(checkbox)
             layout.setAlignment(Qt.AlignCenter)
@@ -151,6 +157,8 @@ class QualityRulesErrorResultsPanelWidget(QgsPanelWidget, WIDGET_UI):
             error_details_item = QTableWidgetItem(details)
             error_details_item.setData(Qt.ToolTipRole, details)
             self.tbw_errors.setItem(row, DETAILS_COLUMN, error_details_item)
+
+            self.__set_row_color_by_state(row, self.__controller.error_state(feature))
 
             row += 1
 
@@ -218,6 +226,23 @@ class QualityRulesErrorResultsPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         return None
 
+    def __set_row_color_by_state(self, row, state):
+        if state == LADMNames.ERR_ERROR_STATE_D_FIXED_V:
+            color == TABLE_ITEM_COLOR_FIXED
+        elif state == LADMNames.ERR_ERROR_STATE_D_EXCEPTION_V:
+            color == TABLE_ITEM_COLOR_EXCEPTION
+        else:  # LADMNames.ERR_ERROR_STATE_D_ERROR_V
+            color = TABLE_ITEM_COLOR_ERROR
+
+        for column in range(self.tbw_errors.columnCount()):
+            item = self.tbw_errors.item(row, column)
+            if item:
+                item.setBackground(QBrush(QColor(color)))
+            else:  # Do we have a widget there?
+                widget = self.tbw_errors.cellWidget(row, column)
+                if widget:
+                    widget.setStyleSheet("background-color:{};".format(color))
+
     def __update_selected_item(self):
         self.__selected_item = None
         items = self.tbw_errors.selectedItems()
@@ -252,10 +277,6 @@ class QualityRulesErrorResultsPanelWidget(QgsPanelWidget, WIDGET_UI):
         if column == CHECK_COLUMN:  # We have check boxes there
             item = self.tbw_errors.item(row, column)
             print(item.checkState())
-
-        if column == AUX_COLUMN:  # We have check boxes there
-            print("Yes!")
-            print(self.tbw_errors.cellWidget(row, column).checkState())
 
     def __error_state_changed(self, row, state):
         # TODO: Save to controller's data and to DB
