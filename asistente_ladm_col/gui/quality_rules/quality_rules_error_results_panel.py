@@ -91,7 +91,7 @@ class QualityRulesErrorResultsPanelWidget(QgsPanelWidget, WIDGET_UI):
         icon_name = icon_names[qr.type().value]
         icon = QIcon(":/Asistente-LADM-COL/resources/images/{}".format(icon_name))
         self.lbl_icon_type.setPixmap(icon.pixmap(QSize(24, 24)))
-        self.lbl_icon_type.setToolTip(qr.type().name)
+        self.lbl_icon_type.setToolTip(self.__controller.get_tr_string(qr.type()))
         self.lbl_qr_name.setText(qr.name())
         self.lbl_qr_name.setToolTip(qr.id())
 

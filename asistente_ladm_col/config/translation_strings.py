@@ -1,6 +1,6 @@
 from qgis.PyQt.QtCore import (QObject,
                               QCoreApplication)
-from asistente_ladm_col.config.enums import EnumQualityRule
+from asistente_ladm_col.config.enums import (EnumQualityRuleType, EnumQualityRule)
 from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
                                                       SUPPLIES_DB_SOURCE)
 from asistente_ladm_col.config.quality_rules_config import (QUALITY_RULE_ERROR_CODE_E100101,
@@ -299,5 +299,10 @@ class TranslatableConfigStrings(QObject):
             QUALITY_RULE_ERROR_CODE_E402101: QCoreApplication.translate("TranslatableConfigStrings", "Restricción no debe tener registros repetidos"),
             QUALITY_RULE_ERROR_CODE_E402201: QCoreApplication.translate("TranslatableConfigStrings", "Fuente Administrativa no debe tener registros repetidos"),
             ERROR_LAYER_GROUP_PREFIX: QCoreApplication.translate("TranslatableConfigStrings", "Quality errors"),
-            RIGHT_OF_WAY_LINE_LAYER: QCoreApplication.translate("TranslatableConfigStrings", "Right of way line")
+            RIGHT_OF_WAY_LINE_LAYER: QCoreApplication.translate("TranslatableConfigStrings", "Right of way line"),
+            EnumQualityRuleType.GENERIC: QCoreApplication.translate("TranslatableConfigStrings", "Generic quality rules"),
+            EnumQualityRuleType.POINT: QCoreApplication.translate("TranslatableConfigStrings", "Point quality rules"),
+            EnumQualityRuleType.LINE: QCoreApplication.translate("TranslatableConfigStrings", "Line quality rules"),
+            EnumQualityRuleType.POLYGON: QCoreApplication.translate("TranslatableConfigStrings", "Polygon quality rules"),
+            EnumQualityRuleType.LOGIC: QCoreApplication.translate("TranslatableConfigStrings", "Logic quality rules")
         }

@@ -87,9 +87,8 @@ class QualityRulesInitialPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         sorted_types = sorted(self.__controller.get_qrs_tree_data().keys())
         for type_enum in sorted_types:
-            type = type_enum.name  # Get the type text from the enum
             children = []
-            type_item = QTreeWidgetItem([type])
+            type_item = QTreeWidgetItem([self.__controller.get_tr_string(type_enum)])
 
             # Filter by search text
             list_qrs = self.__filter_by_search_text(type_enum, self.txt_search.text())

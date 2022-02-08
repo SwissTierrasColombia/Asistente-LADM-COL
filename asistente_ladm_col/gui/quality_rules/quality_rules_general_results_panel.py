@@ -107,9 +107,8 @@ class QualityRulesGeneralResultsPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         sorted_types = sorted(self.__controller.get_general_results_tree_data().keys())
         for type_enum in sorted_types:
-            type = type_enum.name  # Get the type text from the enum
             children = []
-            type_item = QTreeWidgetItem([type])
+            type_item = QTreeWidgetItem([self.__controller.get_tr_string(type_enum)])
 
             # Filter by search text
             list_qrs = self.__filter_by_search_text(type_enum, self.txt_search.text())
@@ -225,13 +224,17 @@ class QualityRulesGeneralResultsPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.__save_settings()
 
         if self.trw_qrs.selectedItems():
-            qr_key = self.trw_qrs.selectedItems()[0].data(QR_COLUMN, Qt.UserRole)
+            qr_key = self.__get_selected_qr_key()
             res = self.__controller.set_selected_qr(qr_key)
             if res:
                 self.show_error_results_panel()
             else:
                 self.logger.warning_msg(__name__, QCoreApplication.translate("QualityRulesGeneralResultsPanelWidget",
                                                                              "The quality rule '{}' couldn't be found! We cannot continue exploring errors.").format(qr_key))
+
+    def __get_selected_qr_key(self):
+        # Since only 1 selected item is allowed, we caan do this:
+        return self.trw_qrs.selectedItems()[0].data(QR_COLUMN, Qt.UserRole)
 
     def __save_settings(self):
         pass
@@ -242,7 +245,14 @@ class QualityRulesGeneralResultsPanelWidget(QgsPanelWidget, WIDGET_UI):
     def __selection_changed(self):
         # Custom slot to refresh labels and button state
         if not self.__block_control_updates:
-            self.btn_view_error_results.setEnabled(len(self.trw_qrs.selectedItems()))
+            enable = False
+            if self.trw_qrs.selectedItems():
+                # Only enable the next panel for QRs that have errors
+                qr_key = self.__get_selected_qr_key()
+                qr_result = self.__controller.get_qr_result(qr_key)
+                enable = qr_result.level == EnumQualityRuleResult.ERRORS
+
+            self.btn_view_error_results.setEnabled(enable)
 
     def __enable_panel_controls(self, enable):
         # Enble/disable "Accept panel"
@@ -305,7 +315,6 @@ class QualityRulesGeneralResultsPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.pbr_total_progress.setValue(value)
         if value == 100:
             self.__enable_panel_controls(True)
-        print("T:", value)
 
     def show_error_results_panel(self):
         """

@@ -26,6 +26,7 @@ from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.general_config import DEFAULT_USE_ROADS_VALUE
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.config.quality_rule_config import QR_IGACR3006
+from asistente_ladm_col.config.translation_strings import TranslatableConfigStrings
 from asistente_ladm_col.core.quality_rules.quality_rule_engine import (QualityRuleEngine,
                                                                        QualityRuleResultLog)
 from asistente_ladm_col.core.quality_rules.quality_rule_registry import QualityRuleRegistry
@@ -44,6 +45,8 @@ class QualityRuleController(QObject):
         self.logger = Logger()
         self.__db = db
 
+        self.__tr_dict = TranslatableConfigStrings().get_translatable_config_strings()
+
         # Hierarquical dict of qrs and qr groups
         self.__qrs_tree_data = dict()  # {type: {qr_key1: qr_obj1, ...}, ...}
 
@@ -58,6 +61,7 @@ class QualityRuleController(QObject):
         self.__selected_qr = None  # QR selected by the user to show its corresponding errors (exactly 1)
 
         self.__qr_engine = None
+        self.__qrs_results = None  # QualityRulesExecutionResult object
 
         self.__error_layer = None
         self.__point_layer = None
@@ -66,6 +70,9 @@ class QualityRuleController(QObject):
 
         # Cache by t_id (built on demand): {t_id1: 'Error', t_id2: 'Corregido', t_id3: 'Exception'}
         self.__error_state_dict = dict()
+
+    def get_tr_string(self, key):
+        return self.__tr_dict.get(key, key)
 
     def validate_qrs(self):
         self.__qr_engine = QualityRuleEngine(self.__db, self.__selected_qrs, self.app.settings.tolerance)
@@ -78,10 +85,13 @@ class QualityRuleController(QObject):
         use_roads = bool(QSettings().value('Asistente-LADM-COL/quality/use_roads', DEFAULT_USE_ROADS_VALUE, bool))
         options = {QR_IGACR3006: {'use_roads': use_roads}}
 
-        res, msg, res_obj = self.__qr_engine.validate_quality_rules(options)
+        res, msg, self.__qrs_results = self.__qr_engine.validate_quality_rules(options)
         self.logger.info_msg(__name__, QCoreApplication.translate("QualityRules",
                                                                   "All the {} quality rules were checked!").format(
             len(self.__selected_qrs)), 15)
+
+    def get_qr_result(self, qr_key):
+        return self.__qrs_results.result(qr_key)
 
     def all_error_layers(self):
         # TODO: Are we using these? If not, delete it!
