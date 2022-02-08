@@ -84,7 +84,6 @@ class QualityRulesErrorResultsPanelWidget(QgsPanelWidget, WIDGET_UI):
         #self.btn_view_error_results.clicked.connect(self.__view_error_results_clicked)
         self.btn_help.clicked.connect(self.__show_help)
         self.tbw_errors.itemSelectionChanged.connect(self.__selection_changed)
-        self.tbw_errors.cellChanged.connect(self.__cell_changed)
 
         # Set icon and QR name in the panel header
         qr = self.__controller.get_selected_qr()
@@ -110,7 +109,6 @@ class QualityRulesErrorResultsPanelWidget(QgsPanelWidget, WIDGET_UI):
 
     def __update_available_error_data(self):
         self.tbw_errors.setUpdatesEnabled(False)  # Don't render until we're ready
-        self.tbw_errors.cellChanged.disconnect(self.__cell_changed)  # We don't want these notifications for a while
 
         # Save selection before clearing table to restate it later (if needed)
         self.__update_selected_item()
@@ -132,6 +130,8 @@ class QualityRulesErrorResultsPanelWidget(QgsPanelWidget, WIDGET_UI):
             checkbox = QCheckBox()
             checkbox.setCheckState(Qt.Checked if self.__controller.is_fixed_error(feature) else Qt.Unchecked)
             checkbox.setStyleSheet('background: white;')
+            checkbox.setEnabled(not self.__controller.is_exception(feature))  # Exceptions cannot be fixed
+            checkbox.setToolTip(QCoreApplication.translate("QualityRulesErrorResultsPanelWidget", "Is the error fixed?"))
             layout = QHBoxLayout(widget)
             layout.addWidget(checkbox)
             layout.setAlignment(Qt.AlignCenter)
@@ -169,7 +169,6 @@ class QualityRulesErrorResultsPanelWidget(QgsPanelWidget, WIDGET_UI):
             item.setSelected(True)
         self.tbw_errors.blockSignals(False)
 
-        self.tbw_errors.cellChanged.connect(self.__cell_changed)  # We do want notifications from the user
         self.tbw_errors.setUpdatesEnabled(True)  # Now render!
 
     def __set_children_custom_widget(self, type_enum, type_item, filtered_qrs):
@@ -228,9 +227,9 @@ class QualityRulesErrorResultsPanelWidget(QgsPanelWidget, WIDGET_UI):
 
     def __set_row_color_by_state(self, row, state):
         if state == LADMNames.ERR_ERROR_STATE_D_FIXED_V:
-            color == TABLE_ITEM_COLOR_FIXED
+            color = TABLE_ITEM_COLOR_FIXED_ERROR
         elif state == LADMNames.ERR_ERROR_STATE_D_EXCEPTION_V:
-            color == TABLE_ITEM_COLOR_EXCEPTION
+            color = TABLE_ITEM_COLOR_EXCEPTION
         else:  # LADMNames.ERR_ERROR_STATE_D_ERROR_V
             color = TABLE_ITEM_COLOR_ERROR
 
@@ -247,10 +246,12 @@ class QualityRulesErrorResultsPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.__selected_item = None
         items = self.tbw_errors.selectedItems()
         for item in items:
-            self.__selected_item = self.__get_item_data(item)  # t_id
+            self.__selected_item = self.__get_data_per_item(item)  # t_id
 
-    def __get_item_data(self, item):
-        row = self.tbw_errors.row(item)
+    def __get_data_per_item(self, item):
+        return self.__get_data_per_row(self.tbw_errors.row(item))
+
+    def __get_data_per_row(self, row):
         return self.tbw_errors.item(row, UUIDS_COLUMN).data(Qt.UserRole)  # This item has data (t_id)
 
     def __search_text_changed(self, text):
@@ -268,19 +269,16 @@ class QualityRulesErrorResultsPanelWidget(QgsPanelWidget, WIDGET_UI):
         if len(self.tbw_errors.selectedItems()):
             for item in self.tbw_errors.selectedItems():
                 if item.column() == UUIDS_COLUMN:  # Only get one item (cell) per row
-                    t_ids.append(self.__get_item_data(item))
+                    t_ids.append(self.__get_data_per_item(item))
             #self.btn_view_error_results.setEnabled(len(self.tbw_errors.selectedItems()))
 
             self.__controller.highlight_geometries(t_ids)
 
-    def __cell_changed(self, row, column):
-        if column == CHECK_COLUMN:  # We have check boxes there
-            item = self.tbw_errors.item(row, column)
-            print(item.checkState())
-
     def __error_state_changed(self, row, state):
-        # TODO: Save to controller's data and to DB
-        print("Fixed" if state == Qt.Checked else "Still an error!")
+        fixed = state == Qt.Checked
+        self.__controller.set_fixed_error(self.__get_data_per_row(row), fixed)
+        self.__set_row_color_by_state(row,
+                                      LADMNames.ERR_ERROR_STATE_D_FIXED_V if fixed else LADMNames.ERR_ERROR_STATE_D_ERROR_V)
 
     def __show_help(self):
         show_plugin_help("quality_rules")

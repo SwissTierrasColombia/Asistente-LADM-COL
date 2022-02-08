@@ -59,6 +59,7 @@ class QualityRuleController(QObject):
 
         self.__qr_engine = None
 
+        self.__error_layer = None
         self.__point_layer = None
         self.__line_layer = None
         self.__polygon_layer = None
@@ -83,6 +84,7 @@ class QualityRuleController(QObject):
             len(self.__selected_qrs)), 15)
 
     def all_error_layers(self):
+        # TODO: Are we using these? If not, delete it!
         return [layer for qr_res in self.__res_dict.values() for layer in qr_res.error_layers if layer.featureCount()]
 
     def __get_qrs_per_role_and_models(self):
@@ -264,6 +266,24 @@ class QualityRuleController(QObject):
 
         return self.__error_state_dict.get(state_t_id, "")
 
+    def __get_error_state_t_id(self, state_value):
+        # Use __error_state_dict to read cached values, but this time we have the value,
+        # not the key, so check in dict values and if not found, go for its t_id
+        if state_value not in self.__error_state_dict.values():
+            db = self.__qr_engine.get_db_quality()
+            t_id = LADMData().get_domain_code_from_value(db, db.names.ERR_ERROR_STATE_D, state_value)
+            self.__error_state_dict[t_id] = state_value
+
+        # Get key by value in a dict:
+        return next((k for k in self.__error_state_dict if self.__error_state_dict[k] == state_value), None)
+
+    def __get_error_layer(self):
+        if not self.__error_layer:
+            db = self.__qr_engine.get_db_quality()
+            self.__error_layer = self.app.core.get_layer(db, db.names.ERR_QUALITY_ERROR_T)
+
+        return self.__error_layer
+
     def __get_point_error_layer(self):
         if not self.__point_layer:
             db = self.__qr_engine.get_db_quality()
@@ -343,43 +363,28 @@ class QualityRuleController(QObject):
 
         return res if res else QCoreApplication.translate("QualityRules", "UUIDs")
 
-    # def show_log_quality_message(self, msg, count):
-    #     self.progress_message_bar = self.iface.messageBar().createMessage("Asistente LADM-COL", msg)
-    #     self.log_quality_validation_progress = QProgressBar()
-    #     self.log_quality_validation_progress.setFixedWidth(80)
-    #     self.log_quality_total_rule_count = count
-    #     self.log_quality_validation_progress.setMaximum(self.log_quality_total_rule_count * 10)
-    #     self.progress_message_bar.layout().addWidget(self.log_quality_validation_progress)
-    #     self.iface.messageBar().pushWidget(self.progress_message_bar, Qgis.Info)
-    #     self.log_quality_validation_progress_count = 0
-    #     self.log_quality_current_rule_count = 0
-    #
-    # def show_log_quality_button(self):
-    #     self.button = QPushButton(self.progress_message_bar)
-    #     self.button.pressed.connect(self.show_log_quality_dialog)
-    #     self.button.setText(QCoreApplication.translate("LogQualityDialog", "Show Results"))
-    #     self.progress_message_bar.layout().addWidget(self.button)
-    #     QCoreApplication.processEvents()
-    #
-    # def set_log_quality_initial_progress(self, msg):
-    #     self.log_quality_validation_progress_count += 2  # 20% of the current rule
-    #     self.log_quality_validation_progress.setValue(self.log_quality_validation_progress_count)
-    #     self.progress_message_bar.setText(
-    #         QCoreApplication.translate("LogQualityDialog",
-    #                                    "Checking {} out of {}: '{}'").format(
-    #                                     self.log_quality_current_rule_count + 1,
-    #                                     self.log_quality_total_rule_count,
-    #                                     msg))
-    #     QCoreApplication.processEvents()
-    #
-    # def set_log_quality_final_progress(self, msg):
-    #     self.log_quality_validation_progress_count += 8  # 80% of the current rule
-    #     self.log_quality_validation_progress.setValue(self.log_quality_validation_progress_count)
-    #     self.log_quality_current_rule_count += 1
-    #     if self.log_quality_current_rule_count ==  self.log_quality_total_rule_count:
-    #         self.progress_message_bar.setText(QCoreApplication.translate("LogQualityDialog",
-    #             "All the {} quality rules were checked! Click the button at the right-hand side to see a report.").format(self.log_quality_total_rule_count))
-    #     else:
-    #         self.progress_message_bar.setText(msg)
-    #     QCoreApplication.processEvents()
-    #
+    def set_fixed_error(self, error_t_id, fixed):
+        # Save to the intermediate dict of data and to the underlying data source whether an error is fixed or not
+        db = self.__qr_engine.get_db_quality()
+        idx_state = self.__get_error_layer().fields().indexOf(db.names.ERR_QUALITY_ERROR_T_ERROR_STATE_F)
+
+        value = LADMNames.ERR_ERROR_STATE_D_FIXED_V if fixed else LADMNames.ERR_ERROR_STATE_D_ERROR_V
+        fixed_or_error_t_id = self.__get_error_state_t_id(value)
+
+        if fixed_or_error_t_id is None:
+            self.logger.critical(__name__, "The error state t_id couldn't be found for value '{}'!".format(value))
+            return
+
+        # Save to dict
+        self.get_error_results_data()[error_t_id].setAttribute(idx_state, fixed_or_error_t_id)
+
+        fids = LADMData.get_fids_from_key_values(self.__get_error_layer(), db.names.T_ID_F, [error_t_id])
+
+        # Save to underlying data source
+        if fids:
+            res = self.__get_error_layer().dataProvider().changeAttributeValues({fids[0]: {idx_state: fixed_or_error_t_id}})
+
+            if not res:
+                self.logger.critical(__name__, "Error modifying the error state value!")
+        else:
+            self.logger.critical(__name__, "Error with t_id '' not found!".format(error_t_id))
