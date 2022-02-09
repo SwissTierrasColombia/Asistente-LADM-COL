@@ -40,7 +40,7 @@ WIDGET_UI = get_ui_class('quality_rules/quality_rules_initial_panel_widget.ui')
 class QualityRulesInitialPanelWidget(QgsPanelWidget, WIDGET_UI):
 
     def __init__(self, controller, parent=None):
-        QgsPanelWidget.__init__(self, parent)
+        QgsPanelWidget.__init__(self, None)
         self.setupUi(self)
         self.__controller = controller
         self.parent = parent

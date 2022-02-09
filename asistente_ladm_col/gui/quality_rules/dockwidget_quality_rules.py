@@ -49,7 +49,6 @@ class DockWidgetQualityRules(QgsDockWidget, DOCKWIDGET_UI):
 
         self.__main_panel = QualityRulesInitialPanelWidget(controller, self)
         self.widget.setMainPanel(self.__main_panel)
-        # self.__main_panel.fill_data()
 
     def closeEvent(self, event):
         # closes open signals on panels

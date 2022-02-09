@@ -52,7 +52,7 @@ RESULT_COLUMN = 1
 class QualityRulesGeneralResultsPanelWidget(QgsPanelWidget, WIDGET_UI):
 
     def __init__(self, controller, parent=None):
-        QgsPanelWidget.__init__(self, parent)
+        QgsPanelWidget.__init__(self, None)
         self.setupUi(self)
         self.__controller = controller
         self.parent = parent
@@ -76,11 +76,26 @@ class QualityRulesGeneralResultsPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.btn_view_error_results.clicked.connect(self.__view_error_results_clicked)
         self.btn_help.clicked.connect(self.__show_help)
         self.trw_qrs.itemSelectionChanged.connect(self.__selection_changed)
+        self.panelAccepted.connect(self.__reset)
+
+        # To keep track of the connections to 'partial' slots, because we need to delete them when the panel is closed
+        self.__partial_connections = list()
 
         # Load available rules for current role and current db models
         self.__load_available_rules()
 
         self.__enable_panel_controls(False)  # Panel controls should be enabled after all rules have validation results
+
+    def __reset(self, panel=None):
+        # Let the controller know we need to go back to initial state
+        self.__controller.reset_general_results_tree_data()
+        self.__controller.reset_selected_qrs()
+
+        # Reset connections to "partial" slots
+        for pair in self.__partial_connections:
+            pair[0].disconnect(pair[1])
+
+        self.__partial_connections = list()
 
     def __load_available_rules(self):
         self.__controller.load_general_results_tree_data()
@@ -119,8 +134,10 @@ class QualityRulesGeneralResultsPanelWidget(QgsPanelWidget, WIDGET_UI):
                 qr_item.setData(QR_COLUMN, Qt.ToolTipRole, "{}\n{}".format(qr.name(), qr.id()))
 
                 # Let's listen some QR's relevant signals to update our view when needed
-                qr.progress_changed.connect(partial(self.__set_qr_progress, qr.id()))
-                qr.validation_finished.connect(partial(self.__set_qr_validation_result, qr))
+                self.__partial_connections.append(
+                    [qr, qr.progress_changed.connect(partial(self.__set_qr_progress, qr.id()))])
+                self.__partial_connections.append(
+                    [qr, qr.validation_finished.connect(partial(self.__set_qr_validation_result, qr))])
 
                 children.append(qr_item)
 
@@ -233,7 +250,8 @@ class QualityRulesGeneralResultsPanelWidget(QgsPanelWidget, WIDGET_UI):
                                                                              "The quality rule '{}' couldn't be found! We cannot continue exploring errors.").format(qr_key))
 
     def __get_selected_qr_key(self):
-        # Since only 1 selected item is allowed, we caan do this:
+        # Only call it if you know that bool(self.trw_qrs.selectedItems()) is True.
+        # Since only 1 selected item is allowed, we can do this:
         return self.trw_qrs.selectedItems()[0].data(QR_COLUMN, Qt.UserRole)
 
     def __save_settings(self):

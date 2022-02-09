@@ -93,10 +93,6 @@ class QualityRuleController(QObject):
     def get_qr_result(self, qr_key):
         return self.__qrs_results.result(qr_key)
 
-    def all_error_layers(self):
-        # TODO: Are we using these? If not, delete it!
-        return [layer for qr_res in self.__res_dict.values() for layer in qr_res.error_layers if layer.featureCount()]
-
     def __get_qrs_per_role_and_models(self):
         return QualityRuleRegistry().get_qrs_per_role_and_models(self.__db)
 
@@ -128,6 +124,10 @@ class QualityRuleController(QObject):
     def get_selected_qrs(self):
         return self.__selected_qrs
 
+    def reset_selected_qrs(self):
+        # To be used when we are returning to select QRs (i.e., to the initial panel)
+        self.__selected_qrs = list()
+
     def load_general_results_tree_data(self):
         """
         Builds a hierarchical dict by qr type: {type: {qr_obj1: qr_results1, ...}, ...}
@@ -144,6 +144,10 @@ class QualityRuleController(QObject):
 
     def get_general_results_tree_data(self):
         return self.__general_results_tree_data
+
+    def reset_general_results_tree_data(self):
+        # To be used when we are returning to select QRs (i.e., to the initial panel)
+        self.__general_results_tree_data = dict()
 
     def set_qr_validation_result(self, qr, qr_result):
         """
