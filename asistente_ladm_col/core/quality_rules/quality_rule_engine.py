@@ -74,6 +74,7 @@ class QualityRuleEngine(QObject):
         self.__rules = self.__get_dict_rules(rules)
         self.__result_layers = list()
         self.__with_gui = self.app.settings.with_gui
+        self.__timestamp = ""
 
         self.__output_path = output_path
 
@@ -101,6 +102,7 @@ class QualityRuleEngine(QObject):
         self.__db_qr = None
         self.__rules = self.__get_dict_rules(rules)
         self.__with_gui = self.app.settings.with_gui
+        self.__timestamp = ""
 
         self.__output_path = output_path
 
@@ -250,6 +252,11 @@ class QualityRuleEngine(QObject):
 
     def get_db_quality(self):
         return self.__db_qr
+
+    def get_timestamp(self):
+        # Last timestamp used to validate QRs.
+        # Note the timestamp is persisted in QR DB's metadata table
+        return self.__timestamp
 
     def export_result_to_pdf(self):
         output_path = get_quality_validation_output_path(self.__output_path, self.__timestamp)

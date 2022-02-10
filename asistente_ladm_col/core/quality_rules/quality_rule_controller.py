@@ -32,11 +32,13 @@ from asistente_ladm_col.core.quality_rules.quality_rule_engine import (QualityRu
 from asistente_ladm_col.core.quality_rules.quality_rule_registry import QualityRuleRegistry
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
+from asistente_ladm_col.utils.quality_error_db_utils import QualityErrorDBUtils
 
 
 class QualityRuleController(QObject):
 
     open_report_called = pyqtSignal(QualityRuleResultLog)  # log result
+    quality_rule_layer_removed = pyqtSignal()
     total_progress_changed = pyqtSignal(int)  # Progress value
 
     def __init__(self, db):
@@ -76,8 +78,12 @@ class QualityRuleController(QObject):
         return self.__tr_dict.get(key, key)
 
     def validate_qrs(self):
-        self.__qr_engine = QualityRuleEngine(self.__db, self.__selected_qrs, self.app.settings.tolerance)
-        self.__qr_engine.progress_changed.connect(self.total_progress_changed)
+        if self.__qr_engine is None:
+            self.__qr_engine = QualityRuleEngine(self.__db, self.__selected_qrs, self.app.settings.tolerance)
+            self.__qr_engine.progress_changed.connect(self.total_progress_changed)
+        else:
+            self.__qr_engine.initialize(self.__db, self.__selected_qrs, self.app.settings.tolerance)
+
         #self.__qr_engine.qr_logger.show_message_emitted.connect(self.show_log_quality_message)
         #self.__qr_engine.qr_logger.show_button_emitted.connect(self.show_log_quality_button)
         #self.__qr_engine.qr_logger.set_initial_progress_emitted.connect(self.set_log_quality_initial_progress)
@@ -87,9 +93,37 @@ class QualityRuleController(QObject):
         options = {QR_IGACR3006: {'use_roads': use_roads}}
 
         res, msg, self.__qrs_results = self.__qr_engine.validate_quality_rules(options)
+
+        self.__connect_layer_willbedeleted_signals()  # Note: Call it after validate_quality_rules!
+
         self.logger.info_msg(__name__, QCoreApplication.translate("QualityRules",
                                                                   "All the {} quality rules were checked!").format(
             len(self.__selected_qrs)), 15)
+
+    def __connect_layer_willbedeleted_signals(self):
+        """
+        Iterate QR DB layers from the layer tree and connect their layerwillberemoved signals.
+        If a QR DB layer is removed, we'll react in the GUI.
+        """
+        group = QualityErrorDBUtils.get_quality_error_group(self.__qr_engine.get_timestamp())
+
+        if group:
+            for tree_layer in group.findLayers():
+                try:
+                    tree_layer.layer().willBeDeleted.disconnect(self.quality_rule_layer_removed)
+                except:
+                    pass
+                tree_layer.layer().willBeDeleted.connect(self.quality_rule_layer_removed)
+
+    def disconnect_layer_willberemoved_signals(self):
+        group = QualityErrorDBUtils.get_quality_error_group(self.__qr_engine.get_timestamp(), False)
+
+        if group:
+            for tree_layer in group.findLayers():
+                try:
+                    tree_layer.layer().willBeDeleted.disconnect(self.quality_rule_layer_removed)
+                except:
+                    pass
 
     def get_qr_result(self, qr_key):
         return self.__qrs_results.result(qr_key)
@@ -138,7 +172,13 @@ class QualityRuleController(QObject):
         self.__reset_general_results_tree_data()
         self.__reset_selected_qrs()
         self.__reset_qrs_results()
-        print("Vars for GRP reset!")
+
+        # Call it before removing QR DB group to avoid triggering parent.layer_removed() slot again.
+        self.disconnect_layer_willberemoved_signals()
+
+        # When we leave the GRP, we remove the QR DB group from layer tree,
+        # because we won't be working anymore with that QR DB
+        QualityErrorDBUtils.remove_quality_error_group(self.__qr_engine.get_timestamp())
 
     def reset_vars_for_error_results_panel(self):
         # Initialize variables when we leave the error results panel
@@ -146,7 +186,6 @@ class QualityRuleController(QObject):
         self.__reset_selected_qr()
         self.__reset_error_state_dict()
         self.__reset_layers()
-        print("Vars for ERP reset!")
 
     def load_general_results_tree_data(self):
         """

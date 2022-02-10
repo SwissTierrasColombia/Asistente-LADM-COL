@@ -58,6 +58,7 @@ class QualityErrorDBUtils(QObject):
         QObject.__init__(self)
 
     def get_quality_error_connector(self, output_path, timestamp, load_layers=False):
+        # TODO: should we support both new and existent gpkgs in this method? I guess so!
         self.progress_changed.emit(0)
 
         output_path = QualityErrorDBUtils.get_quality_validation_output_path(output_path, timestamp)
@@ -305,13 +306,13 @@ class QualityErrorDBUtils(QObject):
         return True, "Success!"
 
     @staticmethod
-    def get_quality_error_group(timestamp):
+    def get_quality_error_group(timestamp, create_if_non_existent=True):
         root = QgsProject.instance().layerTreeRoot()
         prefix = TranslatableConfigStrings.get_translatable_config_strings()[ERROR_LAYER_GROUP_PREFIX]
         group_name = "{} {}".format(prefix, timestamp)
 
         group = root.findGroup(group_name)
-        if group is None:
+        if group is None and create_if_non_existent:
             group = root.insertGroup(0, group_name)
             group.setExpanded(False)
 
@@ -331,7 +332,7 @@ class QualityErrorDBUtils(QObject):
 
     @staticmethod
     def remove_quality_error_group(timestamp):
-        group = QualityErrorDBUtils.get_quality_error_group(timestamp)
+        group = QualityErrorDBUtils.get_quality_error_group(timestamp, False)
         if group:
             parent = group.parent()
             parent.removeChildNode(group)
