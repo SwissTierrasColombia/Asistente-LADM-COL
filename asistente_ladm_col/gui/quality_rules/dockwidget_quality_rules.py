@@ -77,9 +77,9 @@ class DockWidgetQualityRules(QgsDockWidget, DOCKWIDGET_UI):
 
             self.__general_results_panel = QualityRulesGeneralResultsPanelWidget(self.__controller, self)
             self.__controller.total_progress_changed.connect(self.__general_results_panel.update_total_progress)
+            self.__general_results_panel.panelAccepted.connect(self.__controller.reset_vars_for_general_results_panel)
             self.widget.showPanel(self.__general_results_panel)
             self.__controller.validate_qrs()
-            # self.__general_results_panel.panelAccepted.connect(self.__delete_general_result_panel)  # No way back
 
     def __delete_general_result_panel(self):
         if self.__general_results_panel is not None:
@@ -101,5 +101,5 @@ class DockWidgetQualityRules(QgsDockWidget, DOCKWIDGET_UI):
                 self.__error_results_panel = None
 
             self.__error_results_panel = QualityRulesErrorResultsPanelWidget(self.__controller, self)
-            # self.__error_results_panel.panelAccepted.connect(self.reload_tasks)
+            self.__error_results_panel.panelAccepted.connect(self.__controller.reset_vars_for_error_results_panel)
             self.widget.showPanel(self.__error_results_panel)

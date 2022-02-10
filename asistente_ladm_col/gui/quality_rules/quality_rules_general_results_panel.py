@@ -87,10 +87,6 @@ class QualityRulesGeneralResultsPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.__enable_panel_controls(False)  # Panel controls should be enabled after all rules have validation results
 
     def __reset(self, panel=None):
-        # Let the controller know we need to go back to initial state
-        self.__controller.reset_general_results_tree_data()
-        self.__controller.reset_selected_qrs()
-
         # Reset connections to "partial" slots
         for pair in self.__partial_connections:
             pair[0].disconnect(pair[1])

@@ -53,16 +53,17 @@ class QualityRuleController(QObject):
         # Hierarquical dict of qrs and qr groups with general results
         self.__general_results_tree_data = dict()  # {type: {qr_obj1: qr_results1, ...}, ...}
 
-        # Hierrchical dict of qrs and their corresponding error instances
+        # Hierarchical dict of qrs and their corresponding error instances
         # feature1: {uuids, rel_uuids, error_type, nombre_ili_obj, details, values, fixed, exception, geom_fks}
         self.__error_results_data = dict()  # {qr_key1: {t_id1: feature1}}
 
         self.__selected_qrs = list()  # QRs to be validated (at least 1)
         self.__selected_qr = None  # QR selected by the user to show its corresponding errors (exactly 1)
 
-        self.__qr_engine = None
+        self.__qr_engine = None  # Once set, we can reuse it
         self.__qrs_results = None  # QualityRulesExecutionResult object
 
+        # To cache layers from QR DB
         self.__error_layer = None
         self.__point_layer = None
         self.__line_layer = None
@@ -92,6 +93,10 @@ class QualityRuleController(QObject):
 
     def get_qr_result(self, qr_key):
         return self.__qrs_results.result(qr_key)
+
+    def __reset_qrs_results(self):
+        # To be used when we are returning to select QRs (i.e., to the initial panel)
+        self.__qrs_results = None
 
     def __get_qrs_per_role_and_models(self):
         return QualityRuleRegistry().get_qrs_per_role_and_models(self.__db)
@@ -124,9 +129,24 @@ class QualityRuleController(QObject):
     def get_selected_qrs(self):
         return self.__selected_qrs
 
-    def reset_selected_qrs(self):
+    def __reset_selected_qrs(self):
         # To be used when we are returning to select QRs (i.e., to the initial panel)
         self.__selected_qrs = list()
+
+    def reset_vars_for_general_results_panel(self):
+        # Initialize variables when we leave the general results panel
+        self.__reset_general_results_tree_data()
+        self.__reset_selected_qrs()
+        self.__reset_qrs_results()
+        print("Vars for GRP reset!")
+
+    def reset_vars_for_error_results_panel(self):
+        # Initialize variables when we leave the error results panel
+        self.__reset_error_results_data()
+        self.__reset_selected_qr()
+        self.__reset_error_state_dict()
+        self.__reset_layers()
+        print("Vars for ERP reset!")
 
     def load_general_results_tree_data(self):
         """
@@ -145,7 +165,7 @@ class QualityRuleController(QObject):
     def get_general_results_tree_data(self):
         return self.__general_results_tree_data
 
-    def reset_general_results_tree_data(self):
+    def __reset_general_results_tree_data(self):
         # To be used when we are returning to select QRs (i.e., to the initial panel)
         self.__general_results_tree_data = dict()
 
@@ -205,6 +225,10 @@ class QualityRuleController(QObject):
     def get_error_results_data(self):
         # Get the subdict {t_id1: feature1, ...} corresponding to selected qr
         return self.__error_results_data.get(self.__selected_qr.id() if self.__selected_qr else '', dict())
+
+    def __reset_error_results_data(self):
+        # To be used when we are returning to select QR results (i.e., to the general results panel)
+        self.__error_results_data = dict()
 
     def error_t_id(self, feature):
         return feature[self.__qr_engine.get_db_quality().names.T_ID_F]
@@ -318,6 +342,21 @@ class QualityRuleController(QObject):
             self.__polygon_layer = self.app.core.get_layer(db, db.names.ERR_POLYGON_T)
 
         return self.__polygon_layer
+
+    def __reset_layers(self):
+        # To be used when we are returning to select QR results (i.e., to the general results panel)
+        self.__error_layer = None
+        self.__point_layer = None
+        self.__line_layer = None
+        self.__polygon_layer = None
+
+    def __reset_selected_qr(self):
+        # To be used when we are returning to select QR results (i.e., to the general results panel)
+        self.__selected_qr = None
+
+    def __reset_error_state_dict(self):
+        # To be used when we are returning to select QR results (i.e., to the general results panel)
+        self.__error_state_dict = dict()
 
     def __error_related_geometries(self, error_t_ids):
         # Prefered geometry types are polygons, lines, points, in that order
