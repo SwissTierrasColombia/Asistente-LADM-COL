@@ -44,33 +44,34 @@ from qgis.core import QgsNetworkAccessManager
 from asistente_ladm_col.lib.logger import Logger
 
 
-def selectFileName(line_edit_widget, title, file_filter, parent, folder_setting_key):
-    folder = None
-    if folder_setting_key:  # Get from settings
+def selectFileName(line_edit_widget, title, file_filter, parent, setting_property):
+    filename = None
+    if setting_property:  # Get from settings
         from asistente_ladm_col.app_interface import AppInterface  # Here to avoid circular dependency
         app = AppInterface()
-        folder = app.settings.get_setting(folder_setting_key)  # None if key not found
-    if not folder:
-        folder = line_edit_widget.text()
+        filename = getattr(app.settings, setting_property, None)  # None if key not found
+    if not filename:
+        filename = line_edit_widget.text()
 
-    filename, matched_filter = QFileDialog.getOpenFileName(parent, title, folder, file_filter)
-    line_edit_widget.setText(filename)
+    filename, matched_filter = QFileDialog.getOpenFileName(parent, title, os.path.dirname(filename), file_filter)
+    if filename:
+        line_edit_widget.setText(filename)
 
-    if folder_setting_key and filename:  # Save to settings
-        app.settings.set_setting(folder_setting_key, os.path.dirname(filename))
+        if setting_property and getattr(app.settings, setting_property, None):  # Save to settings
+            setattr(app.settings, setting_property, filename)
 
 
 def make_file_selector(widget,
                        title=QCoreApplication.translate("Asistente-LADM-COL", "Open File"),
                        file_filter=QCoreApplication.translate("Asistente-LADM-COL", "Any file(*)"),
                        parent=None,
-                       folder_setting_key=None):
+                       setting_property=None):
     return partial(selectFileName,
                    line_edit_widget=widget,
                    title=title,
                    file_filter=file_filter,
                    parent=parent,
-                   folder_setting_key=folder_setting_key)
+                   setting_property=setting_property)
 
 
 def selectFileNameToSave(line_edit_widget, title, file_filter, parent, extension, extensions):
@@ -96,27 +97,28 @@ def make_save_file_selector(widget, title=QCoreApplication.translate("QgisModelB
                    extension=extension, extensions=extensions)
 
 
-def selectFolder(line_edit_widget, title, parent, folder_setting_key=None):
+def selectFolder(line_edit_widget, title, parent, setting_property=None):
     folder = None
-    if folder_setting_key:  # Get from settings
+    if setting_property:  # Get from settings
         from asistente_ladm_col.app_interface import AppInterface  # Here to avoid circular dependency
         app = AppInterface()
-        folder = app.settings.get_setting(folder_setting_key)  # None if key not found
+        folder = getattr(app.settings, setting_property, None)  # None if key not found
     if not folder:
         folder = line_edit_widget.text()
 
     foldername = QFileDialog.getExistingDirectory(parent, title, folder)
-    line_edit_widget.setText(foldername)
+    if foldername:
+        line_edit_widget.setText(foldername)
 
-    if folder_setting_key and foldername:  # Save to settings
-        app.settings.set_setting(folder_setting_key, os.path.dirname(foldername))
+        if setting_property and getattr(app.settings, setting_property, None):  # Save to settings
+            setattr(app.settings, setting_property, foldername)
 
 
 def make_folder_selector(widget,
                          title=QCoreApplication.translate("Asistente-LADM-COL", "Open Folder"),
                          parent=None,
-                         folder_setting_key=None):
-    return partial(selectFolder, line_edit_widget=widget, title=title, parent=parent, folder_setting_key=folder_setting_key)
+                         setting_property=None):
+    return partial(selectFolder, line_edit_widget=widget, title=title, parent=parent, setting_property=setting_property)
 
 
 def disable_next_wizard(wizard, with_back=True):

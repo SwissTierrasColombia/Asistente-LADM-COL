@@ -39,6 +39,8 @@ class AppSettings:
     CUSTOM_MODEL_DIRS_KEY = "Asistente-LADM-COL/models/custom_model_dirs"
     ETL_SPLITTER_COLLAPSED_KEY = "Asistente-LADM-COL/supplies/etl_splitter_collapsed"
     EXPORT_DIR_FIELD_DATA_KEY = "Asistente-LADM-COL/field_data_capture/export_dir"
+    QR_DB_FILE_KEY = "Asistente-LADM-COL/quality/qr_db_path"
+    QR_RESULTS_DIR_KEY = "Asistente-LADM-COL/quality/results_dir_path"
     SNC_FILES_DIR_KEY = "Asistente-LADM-COL/etl_snc/files_path"
     TOLERANCE_KEY = "Asistente-LADM-COL/quality/tolerance"
     XTF_CONVERTER_SPLITTER_COLLAPSED = "Asistente-LADM-COL/xtf_model_converter/xtf_converter_splitter_collapsed"
@@ -131,6 +133,22 @@ class AppSettings:
     @export_dir_field_data.setter
     def export_dir_field_data(self, value):
         self.__settings.setValue(self.EXPORT_DIR_FIELD_DATA_KEY, value)
+
+    @property
+    def qr_db_file_path(self):
+        return self.__settings.value(self.QR_DB_FILE_KEY, '')
+
+    @qr_db_file_path.setter
+    def qr_db_file_path(self, value):
+        self.__settings.setValue(self.QR_DB_FILE_KEY, value)
+
+    @property
+    def qr_results_dir_path(self):
+        return self.__settings.value(self.QR_RESULTS_DIR_KEY, os.path.expanduser('~'))
+
+    @qr_results_dir_path.setter
+    def qr_results_dir_path(self, value):
+        self.__settings.setValue(self.QR_RESULTS_DIR_KEY, value)
 
     @property
     def snc_files_path(self):

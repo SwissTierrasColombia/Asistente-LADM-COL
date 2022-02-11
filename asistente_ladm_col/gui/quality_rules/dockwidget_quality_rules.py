@@ -20,7 +20,7 @@ from qgis.PyQt.QtCore import (Qt,
                               QCoreApplication)
 from qgis.gui import QgsDockWidget
 
-
+from asistente_ladm_col.config.enums import EnumQualityRulePanelMode
 from asistente_ladm_col.gui.quality_rules.quality_rules_error_results_panel import QualityRulesErrorResultsPanelWidget
 from asistente_ladm_col.gui.quality_rules.quality_rules_general_results_panel import QualityRulesGeneralResultsPanelWidget
 from asistente_ladm_col.gui.quality_rules.quality_rules_initial_panel import QualityRulesInitialPanelWidget
@@ -76,15 +76,25 @@ class DockWidgetQualityRules(QgsDockWidget, DOCKWIDGET_UI):
     def close_dock_widget(self):
         self.close()  # The user needs to use the menus again, which will start everything from scratch
 
-    def show_general_results_panel(self):
+    def show_general_results_panel(self, mode):
+        """
+        :params mode: EnumQualityRulePanelMode
+        """
         with OverrideCursor(Qt.WaitCursor):
             self.__delete_general_result_panel()
 
-            self.__general_results_panel = QualityRulesGeneralResultsPanelWidget(self.__controller, self)
+            self.__general_results_panel = QualityRulesGeneralResultsPanelWidget(self.__controller, mode, self)
             self.__controller.total_progress_changed.connect(self.__general_results_panel.update_total_progress)
             self.__general_results_panel.panelAccepted.connect(self.__controller.reset_vars_for_general_results_panel)
             self.widget.showPanel(self.__general_results_panel)
-            self.__controller.validate_qrs()
+
+            if mode == EnumQualityRulePanelMode.VALIDATE:
+                self.logger.clear_message_bar()
+                res, msg, db_qr = self.__controller.validate_qrs()
+                if not res:
+                    self.__general_results_panel.unblock_panel()
+                    self.widget.acceptAllPanels()  # Go back to initial panel
+                    self.logger.warning_msg(__name__, msg)
 
     def __delete_general_result_panel(self):
         if self.__general_results_panel is not None:

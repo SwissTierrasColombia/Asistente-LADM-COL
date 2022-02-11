@@ -137,6 +137,11 @@ class EnumQualityRuleType(OrderedEnum):
     LOGIC = 4
 
 
+class EnumQualityRulePanelMode(Enum):
+    VALIDATE = 1
+    READ = 2
+
+
 class EnumQualityRuleResult(Enum):
     SUCCESS = 1  # The QR was run and we didn't find any errors (i.e., the data comply with the QR)
     ERRORS = 2  # The QR was run and we found some errors (i.e., the data is invalid according to the QR)

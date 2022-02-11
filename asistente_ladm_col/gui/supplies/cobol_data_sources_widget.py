@@ -52,29 +52,29 @@ class CobolDataSourceWidget(QWidget, WIDGET_UI):
             make_file_selector(self.txt_file_path_blo, QCoreApplication.translate("CobolDataSourceWidget",
                                                                                   "Select the BLO .lis file with Cobol data "),
                                QCoreApplication.translate("CobolDataSourceWidget", 'lis File (*.lis)'),
-                               folder_setting_key=self.app.settings.COBOL_FILES_DIR_KEY))
+                               setting_property="cobol_files_path"))
 
         self.btn_browse_file_uni.clicked.connect(
             make_file_selector(self.txt_file_path_uni, QCoreApplication.translate("CobolDataSourceWidget",
                                                                                   "Select the UNI .lis file with Cobol data "),
                                QCoreApplication.translate("CobolDataSourceWidget", 'lis File (*.lis)'),
-                               folder_setting_key=self.app.settings.COBOL_FILES_DIR_KEY))
+                               setting_property="cobol_files_path"))
 
         self.btn_browse_file_ter.clicked.connect(
             make_file_selector(self.txt_file_path_ter, QCoreApplication.translate("CobolDataSourceWidget",
                                                                                   "Select the TER .lis file with Cobol data "),
                                QCoreApplication.translate("CobolDataSourceWidget", 'lis File (*.lis)'),
-                               folder_setting_key=self.app.settings.COBOL_FILES_DIR_KEY))
+                               setting_property="cobol_files_path"))
 
         self.btn_browse_file_pro.clicked.connect(
             make_file_selector(self.txt_file_path_pro, QCoreApplication.translate("CobolDataSourceWidget",
                                                                                   "Select the PRO .lis file with Cobol data "),
                                QCoreApplication.translate("CobolDataSourceWidget", 'lis File (*.lis)'),
-                               folder_setting_key=self.app.settings.COBOL_FILES_DIR_KEY))
+                               setting_property="cobol_files_path"))
 
         self.btn_browse_file_gdb.clicked.connect(
             make_folder_selector(self.txt_file_path_gdb, QCoreApplication.translate(
-                "CobolDataSourceWidget", "Open GDB folder"), None, self.app.settings.COBOL_FILES_DIR_KEY))
+                "CobolDataSourceWidget", "Open GDB folder"), None, "cobol_files_path"))
 
         file_validator_blo = FileValidator(pattern='*.lis', allow_empty=True)
         file_validator_lis = FileValidator(pattern='*.lis', allow_non_existing=False)

@@ -23,6 +23,7 @@ from qgis.PyQt.QtCore import (QCoreApplication,
 from qgis.core import QgsRectangle
 
 from asistente_ladm_col.app_interface import AppInterface
+from asistente_ladm_col.config.enums import EnumQualityRulePanelMode
 from asistente_ladm_col.config.general_config import DEFAULT_USE_ROADS_VALUE
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.config.quality_rule_config import QR_IGACR3006
@@ -33,6 +34,7 @@ from asistente_ladm_col.core.quality_rules.quality_rule_registry import QualityR
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 from asistente_ladm_col.utils.quality_error_db_utils import QualityErrorDBUtils
+from asistente_ladm_col.utils.qt_utils import normalize_local_url
 
 
 class QualityRuleController(QObject):
@@ -59,6 +61,7 @@ class QualityRuleController(QObject):
         # feature1: {uuids, rel_uuids, error_type, nombre_ili_obj, details, values, fixed, exception, geom_fks}
         self.__error_results_data = dict()  # {qr_key1: {t_id1: feature1}}
 
+        self.__qr_results_dir_path = ''  # Dir path where results will be stored
         self.__selected_qrs = list()  # QRs to be validated (at least 1)
         self.__selected_qr = None  # QR selected by the user to show its corresponding errors (exactly 1)
 
@@ -79,11 +82,16 @@ class QualityRuleController(QObject):
 
     def validate_qrs(self):
         if self.__qr_engine is None:
-            self.__qr_engine = QualityRuleEngine(self.__db, self.__selected_qrs, self.app.settings.tolerance)
+            self.__qr_engine = QualityRuleEngine(self.__db,
+                                                 self.__selected_qrs,
+                                                 self.app.settings.tolerance,
+                                                 self.__qr_results_dir_path)
             self.__qr_engine.progress_changed.connect(self.total_progress_changed)
         else:
-            self.__qr_engine.initialize(self.__db, self.__selected_qrs, self.app.settings.tolerance)
-
+            self.__qr_engine.initialize(self.__db,
+                                        self.__selected_qrs,
+                                        self.app.settings.tolerance,
+                                        self.__qr_results_dir_path)
         #self.__qr_engine.qr_logger.show_message_emitted.connect(self.show_log_quality_message)
         #self.__qr_engine.qr_logger.show_button_emitted.connect(self.show_log_quality_button)
         #self.__qr_engine.qr_logger.set_initial_progress_emitted.connect(self.set_log_quality_initial_progress)
@@ -92,13 +100,30 @@ class QualityRuleController(QObject):
         use_roads = bool(QSettings().value('Asistente-LADM-COL/quality/use_roads', DEFAULT_USE_ROADS_VALUE, bool))
         options = {QR_IGACR3006: {'use_roads': use_roads}}
 
-        res, msg, self.__qrs_results = self.__qr_engine.validate_quality_rules(options)
+        res, msg, qrs_res = self.__qr_engine.validate_quality_rules(options)
+        if not res:
+            return res, msg, None
+
+        self.__qrs_results = qrs_res
 
         self.__connect_layer_willbedeleted_signals()  # Note: Call it after validate_quality_rules!
 
-        self.logger.info_msg(__name__, QCoreApplication.translate("QualityRules",
-                                                                  "All the {} quality rules were checked!").format(
-            len(self.__selected_qrs)), 15)
+        res_u, msg_u, output_qr_dir = QualityErrorDBUtils.get_quality_validation_output_path(self.__qr_results_dir_path,
+                                                                                             self.__qr_engine.get_timestamp())
+
+        if len(self.__selected_qrs) == 1:
+            pre_text = QCoreApplication.translate("QualityRules", "The quality rule was checked!")
+        else:
+            pre_text = QCoreApplication.translate("QualityRules", "All the {} quality rules were checked!").format(len(self.__selected_qrs))
+
+        post_text = QCoreApplication.translate("QualityRules",
+                                               "Both a PDF report and a GeoPackage database with errors can be found in <a href='file:///{}'>{}</a>.").format(
+            normalize_local_url(output_qr_dir),
+            output_qr_dir)
+
+        self.logger.success_msg(__name__, "{} {}".format(pre_text, post_text))
+
+        return res, msg, self.__qrs_results
 
     def __connect_layer_willbedeleted_signals(self):
         """
@@ -126,7 +151,23 @@ class QualityRuleController(QObject):
                     pass
 
     def get_qr_result(self, qr_key):
-        return self.__qrs_results.result(qr_key)
+        """
+        Return the QRExecutionResult object for the given qr_key.
+
+        It first attempts to find it in the __qrs_results dict, but, chances are,
+        the whole set of QRs hasn't been validated when this method is called,
+        so, as a last resort, we go for the tree_data, which is updated each time
+        a QR gets its result.
+        """
+        if self.__qrs_results is not None:
+            return self.__qrs_results.result(qr_key)
+
+        for type, qr_dict in self.__general_results_tree_data.items():
+            for k, v in qr_dict.items():
+                if k.id() == qr_key:
+                    return self.__general_results_tree_data[type][k]
+
+        return None
 
     def __reset_qrs_results(self):
         # To be used when we are returning to select QRs (i.e., to the initial panel)
@@ -135,13 +176,20 @@ class QualityRuleController(QObject):
     def __get_qrs_per_role_and_models(self):
         return QualityRuleRegistry().get_qrs_per_role_and_models(self.__db)
 
-    def load_tree_data(self):
+    def load_tree_data(self, mode):
         """
         Builds a hierarchical dict by qr type: {qr_type1: {qr_key1: qr_obj1, ...}, ...}
 
         Tree data for panel 1.
+
+        :params mode: Value from EnumQualityRulePanelMode (either VALIDATE or READ).
+                      For VALIDATE we load QRs from registry (filtered by role and current db models).
+                      For READ we load QRs from the DB itself.
         """
-        qrs = self.__get_qrs_per_role_and_models()  # Dict of qr key and qr objects.
+        if mode == EnumQualityRulePanelMode.VALIDATE:
+            qrs = self.__get_qrs_per_role_and_models()  # Dict of qr key and qr objects.
+        else:
+            qrs =  dict()  # TODO: Read QRs from the QR DB
 
         for qr_key, qr_obj in qrs.items():
             type = qr_obj.type()
@@ -152,6 +200,9 @@ class QualityRuleController(QObject):
 
     def get_qrs_tree_data(self):
         return self.__qrs_tree_data
+
+    def set_qr_dir_path(self, path):
+        self.__qr_results_dir_path = path
 
     def set_selected_qrs(self, selected_qrs):
         # We sort them because the engine needs the QRs sorted for the PDF report

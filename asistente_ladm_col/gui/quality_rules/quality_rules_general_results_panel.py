@@ -51,10 +51,11 @@ RESULT_COLUMN = 1
 
 class QualityRulesGeneralResultsPanelWidget(QgsPanelWidget, WIDGET_UI):
 
-    def __init__(self, controller, parent=None):
+    def __init__(self, controller, mode, parent=None):
         QgsPanelWidget.__init__(self, None)
         self.setupUi(self)
         self.__controller = controller
+        self.__mode = mode
         self.parent = parent
         self.logger = Logger()
 
@@ -92,6 +93,8 @@ class QualityRulesGeneralResultsPanelWidget(QgsPanelWidget, WIDGET_UI):
             pair[0].disconnect(pair[1])
 
         self.__partial_connections = list()
+
+        self.logger.clear_message_bar()
 
     def __load_available_rules(self):
         self.__controller.load_general_results_tree_data()
@@ -258,27 +261,30 @@ class QualityRulesGeneralResultsPanelWidget(QgsPanelWidget, WIDGET_UI):
 
     def __selection_changed(self):
         # Custom slot to refresh labels and button state
-        if not self.__block_control_updates:
-            enable = False
-            if self.trw_qrs.selectedItems():
-                # Only enable the next panel for QRs that have errors
-                qr_key = self.__get_selected_qr_key()
-                qr_result = self.__controller.get_qr_result(qr_key)
-                enable = qr_result.level == EnumQualityRuleResult.ERRORS
-
-            self.btn_view_error_results.setEnabled(enable)
+        self.__update_view_error_button_state()
 
     def __enable_panel_controls(self, enable):
-        # Enble/disable "Accept panel"
+        # Enable/disable panel controls
         self.blockSignals(not enable)
         self.__block_control_updates = not enable
 
         self.txt_search.setEnabled(enable)
         self.btn_open_report.setEnabled(enable)
-        self.btn_save_gpkg.setEnabled(enable)
 
         # Enable/disable view error results button, which depends on a selection as well
-        self.btn_view_error_results.setEnabled(enable and len(self.trw_qrs.selectedItems()))
+        self.__update_view_error_button_state()
+
+    def __update_view_error_button_state(self):
+        enable = False
+        if not self.__block_control_updates:
+            if self.trw_qrs.selectedItems():
+                # Only enable the next panel for QRs that have errors
+                qr_key = self.__get_selected_qr_key()
+                qr_result = self.__controller.get_qr_result(qr_key)
+                if qr_result:
+                    enable = qr_result.level == EnumQualityRuleResult.ERRORS
+
+        self.btn_view_error_results.setEnabled(enable)
 
     def __set_qr_progress(self, qr_key, value):
         item = self.__get_item_by_qr_key(qr_key)
@@ -329,6 +335,16 @@ class QualityRulesGeneralResultsPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.pbr_total_progress.setValue(value)
         if value == 100:
             self.__enable_panel_controls(True)
+
+    def unblock_panel(self):
+        """
+        Since the panel is blocked while getting QR results,
+        we need a way to let external classes call "unblock_panel",
+        because getting QR results might trigger errors and then they
+        would need to go back and close/accept this panel.
+        """
+        self.blockSignals(False)
+        self.__block_control_updates = False
 
     def show_error_results_panel(self):
         """

@@ -61,9 +61,9 @@ class QualityErrorDBUtils(QObject):
         # TODO: should we support both new and existent gpkgs in this method? I guess so!
         self.progress_changed.emit(0)
 
-        output_path = QualityErrorDBUtils.get_quality_validation_output_path(output_path, timestamp)
-        if output_path is None:
-            return False, "", None
+        res, msg, output_path = QualityErrorDBUtils.get_quality_validation_output_path(output_path, timestamp)
+        if not res:
+            return False, msg, None
 
         db_file = os.path.join(output_path, "Reglas_de_Calidad_{}.gpkg".format(timestamp))
         db = GPKGConnector(db_file)
@@ -107,24 +107,25 @@ class QualityErrorDBUtils(QObject):
         return res, msg, None if not res else db
 
     @staticmethod
-    def get_quality_validation_output_path(output_path, timestamp):
-        if not os.path.exists(output_path):
-            output_path = tempfile.gettempdir()
+    def get_quality_validation_output_path(base_output_path, timestamp):
+        res, msg = True, 'Success'
+        if not os.path.exists(base_output_path):
+            base_output_path = tempfile.gettempdir()
             logger.warning(__name__, QCoreApplication.translate("QualityRuleEngine",
                                                                 "Output dir doesn't exist! Using now '{}'").format(
-                output_path))
+                base_output_path))
 
-        output_path = os.path.join(output_path, "Reglas_de_Calidad_{}".format(timestamp))
+        output_path = os.path.join(base_output_path, "Reglas_de_Calidad_{}".format(timestamp))
         if not os.path.exists(output_path):
             try:
                 os.makedirs(output_path)
             except PermissionError as e:
-                logger.critical_msg(__name__, QCoreApplication.translate("QualityRuleEngine",
-                                                                         "Output dir '{}' is read-only!").format(
-                    output_path))
+                res = False
+                msg = QCoreApplication.translate("QualityRuleEngine", "Output dir '{}' is read-only!").format(base_output_path)
+                logger.critical(__name__, msg)
                 output_path = None
 
-        return output_path
+        return res, msg, output_path
 
     @staticmethod
     def save_errors(db_qr, rule_code, error_code, error_data, target_layer, ili_name=None):

@@ -15,6 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 """
+import os.path
+
 from PyQt5.uic import loadUi
 from qgis.PyQt.QtGui import (QFont,
                              QIcon)
@@ -27,14 +29,21 @@ from qgis.PyQt.QtWidgets import (QTreeWidgetItem,
                                  QComboBox)
 from qgis.gui import QgsPanelWidget
 
+from asistente_ladm_col.app_interface import AppInterface
+from asistente_ladm_col.config.enums import EnumQualityRulePanelMode
 from asistente_ladm_col.gui.transitional_system.tasks_widget import TasksWidget
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.transitional_system.st_session.st_session import STSession
+from asistente_ladm_col.utils.qt_utils import (make_file_selector,
+                                               make_folder_selector)
 from asistente_ladm_col.utils.ui import (get_ui_class,
                                          get_ui_file_path)
 from asistente_ladm_col.utils.utils import show_plugin_help
 
 WIDGET_UI = get_ui_class('quality_rules/quality_rules_initial_panel_widget.ui')
+
+TAB_VALIDATE_INDEX = 0
+TAB_READ_INDEX = 1
 
 
 class QualityRulesInitialPanelWidget(QgsPanelWidget, WIDGET_UI):
@@ -44,7 +53,9 @@ class QualityRulesInitialPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.setupUi(self)
         self.__controller = controller
         self.parent = parent
+        self.app = AppInterface()
         self.logger = Logger()
+        self.__mode = EnumQualityRulePanelMode.VALIDATE
 
         self.__selected_items_list = list()
         self.__icon_names = ['schema.png', 'points.png', 'lines.png', 'polygons.png', 'relationships.svg']
@@ -54,16 +65,62 @@ class QualityRulesInitialPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.setDockMode(True)
         self.setPanelTitle(QCoreApplication.translate("QualityRulesInitialPanelWidget", "Quality Rules"))
 
+        self.__restore_settings()
+
         self.txt_search.textChanged.connect(self.__search_text_changed)
         self.btn_validate.clicked.connect(self.__validate_clicked)
+        self.btn_read.clicked.connect(self.__read_clicked)
         self.btn_help.clicked.connect(self.__show_help)
         self.trw_qrs.itemSelectionChanged.connect(self.__selection_changed)
+        self.tab.currentChanged.connect(self.__tab_changed)
+
+        dir_selector = make_folder_selector(self.txt_dir_path,
+                                            title=QCoreApplication.translate("QualityRulesInitialPanelWidget",
+                                                                             "Select a folder to store quality errors"),
+                                            parent=None,
+                                            setting_property="qr_results_dir_path")
+        self.btn_dir_path.clicked.connect(dir_selector)
+
+        db_file_selector = make_file_selector(self.txt_db_path,
+                                              title=QCoreApplication.translate("QualityRulesInitialPanelWidget",
+                                                                               "Open GeoPackage database file with quality errors"),
+                                              file_filter=QCoreApplication.translate("QualityRulesInitialPanelWidget",
+                                                                                     "GeoPackage Database (*.gpkg)"),
+                                              setting_property="qr_db_file_path")
+
+        self.btn_db_path.clicked.connect(db_file_selector)
+
+        self.__tab_changed(self.tab.currentIndex())  # Direct call to initialize controls
+
+    def __tab_changed(self, index):
+        self.__activate_mode(
+            EnumQualityRulePanelMode.VALIDATE if index == TAB_VALIDATE_INDEX else EnumQualityRulePanelMode.READ)
+
+    def __activate_mode(self, mode):
+        self.__mode = mode
+        validate_mode = mode == EnumQualityRulePanelMode.VALIDATE
+
+        # First reset both search and selection
+        self.txt_search.setText('')
+        self.trw_qrs.clearSelection()
+        self.__selected_items_list = list()
+
+        self.trw_qrs.setEnabled(validate_mode)
+
+        self.btn_validate.setVisible(validate_mode)
+        self.lbl_selected_count.setVisible(validate_mode)
+        self.btn_read.setVisible(not validate_mode)
+
+        self.lbl_presets.setVisible(validate_mode)
+        self.cbo_presets.setVisible(validate_mode)
+        self.btn_save_selection.setVisible(validate_mode)
+        self.btn_delete_selection.setVisible(validate_mode)
 
         # Load available rules for current role and current db models
         self.__load_available_rules()
 
     def __load_available_rules(self):
-        self.__controller.load_tree_data()
+        self.__controller.load_tree_data(self.__mode)
         self.__update_available_rules()
 
     def __update_available_rules(self):
@@ -177,16 +234,30 @@ class QualityRulesInitialPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.__save_settings()
         self.__update_selected_items() # Take latest selection into account
 
+        dir_path = self.txt_dir_path.text().strip()
+        if not os.path.isdir(dir_path):
+            self.logger.warning_msg(__name__, QCoreApplication.translate("QualityRulesInitialPanelWidget",
+                                                                         "The dir '{}' does not exist! Select a valid dir to store quality validation results.").format(
+                dir_path), 15)
+            return
+
         if len(self.__selected_items_list):
+            self.__controller.set_qr_dir_path(dir_path)
             self.__controller.set_selected_qrs(self.__selected_items_list.copy())
-            self.__selected_items_list = list() # Reset
+            self.__selected_items_list = list()  # Reset
             self.show_general_results_panel()
 
+    def __read_clicked(self):
+        self.__save_settings()
+        self.show_general_results_panel()
+
     def __save_settings(self):
-        pass
+        self.app.settings.qr_results_dir_path = self.txt_dir_path.text().strip()
+        self.app.settings.qr_db_file_path = self.txt_db_path.text().strip()
 
     def __restore_settings(self):
-        pass
+        self.txt_dir_path.setText(self.app.settings.qr_results_dir_path)
+        self.txt_db_path.setText(self.app.settings.qr_db_file_path)
 
     def __select_predefined_changed(self, index):
         pass
@@ -195,13 +266,17 @@ class QualityRulesInitialPanelWidget(QgsPanelWidget, WIDGET_UI):
         selected_count = len(self.__selected_items_list)
         if selected_count == 0:
             text = QCoreApplication.translate("QualityRules", "There are no selected rules to validate")
+            btn_text = QCoreApplication.translate("QualityRules", "Validate")
         elif selected_count == 1:
             text = QCoreApplication.translate("QualityRules", "There is 1 selected rule to validate")
+            btn_text = QCoreApplication.translate("QualityRules", "Validate 1 rule")
         else:
             text = QCoreApplication.translate("QualityRules",
                                               "There are {} selected rules to validate").format(selected_count)
+            btn_text = QCoreApplication.translate("QualityRules", "Validate {} rules").format(selected_count)
 
         self.lbl_selected_count.setText(text)
+        self.btn_validate.setText(btn_text)
 
     def __selection_changed(self):
         # Update internal dict and dialog label
@@ -213,7 +288,7 @@ class QualityRulesInitialPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.__update_selected_count_label()
 
     def show_general_results_panel(self):
-        self.parent.show_general_results_panel()
+        self.parent.show_general_results_panel(self.__mode)
 
     def __show_help(self):
         show_plugin_help("quality_rules")

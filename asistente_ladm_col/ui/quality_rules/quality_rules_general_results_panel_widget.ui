@@ -11,9 +11,21 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Initial Panel Widget Quality Rules</string>
+   <string>General Results Panel Widget Quality Rules</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>2</number>
+   </property>
+   <property name="bottomMargin">
+    <number>2</number>
+   </property>
    <item row="1" column="0">
     <widget class="QTreeWidget" name="trw_qrs">
      <property name="selectionMode">
@@ -48,7 +60,30 @@
     </widget>
    </item>
    <item row="3" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QHBoxLayout" name="horizontalLayout"/>
+   </item>
+   <item row="4" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QPushButton" name="btn_help">
+       <property name="text">
+        <string>Help</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
      <item>
       <widget class="QPushButton" name="btn_open_report">
        <property name="sizePolicy">
@@ -74,56 +109,6 @@
          <normaloff>:/Asistente-LADM-COL/resources/images/reports.svg</normaloff>:/Asistente-LADM-COL/resources/images/reports.svg</iconset>
        </property>
       </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btn_save_gpkg">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="text">
-        <string>Save to GeoPackage</string>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>:/Asistente-LADM-COL/resources/images/save.svg</normaloff>:/Asistente-LADM-COL/resources/images/save.svg</iconset>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="4" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
-      <widget class="QPushButton" name="btn_help">
-       <property name="text">
-        <string>Help</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
      </item>
      <item>
       <widget class="QPushButton" name="btn_view_error_results">

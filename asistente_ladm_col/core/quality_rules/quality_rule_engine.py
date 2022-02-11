@@ -145,8 +145,10 @@ class QualityRuleEngine(QObject):
             self.__emit_progress_changed(5)
 
             if not res_db:
-                self.logger.warning_msg(__name__, QCoreApplication.translate("QualityRuleEngine",
-                                                                             "There was a problem creating the quality error DB! Details:").format(msg_db))
+                msg_db = QCoreApplication.translate("QualityRuleEngine",
+                                                    "There was a problem creating the quality error DB! Details: {}").format(
+                    msg_db)
+                self.logger.warning(__name__, msg_db)
                 return False, msg_db, None
 
             self.qr_logger.set_count_topology_rules(len(self.__rules))
@@ -191,6 +193,8 @@ class QualityRuleEngine(QObject):
                         QR_METADATA_OPTIONS: self.__normalize_options(options),
                         QR_METADATA_PERSON: getpass.getuser()}
             QualityErrorDBUtils.save_metadata(self.__db_qr, metadata)
+
+            self.export_result_to_pdf()
 
             self.__emit_progress_changed(99)
 
@@ -259,8 +263,8 @@ class QualityRuleEngine(QObject):
         return self.__timestamp
 
     def export_result_to_pdf(self):
-        output_path = get_quality_validation_output_path(self.__output_path, self.__timestamp)
-        if output_path is None:
+        res, msg, output_path = QualityErrorDBUtils.get_quality_validation_output_path(self.__output_path, self.__timestamp)
+        if not res:
             self.logger.critical(__name__, QCoreApplication.translate("QualityRuleEngine",
                                                                       "PDF report could not be exported, there were problems with the output path '{}'!").format(
                 self.__output_path))
