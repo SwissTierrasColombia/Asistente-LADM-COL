@@ -1232,6 +1232,7 @@ class AsistenteLADMCOLPlugin(QObject):
         dock_widget_qrs = DockWidgetQualityRules(qr_controller, self.main_window)
         self.gui_builder.register_dock_widget(DOCK_WIDGET_QUALITY_RULES, dock_widget_qrs)
         qr_controller.open_report_called.connect(self.show_log_quality_dialog)
+        qr_controller.refresh_error_layer_symbology.connect(self.app.gui.trigger_repaint_on_layer)
         self.conn_manager.db_connection_changed.connect(dock_widget_qrs.update_db_connection)
         self.app.gui.add_tabified_dock_widget(Qt.RightDockWidgetArea, dock_widget_qrs)
 

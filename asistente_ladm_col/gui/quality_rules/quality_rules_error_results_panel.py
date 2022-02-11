@@ -143,7 +143,8 @@ class QualityRulesErrorResultsPanelWidget(QgsPanelWidget, WIDGET_UI):
             uuids = self.__controller.uuid_objs(feature)
             uuid_item = QTableWidgetItem(uuids)
             uuid_item.setData(Qt.UserRole, self.__controller.error_t_id(feature))
-            uuid_item.setData(Qt.ToolTipRole, "UUIDs:\n{}".format(uuids))
+            ili_name = self.__controller.ili_obj_name(feature)
+            uuid_item.setData(Qt.ToolTipRole, "UUIDs ({}):\n{}".format(ili_name, uuids) if ili_name else "UUIDs:\n{}".format(uuids))
             self.tbw_errors.setItem(row, UUIDS_COLUMN, uuid_item)
 
             # 3) Error type code

@@ -20,7 +20,8 @@ from qgis.PyQt.QtCore import (QCoreApplication,
                               pyqtSignal,
                               QSettings,
                               QObject)
-from qgis.core import QgsRectangle
+from qgis.core import (QgsVectorLayer,
+                       QgsRectangle)
 
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.enums import EnumQualityRulePanelMode
@@ -41,6 +42,7 @@ class QualityRuleController(QObject):
 
     open_report_called = pyqtSignal(QualityRuleResultLog)  # log result
     quality_rule_layer_removed = pyqtSignal()
+    refresh_error_layer_symbology = pyqtSignal(QgsVectorLayer)
     total_progress_changed = pyqtSignal(int)  # Progress value
 
     def __init__(self, db):
@@ -122,6 +124,8 @@ class QualityRuleController(QObject):
             output_qr_dir)
 
         self.logger.success_msg(__name__, "{} {}".format(pre_text, post_text))
+
+        self.__emit_refresh_error_layer_symbology()
 
         return res, msg, self.__qrs_results
 
@@ -341,6 +345,10 @@ class QualityRuleController(QObject):
     def uuid_objs(self, feature):
         return "\n".join(feature[self.__qr_engine.get_db_quality().names.ERR_QUALITY_ERROR_T_OBJECT_IDS_F])
 
+    def ili_obj_name(self, feature):
+        ili_name = feature[self.__qr_engine.get_db_quality().names.ERR_QUALITY_ERROR_T_ILI_NAME_F]
+        return ili_name.split(".")[-1] if ili_name else ''
+
     def error_type_code_and_display(self, feature):
         db = self.__qr_engine.get_db_quality()
         names = db.names
@@ -531,3 +539,13 @@ class QualityRuleController(QObject):
                 self.logger.critical(__name__, "Error modifying the error state value!")
         else:
             self.logger.critical(__name__, "Error with t_id '' not found!".format(error_t_id))
+
+    def __emit_refresh_error_layer_symbology(self):
+        if self.__get_point_error_layer().featureCount():
+            self.refresh_error_layer_symbology.emit(self.__get_point_error_layer())
+
+        if self.__get_line_error_layer().featureCount():
+            self.refresh_error_layer_symbology.emit(self.__get_line_error_layer())
+
+        if self.__get_polygon_error_layer().featureCount():
+            self.refresh_error_layer_symbology.emit(self.__get_polygon_error_layer())

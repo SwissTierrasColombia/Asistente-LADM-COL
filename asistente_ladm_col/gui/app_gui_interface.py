@@ -67,6 +67,9 @@ class AppGUIInterface(QObject):
     def refresh_layer_symbology(self, layer_id):
         self.iface.layerTreeView().refreshLayerSymbology(layer_id)
 
+    def trigger_repaint_on_layer(self, layer):
+        layer.triggerRepaint()
+
     def refresh_map(self):
         self.iface.mapCanvas().refresh()
 
@@ -174,18 +177,7 @@ class AppGUIInterface(QObject):
         :param area: Value of the Qt.DockWidgetArea enum
         :param dock_widget: QDockWidget object
         """
-        if Qgis.QGIS_VERSION_INT >= 31300:  # Use native addTabifiedDockWidget
-            self.iface.addTabifiedDockWidget(area, dock_widget, raiseTab=True)
-        else:  # Use plugin's addTabifiedDockWidget, which does not raise the new tab
-            dock_widgets = list()
-            for dw in self.iface.mainWindow().findChildren(QDockWidget):
-                if dw.isVisible() and self.iface.mainWindow().dockWidgetArea(dw) == area:
-                    dock_widgets.append(dw)
-
-            self.iface.mainWindow().addDockWidget(area, dock_widget)  # We add the dock widget, then attempt to tabify
-            if dock_widgets:
-                self.logger.debug(__name__, "Tabifying dock widget {}...".format(dock_widget.windowTitle()))
-                self.iface.mainWindow().tabifyDockWidget(dock_widgets[0], dock_widget)  # No way to prefer one Dock Widget
+        self.iface.addTabifiedDockWidget(area, dock_widget, raiseTab=True)
 
     def open_feature_form(self, layer, feature):
         self.iface.openFeatureForm(layer, feature)
