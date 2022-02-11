@@ -57,7 +57,7 @@ def selectFileName(line_edit_widget, title, file_filter, parent, setting_propert
     if filename:
         line_edit_widget.setText(filename)
 
-        if setting_property and getattr(app.settings, setting_property, None):  # Save to settings
+        if setting_property and getattr(app.settings, setting_property, -1) != -1:  # Save to settings
             setattr(app.settings, setting_property, filename)
 
 
@@ -110,7 +110,7 @@ def selectFolder(line_edit_widget, title, parent, setting_property=None):
     if foldername:
         line_edit_widget.setText(foldername)
 
-        if setting_property and getattr(app.settings, setting_property, None):  # Save to settings
+        if setting_property and getattr(app.settings, setting_property, -1) != -1:  # Save to settings
             setattr(app.settings, setting_property, foldername)
 
 

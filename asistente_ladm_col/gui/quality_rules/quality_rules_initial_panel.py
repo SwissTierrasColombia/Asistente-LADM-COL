@@ -65,6 +65,7 @@ class QualityRulesInitialPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.setDockMode(True)
         self.setPanelTitle(QCoreApplication.translate("QualityRulesInitialPanelWidget", "Quality Rules"))
 
+        self.tab.setTabEnabled(TAB_READ_INDEX, False)  # TODO: Remove when implemented
         self.__restore_settings()
 
         self.txt_search.textChanged.connect(self.__search_text_changed)
