@@ -25,6 +25,7 @@ from qgis.PyQt.QtCore import (Qt,
                               QDateTime,
                               QObject,
                               pyqtSignal)
+import qgis.utils
 from qgis.core import (QgsProject,
                        QgsVectorLayerUtils)
 
@@ -315,6 +316,8 @@ class QualityErrorDBUtils(QObject):
         group = root.findGroup(group_name)
         if group is None and create_if_non_existent:
             group = root.insertGroup(0, group_name)
+            ilg = qgis.utils.plugins['InvisibleLayersAndGroups']
+            ilg.hideGroup(group)
             group.setExpanded(False)
 
         return group

@@ -5,7 +5,8 @@ from functools import (wraps,
 
 from qgis.PyQt.QtCore import (Qt,
                               QCoreApplication,
-                              QSettings)
+                              QSettings,
+                              QEventLoop)
 from qgis.PyQt.QtWidgets import QPushButton
 from qgis.core import Qgis
 from qgis.utils import (isPluginLoaded,
@@ -19,6 +20,8 @@ from asistente_ladm_col.config.general_config import (QGIS_MODEL_BAKER_REQUIRED_
                                                       MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION,
                                                       MAP_SWIPE_TOOL_EXACT_REQUIRED_VERSION,
                                                       MAP_SWIPE_TOOL_REQUIRED_VERSION_URL,
+                                                      INVISIBLE_LAYERS_AND_GROUPS_PLUGIN_NAME,
+                                                      INVISIBLE_LAYERS_AND_GROUPS_MIN_REQUIRED_VERSION,
                                                       LOG_QUALITY_PREFIX_TOPOLOGICAL_RULE_TITLE,
                                                       LOG_QUALITY_SUFFIX_TOPOLOGICAL_RULE_TITLE,
                                                       LOG_QUALITY_LIST_CONTAINER_OPEN,
@@ -494,6 +497,25 @@ def map_swipe_tool_required(func_to_decorate):
 
             inst.logger.warning(__name__,  QCoreApplication.translate("AsistenteLADMCOLPlugin",
                 "A dialog/tool couldn't be opened/executed, MapSwipe Tool not found."))
+
+    return decorated_function
+
+
+def invisible_layers_and_groups_required(func_to_decorate):
+    @wraps(func_to_decorate)
+    def decorated_function(*args, **kwargs):
+        inst = args[0] if type(args[0]).__name__ == 'AsistenteLADMCOLPlugin' else args[0].ladmcol
+
+        # Check if Invisible Layers and Groups is installed and active, install it if necessary
+        if not inst.ilg_plugin.check_if_dependency_is_valid():
+            loop = QEventLoop()  # Do the installation synchronously
+            inst.ilg_plugin.download_dependency_completed.connect(loop.exit)
+            inst.ilg_plugin.install()
+            inst.logger.info(__name__, "Installing dependency ({} {})...".format(INVISIBLE_LAYERS_AND_GROUPS_PLUGIN_NAME,
+                                                                                 INVISIBLE_LAYERS_AND_GROUPS_MIN_REQUIRED_VERSION))
+            loop.exec()
+
+        func_to_decorate(*args, **kwargs)
 
     return decorated_function
 

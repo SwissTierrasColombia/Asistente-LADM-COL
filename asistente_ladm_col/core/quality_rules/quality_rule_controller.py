@@ -227,6 +227,7 @@ class QualityRuleController(QObject):
         self.__reset_general_results_tree_data()
         self.__reset_selected_qrs()
         self.__reset_qrs_results()
+        self.__reset_layers()
 
         # Call it before removing QR DB group to avoid triggering parent.layer_removed() slot again.
         self.disconnect_layer_willberemoved_signals()

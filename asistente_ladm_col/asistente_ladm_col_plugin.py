@@ -80,7 +80,11 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       MAP_SWIPE_TOOL_PLUGIN_NAME,
                                                       MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION,
                                                       MAP_SWIPE_TOOL_EXACT_REQUIRED_VERSION,
-                                                      MAP_SWIPE_TOOL_REQUIRED_VERSION_URL)
+                                                      MAP_SWIPE_TOOL_REQUIRED_VERSION_URL,
+                                                      INVISIBLE_LAYERS_AND_GROUPS_PLUGIN_NAME,
+                                                      INVISIBLE_LAYERS_AND_GROUPS_MIN_REQUIRED_VERSION,
+                                                      INVISIBLE_LAYERS_AND_GROUPS_EXACT_REQUIRED_VERSION,
+                                                      INVISIBLE_LAYERS_AND_GROUPS_REQUIRED_VERSION_URL)
 from asistente_ladm_col.config.layer_tree_indicator_config import LayerTreeIndicatorConfig
 from asistente_ladm_col.config.task_steps_config import TaskStepsConfig
 from asistente_ladm_col.config.translation_strings import (TOOLBAR_FINALIZE_GEOMETRY_CREATION,
@@ -135,6 +139,7 @@ from asistente_ladm_col.utils.decorators import (db_connection_required,
                                                  qgis_model_baker_required,
                                                  activate_processing_plugin,
                                                  map_swipe_tool_required,
+                                                 invisible_layers_and_groups_required,
                                                  validate_if_layers_in_editing_mode_with_changes,
                                                  supplies_model_required,
                                                  valuation_model_required,
@@ -191,6 +196,10 @@ class AsistenteLADMCOLPlugin(QObject):
                                            MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION,
                                            MAP_SWIPE_TOOL_EXACT_REQUIRED_VERSION,
                                            MAP_SWIPE_TOOL_REQUIRED_VERSION_URL)
+        self.ilg_plugin = PluginDependency(INVISIBLE_LAYERS_AND_GROUPS_PLUGIN_NAME,
+                                           INVISIBLE_LAYERS_AND_GROUPS_MIN_REQUIRED_VERSION,
+                                           INVISIBLE_LAYERS_AND_GROUPS_EXACT_REQUIRED_VERSION,
+                                           INVISIBLE_LAYERS_AND_GROUPS_REQUIRED_VERSION_URL)
 
         # We need a couple of contexts when running tools, so, prepare them in advance
         self._context_collected = Context()  # By default, only collected source is set
@@ -1223,6 +1232,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @validate_if_wizard_is_open
     @qgis_model_baker_required
+    @invisible_layers_and_groups_required
     @db_connection_required
     @activate_processing_plugin
     def show_quality_rules_dock_widget(self, *args):

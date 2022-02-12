@@ -171,6 +171,12 @@ MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION = "1.2"
 MAP_SWIPE_TOOL_EXACT_REQUIRED_VERSION = True
 MAP_SWIPE_TOOL_REQUIRED_VERSION_URL = ''  # 'https://plugins.qgis.org/plugins/mapswipetool_plugin/version/1.2/download/'
 
+# Configure Invisible Layers and Groups Dependency
+INVISIBLE_LAYERS_AND_GROUPS_PLUGIN_NAME = "InvisibleLayersAndGroups"
+INVISIBLE_LAYERS_AND_GROUPS_MIN_REQUIRED_VERSION = "2.1"
+INVISIBLE_LAYERS_AND_GROUPS_EXACT_REQUIRED_VERSION = True
+INVISIBLE_LAYERS_AND_GROUPS_REQUIRED_VERSION_URL = 'https://plugins.qgis.org/plugins/InvisibleLayersAndGroups/version/2.1/download/'
+
 SOURCE_DB = '_SOURCE_'
 SUPPLIES_DB_SOURCE = 'SUPPLIES'
 COLLECTED_DB_SOURCE = 'COLLECTED'
