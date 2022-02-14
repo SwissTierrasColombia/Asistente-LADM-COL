@@ -1,4 +1,3 @@
-from asistente_ladm_col.config.enums import EnumQualityRule
 from asistente_ladm_col.config.ladm_names import LADMNames
 
 DEFAULT_GUI = 'DEFAULT_GUI'

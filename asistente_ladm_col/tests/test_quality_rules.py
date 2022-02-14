@@ -14,11 +14,7 @@ start_app()  # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.config.general_config import DEFAULT_TOLERANCE_VALUE
 from asistente_ladm_col.core.quality_rules.quality_rule_engine import QualityRuleEngine
-from asistente_ladm_col.core.quality_rules.quality_rule_layer_manager import QualityRuleLayerManager
 from asistente_ladm_col.config.config_db_supported import ConfigDBsSupported
-from asistente_ladm_col.logic.quality.quality_rules import QualityRules
-from asistente_ladm_col.logic.quality.point_quality_rules import PointQualityRules
-from asistente_ladm_col.logic.quality.polygon_quality_rules import PolygonQualityRules
 from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             import_processing,
                                             get_test_copy_path,
@@ -28,33 +24,12 @@ from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             restore_schema,
                                             unload_qgis_model_baker)
 from asistente_ladm_col.lib.geometry import GeometryUtils
-from asistente_ladm_col.config.enums import EnumQualityRule
-from asistente_ladm_col.lib.quality_rule.quality_rule_manager import QualityRuleManager
-from asistente_ladm_col.config.quality_rules_config import (QUALITY_RULE_ERROR_CODE_E200401,
-                                                            QUALITY_RULE_ERROR_CODE_E200402,
-                                                            QUALITY_RULE_ERROR_CODE_E200403,
-                                                            QUALITY_RULE_ERROR_CODE_E100301,
-                                                            QUALITY_RULE_ERROR_CODE_E100302,
-                                                            QUALITY_RULE_ERROR_CODE_E100303,
-                                                            QUALITY_RULE_ERROR_CODE_E300401,
-                                                            QUALITY_RULE_ERROR_CODE_E300402,
-                                                            QUALITY_RULE_ERROR_CODE_E300403,
-                                                            QUALITY_RULE_ERROR_CODE_E300404,
-                                                            QUALITY_RULE_ERROR_CODE_E300405,
-                                                            QUALITY_RULE_ERROR_CODE_E200301,
-                                                            QUALITY_RULE_ERROR_CODE_E200302,
-                                                            QUALITY_RULE_ERROR_CODE_E200303,
-                                                            QUALITY_RULE_ERROR_CODE_E200304,
-                                                            QUALITY_RULE_ERROR_CODE_E200305,
-                                                            QUALITY_RULE_ERROR_CODE_E300902,
-                                                            QUALITY_RULE_ERROR_CODE_E301002,
-                                                            QUALITY_RULE_ERROR_CODE_E301102)
 
 import_processing()
 import processing
 
 
-@unittest.skip("Until we've finished with the refactor...")
+@unittest.skip("Until we've finished with the refactor of quality rules...")
 class TestQualityRules(unittest.TestCase):
 
     @classmethod

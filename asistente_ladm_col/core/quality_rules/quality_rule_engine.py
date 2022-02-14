@@ -39,7 +39,6 @@ from asistente_ladm_col.core.quality_rules.quality_rule_execution_result import 
                                                                                  QualityRuleExecutionResult)
 from asistente_ladm_col.core.quality_rules.quality_rule_registry import QualityRuleRegistry
 from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.lib.quality_rule.quality_rule_manager import QualityRuleManager
 from asistente_ladm_col.utils.decorators import _log_quality_rule_validations
 from asistente_ladm_col.utils.quality_error_db_utils import QualityErrorDBUtils
 from asistente_ladm_col.utils.qt_utils import export_title_text_to_pdf

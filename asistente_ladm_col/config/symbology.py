@@ -1,10 +1,6 @@
 from qgis.core import QgsWkbTypes
 
-from asistente_ladm_col.config.enums import EnumQualityRule
 from asistente_ladm_col.config.ladm_names import LADMNames
-from asistente_ladm_col.config.quality_rules_config import (QUALITY_RULE_TABLE_NAME,
-                                                            QUALITY_RULES,
-                                                            QualityRuleConfig)
 
 
 class Symbology:
