@@ -1,0 +1,100 @@
+# -*- coding: utf-8 -*-
+"""
+/***************************************************************************
+                              Asistente LADM_COL
+                             --------------------
+        begin                : 2019-06-07
+        git sha              : :%H$
+        copyright            : (C) 2019 by Leo Cardona (BSF Swissphoto)
+                               (C) 2021 by Yesid Polania (BSF Swissphoto)
+        email                : leo.cardona.p@gmail.com
+                               yesidpol.3@gmail.com
+ ***************************************************************************/
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License v3.0 as          *
+ *   published by the Free Software Foundation.                            *
+ *                                                                         *
+ ***************************************************************************/
+ """
+from qgis.PyQt.QtWidgets import QWizard
+
+from asistente_ladm_col.config.enums import EnumFeatureCreationMode
+from asistente_ladm_col.config.general_config import (WIZARD_STRINGS,
+                                                      WIZARD_HELP,
+                                                      WIZARD_REFACTOR_FIELDS_RECENT_MAPPING_OPTIONS,
+                                                      WIZARD_REFACTOR_FIELDS_LAYER_FILTERS,
+                                                      WIZARD_SELECT_SOURCE_HELP,
+                                                      WIZARD_FINISH_BUTTON_TEXT,
+                                                      WIZARD_CREATION_MODE_KEY)
+from asistente_ladm_col.gui.wizards.view.common.source_selector import SourceSelector
+from asistente_ladm_col.gui.wizards.controller.controller_args import CreateFeatureArgs
+from asistente_ladm_col.utils.utils import show_plugin_help
+
+
+class SingleWizardView:
+    def __init__(self, controller, view_config):
+        self.__wizard = QWizard()
+        self.__controller = controller
+        self.__view_config = view_config
+
+        self.__wp_select_source = self._create_select_source()
+
+        self.__init_gui()
+
+    def _create_select_source(self) -> SourceSelector:
+        return SourceSelector(
+            self.__view_config[WIZARD_REFACTOR_FIELDS_RECENT_MAPPING_OPTIONS],
+            self.__view_config[WIZARD_REFACTOR_FIELDS_LAYER_FILTERS],
+            self.__view_config[WIZARD_STRINGS])
+
+    def close(self):
+        self.dispose()
+        self.__wizard.close()
+
+    def dispose(self):
+        self.__wp_select_source.disconnect_signals()
+        self.__wp_select_source.option_changed.disconnect()
+        self.__wizard.rejected.disconnect()
+        self.__wizard.button(QWizard.FinishButton).clicked.disconnect()
+
+    def exec_(self):
+        return self.__wizard.exec_()
+
+    def __init_gui(self):
+        self.__wp_select_source.option_changed.connect(self.__option_changed)
+
+        self.__wizard.addPage(self.__wp_select_source.get_wizard_page())
+        self.__wizard.rejected.connect(self.__view_rejected)
+        self.__wizard.button(QWizard.FinishButton).clicked.connect(self.__finish_button_click)
+        self.__wp_select_source.connect_signals()
+
+    def __view_rejected(self):
+        self.__controller.wizard_rejected()
+
+    def __option_changed(self, e: EnumFeatureCreationMode):
+        self.__wp_select_source.set_help_text(self.__view_config[WIZARD_SELECT_SOURCE_HELP][e])
+        finish_button_text = self.__view_config[WIZARD_FINISH_BUTTON_TEXT][e]
+
+        self.__wizard.setButtonText(QWizard.FinishButton, finish_button_text)
+
+    def _show_help(self):
+        show_plugin_help(self.__view_config[WIZARD_HELP])
+
+    def restore_settings(self, settings: dict):
+        self.__wp_select_source.layer_creation_mode = settings[WIZARD_CREATION_MODE_KEY]
+
+    def get_settings(self):
+        result = {WIZARD_CREATION_MODE_KEY: self.__wp_select_source.layer_creation_mode}
+        return result
+
+    def get_selected_layer_refactor(self):
+        return self.__wp_select_source.selected_layer
+
+    def get_field_mapping_refactor(self):
+        return self.__wp_select_source.field_mapping
+
+    def __finish_button_click(self):
+        e = CreateFeatureArgs(self.__wp_select_source.layer_creation_mode)
+        self.__controller.create_feature(e)
