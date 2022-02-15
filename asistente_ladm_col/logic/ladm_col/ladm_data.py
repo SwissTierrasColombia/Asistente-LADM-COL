@@ -737,8 +737,8 @@ class LADMData(QObject):
         return [feature[t_id_name] for feature in layer.getFeatures(request)]
 
     @staticmethod
-    def get_fids_from_key_values(layer, attribute_name, attribute_values):
-        request = QgsFeatureRequest(QgsExpression("{} in ({})".format(attribute_name, ",".join(str(value) for value in attribute_values))))
+    def get_fids_from_key_values(layer, attribute_name, attribute_value_list):
+        request = QgsFeatureRequest(QgsExpression("{} in ('{}')".format(attribute_name, "','".join(str(value) for value in attribute_value_list))))
         request.setFlags(QgsFeatureRequest.NoGeometry)
         request.setNoAttributes()  # Note: this adds a new flag
 

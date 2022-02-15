@@ -1,5 +1,20 @@
+import functools
 from enum import (Enum,
                   IntFlag)
+
+
+@functools.total_ordering
+class OrderedEnum(Enum):
+    @classmethod
+    @functools.lru_cache(None)
+    def _member_list(cls):
+        return list(cls)
+
+    def __lt__(self, other):
+        if self.__class__ is other.__class__:
+            member_list = self.__class__._member_list()
+            return member_list.index(self) < member_list.index(other)
+        return NotImplemented
 
 
 class EnumDbActionType(Enum):
@@ -114,57 +129,25 @@ class EnumLayerRegistryType(Enum):
     IN_LAYER_TREE = 2
 
 
-# https://www.notinventedhere.org/articles/python/how-to-use-strings-as-name-aliases-in-python-enums.html
-class EnumQualityRule:
-    class Point(Enum):
-        OVERLAPS_IN_BOUNDARY_POINTS = 1001
-        OVERLAPS_IN_CONTROL_POINTS = 1002
-        BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES = 1003
-        BOUNDARY_POINTS_COVERED_BY_PLOT_NODES = 1004
+class EnumQualityRuleType(OrderedEnum):
+    GENERIC = 0  # For instance, iliValidator errors, which may include all types
+    POINT = 1
+    LINE = 2
+    POLYGON = 3
+    LOGIC = 4
 
-    class Line(Enum):
-        OVERLAPS_IN_BOUNDARIES = 2001
-        BOUNDARIES_ARE_NOT_SPLIT = 2002
-        BOUNDARIES_COVERED_BY_PLOTS = 2003
-        BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS = 2004
-        DANGLES_IN_BOUNDARIES = 2005
 
-    class Polygon(Enum):
-        OVERLAPS_IN_PLOTS = 3001
-        OVERLAPS_IN_BUILDINGS = 3002
-        OVERLAPS_IN_RIGHTS_OF_WAY = 3003
-        PLOTS_COVERED_BY_BOUNDARIES = 3004
-        RIGHT_OF_WAY_OVERLAPS_BUILDINGS = 3005
-        GAPS_IN_PLOTS = 3006
-        MULTIPART_IN_RIGHT_OF_WAY = 3007
-        PLOT_NODES_COVERED_BY_BOUNDARY_POINTS = 3008
-        BUILDINGS_SHOULD_BE_WITHIN_PLOTS = 3009
-        BUILDING_UNITS_SHOULD_BE_WITHIN_PLOTS = 3010
-        BUILDING_UNITS_SHOULD_BE_WITHIN_BUILDINGS = 3011
+class EnumQualityRulePanelMode(Enum):
+    VALIDATE = 1
+    READ = 2
 
-    class Logic(Enum):
-        PARCEL_RIGHT_RELATIONSHIP = 4001
-        FRACTION_SUM_FOR_PARTY_GROUPS = 4002
-        DEPARTMENT_CODE_HAS_TWO_NUMERICAL_CHARACTERS = 4003
-        MUNICIPALITY_CODE_HAS_THREE_NUMERICAL_CHARACTERS = 4004
-        PARCEL_NUMBER_HAS_30_NUMERICAL_CHARACTERS = 4005
-        PARCEL_NUMBER_BEFORE_HAS_20_NUMERICAL_CHARACTERS = 4006
-        COL_PARTY_NATURAL_TYPE = 4007
-        COL_PARTY_NOT_NATURAL_TYPE = 4008
-        PARCEL_TYPE_AND_22_POSITION_OF_PARCEL_NUMBER = 4009
-        UEBAUNIT_PARCEL = 4010
-        DUPLICATE_RECORDS_IN_BOUNDARY_POINT = 4011
-        DUPLICATE_RECORDS_IN_SURVEY_POINT = 4012
-        DUPLICATE_RECORDS_IN_CONTROL_POINT = 4013
-        DUPLICATE_RECORDS_IN_BOUNDARY = 4014
-        DUPLICATE_RECORDS_IN_PLOT = 4015
-        DUPLICATE_RECORDS_IN_BUILDING = 4016
-        DUPLICATE_RECORDS_IN_BUILDING_UNIT = 4017
-        DUPLICATE_RECORDS_IN_PARCEL = 4018
-        DUPLICATE_RECORDS_IN_PARTY = 4019
-        DUPLICATE_RECORDS_IN_RIGHT = 4020
-        DUPLICATE_RECORDS_IN_RESTRICTION = 4021
-        DUPLICATE_RECORDS_IN_ADMINISTRATIVE_SOURCE = 4022
+
+class EnumQualityRuleResult(Enum):
+    SUCCESS = 1  # The QR was run and we didn't find any errors (i.e., the data comply with the QR)
+    ERRORS = 2  # The QR was run and we found some errors (i.e., the data is invalid according to the QR)
+    UNDEFINED = 3  # The QR couldn't be run because there were no features to validate it against
+    CRITICAL = 4  # There was an error running the QR (e.g., a requirement was not met, mandatory options were no given,
+                  # the layer was not found in the DB, etc.)
 
 
 class EnumRelationshipType(Enum):
@@ -240,4 +223,3 @@ class EnumPlotCreationResult(Enum):
     CREATED = 1,
     NO_BOUNDARIES_SELECTED = 2,
     NO_PLOTS_CREATED = 3
-

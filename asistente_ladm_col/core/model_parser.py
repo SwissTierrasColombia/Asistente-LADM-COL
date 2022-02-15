@@ -88,8 +88,8 @@ class ModelParser(QObject):
 
     def at_least_one_ladm_col_model_exists(self):
         """
-        Check that all hidden_and_supported models (hidden models are supposed to be the building blocks
-        of extended ones) are also supported in the DB and that there is at least one non-hidden_and_supported
+        Check that at least one hidden_and_supported model (hidden models are supposed to be the building blocks
+        of extended ones) is also supported in the DB and that there is at least one non-hidden_and_supported
         model that is supported in the DB.
 
         Note: Both hidden/non hidden and supported models depend on the active role,
@@ -107,7 +107,7 @@ class ModelParser(QObject):
             elif model_id in non_hidden_model_ids:
                 non_hidden_models_supported.append(is_supported)
 
-        return not (False in hidden_models_supported) and any(non_hidden_models_supported)
+        return any(hidden_models_supported) and any(non_hidden_models_supported)
 
     def _get_models(self):
         return self._db.get_models()

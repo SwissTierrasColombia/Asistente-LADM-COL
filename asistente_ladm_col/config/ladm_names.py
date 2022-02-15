@@ -17,6 +17,9 @@ class LADMNames(metaclass=Singleton):
     CI_CODE_PRESENTATION_FORM_D_DOCUMENT_V = "Documento"
     FDC_PARTY_DOCUMENT_TYPE_D_ILICODE_F_CC_V = "Cedula_ciudadania"
     FDC_PARTY_DOCUMENT_TYPE_D_ILICODE_F_DOC_ID_V = "Tarjeta_identidad"
+    ERR_ERROR_STATE_D_ERROR_V = "Error"
+    ERR_ERROR_STATE_D_FIXED_V = "Corregido"
+    ERR_ERROR_STATE_D_EXCEPTION_V = "Excepcion"
 
     """
     PARCEL TYPE
@@ -56,6 +59,8 @@ class LADMNames(metaclass=Singleton):
     CADASTRAL_CARTOGRAPHY_MODEL_KEY = "Submodelo_Cartografia_Catastral"
     VALUATION_MODEL_KEY = "Submodelo_Avaluos"
     ISO19107_MODEL_KEY = "ISO19107_PLANAS"
+    CATALOG_OBJECTS_MODEL_KEY = "CatalogueObjects"
+    QUALITY_ERROR_MODEL_KEY = "Errores_Calidad"
     FIELD_DATA_CAPTURE_MODEL_KEY = "Captura_Geo"
 
     FDC_TOPIC_NAME = "Captura_Geo"

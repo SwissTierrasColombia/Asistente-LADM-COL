@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 """
 /***************************************************************************
-                              Asistente LADM_COL
+                              Asistente LADM-COL
                              --------------------
         begin                : 2019-03-07
         git sha              : :%H$
@@ -16,10 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 """
-from .db_factory import DBFactory
-
 from asistente_ladm_col.gui.db_panel.mssql_config_panel import MSSQLConfigPanel
+from asistente_ladm_col.lib.db.db_factory import DBFactory
 from asistente_ladm_col.lib.db.mssql_connector import MSSQLConnector
+from asistente_ladm_col.lib.ili.enums import DbIliMode
 from asistente_ladm_col.logic.ladm_col.mssql_ladm_query import MSSQLLADMQuery
 
 
@@ -33,7 +32,6 @@ class MSSQLFactory(DBFactory):
         return "MS SQL Server"
 
     def get_model_baker_db_ili_mode(self):
-        from QgisModelBaker.libili2db.globals import DbIliMode
         return DbIliMode.ili2mssql
 
     def get_config_panel(self, parent):

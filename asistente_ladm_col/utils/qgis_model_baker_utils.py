@@ -25,10 +25,9 @@ from asistente_ladm_col.config.general_config import (QGIS_MODEL_BAKER_PLUGIN_NA
                                                       QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
                                                       QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION)
 from asistente_ladm_col.config.layer_config import LayerConfig
-from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.config.translation_strings import (TranslatableConfigStrings,
-                                                           ERROR_LAYER_GROUP)
 from asistente_ladm_col.config.query_names import QueryNames
+from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.utils.quality_error_db_utils import QualityErrorDBUtils
 from asistente_ladm_col.utils.utils import is_plugin_version_valid
 
 
@@ -39,7 +38,6 @@ class QgisModelBakerUtils(QObject):
         self.logger = Logger()
         from asistente_ladm_col.config.config_db_supported import ConfigDBsSupported
         self._dbs_supported = ConfigDBsSupported()
-        self.translatable_config_strings = TranslatableConfigStrings()
 
     @staticmethod
     def mb_version_valid():
@@ -63,14 +61,7 @@ class QgisModelBakerUtils(QObject):
             self.log_invalid_version()
             return None
 
-    def get_model_baker_db_connection(self, db):
-        generator = self.get_generator(db)
-        if generator is not None:
-            return generator._db_connector
-
-        return None
-
-    def load_layers(self, db, layer_list):
+    def load_layers(self, db, layer_list, group=None):
         """
         Load a selected list of layers from qgis model baker.
         This call should configure relations and bag of enums
@@ -80,16 +71,14 @@ class QgisModelBakerUtils(QObject):
         enums that we get only once per session and configure in
         the Asistente LADM-COL.
         """
-        translated_strings = self.translatable_config_strings.get_translatable_config_strings()
-
         if QgisModelBakerUtils.mb_version_valid():
             qgis_model_baker = qgis.utils.plugins["QgisModelBaker"]
             generator = self.get_generator(db)
             layers = generator.layers(layer_list)
             layers = self._filter_layers(layers)
             relations, bags_of_enum = generator.relations(layers, layer_list)
-            legend = generator.legend(layers, ignore_node_names=[translated_strings[ERROR_LAYER_GROUP]])
-            qgis_model_baker.create_project(layers, relations, bags_of_enum, legend, auto_transaction=False)
+            legend = generator.legend(layers, ignore_node_names=QualityErrorDBUtils.get_quality_error_group_names())
+            qgis_model_baker.create_project(layers, relations, bags_of_enum, legend, auto_transaction=False, group=group)
         else:
             self.log_invalid_version()
 

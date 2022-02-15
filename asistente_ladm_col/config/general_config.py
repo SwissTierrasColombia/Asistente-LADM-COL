@@ -18,8 +18,6 @@ NATIONAL_LAND_AGENCY = "ANT"
 ANNEX_17_REPORT = "Anexo_17"
 ANT_MAP_REPORT = "Plano_ANT"
 
-PREFIX_ERROR_CODE = 'E'
-
 # CTM 12
 DEFAULT_SRS_AUTH = "EPSG"
 DEFAULT_SRS_CODE = "9377"
@@ -41,6 +39,8 @@ MAXIMUM_FIELD_MAPPING_FILES_PER_TABLE = 10
 HELP_DIR_NAME = 'help'
 DEFAULT_USE_CUSTOM_MODELS = True
 DEFAULT_MODELS_DIR = os.path.join(PLUGIN_DIR, 'resources', 'models')
+ILIVALIDATOR_ERRORS_CATALOG_PATH = os.path.join(PLUGIN_DIR, 'resources', 'models', 'catalogo_errores_ilivalidator.xtf')
+IGAC_ERRORS_CATALOG_PATH = os.path.join(PLUGIN_DIR, 'resources', 'models', 'catalogo_errores.xtf')
 PROCESSING_MODELS_DIR = os.path.join(PLUGIN_DIR, 'lib', 'processing', 'models')
 PROCESSING_SCRIPTS_DIR = os.path.join(PLUGIN_DIR, 'lib', 'processing', 'scripts')
 STYLES_DIR = os.path.join(PLUGIN_DIR, 'resources', 'styles')
@@ -116,6 +116,12 @@ MODULE_HELP_MAPPING = {
 
 QGIS_REQUIRED_VERSION = '3.16.0 Hannover'
 QGIS_REQUIRED_VERSION_INT = 31600
+
+QR_METADATA_TOOL_NAME = "{} v{}; QGIS v{}.".format(
+    PLUGIN_NAME,
+    PLUGIN_VERSION,
+    Qgis.QGIS_VERSION)
+
 JAVA_REQUIRED_VERSION = 1.8
 
 KEY_JAVA_OS_VERSION = platform.system() + '_' + platform.architecture()[0]
@@ -146,7 +152,7 @@ DICT_JAVA_DIR_NAME = {
 
 # Configure QGIS Model Baker Dependency
 QGIS_MODEL_BAKER_PLUGIN_NAME = "QgisModelBaker"
-QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION = "6.3.2"
+QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION = "6.3.2.1"
 
 # If Asistente LADM-COL depends on a specific version of QGIS Model Baker
 #  (and only on that one), set to True
@@ -155,13 +161,19 @@ QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION = True
 # If Asistente LADM-COL depends on a specific version of QGIS Model Baker
 #  (and only on that one), and it is not the latest release, then you can
 #  specify a download URL. If that's not the case, pass an empty string below
-QGIS_MODEL_BAKER_REQUIRED_VERSION_URL = 'https://github.com/opengisch/QgisModelBaker/releases/download/v6.3.2/QgisModelBaker.v6.3.2.zip'  # 'https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.1.1.5/QgisModelBaker_6115.zip'  # ''
+QGIS_MODEL_BAKER_REQUIRED_VERSION_URL = 'https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.3.2.1/QgisModelBaker_6321.zip'  # 'https://github.com/opengisch/QgisModelBaker/releases/download/v6.3.2/QgisModelBaker.v6.3.2.zip'
 
 # Configure Map Swipe Tool Dependency
 MAP_SWIPE_TOOL_PLUGIN_NAME = "mapswipetool_plugin"
 MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION = "1.2"
 MAP_SWIPE_TOOL_EXACT_REQUIRED_VERSION = True
 MAP_SWIPE_TOOL_REQUIRED_VERSION_URL = ''  # 'https://plugins.qgis.org/plugins/mapswipetool_plugin/version/1.2/download/'
+
+# Configure Invisible Layers and Groups Dependency
+INVISIBLE_LAYERS_AND_GROUPS_PLUGIN_NAME = "InvisibleLayersAndGroups"
+INVISIBLE_LAYERS_AND_GROUPS_MIN_REQUIRED_VERSION = "2.1"
+INVISIBLE_LAYERS_AND_GROUPS_EXACT_REQUIRED_VERSION = True
+INVISIBLE_LAYERS_AND_GROUPS_REQUIRED_VERSION_URL = 'https://plugins.qgis.org/plugins/InvisibleLayersAndGroups/version/2.1/download/'
 
 SOURCE_DB = '_SOURCE_'
 SUPPLIES_DB_SOURCE = 'SUPPLIES'
@@ -215,10 +227,49 @@ LOG_QUALITY_LIST_CONTAINER_CLOSE = "</ul>"
 LOG_QUALITY_CONTENT_SEPARATOR = "<HR>"
 LOG_QUALITY_LIST_ITEM_ERROR_OPEN = "<li style='color:red;'>"
 LOG_QUALITY_LIST_ITEM_ERROR_CLOSE = "</li>"
-LOG_QUALITY_LIST_ITEM_CORRECT_OPEN = "<li style='color:green;'>"
-LOG_QUALITY_LIST_ITEM_CORRECT_CLOSE = "</li>"
-LOG_QUALITY_LIST_ITEM_OPEN = "<li style='color:#ffd356;'>"
+LOG_QUALITY_LIST_ITEM_SUCCESS_OPEN = "<li style='color:green;'>"
+LOG_QUALITY_LIST_ITEM_SUCCESS_CLOSE = "</li>"
+LOG_QUALITY_LIST_ITEM_OPEN = "<li style='color:#f7b907;'>"
 LOG_QUALITY_LIST_ITEM_CLOSE = "</li>"
+LOG_QUALITY_LIST_ITEM_CRITICAL_OPEN = "<li style='color:#d611ac;'>"
+LOG_QUALITY_LIST_ITEM_CRITICAL_CLOSE = "</li>"
+LOG_QUALITY_OPTIONS_OPEN = "<span style='color:#949494;font-style: italic'>"
+LOG_QUALITY_OPTIONS_CLOSE = "</span>"
+
+WIDGET_STYLE_QUALITY_RULE_SUCCESS = """{color: black;
+                                        border: 2px solid White;
+                                        border-radius: 7px;
+                                        border-style: outset;
+                                        background: #AAE89E;
+                                        padding: 5px;}"""
+WIDGET_STYLE_QUALITY_RULE_ERRORS = """{color: #e1e1e1;
+                                       border: 2px solid White;
+                                       border-radius: 7px;
+                                       border-style: outset;
+                                       background: #F15156;
+                                       padding: 5px;}"""
+WIDGET_STYLE_QUALITY_RULE_UNDEFINED = """{color: #495867;
+                                          border: 2px solid White;
+                                          border-radius: 7px;
+                                          border-style: outset;
+                                          background: #F2AF29;
+                                          padding: 5px;}"""
+WIDGET_STYLE_QUALITY_RULE_CRITICAL = """{color: black;
+                                         border: 2px solid White;
+                                         border-radius: 7px;
+                                         border-style: outset;
+                                         background: #B8B8D1;
+                                         padding: 5px;}"""
+WIDGET_STYLE_QUALITY_RULE_INITIAL_STATE = """{color: #495867;
+                                              border: 2px solid White;
+                                              border-radius: 7px;
+                                              border-style: outset;
+                                              background: #fbf5bd;
+                                              padding: 5px;}"""
+
+TABLE_ITEM_COLOR_ERROR = "#ebafb5"
+TABLE_ITEM_COLOR_EXCEPTION = "#f9d791"
+TABLE_ITEM_COLOR_FIXED_ERROR = "#ccf5c4"
 
 # Wizards
 WIZARD_CLASS = "wizard_class"

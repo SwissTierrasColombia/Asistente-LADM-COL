@@ -43,7 +43,7 @@ To use the LADM-COL Assistant you need:
    - PostGIS 2.4 or higher.
    - (Optional) SQL Server 2012 or higher.
  - QGIS plugins (installing LADM-COL Assistant using QGIS Plugin Manager will also install these automatically):
-   - QGIS Model Baker v6.3.2
+   - QGIS Model Baker v6.3.2.1
    - MapSwipe Tool v1.2
 
 ## Gallery
@@ -70,7 +70,7 @@ To use the LADM-COL Assistant you need:
 
 ## Functionalities
 
-The current version ([3.2.0-beta-1](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/3.1.4)) of the LADM-COL Assistant depends on [QGIS Model Baker v6.3.2](https://github.com/opengisch/QgisModelBaker/releases/download/v6.3.2/QgisModelBaker.v6.3.2.zip) and allows users to:
+The current version ([3.2.0-beta-1](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/3.1.4)) of the LADM-COL Assistant allows users to:
 
  - Integration with the Transitional System:
    - Authentication
@@ -198,11 +198,11 @@ To run the tests locally you need to have *docker* and *docker-compose* installe
 - Install *docker-compose* using the [binaries](https://github.com/docker/compose/releases).
 - NOTE: [installing Docker](https://www.how2shout.com/how-to/how-to-install-docker-ce-on-ubuntu-20-04-lts-focal-fossa.html) on Ubuntu 20.04 is easier.
 
-Before running unit tests, you need to set these 2 environment variables (make sure you use your own repository's root path for the first one):
+Before running unit tests, you need to set these 2 environment variables (make sure you use your own repository's root path for the first one; the second one corresponds to an official QGIS Docker Hub's tag):
 
 ```sh
 export GITHUB_WORKSPACE=/home/Asistente-LADM-COL
-export QGIS_TEST_VERSION="release-3_16"
+export QGIS_TEST_VERSION="final-3_22_1"
 ```
 
 The command to execute unit tests is (execute from the repository's root folder):

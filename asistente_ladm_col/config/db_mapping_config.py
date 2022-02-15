@@ -29,12 +29,12 @@ class DBMappingConfig:
        a.get_db_connection().get_db_mapping()
 
     2. Choose variable names you'll use throughout the code. Example: "LC_MYTABLE_T".
-        We suggest you to use these suffixes: t for tables, d for domains, f for fields.
+        We suggest you to use these suffixes: T for tables, D for domains, F for fields.
         If your variable points to an application or extended model, use its prefix.
 
     3. You can map both tables and fields. It depends on what you'll use in your code.
 
-    4. Note that fields coming for relations have a special notation for their ilinames,
+    4. Note that fields coming from relations have a special notation for their ilinames,
        namely, they include a ".." separator. Don't worry, get_db_mapping() will give you
        the proper iliname you need to use, also in the case of fields coming for relations.
     """
@@ -622,6 +622,47 @@ class DBMappingConfig:
                 }},
             "Submodelo_Cartografia_Catastral.LimitesOperativosCatastro.CC_NomenclaturaVial.Tipo_Via": {
                 QueryNames.VARIABLE_NAME: "CC_ROAD_TYPE_D", QueryNames.FIELDS_DICT: {}},
+        },
+        LADMNames.QUALITY_ERROR_MODEL_KEY: {
+            "Errores_Calidad.Catalogos_Errores.TipoError": {
+                QueryNames.VARIABLE_NAME: "ERR_ERROR_TYPE_T", QueryNames.FIELDS_DICT: {
+                    "Errores_Calidad.Catalogos_Errores.TipoError.Codigo": "ERR_ERROR_TYPE_T_CODE_F",
+                    "Errores_Calidad.Catalogos_Errores.TipoError.Descripcion": "ERR_ERROR_TYPE_T_DESCRIPTION_F"
+                }},
+            "Errores_Calidad.Catalogos_Errores.TipoRegla": {
+                QueryNames.VARIABLE_NAME: "ERR_RULE_TYPE_T", QueryNames.FIELDS_DICT: {
+                    "Errores_Calidad.Catalogos_Errores.TipoRegla.Codigo": "ERR_RULE_TYPE_T_CODE_F",
+                    "Errores_Calidad.Catalogos_Errores.TipoRegla.Descripcion": "ERR_RULE_TYPE_T_DESCRIPTION_F",
+                    "Errores_Calidad.Catalogos_Errores.TipoRegla.Entidad": "ERR_RULE_TYPE_T_ORGANIZATION_F"
+                }},
+            "Errores_Calidad.Topic_Errores.EstadoError": {QueryNames.VARIABLE_NAME: "ERR_ERROR_STATE_D", QueryNames.FIELDS_DICT: {}},
+            "Errores_Calidad.Topic_Errores.Punto": {QueryNames.VARIABLE_NAME: "ERR_POINT_T", QueryNames.FIELDS_DICT: {}},
+            "Errores_Calidad.Topic_Errores.Linea": {QueryNames.VARIABLE_NAME: "ERR_LINE_T", QueryNames.FIELDS_DICT: {}},
+            "Errores_Calidad.Topic_Errores.Poligono": {QueryNames.VARIABLE_NAME: "ERR_POLYGON_T", QueryNames.FIELDS_DICT: {}},
+            "Errores_Calidad.Topic_Errores.Metadatos": {
+                QueryNames.VARIABLE_NAME: "ERR_METADATA_T", QueryNames.FIELDS_DICT: {
+                    "Errores_Calidad.Topic_Errores.Metadatos.Fecha_Validacion": "ERR_METADATA_T_VALIDATION_DATE_F",
+                    "Errores_Calidad.Topic_Errores.Metadatos.Fuente_Datos": "ERR_METADATA_T_DATA_SOURCE_F",
+                    "Errores_Calidad.Topic_Errores.Metadatos.Herramienta_Validacion": "ERR_METADATA_T_TOOL_F",
+                    "Errores_Calidad.Topic_Errores.Metadatos.Persona_Que_Valido": "ERR_METADATA_T_PERSON_F",
+                    "Errores_Calidad.Topic_Errores.Metadatos.Tolerancia": "ERR_METADATA_T_TOLERANCE_F",
+                    "Errores_Calidad.Topic_Errores.Metadatos.Reglas_Validadas": "ERR_METADATA_T_RULES_F",
+                    "Errores_Calidad.Topic_Errores.Metadatos.Opciones_Reglas": "ERR_METADATA_T_RULE_OPTIONS_F"
+                }},
+            "Errores_Calidad.Topic_Errores.ErrorCalidad": {
+                QueryNames.VARIABLE_NAME: "ERR_QUALITY_ERROR_T", QueryNames.FIELDS_DICT: {
+                    "Errores_Calidad.Topic_Errores.ErrorCalidad.Detalles": "ERR_QUALITY_ERROR_T_DETAILS_F",
+                    "Errores_Calidad.Topic_Errores.ErrorCalidad.Id_Objetos": "ERR_QUALITY_ERROR_T_OBJECT_IDS_F",
+                    "Errores_Calidad.Topic_Errores.ErrorCalidad.Id_Objetos_Relacionados": "ERR_QUALITY_ERROR_T_RELATED_OBJECT_IDS_F",
+                    "Errores_Calidad.Topic_Errores.ErrorCalidad.Nombre_ili_Objetos": "ERR_QUALITY_ERROR_T_ILI_NAME_F",
+                    "Errores_Calidad.Topic_Errores.ErrorCalidad.Valores": "ERR_QUALITY_ERROR_T_VALUES_F",
+                    "Errores_Calidad.Topic_Errores.ErrorCalidad.Tipo_Error..Errores_Calidad.Catalogos_Errores.TipoError": "ERR_QUALITY_ERROR_T_ERROR_TYPE_F",
+                    "Errores_Calidad.Topic_Errores.ErrorCalidad.Tipo_Regla..Errores_Calidad.Catalogos_Errores.TipoRegla": "ERR_QUALITY_ERROR_T_RULE_TYPE_F",
+                    "Errores_Calidad.Topic_Errores.ErrorCalidad.EstadoError": "ERR_QUALITY_ERROR_T_ERROR_STATE_F",
+                    "Errores_Calidad.Topic_Errores.Error_Linea.Linea_Relacionada..Errores_Calidad.Topic_Errores.Linea": "ERR_QUALITY_ERROR_T_LINE_F",
+                    "Errores_Calidad.Topic_Errores.Error_Poligono.Poligono_Relacionado..Errores_Calidad.Topic_Errores.Poligono": "ERR_QUALITY_ERROR_T_POLYGON_F",
+                    "Errores_Calidad.Topic_Errores.Error_Punto.Punto_Relacionado..Errores_Calidad.Topic_Errores.Punto": "ERR_QUALITY_ERROR_T_POINT_F"
+                }}
         }
     }
 

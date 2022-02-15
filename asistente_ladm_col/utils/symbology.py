@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 """
 /***************************************************************************
-                              Asistente LADM_COL
+                              Asistente LADM-COL
                              --------------------
         begin                : 2018-04-16
         git sha              : :%H$
@@ -38,35 +37,26 @@ class SymbologyUtils(QObject):
         QObject.__init__(self)
         self.logger = Logger()
 
-    def set_layer_style_from_qml(self, db, layer, is_error_layer=False, emit=False, layer_modifiers=dict(), models=list()):  # TODO: Add tests
-        if not is_error_layer:
-            if db is None:
-                self.logger.critical(__name__, "DB connection is none. Style not set.")
-                return
+    def set_layer_style_from_qml(self, db, layer, emit=False, layer_modifiers=dict(), models=list()):  # TODO: Add tests
+        if db is None:
+            self.logger.critical(__name__, "DB connection is none. Style not set.")
+            return
 
-            qml_name = None
-            if db.is_ladm_layer(layer):
-                layer_name = db.get_ladm_layer_name(layer)
-            else:
-                layer_name = layer.name()  # we identify some error layer styles using the error table names
-
-            # Check if we should use modifier style group
-            if LayerConfig.STYLE_GROUP_LAYER_MODIFIERS in layer_modifiers:
-                style_group_modifiers = layer_modifiers.get(LayerConfig.STYLE_GROUP_LAYER_MODIFIERS)
-
-                if style_group_modifiers:
-                    qml_name = style_group_modifiers.get(layer_name)
-
-            if not qml_name:  # If None or empty string, we use default styles
-                qml_name = Symbology().get_default_style_group(db.names, models).get(layer_name)
-
+        qml_name = None
+        if db.is_ladm_layer(layer):
+            layer_name = db.get_ladm_layer_name(layer)
         else:
             layer_name = layer.name()  # we identify some error layer styles using the error table names
-            style_custom_error_layers = Symbology().get_custom_error_layers()
-            if layer_name in style_custom_error_layers:
-                qml_name = style_custom_error_layers.get(layer_name)
-            else:
-                qml_name = Symbology().get_default_error_style_layer().get(layer.geometryType())
+
+        # Check if we should use modifier style group
+        if LayerConfig.STYLE_GROUP_LAYER_MODIFIERS in layer_modifiers:
+            style_group_modifiers = layer_modifiers.get(LayerConfig.STYLE_GROUP_LAYER_MODIFIERS)
+
+            if style_group_modifiers:
+                qml_name = style_group_modifiers.get(layer_name)
+
+        if not qml_name:  # If None or empty string, we use default styles
+            qml_name = Symbology().get_default_style_group(db.names, models).get(layer_name)
 
         if qml_name:
             self.set_style_from_qml_name(layer, qml_name)

@@ -86,5 +86,7 @@ class LADMCOLAlgorithmProvider(QgsProcessingProvider):
         even if the list does not change, since the self.algs list is
         cleared before calling this method.
         """
-        for alg in [InsertFeaturesToLayer(), PolygonsToLines(), FieldsCalculator(), CopyVectorLayer()]:
-            self.addAlgorithm(alg)
+        self.addAlgorithm(InsertFeaturesToLayer())
+        self.addAlgorithm(PolygonsToLines())
+        self.addAlgorithm(FieldsCalculator())
+        self.addAlgorithm(CopyVectorLayer())

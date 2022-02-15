@@ -1,5 +1,8 @@
 <RCC>
   <qresource prefix="/Asistente-LADM-COL">
+    <file>resources/images/dir.png</file>
+    <file>resources/images/qr_validation.svg</file>
+    <file>resources/images/mActionDeleteSelected.svg</file>
     <file>resources/images/add_on.png</file>
     <file>resources/images/warning.svg</file>
     <file>resources/images/powered_by.png</file>

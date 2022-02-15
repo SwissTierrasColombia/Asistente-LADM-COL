@@ -1,12 +1,11 @@
-# -*- coding: utf-8 -*-
 """
 /***************************************************************************
-                              Asistente LADM_COL
+                              Asistente LADM-COL
                              --------------------
-        begin                : 2020-06-30
-        git sha              : :%H$
-        copyright            : (C) 2020 by Germán Carrillo (SwissTierras Colombia)
-        email                : gcarrillo@linuxmail.org
+        begin           : 2020-06-30
+        git sha         : :%H$
+        copyright       : (C) 2020 by Germán Carrillo (SwissTierras Colombia)
+        email           : gcarrillo@linuxmail.org
  ***************************************************************************/
 /***************************************************************************
  *                                                                         *

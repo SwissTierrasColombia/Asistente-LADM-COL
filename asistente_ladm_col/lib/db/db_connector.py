@@ -159,6 +159,9 @@ class DBConnector(QObject):
         return True
 
     def is_ladm_layer(self, layer):
+        """
+        Whether the layer corresponds to the DB connector source or not.
+        """
         raise NotImplementedError
 
     def get_ladm_layer_name(self, layer, validate_is_ladm=False):

@@ -30,6 +30,18 @@ from asistente_ladm_col.config.general_config import (JAVA_REQUIRED_VERSION,
                                                       TOML_FILE_DIR)
 from asistente_ladm_col.config.ili2db_names import ILI2DBNames
 from asistente_ladm_col.lib.dependency.java_dependency import JavaDependency
+from asistente_ladm_col.lib.ili import ili2dbvalidator
+from asistente_ladm_col.lib.ili import iliimporter
+from asistente_ladm_col.lib.ili import iliexporter
+from asistente_ladm_col.lib.ili import iliupdater
+from asistente_ladm_col.lib.ili.ili2dbconfig import (BaseConfiguration,
+                                                     SchemaImportConfiguration,
+                                                     ImportDataConfiguration,
+                                                     ExportConfiguration,
+                                                     UpdateDataConfiguration,
+                                                     ValidateDataConfiguration)
+from asistente_ladm_col.lib.ili.ili2dbutils import JavaNotFoundError
+from asistente_ladm_col.lib.ili.ilicache import IliCache
 from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.decorators import with_override_cursor
@@ -52,8 +64,6 @@ class Ili2DB(QObject):
         self._base_configuration = None
         self._ilicache = None
         self._log = ''
-
-        from QgisModelBaker.libili2db.ili2dbutils import JavaNotFoundError
 
     def get_full_java_exe_path(self):
         if not self._java_path:
@@ -86,9 +96,6 @@ class Ili2DB(QObject):
                  be shared among chained operations (e.g., export DB1-->schema import DB2-->import DB2).
         """
         if not self._base_configuration:
-            from QgisModelBaker.libili2db.ili2dbconfig import BaseConfiguration
-            from QgisModelBaker.libili2db.ilicache import IliCache
-
             self._base_configuration = BaseConfiguration()
             self._ilicache = IliCache(self._base_configuration)
             self._ilicache.refresh()
@@ -118,7 +125,6 @@ class Ili2DB(QObject):
         return ili_models
 
     def get_import_schema_configuration(self, db_factory, db, ili_models=list(), create_basket_col=False):
-        from QgisModelBaker.libili2db.ili2dbconfig import SchemaImportConfiguration
         configuration = SchemaImportConfiguration()
         db_factory.set_ili2db_configuration_params(db.dict_conn_params, configuration)
         configuration.inheritance = ILI2DBNames.DEFAULT_INHERITANCE
@@ -143,7 +149,6 @@ class Ili2DB(QObject):
         return configuration
 
     def get_import_data_configuration(self, db_factory, db, xtf_path, dataset='', baskets=list(), disable_validation=False):
-        from QgisModelBaker.libili2db.ili2dbconfig import ImportDataConfiguration
         configuration = ImportDataConfiguration()
         db_factory.set_ili2db_configuration_params(db.dict_conn_params, configuration)
         configuration.with_importtid = True
@@ -160,7 +165,6 @@ class Ili2DB(QObject):
         return configuration
 
     def get_export_configuration(self, db_factory, db, xtf_path, dataset='', baskets=list(), disable_validation=False):
-        from QgisModelBaker.libili2db.ili2dbconfig import ExportConfiguration
         configuration = ExportConfiguration()
         db_factory.set_ili2db_configuration_params(db.dict_conn_params, configuration)
         configuration.with_exporttid = True
@@ -177,7 +181,6 @@ class Ili2DB(QObject):
         return configuration
 
     def get_update_configuration(self, db_factory, db, xtf_path, dataset_name):
-        from QgisModelBaker.libili2db.ili2dbconfig import UpdateDataConfiguration
         configuration = UpdateDataConfiguration()
         db_factory.set_ili2db_configuration_params(db.dict_conn_params, configuration)
 
@@ -190,6 +193,23 @@ class Ili2DB(QObject):
         configuration.with_importbid = True
         configuration.with_importtid = True
         configuration.xtffile = xtf_path
+
+        return configuration
+
+    def get_validate_configuration(self, db_factory, db, model_names, xtflog_path, configfile_path):
+        configuration = ValidateDataConfiguration()
+        db_factory.set_ili2db_configuration_params(db.dict_conn_params, configuration)
+
+        configuration.base_configuration = self._get_base_configuration()
+        # Since BaseConfiguration can be shared, avoid a --trace in --validate operation (not supported by ili2db)
+        configuration.base_configuration.debugging_enabled = False
+
+        if model_names:
+            configuration.ilimodels = ';'.join(model_names)
+        if xtflog_path:
+            configuration.xtflogfile = xtflog_path
+        if configfile_path:
+            configuration.configfile = configfile_path
 
         return configuration
 
@@ -206,7 +226,6 @@ class Ili2DB(QObject):
         configuration = self.get_import_schema_configuration(db_factory, db, ili_models, create_basket_col)
 
         # Configure run
-        from QgisModelBaker.libili2db import iliimporter
         importer = iliimporter.Importer()
         importer.tool = db_factory.get_model_baker_db_ili_mode()
         importer.process_started.connect(self.on_process_started)
@@ -247,7 +266,6 @@ class Ili2DB(QObject):
         configuration = self.get_import_data_configuration(db_factory, db, xtf_path, dataset, baskets, disable_validation)
 
         # Configure run
-        from QgisModelBaker.libili2db import iliimporter
         importer = iliimporter.Importer(dataImport=True)
         importer.tool = db_factory.get_model_baker_db_ili_mode()
         importer.process_started.connect(self.on_process_started)
@@ -289,7 +307,6 @@ class Ili2DB(QObject):
         configuration = self.get_export_configuration(db_factory, db, xtf_path, dataset, baskets, disable_validation)
 
         # Configure run
-        from QgisModelBaker.libili2db import iliexporter
         exporter = iliexporter.Exporter()
         exporter.tool = db_factory.get_model_baker_db_ili_mode()
         exporter.process_started.connect(self.on_process_started)
@@ -332,7 +349,6 @@ class Ili2DB(QObject):
         configuration = self.get_update_configuration(db_factory, db, xtf_path, dataset_name)
 
         # Configure run
-        from QgisModelBaker.libili2db import iliupdater
         updater = iliupdater.Updater()
         updater.tool = db_factory.get_model_baker_db_ili_mode()
         updater.process_started.connect(self.on_process_started)
@@ -353,6 +369,50 @@ class Ili2DB(QObject):
             else:
                 self.logger.info(__name__, msg)
 
+        except JavaNotFoundError:
+            msg = QCoreApplication.translate("Ili2DB",
+                                             "Java {} could not be found. You can configure the JAVA_HOME environment variable manually, restart QGIS and try again.").format(
+                JAVA_REQUIRED_VERSION)
+            res = False
+
+        self.logger.clear_status()
+        return res, msg
+
+    @with_override_cursor
+    def validate(self, db, model_names=list(), xtflog_path='', configfile_path=''):
+        # Check prerequisite
+        if not self.get_full_java_exe_path():
+            res_java, msg_java = self.configure_java()
+            if not res_java:
+                return res_java, msg_java
+
+        # Configure command parameters
+        db_factory = self.dbs_supported.get_db_factory(db.engine)
+        configuration = self.get_validate_configuration(db_factory, db, model_names, xtflog_path, configfile_path)
+
+        # Configure run
+        validator = ili2dbvalidator.Ili2DBValidator()
+        validator.tool = db_factory.get_model_baker_db_ili_mode()
+        validator.process_started.connect(self.on_process_started)
+        validator.stderr.connect(self.on_stderr)
+        validator.configuration = configuration
+
+        # Run!
+        res = True
+        msg = QCoreApplication.translate("Ili2DB", "Data successfully validated from DB '{}'!").format(db.get_description_conn_string())
+        self._log = ''
+        self.logger.status(QCoreApplication.translate("Ili2Db", "Validating data from '{}' DB...").format(db.get_description_conn_string()))
+        try:
+            res_validation = validator.run()
+            if (res_validation != ili2dbvalidator.Ili2DBValidator.SUCCESS
+                    and res_validation != ili2dbvalidator.Ili2DBValidator.SUCCESS_WITH_VALIDATION_ERRORS):
+                msg = QCoreApplication.translate("Ili2DB",
+                                                 "An error occurred when validating data from a DB (check the QGIS log panel).")
+                res = False
+                QgsMessageLog.logMessage(self._log, QCoreApplication.translate("Ili2DB", "Validate data from DB"),
+                                         Qgis.Critical)
+            else:
+                self.logger.info(__name__, msg)
         except JavaNotFoundError:
             msg = QCoreApplication.translate("Ili2DB",
                                              "Java {} could not be found. You can configure the JAVA_HOME environment variable manually, restart QGIS and try again.").format(

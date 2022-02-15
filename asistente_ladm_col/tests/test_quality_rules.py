@@ -13,12 +13,8 @@ from asistente_ladm_col.utils.crs_utils import get_crs_authid
 start_app()  # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.config.general_config import DEFAULT_TOLERANCE_VALUE
-from asistente_ladm_col.logic.quality.quality_rule_engine import QualityRuleEngine
-from asistente_ladm_col.logic.quality.quality_rule_layer_manager import QualityRuleLayerManager
+from asistente_ladm_col.core.quality_rules.quality_rule_engine import QualityRuleEngine
 from asistente_ladm_col.config.config_db_supported import ConfigDBsSupported
-from asistente_ladm_col.logic.quality.quality_rules import QualityRules
-from asistente_ladm_col.logic.quality.point_quality_rules import PointQualityRules
-from asistente_ladm_col.logic.quality.polygon_quality_rules import PolygonQualityRules
 from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             import_processing,
                                             get_test_copy_path,
@@ -28,34 +24,13 @@ from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
                                             restore_schema,
                                             unload_qgis_model_baker)
 from asistente_ladm_col.lib.geometry import GeometryUtils
-from asistente_ladm_col.config.enums import EnumQualityRule
-from asistente_ladm_col.lib.quality_rule.quality_rule_manager import QualityRuleManager
-from asistente_ladm_col.config.quality_rules_config import (QUALITY_RULE_ERROR_CODE_E200401,
-                                                            QUALITY_RULE_ERROR_CODE_E200402,
-                                                            QUALITY_RULE_ERROR_CODE_E200403,
-                                                            QUALITY_RULE_ERROR_CODE_E100301,
-                                                            QUALITY_RULE_ERROR_CODE_E100302,
-                                                            QUALITY_RULE_ERROR_CODE_E100303,
-                                                            QUALITY_RULE_ERROR_CODE_E300401,
-                                                            QUALITY_RULE_ERROR_CODE_E300402,
-                                                            QUALITY_RULE_ERROR_CODE_E300403,
-                                                            QUALITY_RULE_ERROR_CODE_E300404,
-                                                            QUALITY_RULE_ERROR_CODE_E300405,
-                                                            QUALITY_RULE_ERROR_CODE_E200301,
-                                                            QUALITY_RULE_ERROR_CODE_E200302,
-                                                            QUALITY_RULE_ERROR_CODE_E200303,
-                                                            QUALITY_RULE_ERROR_CODE_E200304,
-                                                            QUALITY_RULE_ERROR_CODE_E200305,
-                                                            QUALITY_RULE_ERROR_CODE_E300902,
-                                                            QUALITY_RULE_ERROR_CODE_E301002,
-                                                            QUALITY_RULE_ERROR_CODE_E301102)
 
 import_processing()
 import processing
 
 
 @unittest.skip("Until we've finished with the refactor of quality rules...")
-class TesQualityRules(unittest.TestCase):
+class TestQualityRules(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -893,7 +868,7 @@ class TesQualityRules(unittest.TestCase):
 
         # Tolerance: 1mm
         print("INFO: Testing with 1mm of tolerance...")
-        quality_rule_engine.initialize(db_gpkg, list_rules, 1, False)
+        quality_rule_engine.initialize(db_gpkg, list_rules, 1, clear_informality_cache=False)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res.result(rule_key).level, Qgis.Critical)
@@ -908,7 +883,7 @@ class TesQualityRules(unittest.TestCase):
 
         # Tolerance: 2mm
         print("INFO: Testing with 2mm of tolerance...")
-        quality_rule_engine.initialize(db_gpkg, list_rules, 2, False)
+        quality_rule_engine.initialize(db_gpkg, list_rules, 2, clear_informality_cache=False)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res.result(rule_key).level, Qgis.Critical)
@@ -953,7 +928,7 @@ class TesQualityRules(unittest.TestCase):
 
         # Tolerance: 1mm
         print("INFO: Testing with 1mm of tolerance...")
-        quality_rule_engine.initialize(db_gpkg, dict_rules, 1, False)
+        quality_rule_engine.initialize(db_gpkg, dict_rules, 1, clear_informality_cache=False)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res.result(rule_key).level, Qgis.Critical)
@@ -968,7 +943,7 @@ class TesQualityRules(unittest.TestCase):
 
         # Tolerance: 2mm
         print("INFO: Testing with 2mm of tolerance...")
-        quality_rule_engine.initialize(db_gpkg, dict_rules, 2, False)
+        quality_rule_engine.initialize(db_gpkg, dict_rules, 2, clear_informality_cache=False)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res.result(rule_key).level, Qgis.Critical)
@@ -1006,7 +981,7 @@ class TesQualityRules(unittest.TestCase):
 
         # Tolerance: 1mm
         print("INFO: Testing with 1mm of tolerance...")
-        quality_rule_engine.initialize(db_gpkg, dict_rules, 1, False)
+        quality_rule_engine.initialize(db_gpkg, dict_rules, 1, clear_informality_cache=False)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res.result(rule_key).level, Qgis.Critical)
@@ -1020,7 +995,7 @@ class TesQualityRules(unittest.TestCase):
 
         # Tolerance: 2mm
         print("INFO: Testing with 2mm of tolerance...")
-        quality_rule_engine.initialize(db_gpkg, dict_rules, 2, False)
+        quality_rule_engine.initialize(db_gpkg, dict_rules, 2, clear_informality_cache=False)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res.result(rule_key).level, Qgis.Critical)

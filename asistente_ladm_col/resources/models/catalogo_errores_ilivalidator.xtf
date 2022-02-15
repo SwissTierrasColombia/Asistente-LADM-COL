@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><TRANSFER xmlns="http://www.interlis.ch/INTERLIS2.3">
+<HEADERSECTION SENDER="xls2xtf-1.0.2-20160616" VERSION="2.3"><MODELS><MODEL NAME="CatalogueObjects_V1" VERSION="2011-08-30" URI="http://www.geo.admin.ch"></MODEL><MODEL NAME="CatalogueObjectTrees_V1" VERSION="2011-08-30" URI="http://www.geo.admin.ch"></MODEL><MODEL NAME="ISO19107_PLANAS_V3_0" VERSION="2016-03-07" URI="http://www.swisslm.ch/models"></MODEL><MODEL NAME="Errores_Calidad_V0_1" VERSION="2021-09-21" URI="mailto:gcarrillo@linuxmail.org"></MODEL></MODELS></HEADERSECTION>
+<DATASECTION>
+<Errores_Calidad_V0_1.Catalogos_Errores BID="1">
+<Errores_Calidad_V0_1.Catalogos_Errores.TipoError TID="e7ee9744-5f79-4319-906b-f2e59dc1b2ec"><Codigo>ILIVALIDATOR-R0001-E01</Codigo><Descripcion>Errores de integridad de los datos respecto al modelo</Descripcion></Errores_Calidad_V0_1.Catalogos_Errores.TipoError>
+<Errores_Calidad_V0_1.Catalogos_Errores.TipoRegla TID="bb65762c-59c7-477c-ad01-78ebdc3d7bd4"><Codigo>ILIVALIDATOR-R0001</Codigo><Descripcion>Los datos deben corresponder a su modelo (iliValidator)</Descripcion></Errores_Calidad_V0_1.Catalogos_Errores.TipoRegla>
+</Errores_Calidad_V0_1.Catalogos_Errores>
+</DATASECTION>
+</TRANSFER>

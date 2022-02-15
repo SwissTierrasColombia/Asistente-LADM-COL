@@ -1,0 +1,184 @@
+INTERLIS 2.3;
+
+MODEL Errores_Calidad_V0_1 (es)
+AT "mailto:gcarrillo@linuxmail.org"
+VERSION "2021-09-21"  =
+  IMPORTS CatalogueObjects_V1,ISO19107_PLANAS_V3_0;
+
+  TOPIC Catalogos_Errores
+  EXTENDS CatalogueObjects_V1.Catalogues =
+    OID AS INTERLIS.UUIDOID;
+
+    !!@ ili2db.dispName = "Tipo de Error"
+    CLASS TipoError
+    EXTENDS CatalogueObjects_V1.Catalogues.Item =
+      !!@ ili2db.dispName = "Código"
+      Codigo : MANDATORY TEXT*255;
+      !!@ ili2db.dispName = "Descripción"
+      Descripcion : MANDATORY TEXT;
+      UNIQUE Codigo;
+    END TipoError;
+
+    !!@ ili2db.dispName = "Tipo de Regla de Calidad"
+    CLASS TipoRegla
+    EXTENDS CatalogueObjects_V1.Catalogues.Item =
+      !!@ ili2db.dispName = "Código"
+      Codigo : MANDATORY TEXT*255;
+      !!@ ili2db.dispName = "Descripción"
+      Descripcion : MANDATORY TEXT;
+      /** Nombre de la entidad que definió este tipo de regla. En este campo puede escribirse el nombre completo de la entidad y/o su sigla/acrónimo, pues este dato puede usarse para facilitar la búsqueda de reglas de calidad.
+       */
+      !!@ ili2db.dispName = "Entidad"
+      Entidad : TEXT*1024;
+      UNIQUE Codigo;
+    END TipoRegla;
+
+    !!@ ili2db.dispName = "Tipo de Error (Ref)"
+    STRUCTURE TipoErrorRef
+    EXTENDS CatalogueObjects_V1.Catalogues.CatalogueReference =
+      Reference (EXTENDED) : MANDATORY REFERENCE TO (EXTERNAL) Errores_Calidad_V0_1.Catalogos_Errores.TipoError;
+    END TipoErrorRef;
+
+    !!@ ili2db.dispName = "Tipo de Regla de Calidad (Ref)"
+    STRUCTURE TipoReglaRef
+    EXTENDS CatalogueObjects_V1.Catalogues.CatalogueReference =
+      Reference (EXTENDED) : MANDATORY REFERENCE TO (EXTERNAL) Errores_Calidad_V0_1.Catalogos_Errores.TipoRegla;
+    END TipoReglaRef;
+
+  END Catalogos_Errores;
+
+  TOPIC Topic_Errores =
+    OID AS INTERLIS.UUIDOID;
+    DEPENDS ON Errores_Calidad_V0_1.Catalogos_Errores;
+
+    DOMAIN
+
+      /** Listado de opciones para definir estado de un error detectado. Se recomienda solo para propósitos de despliegue.
+       */
+      !!@ ili2db.dispName = "Estado del error (despliegue)"
+      EstadoError = (
+        /** Indica si un error ha sido corregido durante una sesión de corrección de errores. Solo usarlo para propósitos de despliegue, pues la corrección debe hacerse en los datos originales.
+         */
+        !!@ ili2db.dispName = "Corregido"
+        Corregido,
+        /** Indica un error que no ha sido corregido ni ha sido marcado como excepción.
+         */
+        !!@ ili2db.dispName = "Error"
+        Error,
+        /** Indica si un error se marcó como excepción. Esto permite visualizar excepciones aún cuando no se cuente con los datos originales. Solo usarlo para propósitos de despliegue, pues las excepciones se almacenan en su propio modelo.
+         */
+        !!@ ili2db.dispName = "Excepción"
+        Excepcion
+      );
+
+    !!@ ili2db.dispName = "Errores Línea"
+    CLASS Linea =
+      !!@ ili2db.dispName = "Geometría"
+      geometria : MANDATORY ISO19107_PLANAS_V3_0.GM_MultiCurve3D;
+    END Linea;
+
+    !!@ ili2db.dispName = "Metadatos"
+    CLASS Metadatos =
+      /** Nombre del archivo fuente (ej. XTF) o nombre de la base de datos (ej. GeoPackage o PostgreSQL/PostGIS) y/o esquema desde la cual se validaron los datos.
+       */
+      !!@ ili2db.dispName = "Fuente de datos"
+      Fuente_Datos : MANDATORY TEXT*1024;
+      /** Fecha y hora local en la que se validaron los datos.
+       */
+      !!@ ili2db.dispName = "Fecha de validación"
+      Fecha_Validacion : MANDATORY FORMAT INTERLIS.XMLDateTime "2020-1-1T0:0:0.0" .. "2050-12-31T11:59:0.0";
+      /** Valor de tolerancia empleado para la validación (topológica). Este valor se especifica en metros.
+       */
+      !!@ ili2db.dispName = "Tolerancia"
+      Tolerancia : 0.000 .. 10.000 [INTERLIS.m];
+      /** Cadena con los códigos de las reglas validadas.
+       */
+      !!@ ili2db.dispName = "Reglas de calidad validadas"
+      Reglas_Validadas : TEXT*9999;
+      /** Cadena con las opciones o parámetros para cada regla validada.
+       */
+      !!@ ili2db.dispName = "Opciones por regla"
+      Opciones_Reglas : TEXT*9999;
+      /** Nombre de la herramienta empleada para realizar la validación de los datos. Por ejemplo: Asistente LADM-COL.
+       */
+      !!@ ili2db.dispName = "Herramienta de validación"
+      Herramienta_Validacion : TEXT*1024;
+      /** Nombre de la persona que validó los datos.
+       */
+      !!@ ili2db.dispName = "Persona que validó"
+      Persona_Que_Valido : TEXT*1024;
+    END Metadatos;
+
+    !!@ ili2db.dispName = "Errores Polígono"
+    CLASS Poligono =
+      !!@ ili2db.dispName = "Geometría"
+      geometria : MANDATORY ISO19107_PLANAS_V3_0.GM_MultiSurface3D;
+    END Poligono;
+
+    !!@ ili2db.dispName = "Errores Punto"
+    CLASS Punto =
+      !!@ ili2db.dispName = "Geometría"
+      geometria : MANDATORY ISO19107_PLANAS_V3_0.GM_Point3D;
+    END Punto;
+
+    STRUCTURE UUIDs =
+      !!@ ili2db.dispName = "UUIDOID"
+      UUIDOID : INTERLIS.UUIDOID;
+    END UUIDs;
+
+    !!@ ili2db.dispName = "Errores de Calidad"
+    CLASS ErrorCalidad =
+      /** Tipo de regla de calidad que se incumple.
+       */
+      !!@ ili2db.dispName = "Regla de Calidad"
+      Tipo_Regla : MANDATORY Errores_Calidad_V0_1.Catalogos_Errores.TipoReglaRef;
+      /** Tipo de error dentro de una regla de calidad que se incumple.
+       */
+      !!@ ili2db.dispName = "Tipo de error"
+      Tipo_Error : MANDATORY Errores_Calidad_V0_1.Catalogos_Errores.TipoErrorRef;
+      /** Listado de UUIDs referentes a los objetos que tienen error. En general el listado tendrá un elemento.
+       */
+      !!@ ili2db.dispName = "Objetos con error"
+      !!@ ili2db.mapping="ARRAY "
+      Id_Objetos : BAG {1..*} OF Errores_Calidad_V0_1.Topic_Errores.UUIDs;
+      /** Listado de UUIDs de objetos relacionados que permiten tener un contexto más detallado del error. Por ejemplo, puede ser un listado de UUIDs de objetos de una clase B, si se trata de una validación de topología de la clase A con la clase B.
+       */
+      !!@ ili2db.dispName = "Objetos relacionados"
+      !!@ ili2db.mapping="ARRAY "
+      Id_Objetos_Relacionados : BAG {0..*} OF Errores_Calidad_V0_1.Topic_Errores.UUIDs;
+      /** Datos adicionales a los detalles del error. Por ejemplo: Conteo de registros superpuestos. Se recomienda almacenarlos como JSON.
+       */
+      !!@ ili2db.dispName = "Valores relacionados"
+      Valores : TEXT;
+      /** Nombre calificado de clase o topic del modelo de INTERLIS.
+       */
+      !!@ ili2db.dispName = "Nombre ili Objetos"
+      Nombre_ili_Objetos : TEXT*1024;
+      /** Detalles técnicos del error.
+       */
+      !!@ ili2db.dispName = "Detalles"
+      Detalles : TEXT*9999;
+      /** Define el estado de un error detectado. Se recomienda solo para propósitos de despliegue.
+       */
+      !!@ ili2db.dispName = "Estado del error (despliegue)"
+      EstadoError : MANDATORY EstadoError;
+    END ErrorCalidad;
+
+    ASSOCIATION Error_Linea =
+      Linea_Relacionada -- {0..1} Linea;
+      Error_Relacionado -- {1} ErrorCalidad;
+    END Error_Linea;
+
+    ASSOCIATION Error_Poligono =
+      Poligono_Relacionado -- {0..1} Poligono;
+      Error_Relacionado -- {1} ErrorCalidad;
+    END Error_Poligono;
+
+    ASSOCIATION Error_Punto =
+      Punto_Relacionado -- {0..1} Punto;
+      Error_Relacionado -- {1} ErrorCalidad;
+    END Error_Punto;
+
+  END Topic_Errores;
+
+END Errores_Calidad_V0_1.

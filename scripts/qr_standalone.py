@@ -171,7 +171,7 @@ print("[INFO] Model Baker initialized!")
 
 from asistente_ladm_col.asistente_ladm_col_plugin import AsistenteLADMCOLPlugin
 from asistente_ladm_col.app_interface import AppInterface
-from asistente_ladm_col.logic.quality.quality_rule_engine import QualityRuleEngine
+from asistente_ladm_col.core.quality_rules.quality_rule_engine import QualityRuleEngine
 from asistente_ladm_col.config.enums import EnumQualityRule
 from asistente_ladm_col.utils.qt_utils import export_title_text_to_pdf
 
@@ -194,17 +194,6 @@ res_tc, code, msg = db.test_connection()  # To initialize DBMappingRegistry obj.
 if not res_tc:
     raise Exception("Base de datos inválida!\n\t{}".format(msg))
 
-def get_qr_key(key):
-    if key.startswith('1'):
-        return EnumQualityRule.Point(int(key))
-    elif key.startswith('2'):
-        return EnumQualityRule.Line(int(key))
-    elif key.startswith('3'):
-        return EnumQualityRule.Polygon(int(key))
-    elif key.startswith('4'):
-        return EnumQualityRule.Logic(int(key))
-
-quality_rules = [get_qr_key(k) for k in quality_rules]
 qr_engine = QualityRuleEngine(db, quality_rules, TOLERANCE)
 
 
@@ -215,18 +204,17 @@ qr_engine = QualityRuleEngine(db, quality_rules, TOLERANCE)
 print("\n[INFO] Testing {} quality rules with {}mm of tolerance...".format(
     len(quality_rules),
     TOLERANCE))
-res = qr_engine.validate_quality_rules()
+res, msg, qr_res = qr_engine.validate_quality_rules()
 
 
 # ------------------------------------------------------------------------------
 # ------------------------------- PREPARE RESULTS ------------------------------
 # ------------------------------------------------------------------------------
 
-print(res.result(quality_rules[0]).msg, res.result(quality_rules[0]).level)
 print("\n[INFO] Results can be found at '{}'!".format(OUTPUT_DIR))
 
 # GeoPackage (only if at least 1 error is found)
-error_layers = res.all_error_layers()
+error_layers = qr_res.all_error_layers()
 if error_layers:
     gpkg_filepath = os.path.join(OUTPUT_DIR, 
                                  "Reglas_de_Calidad_{}.gpkg".format(TIMESTAMP))

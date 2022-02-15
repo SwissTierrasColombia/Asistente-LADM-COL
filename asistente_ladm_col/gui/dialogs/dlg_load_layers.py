@@ -65,25 +65,25 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
         for name, layer_list in LayerConfig.get_layer_sets(self.names, self.app.core.get_active_models_per_db(db)).items():
             self.cbo_select_predefined_tables.addItem(name, layer_list)
 
-        self.cbo_select_predefined_tables.currentIndexChanged.connect(self.select_predefined_changed)
+        self.cbo_select_predefined_tables.currentIndexChanged.connect(self.__select_predefined_changed)
 
         # Set connections
         self.buttonBox.accepted.connect(self.accepted)
         self.buttonBox.rejected.connect(self.rejected)
-        self.buttonBox.helpRequested.connect(self.show_help)
-        self.txt_search_text.textChanged.connect(self.search_text_changed)
-        self.chk_show_domains.toggled.connect(self.show_table_type_changed)
-        self.chk_show_structures.toggled.connect(self.show_table_type_changed)
-        self.chk_show_associations.toggled.connect(self.show_table_type_changed)
-        self.trw_layers.itemSelectionChanged.connect(self.selection_changed)
+        self.buttonBox.helpRequested.connect(self.__show_help)
+        self.txt_search_text.textChanged.connect(self.__search_text_changed)
+        self.chk_show_domains.toggled.connect(self.__show_table_type_changed)
+        self.chk_show_structures.toggled.connect(self.__show_table_type_changed)
+        self.chk_show_associations.toggled.connect(self.__show_table_type_changed)
+        self.trw_layers.itemSelectionChanged.connect(self.__selection_changed)
 
         # Reload latest settings
-        self.restore_settings()
+        self.__restore_settings()
 
         # Load layers from the db
-        self.load_available_layers()
+        self.__load_available_layers()
 
-    def load_available_layers(self):
+    def __load_available_layers(self):
         # Call qgis model baker tables_info and fill the tree
         tables_info = self.app.core.get_cached_layers()
         self.models_tree = dict()
@@ -99,21 +99,21 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
                 else:
                     self.models_tree[model][record[QueryNames.TABLE_ALIAS] or record[QueryNames.TABLE_NAME_MODEL_BAKER]] = record
 
-        self.update_available_layers()
+        self.__update_available_layers()
 
-    def update_available_layers(self):
+    def __update_available_layers(self):
         self.trw_layers.setUpdatesEnabled(False)  # Don't render until we're ready
 
         # Grab some context data
         show_domains = self.chk_show_domains.isChecked()
         show_structures = self.chk_show_structures.isChecked()
         show_associations = self.chk_show_associations.isChecked()
-        top_level_items_expanded_info = []
+        top_level_items_expanded_info = dict()
         for i in range(self.trw_layers.topLevelItemCount()):
-            top_level_items_expanded_info.append(self.trw_layers.topLevelItem(i).isExpanded())
+            top_level_items_expanded_info[self.trw_layers.topLevelItem(i).text(0)] = self.trw_layers.topLevelItem(i).isExpanded()
 
         # Save selection
-        self.update_selected_items()
+        self.__update_selected_items()
 
         # Iterate models adding children
         self.trw_layers.blockSignals(True) # We don't want to get itemSelectionChanged here
@@ -126,7 +126,7 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
             model_item = QTreeWidgetItem([model])
 
             # Filter by search text
-            list_tables = self.filter_tables_by_search_text(self.models_tree[model].keys(), self.txt_search_text.text())
+            list_tables = self.__filter_tables_by_search_text(self.models_tree[model].keys(), self.txt_search_text.text())
             sorted_tables = sorted(list_tables)
 
             for table in sorted_tables:
@@ -165,8 +165,9 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
 
                 children.append(table_item)
 
-            model_item.addChildren(children)
-            self.trw_layers.addTopLevelItem(model_item)
+            if children:
+                model_item.addChildren(children)
+                self.trw_layers.addTopLevelItem(model_item)
 
         # Set selection
         iterator = QTreeWidgetItemIterator(self.trw_layers, QTreeWidgetItemIterator.Selectable)
@@ -184,26 +185,22 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
         # Set expand taking previous states into account
         for i in range(self.trw_layers.topLevelItemCount()):
             self.trw_layers.topLevelItem(i).setFlags(Qt.ItemIsEnabled) # Not selectable
-            self.trw_layers.topLevelItem(i).setExpanded(top_level_items_expanded_info[i] if top_level_items_expanded_info else True)
+            self.trw_layers.topLevelItem(i).setExpanded(top_level_items_expanded_info.get(self.trw_layers.topLevelItem(i).text(0), True))
 
         self.trw_layers.setUpdatesEnabled(True) # Now render!
 
-    def filter_tables_by_search_text(self, list_tables, search_text):
+    def __filter_tables_by_search_text(self, list_tables, search_text):
         res = list(list_tables)[:]
         search_text = search_text.lower()
         if search_text:
-            if len(search_text) == 1:
-                for table in list_tables:
-                    if not table.lower().startswith(search_text):
-                        res.remove(table)
-            elif len(search_text) > 1:
+            if len(search_text) > 1:
                 for table in list_tables:
                     if search_text not in table.lower():
                         res.remove(table)
 
         return res
 
-    def update_selected_items(self):
+    def __update_selected_items(self):
         iterator = QTreeWidgetItemIterator(self.trw_layers, QTreeWidgetItemIterator.Selectable)
         while iterator.value():
             item = iterator.value()
@@ -217,15 +214,15 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
 
             iterator += 1
 
-    def search_text_changed(self, text):
-        self.update_available_layers()
+    def __search_text_changed(self, text):
+        self.__update_available_layers()
 
-    def show_table_type_changed(self, state):
-        self.update_available_layers()
+    def __show_table_type_changed(self, state):
+        self.__update_available_layers()
 
     def accepted(self):
-        self.save_settings()
-        self.update_selected_items() # Take latest selection into account
+        self.__save_settings()
+        self.__update_selected_items() # Take latest selection into account
 
         if len(self.selected_items_dict):
             # Load selected layers
@@ -241,19 +238,19 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
     def rejected(self):
         self.selected_items_dict = dict()
 
-    def save_settings(self):
+    def __save_settings(self):
         settings = QSettings()
         settings.setValue('Asistente-LADM-COL/load_layers_dialog/show_domains', self.chk_show_domains.isChecked())
         settings.setValue('Asistente-LADM-COL/load_layers_dialog/show_structures', self.chk_show_structures.isChecked())
         settings.setValue('Asistente-LADM-COL/load_layers_dialog/show_associations', self.chk_show_associations.isChecked())
 
-    def restore_settings(self):
+    def __restore_settings(self):
         settings = QSettings()
         self.chk_show_domains.setChecked(settings.value('Asistente-LADM-COL/load_layers_dialog/show_domains', False, bool))
         self.chk_show_structures.setChecked(settings.value('Asistente-LADM-COL/load_layers_dialog/show_structures', False, bool))
         self.chk_show_associations.setChecked(settings.value('Asistente-LADM-COL/load_layers_dialog/show_associations', False, bool))
 
-    def select_predefined_changed(self, index):
+    def __select_predefined_changed(self, index):
         layer_list = self.cbo_select_predefined_tables.currentData()
 
         # Clear layer selection
@@ -272,7 +269,7 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
                     select_layers_list.append(table_name_in_tree)
                     self.selected_items_dict[table_name_in_tree] = record
 
-        self.update_selected_count_label()
+        self.__update_selected_count_label()
 
         # Select predefined layers in the view (some layers might not be visible)
         if select_layers_list:
@@ -291,7 +288,7 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
 
             self.trw_layers.blockSignals(False)
 
-    def update_selected_count_label(self):
+    def __update_selected_count_label(self):
         selected_count = len(self.selected_items_dict)
         if selected_count == 0:
             text = QCoreApplication.translate("LoadLayersDialog",
@@ -305,10 +302,10 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
 
         self.lbl_selected_count.setText(text)
 
-    def selection_changed(self):
+    def __selection_changed(self):
         # Update internal dict and dialog label
-        self.update_selected_items()
-        self.update_selected_count_label()
+        self.__update_selected_items()
+        self.__update_selected_count_label()
 
-    def show_help(self):
+    def __show_help(self):
         show_plugin_help("load_layers")

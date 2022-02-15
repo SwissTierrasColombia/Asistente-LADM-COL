@@ -166,12 +166,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
 
     def _search_data_by_plot(self, plot_feature):
         plot_t_id = plot_feature[self._controller.t_id_name()]
-        self.canvas.flashFeatureIds(self._controller.plot_layer(),
-                                    [plot_feature.id()],
-                                    QColor(255, 0, 0, 255),
-                                    QColor(255, 0, 0, 0),
-                                    flashes=1,
-                                    duration=500)
+        self.app.gui.flash_features(self._controller.plot_layer(), [plot_feature.id()])
 
         with OverrideCursor(Qt.WaitCursor):
             if not self.isVisible():

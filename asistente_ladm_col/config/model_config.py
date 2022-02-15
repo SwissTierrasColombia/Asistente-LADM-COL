@@ -3,13 +3,16 @@ from copy import deepcopy
 from qgis.PyQt.QtCore import QCoreApplication
 
 from asistente_ladm_col.config.db_mapping_config import DBMappingConfig
+from asistente_ladm_col.config.general_config import (ILIVALIDATOR_ERRORS_CATALOG_PATH,
+                                                      IGAC_ERRORS_CATALOG_PATH)
 from asistente_ladm_col.config.keys.common import (MODEL_ALIAS,
                                                    MODEL_IS_SUPPORTED,
                                                    MODEL_SUPPORTED_VERSION,
                                                    MODEL_HIDDEN_BY_DEFAULT,
                                                    MODEL_CHECKED_BY_DEFAULT,
                                                    MODEL_MAPPING,
-                                                   MODEL_ILI2DB_PARAMETERS)
+                                                   MODEL_ILI2DB_PARAMETERS,
+                                                   MODEL_CATALOGS)
 from asistente_ladm_col.config.keys.ili2db_keys import *
 from asistente_ladm_col.config.ladm_names import LADMNames
 
@@ -88,6 +91,24 @@ class ModelConfig:
                 MODEL_HIDDEN_BY_DEFAULT: True,
                 MODEL_CHECKED_BY_DEFAULT: False,
                 MODEL_MAPPING: db_mapping_config.get_model_mapping(LADMNames.ISO19107_MODEL_KEY)
+            },
+            LADMNames.CATALOG_OBJECTS_MODEL_KEY: {
+                MODEL_ALIAS: QCoreApplication.translate("TranslatableConfigStrings", "Catalog objects"),
+                MODEL_IS_SUPPORTED: True,
+                MODEL_SUPPORTED_VERSION: "1",
+                MODEL_HIDDEN_BY_DEFAULT: True,
+                MODEL_CHECKED_BY_DEFAULT: False,
+                MODEL_MAPPING: dict()
+            },
+            LADMNames.QUALITY_ERROR_MODEL_KEY: {
+                MODEL_ALIAS: QCoreApplication.translate("TranslatableConfigStrings", "Quality errors"),
+                MODEL_IS_SUPPORTED: True,
+                MODEL_SUPPORTED_VERSION: "0.1",
+                MODEL_HIDDEN_BY_DEFAULT: False,
+                MODEL_CHECKED_BY_DEFAULT: False,
+                MODEL_MAPPING: db_mapping_config.get_model_mapping(LADMNames.QUALITY_ERROR_MODEL_KEY),
+                MODEL_CATALOGS: {'iliValidator': ILIVALIDATOR_ERRORS_CATALOG_PATH,
+                                 'IGAC': IGAC_ERRORS_CATALOG_PATH}
             },
             LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY: {
                 MODEL_ALIAS: QCoreApplication.translate("TranslatableConfigStrings", "Field data capture"),

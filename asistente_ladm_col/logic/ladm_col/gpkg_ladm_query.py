@@ -238,12 +238,14 @@ class GPKGLADMQuery(QGISLADMQuery):
 
     @staticmethod
     def get_parcels_with_repeated_domain_right(db):
-        query = """SELECT conteo.{col_baunit_rrr_t_unit_f} AS {t_id}, {t_ili_tid}
-                   FROM {lc_parcel_t}, (SELECT {col_baunit_rrr_t_unit_f}, count({lc_right_t_type_f}) as dominios
+        query = """SELECT {t_ili_tid}, conteo.dominios
+                   FROM {lc_parcel_t}, (SELECT {col_baunit_rrr_t_unit_f},
+                                               count({lc_right_t_type_f}) as conteo,
+                                               group_concat({t_ili_tid}, ';') as dominios
                                                             FROM {lc_right_t}
                                                             WHERE {lc_right_t_type_f} = (SELECT {t_id} FROM {lc_right_type_d} WHERE {ilicode} = '{lc_right_type_d_ilicode_f_ownership_v}')
                                                             GROUP BY {col_baunit_rrr_t_unit_f}) as conteo
-                   WHERE {t_id} = conteo.{col_baunit_rrr_t_unit_f} and conteo.dominios > 1
+                   WHERE {t_id} = conteo.{col_baunit_rrr_t_unit_f} and conteo.conteo > 1
                 """.format(t_id=db.names.T_ID_F,
                            t_ili_tid=db.names.T_ILI_TID_F,
                            ilicode=db.names.ILICODE_F,
