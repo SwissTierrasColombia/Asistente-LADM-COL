@@ -9,15 +9,13 @@ start_app() # need to start before asistente_ladm_col.tests.utils
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.tests.utils import (get_gpkg_conn,
                                             get_pg_conn,
-                                            restore_schema,
-                                            import_qgis_model_baker, unload_qgis_model_baker)
+                                            restore_schema)
 
 
 class TestGetModels(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        import_qgis_model_baker()
         cls.ladmcol_models = LADMColModelRegistry()
 
     def test_pg_get_models(self):
@@ -92,7 +90,7 @@ class TestGetModels(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        unload_qgis_model_baker()
+        pass
 
 if __name__ == '__main__':
     nose2.main()

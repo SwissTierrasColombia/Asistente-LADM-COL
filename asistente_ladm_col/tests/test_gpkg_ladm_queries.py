@@ -11,8 +11,6 @@ from asistente_ladm_col.tests.utils import (get_copy_gpkg_conn,
                                             get_field_values_by_key_values,
                                             standardize_query_results,
                                             import_asistente_ladm_col,
-                                            import_qgis_model_baker,
-                                            unload_qgis_model_baker,
                                             import_processing)
 from asistente_ladm_col.logic.ladm_col.qgis_ladm_query import QGISLADMQuery
 
@@ -31,7 +29,6 @@ class TestGPKGLADMQueries(unittest.TestCase):
     def setUpClass(cls):
         import_processing()
         import_asistente_ladm_col() # Import plugin
-        import_qgis_model_baker()
         cls.db_gpkg = get_copy_gpkg_conn('test_ladm_col_queries_qpkg')
 
         # We can't use the restored database connection because the expression functions use the one in the plugin;
@@ -116,9 +113,8 @@ class TestGPKGLADMQueries(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        print('Closing connection and unloading Model Baker...')
+        print('Closing connection...')
         cls.db_gpkg.conn.close()
-        unload_qgis_model_baker()
 
 
 if __name__ == '__main__':

@@ -10,9 +10,7 @@ from qgis.testing import (unittest,
 
 start_app()  # need to start before asistente_ladm_col.tests.utils
 
-from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
-                                            unload_qgis_model_baker,
-                                            get_field_values_by_key_values,
+from asistente_ladm_col.tests.utils import (get_field_values_by_key_values,
                                             get_copy_gpkg_conn)
 from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 
@@ -21,8 +19,6 @@ class TestLADMData(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        import_qgis_model_baker()
-
         # DB with single child model
         cls.db_gpkg = get_copy_gpkg_conn('test_ladm_survey_model_gpkg')
         res, code, msg = cls.db_gpkg.test_connection()
@@ -259,7 +255,6 @@ class TestLADMData(unittest.TestCase):
     def tearDownClass(cls):
         print("\nINFO: Closing open db connections; unloading Model Baker")
         cls.db_gpkg.conn.close()
-        unload_qgis_model_baker()
 
 
 if __name__ == '__main__':

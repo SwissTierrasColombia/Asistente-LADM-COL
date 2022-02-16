@@ -11,15 +11,15 @@ from qgis.testing import unittest, start_app
 from asistente_ladm_col.app_interface import AppInterface
 
 start_app()
-from QgisModelBaker.libqgsprojectgen.db_factory.gpkg_command_config_manager import GpkgCommandConfigManager
-from QgisModelBaker.libqgsprojectgen.generator.generator import Generator
-from QgisModelBaker.libili2db.ili2dbconfig import (SchemaImportConfiguration,
-                                                   ImportDataConfiguration,
-                                                   ExportConfiguration,
-                                                   BaseConfiguration)
-from QgisModelBaker.libili2db import (iliimporter,
-                                      iliexporter)
-from QgisModelBaker.libili2db.globals import DbIliMode
+from asistente_ladm_col.lib.model_baker_lib.db_factory.gpkg_command_config_manager import GpkgCommandConfigManager
+from asistente_ladm_col.lib.model_baker_lib.generator.generator import Generator
+from asistente_ladm_col.lib.ili.ili2dbconfig import (SchemaImportConfiguration,
+                                                               ImportDataConfiguration,
+                                                               ExportConfiguration,
+                                                               BaseConfiguration)
+from asistente_ladm_col.lib.ili import (iliimporter,
+                                        iliexporter)
+from asistente_ladm_col.lib.ili.enums import DbIliMode
 
 from asistente_ladm_col.config.general_config import (TOML_FILE_DIR,
                                                       DEFAULT_SRS_AUTH,
@@ -30,8 +30,6 @@ from asistente_ladm_col.tests.utils import (testdata_path,
                                             get_gpkg_conn_from_path,
                                             get_pg_conn,
                                             restore_schema,
-                                            import_qgis_model_baker,
-                                            unload_qgis_model_baker,
                                             MODELS_PATH,
                                             reset_db_mssql,
                                             get_mssql_conn, restore_schema_mssql)
@@ -46,7 +44,6 @@ class TestQgisModelBaker(unittest.TestCase):
 
         cls.app = AppInterface()
         cls.base_test_path = tempfile.mkdtemp()
-        import_qgis_model_baker()
 
         cls.ladmcol_models = LADMColModelRegistry()
 
@@ -460,7 +457,7 @@ class TestQgisModelBaker(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        unload_qgis_model_baker()
+        pass
 
 if __name__ == '__main__':
     nose2.main()

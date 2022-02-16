@@ -11,10 +11,8 @@ from asistente_ladm_col.app_interface import AppInterface
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
-from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
-                                            run_etl_model,
+from asistente_ladm_col.tests.utils import (run_etl_model,
                                             import_asistente_ladm_col,
-                                            unload_qgis_model_baker,
                                             import_processing,
                                             get_pg_conn,
                                             delete_features,
@@ -37,7 +35,6 @@ class TestCopy(unittest.TestCase):
     def setUpClass(cls):
         print("\nINFO: Setting up copy CSV points to DB validation...")
         print("INFO: Restoring databases to be used")
-        import_qgis_model_baker()
         import_asistente_ladm_col()
         cls.app = AppInterface()
         cls.app.core.initialize_ctm12()  # We need to initialize CTM12
@@ -239,7 +236,7 @@ class TestCopy(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        unload_qgis_model_baker()
+        pass
 
 
 if __name__ == '__main__':

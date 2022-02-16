@@ -11,9 +11,7 @@ from asistente_ladm_col.app_interface import AppInterface
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
-from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
-                                            unload_qgis_model_baker,
-                                            restore_schema,
+from asistente_ladm_col.tests.utils import (restore_schema,
                                             get_pg_conn,
                                             import_processing,
                                             delete_features,
@@ -27,8 +25,6 @@ class TestInsertFeaturesToLayer(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        import_qgis_model_baker()
-
         cls.app = AppInterface()
 
         restore_schema('test_ladm_cadastral_manager_data')
@@ -119,8 +115,7 @@ class TestInsertFeaturesToLayer(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        print("INFO: Unloading Model Baker")
-        unload_qgis_model_baker()
+        pass
 
 
 if __name__ == '__main__':

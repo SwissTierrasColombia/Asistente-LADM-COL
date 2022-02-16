@@ -9,9 +9,7 @@ from asistente_ladm_col.app_interface import AppInterface
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
-from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
-                                            unload_qgis_model_baker,
-                                            get_pg_conn,
+from asistente_ladm_col.tests.utils import (get_pg_conn,
                                             delete_features,
                                             restore_schema,
                                             run_etl_model)
@@ -29,7 +27,6 @@ class TestGeomsLoad(unittest.TestCase):
         print("\nINFO: Setting up copy layer With different Geometries to DB validation...")
 
         cls.app = AppInterface()
-        import_qgis_model_baker()
 
         # restore schemas
         print("INFO: Restoring databases to be used")
@@ -169,7 +166,6 @@ class TestGeomsLoad(unittest.TestCase):
         print("INFO: Closing open connections to databases")
         cls.db_distinct_geoms.conn.close()
         cls.db_pg.conn.close()
-        unload_qgis_model_baker()
 
 
 if __name__ == '__main__':

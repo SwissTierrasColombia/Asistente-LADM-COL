@@ -150,19 +150,6 @@ DICT_JAVA_DIR_NAME = {
     'Windows_64bit': 'jre1.8.0_231'
 }
 
-# Configure QGIS Model Baker Dependency
-QGIS_MODEL_BAKER_PLUGIN_NAME = "QgisModelBaker"
-QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION = "6.3.2.1"
-
-# If Asistente LADM-COL depends on a specific version of QGIS Model Baker
-#  (and only on that one), set to True
-QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION = True
-
-# If Asistente LADM-COL depends on a specific version of QGIS Model Baker
-#  (and only on that one), and it is not the latest release, then you can
-#  specify a download URL. If that's not the case, pass an empty string below
-QGIS_MODEL_BAKER_REQUIRED_VERSION_URL = 'https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.3.2.1/QgisModelBaker_6321.zip'  # 'https://github.com/opengisch/QgisModelBaker/releases/download/v6.3.2/QgisModelBaker.v6.3.2.zip'
-
 # Configure Map Swipe Tool Dependency
 MAP_SWIPE_TOOL_PLUGIN_NAME = "mapswipetool_plugin"
 MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION = "1.2"

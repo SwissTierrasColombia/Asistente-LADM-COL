@@ -73,10 +73,6 @@ from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       WIZARD_CREATE_PHYSICAL_ZONE_VALUATION,
                                                       WIZARD_CREATE_BUILDING_UNIT_VALUATION,
                                                       WIZARD_CREATE_BUILDING_UNIT_QUALIFICATION_VALUATION,
-                                                      QGIS_MODEL_BAKER_PLUGIN_NAME,
-                                                      QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
-                                                      QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION,
-                                                      QGIS_MODEL_BAKER_REQUIRED_VERSION_URL,
                                                       MAP_SWIPE_TOOL_PLUGIN_NAME,
                                                       MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION,
                                                       MAP_SWIPE_TOOL_EXACT_REQUIRED_VERSION,
@@ -136,7 +132,6 @@ from asistente_ladm_col.lib.db.db_connection_manager import ConnectionManager
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.decorators import (db_connection_required,
                                                  validate_if_wizard_is_open,
-                                                 qgis_model_baker_required,
                                                  activate_processing_plugin,
                                                  map_swipe_tool_required,
                                                  invisible_layers_and_groups_required,
@@ -188,10 +183,6 @@ class AsistenteLADMCOLPlugin(QObject):
         layer_tree_indicator_config.set_slot_caller(self)
 
         # Let's persist some dependency objects
-        self.qmb_plugin = PluginDependency(QGIS_MODEL_BAKER_PLUGIN_NAME,
-                                           QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
-                                           QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION,
-                                           QGIS_MODEL_BAKER_REQUIRED_VERSION_URL)
         self.mst_plugin = PluginDependency(MAP_SWIPE_TOOL_PLUGIN_NAME,
                                            MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION,
                                            MAP_SWIPE_TOOL_EXACT_REQUIRED_VERSION,
@@ -824,14 +815,12 @@ class AsistenteLADMCOLPlugin(QObject):
         dlg.exec_()
 
     @validate_if_wizard_is_open
-    @qgis_model_baker_required
     @db_connection_required
     @field_data_capture_model_required
     def show_allocate_parcels_field_data_capture(self, *args):
         self.show_field_data_capture_dockwidget(True)
 
     @validate_if_wizard_is_open
-    @qgis_model_baker_required
     @db_connection_required
     @field_data_capture_model_required
     def show_synchronize_field_data(self):
@@ -856,35 +845,30 @@ class AsistenteLADMCOLPlugin(QObject):
         self.app.gui.add_tabified_dock_widget(Qt.RightDockWidgetArea, dock_widget_field_data_capture)
 
     @validate_if_wizard_is_open
-    @qgis_model_baker_required
     @db_connection_required
     @survey_model_required
     def call_explode_boundaries(self, *args):
         self.toolbar.build_boundary(self.get_db_connection())
 
     @validate_if_wizard_is_open
-    @qgis_model_baker_required
     @db_connection_required
     @survey_model_required
     def call_topological_editing(self, *args):
         self.app.enable_topological_editing(self.get_db_connection())
 
     @validate_if_wizard_is_open
-    @qgis_model_baker_required
     @db_connection_required
     @survey_model_required
     def call_fill_topology_table_pointbfs(self, *args):
         self.toolbar.fill_topology_table_pointbfs(self.get_db_connection())
 
     @validate_if_wizard_is_open
-    @qgis_model_baker_required
     @db_connection_required
     @survey_model_required
     def call_fill_topology_tables_morebfs_less(self, *args):
         self.toolbar.fill_topology_tables_morebfs_less(self.get_db_connection())
 
     @validate_if_wizard_is_open
-    @qgis_model_baker_required
     @db_connection_required
     @survey_model_required
     @activate_processing_plugin
@@ -892,7 +876,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self.right_of_way.fill_right_of_way_relations(self.get_db_connection())
 
     @validate_if_wizard_is_open
-    @qgis_model_baker_required
     @db_connection_required
     @cadastral_cartography_model_required
     @survey_model_required
@@ -900,14 +883,12 @@ class AsistenteLADMCOLPlugin(QObject):
         self.report_generator.generate_report(self.get_db_connection(), ANT_MAP_REPORT)
 
     @validate_if_wizard_is_open
-    @qgis_model_baker_required
     @db_connection_required
     @survey_model_required
     def call_annex_17_report_generation(self, *args):
         self.report_generator.generate_report(self.get_db_connection(), ANNEX_17_REPORT)
 
     @validate_if_wizard_is_open
-    @qgis_model_baker_required
     @db_connection_required
     @survey_model_required
     @activate_processing_plugin
@@ -916,7 +897,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self._dlg.log_excel_show_message_emitted.connect(self.show_log_excel_button)
         self._dlg.exec_()
 
-    @qgis_model_baker_required
     @db_connection_required
     def call_fix_ladm_col_relations(self, *args):
         self.app.core.fix_ladm_col_relations(self.get_db_connection())  # Always for COLLECTED db
@@ -972,14 +952,12 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_plugin_manager(self):
         self.iface.actionManagePlugins().trigger()
 
-    @qgis_model_baker_required
     @db_connection_required
     def load_layers_from_qgis_model_baker(self, *args):
         dlg = LoadLayersDialog(self.get_db_connection(), self.main_window)
         dlg.exec_()
 
     @validate_if_wizard_is_open
-    @qgis_model_baker_required
     @db_connection_required
     @survey_model_required
     def show_queries(self, *args):
@@ -1016,7 +994,6 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @update_context_to_current_role
     @validate_if_wizard_is_open
-    @qgis_model_baker_required
     def show_dlg_import_schema(self, *args, **kwargs):
         """
         Can be called from 1) an action, 2) from a signal or 3) directly.
@@ -1060,7 +1037,6 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @update_context_to_current_role
     @validate_if_wizard_is_open
-    @qgis_model_baker_required
     def show_dlg_import_data(self, *args):
         from .gui.qgis_model_baker.dlg_import_data import DialogImportData
 
@@ -1080,7 +1056,6 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @update_context_to_current_role
     @validate_if_wizard_is_open
-    @qgis_model_baker_required
     def show_dlg_export_data(self, *args):
         from .gui.qgis_model_baker.dlg_export_data import DialogExportData
 
@@ -1114,7 +1089,6 @@ class AsistenteLADMCOLPlugin(QObject):
         dlg.exec_()
 
     @validate_if_wizard_is_open
-    @qgis_model_baker_required
     @db_connection_required
     @survey_model_required
     def show_wiz_point_cad(self, *args):
@@ -1178,7 +1152,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self.show_wizard(WIZARD_CREATE_COL_PARTY_CADASTRAL)
 
     @validate_if_wizard_is_open
-    @qgis_model_baker_required
     @db_connection_required
     @survey_model_required
     def show_dlg_group_party(self, *args):
@@ -1224,14 +1197,12 @@ class AsistenteLADMCOLPlugin(QObject):
         self.show_wizard(WIZARD_CREATE_SPATIAL_SOURCE_SURVEY)
 
     @validate_if_wizard_is_open
-    @qgis_model_baker_required
     @db_connection_required
     @survey_model_required
     def upload_source_files(self, *args):
         self.app.core.upload_source_files(self.get_db_connection())
 
     @validate_if_wizard_is_open
-    @qgis_model_baker_required
     @invisible_layers_and_groups_required
     @db_connection_required
     @activate_processing_plugin
@@ -1279,7 +1250,6 @@ class AsistenteLADMCOLPlugin(QObject):
         self.show_wizard(WIZARD_CREATE_PHYSICAL_ZONE_VALUATION)
 
     @validate_if_wizard_is_open
-    @qgis_model_baker_required
     @map_swipe_tool_required
     @db_connection_required
     @survey_model_required
@@ -1290,7 +1260,6 @@ class AsistenteLADMCOLPlugin(QObject):
             self.show_change_detection_dockwidget(False)  # all_parcels_mode is False, we want the per_parcel_mode instead
 
     @validate_if_wizard_is_open
-    @qgis_model_baker_required
     @map_swipe_tool_required
     @db_connection_required
     @survey_model_required
@@ -1342,7 +1311,6 @@ class AsistenteLADMCOLPlugin(QObject):
 
     @activate_processing_plugin
     @validate_if_wizard_is_open
-    @qgis_model_baker_required
     def show_wizard(self, wizard_name, *args, **kwargs):
 
         self.wiz = self.wizard_factory.get_wizard(self.iface, self.get_db_connection(), wizard_name, self)

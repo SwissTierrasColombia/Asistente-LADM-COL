@@ -21,12 +21,11 @@ from qgis.PyQt.QtCore import (QObject,
 from qgis.core import QgsProject
 
 from asistente_ladm_col.app_interface import AppInterface
-from asistente_ladm_col.config.general_config import (QGIS_MODEL_BAKER_PLUGIN_NAME,
-                                                      QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
-                                                      QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION)
 from asistente_ladm_col.config.layer_config import LayerConfig
 from asistente_ladm_col.config.query_names import QueryNames
 from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.lib.model_baker_lib.qgismodelbaker_lib import QgisModelBakerPluginLib
+from asistente_ladm_col.lib.model_baker_lib.utils.qgis_utils import get_suggested_index_for_layer
 from asistente_ladm_col.utils.quality_error_db_utils import QualityErrorDBUtils
 from asistente_ladm_col.utils.utils import is_plugin_version_valid
 
@@ -39,27 +38,12 @@ class QgisModelBakerUtils(QObject):
         from asistente_ladm_col.config.config_db_supported import ConfigDBsSupported
         self._dbs_supported = ConfigDBsSupported()
 
-    @staticmethod
-    def mb_version_valid():
-        return is_plugin_version_valid(QGIS_MODEL_BAKER_PLUGIN_NAME,
-                                       QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
-                                       QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION)
-
-    def log_invalid_version(self):
-        self.logger.critical(__name__,
-                             QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                        "The QGIS Model Baker plugin v{} is a prerequisite, install it before using LADM-COL Assistant.").format(
-                                 QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION))
+        self.__mb_lib = QgisModelBakerPluginLib()
 
     def get_generator(self, db):
-        if QgisModelBakerUtils.mb_version_valid():
-            tool = self._dbs_supported.get_db_factory(db.engine).get_model_baker_db_ili_mode()
+        tool = self._dbs_supported.get_db_factory(db.engine).get_model_baker_db_ili_mode()
 
-            qgis_model_baker = qgis.utils.plugins["QgisModelBaker"]
-            return qgis_model_baker.get_generator()(tool, db.uri, "smart2", db.schema, pg_estimated_metadata=False)
-        else:
-            self.log_invalid_version()
-            return None
+        return self.__mb_lib.get_generator()(tool, db.uri, "smart2", db.schema, pg_estimated_metadata=False)
 
     def load_layers(self, db, layer_list, group=None):
         """
@@ -71,16 +55,12 @@ class QgisModelBakerUtils(QObject):
         enums that we get only once per session and configure in
         the Asistente LADM-COL.
         """
-        if QgisModelBakerUtils.mb_version_valid():
-            qgis_model_baker = qgis.utils.plugins["QgisModelBaker"]
-            generator = self.get_generator(db)
-            layers = generator.layers(layer_list)
-            layers = self._filter_layers(layers)
-            relations, bags_of_enum = generator.relations(layers, layer_list)
-            legend = generator.legend(layers, ignore_node_names=QualityErrorDBUtils.get_quality_error_group_names())
-            qgis_model_baker.create_project(layers, relations, bags_of_enum, legend, auto_transaction=False, group=group)
-        else:
-            self.log_invalid_version()
+        generator = self.get_generator(db)
+        layers = generator.layers(layer_list)
+        layers = self._filter_layers(layers)
+        relations, bags_of_enum = generator.relations(layers, layer_list)
+        legend = generator.legend(layers, ignore_node_names=QualityErrorDBUtils.get_quality_error_group_names())
+        self.__mb_lib.create_project(layers, relations, bags_of_enum, legend, auto_transaction=False, group=group)
 
     def get_required_layers_without_load(self, layer_list, db):
         """
@@ -91,18 +71,16 @@ class QgisModelBakerUtils(QObject):
         :return: list of QgsVectorLayers registered in the project
         """
         layers = list()
-        if QgisModelBakerUtils.mb_version_valid():
-            tool = self._dbs_supported.get_db_factory(db.engine).get_model_baker_db_ili_mode()
-            generator = self.get_generator(db)
-            model_baker_layers = generator.layers(layer_list)
-            model_baker_layers = self._filter_layers(model_baker_layers)
 
-            for model_baker_layer in model_baker_layers:
-                layer = model_baker_layer.create()  # Convert Model Baker layer to QGIS layer
-                QgsProject.instance().addMapLayer(layer, False)  # Do not load it to canvas
-                layers.append(layer)
-        else:
-            self.log_invalid_version()
+        tool = self._dbs_supported.get_db_factory(db.engine).get_model_baker_db_ili_mode()
+        generator = self.get_generator(db)
+        model_baker_layers = generator.layers(layer_list)
+        model_baker_layers = self._filter_layers(model_baker_layers)
+
+        for model_baker_layer in model_baker_layers:
+            layer = model_baker_layer.create()  # Convert Model Baker layer to QGIS layer
+            QgsProject.instance().addMapLayer(layer, False)  # Do not load it to canvas
+            layers.append(layer)
 
         return layers
 
@@ -128,17 +106,13 @@ class QgisModelBakerUtils(QObject):
         of all relations and bags of enums in the DB and cache it
         in the Asistente LADM-COL.
         """
-        if QgisModelBakerUtils.mb_version_valid():
-            generator = self.get_generator(db)
+        generator = self.get_generator(db)
 
-            layers = generator.get_tables_info_without_ignored_tables()
-            layers = self._filter_layers(layers)
-            relations = [relation for relation in generator.get_relations_info()]
-            QgisModelBakerUtils._filter_relations(relations)
-            return (layers, relations, {})
-        else:
-            self.log_invalid_version()
-            return (list(), list(), dict())
+        layers = generator.get_tables_info_without_ignored_tables()
+        layers = self._filter_layers(layers)
+        relations = [relation for relation in generator.get_relations_info()]
+        QgisModelBakerUtils._filter_relations(relations)
+        return (layers, relations, {})
 
     @staticmethod
     def _filter_relations(relations):
@@ -160,15 +134,9 @@ class QgisModelBakerUtils(QObject):
             relations.remove(idx)
 
     def get_tables_info_without_ignored_tables(self, db):
-        if QgisModelBakerUtils.mb_version_valid():
-            generator = self.get_generator(db)
-            return generator.get_tables_info_without_ignored_tables()
-        else:
-            self.log_invalid_version()
+        generator = self.get_generator(db)
+        return generator.get_tables_info_without_ignored_tables()
 
     @staticmethod
     def get_suggested_index_for_layer(layer, group):
-        if QgisModelBakerUtils.mb_version_valid():
-            import QgisModelBaker
-            return QgisModelBaker.utils.qgis_utils.get_suggested_index_for_layer(layer, group)
-        return None
+        return get_suggested_index_for_layer(layer, group)

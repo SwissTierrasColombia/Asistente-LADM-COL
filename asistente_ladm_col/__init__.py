@@ -26,34 +26,12 @@ from asistente_ladm_col.lib.dependency.plugin_dependency import PluginDependency
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.config.general_config import (PLUGIN_NAME,
                                                       QGIS_REQUIRED_VERSION,
-                                                      QGIS_REQUIRED_VERSION_INT,
-                                                      QGIS_MODEL_BAKER_PLUGIN_NAME,
-                                                      QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
-                                                      QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION,
-                                                      QGIS_MODEL_BAKER_REQUIRED_VERSION_URL)
+                                                      QGIS_REQUIRED_VERSION_INT)
 from asistente_ladm_col.utils.utils import is_plugin_version_valid
 
 
 def classFactory(iface):
     if Qgis.QGIS_VERSION_INT >= QGIS_REQUIRED_VERSION_INT:
-        # Do we need to install Model Baker on our own?
-        valid_dependency = is_plugin_version_valid(QGIS_MODEL_BAKER_PLUGIN_NAME,
-                                                   QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
-                                                   QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION)
-
-        if not valid_dependency:
-            # Only create the dependency object if we know that we need to install the dependency
-            qmb_plugin = PluginDependency(QGIS_MODEL_BAKER_PLUGIN_NAME,
-                                          QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
-                                          QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION,
-                                          QGIS_MODEL_BAKER_REQUIRED_VERSION_URL)
-            loop = QEventLoop()  # Do the installation synchronously
-            qmb_plugin.download_dependency_completed.connect(loop.exit)
-            qmb_plugin.install()
-            Logger().info(__name__, "Installing dependency ({} {})...".format(QGIS_MODEL_BAKER_PLUGIN_NAME,
-                                                                              QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION))
-            loop.exec()
-
         try:
             Logger().info(__name__, "STARTING LADM-COL ASSISTANT...")
             from .asistente_ladm_col_plugin import AsistenteLADMCOLPlugin

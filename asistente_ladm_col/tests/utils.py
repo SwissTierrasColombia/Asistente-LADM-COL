@@ -187,14 +187,6 @@ def import_asistente_ladm_col():
     if not plugin_found:
         qgis.utils.plugins["asistente_ladm_col"] = asistente_ladm_col_plugin
 
-def import_qgis_model_baker():
-    global iface
-    plugin_found = "QgisModelBaker" in qgis.utils.plugins
-    if not plugin_found:
-        import QgisModelBaker
-        pg = QgisModelBaker.classFactory(iface)
-        qgis.utils.plugins["QgisModelBaker"] = pg
-
 def import_processing():
     if not "processing" in qgis.utils.plugins:
         sys.path.append("/usr/share/qgis/python/plugins/")
@@ -203,12 +195,6 @@ def import_processing():
         Processing.initialize()
         if Qgis.QGIS_VERSION_INT < 31605:
             QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
-
-def unload_qgis_model_baker():
-    global iface
-    plugin_found = "QgisModelBaker" in qgis.utils.plugins
-    if plugin_found:
-        del(qgis.utils.plugins["QgisModelBaker"])
 
 def run_etl_model(names, input_layer, out_layer, ladm_col_layer_name):
     import_processing()
