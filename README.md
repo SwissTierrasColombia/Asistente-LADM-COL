@@ -41,7 +41,7 @@ Para usar el Asistente LADM-COL se requiere:
  - Sistema Operativo:
    - Windows 10
    - GNU/Linux
-   - macOS
+   - macOS (soporte limitado)
  - Software base:
    - QGIS v3.16.x - Hannover o superior ([descargar](https://qgis.org/downloads/)).
    - Java v1.8
@@ -49,8 +49,8 @@ Para usar el Asistente LADM-COL se requiere:
    - PostGIS 2.4 o superior.
    - (Opcional) SQL Server 2012 o superior.
  - Complementos de QGIS (al instalar el Asistente LADM-COL usando el Administrador de Complementos de QGIS, las dependencias se instalarán automáticamente):
-   - QGIS Model Baker v6.3.2.1
    - MapSwipe Tool v1.2
+   - Invisible layers and groups v2.1
 
 ## Galería
 
@@ -159,11 +159,9 @@ Para usar el Asistente LADM-COL se requiere:
 
 #### Cargar capas
 
-+ Seleccionar en un diálogo las capas a cargar de cualquier modelo de la base de datos o esquema:
-
-- Usar el plugin 'QGIS Model Baker' para cargar capas con formularios, relaciones y dominios configurados.
-
-- Cargar conjuntos de capas preconfigurados.
++ Seleccionar en un diálogo las capas a cargar de cualquier modelo de la base de datos o esquema.
++ Cargar capas con formularios, relaciones y dominios configurados.
++ Cargar conjuntos de capas preconfigurados.
 
 
 #### Gestión de Insumos
