@@ -15,14 +15,12 @@ start_app()  # need to start before asistente_ladm_col.tests.utils
 from asistente_ladm_col.config.general_config import DEFAULT_TOLERANCE_VALUE
 from asistente_ladm_col.core.quality_rules.quality_rule_engine import QualityRuleEngine
 from asistente_ladm_col.config.config_db_supported import ConfigDBsSupported
-from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
-                                            import_processing,
+from asistente_ladm_col.tests.utils import (import_processing,
                                             get_test_copy_path,
                                             get_pg_conn,
                                             get_gpkg_conn,
                                             get_gpkg_conn_from_path,
-                                            restore_schema,
-                                            unload_qgis_model_baker)
+                                            restore_schema)
 from asistente_ladm_col.lib.geometry import GeometryUtils
 
 import_processing()
@@ -34,7 +32,6 @@ class TestQualityRules(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        import_qgis_model_baker()
         cls.app = AppInterface()
         cls.quality_rules = QualityRules()
         cls.geometry = GeometryUtils()
@@ -1023,7 +1020,6 @@ class TestQualityRules(unittest.TestCase):
         cls.app.settings.tolerance = DEFAULT_TOLERANCE_VALUE
 
         print("INFO: Unloading Model Baker...")
-        unload_qgis_model_baker()
 
 
 if __name__ == '__main__':

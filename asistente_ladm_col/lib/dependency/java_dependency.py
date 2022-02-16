@@ -144,17 +144,6 @@ class JavaDependency(Dependency):
                     return True
 
         # If JAVA_HOME environment variable doesn't exist
-        # We use the value defined in QgisModelBaker
-        java_exe = JavaDependency.get_java_path_from_qgis_model_baker()
-
-        if java_exe:
-            is_valid, java_message = JavaDependency.java_path_is_valid(java_exe)
-            if is_valid:
-                os.environ['JAVA_HOME'] = java_exe.split(pattern_java)[0]
-                return True
-
-        # If JAVA_HOME environment variable doesn't exist
-        # If JAVA_HOME is no defined in QgisModelBaker
 
         # Check if Java was installed previously by this plugin
         full_path_java = os.path.join(DEPENDENCIES_BASE_PATH, DICT_JAVA_DIR_NAME[KEY_JAVA_OS_VERSION], 'bin', JavaDependency.JAVA_NAME)
@@ -242,10 +231,6 @@ class JavaDependency(Dependency):
         for escape_character in escape_characters:
             java_path = java_path.replace(escape_character[0], escape_character[1])
         return java_path
-
-    @staticmethod
-    def get_java_path_from_qgis_model_baker():
-        return QSettings().value('QgisModelBaker/ili2db/JavaPath', '', str)
 
     def check_if_dependency_is_valid(self):
         custom_java_dir_path = os.path.join(DEPENDENCIES_BASE_PATH, DICT_JAVA_DIR_NAME[KEY_JAVA_OS_VERSION])

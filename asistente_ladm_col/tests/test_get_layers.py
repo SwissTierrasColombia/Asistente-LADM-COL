@@ -7,9 +7,7 @@ from asistente_ladm_col.app_interface import AppInterface
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
-from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
-                                            unload_qgis_model_baker,
-                                            get_pg_conn,
+from asistente_ladm_col.tests.utils import (get_pg_conn,
                                             get_copy_gpkg_conn,
                                             restore_schema,
                                             get_mssql_conn,
@@ -21,7 +19,6 @@ class TestGetLayers(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        import_qgis_model_baker(),
         cls.app = AppInterface()
         cls.db_gpkg = get_copy_gpkg_conn('test_ladm_survey_model_gpkg')
 
@@ -206,7 +203,6 @@ class TestGetLayers(unittest.TestCase):
         print("INFO: Closing connection and unloading model baker")
         cls.db_pg.conn.close()
         cls.db_mssql.conn.close()
-        unload_qgis_model_baker()
 
 
 if __name__ == '__main__':

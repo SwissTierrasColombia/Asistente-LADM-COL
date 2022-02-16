@@ -26,11 +26,11 @@ from qgis.PyQt.QtCore import (QCoreApplication,
 from qgis.core import (QgsMessageLog,
                        Qgis)
 
-from QgisModelBaker.libili2db.ili2dbutils import JavaNotFoundError
-from QgisModelBaker.libili2db import iliexporter
-from QgisModelBaker.libili2db.ili2dbconfig import (BaseConfiguration,
+from asistente_ladm_col.lib.ili.ili2dbutils import JavaNotFoundError
+from asistente_ladm_col.lib.ili import iliexporter
+from asistente_ladm_col.lib.ili.ili2dbconfig import (BaseConfiguration,
                                                    ExportConfiguration)
-from QgisModelBaker.libili2db.ilicache import IliCache
+from asistente_ladm_col.lib.ili.ilicache import IliCache
 
 from asistente_ladm_col.config.config_db_supported import ConfigDBsSupported
 from asistente_ladm_col.config.general_config import (JAVA_REQUIRED_VERSION,

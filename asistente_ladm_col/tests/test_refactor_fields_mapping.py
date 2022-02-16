@@ -8,9 +8,7 @@ from asistente_ladm_col.app_interface import AppInterface
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
-from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
-                                            unload_qgis_model_baker,
-                                            get_copy_gpkg_conn,
+from asistente_ladm_col.tests.utils import (get_copy_gpkg_conn,
                                             run_etl_model)
 
 
@@ -18,7 +16,6 @@ class TestRefactorFieldsMapping(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        import_qgis_model_baker()
         cls.db_gpkg_empty = get_copy_gpkg_conn('test_empty_ladm_gpkg')
         cls.db_gpkg_test = get_copy_gpkg_conn('test_export_data_qpkg')
         cls.app = AppInterface()
@@ -75,7 +72,6 @@ class TestRefactorFieldsMapping(unittest.TestCase):
         print("INFO: Closing open connections to databases")
         cls.db_gpkg_empty.conn.close()
         cls.db_gpkg_test.conn.close()
-        unload_qgis_model_baker()
 
 
 if __name__ == '__main__':

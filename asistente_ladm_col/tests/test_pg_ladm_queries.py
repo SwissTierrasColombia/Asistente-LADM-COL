@@ -14,8 +14,6 @@ from asistente_ladm_col.tests.utils import (get_pg_conn,
                                             standardize_query_results,
                                             import_asistente_ladm_col,
                                             import_processing,
-                                            import_qgis_model_baker,
-                                            unload_qgis_model_baker,
                                             restore_schema)
 from asistente_ladm_col.tests.resources.expected_results.queries.ladm_basic_query_test_results import expected_result_ladm_basic_query
 from asistente_ladm_col.tests.resources.expected_results.queries.ladm_economic_query_test_results import expected_result_ladm_economic_query
@@ -32,7 +30,6 @@ class TestPGLADMQueries(unittest.TestCase):
     def setUpClass(cls):
         import_processing()
         import_asistente_ladm_col()  # Import plugin
-        import_qgis_model_baker()
 
         print("INFO: Restoring databases to be used")
         restore_schema('test_ladm_col_queries')
@@ -122,7 +119,6 @@ class TestPGLADMQueries(unittest.TestCase):
     def tearDownClass(cls):
         print("INFO: Closing open connections to databases")
         cls.db_pg.conn.close()
-        unload_qgis_model_baker()
 
 
 if __name__ == '__main__':

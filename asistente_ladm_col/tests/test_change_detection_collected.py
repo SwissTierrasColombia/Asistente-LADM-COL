@@ -12,9 +12,7 @@ from asistente_ladm_col.tests.utils import (get_pg_conn,
                                             normalize_response,
                                             standardize_query_results,
                                             get_field_values_by_key_values,
-                                            restore_schema,
-                                            import_qgis_model_baker,
-                                            unload_qgis_model_baker)
+                                            restore_schema)
 
 from asistente_ladm_col.tests.resources.expected_results.change_detections.collected.parcel_data_to_compare_changes_all_data import parcel_data_to_compare_changes_all_data
 from asistente_ladm_col.tests.resources.expected_results.change_detections.collected.parcel_data_to_compare_changes_parcel_number_253940000000000230055000000000 import parcel_data_to_compare_changes_parcel_number_253940000000000230055000000000
@@ -26,7 +24,6 @@ class TestChangeDetectionsCollected(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         print("INFO: Restoring databases to be used")
-        import_qgis_model_baker()
         restore_schema('test_ladm_col_queries')
         cls.db_pg = get_pg_conn('test_ladm_col_queries')
         res, code, msg = cls.db_pg.test_connection()
@@ -181,7 +178,6 @@ class TestChangeDetectionsCollected(unittest.TestCase):
     def tearDownClass(cls):
         print("\nINFO: Closing open connections to databases")
         cls.db_pg.conn.close()
-        unload_qgis_model_baker()
 
 
 if __name__ == '__main__':

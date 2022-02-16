@@ -51,14 +51,6 @@ ENV PATH="/usr/local/bin:${PATH}"
 RUN pip3 install --upgrade pip==9.0.3 && \
     pip3 install --upgrade psycopg2
 
-# When our PRs get merged in time!
-#RUN wget https://github.com/opengisch/QgisModelBaker/releases/download/v6.3.2/QgisModelBaker.v6.3.2.zip -O /tmp/QgisModelBaker.zip
-
-# When we need a custom release
-RUN wget https://github.com/SwissTierrasColombia/QgisModelBaker/releases/download/v6.3.2.1/QgisModelBaker_6321.zip -O /tmp/QgisModelBaker.zip
-
-RUN unzip /tmp/QgisModelBaker.zip -d /usr/share/qgis/python/plugins
-RUN rm -rf /tmp/QgisModelBaker.zip
 
 ENV LANG=C.UTF-8
 

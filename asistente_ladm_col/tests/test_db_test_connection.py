@@ -14,8 +14,6 @@ from asistente_ladm_col.tests.utils import (get_gpkg_conn,
                                             get_pg_conn,
                                             restore_schema,
                                             get_gpkg_conn_from_path,
-                                            import_qgis_model_baker,
-                                            unload_qgis_model_baker,
                                             reset_db_mssql,
                                             restore_schema_mssql,
                                             get_mssql_conn)
@@ -25,8 +23,7 @@ class TestDBTestConnection(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        print("\nINFO: Importing Model Baker...")
-        import_qgis_model_baker()
+        pass
 
     def test_pg_test_connection_interlis_ladm_col_models(self):
         print("\nINFO: Validate test_connection() for PostgreSQL (Interlis, no LADM-COL models)...")
@@ -206,8 +203,7 @@ class TestDBTestConnection(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        print("INFO: Unloading Model Baker...")
-        unload_qgis_model_baker()
+        pass
 
 if __name__ == '__main__':
     nose2.main()

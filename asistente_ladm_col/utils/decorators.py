@@ -14,10 +14,7 @@ from qgis.utils import (isPluginLoaded,
                         startPlugin)
 
 from asistente_ladm_col.config.enums import EnumQualityRuleResult
-from asistente_ladm_col.config.general_config import (QGIS_MODEL_BAKER_REQUIRED_VERSION_URL,
-                                                      QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
-                                                      QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION,
-                                                      MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION,
+from asistente_ladm_col.config.general_config import (MAP_SWIPE_TOOL_MIN_REQUIRED_VERSION,
                                                       MAP_SWIPE_TOOL_EXACT_REQUIRED_VERSION,
                                                       MAP_SWIPE_TOOL_REQUIRED_VERSION_URL,
                                                       INVISIBLE_LAYERS_AND_GROUPS_PLUGIN_NAME,
@@ -136,45 +133,6 @@ def db_connection_required(func_to_decorate):
             return  # If any db connection changed or it's invalid, we don't return the decorated function
         else:
             func_to_decorate(*args, **kwargs)
-
-    return decorated_function
-
-
-def qgis_model_baker_required(func_to_decorate):
-    @wraps(func_to_decorate)
-    def decorated_function(*args, **kwargs):
-        inst = args[0] if type(args[0]).__name__ == 'AsistenteLADMCOLPlugin' else args[0].ladmcol
-        # Check if QGIS Model Baker is installed and active, disable access if not
-        if inst.qmb_plugin.check_if_dependency_is_valid():
-            func_to_decorate(*args, **kwargs)
-        else:
-            if QGIS_MODEL_BAKER_REQUIRED_VERSION_URL:  # Handle custom plugin release installation
-                msg = QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                 "The plugin 'QGIS Model Baker' version {} is required, but couldn't be found. Click the button to install it.").format(
-                                                    QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION)
-
-                widget = inst.iface.messageBar().createMessage("Asistente LADM-COL", msg)
-                button = QPushButton(widget)
-                button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Install plugin"))
-                button.pressed.connect(inst.qmb_plugin.install)
-                widget.layout().addWidget(button)
-                inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 20)
-            else:  # Shouldn't be necessary because QGIS handles official plugin dependencies
-                msg = QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                                 "The plugin 'QGIS Model Baker' version {} {}is required, but couldn't be found. Click the button to show the Plugin Manager.").format(
-                    QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
-                    '' if QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION else '(or higher) ')
-
-                widget = inst.iface.messageBar().createMessage("Asistente LADM-COL", msg)
-                button = QPushButton(widget)
-                button.setText(QCoreApplication.translate("AsistenteLADMCOLPlugin", "Plugin Manager"))
-                button.pressed.connect(inst.show_plugin_manager)
-                widget.layout().addWidget(button)
-                inst.iface.messageBar().pushWidget(widget, Qgis.Warning, 15)
-
-            inst.logger.warning(__name__,
-                QCoreApplication.translate("AsistenteLADMCOLPlugin",
-                                           "A dialog/tool couldn't be opened/executed, QGIS Model Baker not found."))
 
     return decorated_function
 

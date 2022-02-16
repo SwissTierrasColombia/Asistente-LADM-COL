@@ -9,13 +9,11 @@ from asistente_ladm_col.lib.geometry import GeometryUtils
 
 start_app()  # need to start before asistente_ladm_col.tests.utils
 
-from asistente_ladm_col.tests.utils import (import_qgis_model_baker,
-                                            import_processing,
+from asistente_ladm_col.tests.utils import (import_processing,
                                             get_test_copy_path,
                                             get_pg_conn,
                                             get_gpkg_conn,
-                                            restore_schema,
-                                            unload_qgis_model_baker)
+                                            restore_schema)
 
 import_processing()
 import processing
@@ -25,7 +23,6 @@ class TestQualityValidations(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        import_qgis_model_baker()
         cls.app = AppInterface()
         cls.geometry = GeometryUtils()
 
@@ -354,8 +351,7 @@ class TestQualityValidations(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        print("INFO: Unloading Model Baker...")
-        unload_qgis_model_baker()
+        pass
 
 
 if __name__ == '__main__':

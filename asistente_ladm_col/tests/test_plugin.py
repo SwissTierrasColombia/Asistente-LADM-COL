@@ -4,36 +4,16 @@ from qgis.core import QgsApplication
 from qgis.testing import (start_app,
                           unittest)
 
-from asistente_ladm_col.tests.utils import (get_iface,
-                                            import_qgis_model_baker,
-                                            unload_qgis_model_baker)
+from asistente_ladm_col.tests.utils import (get_iface)
 from asistente_ladm_col.asistente_ladm_col_plugin import AsistenteLADMCOLPlugin
 asistente_ladm_col = AsistenteLADMCOLPlugin(get_iface(), False)
 
 from asistente_ladm_col.utils.utils import is_plugin_version_valid
-from asistente_ladm_col.config.general_config import (QGIS_MODEL_BAKER_PLUGIN_NAME,
-                                                      QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
-                                                      QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION)
+
 start_app()
 
 
 class TestPlugin(unittest.TestCase):
-
-    def test_01_dependencies(self):
-        print('\nINFO: Validating plugin dependencies...')
-        global asistente_ladm_col
-
-        unload_qgis_model_baker()
-        valid = is_plugin_version_valid(QGIS_MODEL_BAKER_PLUGIN_NAME,
-                                        QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
-                                        QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION)
-        self.assertFalse(valid)
-
-        import_qgis_model_baker()
-        valid = is_plugin_version_valid(QGIS_MODEL_BAKER_PLUGIN_NAME,
-                                        QGIS_MODEL_BAKER_MIN_REQUIRED_VERSION,
-                                        QGIS_MODEL_BAKER_EXACT_REQUIRED_VERSION)
-        self.assertTrue(valid)
 
     def test_processing_provider(self):
         print('\nINFO: Validating LADM-COL processing provider...')
