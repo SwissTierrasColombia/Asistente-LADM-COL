@@ -19,11 +19,11 @@ from qgis.PyQt.QtCore import (pyqtSignal,
                               QObject,
                               QCoreApplication)
 
-from asistente_ladm_col.core.xtf_model_converter.ladm_col_model_converter import LADMColModelConverter
+from asistente_ladm_col.core.xtf_model_converter.abstract_ladm_col_model_converter import AbstractLADMColModelConverter
 from asistente_ladm_col.utils.utils import get_number_of_lines_in_file
 
 
-class Survey11To10Converter(LADMColModelConverter):
+class Survey11To10Converter(AbstractLADMColModelConverter):
     """
     Convert data from Lev_Cat_V1_1 to Lev_Cat_V1_0
     """
@@ -53,7 +53,7 @@ class Survey11To10Converter(LADMColModelConverter):
                         "Submodelo_Avaluos_V1_1": "Submodelo_Avaluos_V1_0"}
 
     def __init__(self):
-        LADMColModelConverter.__init__(self)
+        AbstractLADMColModelConverter.__init__(self)
 
         self._key = "lev_cat_1_1-lev_cat_1_0"
         self._display_name = "Levantamiento Catastral 1.1 a Levantamiento Catastral 1.0"

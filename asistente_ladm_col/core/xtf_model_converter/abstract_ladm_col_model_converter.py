@@ -23,7 +23,7 @@ from qgis.PyQt.QtCore import (pyqtSignal,
 from asistente_ladm_col.utils.abstract_class import AbstractQObjectMeta
 
 
-class LADMColModelConverter(QObject, metaclass=AbstractQObjectMeta):
+class AbstractLADMColModelConverter(QObject, metaclass=AbstractQObjectMeta):
     """
     Abstract class for LADM-COL model converters
     """
