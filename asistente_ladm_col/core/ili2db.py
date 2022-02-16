@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 """
+from PyQt5.QtCore import pyqtSignal
 from qgis.PyQt.QtCore import (QObject,
                               QCoreApplication,
                               QSettings)
@@ -27,7 +28,8 @@ from asistente_ladm_col.config.general_config import (JAVA_REQUIRED_VERSION,
                                                       DEFAULT_MODELS_DIR,
                                                       CTM12_GPKG_SCRIPT_PATH,
                                                       CTM12_PG_SCRIPT_PATH,
-                                                      TOML_FILE_DIR)
+                                                      TOML_FILE_DIR,
+                                                      DEFAULT_ILI2DB_DEBUG_MODE)
 from asistente_ladm_col.config.ili2db_names import ILI2DBNames
 from asistente_ladm_col.lib.dependency.java_dependency import JavaDependency
 from asistente_ladm_col.lib.ili import ili2dbvalidator
@@ -51,6 +53,11 @@ class Ili2DB(QObject):
     """
     Execute ili2db operations via Model Baker API
     """
+    stdout = pyqtSignal(str)
+    stderr = pyqtSignal(str)
+    process_started = pyqtSignal(str)
+    process_finished = pyqtSignal(int, int)
+
     def __init__(self):
         QObject.__init__(self)
 
@@ -111,6 +118,12 @@ class Ili2DB(QObject):
                 else:
                     self._base_configuration.custom_model_directories = custom_model_directories
                     self._base_configuration.custom_model_directories_enabled = True
+
+            # Debug mode
+            self._base_configuration.debugging_enabled = \
+                QSettings().value('Asistente-LADM-COL/models/debug', DEFAULT_ILI2DB_DEBUG_MODE, type=bool)
+
+            self._base_configuration.logfile_path = QSettings().value('Asistente-LADM-COL/models/log_file_path', '')
 
         return self._base_configuration
 
@@ -231,6 +244,9 @@ class Ili2DB(QObject):
         importer.process_started.connect(self.on_process_started)
         importer.stderr.connect(self.on_stderr)
         importer.configuration = configuration
+
+        importer.stdout.connect(self.stdout)
+        importer.process_finished.connect(self.process_finished)
 
         # Run!
         res = True
@@ -424,6 +440,8 @@ class Ili2DB(QObject):
 
     def on_process_started(self, command):
         self._log += command + '\n'
+        self.process_started.emit(command)
 
     def on_stderr(self, text):
         self._log += text
+        self.stderr.emit(text)
