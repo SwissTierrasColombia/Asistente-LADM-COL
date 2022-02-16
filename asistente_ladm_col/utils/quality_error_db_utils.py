@@ -70,7 +70,9 @@ class QualityErrorDBUtils(QObject):
         db = GPKGConnector(db_file)
         ili2db = Ili2DB()
         error_model = LADMColModelRegistry().model(LADMNames.QUALITY_ERROR_MODEL_KEY)
-        res, msg = ili2db.import_schema(db, [error_model.full_name()])
+
+        configuration = ili2db.get_import_schema_configuration(db, [error_model.full_name()])
+        res, msg = ili2db.import_schema(db, configuration)
 
         self.progress_changed.emit(50)
 

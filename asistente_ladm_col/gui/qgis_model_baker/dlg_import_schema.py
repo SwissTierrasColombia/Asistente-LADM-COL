@@ -18,6 +18,7 @@
  *                                                                         *
  ***************************************************************************/
 """
+from asistente_ladm_col.core.ili2db import Ili2DB
 from asistente_ladm_col.lib.ili import iliimporter
 from asistente_ladm_col.lib.ili.ili2dbconfig import (SchemaImportConfiguration,
                                                      BaseConfiguration)
@@ -90,8 +91,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
         self.db_source = context.get_db_sources()[0]
         self.db = self.conn_manager.get_db_connector_from_source(self.db_source)
-        self.base_configuration = BaseConfiguration()
-        self.ilicache = IliCache(self.base_configuration)
+
         self._dbs_supported = ConfigDBsSupported()
         self._running_tool = False
 
@@ -267,8 +267,8 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             self.disable()
             return
 
-        configuration = self.update_configuration()
-        configuration = self.apply_role_model_configuration(configuration)
+        # TODO role model configuration?
+        # configuration = self.apply_role_model_configuration(configuration)
 
         if not self.get_checked_models():
             self._running_tool = False
@@ -278,41 +278,29 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             self.import_models_list_widget.setFocus()
             return
 
-        self.save_configuration(configuration)
+        self.save_configuration(None)
 
-        with OverrideCursor(Qt.WaitCursor):
-            self.progress_bar.show()
-            self.disable()
-            self.txtStdout.setTextColor(QColor('#000000'))
-            self.txtStdout.clear()
+        self.progress_bar.show()
+        self.disable()
+        self.txtStdout.setTextColor(QColor('#000000'))
+        self.txtStdout.clear()
 
-            importer = iliimporter.Importer()
+        ili2db = Ili2DB()
 
-            db_factory = self._dbs_supported.get_db_factory(self.db.engine)
+        self._connect_ili2db_signals(ili2db)
 
-            importer.tool = db_factory.get_model_baker_db_ili_mode()
-            importer.configuration = configuration
-            importer.stdout.connect(self.print_info)
-            importer.stderr.connect(self.on_stderr)
-            importer.process_started.connect(self.on_process_started)
-            importer.process_finished.connect(self.on_process_finished)
+        models = self.get_checked_models()
 
-            try:
-                if importer.run() != iliimporter.Importer.SUCCESS:
-                    self._running_tool = False
-                    self.show_message(QCoreApplication.translate("DialogImportSchema", "An error occurred when creating the LADM-COL structure. For more information see the log..."), Qgis.Warning)
-                    self.on_result.emit(False)  # Inform other classes that the execution was not successful
-                    return
-            except JavaNotFoundError:
-                self._running_tool = False
-                message_error_java = QCoreApplication.translate("DialogImportSchema", "Java {} could not be found. You can configure the JAVA_HOME environment variable manually, restart QGIS and try again.").format(JAVA_REQUIRED_VERSION)
-                self.txtStdout.setTextColor(QColor('#000000'))
-                self.txtStdout.clear()
-                self.txtStdout.setText(message_error_java)
-                self.show_message(message_error_java, Qgis.Warning)
-                return
+        configuration = ili2db.get_import_schema_configuration(self.db, models)
+        configuration = self.apply_role_model_configuration(configuration)
 
-            self._running_tool = False
+        res, msg = ili2db.import_schema(self.db, configuration)
+
+        self._disconnect_ili2db_signals(ili2db)
+
+        self._running_tool = False
+
+        if res:
             self.buttonBox.clear()
             if self.link_to_import_data:
                 self.buttonBox.addButton(self.BUTTON_NAME_GO_TO_IMPORT_DATA,
@@ -321,13 +309,16 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             self.buttonBox.addButton(QDialogButtonBox.Close)
             self.progress_bar.setValue(100)
             self.print_info(QCoreApplication.translate("DialogImportSchema", "\nDone!"), '#004905')
-            self.show_message(QCoreApplication.translate("DialogImportSchema", "LADM-COL structure was successfully created!"), Qgis.Success)
-            self.on_result.emit(True)  # Inform other classes that the execution was successful
             self._db_was_changed = True  # Schema could become LADM compliant after a schema import
 
             if self.db_source == COLLECTED_DB_SOURCE:
                 self.logger.info(__name__, "Schedule a call to refresh db relations cache since a Schema Import was run on the current 'collected' DB.")
                 self._schedule_layers_and_relations_refresh = True
+
+        message_type = Qgis.Success if res else Qgis.Warning
+        self.show_message(msg, message_type)
+        # Inform other classes whether the execution was successful or not
+        self.on_result.emit(res)
 
     def download_java_complete(self):
         self.accepted()
@@ -371,57 +362,6 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             self.crs_label.setStyleSheet('')
             self.crs_label.setToolTip(QCoreApplication.translate("DialogImportSchema", "Coordinate Reference System"))
 
-    def update_configuration(self):
-        db_factory = self._dbs_supported.get_db_factory(self.db.engine)
-
-        configuration = SchemaImportConfiguration()
-        db_factory.set_ili2db_configuration_params(self.db.dict_conn_params, configuration)
-
-        # set custom toml file
-        configuration.tomlfile = TOML_FILE_DIR
-        configuration.inheritance = ILI2DBNames.DEFAULT_INHERITANCE
-        configuration.create_basket_col = ILI2DBNames.CREATE_BASKET_COL
-        configuration.create_import_tid = ILI2DBNames.CREATE_IMPORT_TID
-        configuration.stroke_arcs = ILI2DBNames.STROKE_ARCS
-
-        # CTM12 support
-        configuration.srs_auth = self.srs_auth
-        configuration.srs_code = self.srs_code
-        if self.srs_auth == DEFAULT_SRS_AUTH and self.srs_code == DEFAULT_SRS_CODE:
-            if self.db.engine == 'pg':
-                configuration.pre_script = CTM12_PG_SCRIPT_PATH
-            elif self.db.engine == 'gpkg':
-                # (Ugly, I know) We need to send known parameters, we'll fix this in the post_script
-                configuration.srs_auth = 'EPSG'
-                configuration.srs_code = 3116
-                configuration.post_script = CTM12_GPKG_SCRIPT_PATH
-
-        full_java_exe_path = JavaDependency.get_full_java_exe_path()
-        if full_java_exe_path:
-            self.base_configuration.java_path = full_java_exe_path
-
-        # Debug mode
-        self.base_configuration.debugging_enabled = QSettings().value('Asistente-LADM-COL/models/debug', DEFAULT_ILI2DB_DEBUG_MODE, type=bool)
-        self.base_configuration.logfile_path = QSettings().value('Asistente-LADM-COL/models/log_file_path', '')
-
-        # User could have changed the default values
-        self.use_local_models = self.app.settings.custom_models
-        self.custom_model_directories = self.app.settings.custom_model_dirs
-
-        # Check custom model directories
-        if self.use_local_models:
-            if not self.custom_model_directories:
-                self.base_configuration.custom_model_directories_enabled = False
-            else:
-                self.base_configuration.custom_model_directories = self.custom_model_directories
-                self.base_configuration.custom_model_directories_enabled = True
-
-        configuration.base_configuration = self.base_configuration
-        if self.get_checked_models():
-            configuration.ilimodels = ';'.join(self.get_checked_models())
-
-        return configuration
-
     def apply_role_model_configuration(self, configuration):
         """
         Applies the configuration that the active role has set over checked models.
@@ -455,7 +395,8 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self.advance_progress_bar_by_text(text)
 
     def on_process_started(self, command):
-        self.txtStdout.setText(command)
+        # color_log_text(command, self.txtStdout)
+        self.txtStdout.append(command)
         QCoreApplication.processEvents()
 
     def on_process_finished(self, exit_code, result):
@@ -472,6 +413,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
         self.txtStdout.setTextColor(QColor(color))
         self.txtStdout.append(message)
+        QCoreApplication.processEvents()
 
     def advance_progress_bar_by_text(self, text):
         if text.strip() == 'Info: compile models…':
@@ -505,3 +447,15 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
         self.bar.clearWidgets()  # Remove previous messages before showing a new one
         self.bar.pushMessage("Asistente LADM-COL", message, level, duration = 0)
+
+    def _connect_ili2db_signals(self, ili2db):
+        ili2db.process_started.connect(self.on_process_started)
+        ili2db.stderr.connect(self.on_stderr)
+        ili2db.stdout.connect(self.print_info)
+        ili2db.process_finished.connect(self.on_process_finished)
+
+    def _disconnect_ili2db_signals(self, ili2db):
+        ili2db.process_started.disconnect(self.on_process_started)
+        ili2db.stderr.disconnect(self.on_stderr)
+        ili2db.stdout.disconnect(self.print_info)
+        ili2db.process_finished.disconnect(self.on_process_finished)
