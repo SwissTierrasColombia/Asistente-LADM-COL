@@ -16,7 +16,7 @@
  ***************************************************************************/
 """
 from asistente_ladm_col.app_interface import AppInterface
-from asistente_ladm_col.core.xtf_model_converter.ladm_col_model_converter import LADMColModelConverter
+from asistente_ladm_col.core.xtf_model_converter.abstract_ladm_col_model_converter import AbstractLADMColModelConverter
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.logic.xtf_model_converter.lev_cat_1_0_to_1_1_converter import Survey10To11Converter
 from asistente_ladm_col.logic.xtf_model_converter.lev_cat_1_1_to_1_0_converter import Survey11To10Converter
@@ -41,7 +41,7 @@ class XTFModelConverterRegistry(metaclass=Singleton):
         :param converter: LADMColModelConverter instance.
         :return: True if the converter was registered, False otherwise.
         """
-        if not isinstance(converter, LADMColModelConverter):
+        if not isinstance(converter, AbstractLADMColModelConverter):
             self.logger.warning(__name__, "The converter '{}' is not a 'LADMColModelConverter' instance!".format(converter.id()))
             return False
 

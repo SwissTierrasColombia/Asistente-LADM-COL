@@ -31,17 +31,17 @@ from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.config.quality_rule_config import (QR_ILIVALIDATORR0001,
                                                            QRE_ILIVALIDATORR0001E01)
-from asistente_ladm_col.core.xtf_model_converter.ladm_col_model_converter import LADMColModelConverter
+from asistente_ladm_col.core.xtf_model_converter.abstract_ladm_col_model_converter import AbstractLADMColModelConverter
 from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 from asistente_ladm_col.utils.interlis_utils import get_layer_from_xtflog
 
 
-class IliVErrorsToErroresCalidad01Converter(LADMColModelConverter):
+class IliVErrorsToErroresCalidad01Converter(AbstractLADMColModelConverter):
     """
     Convert data from IliVErrors to Errores_Calidad_V0_1
     """
     def __init__(self):
-        LADMColModelConverter.__init__(self)
+        AbstractLADMColModelConverter.__init__(self)
 
         self._key = "iliverrors-errores_calidad_0_1"
         self._display_name = "IliVErrors a Errores Calidad 0.1"
