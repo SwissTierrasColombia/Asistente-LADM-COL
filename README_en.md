@@ -35,7 +35,7 @@ To use the LADM-COL Assistant you need:
  - Operating System:
    - Windows 8 or Windows 10
    - GNU/Linux
-   - macOS
+   - macOS (limited support)
  - Base software:
    - QGIS v3.16.x-Hannover or higher.
    - Java v1.8.
@@ -43,8 +43,8 @@ To use the LADM-COL Assistant you need:
    - PostGIS 2.4 or higher.
    - (Optional) SQL Server 2012 or higher.
  - QGIS plugins (installing LADM-COL Assistant using QGIS Plugin Manager will also install these automatically):
-   - QGIS Model Baker v6.3.2.1
    - MapSwipe Tool v1.2
+   - Invisible layers and groups v2.1
 
 ## Gallery
 
@@ -141,9 +141,9 @@ The current version ([3.2.0-beta-1](https://github.com/SwissTierrasColombia/Asis
  - Create `Rights`, `Restrictions` and `Responsibilities`:
    - Using preconfigured forms (associating the new object to selected `Administrative Sources`).
    - From another table with any structure, setting a field mapping.
- - Select in a dialog layers to load from any model in the database or schema:
-   - Use the 'QGIS Model Baker' plugin (a prerequisite) to load layers with configured forms, relations and domains.
-   - Load preconfigured layer sets.
+ - Select in a dialog layers to load from any model in the database or schema.
+ - Load layers with configured forms, relations and domains.
+ - Load preconfigured layer sets.
  - Check quality rules (topology):
    - Check overlaps in `Boundary Points`.
    - Check overlaps in `Control Points`.
@@ -246,4 +246,4 @@ If these prerrequisites are not met, the LADM-COL Assistant will continue runnin
       + Wait until the animation ends or click on `Skip` (below in the page).
       + Sign in using your e-mail.
       + Search for "Asistente LADM-COL" and choose the `SwissTierrasColombia/Asistente-LADM-COL` repository.
-      + That's it! After getting notifications, you will need to wait some hours until the plugin is accepted and available in the QGIS plugin repo.
+      + That's it! After getting notifications, you will need to wait some hours until the plugin is accepted and available in the QGIS plugin repo.m
