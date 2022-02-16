@@ -361,13 +361,16 @@ class TreeModel(QAbstractItemModel):
             else:
                 # Simple key-value pair
                 kv_item = self._create_new_item(parent)
-                kv_item.setData(0, "{}: {}".format(key, values))
+                kv_text = "{}: {}".format(key, values)
+                kv_item.setData(0, kv_text)
                 value_user_role = {"value": values}
                 if key.startswith("Archivo fuente"):
                     value_user_role.update({'url': values})
                 kv_item.setData(0, value_user_role, Qt.UserRole)
                 if values is None:
                     kv_item.setData(0, QBrush(Qt.lightGray), Qt.ForegroundRole)
+                else:
+                    kv_item.setData(0, kv_text, Qt.ToolTipRole)
 
                 # Additional item for a file preview
                 if key.startswith("Archivo fuente"):
