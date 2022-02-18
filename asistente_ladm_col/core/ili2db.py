@@ -163,7 +163,8 @@ class Ili2DB(QObject):
 
         return configuration
 
-    def get_import_data_configuration(self, db_factory, db, xtf_path, dataset='', baskets=list(), disable_validation=False):
+    def get_import_data_configuration(self, db, xtf_path, dataset='', baskets=list(), disable_validation=False):
+        db_factory = self.dbs_supported.get_db_factory(db.engine)
         configuration = ImportDataConfiguration()
         db_factory.set_ili2db_configuration_params(db.dict_conn_params, configuration)
         configuration.with_importtid = True
@@ -271,7 +272,7 @@ class Ili2DB(QObject):
         return res, msg
 
     @with_override_cursor
-    def import_data(self, db, xtf_path, dataset='', baskets=list(), disable_validation=False):
+    def import_data(self, db, configuration, xtf_path):
         # Check prerequisite
         if not self.get_full_java_exe_path():
             res_java, msg_java = self.configure_java()
@@ -280,7 +281,6 @@ class Ili2DB(QObject):
 
         # Configure command parameters
         db_factory = self.dbs_supported.get_db_factory(db.engine)
-        configuration = self.get_import_data_configuration(db_factory, db, xtf_path, dataset, baskets, disable_validation)
 
         # Configure run
         importer = iliimporter.Importer(dataImport=True)
