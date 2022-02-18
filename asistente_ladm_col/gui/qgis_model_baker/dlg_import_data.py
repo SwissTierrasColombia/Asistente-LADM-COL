@@ -20,6 +20,7 @@
 """
 import os
 
+from asistente_ladm_col.core.ili2db import Ili2DB
 from asistente_ladm_col.lib.ili import iliimporter
 from asistente_ladm_col.lib.ili.ili2dbconfig import (ImportDataConfiguration,
                                                      BaseConfiguration)
@@ -286,7 +287,9 @@ class DialogImportData(QDialog, DIALOG_UI):
             self.disable()
             return
 
-        configuration = self.update_configuration()
+        ili2db = Ili2DB()
+
+        configuration = self.update_configuration(ili2db)
         configuration = self.apply_role_model_configuration(configuration)
 
         if configuration.disable_validation:  # If data validation at import is disabled, we ask for confirmation
@@ -363,49 +366,32 @@ class DialogImportData(QDialog, DIALOG_UI):
 
             return
 
-        with OverrideCursor(Qt.WaitCursor):
-            self.progress_bar.show()
+        self.progress_bar.show()
 
-            self.disable()
-            self.txtStdout.setTextColor(QColor('#000000'))
-            self.txtStdout.clear()
+        self.disable()
+        self.txtStdout.setTextColor(QColor('#000000'))
+        self.txtStdout.clear()
 
-            dataImporter = iliimporter.Importer(dataImport=True)
+        self._connect_ili2db_signals(ili2db)
 
-            db_factory = self._dbs_supported.get_db_factory(self.db.engine)
+        self.save_configuration(configuration)
 
-            dataImporter.tool = db_factory.get_model_baker_db_ili_mode()
-            dataImporter.configuration = configuration
+        res, msg = ili2db.import_schema(self.db, configuration)
 
-            self.save_configuration(configuration)
+        self._disconnect_ili2db_signals(ili2db)
 
-            dataImporter.stdout.connect(self.print_info)
-            dataImporter.stderr.connect(self.on_stderr)
-            dataImporter.process_started.connect(self.on_process_started)
-            dataImporter.process_finished.connect(self.on_process_finished)
+        self._running_tool = False
 
-            self.progress_bar.setValue(25)
+        self.progress_bar.setValue(25)
 
-            try:
-                if dataImporter.run() != iliimporter.Importer.SUCCESS:
-                    self._running_tool = False
-                    self.show_message(QCoreApplication.translate("DialogImportData", "An error occurred when importing the data. For more information see the log..."), Qgis.Warning)
-                    return
-            except JavaNotFoundError:
-                self._running_tool = False
-                error_msg_java = QCoreApplication.translate("DialogImportData", "Java {} could not be found. You can configure the JAVA_HOME environment variable manually, restart QGIS and try again.").format(JAVA_REQUIRED_VERSION)
-                self.txtStdout.setTextColor(QColor('#000000'))
-                self.txtStdout.clear()
-                self.txtStdout.setText(error_msg_java)
-                self.show_message(error_msg_java, Qgis.Warning)
-                return
-
-            self._running_tool = False
+        if res:
             self.buttonBox.clear()
             self.buttonBox.setEnabled(True)
             self.buttonBox.addButton(QDialogButtonBox.Close)
             self.progress_bar.setValue(100)
-            self.show_message(QCoreApplication.translate("DialogImportData", "Import of the data was successfully completed"), Qgis.Success)
+
+        message_type = Qgis.Success if res else Qgis.Warning
+        self.show_message(msg, message_type)
 
     def download_java_complete(self):
         self.accepted()
@@ -439,52 +425,29 @@ class DialogImportData(QDialog, DIALOG_UI):
         if self.use_local_models:
             self.custom_model_directories = self.app.settings.custom_model_dirs
 
-    def update_configuration(self):
+    def update_configuration(self, ili2db: Ili2DB):
         """
         Get the configuration that is updated with the user configuration changes on the dialog.
         :return: Configuration
         """
-        db_factory = self._dbs_supported.get_db_factory(self.db.engine)
+        disable_validation = \
+            not QSettings().value('Asistente-LADM-COL/models/validate_data_importing_exporting', True, bool)
 
-        configuration = ImportDataConfiguration()
-        db_factory.set_ili2db_configuration_params(self.db.dict_conn_params, configuration)
+        configuration = ili2db.get_import_data_configuration(self.db, self.xtf_file_line_edit.text().strip(),
+                                                             disable_validation=disable_validation)
 
-        configuration.xtffile = self.xtf_file_line_edit.text().strip()
         configuration.delete_data = False
 
         configuration.srs_auth = QSettings().value('Asistente-LADM-COL/QgisModelBaker/srs_auth', DEFAULT_SRS_AUTH, str)
         configuration.srs_code = QSettings().value('Asistente-LADM-COL/QgisModelBaker/srs_code', int(DEFAULT_SRS_CODE), int)
-        configuration.inheritance = ILI2DBNames.DEFAULT_INHERITANCE
+
         configuration.create_basket_col = ILI2DBNames.CREATE_BASKET_COL
         configuration.create_import_tid = ILI2DBNames.CREATE_IMPORT_TID
         configuration.stroke_arcs = ILI2DBNames.STROKE_ARCS
-        configuration.with_importtid = True
 
-        full_java_exe_path = JavaDependency.get_full_java_exe_path()
-        if full_java_exe_path:
-            self.base_configuration.java_path = full_java_exe_path
-
-        # Debug mode
-        self.base_configuration.debugging_enabled = QSettings().value('Asistente-LADM-COL/models/debug', DEFAULT_ILI2DB_DEBUG_MODE, type=bool)
-        self.base_configuration.logfile_path = QSettings().value('Asistente-LADM-COL/models/log_file_path', '')
-
-        # User could have changed the default values
-        self.use_local_models = self.app.settings.custom_models
-        self.custom_model_directories = self.app.settings.custom_model_dirs
-
-        # Check custom model directories
-        if self.use_local_models:
-            if not self.custom_model_directories:
-                self.base_configuration.custom_model_directories_enabled = False
-            else:
-                self.base_configuration.custom_model_directories = self.custom_model_directories
-                self.base_configuration.custom_model_directories_enabled = True
-
-        configuration.base_configuration = self.base_configuration
+        # TODO this is different to ili2db.py
         if self.get_ili_models():
             configuration.ilimodels = ';'.join(self.get_ili_models())
-
-        configuration.disable_validation = not QSettings().value('Asistente-LADM-COL/models/validate_data_importing_exporting', True, bool)
 
         return configuration
 
@@ -582,3 +545,15 @@ class DialogImportData(QDialog, DIALOG_UI):
 
         self.bar.clearWidgets()  # Remove previous messages before showing a new one
         self.bar.pushMessage("Asistente LADM-COL", message, level, duration=0)
+
+    def _connect_ili2db_signals(self, ili2db):
+        ili2db.process_started.connect(self.on_process_started)
+        ili2db.stderr.connect(self.on_stderr)
+        ili2db.stdout.connect(self.print_info)
+        ili2db.process_finished.connect(self.on_process_finished)
+
+    def _disconnect_ili2db_signals(self, ili2db):
+        ili2db.process_started.disconnect(self.on_process_started)
+        ili2db.stderr.disconnect(self.on_stderr)
+        ili2db.stdout.disconnect(self.print_info)
+        ili2db.process_finished.disconnect(self.on_process_finished)
