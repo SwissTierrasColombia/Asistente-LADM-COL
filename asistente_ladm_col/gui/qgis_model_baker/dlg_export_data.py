@@ -20,12 +20,11 @@
 """
 import os
 
+from asistente_ladm_col.core.ili2db import Ili2DB
 from asistente_ladm_col.lib.ili import iliexporter
-from asistente_ladm_col.lib.ili.ili2dbconfig import (ExportConfiguration,
-                                                     BaseConfiguration)
+from asistente_ladm_col.lib.ili.ili2dbconfig import BaseConfiguration
 from asistente_ladm_col.lib.ili.ili2dbutils import color_log_text
 from asistente_ladm_col.lib.ili.ilicache import IliCache
-from asistente_ladm_col.lib.ili.ili2dbutils import JavaNotFoundError
 from qgis.PyQt.QtCore import (Qt,
                               QCoreApplication,
                               QSettings,
@@ -42,8 +41,7 @@ from qgis.core import Qgis
 from qgis.gui import QgsGui
 from qgis.gui import QgsMessageBar
 
-from asistente_ladm_col.config.general_config import (DEFAULT_ILI2DB_DEBUG_MODE,
-                                                      COLLECTED_DB_SOURCE,
+from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
                                                       JAVA_REQUIRED_VERSION,
                                                       SETTINGS_CONNECTION_TAB_INDEX,
                                                       SETTINGS_MODELS_TAB_INDEX)
@@ -56,8 +54,7 @@ from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.utils import show_plugin_help
 from asistente_ladm_col.utils.qt_utils import (Validators,
                                                FileValidator,
-                                               make_save_file_selector,
-                                               OverrideCursor)
+                                               make_save_file_selector)
 
 from asistente_ladm_col.config.config_db_supported import ConfigDBsSupported
 DIALOG_UI = get_ui_class('qgis_model_baker/dlg_export_data.ui')
@@ -242,7 +239,8 @@ class DialogExportData(QDialog, DIALOG_UI):
             self.disable()
             return
 
-        configuration = self.update_configuration()
+        ili2db = Ili2DB()
+        configuration = self.update_configuration(ili2db)
 
         if configuration.disable_validation:  # If data validation at export is disabled, we ask for confirmation
             self.msg = QMessageBox()
@@ -285,59 +283,38 @@ class DialogExportData(QDialog, DIALOG_UI):
                 self._running_tool = False
                 return
 
-        with OverrideCursor(Qt.WaitCursor):
-            self.progress_bar.show()
+        self.progress_bar.show()
 
-            self.disable()
-            self.txtStdout.setTextColor(QColor('#000000'))
-            self.txtStdout.clear()
+        self.disable()
+        self.txtStdout.setTextColor(QColor('#000000'))
+        self.txtStdout.clear()
 
-            exporter = iliexporter.Exporter()
+        self._connect_ili2db_signals(ili2db)
+        self.save_configuration(configuration)
+        res, msg = ili2db.export(self.db, configuration)
+        self._disconnect_ili2db_signals(ili2db)
+        self._running_tool = False
 
-            db_factory = self._dbs_supported.get_db_factory(self.db.engine)
+        self.progress_bar.setValue(25)
 
-            exporter.tool = db_factory.get_model_baker_db_ili_mode()
-            exporter.configuration = configuration
-
-            self.save_configuration(configuration)
-
-            exporter.stdout.connect(self.print_info)
-            exporter.stderr.connect(self.on_stderr)
-            exporter.process_started.connect(self.on_process_started)
-            exporter.process_finished.connect(self.on_process_finished)
-
-            self.progress_bar.setValue(25)
-
-            try:
-                if exporter.run() != iliexporter.Exporter.SUCCESS:
-                    self._running_tool = False
-                    self.show_message(QCoreApplication.translate("DialogExportData", "An error occurred when exporting the data. For more information see the log..."), Qgis.Warning)
-                    self.on_result.emit(False)  # Inform other classes that the execution was not successful
-
-                    # Since the export was not successful, we'll try to remove any temp XTF generated
-                    if os.path.exists(configuration.xtffile):
-                        try:
-                            os.remove(configuration.xtffile)
-                        except:
-                            pass
-
-                    return
-            except JavaNotFoundError:
-                self._running_tool = False
-                message_error_java = QCoreApplication.translate("DialogExportData", "Java {} could not be found. You can configure the JAVA_HOME environment variable manually, restart QGIS and try again.").format(JAVA_REQUIRED_VERSION)
-                self.txtStdout.setTextColor(QColor('#000000'))
-                self.txtStdout.clear()
-                self.txtStdout.setText(message_error_java)
-                self.show_message(message_error_java, Qgis.Warning)
-                return
-
-            self._running_tool = False
+        if res:
             self.buttonBox.clear()
             self.buttonBox.setEnabled(True)
             self.buttonBox.addButton(QDialogButtonBox.Close)
             self.progress_bar.setValue(100)
-            self.show_message(QCoreApplication.translate("DialogExportData", "Export of the data was successfully completed.") , Qgis.Success)
-            self.on_result.emit(True)  # Inform other classes that the execution was successful
+        else:
+            # Since the export was not successful, we'll try to remove any temp XTF generated
+            if os.path.exists(configuration.xtffile):
+                try:
+                    os.remove(configuration.xtffile)
+                except:
+                    pass
+
+        message_type = Qgis.Success if res else Qgis.Warning
+        self.show_message(msg, message_type)
+
+        # Inform other classes whether the execution was successful or not
+        self.on_result.emit(res)
 
     def download_java_complete(self):
         self.accepted()
@@ -366,43 +343,20 @@ class DialogExportData(QDialog, DIALOG_UI):
         if custom_model_is_checked:
             self.custom_model_directories = self.app.settings.custom_model_dirs
 
-    def update_configuration(self):
+    def update_configuration(self, ili2db: Ili2DB):
         """
         Get the configuration that is updated with the user configuration changes on the dialog.
         :return: Configuration
         """
-        db_factory = self._dbs_supported.get_db_factory(self.db.engine)
+        disable_validation = \
+            not QSettings().value('Asistente-LADM-COL/models/validate_data_importing_exporting', True, bool)
 
-        configuration = ExportConfiguration()
-        db_factory.set_ili2db_configuration_params(self.db.dict_conn_params, configuration)
+        configuration = ili2db.get_export_configuration(self.db, self.xtf_file_line_edit.text().strip(),
+                                                        disable_validation=disable_validation)
 
-        configuration.xtffile = self.xtf_file_line_edit.text().strip()
-        configuration.with_exporttid = True
-        full_java_exe_path = JavaDependency.get_full_java_exe_path()
-        if full_java_exe_path:
-            self.base_configuration.java_path = full_java_exe_path
-
-        # Debug mode
-        self.base_configuration.debugging_enabled = QSettings().value('Asistente-LADM-COL/models/debug', DEFAULT_ILI2DB_DEBUG_MODE, type=bool)
-        self.base_configuration.logfile_path = QSettings().value('Asistente-LADM-COL/models/log_file_path', '')
-
-        # User could have changed the default values
-        self.use_local_models = self.app.settings.custom_models
-        self.custom_model_directories = self.app.settings.custom_model_dirs
-
-        # Check custom model directories
-        if self.use_local_models:
-            if not self.custom_model_directories:
-                self.base_configuration.custom_model_directories_enabled = False
-            else:
-                self.base_configuration.custom_model_directories = self.custom_model_directories
-                self.base_configuration.custom_model_directories_enabled = True
-
-        configuration.base_configuration = self.base_configuration
+        # TODO this is different to ili2db.py
         if self.get_ili_models():
             configuration.ilimodels = ';'.join(self.get_ili_models())
-
-        configuration.disable_validation = not QSettings().value('Asistente-LADM-COL/models/validate_data_importing_exporting', True, bool)
 
         return configuration
 
@@ -488,3 +442,15 @@ class DialogExportData(QDialog, DIALOG_UI):
         """
         self.xtf_browser_was_opened = False
         self.clear_messages()
+
+    def _connect_ili2db_signals(self, ili2db):
+        ili2db.process_started.connect(self.on_process_started)
+        ili2db.stderr.connect(self.on_stderr)
+        ili2db.stdout.connect(self.print_info)
+        ili2db.process_finished.connect(self.on_process_finished)
+
+    def _disconnect_ili2db_signals(self, ili2db):
+        ili2db.process_started.disconnect(self.on_process_started)
+        ili2db.stderr.disconnect(self.on_stderr)
+        ili2db.stdout.disconnect(self.print_info)
+        ili2db.process_finished.disconnect(self.on_process_finished)
