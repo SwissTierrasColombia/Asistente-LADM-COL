@@ -44,6 +44,7 @@ from asistente_ladm_col.lib.ili.ili2dbconfig import (BaseConfiguration,
                                                      ValidateDataConfiguration)
 from asistente_ladm_col.lib.ili.ili2dbutils import JavaNotFoundError
 from asistente_ladm_col.lib.ili.ilicache import IliCache
+from asistente_ladm_col.lib.ili.iliexecutable import IliExecutable
 from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils.decorators import with_override_cursor
@@ -244,12 +245,9 @@ class Ili2DB(QObject):
         # Configure run
         importer = iliimporter.Importer()
         importer.tool = db_factory.get_model_baker_db_ili_mode()
-        importer.process_started.connect(self.on_process_started)
-        importer.stderr.connect(self.on_stderr)
         importer.configuration = configuration
 
-        importer.stdout.connect(self.stdout)
-        importer.process_finished.connect(self.process_finished)
+        self._connect_ili_executable_signals(importer)
 
         # Run!
         res = True
@@ -269,6 +267,7 @@ class Ili2DB(QObject):
                 JAVA_REQUIRED_VERSION)
             res = False
 
+        self._disconnect_ili_executable_signals(importer)
         self.logger.clear_status()
         return res, msg
 
@@ -286,9 +285,9 @@ class Ili2DB(QObject):
         # Configure run
         importer = iliimporter.Importer(dataImport=True)
         importer.tool = db_factory.get_model_baker_db_ili_mode()
-        importer.process_started.connect(self.on_process_started)
-        importer.stderr.connect(self.on_stderr)
         importer.configuration = configuration
+
+        self._connect_ili_executable_signals(importer)
 
         # Run!
         res = True
@@ -309,6 +308,7 @@ class Ili2DB(QObject):
                 JAVA_REQUIRED_VERSION)
             res = False
 
+        self._disconnect_ili_executable_signals(importer)
         self.logger.clear_status()
         return res, msg
 
@@ -326,9 +326,9 @@ class Ili2DB(QObject):
         # Configure run
         exporter = iliexporter.Exporter()
         exporter.tool = db_factory.get_model_baker_db_ili_mode()
-        exporter.process_started.connect(self.on_process_started)
-        exporter.stderr.connect(self.on_stderr)
         exporter.configuration = configuration
+
+        self._connect_ili_executable_signals(exporter)
 
         # Run!
         res = True
@@ -350,6 +350,7 @@ class Ili2DB(QObject):
                 JAVA_REQUIRED_VERSION)
             res = False
 
+        self._disconnect_ili_executable_signals(exporter)
         self.logger.clear_status()
         return res, msg
 
@@ -368,9 +369,9 @@ class Ili2DB(QObject):
         # Configure run
         updater = iliupdater.Updater()
         updater.tool = db_factory.get_model_baker_db_ili_mode()
-        updater.process_started.connect(self.on_process_started)
-        updater.stderr.connect(self.on_stderr)
         updater.configuration = configuration
+
+        self._connect_ili_executable_signals(updater)
 
         # Run!
         res = True
@@ -392,6 +393,7 @@ class Ili2DB(QObject):
                 JAVA_REQUIRED_VERSION)
             res = False
 
+        self._disconnect_ili_executable_signals(updater)
         self.logger.clear_status()
         return res, msg
 
@@ -441,8 +443,24 @@ class Ili2DB(QObject):
 
     def on_process_started(self, command):
         self._log += command + '\n'
-        self.process_started.emit(command)
 
     def on_stderr(self, text):
         self._log += text
-        self.stderr.emit(text)
+
+    def _connect_ili_executable_signals(self, ili_executable: IliExecutable):
+        ili_executable.process_started.connect(self.process_started)
+        ili_executable.stderr.connect(self.stderr)
+        ili_executable.stdout.connect(self.stdout)
+        ili_executable.process_finished.connect(self.process_finished)
+
+        ili_executable.process_started.connect(self.on_process_started)
+        ili_executable.stderr.connect(self.on_stderr)
+
+    def _disconnect_ili_executable_signals(self, ili_executable: IliExecutable):
+        ili_executable.process_started.disconnect(self.process_started)
+        ili_executable.stderr.disconnect(self.stderr)
+        ili_executable.stdout.disconnect(self.stdout)
+        ili_executable.process_finished.disconnect(self.process_finished)
+
+        ili_executable.process_started.disconnect(self.on_process_started)
+        ili_executable.stderr.disconnect(self.on_stderr)

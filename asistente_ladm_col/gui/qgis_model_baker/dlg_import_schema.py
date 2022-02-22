@@ -265,7 +265,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             self.import_models_list_widget.setFocus()
             return
 
-        self.save_configuration(None)
+        self.save_configuration()
 
         self.progress_bar.show()
         self.disable()
@@ -315,7 +315,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         if (progress % 20) == 0:
             self.txtStdout.append('...')
 
-    def save_configuration(self, configuration):
+    def save_configuration(self):
         settings = QSettings()
         settings.setValue('Asistente-LADM-COL/QgisModelBaker/show_log', not self.log_config.isCollapsed())
         settings.setValue('Asistente-LADM-COL/QgisModelBaker/srs_auth', self.srs_auth)
@@ -382,7 +382,7 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self.advance_progress_bar_by_text(text)
 
     def on_process_started(self, command):
-        # color_log_text(command, self.txtStdout)
+        color_log_text(command, self.txtStdout)
         self.txtStdout.append(command)
         QCoreApplication.processEvents()
 
@@ -400,7 +400,6 @@ class DialogImportSchema(QDialog, DIALOG_UI):
 
         self.txtStdout.setTextColor(QColor(color))
         self.txtStdout.append(message)
-        QCoreApplication.processEvents()
 
     def advance_progress_bar_by_text(self, text):
         if text.strip() == 'Info: compile models…':
