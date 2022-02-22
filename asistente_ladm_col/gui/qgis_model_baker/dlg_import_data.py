@@ -22,11 +22,9 @@ import os
 
 from asistente_ladm_col.core.ili2db import Ili2DB
 from asistente_ladm_col.lib.ili import iliimporter
-from asistente_ladm_col.lib.ili.ili2dbconfig import (ImportDataConfiguration,
-                                                     BaseConfiguration)
+from asistente_ladm_col.lib.ili.ili2dbconfig import BaseConfiguration
 from asistente_ladm_col.lib.ili.ili2dbutils import color_log_text
 from asistente_ladm_col.lib.ili.ilicache import IliCache
-from asistente_ladm_col.lib.ili.ili2dbutils import JavaNotFoundError
 from asistente_ladm_col.config.ili2db_names import ILI2DBNames
 from qgis.PyQt.QtCore import (Qt,
                               pyqtSignal,
@@ -44,8 +42,7 @@ from qgis.core import Qgis
 from qgis.gui import QgsGui
 from qgis.gui import QgsMessageBar
 
-from asistente_ladm_col.config.general_config import (DEFAULT_ILI2DB_DEBUG_MODE,
-                                                      COLLECTED_DB_SOURCE,
+from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
                                                       SETTINGS_CONNECTION_TAB_INDEX,
                                                       JAVA_REQUIRED_VERSION,
                                                       SETTINGS_MODELS_TAB_INDEX,
@@ -62,8 +59,7 @@ from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.utils import show_plugin_help
 from asistente_ladm_col.utils.qt_utils import (Validators,
                                                FileValidator,
-                                               make_file_selector,
-                                               OverrideCursor)
+                                               make_file_selector)
 
 from asistente_ladm_col.config.config_db_supported import ConfigDBsSupported
 from asistente_ladm_col.config.enums import EnumDbActionType
@@ -376,7 +372,7 @@ class DialogImportData(QDialog, DIALOG_UI):
 
         self.save_configuration(configuration)
 
-        res, msg = ili2db.import_schema(self.db, configuration)
+        res, msg = ili2db.import_data(self.db, configuration)
 
         self._disconnect_ili2db_signals(ili2db)
 

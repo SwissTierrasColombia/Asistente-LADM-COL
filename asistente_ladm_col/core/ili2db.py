@@ -180,7 +180,8 @@ class Ili2DB(QObject):
 
         return configuration
 
-    def get_export_configuration(self, db_factory, db, xtf_path, dataset='', baskets=list(), disable_validation=False):
+    def get_export_configuration(self, db, xtf_path, dataset='', baskets=list(), disable_validation=False):
+        db_factory = self.dbs_supported.get_db_factory(db.engine)
         configuration = ExportConfiguration()
         db_factory.set_ili2db_configuration_params(db.dict_conn_params, configuration)
         configuration.with_exporttid = True
@@ -230,7 +231,7 @@ class Ili2DB(QObject):
         return configuration
 
     @with_override_cursor
-    def import_schema(self, db, configuration):
+    def import_schema(self, db, configuration: SchemaImportConfiguration):
         # Check prerequisite
         if not self.get_full_java_exe_path():
             res_java, msg_java = self.configure_java()
@@ -272,7 +273,7 @@ class Ili2DB(QObject):
         return res, msg
 
     @with_override_cursor
-    def import_data(self, db, configuration, xtf_path):
+    def import_data(self, db, configuration: ImportDataConfiguration):
         # Check prerequisite
         if not self.get_full_java_exe_path():
             res_java, msg_java = self.configure_java()
@@ -291,7 +292,7 @@ class Ili2DB(QObject):
 
         # Run!
         res = True
-        msg = QCoreApplication.translate("Ili2DB", "XTF '{}' imported successfully!").format(xtf_path)
+        msg = QCoreApplication.translate("Ili2DB", "XTF '{}' imported successfully!").format(configuration.xtffile)
         self._log = ''
         self.logger.status(QCoreApplication.translate("Ili2Db", "Importing XTF into {}...").format(db.engine.upper()))
         try:
@@ -312,7 +313,7 @@ class Ili2DB(QObject):
         return res, msg
 
     @with_override_cursor
-    def export(self, db, xtf_path, dataset='', baskets=list(), disable_validation=False):
+    def export(self, db, configuration: ExportConfiguration):
         # Check prerequisite
         if not self.get_full_java_exe_path():
             res_java, msg_java = self.configure_java()
@@ -321,7 +322,6 @@ class Ili2DB(QObject):
 
         # Configure command parameters
         db_factory = self.dbs_supported.get_db_factory(db.engine)
-        configuration = self.get_export_configuration(db_factory, db, xtf_path, dataset, baskets, disable_validation)
 
         # Configure run
         exporter = iliexporter.Exporter()
@@ -332,7 +332,7 @@ class Ili2DB(QObject):
 
         # Run!
         res = True
-        msg = QCoreApplication.translate("Ili2DB", "XTF '{}' exported successfully!").format(xtf_path)
+        msg = QCoreApplication.translate("Ili2DB", "XTF '{}' exported successfully!").format(configuration.xtffile)
         self._log = ''
         self.logger.status(QCoreApplication.translate("Ili2Db", "Exporting from {} to XTF...").format(db.engine.upper()))
         try:

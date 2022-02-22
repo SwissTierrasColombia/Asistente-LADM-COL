@@ -19,12 +19,7 @@
  ***************************************************************************/
 """
 from asistente_ladm_col.core.ili2db import Ili2DB
-from asistente_ladm_col.lib.ili import iliimporter
-from asistente_ladm_col.lib.ili.ili2dbconfig import (SchemaImportConfiguration,
-                                                     BaseConfiguration)
 from asistente_ladm_col.lib.ili.ili2dbutils import color_log_text
-from asistente_ladm_col.lib.ili.ilicache import IliCache
-from asistente_ladm_col.lib.ili.ili2dbutils import JavaNotFoundError
 
 from qgis.PyQt.QtCore import (Qt,
                               QCoreApplication,
@@ -39,17 +34,13 @@ from qgis.PyQt.QtWidgets import (QDialog,
 from qgis.core import Qgis
 from qgis.gui import QgsMessageBar
 
-from asistente_ladm_col.config.general_config import (DEFAULT_ILI2DB_DEBUG_MODE,
-                                                      DEFAULT_SRS_AUTH,
+from asistente_ladm_col.config.general_config import (DEFAULT_SRS_AUTH,
                                                       DEFAULT_SRS_CODE,
                                                       COLLECTED_DB_SOURCE,
                                                       SETTINGS_CONNECTION_TAB_INDEX,
                                                       JAVA_REQUIRED_VERSION,
-                                                      TOML_FILE_DIR,
                                                       SETTINGS_MODELS_TAB_INDEX,
-                                                      CTM12_PG_SCRIPT_PATH,
-                                                      CTM12_GPKG_SCRIPT_PATH, DEFAULT_SRS_AUTHID)
-from asistente_ladm_col.config.ili2db_names import ILI2DBNames
+                                                      DEFAULT_SRS_AUTHID)
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.keys.ili2db_keys import *
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
@@ -59,8 +50,7 @@ from asistente_ladm_col.utils.crs_utils import get_crs_from_auth_and_code, get_c
 from asistente_ladm_col.lib.dependency.java_dependency import JavaDependency
 from asistente_ladm_col.utils import get_ui_class
 from asistente_ladm_col.utils.utils import show_plugin_help
-from asistente_ladm_col.utils.qt_utils import (Validators,
-                                               OverrideCursor)
+from asistente_ladm_col.utils.qt_utils import Validators
 
 from asistente_ladm_col.config.config_db_supported import ConfigDBsSupported
 from asistente_ladm_col.config.enums import EnumDbActionType
@@ -266,9 +256,6 @@ class DialogImportSchema(QDialog, DIALOG_UI):
             self.java_dependency.get_java_on_demand()
             self.disable()
             return
-
-        # TODO role model configuration?
-        # configuration = self.apply_role_model_configuration(configuration)
 
         if not self.get_checked_models():
             self._running_tool = False
