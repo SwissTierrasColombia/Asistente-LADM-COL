@@ -53,26 +53,6 @@ class PGLADMQuery(QGISLADMQuery):
         return PGLADMQuery._get_query_results(db, query)
 
     @staticmethod
-    def get_igac_property_record_card_info(db, **kwargs):
-        """
-        Query by component: Legal info
-        :param kwargs: dict with one of the following key-value param
-               plot_t_ids
-               parcel_fmi
-               parcel_number
-               previous_parcel_number
-        :return:
-        """
-        params = QGISLADMQuery._get_parameters(kwargs)
-        query = property_record_card_query.get_igac_property_record_card_query(names=db.names,
-                                                                               schema=db.schema,
-                                                                               plot_t_ids=params[QueryNames.SEARCH_KEY_PLOT_T_IDS],
-                                                                               parcel_fmi=params[QueryNames.SEARCH_KEY_PARCEL_FMI],
-                                                                               parcel_number=params[QueryNames.SEARCH_KEY_PARCEL_NUMBER],
-                                                                               previous_parcel_number=params[QueryNames.SEARCH_KEY_PREVIOUS_PARCEL_NUMBER])
-        return PGLADMQuery._get_query_results(db, query)
-
-    @staticmethod
     def get_igac_physical_info(db, **kwargs):
         """
         Query by component: Physical info

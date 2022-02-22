@@ -54,9 +54,6 @@ class QGISLADMQuery:
         self.app = AppInterface()
         self.ladm_data = LADMData()
 
-    def get_igac_property_record_card_info(self, db, **kwargs):
-        return self._execute_ladm_query(db, EnumLADMQueryType.IGAC_PROPERTY_RECORD_CARD_INFO, kwargs)
-
     def get_igac_economic_info(self, db, **kwargs):
         return self._execute_ladm_query(db, EnumLADMQueryType.IGAC_ECONOMIC_INFO, kwargs)
 
@@ -85,8 +82,6 @@ class QGISLADMQuery:
             query = get_igac_legal_query(db.names, ladm_units)
         elif EnumLADMQueryType.IGAC_ECONOMIC_INFO == query_type:
             query = get_igac_economic_query(db.names, ladm_units)
-        elif EnumLADMQueryType.IGAC_PROPERTY_RECORD_CARD_INFO == query_type:
-            query = get_igac_property_record_card_query(db.names, ladm_units)
 
         self._execute_query(db, response, query[QueryNames.LEVEL_TABLE], filter_field_values)
         return response

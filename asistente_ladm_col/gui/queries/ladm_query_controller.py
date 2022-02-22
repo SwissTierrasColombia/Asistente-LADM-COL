@@ -250,9 +250,6 @@ class LADMQueryController(QObject):
     def search_data_legal_info(self, **kwargs):
         return self._ladm_queries.get_igac_legal_info(self._db, **kwargs)
 
-    def search_data_property_record_card_info(self, **kwargs):
-        return self._ladm_queries.get_igac_property_record_card_info(self._db, **kwargs)
-
     def search_data_physical_info(self, **kwargs):
         return self._ladm_queries.get_igac_physical_info(self._db, **kwargs)
 

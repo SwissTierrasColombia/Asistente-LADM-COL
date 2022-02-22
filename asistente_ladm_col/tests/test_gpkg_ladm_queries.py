@@ -78,17 +78,6 @@ class TestGPKGLADMQueries(unittest.TestCase):
         result = standardize_query_results(self.ladm_queries.get_igac_legal_info(self.db_gpkg, **kwargs))
         self.assertTrue(expected_result_ladm_legal_query == result, 'The result obtained is not as expected: {} {}'.format(expected_result_ladm_legal_query, result))
 
-    def test_ladm_queries_igac_property_record_card_query(self):
-        print("\nINFO: Validating property record card info query from IGAC...")
-
-        # Empty result
-        kwargs = {'plot_t_ids': [-1]}
-        self.assertEqual(self.ladm_queries.get_igac_property_record_card_info(self.db_gpkg, **kwargs), {'lc_terreno': []})
-
-        kwargs = {'plot_t_ids': self.test_plot_t_ids}
-        result = standardize_query_results(self.ladm_queries.get_igac_property_record_card_info(self.db_gpkg, **kwargs))
-        self.assertTrue(expected_result_ladm_property_record_card_query == result, 'The result obtained is not as expected: {} {}'.format(expected_result_ladm_property_record_card_query, result))
-
     def test_ladm_queries_igac_physical_query(self):
         print("\nINFO: Validating physical info query from IGAC...")
 

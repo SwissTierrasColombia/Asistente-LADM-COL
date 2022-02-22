@@ -361,20 +361,6 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="tab_results_property_record_card">
-          <attribute name="title">
-           <string>Property record card</string>
-          </attribute>
-          <layout class="QGridLayout" name="gridLayout_10">
-           <item row="0" column="0">
-            <widget class="QTreeView" name="tree_view_property_record_card">
-             <property name="headerHidden">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
          <widget class="QWidget" name="tab_results_physical">
           <attribute name="title">
            <string>Physical info</string>

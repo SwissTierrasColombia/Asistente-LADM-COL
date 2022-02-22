@@ -96,7 +96,6 @@ class EnumLADMQueryType(Enum):
     IGAC_PHYSICAL_INFO = 2
     IGAC_LEGAL_INFO = 3
     IGAC_ECONOMIC_INFO = 4
-    IGAC_PROPERTY_RECORD_CARD_INFO = 5
 
 
 class EnumSpatialOperationType(Enum):

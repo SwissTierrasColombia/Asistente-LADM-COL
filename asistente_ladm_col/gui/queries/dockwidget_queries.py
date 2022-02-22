@@ -100,9 +100,6 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         self.tree_view_legal.setContextMenuPolicy(Qt.CustomContextMenu)
         self.tree_view_legal.customContextMenuRequested.connect(self._show_context_menu)
 
-        self.tree_view_property_record_card.setContextMenuPolicy(Qt.CustomContextMenu)
-        self.tree_view_property_record_card.customContextMenuRequested.connect(self._show_context_menu)
-
         self.tree_view_physical.setContextMenuPolicy(Qt.CustomContextMenu)
         self.tree_view_physical.customContextMenuRequested.connect(self._show_context_menu)
 
@@ -197,9 +194,6 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
 
         records = self._controller.search_data_legal_info(**kwargs)
         self._setup_tree_view(self.tree_view_legal, records)
-
-        records = self._controller.search_data_property_record_card_info(**kwargs)
-        self._setup_tree_view(self.tree_view_property_record_card, records)
 
         records = self._controller.search_data_physical_info(**kwargs)
         self._setup_tree_view(self.tree_view_physical, records)
