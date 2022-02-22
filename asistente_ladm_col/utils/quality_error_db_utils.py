@@ -80,7 +80,7 @@ class QualityErrorDBUtils(QObject):
             for catalog_key, catalog_xtf_path in error_model.get_catalogs().items():
                 logger.info(__name__, "Importing catalog '{}' to quality error database...".format(catalog_key))
                 ili2db.get_import_data_configuration(db, catalog_xtf_path)
-                res_xtf, msg_xtf = ili2db.import_data(db, configuration, catalog_xtf_path)
+                res_xtf, msg_xtf = ili2db.import_data(db, configuration)
                 if not res_xtf:
                     logger.warning(__name__,
                                    "There was a problem importing catalog '{}'! Skipping...".format(catalog_key))

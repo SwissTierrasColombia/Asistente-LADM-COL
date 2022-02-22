@@ -434,13 +434,6 @@ class DialogImportData(QDialog, DIALOG_UI):
 
         configuration.delete_data = False
 
-        configuration.srs_auth = QSettings().value('Asistente-LADM-COL/QgisModelBaker/srs_auth', DEFAULT_SRS_AUTH, str)
-        configuration.srs_code = QSettings().value('Asistente-LADM-COL/QgisModelBaker/srs_code', int(DEFAULT_SRS_CODE), int)
-
-        configuration.create_basket_col = ILI2DBNames.CREATE_BASKET_COL
-        configuration.create_import_tid = ILI2DBNames.CREATE_IMPORT_TID
-        configuration.stroke_arcs = ILI2DBNames.STROKE_ARCS
-
         # TODO this is different to ili2db.py
         if self.get_ili_models():
             configuration.ilimodels = ';'.join(self.get_ili_models())
