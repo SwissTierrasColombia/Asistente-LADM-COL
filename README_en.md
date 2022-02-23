@@ -246,4 +246,4 @@ If these prerrequisites are not met, the LADM-COL Assistant will continue runnin
       + Wait until the animation ends or click on `Skip` (below in the page).
       + Sign in using your e-mail.
       + Search for "Asistente LADM-COL" and choose the `SwissTierrasColombia/Asistente-LADM-COL` repository.
-      + That's it! After getting notifications, you will need to wait some hours until the plugin is accepted and available in the QGIS plugin repo.m
+      + That's it! After getting notifications, you will need to wait some hours until the plugin is accepted and available in the QGIS plugin repo.

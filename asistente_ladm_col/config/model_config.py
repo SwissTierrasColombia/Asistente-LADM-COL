@@ -31,7 +31,7 @@ class ModelConfig:
             LADMNames.LADM_COL_MODEL_KEY: {
                 MODEL_ALIAS: QCoreApplication.translate("TranslatableConfigStrings", "LADM-COL"),
                 MODEL_IS_SUPPORTED: True,
-                MODEL_SUPPORTED_VERSION: "3.0",
+                MODEL_SUPPORTED_VERSION: "3.1",
                 MODEL_HIDDEN_BY_DEFAULT: True,
                 MODEL_CHECKED_BY_DEFAULT: False,
                 MODEL_MAPPING: db_mapping_config.get_model_mapping(LADMNames.LADM_COL_MODEL_KEY)
@@ -39,7 +39,7 @@ class ModelConfig:
             LADMNames.SURVEY_MODEL_KEY: {
                 MODEL_ALIAS: QCoreApplication.translate("TranslatableConfigStrings", "Survey"),
                 MODEL_IS_SUPPORTED: True,
-                MODEL_SUPPORTED_VERSION: "1.1",
+                MODEL_SUPPORTED_VERSION: "1.2",
                 MODEL_HIDDEN_BY_DEFAULT: False,
                 MODEL_CHECKED_BY_DEFAULT: True,
                 MODEL_MAPPING: db_mapping_config.get_model_mapping(LADMNames.SURVEY_MODEL_KEY)
@@ -55,7 +55,7 @@ class ModelConfig:
             LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY: {
                 MODEL_ALIAS: QCoreApplication.translate("TranslatableConfigStrings", "SNR data"),
                 MODEL_IS_SUPPORTED: True,
-                MODEL_SUPPORTED_VERSION: "1.0",
+                MODEL_SUPPORTED_VERSION: "2.0",
                 MODEL_HIDDEN_BY_DEFAULT: False,
                 MODEL_CHECKED_BY_DEFAULT: False,
                 MODEL_MAPPING: db_mapping_config.get_model_mapping(LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY)
@@ -71,7 +71,7 @@ class ModelConfig:
             LADMNames.CADASTRAL_CARTOGRAPHY_MODEL_KEY: {
                 MODEL_ALIAS: QCoreApplication.translate("TranslatableConfigStrings", "Reference cadastral cartography"),
                 MODEL_IS_SUPPORTED: True,
-                MODEL_SUPPORTED_VERSION: "1.1",
+                MODEL_SUPPORTED_VERSION: "1.2",
                 MODEL_HIDDEN_BY_DEFAULT: False,
                 MODEL_CHECKED_BY_DEFAULT: False,
                 MODEL_MAPPING: db_mapping_config.get_model_mapping(LADMNames.CADASTRAL_CARTOGRAPHY_MODEL_KEY)
