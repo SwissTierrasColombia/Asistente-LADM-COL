@@ -55,6 +55,9 @@ class WizardFactory:
 
         wizard_config = wizard_config_factory.get_wizard_config(db, wizard_name)
 
+        if wizard_config is None:
+            return None
+
         wizard_result = None
 
         if wizard_name == WIZARD_CREATE_COL_PARTY_CADASTRAL or wizard_name == WIZARD_CREATE_ADMINISTRATIVE_SOURCE_SURVEY:
