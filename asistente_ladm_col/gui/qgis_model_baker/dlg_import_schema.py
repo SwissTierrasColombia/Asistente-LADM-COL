@@ -382,7 +382,6 @@ class DialogImportSchema(QDialog, DIALOG_UI):
         self.advance_progress_bar_by_text(text)
 
     def on_process_started(self, command):
-        color_log_text(command, self.txtStdout)
         self.txtStdout.append(command)
         QCoreApplication.processEvents()
 
