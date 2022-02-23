@@ -282,30 +282,6 @@ class LayerConfig:
                                             TRUE
                                     END""".format(LC_BUILDING_UNIT_T_BUILT_AREA_F=names.LC_BUILDING_UNIT_T_BUILT_AREA_F),
                             'description': 'El valor debe ser mayor a cero (0).'
-                        },
-                        names.LC_BUILDING_UNIT_T_BUILT_PRIVATE_AREA_F: {
-                            'expression': """
-                                    CASE
-                                        WHEN  "{LC_BUILDING_UNIT_T_BUILT_PRIVATE_AREA_F}" IS NULL THEN
-                                            TRUE
-                                        WHEN  "{LC_BUILDING_UNIT_T_BUILT_PRIVATE_AREA_F}" = 0 THEN
-                                            FALSE
-                                        ELSE
-                                            TRUE
-                                    END""".format(LC_BUILDING_UNIT_T_BUILT_PRIVATE_AREA_F=names.LC_BUILDING_UNIT_T_BUILT_PRIVATE_AREA_F),
-                            'description': 'El valor debe ser mayor a cero (0).'
-                        },
-                        names.LC_BUILDING_UNIT_T_BUILDING_UNIT_VALUATION_F: {
-                            'expression': """
-                                    CASE
-                                        WHEN  "{LC_BUILDING_UNIT_T_BUILDING_UNIT_VALUATION_F}" IS NULL THEN
-                                            TRUE
-                                        WHEN  "{LC_BUILDING_UNIT_T_BUILDING_UNIT_VALUATION_F}" = 0 THEN
-                                            FALSE
-                                        ELSE
-                                            TRUE
-                                    END""".format(LC_BUILDING_UNIT_T_BUILDING_UNIT_VALUATION_F=names.LC_BUILDING_UNIT_T_BUILDING_UNIT_VALUATION_F),
-                            'description': 'El valor debe ser mayor a cero (0).'
                         }
                     }
                 }
@@ -456,11 +432,6 @@ class LayerConfig:
                     names.LC_BUILDING_T: {
                         "qgis_25d_angle": 90,
                         "qgis_25d_height": 1
-                    },
-                    names.LC_BUILDING_UNIT_T: {
-                            "qgis_25d_angle": 90,
-                            "qgis_25d_height": 'coalesce("{}", 0) * 2.5'.format(
-                                names.LC_BUILDING_UNIT_T_TOTAL_FLOORS_F)
                     }})
 
         return layer_variables
@@ -569,12 +540,7 @@ class LayerConfig:
                                   names.COL_SPATIAL_UNIT_T_LABEL_F,
                                   names.COL_SPATIAL_UNIT_T_SURFACE_RELATION_F,
                                   names.COL_SPATIAL_UNIT_T_GEOMETRY_F],
-            names.LC_BUILDING_UNIT_T: [names.LC_BUILDING_UNIT_T_BUILDING_UNIT_VALUATION_F,
-                                       names.LC_BUILDING_UNIT_T_FLOOR_F,
-                                       names.LC_BUILDING_UNIT_T_IDENTIFICATION_F,
-                                       names.LC_BUILDING_UNIT_T_USE_F,
-                                       names.LC_BUILDING_UNIT_T_BUILT_AREA_F,
-                                       names.LC_BUILDING_UNIT_T_BUILT_PRIVATE_AREA_F,
+            names.LC_BUILDING_UNIT_T: [names.LC_BUILDING_UNIT_T_BUILT_AREA_F,
                                        names.LC_BUILDING_UNIT_T_BUILDING_F,
                                        names.COL_SPATIAL_UNIT_T_DIMENSION_F,
                                        names.COL_SPATIAL_UNIT_T_LABEL_F,
