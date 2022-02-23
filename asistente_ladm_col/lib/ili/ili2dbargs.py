@@ -64,6 +64,6 @@ def _get_db_args(configuration, hide_password=False):
 
 def _get_schema_import_args(tool):
     args = list()
-    if tool == 'pg':
+    if tool == DbIliMode.ili2pg:
         args += ["--setupPgExt"]
     return args

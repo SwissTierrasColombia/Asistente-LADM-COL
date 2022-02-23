@@ -28,7 +28,7 @@ class DBMappingConfig:
        a = qgis.utils.plugins['asistente_ladm_col']
        a.get_db_connection().get_db_mapping()
 
-    2. Choose variable names you'll use throughout the code. Example: "LC_MYTABLE_T".
+    2. Choose variable names you'll use throughout the code. Example: "GC_MYTABLE_T".
         We suggest you to use these suffixes: T for tables, D for domains, F for fields.
         If your variable points to an application or extended model, use its prefix.
 

@@ -26,7 +26,7 @@ INTERLIS 2.3;
  * 
  * -----------------------------------------------------------
  */
-MODEL LADM_COL_V3_0 (es)
+MODEL LADM_COL_V3_1 (es)
 AT "http://www.proadmintierra.info/"
 VERSION "V1.2.0"  // 2019-08-13 // =
   IMPORTS ISO19107_PLANAS_V3_0;
@@ -54,6 +54,8 @@ VERSION "V1.2.0"  // 2019-08-13 // =
          */
         !!@ ili2db.dispName = "Imagen"
         Imagen,
+        /** Archivo digital que contiene un escrito en que constan datos fidedignos o susceptibles de ser empleados como tales para probar algo.
+         */
         !!@ ili2db.dispName = "Documento"
         Documento,
         /** Definición en la ISO 19115:2003.
@@ -176,39 +178,48 @@ VERSION "V1.2.0"  // 2019-08-13 // =
       /** Si ha sido situado por interpolación, de qué manera se ha hecho.
        */
       COL_InterpolacionTipo = (
+        /** Interpolación aislada.
+         */
         !!@ ili2db.dispName = "Aislado"
         Aislado,
+        /** Interpolación intermedia de arco.
+         */
         !!@ ili2db.dispName = "Intermedio arco"
         Intermedio_Arco,
+        /** Interpolación intermedia de línea.
+         */
         !!@ ili2db.dispName = "Intermedio línea"
         Intermedio_Linea
       );
 
+      /** Indica el método utilizado para la recolección de los puntos.
+       */
       COL_MetodoProduccionTipo = (
-        /** Aquellos que requieren una visita campo con el fin de
-         * recolectar la realidad de los bienes inmuebles.
+        /** Aquellos que requieren una visita campo con el fin de recolectar la realidad de los bienes inmuebles.
          */
         !!@ ili2db.dispName = "Método directo"
         Metodo_Directo,
-        /** aquellos métodos identificación física, jurídica y
-         * económica de los inmuebles a través del uso de de sensores
-         * remotos, integración registros administrativos, modelos ísticos y
-         * econométricos, análisis de Big Data y fuentes secundarias como
-         * observatorios inmobiliarios, su posterior incorporación en la base catastral.
+        /** Aquellos métodos identificación física, jurídica y económica de los inmuebles a través del uso de sensores remotos, integración registros administrativos, modelos probabilísticos y econométricos, análisis de Big Data y fuentes secundarias como observatorios inmobiliarios, su posterior incorporación en la base catastral.
          */
         !!@ ili2db.dispName = "Método indirecto"
         Metodo_Indirecto,
         /** Son los derivados participación de la comunidad en el suministro de información que sirva como insumo para el desarrollo de los procesos catastrales. Los gestores catastrales propenderán por la adopción nuevas tecnologías y procesos comunitarios que faciliten la participación los ciudadanos.
          */
-        !!@ ili2db.dispName = "Metodo declarativo y colaborativo"
+        !!@ ili2db.dispName = "Método declarativo y colaborativo"
         Metodo_Declarativo_y_Colaborativo
       );
 
       COL_PuntoTipo = (
+        /** Punto tipo de control.
+         */
         !!@ ili2db.dispName = "Control"
         Control,
+        /** Puntos del levantamiento catastral.
+         */
         !!@ ili2db.dispName = "Catastro"
         Catastro,
+        /** Otro tipo de punto.
+         */
         !!@ ili2db.dispName = "Otro"
         Otro
       );
@@ -262,10 +273,16 @@ VERSION "V1.2.0"  // 2019-08-13 // =
       );
 
       COL_VolumenTipo = (
+        /** Se utiliza cuando el valor de volumen es reportado por una fuente externa válida.
+         */
         !!@ ili2db.dispName = "Oficial"
         Oficial,
+        /** Se utiliza cuando el valor de volumen es calculado a partir de las propiedades de la unidad espacial directamente.
+         */
         !!@ ili2db.dispName = "Calculado"
         Calculado,
+        /** Se utiliza cuando el valor de volumen es diferente a las dos anteriores.
+         */
         !!@ ili2db.dispName = "Otro"
         Otro
       );
@@ -299,12 +316,20 @@ VERSION "V1.2.0"  // 2019-08-13 // =
       );
 
       COL_RelacionSuperficieTipo = (
+        /** Cuando la superficie del terreno o la construcción mantiene o se encuentra localizada a nivel de rasante de la zona, es decir, la línea que define la inclinación o pendiente con respecto al plano horizontal.
+         */
         !!@ ili2db.dispName = "En rasante"
         En_Rasante,
+        /** Cuando la superficie del terreno o la construcción se encuentra por encima de la rasante de la zona.
+         */
         !!@ ili2db.dispName = "En vuelo"
         En_Vuelo,
+        /** Cuando la superficie del terreno o la construcción se encuentra por debajo de la superficie terrestre.
+         */
         !!@ ili2db.dispName = "En subsuelo"
         En_Subsuelo,
+        /** Cuando la superficie del terreno o la construcción presenta una condición diferente a las anteriores.
+         */
         !!@ ili2db.dispName = "Otro"
         Otro
       );
@@ -323,7 +348,7 @@ VERSION "V1.2.0"  // 2019-08-13 // =
     /** Estructura que proviene de la traducción de la clase CC_OperationMethod de la ISO 19111. Indica el método utilizado, mediante un algoritmo o un procedimiento, para realizar operaciones con coordenadas.
      */
     STRUCTURE CC_MetodoOperacion =
-      /** Fórmulas o procedimientos utilizadoa por este método de operación de coordenadas. Esto puede ser una referencia a una publicación. Tenga en cuenta que el método de operación puede no ser analítico, en cuyo caso este atributo hace referencia o contiene el procedimiento, no una fórmula analítica.
+      /** Fórmulas o procedimientos utilizados por este método de operación de coordenadas. Esto puede ser una referencia a una publicación. Tenga en cuenta que el método de operación puede no ser analítico, en cuyo caso este atributo hace referencia o contiene el procedimiento, no una fórmula analítica.
        */
       !!@ ili2db.dispName = "Fórmula"
       Formula : MANDATORY CharacterString;
@@ -333,10 +358,12 @@ VERSION "V1.2.0"  // 2019-08-13 // =
       Dimensiones_Origen : Integer;
       /** Número de dimensiones en el CRS de destino de este método de operación de coordenadas.
        */
-      !!@ ili2db.dispName = "Ddimensiones objetivo"
-      Ddimensiones_Objetivo : Integer;
+      !!@ ili2db.dispName = "Dimensiones objetivo"
+      Dimensiones_Objetivo : Integer;
     END CC_MetodoOperacion;
 
+    /** Es el valor de la cantidad de superficie que cubre una figura de dos dimensiones.
+     */
     !!@ ili2db.dispName = "Valores de área"
     STRUCTURE COL_AreaValor =
       /** Indica si el valor a registrar corresponde al área gráfica o alfanumérica de la base de datos catastral.
@@ -346,7 +373,7 @@ VERSION "V1.2.0"  // 2019-08-13 // =
       /** Corresponde al valor del área registrada en la base de datos catastral.
        */
       !!@ ili2db.dispName = "Área"
-      Area : MANDATORY 0.0 .. 99999999999999.9 [LADM_COL_V3_0.m2];
+      Area : MANDATORY 0.0 .. 99999999999999.9 [LADM_COL_V3_1.m2];
       /** Parametros de la proyección utilizada para el cálculo del área de la forma proj, ejemplo: 'EPSG:3116', '+proj=tmerc +lat_0=4.59620041666667 +lon_0=-74.0775079166667 +k=1 +x_0=1000000 +y_0=1000000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs'
        */
       !!@ ili2db.dispName = "Datos de la proyección"
@@ -357,6 +384,8 @@ VERSION "V1.2.0"  // 2019-08-13 // =
      */
     !!@ ili2db.dispName = "Dirección"
     STRUCTURE ExtDireccion =
+      /** Valores: Estructurada y No Estructurada.
+       */
       !!@ ili2db.dispName = "Tipo de dirección"
       Tipo_Direccion : MANDATORY (
         !!@ ili2db.dispName = "Estructurada"
@@ -364,14 +393,20 @@ VERSION "V1.2.0"  // 2019-08-13 // =
         !!@ ili2db.dispName = "No estructurada"
         No_Estructurada
       );
+      /** Valor Booleano para distinguir si la dirección es principal.
+       */
       !!@ ili2db.dispName = "Es dirección principal"
       Es_Direccion_Principal : BOOLEAN;
       /** Par de valores georreferenciados (x,y) en la que se encuentra la dirección.
        */
       !!@ ili2db.dispName = "Localización"
       Localizacion : ISO19107_PLANAS_V3_0.GM_Point3D;
+      /** Código postal.
+       */
       !!@ ili2db.dispName = "Código postal"
       Codigo_Postal : CharacterString;
+      /** Valores: Avenida_Calle, Avenida_Carrera, Avenida, Autopista, Circunvalar, Calle, Carrera, Diagonal, Transversal, Circular.
+       */
       !!@ ili2db.dispName = "Clase de vía principal"
       Clase_Via_Principal : (
         !!@ ili2db.dispName = "Avenida calle"
@@ -395,10 +430,16 @@ VERSION "V1.2.0"  // 2019-08-13 // =
         !!@ ili2db.dispName = "Circular"
         Circular
       );
+      /** Numero que acompaña a la clase de vía principal.
+       */
       !!@ ili2db.dispName = "Valor vía principal"
       Valor_Via_Principal : TEXT*100;
+      /** Letra que acompaña al valor de la vía principal.
+       */
       !!@ ili2db.dispName = "Letra vía principal"
       Letra_Via_Principal : TEXT*20;
+      /** Valores: Norte, Sur, Este, Oeste.
+       */
       !!@ ili2db.dispName = "Sector de la ciudad"
       Sector_Ciudad : (
         Norte,
@@ -406,12 +447,20 @@ VERSION "V1.2.0"  // 2019-08-13 // =
         Este,
         Oeste
       );
+      /** Número de la vía generadora.
+       */
       !!@ ili2db.dispName = "Valor de vía generadora"
       Valor_Via_Generadora : TEXT*100;
+      /** Letra que acompaña al valor de la vía generadora.
+       */
       !!@ ili2db.dispName = "Letra de vía generadora"
       Letra_Via_Generadora : TEXT*20;
+      /** Distancia entre la vía generadora al acceso del predio.
+       */
       !!@ ili2db.dispName = "Número del predio"
       Numero_Predio : TEXT*20;
+      /** Sector de donde se localiza el predio, ejemplo: Norte, Sur, Este, Oeste.
+       */
       !!@ ili2db.dispName = "Sector del predio"
       Sector_Predio : (
         Norte,
@@ -419,8 +468,12 @@ VERSION "V1.2.0"  // 2019-08-13 // =
         Este,
         Oeste
       );
+      /** Complemento de la dirección.
+       */
       !!@ ili2db.dispName = "Complemento"
       Complemento : TEXT*255;
+      /** Nombre del predio, ejemplo, nombre de los predios en el sector rural. Este valor se diligencia cuando el tipo de dirección es "No_Estructurada".
+       */
       !!@ ili2db.dispName = "Nombre del predio"
       Nombre_Predio : TEXT*255;
     END ExtDireccion;
@@ -479,7 +532,7 @@ VERSION "V1.2.0"  // 2019-08-13 // =
         Telecomunicacion
       );
 
-      Peso = 0.0 .. 999999999999999.0 [LADM_COL_V3_0.COP];
+      Peso = 0.0 .. 999999999999999.0 [LADM_COL_V3_1.COP];
 
     /** Registro de la fórmula o procedimiento utilizado en la transformación y de su resultado.
      */
@@ -487,7 +540,7 @@ VERSION "V1.2.0"  // 2019-08-13 // =
       /** Fórmula o procedimiento utilizado en la transformación.
        */
       !!@ ili2db.dispName = "Transformación"
-      Transformacion : MANDATORY LADM_COL_V3_0.LADM_Nucleo.CC_MetodoOperacion;
+      Transformacion : MANDATORY LADM_COL_V3_1.LADM_Nucleo.CC_MetodoOperacion;
       /** Geometría una vez realizado el proceso de transformación.
        */
       !!@ ili2db.dispName = "Localización transformada"
@@ -498,7 +551,7 @@ VERSION "V1.2.0"  // 2019-08-13 // =
      */
     STRUCTURE ExtUnidadEdificacionFisica =
       !!@ ili2db.dispName = "Ext dirección id"
-      Ext_Direccion_ID : LADM_COL_V3_0.LADM_Nucleo.ExtDireccion;
+      Ext_Direccion_ID : LADM_COL_V3_1.LADM_Nucleo.ExtDireccion;
     END ExtUnidadEdificacionFisica;
 
     /** Referencia a una imagen mediante su url.
@@ -532,11 +585,11 @@ VERSION "V1.2.0"  // 2019-08-13 // =
       /** Identificador externo del interesado.
        */
       !!@ ili2db.dispName = "Ext dirección id"
-      Ext_Direccion_ID : LADM_COL_V3_0.LADM_Nucleo.ExtDireccion;
+      Ext_Direccion_ID : LADM_COL_V3_1.LADM_Nucleo.ExtDireccion;
       /** Imagen de la huella dactilar del interesado.
        */
       !!@ ili2db.dispName = "Huella dactilar"
-      Huella_Dactilar : LADM_COL_V3_0.LADM_Nucleo.Imagen;
+      Huella_Dactilar : LADM_COL_V3_1.LADM_Nucleo.Imagen;
       /** Campo de nombre del interesado.
        */
       !!@ ili2db.dispName = "Nombre"
@@ -544,11 +597,11 @@ VERSION "V1.2.0"  // 2019-08-13 // =
       /** Fotografía del interesado.
        */
       !!@ ili2db.dispName = "Fotografía"
-      Fotografia : LADM_COL_V3_0.LADM_Nucleo.Imagen;
+      Fotografia : LADM_COL_V3_1.LADM_Nucleo.Imagen;
       /** Firma del interesado.
        */
       !!@ ili2db.dispName = "Firma"
-      Firma : LADM_COL_V3_0.LADM_Nucleo.Imagen;
+      Firma : LADM_COL_V3_1.LADM_Nucleo.Imagen;
       /** Ruta de almacenamiento del documento escaneado del interesado.
        */
       !!@ ili2db.dispName = "Documento escaneado"
@@ -565,7 +618,7 @@ VERSION "V1.2.0"  // 2019-08-13 // =
       /** Identificador de referencia a un interesado externo que es el administrador.
        */
       !!@ ili2db.dispName = "Ext interesado administrador id"
-      Ext_Interesado_Administrador_ID : LADM_COL_V3_0.LADM_Nucleo.ExtInteresado;
+      Ext_Interesado_Administrador_ID : LADM_COL_V3_1.LADM_Nucleo.ExtInteresado;
     END ExtRedServiciosFisica;
 
     /** Referencia a clase externa desde donde se gestiona el repositorio de archivos.
@@ -592,8 +645,12 @@ VERSION "V1.2.0"  // 2019-08-13 // =
        */
       !!@ ili2db.dispName = "Fecha de entrega"
       Fecha_Entrega : INTERLIS.XMLDate;
+      /** Identificador único global. Corresponde al atributo de la clase en LADM.
+       */
       !!@ ili2db.dispName = "Espacio de nombres"
       Espacio_De_Nombres : MANDATORY CharacterString;
+      /** Identificador único local.
+       */
       !!@ ili2db.dispName = "Local ID"
       Local_Id : MANDATORY CharacterString;
     END ExtArchivo;
@@ -609,7 +666,7 @@ VERSION "V1.2.0"  // 2019-08-13 // =
       /** Identificador del archivo fuente controlado por una clase externa.
        */
       !!@ ili2db.dispName = "Ext archivo id"
-      Ext_Archivo_ID : LADM_COL_V3_0.LADM_Nucleo.ExtArchivo;
+      Ext_Archivo_ID : LADM_COL_V3_1.LADM_Nucleo.ExtArchivo;
       /** Tipo de formato en el que es presentada la fuente, de acuerdo con el registro de metadatos.
        */
       !!@ ili2db.dispName = "Tipo principal"
@@ -658,7 +715,7 @@ VERSION "V1.2.0"  // 2019-08-13 // =
       /** Registros del área en diferentes sistemas.
        */
       !!@ ili2db.dispName = "Área"
-      Area : LIST {0..*} OF LADM_COL_V3_0.LADM_Nucleo.COL_AreaValor;
+      Area : LIST {0..*} OF LADM_COL_V3_1.LADM_Nucleo.COL_AreaValor;
       /** Dimensión del objeto.
        */
       !!@ ili2db.dispName = "Dimensión"
@@ -666,7 +723,7 @@ VERSION "V1.2.0"  // 2019-08-13 // =
       /** Corresponde al atributo extAddressID de la clase en LADM.
        */
       !!@ ili2db.dispName = "Ext dirección id"
-      Ext_Direccion_ID : LIST {0..*} OF LADM_COL_V3_0.LADM_Nucleo.ExtDireccion;
+      Ext_Direccion_ID : LIST {0..*} OF LADM_COL_V3_1.LADM_Nucleo.ExtDireccion;
       /** Corresponde al atributo label de la clase en LADM.
        */
       !!@ ili2db.dispName = "Etiqueta"
@@ -678,8 +735,8 @@ VERSION "V1.2.0"  // 2019-08-13 // =
       /** Corresponde al atributo volume de la clase en LADM.
        */
       !!@ ili2db.dispName = "Volumen"
-      Volumen : LIST {0..*} OF LADM_COL_V3_0.LADM_Nucleo.COL_VolumenValor;
-      /** Materializacion del metodo createArea(). Almacena de forma permanente la geometría de tipo poligonal.
+      Volumen : LIST {0..*} OF LADM_COL_V3_1.LADM_Nucleo.COL_VolumenValor;
+      /** Materialización del método createArea(). Almacena de forma permanente la geometría de tipo poligonal.
        */
       !!@ ili2db.dispName = "Geometría"
       Geometria : ISO19107_PLANAS_V3_0.GM_MultiSurface3D;
@@ -714,7 +771,7 @@ VERSION "V1.2.0"  // 2019-08-13 // =
       /** Identificador de la unidad de edificación.
        */
       !!@ ili2db.dispName = "Ext unidad edificación física id"
-      Ext_Unidad_Edificacion_Fisica_ID : LADM_COL_V3_0.LADM_Nucleo.ExtUnidadEdificacionFisica;
+      Ext_Unidad_Edificacion_Fisica_ID : LADM_COL_V3_1.LADM_Nucleo.ExtUnidadEdificacionFisica;
       /** Tipo de unidad de edificación de la que se trata.
        */
       !!@ ili2db.dispName = "Tipo"
@@ -733,7 +790,7 @@ VERSION "V1.2.0"  // 2019-08-13 // =
       /** Identificador de la red física hacia una referencia externa.
        */
       !!@ ili2db.dispName = "Ext id red física"
-      ext_ID_Red_Fisica : LADM_COL_V3_0.LADM_Nucleo.ExtRedServiciosFisica;
+      ext_ID_Red_Fisica : LADM_COL_V3_1.LADM_Nucleo.ExtRedServiciosFisica;
       /** Estado de operatividad de la red.
        */
       !!@ ili2db.dispName = "Estado"
@@ -845,14 +902,14 @@ VERSION "V1.2.0"  // 2019-08-13 // =
        */
       !!@ ili2db.dispName = "Tipo de punto"
       PuntoTipo : MANDATORY COL_PuntoTipo;
-      /** Indica si el método de levantamiento catastral: método directo o indirecto.
+      /** Indica el método utilizado para la recolección de los puntos.
        */
       !!@ ili2db.dispName = "Método de producción"
       MetodoProduccion : MANDATORY COL_MetodoProduccionTipo;
       /** Transformación y Resultado.
        */
       !!@ ili2db.dispName = "Transformación y resultado"
-      Transformacion_Y_Resultado : LIST {0..*} OF LADM_COL_V3_0.LADM_Nucleo.COL_Transformacion;
+      Transformacion_Y_Resultado : LIST {0..*} OF LADM_COL_V3_1.LADM_Nucleo.COL_Transformacion;
       /** Geometria punto para administración de los objetos: punto de lindero, punto levantamiento y punto de control.
        */
       !!@ ili2db.dispName = "Geometría"
@@ -981,7 +1038,7 @@ VERSION "V1.2.0"  // 2019-08-13 // =
       /** Identificador del interesado.
        */
       !!@ ili2db.dispName = "Ext PID"
-      ext_PID : LADM_COL_V3_0.LADM_Nucleo.ExtInteresado;
+      ext_PID : LADM_COL_V3_1.LADM_Nucleo.ExtInteresado;
       /** Nombre del interesado.
        */
       !!@ ili2db.dispName = "Nombre"
@@ -1021,9 +1078,9 @@ VERSION "V1.2.0"  // 2019-08-13 // =
     ASSOCIATION col_miembros =
       interesado -- {2..*} COL_Interesado;
       agrupacion -<> {0..*} COL_AgrupacionInteresados;
-      participacion : LADM_COL_V3_0.LADM_Nucleo.Fraccion;
+      participacion : LADM_COL_V3_1.LADM_Nucleo.Fraccion;
     END col_miembros;
 
   END LADM_Nucleo;
 
-END LADM_COL_V3_0.
+END LADM_COL_V3_1.
