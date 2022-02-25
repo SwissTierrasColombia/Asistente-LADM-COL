@@ -18,6 +18,7 @@ from asistente_ladm_col.tests.utils import (get_pg_conn,
                                             restore_schema)
 
 
+@unittest.skip("Until we've migrated to Lev Cat 1.2 completely...")
 class TestChangeDetectionSupplies(unittest.TestCase):
 
     @classmethod

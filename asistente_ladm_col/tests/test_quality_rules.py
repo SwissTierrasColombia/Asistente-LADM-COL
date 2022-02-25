@@ -27,7 +27,7 @@ import_processing()
 import processing
 
 
-@unittest.skip("Until we've finished with the refactor of quality rules...")
+@unittest.skip("Until we've migrated to Lev Cat 1.2 completely...")
 class TestQualityRules(unittest.TestCase):
 
     @classmethod

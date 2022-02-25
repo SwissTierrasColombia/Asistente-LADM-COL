@@ -130,7 +130,8 @@ class TestDBTestConnection(unittest.TestCase):
         self.assertFalse(res, msg)
         self.assertEqual(code, EnumTestConnectionMsg.NO_LADM_MODELS_FOUND_IN_SUPPORTED_VERSION)
 
-    def test_gpkg_test_connection_required_models_success(self):
+    def _test_gpkg_test_connection_required_models_success(self):
+        # TODO: Migrate to Lev Cat 1.2
         print("\nINFO: Validate test_connection() for GeoPackage (required models (success): survey and snr)...")
         db = get_gpkg_conn('test_ladm_survey_model_gpkg')
         res, code, msg = db.test_connection(models={REQUIRED_MODELS: [LADMNames.SURVEY_MODEL_KEY,

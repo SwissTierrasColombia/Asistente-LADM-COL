@@ -15,6 +15,7 @@ from asistente_ladm_col.tests.utils import (get_field_values_by_key_values,
 from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 
 
+@unittest.skip("Until we've migrated to Lev Cat 1.2 completely...")
 class TestLADMData(unittest.TestCase):
 
     @classmethod
