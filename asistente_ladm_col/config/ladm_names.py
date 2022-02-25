@@ -8,6 +8,7 @@ class LADMNames(metaclass=Singleton):
     """
     USEFUL DOMAIN VALUES
     """
+    LC_CONDITION_PARCEL_TYPE_D_ILICODE_F_INFORMAL_V = "Informal"
     LC_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V = "Persona_Natural"
     LC_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V = "Persona_Juridica"
     LC_PARTY_DOCUMENT_TYPE_D_ILICODE_F_NIT_V = "NIT"

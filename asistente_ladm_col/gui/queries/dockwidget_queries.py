@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 /***************************************************************************
                               Asistente LADM-COL
@@ -31,6 +30,7 @@ from qgis.PyQt.QtWidgets import (QMenu,
                                  QAction, 
                                  QApplication, 
                                  QLabel)
+from qgis.core import NULL
 from qgis.gui import (QgsDockWidget, 
                       QgsMapToolIdentifyFeature)
 
@@ -195,6 +195,10 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
             bZoom = kwargs['zoom_and_select']
             del kwargs['zoom_and_select']
 
+        if 'parcel_number' in kwargs and kwargs['parcel_number'] == NULL:
+            self.logger.warning(__name__, QCoreApplication.translate("DockWidgetQueries",
+                                                                     "The parcel number is NULL! We cannot retrieve data for parcels with NULL parcel numbers."))
+
         # records = self._controller.search_data_basic_info(**kwargs)
         # if bZoom:
         #     self._controller.zoom_to_resulting_plots(records)
@@ -335,7 +339,7 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
         self.btn_previous_informal_parcel.setEnabled(enable)
 
     def _update_informal_labels(self, parcel_number='', current=0, total=0):
-        self.lbl_informal_parcel_number.setText(parcel_number)
+        self.lbl_informal_parcel_number.setText(parcel_number if parcel_number != NULL else 'NULL')
         out_of = ''
         if current and total:
             out_of = QCoreApplication.translate("DockWidgetQueries", "{} out of {}").format(current, total)

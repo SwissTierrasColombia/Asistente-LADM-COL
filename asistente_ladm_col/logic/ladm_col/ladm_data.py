@@ -680,10 +680,15 @@ class LADMData(QObject):
         if not with_geometry:
             request.setFlags(QgsFeatureRequest.NoGeometry)
         if not with_attributes:
+            # If no attributes required, we still retrieve a t_id field (or anything passed as parameter)
             field_idx = layer.fields().indexFromName(t_id_name)
             request.setSubsetOfAttributes([field_idx])  # Note: this adds a new flag
 
         return [feature for feature in layer.getFeatures(request)]
+
+    @staticmethod
+    def get_t_ids_by_expression(db, layer, expression=None):
+        return [f[db.names.T_ID_F] for f in LADMData.get_features_by_expression(layer, db.names.T_ID_F, expression)]
 
     @staticmethod
     def get_features_from_t_ids(layer, t_id_name, t_ids, no_attributes=False, no_geometry=False, only_attributes=list(), order_by=''):
@@ -929,17 +934,14 @@ class LADMData(QObject):
 
         return res
 
-    def get_informal_parcel_tids(self, db, right_layer):
-        # Go to rights table and get informal parcel tids
-        occupation = self.get_domain_code_from_value(db, db.names.LC_RIGHT_TYPE_D,
-                                                     LADMNames.LC_RIGHT_TYPE_D_ILICODE_F_OCCUPATION_V)
-        possession = self.get_domain_code_from_value(db, db.names.LC_RIGHT_TYPE_D,
-                                                     LADMNames.LC_RIGHT_TYPE_D_ILICODE_F_POSSESSION_V)
-        exp = "{type} = {ocu} or {type} = {pos}".format(type=db.names.LC_RIGHT_T_TYPE_F, ocu=occupation, pos=possession)
-        right_features = LADMData.get_features_by_expression(right_layer,
-                                                             db.names.COL_BAUNIT_RRR_T_UNIT_F, QgsExpression(exp))
+    def get_informal_parcel_tids(self, db, parcel_layer):
+        # Go to parcel table and get those that have its condition as informal
+        informal = self.get_domain_code_from_value(db,
+                                                   db.names.LC_CONDITION_PARCEL_TYPE_D,
+                                                   LADMNames.LC_CONDITION_PARCEL_TYPE_D_ILICODE_F_INFORMAL_V)
+        exp = "{cond} = {inf}".format(cond=db.names.LC_PARCEL_T_PARCEL_TYPE_F, inf=informal)
 
-        return [f[db.names.COL_BAUNIT_RRR_T_UNIT_F] for f in right_features]
+        return LADMData.get_t_ids_by_expression(db, parcel_layer, QgsExpression(exp))
 
     def get_informal_plot_tids(self, db):
         return self.__get_informal_spatial_unit_tids(db, db.names.LC_PLOT_T)
@@ -962,13 +964,13 @@ class LADMData(QObject):
             return cached_value
 
         layers = {su_layer_name: None,
-                  db.names.LC_RIGHT_T: None,
+                  db.names.LC_PARCEL_T: None,
                   db.names.COL_UE_BAUNIT_T: None}
         AppInterface().core.get_layers(db, layers, load=True)
         if not layers:
             return list()
 
-        parcel_tids = self.get_informal_parcel_tids(db, layers[db.names.LC_RIGHT_T])
+        parcel_tids = self.get_informal_parcel_tids(db, layers[db.names.LC_PARCEL_T])
 
         # Now get related Spatial Units' tids
         su_tids = self.__get_spatial_units_related_to_parcels(db, parcel_tids, db.names.T_ID_F, su_layer_name,

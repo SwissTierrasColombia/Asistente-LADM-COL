@@ -261,8 +261,8 @@ class LADMQueryController(QObject):
         :return: Triple --> parcel_number, current, total
         """
         # We always go to the DB to get informality info
-        right_layer = self.app.core.get_layer(self._db, self._db.names.LC_RIGHT_T, True)
-        informal_parcel_t_ids = self._ladm_data.get_informal_parcel_tids(self._db, right_layer)
+        parcel_layer = self.app.core.get_layer(self._db, self._db.names.LC_PARCEL_T, True)
+        informal_parcel_t_ids = self._ladm_data.get_informal_parcel_tids(self._db, parcel_layer)
 
         # Overwrite cache
         self._informal_parcels_info = tuple()
