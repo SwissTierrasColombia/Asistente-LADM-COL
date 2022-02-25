@@ -19,6 +19,7 @@ from asistente_ladm_col.tests.resources.expected_results.change_detections.colle
 from asistente_ladm_col.tests.resources.expected_results.change_detections.collected.parcel_data_to_compare_changes_parcel_number_253940000000000230241000000000 import parcel_data_to_compare_changes_parcel_number_253940000000000230241000000000
 
 
+@unittest.skip("Until we've migrated to Lev Cat 1.2 completely...")
 class TestChangeDetectionsCollected(unittest.TestCase):
 
     @classmethod

@@ -35,6 +35,7 @@ from asistente_ladm_col.tests.utils import (testdata_path,
                                             get_mssql_conn, restore_schema_mssql)
 
 
+@unittest.skip("Until we've migrated to Lev Cat 1.2 completely...")
 class TestQgisModelBaker(unittest.TestCase):
 
     @classmethod

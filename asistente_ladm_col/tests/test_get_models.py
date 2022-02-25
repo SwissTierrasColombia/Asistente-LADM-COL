@@ -12,6 +12,7 @@ from asistente_ladm_col.tests.utils import (get_gpkg_conn,
                                             restore_schema)
 
 
+@unittest.skip("Until we've migrated to Lev Cat 1.2 completely...")
 class TestGetModels(unittest.TestCase):
 
     @classmethod

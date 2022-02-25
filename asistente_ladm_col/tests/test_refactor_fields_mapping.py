@@ -12,6 +12,7 @@ from asistente_ladm_col.tests.utils import (get_copy_gpkg_conn,
                                             run_etl_model)
 
 
+@unittest.skip("Until we've migrated to Lev Cat 1.2 completely...")
 class TestRefactorFieldsMapping(unittest.TestCase):
 
     @classmethod

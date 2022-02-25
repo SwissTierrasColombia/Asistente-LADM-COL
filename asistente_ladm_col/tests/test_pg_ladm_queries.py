@@ -24,6 +24,8 @@ from asistente_ladm_col.logic.ladm_col.pg_ladm_query import PGLADMQuery
 from asistente_ladm_col.config.expression_functions import (get_domain_code_from_value,
                                                             get_domain_value_from_code)
 
+
+@unittest.skip("Until we've migrated to Lev Cat 1.2 completely...")
 class TestPGLADMQueries(unittest.TestCase):
 
     @classmethod

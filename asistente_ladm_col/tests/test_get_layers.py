@@ -15,6 +15,7 @@ from asistente_ladm_col.tests.utils import (get_pg_conn,
                                             reset_db_mssql)
 
 
+@unittest.skip("Until we've migrated to Lev Cat 1.2 completely...")
 class TestGetLayers(unittest.TestCase):
 
     @classmethod
