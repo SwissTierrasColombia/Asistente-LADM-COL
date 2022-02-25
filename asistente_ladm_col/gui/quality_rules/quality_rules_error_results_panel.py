@@ -79,6 +79,10 @@ class QualityRulesErrorResultsPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.tbw_errors.horizontalHeader().setSectionResizeMode(CHECK_COLUMN, QHeaderView.ResizeToContents)
         self.tbw_errors.horizontalHeader().setSectionResizeMode(QRE_COLUMN, QHeaderView.ResizeToContents)
 
+        # TODO: uncomment the following block when implemented
+        self.btn_exception.setEnabled(False)
+        self.btn_fix_error.setEnabled(False)
+
         self.txt_search.textChanged.connect(self.__search_text_changed)
         #self.btn_open_report.clicked.connect(self.__controller.open_report)
         #self.btn_view_error_results.clicked.connect(self.__view_error_results_clicked)

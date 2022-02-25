@@ -68,6 +68,12 @@ class QualityRulesInitialPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.tab.setTabEnabled(TAB_READ_INDEX, False)  # TODO: Remove when implemented
         self.__restore_settings()
 
+        # TODO: uncomment the following block when implemented
+        self.lbl_presets.setEnabled(False)
+        self.cbo_presets.setEnabled(False)
+        self.btn_save_selection.setEnabled(False)
+        self.btn_delete_selection.setEnabled(False)
+
         self.txt_search.textChanged.connect(self.__search_text_changed)
         self.btn_validate.clicked.connect(self.__validate_clicked)
         self.btn_read.clicked.connect(self.__read_clicked)
