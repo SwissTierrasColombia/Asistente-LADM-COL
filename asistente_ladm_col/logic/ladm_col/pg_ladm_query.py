@@ -12,6 +12,10 @@ class PGLADMQuery(QGISLADMQuery):
     def __init__(self):
         super(PGLADMQuery, self).__init__()
 
+        # TODO: escape literals to prevent SQL injection. Example:
+        # cursor.execute("SELECT admin FROM users WHERE username = %(username)s", {'username': username});
+        # See https://realpython.com/prevent-python-sql-injection/
+
     @staticmethod
     def get_igac_basic_info(db, **kwargs):
         """
