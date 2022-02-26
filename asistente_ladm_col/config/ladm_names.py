@@ -49,6 +49,17 @@ class LADMNames(metaclass=Singleton):
     PARCEL_TYPE_PUBLIC_USE = "Bien_Uso_Publico"
 
     """
+    NOVELTY PARCEL NUMBER TYPE
+    """
+    NOVELTY_PARCEL_NUMBER_NEW_PARCEL = 'Predio_Nuevo'
+    NOVELTY_PARCEL_NUMBER_CHANGE_PARCEL = 'Cambio_Numero_Predial'
+    NOVELTY_PARCEL_NUMBER_APPORTIONMENT = 'Desenglobe'
+    NOVELTY_PARCEL_NUMBER_AGGREGATION = 'Englobe'
+    NOVELTY_PARCEL_NUMBER_CANCELLATION = 'Cancelacion'
+    NOVELTY_PARCEL_NUMBER_NO_NOVELTY = 'Ninguna'
+
+
+    """
     LADM PACKAGES
     """
     SURVEYING_AND_REPRESENTATION_PACKAGE = "Topografía y Representación"

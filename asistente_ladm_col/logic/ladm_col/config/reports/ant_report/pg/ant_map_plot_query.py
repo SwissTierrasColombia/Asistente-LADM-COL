@@ -1,3 +1,5 @@
+from asistente_ladm_col.config.ladm_names import LADMNames
+
 def get_ant_map_query(names, schema, where_id):
     query = """
         WITH
@@ -20,7 +22,47 @@ def get_ant_map_query(names, schema, where_id):
         ),
         info_predio AS (
             SELECT
-                {LC_PARCEL_T}.{LC_PARCEL_T_PARCEL_NUMBER_F} AS numero_predial
+                (
+                    select
+                        case
+                            when (
+                                   select {LC_PARCEL_T_PARCEL_NUMBER_F} from {schema}.{LC_STRUCTURE_NOVELTY_PARCEL_NUMBER_T} where {LC_STRUCTURE_NOVELTY_PARCEL_NUMBER_T_LC_ADDITIONAL_DATA_CADASTRAL_SURVEY_F} = (
+                                        select {T_ID_F} from {schema}.{LC_ADDITIONAL_DATA_CADASTRAL_SURVEY_T}
+                                        where {LC_ADDITIONAL_DATA_CADASTRAL_SURVEY_T}.{LC_PARCEL_T} = {LC_PARCEL_T}.{T_ID_F}
+                                    ) and {LC_STRUCTURE_NOVELTY_PARCEL_NUMBER_T_NOVELTY_TYPE_F} in (select {T_ID_F} from {schema}.{LC_NOVELTY_PARCEL_NUMBER_TYPE_D} where {ILICODE_F} not in ('{NOVELTY_PARCEL_NUMBER_NO_NOVELTY}', '{NOVELTY_PARCEL_NUMBER_CANCELLATION}')) limit 1
+                                ) is not null then
+                                case
+                                    when (select {LC_RIGHT_T_TYPE_F} from {schema}.{LC_RIGHT_T} where {COL_BAUNIT_RRR_T_UNIT_F}  = {LC_PARCEL_T}.{T_ID_F} limit 1) = (select {T_ID_F} from {schema}.{LC_RIGHT_TYPE_D} where {ILICODE_F} = '{LC_RIGHT_TYPE_D_ILICODE_F_OWNERSHIP_V}') then
+                                        (
+                                           select {LC_PARCEL_T_PARCEL_NUMBER_F} from {schema}.{LC_STRUCTURE_NOVELTY_PARCEL_NUMBER_T} where  {LC_STRUCTURE_NOVELTY_PARCEL_NUMBER_T_LC_ADDITIONAL_DATA_CADASTRAL_SURVEY_F} = (
+                                                select {T_ID_F} from {schema}.{LC_ADDITIONAL_DATA_CADASTRAL_SURVEY_T}
+                                                where {LC_ADDITIONAL_DATA_CADASTRAL_SURVEY_T}.{LC_PARCEL_T} = {LC_PARCEL_T}.{T_ID_F}
+                                            ) and {LC_STRUCTURE_NOVELTY_PARCEL_NUMBER_T_NOVELTY_TYPE_F} in (select {T_ID_F} from {schema}.{LC_NOVELTY_PARCEL_NUMBER_TYPE_D} where {ILICODE_F} not in ('{NOVELTY_PARCEL_NUMBER_NO_NOVELTY}', '{NOVELTY_PARCEL_NUMBER_CANCELLATION}')) limit 1
+                                        )
+                                    else
+                                        case
+                                            when
+                                                (
+                                                   select {LC_PARCEL_T_PARCEL_NUMBER_F} from {schema}.{LC_STRUCTURE_NOVELTY_PARCEL_NUMBER_T} where  {LC_STRUCTURE_NOVELTY_PARCEL_NUMBER_T_LC_ADDITIONAL_DATA_CADASTRAL_SURVEY_F} = (
+                                                        select {T_ID_F} from {schema}.{LC_ADDITIONAL_DATA_CADASTRAL_SURVEY_T}
+                                                        where {LC_ADDITIONAL_DATA_CADASTRAL_SURVEY_T}.{LC_PARCEL_T} = {LC_PARCEL_T}.{T_ID_F}
+                                                    ) and {LC_STRUCTURE_NOVELTY_PARCEL_NUMBER_T_NOVELTY_TYPE_F} in (select {T_ID_F} from {schema}.{LC_NOVELTY_PARCEL_NUMBER_TYPE_D} where {ILICODE_F} in ('{NOVELTY_PARCEL_NUMBER_NEW_PARCEL}', '{NOVELTY_PARCEL_NUMBER_CHANGE_PARCEL}')) limit 1
+                                                ) is not null then
+                                                    (
+                                                       select {LC_PARCEL_T_PARCEL_NUMBER_F} from {schema}.{LC_STRUCTURE_NOVELTY_PARCEL_NUMBER_T} where  {LC_STRUCTURE_NOVELTY_PARCEL_NUMBER_T_LC_ADDITIONAL_DATA_CADASTRAL_SURVEY_F} = (
+                                                            select {T_ID_F} from {schema}.{LC_ADDITIONAL_DATA_CADASTRAL_SURVEY_T}
+                                                            where {LC_ADDITIONAL_DATA_CADASTRAL_SURVEY_T}.{LC_PARCEL_T} = {LC_PARCEL_T}.{T_ID_F}
+                                                        ) and {LC_STRUCTURE_NOVELTY_PARCEL_NUMBER_T_NOVELTY_TYPE_F} in (select {T_ID_F} from {schema}.{LC_NOVELTY_PARCEL_NUMBER_TYPE_D} where {ILICODE_F} in ('{NOVELTY_PARCEL_NUMBER_NEW_PARCEL}', '{NOVELTY_PARCEL_NUMBER_CHANGE_PARCEL}')) limit 1
+                                                    )
+                                            else
+                                                {LC_PARCEL_T_PARCEL_NUMBER_F}
+                                        end
+                                end
+                            else
+                                {LC_PARCEL_T_PARCEL_NUMBER_F}
+                        end
+                    from {schema}.{LC_RIGHT_T} where {COL_BAUNIT_RRR_T_UNIT_F} = {LC_PARCEL_T}.{T_ID_F} limit 1
+				) as numero_predial
                 ,{LC_PARCEL_T}.{T_ID_F}
                 FROM {schema}.{LC_PARCEL_T} WHERE {LC_PARCEL_T}.{T_ID_F} IN (SELECT * FROM predios_seleccionados)
         ),
@@ -106,7 +148,12 @@ def get_ant_map_query(names, schema, where_id):
         ) AS ff;
     """.format(**vars(names),  # Custom keys are searched in Table And Field Names object
                schema=schema,
-               where_id=where_id)
+               where_id=where_id,
+               NOVELTY_PARCEL_NUMBER_NEW_PARCEL=LADMNames.NOVELTY_PARCEL_NUMBER_NEW_PARCEL,
+               NOVELTY_PARCEL_NUMBER_CHANGE_PARCEL=LADMNames.NOVELTY_PARCEL_NUMBER_CHANGE_PARCEL,
+               NOVELTY_PARCEL_NUMBER_CANCELLATION=LADMNames.NOVELTY_PARCEL_NUMBER_CANCELLATION,
+               NOVELTY_PARCEL_NUMBER_NO_NOVELTY=LADMNames.NOVELTY_PARCEL_NUMBER_NO_NOVELTY,
+               LC_RIGHT_TYPE_D_ILICODE_F_OWNERSHIP_V=LADMNames.LC_RIGHT_TYPE_D_ILICODE_F_OWNERSHIP_V)
 
     return query
 

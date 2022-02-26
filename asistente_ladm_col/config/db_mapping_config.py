@@ -353,6 +353,19 @@ DB_MAPPING_CONFIG = {
             'Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_InteresadoContacto.Telefono2': 'LC_PARTY_CONTACT_T_TELEPHONE_NUMBER_2_F',
             'Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.lc_interesado_interesadocontacto.lc_interesado..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Interesado': 'LC_PARTY_CONTACT_T_LC_PARTY_F'
         }},
+        "Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_DatosAdicionalesLevantamientoCatastral": {QueryNames.VARIABLE_NAME: "LC_ADDITIONAL_DATA_CADASTRAL_SURVEY_T", QueryNames.FIELDS_DICT: {
+                "Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_DatosAdicionalesLevantamientoCatastral.Novedad_Numeros_Prediales..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_DatosAdicionalesLevantamientoCatastral": "LC_STRUCTURE_NOVELTY_PARCEL_NUMBER_T_LC_ADDITIONAL_DATA_CADASTRAL_SURVEY_F",
+                "Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_DatosAdicionalesLevantamientoCatastral.Novedad_FMI..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_DatosAdicionalesLevantamientoCatastral": "LC_STRUCTURE_NOVELTY_FMI_T_LC_ADDITIONAL_DATA_CADASTRAL_SURVEY_F"
+        }},
+        "Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_EstructuraNovedadFMI": {QueryNames.VARIABLE_NAME: "LC_STRUCTURE_NOVELTY_FMI_T", QueryNames.FIELDS_DICT: {
+                "Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_EstructuraNovedadFMI.Codigo_ORIP": "LC_STRUCTURE_NOVELTY_FMI_T_ORIP_CODE_F",
+                "Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_EstructuraNovedadFMI.Numero_FMI": "LC_STRUCTURE_NOVELTY_FMI_T_FMI_NUMBER_F"
+        }},
+        "Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_EstructuraNovedadNumeroPredial": {QueryNames.VARIABLE_NAME: "LC_STRUCTURE_NOVELTY_PARCEL_NUMBER_T", QueryNames.FIELDS_DICT: {
+                "Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_EstructuraNovedadNumeroPredial.Numero_Predial": "LC_STRUCTURE_NOVELTY_PARCEL_NUMBER_T_PARCEL_NUMBER_F",
+                "Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_EstructuraNovedadNumeroPredial.Tipo_Novedad": "LC_STRUCTURE_NOVELTY_PARCEL_NUMBER_T_NOVELTY_TYPE_F"
+        }},
+        "Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_EstructuraNovedadNumeroPredial.Tipo_Novedad": {QueryNames.VARIABLE_NAME: "LC_NOVELTY_PARCEL_NUMBER_TYPE_D", QueryNames.FIELDS_DICT: {}},
         "Modelo_Aplicacion_LADMCOL_Lev_Cat.LC_FuenteAdministrativaTipo": {QueryNames.VARIABLE_NAME: "LC_ADMINISTRATIVE_SOURCE_TYPE_D", QueryNames.FIELDS_DICT: {}},
         "Modelo_Aplicacion_LADMCOL_Lev_Cat.LC_FotoidentificacionTipo": {QueryNames.VARIABLE_NAME: "LC_PHOTO_IDENTIFICATION_TYPE_D", QueryNames.FIELDS_DICT: {}},
         "Modelo_Aplicacion_LADMCOL_Lev_Cat.LC_GrupoEtnicoTipo": {QueryNames.VARIABLE_NAME: "LC_ETHNIC_GROUP_TYPE_D", QueryNames.FIELDS_DICT: {}},
