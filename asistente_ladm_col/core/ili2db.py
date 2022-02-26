@@ -106,7 +106,6 @@ class Ili2DB(QObject):
         if not self._base_configuration:
             self._base_configuration = BaseConfiguration()
             self._ilicache = IliCache(self._base_configuration)
-            self._ilicache.refresh()
 
             self._base_configuration.java_path = self.get_full_java_exe_path()  # It is well configured at this point!
 
@@ -125,6 +124,8 @@ class Ili2DB(QObject):
                 QSettings().value('Asistente-LADM-COL/models/debug', DEFAULT_ILI2DB_DEBUG_MODE, type=bool)
 
             self._base_configuration.logfile_path = QSettings().value('Asistente-LADM-COL/models/log_file_path', '')
+
+            self._ilicache.refresh()  # Always call it after setting custom_model_directories
 
         return self._base_configuration
 

@@ -22,9 +22,7 @@ import os
 
 from asistente_ladm_col.core.ili2db import Ili2DB
 from asistente_ladm_col.lib.ili import iliimporter
-from asistente_ladm_col.lib.ili.ili2dbconfig import BaseConfiguration
 from asistente_ladm_col.lib.ili.ili2dbutils import color_log_text
-from asistente_ladm_col.lib.ili.ilicache import IliCache
 from asistente_ladm_col.config.ili2db_names import ILI2DBNames
 from qgis.PyQt.QtCore import (Qt,
                               pyqtSignal,
@@ -82,7 +80,6 @@ class DialogImportData(QDialog, DIALOG_UI):
         self.db_source = context.get_db_sources()[0]
         self.link_to_import_schema = link_to_import_schema
         self.db = self.conn_manager.get_db_connector_from_source(self.db_source)
-        self.base_configuration = BaseConfiguration()
         self.logger = Logger()
         self.app = AppInterface()
         self.__ladmcol_models = LADMColModelRegistry()
@@ -90,9 +87,6 @@ class DialogImportData(QDialog, DIALOG_UI):
         self.java_dependency = JavaDependency()
         self.java_dependency.download_dependency_completed.connect(self.download_java_complete)
         self.java_dependency.download_dependency_progress_changed.connect(self.download_java_progress_change)
-
-        self.ilicache = IliCache(self.base_configuration)
-        self.ilicache.refresh()
 
         self._dbs_supported = ConfigDBsSupported()
         self._running_tool = False

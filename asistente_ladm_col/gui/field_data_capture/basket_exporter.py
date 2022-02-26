@@ -69,7 +69,6 @@ class BasketExporter(QObject):
 
         self.base_configuration = BaseConfiguration()
         self.ilicache = IliCache(self.base_configuration)
-        self.ilicache.refresh()
 
         db_factory = self._dbs_supported.get_db_factory(self._db.engine)
         self.configuration = ExportConfiguration()
@@ -87,6 +86,8 @@ class BasketExporter(QObject):
             else:
                 self.base_configuration.custom_model_directories = custom_model_directories
                 self.base_configuration.custom_model_directories_enabled = True
+
+        self.ilicache.refresh()  # Always call it after setting custom_model_directories
 
         self.configuration.base_configuration = self.base_configuration
         if self.get_ili_models():

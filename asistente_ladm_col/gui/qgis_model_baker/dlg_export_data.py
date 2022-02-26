@@ -22,9 +22,7 @@ import os
 
 from asistente_ladm_col.core.ili2db import Ili2DB
 from asistente_ladm_col.lib.ili import iliexporter
-from asistente_ladm_col.lib.ili.ili2dbconfig import BaseConfiguration
 from asistente_ladm_col.lib.ili.ili2dbutils import color_log_text
-from asistente_ladm_col.lib.ili.ilicache import IliCache
 from qgis.PyQt.QtCore import (Qt,
                               QCoreApplication,
                               QSettings,
@@ -82,10 +80,6 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.java_dependency = JavaDependency()
         self.java_dependency.download_dependency_completed.connect(self.download_java_complete)
         self.java_dependency.download_dependency_progress_changed.connect(self.download_java_progress_change)
-
-        self.base_configuration = BaseConfiguration()
-        self.ilicache = IliCache(self.base_configuration)
-        self.ilicache.refresh()
 
         self._dbs_supported = ConfigDBsSupported()
         self._running_tool = False
