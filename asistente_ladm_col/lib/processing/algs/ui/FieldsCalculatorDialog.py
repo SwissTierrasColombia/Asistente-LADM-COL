@@ -47,7 +47,6 @@ from qgis.gui import QgsEncodingFileDialog, QgsGui
 from qgis.utils import OverrideCursor
 
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.core.ProcessingLog import ProcessingLog
 from processing.gui.AlgorithmExecutor import execute
 from processing.tools import dataobjects
 from processing.gui.Postprocessing import handleAlgorithmResults
@@ -193,7 +192,7 @@ class FieldsCalculatorDialog(BASE, WIDGET):
                 self.feedback.progressChanged.connect(self.setPercentage)
 
                 context = dataobjects.createContext()
-                ProcessingLog.addToLog(self.alg.asPythonCommand(parameters, context))
+                QgsMessageLog.logMessage(self.alg.asPythonCommand(parameters, context), self.tr('Processing'))
                 QgsGui.instance().processingRecentAlgorithmLog().push(self.alg.id())
 
                 self.executed, results = execute(self.alg, parameters, context, self.feedback)
