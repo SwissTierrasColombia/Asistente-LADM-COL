@@ -56,7 +56,7 @@ Para usar el Asistente LADM-COL se requiere:
 
 + Reglas de Calidad
 
-  ![Reglas de Calidad](https://s3.amazonaws.com/media-p.slid.es/uploads/308098/images/6343636/quality_rules_25-min.gif)
+  https://user-images.githubusercontent.com/652785/154091679-73e9e847-af89-4179-b4a8-48b2d9cf1f56.mp4
 
 + Consultas
 
