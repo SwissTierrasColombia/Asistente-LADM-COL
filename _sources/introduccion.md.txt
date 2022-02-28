@@ -25,7 +25,7 @@ Un proyecto de: <a href="https://swisstierrascolombia.com" target="_blank">Swiss
 
 ### Soporte de funcionalidades por motor de base de datos
 
-La versión actual (<a href="https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/3.1.12" target="_blank">3.1.12</a>) del Asistente LADM-COL soporta los motores de Base de Datos PostgreSQL/PostGIS, GeoPackage y SQL Server.
+La versión actual (<a href="https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/4.0.0-beta" target="_blank">4.0.0-beta</a>) del Asistente LADM-COL soporta los motores de Base de Datos PostgreSQL/PostGIS, GeoPackage y SQL Server.
 
 Este es el soporte funcional para cada motor:
 
@@ -71,7 +71,7 @@ Este es el soporte funcional para cada motor:
 
 #### Administración de datos
 
-  - Crear estructura de base de datos conforme al modelo LADM-COL v3.0.
+  - Crear estructura de base de datos conforme al modelo LADM-COL v3.1.
   - Importar datos desde archivo de transferencia (.XTF).
   - Exportar datos a archivo de transferencia (.XTF).
   - Importar/exportar datos desde y hacia archivos de transferencia (.XTF) desactivando la validación de los mismos. 
@@ -82,7 +82,7 @@ Este es el soporte funcional para cada motor:
 
 #### Captura y estructuración de datos
 
-+ Capturar datos para el modelo de aplicación de Levantamiento Catastral v1.0 (<a href="https://github.com/SwissTierrasColombia/LADM_COL/releases/download/1.0/Modelo_Aplicacion_LADMCOL_Levantamiento_Catastral_V1_0.zip" target="_blank">descargar</a>).
++ Capturar datos para el modelo de aplicación de Levantamiento Catastral v1.2.
  - Agregar puntos a las capas `Punto Lindero`, `Punto Levantamiento` y `Punto Control`:
    - Desde archivo CSV con la estructura requerida.
      - Validar para evitar insertar puntos superpuestos.
@@ -240,13 +240,13 @@ Para usar el Asistente LADM-COL se requiere:
    - GNU/Linux
    - macOS
  - Software base:
-   - QGIS v3.10.0-A Coruña o superior
+   - QGIS v3.22.0 Białowieża o superior
    - Java v1.8
    - PostgreSQL 9.5 o superior (funciona PostgreSQL 10, 11 ó 12).
    - PostGIS 2.4 o superior.
  - Complementos de QGIS (al instalar el Asistente LADM-COL usando el Administrador de Complementos de QGIS, las dependencias se instalarán automáticamente):
-   - QGIS Model Baker v6.1.1.5.
    - MapSwipe Tool v1.2
+   - Invisible layers and groups v2.1
 
 
 ### Proceso de instalación
@@ -255,20 +255,14 @@ Para usar el Asistente LADM-COL se requiere:
 
 <div class="seealso">
 <p class="admonition-title">TIP</p>
-<p>Con la versión actual del Asistente LADM-COL, se recomienda usar la versión v3.14.16 de QGIS. Para obtenerla diríjete a <a href="https://qgis.org/downloads/" target="_blank">la página de descargas de QGIS</a></p>
+<p>Con la versión actual del Asistente LADM-COL, se recomienda usar la versión v3.22.0 (o superior) de QGIS. Para obtenerla diríjete a <a href="https://qgis.org/downloads/" target="_blank">la página de descargas de QGIS</a></p>
 </div>
+
 
 - El proceso puede ser observado gráficamete en el siguiente GIF:
 
   <a class="" data-lightbox="Proceso de instalación del plugin" href="_static/instalacion/instalation.gif" title="Proceso de instalación del plugin" data-title="Proceso de instalación del plugin"><img src="_static/instalacion/instalation.gif" class="align-center" width="800px" alt="Proceso de instalación del plugin"/></a>
 
-- En caso de no contar con la versión correcta del plugin QgisModelBaker, el Asistente LADM-COL mostrará un mensaje similar a este:
-
-  <a class="" data-lightbox="Error de dependencia QgisModelBaker" href="_static/instalacion/error_asistente_qgis_model_baker.png" title="Error de dependencia QgisModelBaker" data-title="Error de dependencia QgisModelBaker"><img src="_static/instalacion/error_asistente_qgis_model_baker.png" class="align-center" width="800px" alt="Error de dependencia QgisModelBaker"/></a>
-  
-- Si tienes un error con el QgisModelBaker requerido, puedes instalar el plugin QgisModelBaker como en el siguiente GIF:
-
-<a class="" data-lightbox="Instalación de QgisModelBaker" href="_static/instalacion/instalation_qgis_model_baker.gif" title="Instalación de QgisModelBaker" data-title="Instalación de QgisModelBaker"><img src="_static/instalacion/instalation_qgis_model_baker.gif" class="align-center" width="800px" alt="Instalación de QgisModelBaker"/></a>
 
 
 ### Habilitar proyección "Origen Nacional"
