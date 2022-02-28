@@ -12,7 +12,7 @@ Links of interest: [Documentation](https://swisstierrascolombia.github.io/Asiste
 A project of: [SwissTierras Colombia](https://swisstierrascolombia.com/) ([BSF-Swissphoto AG](http://bsf-swissphoto.com/) - [INCIGE SAS](http://www.incige.com/))
 
 
-:arrow_right: With the current version of LADM-COL Assistant, we suggest you to use QGIS v3.22.1 or higher, which are available at https://qgis.org/downloads/
+:arrow_right: With the current version of LADM-COL Assistant, we suggest you to use QGIS v3.22.0 or higher, which are available at https://qgis.org/downloads/
 
 ## Support per DB engine
 
@@ -37,7 +37,7 @@ To use the LADM-COL Assistant you need:
    - GNU/Linux
    - macOS (limited support)
  - Base software:
-   - QGIS v3.22.1 Białowieża or higher.
+   - QGIS v3.22.0 Białowieża or higher.
    - Java v1.8.
    - PostgreSQL 9.5 or higher (PostgreSQL 10, 11 or 12 work as well).
    - PostGIS 2.4 or higher.
@@ -70,20 +70,20 @@ To use the LADM-COL Assistant you need:
 
 ## Functionalities
 
-The current version ([3.2.0-beta-1](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/3.1.4)) of the LADM-COL Assistant allows users to:
+The current version ([4.0.0-beta](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/4.0.0-beta)) of the LADM-COL Assistant allows users to:
 
- - Integration with the Transitional System:
+ - Integrate with the Transitional System:
    - Authentication
    - Task management: start, cancel and finalize tasks.
    - Tasks of cadastral supplies generation and assisted integration of supplies (partial support). 
      - ETL to generate cadastral supplies from cadastral authority (IGAC) data (SNC source).
      - ETL to generate cadastral supplies from cadastral authority (IGAC) data (Cobol source).
  - Roles support and GUI for each role.
- - Create database structures for the LADM-COL v3.0 model using the national map projection.
+ - Create database structures for the LADM-COL v3.1 model using the national map projection.
  - Two database engines to manage LADM-COL data:
    - PostgreSQL/PostGIS: Total support.
    - GeoPackage: Total support (except reports).
- - Capture data for the Application Model Cadastral Survey v1.0 ([download](https://github.com/SwissTierrasColombia/LADM_COL/releases/download/1.0/Modelo_Aplicacion_LADMCOL_Levantamiento_Catastral_V1_0.zip)).
+ - Capture data for the Application Model Cadastral Survey v1.2 ([download](https://github.com/SwissTierrasColombia/LADM_COL/releases/download/1.0/Modelo_Aplicacion_LADMCOL_Levantamiento_Catastral_V1_0.zip)).
  - Import data from transfer files (.XTF).
  - Export data to transfer files (.XTF).
  - Import/export data from/to transfer files (.XTF) disabling data validation.

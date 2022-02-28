@@ -114,8 +114,8 @@ MODULE_HELP_MAPPING = {
     'welcome_screen': 'introduccion.html#dialogo-de-bienvenida'
 }
 
-QGIS_REQUIRED_VERSION = '3.22.1-Białowieża'
-QGIS_REQUIRED_VERSION_INT = 32201
+QGIS_REQUIRED_VERSION = '3.22.0-Białowieża'
+QGIS_REQUIRED_VERSION_INT = 32200
 
 QR_METADATA_TOOL_NAME = "{} v{}; QGIS v{}.".format(
     PLUGIN_NAME,

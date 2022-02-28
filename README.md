@@ -14,11 +14,11 @@ Enlaces de interés: [Documentación](https://swisstierrascolombia.github.io/Asi
 Un proyecto de: [SwissTierras Colombia](https://swisstierrascolombia.com/) ([BSF-Swissphoto AG](http://bsf-swissphoto.com/) - [INCIGE S.A.S](http://www.incige.com/))
 
 
-:arrow_right: Con la versión actual del Asistente LADM-COL, te sugerimos utilizar QGIS v3.22.1 o superior, disponibles en https://qgis.org/downloads/
+:arrow_right: Con la versión actual del Asistente LADM-COL, te sugerimos utilizar QGIS v3.22.0 o superior, disponibles en https://qgis.org/downloads/
 
 ## Soporte de funcionalidades por motor de base de datos
 
-La versión actual ([3.2.0-beta-1](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/3.2.0-beta-1)) del Asistente LADM-COL soporta los motores de Base de Datos PostgreSQL/PostGIS, GeoPackage y SQL Server.
+La versión actual ([4.0.0-beta](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/4.0.0-beta)) del Asistente LADM-COL soporta los motores de Base de Datos PostgreSQL/PostGIS, GeoPackage y SQL Server.
 
 Este es el soporte funcional para cada motor: 
 
@@ -43,7 +43,7 @@ Para usar el Asistente LADM-COL se requiere:
    - GNU/Linux
    - macOS (soporte limitado)
  - Software base:
-   - QGIS v3.22.1 - Białowieża o superior ([descargar](https://qgis.org/downloads/)).
+   - QGIS v3.22.0 - Białowieża o superior ([descargar](https://qgis.org/downloads/)).
    - Java v1.8
    - PostgreSQL 9.5 o superior (funciona con PostgreSQL 10, 11 ó 12).
    - PostGIS 2.4 o superior.
@@ -78,7 +78,7 @@ Para usar el Asistente LADM-COL se requiere:
 
 #### Administración de datos
 
-  - Crear estructura de base de datos conforme al modelo LADM-COL v3.0, usando la proyección Origen Nacional.
+  - Crear estructura de base de datos conforme al modelo LADM-COL v3.1, usando la proyección Origen Nacional (EPSG:9377).
   - Importar datos desde archivo de transferencia (.XTF).
   - Exportar datos a archivo de transferencia (.XTF).
   - Importar/exportar datos desde y hacia archivos de transferencia (.XTF) desactivando la validación de los mismos. 
@@ -89,7 +89,7 @@ Para usar el Asistente LADM-COL se requiere:
 
 #### Captura y estructuración de datos
 
-+ Capturar datos para el modelo de aplicación de Levantamiento Catastral v1.1.
++ Capturar datos para el modelo de aplicación de Levantamiento Catastral v1.2.
 
  - Agregar puntos a las capas `Punto Lindero`, `Punto Levantamiento` y `Punto Control`:
    - Desde archivo CSV con la estructura requerida.

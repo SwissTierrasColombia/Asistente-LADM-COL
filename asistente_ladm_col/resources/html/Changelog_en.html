@@ -4,26 +4,30 @@
     <meta charset="UTF-8">
 </head>
 <body>
-<p>Cambios en la version <b>3.2.0-beta-1</b></p>
+<p>Cambios en la version <b>4.0.0-beta</b></p>
 <ul>
-    <li>Soporta el modelo de aplicación de Levantamiento Catastral v1.1.</li>
-    <li>Se introduce un conversor de datos en formato XTF. Conversiones soportadas hasta el momento: Desde el modelo de aplicación de Levantamiento Catastral 1.0 hacia su versión 1.1 y viceversa.</li>
-    <li>Script qr_standalone.py para ejecutar reglas de calidad desde la terminal de comandos (sin iniciar una sesión gráfica de QGIS).</li>
-    <li>Soporta el modelo de aplicación de Levantamiento Catastral v1.1.</li>
+    <li>Soporta el modelo de aplicación de Levantamiento Catastral v1.2.</li>
     <li>Informalidad:
         <ul>
             <li>Se introduce simbología para identificar la informalidad en terrenos, construcciones y unidades de construcción.</li>
             <li>Los predios informales se pueden recorrer uno a uno en el módulo de consultas, obteniendo la información de los mismos por componente.</li>
         </ul>
     </li>
-    <li>Mejoras y optimización del módulo de reglas de calidad.:
+    <li>Refactor, mejoras y optimización del módulo de reglas de calidad:
         <ul>
+            <li>El núcleo (core) del módulo ha sido reescrito para darle más flexibilidad y compatibilidad con Add-ons.</li>
+            <li>Se utiliza un modelo de INTERLIS de errores de calidad para almacenar los errores de calidad encontrados.</li>
+            <li>Se utilizan catálogos de INTERLIS (listados de reglas de calidad en .XTF) para no tener que modificar el modelo si se agregan o eliminan reglas de calidad.</li>
+            <li>La validación de iliValidator es ahora una regla de calidad, y se comporta como las demás: los resultados se guardan en la misma base de datos y aparecen en el reporte en PDF de la validación de reglas de calidad.</li>
+            <li>La interfaz gráfica fue rediseñada. Ahora se usa un panel (dockwidget) que permite buscar reglas y analizar individualmente los errores encontrados.</li>
             <li>La regla de calidad "Los terrenos no deben superponerse" soporta informalidad. Esto es, si dos terrenos se superponen pero uno es formal y el otro informal, no se considera como error topológico.</li>
         </ul>
     </li>
     <li>Se introduce el soporte de Add-ons para extender la funcionalidad del Asistente LADM-COL. Los Add-ons son plugins de QGIS que dependen del Asistente LADM-COL. Por ejemplo, el Add-on de Ambiente agrega varios modelos, un rol y nuevas funcionalidades relativas al sector Ambiente.</li>
-    <li>En importación masiva de datos, los mapeos de campos muestran los campos obligatorios resaltados para facilitar el llenado.</li>
-    <li>El orden de los atributos de cada formulario es configurable (archivo LADM_COL_configuration.toml).</li>
+    <li>En importación masiva de datos, los mapeos de campos muestran los campos obligatorios resaltados en color naranja para facilitar el llenado.</li>
+    <li>El orden de los atributos de cada formulario es configurable en el archivo LADM_COL_configuration.toml. (Colaboración de Jonny Sánchez)</li>
+    <li>Refactor del módulo de wizards para mejorar su mantenimiento. Es un refactor a nivel de núcleo (core) y no de interfaz.</li>
+    <li>Se elimina la dependencia con el plugin QGIS Model Baker. El usuario no necesitará instalar dicho plugin pues se ha incluido como librería dentro del Asistente LADM-COL.</li>
 </ul>
 </body>
 </html>
