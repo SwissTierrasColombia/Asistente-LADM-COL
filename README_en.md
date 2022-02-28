@@ -12,7 +12,7 @@ Links of interest: [Documentation](https://swisstierrascolombia.github.io/Asiste
 A project of: [SwissTierras Colombia](https://swisstierrascolombia.com/) ([BSF-Swissphoto AG](http://bsf-swissphoto.com/) - [INCIGE SAS](http://www.incige.com/))
 
 
-:arrow_right: With the current version of LADM-COL Assistant, we suggest you to use QGIS v3.20.x, available at https://qgis.org/downloads/
+:arrow_right: With the current version of LADM-COL Assistant, we suggest you to use QGIS v3.22.1 or higher, which are available at https://qgis.org/downloads/
 
 ## Support per DB engine
 
@@ -37,7 +37,7 @@ To use the LADM-COL Assistant you need:
    - GNU/Linux
    - macOS (limited support)
  - Base software:
-   - QGIS v3.16.x-Hannover or higher.
+   - QGIS v3.22.1 Białowieża or higher.
    - Java v1.8.
    - PostgreSQL 9.5 or higher (PostgreSQL 10, 11 or 12 work as well).
    - PostGIS 2.4 or higher.

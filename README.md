@@ -14,7 +14,7 @@ Enlaces de interés: [Documentación](https://swisstierrascolombia.github.io/Asi
 Un proyecto de: [SwissTierras Colombia](https://swisstierrascolombia.com/) ([BSF-Swissphoto AG](http://bsf-swissphoto.com/) - [INCIGE S.A.S](http://www.incige.com/))
 
 
-:arrow_right: Con la versión actual del Asistente LADM-COL, te sugerimos utilizar QGIS v3.20.x, disponible en https://qgis.org/downloads/
+:arrow_right: Con la versión actual del Asistente LADM-COL, te sugerimos utilizar QGIS v3.22.1 o superior, disponibles en https://qgis.org/downloads/
 
 ## Soporte de funcionalidades por motor de base de datos
 
@@ -43,7 +43,7 @@ Para usar el Asistente LADM-COL se requiere:
    - GNU/Linux
    - macOS (soporte limitado)
  - Software base:
-   - QGIS v3.16.x - Hannover o superior ([descargar](https://qgis.org/downloads/)).
+   - QGIS v3.22.1 - Białowieża o superior ([descargar](https://qgis.org/downloads/)).
    - Java v1.8
    - PostgreSQL 9.5 o superior (funciona con PostgreSQL 10, 11 ó 12).
    - PostGIS 2.4 o superior.
