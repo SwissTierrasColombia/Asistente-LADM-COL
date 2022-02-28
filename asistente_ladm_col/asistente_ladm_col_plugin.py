@@ -616,11 +616,11 @@ class AsistenteLADMCOLPlugin(QObject):
         self._query_changes_all_parcels_action.triggered.connect(partial(self.query_changes_all_parcels, self._context_collected_supplies))
         self._change_detections_settings_action.triggered.connect(partial(self.show_change_detection_settings, self._context_collected_supplies))
 
-        self.gui_builder.register_actions({
-            ACTION_CHANGE_DETECTION_PER_PARCEL: self._query_changes_per_parcel_action,
-            ACTION_CHANGE_DETECTION_ALL_PARCELS: self._query_changes_all_parcels_action,
-            ACTION_CHANGE_DETECTION_SETTINGS: self._change_detections_settings_action
-        })
+        # self.gui_builder.register_actions({
+        #     ACTION_CHANGE_DETECTION_PER_PARCEL: self._query_changes_per_parcel_action,
+        #     ACTION_CHANGE_DETECTION_ALL_PARCELS: self._query_changes_all_parcels_action,
+        #     ACTION_CHANGE_DETECTION_SETTINGS: self._change_detections_settings_action
+        # })
 
     def create_generic_actions(self):
         self._load_layers_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/load_layers.png"), QCoreApplication.translate("AsistenteLADMCOLPlugin", "Load layers"),
@@ -667,15 +667,15 @@ class AsistenteLADMCOLPlugin(QObject):
         self._about_action.triggered.connect(self.show_about_dialog)
 
         self.gui_builder.register_actions({
-            ACTION_REPORT_ANNEX_17: self._annex_17_action,
-            ACTION_REPORT_ANT: self._ant_map_action,
+            # ACTION_REPORT_ANNEX_17: self._annex_17_action,
+            # ACTION_REPORT_ANT: self._ant_map_action,
             ACTION_LOAD_LAYERS: self._load_layers_action,
             ACTION_PARCEL_QUERY: self._queries_action,
             ACTION_CHECK_QUALITY_RULES: self._quality_survey_action,
             ACTION_SCHEMA_IMPORT: self._import_schema_action,
             ACTION_IMPORT_DATA: self._import_data_action,
             ACTION_EXPORT_DATA: self._export_data_action,
-            ACTION_XTF_MODEL_CONVERTER: self._xtf_model_converter_action,
+            # ACTION_XTF_MODEL_CONVERTER: self._xtf_model_converter_action,
             ACTION_SETTINGS: self._settings_action,
             ACTION_HELP: self._help_action,
             ACTION_ABOUT: self._about_action
