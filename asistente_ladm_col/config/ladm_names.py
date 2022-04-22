@@ -218,7 +218,7 @@ MODEL_CONFIG = {
     LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY: {
         MODEL_ALIAS: QCoreApplication.translate("TranslatableConfigStrings", "Field data capture"),
         MODEL_IS_SUPPORTED: True,
-        MODEL_SUPPORTED_VERSION: "0.5",
+        MODEL_SUPPORTED_VERSION: "0.9",
         MODEL_HIDDEN_BY_DEFAULT: True,
         MODEL_CHECKED_BY_DEFAULT: False,
         MODEL_ILI2DB_PARAMETERS: {

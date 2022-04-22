@@ -1200,23 +1200,28 @@ class LADMData(QObject):
                                                                    "Could not write basket id {} to Building Unit layer.".format(
                                                                        t_basket))
 
-            # CONVENTIONAL QUALIFICATION
-            # Get conventional qualifications from building units and write the basket
-            qualification_ids = LADMData.get_referenced_features(names,
-                                                                 fdc_qualification_layer,
-                                                                 fdc_building_unit_layer,
-                                                                 names.FDC_BUILDING_UNIT_T_CONVENTIONAL_QUALIFICATION_F,
-                                                                 get_feature=False,  # get_fids
-                                                                 fids=building_unit_ids)
-            if qualification_ids:
-                res = LADMData.change_attribute_value(fdc_qualification_layer,
-                                                      names.T_BASKET_F,
-                                                      t_basket,
-                                                      qualification_ids)
-                if not res:
-                    return False, None, QCoreApplication.translate("LADMData",
-                                                                   "Could not write basket id {} to Building Unit layer.".format(
-                                                                       t_basket))
+            # TODO: The value mapping should be updated because the way in which building unit
+            #  building units characteristics and conventional qualification is managed has changed.
+            #  one building units characteristics can be associated to two building units with different basket ids
+
+
+            # # CONVENTIONAL QUALIFICATION
+            # # Get conventional qualifications from building units and write the basket
+            # qualification_ids = LADMData.get_referenced_features(names,
+            #                                                      fdc_qualification_layer,
+            #                                                      fdc_building_unit_layer,
+            #                                                      names.FDC_BUILDING_UNIT_T_CONVENTIONAL_QUALIFICATION_F,
+            #                                                      get_feature=False,  # get_fids
+            #                                                      fids=building_unit_ids)
+            # if qualification_ids:
+            #     res = LADMData.change_attribute_value(fdc_qualification_layer,
+            #                                           names.T_BASKET_F,
+            #                                           t_basket,
+            #                                           qualification_ids)
+            #     if not res:
+            #         return False, None, QCoreApplication.translate("LADMData",
+            #                                                        "Could not write basket id {} to Building Unit layer.".format(
+            #                                                            t_basket))
 
         return True, len(building_ids), 'Success!'
 
