@@ -87,15 +87,18 @@ class DBMappingConfig:
             "LADM_COL.LADM_Nucleo.COL_MetodoProduccionTipo": {QueryNames.VARIABLE_NAME: "COL_PRODUCTION_METHOD_TYPE_D", QueryNames.FIELDS_DICT: {}},
             "LADM_COL.LADM_Nucleo.COL_RelacionSuperficieTipo": {QueryNames.VARIABLE_NAME: "COL_SURFACE_RELATION_TYPE_D", QueryNames.FIELDS_DICT: {}},
             "LADM_COL.LADM_Nucleo.ExtInteresado": {QueryNames.VARIABLE_NAME: "EXT_PARTY_S", QueryNames.FIELDS_DICT: {}},
-            "LADM_COL.LADM_Nucleo.Fraccion": {QueryNames.VARIABLE_NAME: "FRACTION_S", QueryNames.FIELDS_DICT: {
-                "LADM_COL.LADM_Nucleo.Fraccion.Denominador": "FRACTION_S_DENOMINATOR_F",
-                "LADM_COL.LADM_Nucleo.Fraccion.Numerador": "FRACTION_S_NUMERATOR_F"
-            }},
+            # TODO: Remove the use of the fraction
+            # "LADM_COL.LADM_Nucleo.Fraccion": {QueryNames.VARIABLE_NAME: "FRACTION_S", QueryNames.FIELDS_DICT: {
+            #     "LADM_COL.LADM_Nucleo.Fraccion.Denominador": "FRACTION_S_DENOMINATOR_F",
+            #     "LADM_COL.LADM_Nucleo.Fraccion.Numerador": "FRACTION_S_NUMERATOR_F"
+            # }},
             "LADM_COL.LADM_Nucleo.COL_UnidadAdministrativaBasicaTipo": {QueryNames.VARIABLE_NAME: "COL_BAUNIT_TYPE_D", QueryNames.FIELDS_DICT: {}},
             "LADM_COL.LADM_Nucleo.COL_DimensionTipo": {QueryNames.VARIABLE_NAME: "COL_DIMENSION_TYPE_D", QueryNames.FIELDS_DICT: {}},
             "LADM_COL.LADM_Nucleo.COL_PuntoTipo": {QueryNames.VARIABLE_NAME: "COL_POINT_TYPE_D", QueryNames.FIELDS_DICT: {}},
             "LADM_COL.LADM_Nucleo.col_miembros": {QueryNames.VARIABLE_NAME: "MEMBERS_T", QueryNames.FIELDS_DICT: {
-                "LADM_COL.LADM_Nucleo.col_miembros.participacion..LADM_COL.LADM_Nucleo.col_miembros": "FRACTION_S_MEMBER_F",
+                "LADM_COL.LADM_Nucleo.col_miembros.participacion": "MEMBERS_T_PARTICIPATION_F",
+                # TODO: Remove the use of the fraction
+                # "LADM_COL.LADM_Nucleo.col_miembros.participacion..LADM_COL.LADM_Nucleo.col_miembros": "FRACTION_S_MEMBER_F",
                 "LADM_COL.LADM_Nucleo.col_miembros.agrupacion..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_AgrupacionInteresados": "MEMBERS_T_GROUP_PARTY_F",
                 "LADM_COL.LADM_Nucleo.col_miembros.interesado..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Interesado": "MEMBERS_T_PARTY_F"
             }},
