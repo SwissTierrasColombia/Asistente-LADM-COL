@@ -1078,7 +1078,7 @@ VERSION "V1.2.0"  // 2019-08-13 // =
     ASSOCIATION col_miembros =
       interesado -- {2..*} COL_Interesado;
       agrupacion -<> {0..*} COL_AgrupacionInteresados;
-      participacion : LADM_COL_V3_1.LADM_Nucleo.Fraccion;
+      participacion : 0.0000000000 .. 1.0000000000;
     END col_miembros;
 
   END LADM_Nucleo;
