@@ -306,7 +306,8 @@ def get_role_config():
                 #QR_IGACR3006,
                 QR_IGACR4001,
                 QR_IGACR4003,
-                QR_IGACR4005
+                QR_IGACR4005,
+                QR_IGACR4022
             ],
             ROLE_GUI_CONFIG: {TEMPLATE_GUI: basic_role_gui}
         },
