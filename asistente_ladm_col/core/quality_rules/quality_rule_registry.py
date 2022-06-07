@@ -29,6 +29,7 @@ from asistente_ladm_col.logic.quality_rules.qr_parcel_right_relationship import 
 from asistente_ladm_col.logic.quality_rules.qr_parcel_with_invalid_parcel_number import QRParcelWithInvalidParcelNumber
 from asistente_ladm_col.logic.quality_rules.qr_parcel_department_field_valid_code import QRParcelWithInvalidDepartmentCode
 from asistente_ladm_col.logic.quality_rules.qr_administrative_source_with_duplicate_records import QRAdministrativeSourceWithDuplicateRecords
+from asistente_ladm_col.logic.quality_rules.qr_right_with_duplicate_records import QRRightWithDuplicateRecords
 from asistente_ladm_col.utils.singleton import Singleton
 
 
@@ -42,14 +43,15 @@ class QualityRuleRegistry(metaclass=Singleton):
         self.__quality_rules = dict()  # {quality_rule_key1: QualityRule1, ...}
 
         # Register default quality rules
-        self.register_quality_rule(QRValidateDataAgainstModel())
-        self.register_quality_rule(QROverlappingBoundaryPoints())
-        self.register_quality_rule(QROverlappingBoundaries())
-        self.register_quality_rule(QRGapsInPlots())
-        self.register_quality_rule(QRParcelRightRelationship())
-        self.register_quality_rule(QRParcelWithInvalidDepartmentCode())   # QR_IGACR4003
-        self.register_quality_rule(QRParcelWithInvalidParcelNumber())
-        self.register_quality_rule(QRAdministrativeSourceWithDuplicateRecords())
+        self.register_quality_rule(QRValidateDataAgainstModel())  # QR_ILIVALIDATORR0001
+        self.register_quality_rule(QROverlappingBoundaryPoints())  # QR_IGACR1001
+        self.register_quality_rule(QROverlappingBoundaries())  # QR_IGACR2001
+        self.register_quality_rule(QRGapsInPlots())  # QR_IGACR3006
+        self.register_quality_rule(QRParcelRightRelationship())  # QR_IGACR4001
+        self.register_quality_rule(QRParcelWithInvalidDepartmentCode())  # QR_IGACR4003
+        self.register_quality_rule(QRParcelWithInvalidParcelNumber())  # QR_IGACR4005
+        self.register_quality_rule(QRRightWithDuplicateRecords())  # QR_IGACR4020
+        self.register_quality_rule(QRAdministrativeSourceWithDuplicateRecords())  # QR_IGACR4022
 
     def register_quality_rule(self, quality_rule):
         """
