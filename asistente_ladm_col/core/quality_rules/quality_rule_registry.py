@@ -29,6 +29,7 @@ from asistente_ladm_col.logic.quality_rules.qr_parcel_right_relationship import 
 from asistente_ladm_col.logic.quality_rules.qr_parcel_with_invalid_parcel_number import QRParcelWithInvalidParcelNumber
 from asistente_ladm_col.logic.quality_rules.qr_parcel_department_field_valid_code import QRParcelWithInvalidDepartmentCode
 from asistente_ladm_col.logic.quality_rules.qr_administrative_source_with_duplicate_records import QRAdministrativeSourceWithDuplicateRecords
+from asistente_ladm_col.logic.quality_rules.qr_building_unit_with_duplicate_records import QRBuildingUnitWithDuplicateRecords
 from asistente_ladm_col.logic.quality_rules.qr_right_with_duplicate_records import QRRightWithDuplicateRecords
 from asistente_ladm_col.utils.singleton import Singleton
 
@@ -50,6 +51,7 @@ class QualityRuleRegistry(metaclass=Singleton):
         self.register_quality_rule(QRParcelRightRelationship())  # QR_IGACR4001
         self.register_quality_rule(QRParcelWithInvalidDepartmentCode())  # QR_IGACR4003
         self.register_quality_rule(QRParcelWithInvalidParcelNumber())  # QR_IGACR4005
+        self.register_quality_rule(QRBuildingUnitWithDuplicateRecords())  # QR_IGACR4017
         self.register_quality_rule(QRRightWithDuplicateRecords())  # QR_IGACR4020
         self.register_quality_rule(QRAdministrativeSourceWithDuplicateRecords())  # QR_IGACR4022
 
