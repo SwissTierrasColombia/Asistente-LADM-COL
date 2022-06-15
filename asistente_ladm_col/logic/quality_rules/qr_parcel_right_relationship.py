@@ -20,14 +20,8 @@ from qgis.PyQt.QtCore import (QCoreApplication,
 
 from qgis.core import QgsVectorLayer
 
-from asistente_ladm_col.config.enums import (EnumQualityRuleType,
-                                             EnumQualityRuleResult)
-from asistente_ladm_col.config.keys.common import (QUALITY_RULE_LAYERS,
-                                                   QUALITY_RULE_LADM_COL_LAYERS,
-                                                   QUALITY_RULE_ADJUSTED_LAYERS,
-                                                   ADJUSTED_INPUT_LAYER,
-                                                   ADJUSTED_REFERENCE_LAYER,
-                                                   FIX_ADJUSTED_LAYER)
+from asistente_ladm_col.config.enums import EnumQualityRuleResult
+from asistente_ladm_col.config.keys.common import QUALITY_RULE_LADM_COL_LAYERS
 from asistente_ladm_col.config.layer_config import LADMNames
 from asistente_ladm_col.config.quality_rule_config import (QR_IGACR4001,
                                                            QRE_IGACR4001E01,

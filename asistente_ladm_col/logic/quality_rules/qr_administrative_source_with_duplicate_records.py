@@ -19,14 +19,8 @@
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QSettings)
 
-from asistente_ladm_col.config.enums import (EnumQualityRuleType,
-                                             EnumQualityRuleResult)
-from asistente_ladm_col.config.keys.common import (QUALITY_RULE_LAYERS,
-                                                   QUALITY_RULE_LADM_COL_LAYERS,
-                                                   QUALITY_RULE_ADJUSTED_LAYERS,
-                                                   ADJUSTED_INPUT_LAYER,
-                                                   ADJUSTED_REFERENCE_LAYER,
-                                                   FIX_ADJUSTED_LAYER)
+from asistente_ladm_col.config.enums import EnumQualityRuleResult
+from asistente_ladm_col.config.keys.common import QUALITY_RULE_LADM_COL_LAYERS
 from asistente_ladm_col.config.layer_config import LADMNames
 from asistente_ladm_col.config.quality_rule_config import (QR_IGACR4022,
                                                            QRE_IGACR4022E01)
@@ -46,7 +40,8 @@ class QRAdministrativeSourceWithDuplicateRecords(AbstractLogicQualityRule):
 
         self._id = QR_IGACR4022
         self._name = "Fuente administrativa no debe tener registros duplicados"
-        self._tags = ["igac", "instituto geográfico agustín codazzi", "lógica", "negocio", "fuente administrativa", "duplicado"]
+        self._tags = ["igac", "instituto geográfico agustín codazzi", "lógica",
+                      "negocio", "fuente administrativa", "duplicado"]
         self._models = [LADMNames.SURVEY_MODEL_KEY]
 
         self._errors = {self._ERROR_01: "Fuente Administrativa no debe tener registros repetidos"}

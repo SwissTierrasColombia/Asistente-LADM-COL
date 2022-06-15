@@ -19,14 +19,8 @@
 from qgis.PyQt.QtCore import (QCoreApplication,
                               QSettings)
 
-from asistente_ladm_col.config.enums import (EnumQualityRuleType,
-                                             EnumQualityRuleResult)
-from asistente_ladm_col.config.keys.common import (QUALITY_RULE_LAYERS,
-                                                   QUALITY_RULE_LADM_COL_LAYERS,
-                                                   QUALITY_RULE_ADJUSTED_LAYERS,
-                                                   ADJUSTED_INPUT_LAYER,
-                                                   ADJUSTED_REFERENCE_LAYER,
-                                                   FIX_ADJUSTED_LAYER)
+from asistente_ladm_col.config.enums import EnumQualityRuleResult
+from asistente_ladm_col.config.keys.common import QUALITY_RULE_LADM_COL_LAYERS
 from asistente_ladm_col.config.layer_config import LADMNames
 from asistente_ladm_col.config.quality_rule_config import (QR_IGACR4020,
                                                            QRE_IGACR4020E01)
@@ -46,7 +40,8 @@ class QRRightWithDuplicateRecords(AbstractLogicQualityRule):
 
         self._id = QR_IGACR4020
         self._name = "Derecho no debe tener registros duplicados"
-        self._tags = ["igac", "instituto geográfico agustín codazzi", "lógica", "negocio", "derecho", "duplicado", "drr"]
+        self._tags = ["igac", "instituto geográfico agustín codazzi", "lógica",
+                      "negocio", "derecho", "duplicado", "drr"]
         self._models = [LADMNames.SURVEY_MODEL_KEY]
 
         self._errors = {self._ERROR_01: "Derecho no debe tener registros repetidos"}
