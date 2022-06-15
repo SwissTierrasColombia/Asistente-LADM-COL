@@ -2,7 +2,7 @@
 /***************************************************************************
                               Asistente LADM_COL
                              --------------------
-        begin                : 2022-06-08
+        begin                : 2022-06-15
         git sha              : :%H$
         copyright            : (C) 2022 by Leo Cardona (BSF Swissphoto)
         email                : contacto@ceicol.com
@@ -22,35 +22,34 @@ from qgis.PyQt.QtCore import (QCoreApplication,
 from asistente_ladm_col.config.enums import EnumQualityRuleResult
 from asistente_ladm_col.config.keys.common import QUALITY_RULE_LADM_COL_LAYERS
 from asistente_ladm_col.config.layer_config import LADMNames
-from asistente_ladm_col.config.quality_rule_config import (QR_IGACR4017,
-                                                           QRE_IGACR4017E01)
+from asistente_ladm_col.config.quality_rule_config import (QR_IGACR4014,
+                                                           QRE_IGACR4014E01)
 from asistente_ladm_col.core.quality_rules.abstract_logic_quality_rule import AbstractLogicQualityRule
 from asistente_ladm_col.core.quality_rules.quality_rule_execution_result import QualityRuleExecutionResult
 from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 
 
-class QRBuildingUnitWithDuplicateRecords(AbstractLogicQualityRule):
+class QRBoundaryWithDuplicateRecords(AbstractLogicQualityRule):
     """
-    Check that building unit don't have duplicate records
+    Check that boundary don't have duplicate records
     """
-    _ERROR_01 = QRE_IGACR4017E01  # Building unit with duplicate records
+    _ERROR_01 = QRE_IGACR4014E01  # Boundary with duplicate records
 
     def __init__(self):
         AbstractLogicQualityRule.__init__(self)
 
-        self._id = QR_IGACR4017
-        self._name = "Unidad de construcción no debe tener registros duplicados"
-        self._tags = ["igac", "instituto geográfico agustín codazzi", "lógica", "negocio", "unidad de construcción",
-                      "duplicado"]
+        self._id = QR_IGACR4014
+        self._name = "Lindero no debe tener registros duplicados"
+        self._tags = ["igac", "instituto geográfico agustín codazzi", "lógica", "negocio", "lindero", "duplicado"]
         self._models = [LADMNames.SURVEY_MODEL_KEY]
 
-        self._errors = {self._ERROR_01: "Unidad de construcción no debe tener registros repetidos"}
+        self._errors = {self._ERROR_01: "Lindero no debe tener registros repetidos"}
 
         # Optional. Only useful for display purposes.
         self._field_mapping = dict()  # E.g., {'id_objetos': 'ids_punto_lindero', 'valores': 'conteo'}
 
     def layers_config(self, names):
-        return {QUALITY_RULE_LADM_COL_LAYERS: [names.LC_BUILDING_UNIT_T]}
+        return {QUALITY_RULE_LADM_COL_LAYERS: [names.LC_BOUNDARY_T]}
 
     def _validate(self, db, db_qr, layer_dict, tolerance, **kwargs):
         self.progress_changed.emit(5)
@@ -62,14 +61,10 @@ class QRBuildingUnitWithDuplicateRecords(AbstractLogicQualityRule):
 
         error_state = None
 
-        table = db.names.LC_BUILDING_UNIT_T
-        fields = [db.names.LC_BUILDING_UNIT_T_FLOOR_F,
-                  db.names.LC_BUILDING_UNIT_T_BUILT_AREA_F,
-                  db.names.LC_BUILDING_UNIT_T_BUILDING_F,
-                  db.names.COL_SPATIAL_UNIT_T_DIMENSION_F,
-                  db.names.COL_SPATIAL_UNIT_T_LABEL_F,
-                  db.names.COL_SPATIAL_UNIT_T_SURFACE_RELATION_F,
-                  db.names.COL_SPATIAL_UNIT_T_GEOMETRY_F]
+        table = db.names.LC_BOUNDARY_T
+        fields = [db.names.LC_BOUNDARY_T_LENGTH_F,
+                  db.names.COL_BFS_T_TEXTUAL_LOCATION_F,
+                  db.names.COL_BFS_T_GEOMETRY_F]
 
         res, records = ladm_queries.get_duplicate_records_in_table(db, table, fields)
         count = len(records)
@@ -85,7 +80,7 @@ class QRBuildingUnitWithDuplicateRecords(AbstractLogicQualityRule):
                     record['duplicate_uuids'].split(','),
                     None,
                     None,
-                    'Unidad de construcción repetida {} veces'.format(record['duplicate_total']),
+                    'Lindero repetido {} veces'.format(record['duplicate_total']),
                     error_state]
                 errors['data'].append(error_data)
 
@@ -95,11 +90,11 @@ class QRBuildingUnitWithDuplicateRecords(AbstractLogicQualityRule):
 
         if count > 0:
             res_type = EnumQualityRuleResult.ERRORS
-            msg = QCoreApplication.translate("QualityRules", "{} building unit "
+            msg = QCoreApplication.translate("QualityRules", "{} boundaries "
                                                              "with duplicate records were found.").format(count)
         else:
             res_type = EnumQualityRuleResult.SUCCESS
-            msg = QCoreApplication.translate("QualityRules", "No duplicate right were found.")
+            msg = QCoreApplication.translate("QualityRules", "No duplicate boundaries were found.")
 
         self.progress_changed.emit(100)
 
