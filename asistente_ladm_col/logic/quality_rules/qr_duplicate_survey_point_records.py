@@ -2,7 +2,7 @@
 /***************************************************************************
                               Asistente LADM_COL
                              --------------------
-        begin                : 2022-06-04
+        begin                : 2022-06-15
         git sha              : :%H$
         copyright            : (C) 2022 by Leo Cardona (BSF Swissphoto)
         email                : contacto@ceicol.com
@@ -22,35 +22,34 @@ from qgis.PyQt.QtCore import (QCoreApplication,
 from asistente_ladm_col.config.enums import EnumQualityRuleResult
 from asistente_ladm_col.config.keys.common import QUALITY_RULE_LADM_COL_LAYERS
 from asistente_ladm_col.config.layer_config import LADMNames
-from asistente_ladm_col.config.quality_rule_config import (QR_IGACR4022,
-                                                           QRE_IGACR4022E01)
+from asistente_ladm_col.config.quality_rule_config import (QR_IGACR4012,
+                                                           QRE_IGACR4012E01)
 from asistente_ladm_col.core.quality_rules.abstract_logic_quality_rule import AbstractLogicQualityRule
 from asistente_ladm_col.core.quality_rules.quality_rule_execution_result import QualityRuleExecutionResult
 from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 
 
-class QRAdministrativeSourceWithDuplicateRecords(AbstractLogicQualityRule):
+class QRDuplicateSurveyPointRecords(AbstractLogicQualityRule):
     """
-    Check that administrative source don't have duplicate records
+    Check that boundary point don't have duplicate records
     """
-    _ERROR_01 = QRE_IGACR4022E01  # Administrative source with duplicate records
+    _ERROR_01 = QRE_IGACR4012E01  # Boundary with duplicate records
 
     def __init__(self):
         AbstractLogicQualityRule.__init__(self)
 
-        self._id = QR_IGACR4022
-        self._name = "Fuente administrativa no debe tener registros duplicados"
-        self._tags = ["igac", "instituto geográfico agustín codazzi", "lógica",
-                      "negocio", "fuente administrativa", "duplicado"]
+        self._id = QR_IGACR4012
+        self._name = "Punto de Levantamiento no debe tener registros duplicados"
+        self._tags = ["igac", "instituto geográfico agustín codazzi", "lógica", "negocio", "punto levantamiento", "duplicado"]
         self._models = [LADMNames.SURVEY_MODEL_KEY]
 
-        self._errors = {self._ERROR_01: "Fuente Administrativa no debe tener registros repetidos"}
+        self._errors = {self._ERROR_01: "Punto de Levantamiento no debe tener registros repetidos"}
 
         # Optional. Only useful for display purposes.
         self._field_mapping = dict()  # E.g., {'id_objetos': 'ids_punto_lindero', 'valores': 'conteo'}
 
     def layers_config(self, names):
-        return {QUALITY_RULE_LADM_COL_LAYERS: [names.LC_ADMINISTRATIVE_SOURCE_T]}
+        return {QUALITY_RULE_LADM_COL_LAYERS: [names.LC_SURVEY_POINT_T]}
 
     def _validate(self, db, db_qr, layer_dict, tolerance, **kwargs):
         self.progress_changed.emit(5)
@@ -62,15 +61,15 @@ class QRAdministrativeSourceWithDuplicateRecords(AbstractLogicQualityRule):
 
         error_state = None
 
-        # Check administrative source with duplicate records
-        table = db.names.LC_ADMINISTRATIVE_SOURCE_T
-        fields = [db.names.LC_ADMINISTRATIVE_SOURCE_T_EMITTING_ENTITY_F,
-                  db.names.COL_ADMINISTRATIVE_SOURCE_T_SOURCE_NUMBER_F,
-                  db.names.COL_ADMINISTRATIVE_SOURCE_T_OBSERVATION_F,
-                  db.names.LC_ADMINISTRATIVE_SOURCE_T_TYPE_F,
-                  db.names.COL_SOURCE_T_DATE_DOCUMENT_F,
-                  db.names.COL_SOURCE_T_AVAILABILITY_STATUS_F,
-                  db.names.COL_SOURCE_T_MAIN_TYPE_F]
+        table = db.names.LC_SURVEY_POINT_T
+        fields = [db.names.LC_SURVEY_POINT_T_SURVEY_POINT_TYPE_F,
+                  db.names.LC_SURVEY_POINT_T_PHOTO_IDENTIFICATION_F,
+                  db.names.LC_SURVEY_POINT_T_VERTICAL_ACCURACY_F,
+                  db.names.LC_SURVEY_POINT_T_HORIZONTAL_ACCURACY_F,
+                  db.names.COL_POINT_T_INTERPOLATION_POSITION_F,
+                  db.names.COL_POINT_T_PRODUCTION_METHOD_F,
+                  db.names.LC_SURVEY_POINT_T_POINT_TYPE_F,
+                  db.names.COL_POINT_T_ORIGINAL_LOCATION_F]
 
         res, records = ladm_queries.get_duplicate_records_in_table(db, table, fields)
         count = len(records)
@@ -86,7 +85,7 @@ class QRAdministrativeSourceWithDuplicateRecords(AbstractLogicQualityRule):
                     record['duplicate_uuids'].split(','),
                     None,
                     None,
-                    'Fuente administrativa repetida {} veces'.format(record['duplicate_total']),
+                    'Punto levantamiento repetido {} veces'.format(record['duplicate_total']),
                     error_state]
                 errors['data'].append(error_data)
 
@@ -96,11 +95,11 @@ class QRAdministrativeSourceWithDuplicateRecords(AbstractLogicQualityRule):
 
         if count > 0:
             res_type = EnumQualityRuleResult.ERRORS
-            msg = QCoreApplication.translate("QualityRules", "{} administrative sources "
+            msg = QCoreApplication.translate("QualityRules", "{} survey points "
                                                              "with duplicate records were found.").format(count)
         else:
             res_type = EnumQualityRuleResult.SUCCESS
-            msg = QCoreApplication.translate("QualityRules", "No duplicate administrative sources were found.")
+            msg = QCoreApplication.translate("QualityRules", "No duplicate survey points were found.")
 
         self.progress_changed.emit(100)
 

@@ -22,34 +22,34 @@ from qgis.PyQt.QtCore import (QCoreApplication,
 from asistente_ladm_col.config.enums import EnumQualityRuleResult
 from asistente_ladm_col.config.keys.common import QUALITY_RULE_LADM_COL_LAYERS
 from asistente_ladm_col.config.layer_config import LADMNames
-from asistente_ladm_col.config.quality_rule_config import (QR_IGACR4012,
-                                                           QRE_IGACR4012E01)
+from asistente_ladm_col.config.quality_rule_config import (QR_IGACR4014,
+                                                           QRE_IGACR4014E01)
 from asistente_ladm_col.core.quality_rules.abstract_logic_quality_rule import AbstractLogicQualityRule
 from asistente_ladm_col.core.quality_rules.quality_rule_execution_result import QualityRuleExecutionResult
 from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 
 
-class QRSurveyPointWithDuplicateRecords(AbstractLogicQualityRule):
+class QRDuplicateBoundaryRecords(AbstractLogicQualityRule):
     """
-    Check that boundary point don't have duplicate records
+    Check that boundary don't have duplicate records
     """
-    _ERROR_01 = QRE_IGACR4012E01  # Boundary with duplicate records
+    _ERROR_01 = QRE_IGACR4014E01  # Boundary with duplicate records
 
     def __init__(self):
         AbstractLogicQualityRule.__init__(self)
 
-        self._id = QR_IGACR4012
-        self._name = "Punto de Levantamiento no debe tener registros duplicados"
-        self._tags = ["igac", "instituto geográfico agustín codazzi", "lógica", "negocio", "punto levantamiento", "duplicado"]
+        self._id = QR_IGACR4014
+        self._name = "Lindero no debe tener registros duplicados"
+        self._tags = ["igac", "instituto geográfico agustín codazzi", "lógica", "negocio", "lindero", "duplicado"]
         self._models = [LADMNames.SURVEY_MODEL_KEY]
 
-        self._errors = {self._ERROR_01: "Punto de Levantamiento no debe tener registros repetidos"}
+        self._errors = {self._ERROR_01: "Lindero no debe tener registros repetidos"}
 
         # Optional. Only useful for display purposes.
         self._field_mapping = dict()  # E.g., {'id_objetos': 'ids_punto_lindero', 'valores': 'conteo'}
 
     def layers_config(self, names):
-        return {QUALITY_RULE_LADM_COL_LAYERS: [names.LC_SURVEY_POINT_T]}
+        return {QUALITY_RULE_LADM_COL_LAYERS: [names.LC_BOUNDARY_T]}
 
     def _validate(self, db, db_qr, layer_dict, tolerance, **kwargs):
         self.progress_changed.emit(5)
@@ -61,15 +61,10 @@ class QRSurveyPointWithDuplicateRecords(AbstractLogicQualityRule):
 
         error_state = None
 
-        table = db.names.LC_SURVEY_POINT_T
-        fields = [db.names.LC_SURVEY_POINT_T_SURVEY_POINT_TYPE_F,
-                  db.names.LC_SURVEY_POINT_T_PHOTO_IDENTIFICATION_F,
-                  db.names.LC_SURVEY_POINT_T_VERTICAL_ACCURACY_F,
-                  db.names.LC_SURVEY_POINT_T_HORIZONTAL_ACCURACY_F,
-                  db.names.COL_POINT_T_INTERPOLATION_POSITION_F,
-                  db.names.COL_POINT_T_PRODUCTION_METHOD_F,
-                  db.names.LC_SURVEY_POINT_T_POINT_TYPE_F,
-                  db.names.COL_POINT_T_ORIGINAL_LOCATION_F]
+        table = db.names.LC_BOUNDARY_T
+        fields = [db.names.LC_BOUNDARY_T_LENGTH_F,
+                  db.names.COL_BFS_T_TEXTUAL_LOCATION_F,
+                  db.names.COL_BFS_T_GEOMETRY_F]
 
         res, records = ladm_queries.get_duplicate_records_in_table(db, table, fields)
         count = len(records)
@@ -85,7 +80,7 @@ class QRSurveyPointWithDuplicateRecords(AbstractLogicQualityRule):
                     record['duplicate_uuids'].split(','),
                     None,
                     None,
-                    'Punto levantamiento repetido {} veces'.format(record['duplicate_total']),
+                    'Lindero repetido {} veces'.format(record['duplicate_total']),
                     error_state]
                 errors['data'].append(error_data)
 
@@ -95,11 +90,11 @@ class QRSurveyPointWithDuplicateRecords(AbstractLogicQualityRule):
 
         if count > 0:
             res_type = EnumQualityRuleResult.ERRORS
-            msg = QCoreApplication.translate("QualityRules", "{} survey points "
+            msg = QCoreApplication.translate("QualityRules", "{} boundaries "
                                                              "with duplicate records were found.").format(count)
         else:
             res_type = EnumQualityRuleResult.SUCCESS
-            msg = QCoreApplication.translate("QualityRules", "No duplicate survey points were found.")
+            msg = QCoreApplication.translate("QualityRules", "No duplicate boundaries were found.")
 
         self.progress_changed.emit(100)
 
