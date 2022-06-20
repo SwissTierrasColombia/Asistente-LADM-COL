@@ -1,5 +1,7 @@
 from asistente_ladm_col.utils.singleton import Singleton
 
+SPECIAL_CHARACTERS = "special_characters"
+DIGITS = "digits"
 
 class LADMNames(metaclass=Singleton):
     """
