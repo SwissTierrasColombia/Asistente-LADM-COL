@@ -27,7 +27,7 @@ from asistente_ladm_col.logic.quality_rules.qr_validate_data_against_model impor
 from asistente_ladm_col.logic.quality_rules.qr_gaps_in_plots import QRGapsInPlots
 from asistente_ladm_col.logic.quality_rules.qr_parcel_right_relationship import QRParcelRightRelationship
 from asistente_ladm_col.logic.quality_rules.qr_parcel_with_invalid_parcel_number import QRParcelWithInvalidParcelNumber
-from asistente_ladm_col.logic.quality_rules.qr_party_duplicate_records import QRDuplicatePartyRecords
+from asistente_ladm_col.logic.quality_rules.qr_duplicate_party_records import QRDuplicatePartyRecords
 from asistente_ladm_col.utils.singleton import Singleton
 
 
