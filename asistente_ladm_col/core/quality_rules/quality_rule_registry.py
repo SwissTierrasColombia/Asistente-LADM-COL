@@ -27,6 +27,7 @@ from asistente_ladm_col.logic.quality_rules.qr_boundary_points_not_covered_by_bo
 from asistente_ladm_col.logic.quality_rules.qr_boundary_points_covered_plot_nodes import QRBoundaryPointsCoveredPlotNodes
 from asistente_ladm_col.logic.quality_rules.qr_overlapping_boundaries import QROverlappingBoundaries
 from asistente_ladm_col.logic.quality_rules.qr_overlapping_buildings import QROverlappingBuildings
+from asistente_ladm_col.logic.quality_rules.qr_overlapping_right_of_ways import QROverlappingRightOfWays
 from asistente_ladm_col.logic.quality_rules.qr_validate_data_against_model import QRValidateDataAgainstModel
 from asistente_ladm_col.logic.quality_rules.qr_gaps_in_plots import QRGapsInPlots
 from asistente_ladm_col.logic.quality_rules.qr_multiparts_in_right_of_way import QRMultiPartsInRightOfWay
@@ -67,6 +68,7 @@ class QualityRuleRegistry(metaclass=Singleton):
         self.register_quality_rule(QRBoundaryPointsCoveredPlotNodes())  # QR_IGACR1004
         self.register_quality_rule(QROverlappingBoundaries())  # QR_IGACR2001
         self.register_quality_rule(QROverlappingBuildings())  # QR_IGACR3002
+        self.register_quality_rule(QROverlappingRightOfWays())  # QR_IGACR3003
         self.register_quality_rule(QRGapsInPlots())  # QR_IGACR3006
         self.register_quality_rule(QRMultiPartsInRightOfWay())  # QR_IGACR3007
         self.register_quality_rule(QRParcelRightRelationship())  # QR_IGACR4001
