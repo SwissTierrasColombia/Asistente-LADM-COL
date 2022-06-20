@@ -27,6 +27,7 @@ from asistente_ladm_col.logic.quality_rules.qr_validate_data_against_model impor
 from asistente_ladm_col.logic.quality_rules.qr_gaps_in_plots import QRGapsInPlots
 from asistente_ladm_col.logic.quality_rules.qr_parcel_right_relationship import QRParcelRightRelationship
 from asistente_ladm_col.logic.quality_rules.qr_parcel_with_invalid_parcel_number import QRParcelWithInvalidParcelNumber
+from asistente_ladm_col.logic.quality_rules.qr_validate_natural_party import QRValidateNaturalParty
 from asistente_ladm_col.utils.singleton import Singleton
 
 
@@ -40,12 +41,13 @@ class QualityRuleRegistry(metaclass=Singleton):
         self.__quality_rules = dict()  # {quality_rule_key1: QualityRule1, ...}
 
         # Register default quality rules
-        self.register_quality_rule(QRValidateDataAgainstModel())
-        self.register_quality_rule(QROverlappingBoundaryPoints())
-        self.register_quality_rule(QROverlappingBoundaries())
-        self.register_quality_rule(QRGapsInPlots())
-        self.register_quality_rule(QRParcelRightRelationship())
-        self.register_quality_rule(QRParcelWithInvalidParcelNumber())
+        self.register_quality_rule(QRValidateDataAgainstModel())  # QR_ILIVALIDATORR0001
+        self.register_quality_rule(QROverlappingBoundaryPoints())  # QR_IGACR1001
+        self.register_quality_rule(QROverlappingBoundaries())  # QR_IGACR2001
+        self.register_quality_rule(QRGapsInPlots())  # QR_IGACR3006
+        self.register_quality_rule(QRParcelRightRelationship())  # QR_IGACR4001
+        self.register_quality_rule(QRParcelWithInvalidParcelNumber())  # QR_IGACR4005
+        self.register_quality_rule(QRValidateNaturalParty())  # QR_IGACR4007
 
     def register_quality_rule(self, quality_rule):
         """
