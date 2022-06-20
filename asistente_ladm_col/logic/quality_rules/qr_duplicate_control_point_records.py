@@ -20,7 +20,7 @@ from qgis.PyQt.QtCore import (QCoreApplication,
 
 from asistente_ladm_col.config.enums import EnumQualityRuleResult
 from asistente_ladm_col.config.keys.common import QUALITY_RULE_LADM_COL_LAYERS
-from asistente_ladm_col.config.layer_config import LADMNames, LayerConfig
+from asistente_ladm_col.config.layer_config import LADMNames
 from asistente_ladm_col.config.quality_rule_config import (QR_IGACR4013,
                                                            QRE_IGACR4013E01)
 from asistente_ladm_col.core.quality_rules.abstract_logic_quality_rule import AbstractLogicQualityRule
@@ -38,7 +38,7 @@ class QRDuplicateControlPointRecords(AbstractLogicQualityRule):
         AbstractLogicQualityRule.__init__(self)
 
         self._id = QR_IGACR4013
-        self._name = "Revisar que la tabla punto control no tenga registros repetidos"
+        self._name = "Punto control no debe tener registros repetidos"
         self._tags = ["igac", "instituto geográfico agustín codazzi", "lógica", "negocio", "punto control", "registros repetidos"]
         self._models = [LADMNames.SURVEY_MODEL_KEY]
 
@@ -59,10 +59,17 @@ class QRDuplicateControlPointRecords(AbstractLogicQualityRule):
             return pre_obj
 
         error_state = None
-        
-        fields = LayerConfig.get_logic_consistency_tables(db.names).get(db.names.LC_CONTROL_POINT_T)
-        # Check control point with duplicate records
-        res, records = ladm_queries.get_duplicate_records_in_table(db,db.names.LC_CONTROL_POINT_T,fields)
+
+        # Check control point with duplicate records       
+        table = db.names.LC_CONTROL_POINT_T
+        fields = [db.names.LC_CONTROL_POINT_T_VERTICAL_ACCURACY_F,
+                  db.names.LC_CONTROL_POINT_T_HORIZONTAL_ACCURACY_F,
+                  db.names.LC_CONTROL_POINT_T_ID_F,
+                  db.names.COL_POINT_T_INTERPOLATION_POSITION_F,
+                  db.names.LC_CONTROL_POINT_T_POINT_TYPE_F,
+                  db.names.COL_POINT_T_ORIGINAL_LOCATION_F]
+
+        res, records = ladm_queries.get_duplicate_records_in_table(db, table, fields)
         count = len(records)
 
         self.progress_changed.emit(50)
