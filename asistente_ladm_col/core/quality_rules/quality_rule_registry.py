@@ -31,6 +31,7 @@ from asistente_ladm_col.logic.quality_rules.qr_multiparts_in_right_of_way import
 from asistente_ladm_col.logic.quality_rules.qr_parcel_right_relationship import QRParcelRightRelationship
 from asistente_ladm_col.logic.quality_rules.qr_parcel_with_invalid_parcel_number import QRParcelWithInvalidParcelNumber
 from asistente_ladm_col.logic.quality_rules.qr_parcel_with_invalid_previous_parcel_number import QRParcelWithInvalidPreviousParcelNumber
+from asistente_ladm_col.logic.quality_rules.qr_validate_natural_party import QRValidateNaturalParty
 from asistente_ladm_col.logic.quality_rules.qr_parcel_department_field_valid_code import QRParcelWithInvalidDepartmentCode
 from asistente_ladm_col.logic.quality_rules.qr_parcel_with_invalid_municipality_code import QRParcelWithInvalidMunicipalityCode
 from asistente_ladm_col.logic.quality_rules.qr_validate_legal_party import QRValidateLegalParty
@@ -69,6 +70,7 @@ class QualityRuleRegistry(metaclass=Singleton):
         self.register_quality_rule(QRParcelWithInvalidMunicipalityCode())  # QR_IGACR4004
         self.register_quality_rule(QRParcelWithInvalidParcelNumber())  # QR_IGACR4005
         self.register_quality_rule(QRParcelWithInvalidPreviousParcelNumber())  # QR_IGACR4006
+        self.register_quality_rule(QRValidateNaturalParty())  # QR_IGACR4007
         self.register_quality_rule(QRValidateLegalParty())  # QR_IGACR4008
         self.register_quality_rule(QRDuplicateBoundaryPointRecords())  # QR_IGACR4011
         self.register_quality_rule(QRDuplicateSurveyPointRecords())  # QR_IGACR4012
