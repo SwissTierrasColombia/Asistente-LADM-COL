@@ -20,7 +20,7 @@ from qgis.PyQt.QtCore import (QCoreApplication,
 
 from asistente_ladm_col.config.enums import EnumQualityRuleResult
 from asistente_ladm_col.config.keys.common import QUALITY_RULE_LADM_COL_LAYERS
-from asistente_ladm_col.config.layer_config import LADMNames, LayerConfig
+from asistente_ladm_col.config.layer_config import LADMNames
 from asistente_ladm_col.config.quality_rule_config import (QR_IGACR4016,
                                                            QRE_IGACR4016E01)
 from asistente_ladm_col.core.quality_rules.abstract_logic_quality_rule import AbstractLogicQualityRule
@@ -38,11 +38,11 @@ class QRDuplicateBuildingRecords(AbstractLogicQualityRule):
         AbstractLogicQualityRule.__init__(self)
 
         self._id = QR_IGACR4016
-        self._name = "Revisar que la tabla construccion no tenga registros repetidos"
+        self._name = "Construcción no debe tener registros repetidos"
         self._tags = ["igac", "instituto geográfico agustín codazzi", "lógica", "negocio", "construccion", "registros repetidos"]
         self._models = [LADMNames.SURVEY_MODEL_KEY]
 
-        self._errors = {self._ERROR_01: "Construccion no debe tener registros repetidos"}
+        self._errors = {self._ERROR_01: "Construcción no debe tener registros repetidos"}
 
         # Optional. Only useful for display purposes.
         self._field_mapping = dict()  # E.g., {'id_objetos': 'ids_punto_lindero', 'valores': 'conteo'}
@@ -59,10 +59,17 @@ class QRDuplicateBuildingRecords(AbstractLogicQualityRule):
             return pre_obj
 
         error_state = None
-        
-        fields = LayerConfig.get_logic_consistency_tables(db.names).get(db.names.LC_BUILDING_T)
+
         # Check building with duplicate records
-        res, records = ladm_queries.get_duplicate_records_in_table(db,db.names.LC_BUILDING_T,fields)
+        table = db.names.LC_BUILDING_T
+        fields = [db.names.LC_BUILDING_T_BUILDING_VALUATION_F,
+                  db.names.LC_BUILDING_T_BUILDING_AREA_F,
+                  db.names.COL_SPATIAL_UNIT_T_DIMENSION_F,
+                  db.names.COL_SPATIAL_UNIT_T_LABEL_F,
+                  db.names.COL_SPATIAL_UNIT_T_SURFACE_RELATION_F,
+                  db.names.COL_SPATIAL_UNIT_T_GEOMETRY_F]
+
+        res, records = ladm_queries.get_duplicate_records_in_table(db,table,fields)
         count = len(records)
 
         self.progress_changed.emit(50)
@@ -76,7 +83,7 @@ class QRDuplicateBuildingRecords(AbstractLogicQualityRule):
                     record['duplicate_uuids'].split(','),
                     None,
                     None,
-                    'Construcción repetido {} veces'.format(record['duplicate_total']),
+                    'Construcción repetida {} veces'.format(record['duplicate_total']),
                     error_state]
                 errors['data'].append(error_data)
 
