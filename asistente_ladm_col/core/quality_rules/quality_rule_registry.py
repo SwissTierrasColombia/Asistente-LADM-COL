@@ -24,6 +24,7 @@ from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
 from asistente_ladm_col.logic.quality_rules.qr_overlapping_boundary_points import QROverlappingBoundaryPoints
 from asistente_ladm_col.logic.quality_rules.qr_overlapping_control_points import QROverlappingControlPoints
 from asistente_ladm_col.logic.quality_rules.qr_boundary_points_not_covered_by_boundary_nodes import QRBoundaryPointsNotCoveredByBoundaryNodes
+from asistente_ladm_col.logic.quality_rules.qr_boundary_points_covered_plot_nodes import QRBoundaryPointsCoveredPlotNodes
 from asistente_ladm_col.logic.quality_rules.qr_overlapping_boundaries import QROverlappingBoundaries
 from asistente_ladm_col.logic.quality_rules.qr_overlapping_buildings import QROverlappingBuildings
 from asistente_ladm_col.logic.quality_rules.qr_validate_data_against_model import QRValidateDataAgainstModel
@@ -63,6 +64,7 @@ class QualityRuleRegistry(metaclass=Singleton):
         self.register_quality_rule(QROverlappingBoundaryPoints())  # QR_IGACR1001
         self.register_quality_rule(QROverlappingControlPoints())  # QR_IGACR1002
         self.register_quality_rule(QRBoundaryPointsNotCoveredByBoundaryNodes())  # QR_IGACR1003
+        self.register_quality_rule(QRBoundaryPointsCoveredPlotNodes())  # QR_IGACR1004
         self.register_quality_rule(QROverlappingBoundaries())  # QR_IGACR2001
         self.register_quality_rule(QROverlappingBuildings())  # QR_IGACR3002
         self.register_quality_rule(QRGapsInPlots())  # QR_IGACR3006
