@@ -302,6 +302,7 @@ def get_role_config():
             ROLE_QUALITY_RULES: [
                 QR_ILIVALIDATORR0001,
                 QR_IGACR1001,
+                QR_IGACR1002,
                 #QR_IGACR2001,
                 #QR_IGACR3006,
                 QR_IGACR4001,
