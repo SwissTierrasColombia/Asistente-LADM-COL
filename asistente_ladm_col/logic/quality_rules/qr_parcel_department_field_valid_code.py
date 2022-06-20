@@ -30,7 +30,7 @@ from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 
 class QRParcelWithInvalidDepartmentCode(AbstractLogicQualityRule):
     """
-    Check that parcels have incorrect department code
+    Check that parcels have a valid department code
     """
     _ERROR_01 = QRE_IGACR4003E01  # Parcel with incorrect department code
 
@@ -38,7 +38,7 @@ class QRParcelWithInvalidDepartmentCode(AbstractLogicQualityRule):
         AbstractLogicQualityRule.__init__(self)
 
         self._id = QR_IGACR4003
-        self._name = "Revisar que el código de departamento de la tabla predio tiene dos caracteres numéricos"
+        self._name = "El código de departamento de la tabla predio debe tener dos caracteres numéricos"
         self._tags = ["igac", "instituto geográfico agustín codazzi", "lógica", "negocio", "predio", "departamento"]
         self._models = [LADMNames.SURVEY_MODEL_KEY]
 
