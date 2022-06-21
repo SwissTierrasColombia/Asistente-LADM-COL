@@ -30,6 +30,7 @@ from asistente_ladm_col.logic.quality_rules.qr_parcel_with_invalid_parcel_number
 from asistente_ladm_col.logic.quality_rules.qr_parcel_department_field_valid_code import QRParcelWithInvalidDepartmentCode
 from asistente_ladm_col.logic.quality_rules.qr_duplicate_boundary_point_records import QRDuplicateBoundaryPointRecords
 from asistente_ladm_col.logic.quality_rules.qr_duplicate_survey_point_records import QRDuplicateSurveyPointRecords
+from asistente_ladm_col.logic.quality_rules.qr_duplicate_control_point_records import QRDuplicateControlPointRecords
 from asistente_ladm_col.logic.quality_rules.qr_duplicate_administrative_source_records import QRDuplicateAdministrativeSourceRecords
 from asistente_ladm_col.logic.quality_rules.qr_duplicate_boundary_records import QRDuplicateBoundaryRecords
 from asistente_ladm_col.logic.quality_rules.qr_duplicate_building_records import QRDuplicateBuildingRecords
@@ -58,6 +59,7 @@ class QualityRuleRegistry(metaclass=Singleton):
         self.register_quality_rule(QRParcelWithInvalidParcelNumber())  # QR_IGACR4005
         self.register_quality_rule(QRDuplicateBoundaryPointRecords())  # QR_IGACR4011
         self.register_quality_rule(QRDuplicateSurveyPointRecords())  # QR_IGACR4012
+        self.register_quality_rule(QRDuplicateControlPointRecords())  # QR_IGACR4013
         self.register_quality_rule(QRDuplicateBoundaryRecords())  # QR_IGACR4014
         self.register_quality_rule(QRDuplicateBuildingRecords())  # QR_IGACR4016
         self.register_quality_rule(QRDuplicateBuildingUnitRecords())  # QR_IGACR4017
