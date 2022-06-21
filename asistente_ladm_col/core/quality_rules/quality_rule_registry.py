@@ -37,6 +37,7 @@ from asistente_ladm_col.logic.quality_rules.qr_duplicate_building_records import
 from asistente_ladm_col.logic.quality_rules.qr_duplicate_building_unit_records import QRDuplicateBuildingUnitRecords
 from asistente_ladm_col.logic.quality_rules.qr_duplicate_party_records import QRDuplicatePartyRecords
 from asistente_ladm_col.logic.quality_rules.qr_duplicate_right_records import QRDuplicateRightRecords
+from asistente_ladm_col.logic.quality_rules.qr_duplicate_restriction_records import QRDuplicateRestrictionRecords
 from asistente_ladm_col.utils.singleton import Singleton
 
 
@@ -65,6 +66,7 @@ class QualityRuleRegistry(metaclass=Singleton):
         self.register_quality_rule(QRDuplicateBuildingUnitRecords())  # QR_IGACR4017
         self.register_quality_rule(QRDuplicatePartyRecords())  # QR_IGACR4019
         self.register_quality_rule(QRDuplicateRightRecords())  # QR_IGACR4020
+        self.register_quality_rule(QRDuplicateRestrictionRecords())  # QR_IGACR4021
         self.register_quality_rule(QRDuplicateAdministrativeSourceRecords())  # QR_IGACR4022
 
     def register_quality_rule(self, quality_rule):
