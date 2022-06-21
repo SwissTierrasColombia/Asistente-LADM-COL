@@ -26,6 +26,7 @@ from asistente_ladm_col.logic.quality_rules.qr_overlapping_boundaries import QRO
 from asistente_ladm_col.logic.quality_rules.qr_validate_data_against_model import QRValidateDataAgainstModel
 from asistente_ladm_col.logic.quality_rules.qr_gaps_in_plots import QRGapsInPlots
 from asistente_ladm_col.logic.quality_rules.qr_parcel_right_relationship import QRParcelRightRelationship
+from asistente_ladm_col.logic.quality_rules.qr_duplicate_building_records import QRDuplicateBuildingRecords
 from asistente_ladm_col.logic.quality_rules.qr_parcel_with_invalid_parcel_number import QRParcelWithInvalidParcelNumber
 from asistente_ladm_col.logic.quality_rules.qr_parcel_department_field_valid_code import QRParcelWithInvalidDepartmentCode
 from asistente_ladm_col.logic.quality_rules.qr_duplicate_survey_point_records import QRDuplicateSurveyPointRecords
@@ -55,6 +56,7 @@ class QualityRuleRegistry(metaclass=Singleton):
         self.register_quality_rule(QRParcelWithInvalidParcelNumber())  # QR_IGACR4005
         self.register_quality_rule(QRDuplicateSurveyPointRecords())  # QR_IGACR4012
         self.register_quality_rule(QRDuplicateBoundaryRecords())  # QR_IGACR4014
+        self.register_quality_rule(QRDuplicateBuildingRecords())  # QR_IGACR4016
         self.register_quality_rule(QRDuplicateBuildingUnitRecords())  # QR_IGACR4017
         self.register_quality_rule(QRDuplicateRightRecords())  # QR_IGACR4020
         self.register_quality_rule(QRDuplicateAdministrativeSourceRecords())  # QR_IGACR4022
