@@ -32,6 +32,7 @@ from asistente_ladm_col.logic.quality_rules.qr_overlapping_right_of_ways_buildin
 from asistente_ladm_col.logic.quality_rules.qr_validate_data_against_model import QRValidateDataAgainstModel
 from asistente_ladm_col.logic.quality_rules.qr_gaps_in_plots import QRGapsInPlots
 from asistente_ladm_col.logic.quality_rules.qr_multiparts_in_right_of_way import QRMultiPartsInRightOfWay
+from asistente_ladm_col.logic.quality_rules.qr_plot_nodes_covered_boundary_points import QRPlotNodesCoveredBoundaryPoints
 from asistente_ladm_col.logic.quality_rules.qr_parcel_right_relationship import QRParcelRightRelationship
 from asistente_ladm_col.logic.quality_rules.qr_parcel_with_invalid_parcel_number import QRParcelWithInvalidParcelNumber
 from asistente_ladm_col.logic.quality_rules.qr_parcel_with_invalid_previous_parcel_number import QRParcelWithInvalidPreviousParcelNumber
@@ -73,6 +74,7 @@ class QualityRuleRegistry(metaclass=Singleton):
         self.register_quality_rule(QROverlappingRightOfWaysBuildings())  # QR_IGACR3005
         self.register_quality_rule(QRGapsInPlots())  # QR_IGACR3006
         self.register_quality_rule(QRMultiPartsInRightOfWay())  # QR_IGACR3007
+        self.register_quality_rule(QRPlotNodesCoveredBoundaryPoints())  # QR_IGACR3008
         self.register_quality_rule(QRParcelRightRelationship())  # QR_IGACR4001
         self.register_quality_rule(QRParcelWithInvalidDepartmentCode())  # QR_IGACR4003
         self.register_quality_rule(QRParcelWithInvalidMunicipalityCode())  # QR_IGACR4004
