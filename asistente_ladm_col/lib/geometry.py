@@ -346,7 +346,8 @@ class GeometryUtils(QObject):
 
         return QgsGeometry.collectGeometry(listGeoms) if len(listGeoms) > 0 else None
 
-    def get_inner_intersections_between_polygons(self, polygon_layer_1, polygon_layer_2):
+    @staticmethod
+    def get_inner_intersections_between_polygons(polygon_layer_1, polygon_layer_2):
         """
         Discard intersections other than inner intersections (i.e., only returns
         polygon intersections)

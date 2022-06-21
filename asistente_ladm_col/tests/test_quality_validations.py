@@ -114,7 +114,7 @@ class TestQualityValidations(unittest.TestCase):
         right_of_way_features = [feature for feature in right_of_way_layer.getFeatures()]
         self.assertEqual(len(right_of_way_features), 6)
 
-        ids, over_pol = self.geometry.get_inner_intersections_between_polygons(right_of_way_layer, building_layer)
+        ids, over_pol = GeometryUtils.get_inner_intersections_between_polygons(right_of_way_layer, building_layer)
 
         geometries = [v.asWkt() for v in over_pol.asGeometryCollection()]
 
