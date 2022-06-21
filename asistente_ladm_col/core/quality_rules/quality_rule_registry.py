@@ -27,6 +27,7 @@ from asistente_ladm_col.logic.quality_rules.qr_validate_data_against_model impor
 from asistente_ladm_col.logic.quality_rules.qr_gaps_in_plots import QRGapsInPlots
 from asistente_ladm_col.logic.quality_rules.qr_parcel_right_relationship import QRParcelRightRelationship
 from asistente_ladm_col.logic.quality_rules.qr_parcel_with_invalid_parcel_number import QRParcelWithInvalidParcelNumber
+from asistente_ladm_col.logic.quality_rules.qr_parcel_department_field_valid_code import QRParcelWithInvalidDepartmentCode
 from asistente_ladm_col.utils.singleton import Singleton
 
 
@@ -45,6 +46,7 @@ class QualityRuleRegistry(metaclass=Singleton):
         self.register_quality_rule(QROverlappingBoundaries())
         self.register_quality_rule(QRGapsInPlots())
         self.register_quality_rule(QRParcelRightRelationship())
+        self.register_quality_rule(QRParcelWithInvalidDepartmentCode())   # QR_IGACR4003
         self.register_quality_rule(QRParcelWithInvalidParcelNumber())
 
     def register_quality_rule(self, quality_rule):
