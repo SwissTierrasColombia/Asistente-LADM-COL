@@ -73,23 +73,41 @@ dispExpression="concat(nombre, ' (', numero_documento, ')')"
 
 # ExtDireccion
 
-["LADM_COL_V3_1.LADM_Nucleo.ExtDireccion.Clase_Via_Principal"]
-form_order=4
-
-["LADM_COL_V3_1.LADM_Nucleo.ExtDireccion.Codigo_Postal"]
-form_order=3
-
-["LADM_COL_V3_1.LADM_Nucleo.ExtDireccion.Complemento"]
-form_order=12
+["LADM_COL_V3_1.LADM_Nucleo.ExtDireccion.Tipo_Direccion"]
+form_order=1
 
 ["LADM_COL_V3_1.LADM_Nucleo.ExtDireccion.Es_Direccion_Principal"]
 form_order=2
 
-["LADM_COL_V3_1.LADM_Nucleo.ExtDireccion.Letra_Via_Generadora"]
-form_order=9
+["LADM_COL_V3_1.LADM_Nucleo.ExtDireccion.Codigo_Postal"]
+form_order=3
+
+["LADM_COL_V3_1.LADM_Nucleo.ExtDireccion.Clase_Via_Principal"]
+form_order=4
+
+["LADM_COL_V3_1.LADM_Nucleo.ExtDireccion.Valor_Via_Principal"]
+form_order=5
 
 ["LADM_COL_V3_1.LADM_Nucleo.ExtDireccion.Letra_Via_Principal"]
 form_order=6
+
+["LADM_COL_V3_1.LADM_Nucleo.ExtDireccion.Sector_Ciudad"]
+form_order=7
+
+["LADM_COL_V3_1.LADM_Nucleo.ExtDireccion.Valor_Via_Generadora"]
+form_order=8
+
+["LADM_COL_V3_1.LADM_Nucleo.ExtDireccion.Letra_Via_Generadora"]
+form_order=9
+
+["LADM_COL_V3_1.LADM_Nucleo.ExtDireccion.Numero_Predio"]
+form_order=10
+
+["LADM_COL_V3_1.LADM_Nucleo.ExtDireccion.Sector_Predio"]
+form_order=11
+
+["LADM_COL_V3_1.LADM_Nucleo.ExtDireccion.Complemento"]
+form_order=12
 
 ["LADM_COL_V3_1.LADM_Nucleo.ExtDireccion.Localizacion"]
 form_order=14
@@ -97,55 +115,73 @@ form_order=14
 ["LADM_COL_V3_1.LADM_Nucleo.ExtDireccion.Nombre_Predio"]
 form_order=13
 
-["LADM_COL_V3_1.LADM_Nucleo.ExtDireccion.Numero_Predio"]
-form_order=10
+# ExtArchivo
 
-["LADM_COL_V3_1.LADM_Nucleo.ExtDireccion.Sector_Ciudad"]
-form_order=7
-
-["LADM_COL_V3_1.LADM_Nucleo.ExtDireccion.Sector_Predio"]
-form_order=11
-
-["LADM_COL_V3_1.LADM_Nucleo.ExtDireccion.Tipo_Direccion"]
+["LADM_COL_V3_1.LADM_Nucleo.ExtArchivo.Fecha_Aceptacion"]
 form_order=1
 
-["LADM_COL_V3_1.LADM_Nucleo.ExtDireccion.Valor_Via_Generadora"]
-form_order=8
+["LADM_COL_V3_1.LADM_Nucleo.ExtArchivo.Datos"]
+form_order=2
 
-["LADM_COL_V3_1.LADM_Nucleo.ExtDireccion.Valor_Via_Principal"]
-form_order=5
+["LADM_COL_V3_1.LADM_Nucleo.ExtArchivo.Extraccion"]
+form_order=3
 
-# LC_Predio
-
-["LADM_COL_V3_1.LADM_Nucleo.COL_UnidadAdministrativaBasica.Nombre"]
-form_order=14
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Predio.Avaluo_Catastral"]
-form_order=13
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Predio.Codigo_ORIP"]
+["LADM_COL_V3_1.LADM_Nucleo.ExtArchivo.Fecha_Grabacion"]
 form_order=4
 
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Predio.Condicion_Predio"]
-form_order=12
+["LADM_COL_V3_1.LADM_Nucleo.ExtArchivo.Fecha_Entrega"]
+form_order=5
+
+["LADM_COL_V3_1.LADM_Nucleo.ExtArchivo.Espacio_De_Nombres"]
+form_order=6
+
+["LADM_COL_V3_1.LADM_Nucleo.ExtArchivo.Local_Id"]
+form_order=7
+
+# ExtInteresado
+
+["LADM_COL_V3_1.LADM_Nucleo.ExtInteresado.Huella_Dactilar"]
+form_order=1
+
+["LADM_COL_V3_1.LADM_Nucleo.ExtInteresado.Nombre"]
+form_order=2
+
+["LADM_COL_V3_1.LADM_Nucleo.ExtInteresado.Fotografia"]
+form_order=3
+
+["LADM_COL_V3_1.LADM_Nucleo.ExtInteresado.Firma"]
+form_order=4
+
+["LADM_COL_V3_1.LADM_Nucleo.ExtInteresado.Documento_Escaneado"]
+form_order=5
+
+# COL_AreaValor
+
+["LADM_COL_V3_1.LADM_Nucleo.COL_AreaValor.Tipo"]
+form_order=1
+
+["LADM_COL_V3_1.LADM_Nucleo.COL_AreaValor.Area"]
+form_order=2
+
+["LADM_COL_V3_1.LADM_Nucleo.COL_AreaValor.Datos_Proyeccion"]
+form_order=3
+
+# LC_Predio
 
 ["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Predio.Departamento"]
 form_order=1
 
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Predio.Direccion"]
-form_order=10
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Predio.Id_Operacion"]
-form_order=9
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Predio.Matricula_Inmobiliaria"]
-form_order=5
-
 ["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Predio.Municipio"]
 form_order=2
 
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Predio.NUPRE"]
-form_order=8 
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Predio.Tiene_FMI"]
+form_order=3
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Predio.Codigo_ORIP"]
+form_order=4
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Predio.Matricula_Inmobiliaria"]
+form_order=5
 
 ["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Predio.Numero_Predial"]
 form_order=6
@@ -153,78 +189,187 @@ form_order=6
 ["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Predio.Numero_Predial_Anterior"]
 form_order=7
 
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Predio.Tiene_FMI"]
-form_order=3
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Predio.Codigo_Homologado"]
+form_order=8
 
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Predio.Tipo"]
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Predio.Interrelacionado"]
+form_order=9
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Predio.Codigo_Homologado_FMI"]
+form_order=10
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Predio.NUPRE"]
 form_order=11
 
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Predio.Id_Operacion"]
+form_order=12
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Predio.Direccion"]
+form_order=13
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Predio.Tipo"]
+form_order=14
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Predio.Condicion_Predio"]
+form_order=15
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Predio.Avaluo_Catastral"]
+form_order=16
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Predio.Valor_Referencia"]
+form_order=17
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Predio.Destinacion_Economica"]
+form_order=18
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Predio.Clase_Suelo"]
+form_order=19
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Predio.Categoria_Suelo"]
+form_order=20
+
+["LADM_COL_V3_1.LADM_Nucleo.COL_UnidadAdministrativaBasica.Nombre"]
+form_order=21
+
+# LC_DatosPHCondominio
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosPHCondominio.Area_Total_Terreno"]
+form_order=1
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosPHCondominio.Area_Total_Terreno_Privada"]
+form_order=2
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosPHCondominio.Area_Total_Terreno_Comun"]
+form_order=3
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosPHCondominio.Area_Total_Construida"]
+form_order=4
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosPHCondominio.Area_Total_Construida_Privada"]
+form_order=5
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosPHCondominio.Area_Total_Construida_Comun"]
+form_order=6
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosPHCondominio.Numero_Torres"]
+form_order=7
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosPHCondominio.Total_Unidades_Privadas"]
+form_order=8
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.lc_ph_predio.lc_predio"]
+form_order=9
+
+# ExtReferenciaRegistralSistemaAntiguo
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.ExtReferenciaRegistralSistemaAntiguo.Tipo_Referencia"]
+form_order=1
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.ExtReferenciaRegistralSistemaAntiguo.Oficina"]
+form_order=2
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.ExtReferenciaRegistralSistemaAntiguo.Libro"]
+form_order=3
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.ExtReferenciaRegistralSistemaAntiguo.Tomo"]
+form_order=4
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.ExtReferenciaRegistralSistemaAntiguo.Pagina"]
+form_order=5
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.ExtReferenciaRegistralSistemaAntiguo.Numero"]
+form_order=6
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.ExtReferenciaRegistralSistemaAntiguo.Dia"]
+form_order=7
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.ExtReferenciaRegistralSistemaAntiguo.Mes"]
+form_order=8
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.ExtReferenciaRegistralSistemaAntiguo.Anio"]
+form_order=9
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.ExtReferenciaRegistralSistemaAntiguo.Matricula"]
+form_order=10
+
 # LC_DatosAdicionalesLevantamientoCatastral
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosAdicionalesLevantamientoCatastral.Tiene_Area_Registral"]
+form_order=1
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosAdicionalesLevantamientoCatastral.Area_Registral_M2"]
+form_order=2
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosAdicionalesLevantamientoCatastral.Procedimiento_Catastral_Registral"]
+form_order=3
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosAdicionalesLevantamientoCatastral.Novedad_Numeros_Prediales"]
+form_order=4
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosAdicionalesLevantamientoCatastral.Novedad_FMI"]
+form_order=5
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosAdicionalesLevantamientoCatastral.Fecha_Visita_predial"]
+form_order=6
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosAdicionalesLevantamientoCatastral.Resultado_Visita"]
+form_order=7
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosAdicionalesLevantamientoCatastral.Otro_Cual_Resultado_Visita"]
+form_order=8
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosAdicionalesLevantamientoCatastral.Suscribe_Acta_Colindancia"]
+form_order=9
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosAdicionalesLevantamientoCatastral.Observaciones"]
+form_order=10
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosAdicionalesLevantamientoCatastral.Tipo_Documento_Reconocedor"]
+form_order=11
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosAdicionalesLevantamientoCatastral.Numero_Documento_Reconocedor"]
+form_order=12
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosAdicionalesLevantamientoCatastral.Primer_Nombre_Reconocedor"]
+form_order=13
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosAdicionalesLevantamientoCatastral.Segundo_Nombre_Reconocedor"]
+form_order=14
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosAdicionalesLevantamientoCatastral.Primer_Apellido_Reconocedor"]
+form_order=14
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosAdicionalesLevantamientoCatastral.Segundo_Apellido_Reconocedor"]
+form_order=15
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosAdicionalesLevantamientoCatastral.Despojo_Abandono"]
+form_order=16
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosAdicionalesLevantamientoCatastral.Estrato"]
+form_order=17
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosAdicionalesLevantamientoCatastral.Otro_Cual_Estrato"]
+form_order=18
 
 ["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.lc_informacion_adicional_predio.lc_predio"]
 form_order=19
 
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosAdicionalesLevantamientoCatastral.Area_Registral_M2"]
-form_order=5
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosAdicionalesLevantamientoCatastral.Categoria_Suelo"]
-form_order=3
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosAdicionalesLevantamientoCatastral.Clase_Suelo"]
-form_order=2
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosAdicionalesLevantamientoCatastral.Destinacion_Economica"]
-form_order=1
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosAdicionalesLevantamientoCatastral.Fecha_Visita_predial"]
-form_order=9
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosAdicionalesLevantamientoCatastral.Novedad_FMI"]
-form_order=8
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosAdicionalesLevantamientoCatastral.Novedad_Numeros_Prediales"]
-form_order=7
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosAdicionalesLevantamientoCatastral.Numero_Documento_Reconocedor"]
-form_order=14
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosAdicionalesLevantamientoCatastral.Observaciones"]
-form_order=12
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosAdicionalesLevantamientoCatastral.Primer_Apellido_Reconocedor"]
-form_order=17
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosAdicionalesLevantamientoCatastral.Primer_Nombre_Reconocedor"]
-form_order=15
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosAdicionalesLevantamientoCatastral.Procedimiento_Catastral_Registral"]
-form_order=6
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosAdicionalesLevantamientoCatastral.Resultado_Visita"]
-form_order=10
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosAdicionalesLevantamientoCatastral.Segundo_Apellido_Reconocedor"]
-form_order=18
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosAdicionalesLevantamientoCatastral.Segundo_Nombre_Reconocedor"]
-form_order=16
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosAdicionalesLevantamientoCatastral.Suscribe_Acta_Colindancia"]
-form_order=11
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosAdicionalesLevantamientoCatastral.Tiene_Area_Registral"]
-form_order=4
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_DatosAdicionalesLevantamientoCatastral.Tipo_Documento_Reconocedor"]
-form_order=13
-
 # LC_OfertasMercadoInmobiliario
 
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.lc_predio_ofertas_mercado_inmobiliario.lc_predio"]
-form_order=8
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_OfertasMercadoInmobiliario.Tipo_Oferta"]
+form_order=1
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_OfertasMercadoInmobiliario.Valor_Pedido"]
+form_order=2
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_OfertasMercadoInmobiliario.Valor_Negociado"]
+form_order=3
 
 ["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_OfertasMercadoInmobiliario.Fecha_Captura_Oferta"]
 form_order=4
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_OfertasMercadoInmobiliario.Tiempo_Oferta_Mercado"]
+form_order=5
 
 ["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_OfertasMercadoInmobiliario.Nombre_Oferente"]
 form_order=6
@@ -232,84 +377,45 @@ form_order=6
 ["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_OfertasMercadoInmobiliario.Numero_Contacto_Oferente"]
 form_order=7
 
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_OfertasMercadoInmobiliario.Tiempo_Oferta_Mercado"]
-form_order=5
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_OfertasMercadoInmobiliario.Tipo_Oferta"]
-form_order=1
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_OfertasMercadoInmobiliario.Valor_Negociado"]
-form_order=3
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_OfertasMercadoInmobiliario.Valor_Pedido"]
-form_order=2
-
-# LC_ContactoVisita
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.lc_informacion_adicional_contacto.lc_datos_adicionales"]
-form_order=12
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_ContactoVisita.Autoriza_Notificaciones"]
-form_order=10
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_ContactoVisita.Celular"]
-form_order=9
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_ContactoVisita.Correo_Electronico"]
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.lc_predio_ofertas_mercado_inmobiliario.lc_predio"]
 form_order=8
 
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_ContactoVisita.Domicilio_Notificaciones"]
-form_order=11
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_ContactoVisita.Numero_Documento_Quien_Atendio"]
-form_order=2
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_ContactoVisita.Primer_Apellido_Quien_Atendio"]
-form_order=5
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_ContactoVisita.Primer_Nombre_Quien_Atendio"]
-form_order=3
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_ContactoVisita.Relacion_Con_Predio"]
-form_order=7
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_ContactoVisita.Segundo_Apellido_Quien_Atendio"]
-form_order=6
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_ContactoVisita.Segundo_Nombre_Quien_Atendio"]
-form_order=4
+# LC_ContactoVisita
 
 ["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_ContactoVisita.Tipo_Documento_Quien_Atendio"]
 form_order=1
 
-# LC_Interesado
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_ContactoVisita.Numero_Documento_Quien_Atendio"]
+form_order=2
 
-["LADM_COL_V3_1.LADM_Nucleo.COL_Interesado.Nombre"]
-form_order=11
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Interesado.Documento_Identidad"]
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_ContactoVisita.Primer_Nombre_Quien_Atendio"]
 form_order=3
 
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Interesado.Grupo_Etnico"]
-form_order=9
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Interesado.Primer_Apellido"]
-form_order=6
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Interesado.Primer_Nombre"]
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_ContactoVisita.Segundo_Nombre_Quien_Atendio"]
 form_order=4
 
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Interesado.Razon_Social"]
-form_order=10
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Interesado.Segundo_Apellido"]
-form_order=7
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Interesado.Segundo_Nombre"]
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_ContactoVisita.Primer_Apellido_Quien_Atendio"]
 form_order=5
 
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Interesado.Sexo"]
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_ContactoVisita.Segundo_Apellido_Quien_Atendio"]
+form_order=6
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_ContactoVisita.Correo_Electronico"]
+form_order=7
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_ContactoVisita.Celular"]
 form_order=8
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_ContactoVisita.Autoriza_Notificaciones"]
+form_order=9
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_ContactoVisita.Domicilio_Notificaciones"]
+form_order=10
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.lc_informacion_adicional_contacto.lc_datos_adicionales"]
+form_order=11
+
+# LC_Interesado
 
 ["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Interesado.Tipo"]
 form_order=1
@@ -317,16 +423,75 @@ form_order=1
 ["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Interesado.Tipo_Documento"]
 form_order=2
 
-# LC_Derecho
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Interesado.Documento_Identidad"]
+form_order=3
 
-["LADM_COL_V3_1.LADM_Nucleo.col_baunitRrr.unidad"]
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Interesado.Primer_Nombre"]
+form_order=4
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Interesado.Segundo_Nombre"]
 form_order=5
 
-["LADM_COL_V3_1.LADM_Nucleo.col_rrrInteresado.interesado"]
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Interesado.Primer_Apellido"]
 form_order=6
 
-["LADM_COL_V3_1.LADM_Nucleo.COL_DRR.Descripcion"]
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Interesado.Segundo_Apellido"]
+form_order=7
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Interesado.Sexo"]
+form_order=8
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Interesado.Grupo_Etnico"]
+form_order=9
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Interesado.Razon_Social"]
+form_order=10
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Interesado.Estado_Civil"]
+form_order=11
+
+["LADM_COL_V3_1.LADM_Nucleo.COL_Interesado.Nombre"]
+form_order=12
+
+# LC_InteresadoContacto
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_InteresadoContacto.Telefono1"]
+form_order=1
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_InteresadoContacto.Telefono2"]
+form_order=2
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_InteresadoContacto.Domicilio_Notificacion"]
+form_order=3
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_InteresadoContacto.Direccion_Residencia"]
 form_order=4
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_InteresadoContacto.Correo_Electronico"]
+form_order=5
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_InteresadoContacto.Autoriza_Notificacion_Correo"]
+form_order=6
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_InteresadoContacto.Departamento"]
+form_order=7
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_InteresadoContacto.Municipio"]
+form_order=8
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_InteresadoContacto.Vereda"]
+form_order=9
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_InteresadoContacto.Corregimiento"]
+form_order=10
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.lc_interesado_interesadocontacto.lc_interesado"]
+form_order=11
+
+# LC_Derecho
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Derecho.Tipo"]
+form_order=1
 
 ["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Derecho.Fecha_Inicio_Tenencia"]
 form_order=2
@@ -334,10 +499,22 @@ form_order=2
 ["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Derecho.Fraccion_Derecho"]
 form_order=3
 
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Derecho.Tipo"]
-form_order=1
+["LADM_COL_V3_1.LADM_Nucleo.COL_DRR.Descripcion"]
+form_order=4
+
+["LADM_COL_V3_1.LADM_Nucleo.col_baunitRrr.unidad"]
+form_order=5
+
+["LADM_COL_V3_1.LADM_Nucleo.col_rrrInteresado.interesado"]
+form_order=6
 
 # LC_Restriccion
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Restriccion.Tipo"]
+form_order=1
+
+["LADM_COL_V3_1.LADM_Nucleo.COL_DRR.Descripcion"]
+form_order=2
 
 ["LADM_COL_V3_1.LADM_Nucleo.col_baunitRrr.unidad"]
 form_order=3
@@ -345,72 +522,92 @@ form_order=3
 ["LADM_COL_V3_1.LADM_Nucleo.col_rrrInteresado.interesado"]
 form_order=4
 
-["LADM_COL_V3_1.LADM_Nucleo.COL_DRR.Descripcion"]
-form_order=2
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Restriccion.Tipo"]
-form_order=1
-
 # LC_UnidadConstruccion
 
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.lc_construccion_unidadconstruccion.lc_construccion"]
-form_order=25
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_UnidadConstruccion.Altura"]
-form_order=15
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_UnidadConstruccion.Anio_Construccion"]
-form_order=12
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_UnidadConstruccion.Area_Construida"]
-form_order=13
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_UnidadConstruccion.Area_Privada_Construida"]
-form_order=14
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_UnidadConstruccion.Avaluo_Unidad_Construccion"]
-form_order=16
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_UnidadConstruccion.Identificador"]
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_UnidadConstruccion.Planta_Ubicacion"]
 form_order=1
 
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_UnidadConstruccion.Observaciones"]
-form_order=17
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_UnidadConstruccion.Planta_Ubicacion"]
-form_order=4
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_UnidadConstruccion.Tipo_Construccion"]
-form_order=5
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_UnidadConstruccion.Tipo_Dominio"]
-form_order=6
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_UnidadConstruccion.Tipo_Planta"]
-form_order=3
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_UnidadConstruccion.Tipo_Unidad_Construccion"]
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_UnidadConstruccion.Area_Construida"]
 form_order=2
 
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_UnidadConstruccion.Total_Banios"]
-form_order=10
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_UnidadConstruccion.Altura"]
+form_order=3
 
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_UnidadConstruccion.Total_Habitaciones"]
-form_order=9
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.lc_construccion_unidadconstruccion.lc_construccion"]
+form_order=4
 
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_UnidadConstruccion.Total_Locales"]
-form_order=11
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.lc_unidadconstruccion_caracteristicasunidadconstruccion.lc_caracteristicasunidadconstruccion"]
+form_order=5
 
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_UnidadConstruccion.Total_Pisos"]
+# LC_CarateristicasUnidadConstruccion
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_CaracteristicasUnidadConstruccion.Identificador"]
+form_order=1
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_CaracteristicasUnidadConstruccion.Tipo_Unidad_Construccion"]
+form_order=2
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_CaracteristicasUnidadConstruccion.Tipo_Planta"]
+form_order=3
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_CaracteristicasUnidadConstruccion.Tipo_Construccion"]
+form_order=4
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_CaracteristicasUnidadConstruccion.Tipo_Dominio"]
+form_order=5
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_CaracteristicasUnidadConstruccion.Uso"]
+form_order=6
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_CaracteristicasUnidadConstruccion.Total_Plantas"]
+form_order=7
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_CaracteristicasUnidadConstruccion.Total_Habitaciones"]
 form_order=8
 
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_UnidadConstruccion.Uso"]
-form_order=7
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_CaracteristicasUnidadConstruccion.Total_Banios"]
+form_order=9
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_CaracteristicasUnidadConstruccion.Total_Locales"]
+form_order=10
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_CaracteristicasUnidadConstruccion.Anio_Construccion"]
+form_order=11
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_CaracteristicasUnidadConstruccion.Area_Construida"]
+form_order=12
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_CaracteristicasUnidadConstruccion.Area_Privada_Construida"]
+form_order=12
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_CaracteristicasUnidadConstruccion.Avaluo_Unidad_Construccion"]
+form_order=13
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_CaracteristicasUnidadConstruccion.Observaciones"]
+form_order=14
 
 # LC_Construccion
 
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Construccion.Altura"]
-form_order=10
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Construccion.Identificador"]
+form_order=1
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Construccion.Tipo_Construccion"]
+form_order=2
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Construccion.Tipo_Dominio"]
+form_order=3
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Construccion.Numero_Pisos"]
+form_order=4
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Construccion.Numero_Sotanos"]
+form_order=5
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Construccion.Numero_Semisotanos"]
+form_order=6
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Construccion.Numero_Mezanines"]
+form_order=7
 
 ["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Construccion.Anio_Construccion"]
 form_order=8
@@ -418,32 +615,17 @@ form_order=8
 ["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Construccion.Area_Construccion"]
 form_order=9
 
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Construccion.Altura"]
+form_order=10
+
 ["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Construccion.Avaluo_Construccion"]
 form_order=11
 
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Construccion.Identificador"]
-form_order=1
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Construccion.Numero_Mezanines"]
-form_order=7
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Construccion.Numero_Pisos"]
-form_order=4
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Construccion.Numero_Semisotanos"]
-form_order=6
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Construccion.Numero_Sotanos"]
-form_order=5
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Construccion.Observaciones"]
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Construccion.Valor_Referencia_Construccion"]
 form_order=12
 
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Construccion.Tipo_Construccion"]
-form_order=2
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Construccion.Tipo_Dominio"]
-form_order=3
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Construccion.Observaciones"]
+form_order=13
 
 # LC_Terreno
 
@@ -453,13 +635,67 @@ form_order=1
 ["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Terreno.Avaluo_Terreno"]
 form_order=2
 
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Terreno.Geometria"]
-form_order=4
-
 ["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Terreno.Manzana_Vereda_Codigo"]
 form_order=3
 
+# LC_ServidumbreTransito
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_ServidumbreTransito.Area_Servidumbre"]
+form_order=1
+
+#LC_TipologiaConstruccion
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_TipologiaConstruccion.Tipo_Tipologia"]
+form_order=1
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_TipologiaConstruccion.Cual"]
+form_order=2
+
+#LC_CalificacionConvencional
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_CalificacionConvencional.Tipo_Calificar"]
+form_order=1
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_CalificacionConvencional.Total_Calificacion"]
+form_order=2
+
+#LC_GrupoCalificacion
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_GrupoCalificacion.Clase_Calificacion"]
+form_order=1
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_GrupoCalificacion.Conservacion"]
+form_order=2
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_GrupoCalificacion.Subtotal"]
+form_order=3
+
+#LC_ObjetoConstruccion
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_ObjetoConstruccion.Tipo_Objeto_Construccion"]
+form_order=1
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_ObjetoConstruccion.Puntos"]
+form_order=2
+
+#LC_Lindero
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_Lindero.Longitud"]
+form_order=1
+
+["LADM_COL_V3_1.LADM_Nucleo.COL_CadenaCarasLimite.Localizacion_Textual"]
+form_order=2
+
 #LC_PuntoLindero
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_PuntoLindero.ID_Punto_Lindero"]
+form_order=1
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_PuntoLindero.PuntoTipo"]
+form_order=2
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_PuntoLindero.Fotoidentificacion"]
+form_order=4
 
 ["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_PuntoLindero.Acuerdo"]
 form_order=3
@@ -470,25 +706,7 @@ form_order=5
 ["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_PuntoLindero.Exactitud_Vertical"]
 form_order=6
 
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_PuntoLindero.Fotoidentificacion"]
-form_order=4
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_PuntoLindero.ID_Punto_Lindero"]
-form_order=1
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_PuntoLindero.PuntoTipo"]
-form_order=2
-
 #LC_PuntoLevantamiento
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_PuntoLevantamiento.Exactitud_Horizontal"]
-form_order=5
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_PuntoLevantamiento.Exactitud_Vertical"]
-form_order=6
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_PuntoLevantamiento.Fotoidentificacion"]
-form_order=4
 
 ["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_PuntoLevantamiento.ID_Punto_Levantamiento"]
 form_order=1
@@ -499,13 +717,16 @@ form_order=2
 ["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_PuntoLevantamiento.Tipo_Punto_Levantamiento"]
 form_order=3
 
-#LC_PuntoControl
-
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_PuntoControl.Exactitud_Horizontal"]
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_PuntoLevantamiento.Fotoidentificacion"]
 form_order=4
 
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_PuntoControl.Exactitud_Vertical"]
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_PuntoLevantamiento.Exactitud_Horizontal"]
 form_order=5
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_PuntoLevantamiento.Exactitud_Vertical"]
+form_order=6
+
+#LC_PuntoControl
 
 ["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_PuntoControl.ID_Punto_Control"]
 form_order=1
@@ -516,21 +737,33 @@ form_order=2
 ["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_PuntoControl.Tipo_Punto_Control"]
 form_order=3
 
-#LC_FuenteAdministrativa
-
-["LADM_COL_V3_1.LADM_Nucleo.COL_FuenteAdministrativa.Numero_Fuente"]
-form_order=2
-
-["LADM_COL_V3_1.LADM_Nucleo.COL_FuenteAdministrativa.Observacion"]
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_PuntoControl.Exactitud_Horizontal"]
 form_order=4
 
-["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_FuenteAdministrativa.Ente_Emisor"]
-form_order=3
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_PuntoControl.Exactitud_Vertical"]
+form_order=5
+
+#LC_FuenteAdministrativa
 
 ["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_FuenteAdministrativa.Tipo"]
 form_order=1
 
+["LADM_COL_V3_1.LADM_Nucleo.COL_FuenteAdministrativa.Numero_Fuente"]
+form_order=2
+
+["Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.Levantamiento_Catastral.LC_FuenteAdministrativa.Ente_Emisor"]
+form_order=3
+
+["LADM_COL_V3_1.LADM_Nucleo.COL_FuenteAdministrativa.Observacion"]
+form_order=4
+
 #LC_FuenteEspacial
+
+["LADM_COL_V3_1.LADM_Nucleo.COL_FuenteEspacial.Tipo"]
+form_order=1
+
+["LADM_COL_V3_1.LADM_Nucleo.COL_FuenteEspacial.Nombre"]
+form_order=2
 
 ["LADM_COL_V3_1.LADM_Nucleo.COL_FuenteEspacial.Descripcion"]
 form_order=3
@@ -538,19 +771,13 @@ form_order=3
 ["LADM_COL_V3_1.LADM_Nucleo.COL_FuenteEspacial.Metadato"]
 form_order=4
 
-["LADM_COL_V3_1.LADM_Nucleo.COL_FuenteEspacial.Nombre"]
-form_order=2
-
-["LADM_COL_V3_1.LADM_Nucleo.COL_FuenteEspacial.Tipo"]
-form_order=1
-
 # Common fields
-
-["LADM_COL_V3_1.LADM_Nucleo.COL_Fuente.Estado_Disponibilidad"]
-form_order=894
 
 ["LADM_COL_V3_1.LADM_Nucleo.COL_Fuente.Fecha_Documento_Fuente"]
 form_order=893
+
+["LADM_COL_V3_1.LADM_Nucleo.COL_Fuente.Estado_Disponibilidad"]
+form_order=894
 
 ["LADM_COL_V3_1.LADM_Nucleo.COL_Fuente.Tipo_Principal"]
 form_order=895
