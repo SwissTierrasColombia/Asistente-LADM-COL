@@ -308,6 +308,7 @@ def get_role_config():
                 #QR_IGACR2001,
                 QR_IGACR3002,
                 QR_IGACR3003,
+                QR_IGACR3005,
                 #QR_IGACR3006,
                 QR_IGACR3007,
                 QR_IGACR4001,
