@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 /***************************************************************************
                               Asistente LADM_COL
@@ -39,6 +38,7 @@ from qgis.core import (QgsField,
                        QgsVectorLayerUtils,
                        QgsWkbTypes,
                        edit,
+                       NULL,
                        QgsFeatureSource)
 
 import processing
@@ -1142,3 +1142,79 @@ class GeometryUtils(QObject):
     def create_spatial_index(layer):
         if layer.hasSpatialIndex() != QgsFeatureSource.SpatialIndexPresent:
             processing.run("native:createspatialindex", {'INPUT': layer})
+
+    @staticmethod
+    def get_unique_nodes_layer(layer, id_field):
+        """
+        Return layer with unique nodes
+        It is necessary because 'remove duplicate vertices' processing algorithm does not filter the data as we need them
+        """
+
+        tmp_nodes_layer = processing.run("native:extractvertices", {'INPUT': layer, 'OUTPUT': 'memory:'})['OUTPUT']
+
+        # layer is created with unique vertices
+        # It is necessary because 'remove duplicate vertices' processing algorithm does not filter the data as we need them
+        unique_nodes_layer = QgsVectorLayer("Point?crs={}".format(layer.sourceCrs().authid()), 'unique nodes', "memory")
+        data_provider = unique_nodes_layer.dataProvider()
+        data_provider.addAttributes([QgsField(id_field, QVariant.Int)])
+        unique_nodes_layer.updateFields()
+
+        id_field_idx = tmp_nodes_layer.fields().indexFromName(id_field)
+        request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
+
+        filter_fs = []
+        fs = []
+        for f in tmp_nodes_layer.getFeatures(request):
+            item = [f[id_field], f.geometry().asWkt()]
+            if item not in filter_fs:
+                filter_fs.append(item)
+                fs.append(f)
+        del filter_fs
+        unique_nodes_layer.dataProvider().addFeatures(fs)
+        GeometryUtils.create_spatial_index(unique_nodes_layer)
+        return unique_nodes_layer
+
+    @staticmethod
+    def get_boundary_points_not_covered_by_boundary_nodes(db, boundary_point_layer, boundary_layer, point_bfs_layer, id_field):
+        boundary_nodes_layer = GeometryUtils.get_unique_nodes_layer(boundary_layer, id_field)
+
+        # Spatial Join between boundary_points and boundary_nodes
+        spatial_join_layer = processing.run("qgis:joinattributesbylocation",
+                                            {'INPUT': boundary_point_layer,
+                                             'JOIN': boundary_nodes_layer,
+                                             'PREDICATE': [0],  # Intersects
+                                             'JOIN_FIELDS': [db.names.T_ID_F],
+                                             'METHOD': 0,
+                                             'DISCARD_NONMATCHING': False,
+                                             'PREFIX': '',
+                                             'OUTPUT': 'memory:'})['OUTPUT']
+
+        exp_point_bfs = '"{}" is not null and "{}" is not null'.format(db.names.POINT_BFS_T_LC_BOUNDARY_POINT_F,
+                                                                       db.names.POINT_BFS_T_LC_BOUNDARY_F)
+
+        list_point_bfs = [{'boundary_point_id': feature[db.names.POINT_BFS_T_LC_BOUNDARY_POINT_F],
+                           'boundary_id': feature[db.names.POINT_BFS_T_LC_BOUNDARY_F]}
+                          for feature in point_bfs_layer.getFeatures(exp_point_bfs)]
+
+        spatial_join_boundary_point_boundary_node = [{'boundary_point_id': feature[id_field],
+                                                     'boundary_id': feature[id_field + '_2']}
+                                                     for feature in spatial_join_layer.getFeatures()]
+
+        boundary_point_without_boundary_node = list()
+        no_register_point_bfs = list()
+        duplicate_in_point_bfs = list()
+
+        # point_bfs topology check
+        for item_sj in spatial_join_boundary_point_boundary_node:
+            boundary_point_id = item_sj['boundary_point_id']
+            boundary_id = item_sj['boundary_id']
+
+            if boundary_id != NULL:
+                if item_sj not in list_point_bfs:
+                    no_register_point_bfs.append((boundary_point_id, boundary_id))  # no registered in point bfs
+                elif list_point_bfs.count(item_sj) > 1:
+                    duplicate_in_point_bfs.append((boundary_point_id, boundary_id))  # duplicate in point bfs
+            else:
+                boundary_point_without_boundary_node.append(boundary_point_id)  # boundary point without boundary node
+
+        return boundary_point_without_boundary_node, no_register_point_bfs, duplicate_in_point_bfs
