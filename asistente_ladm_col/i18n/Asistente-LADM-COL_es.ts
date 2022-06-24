@@ -10645,8 +10645,8 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
     <message>
         <location filename="../config/translation_strings.py" line="185"/>
         <location filename="../config/translation_strings.py" line="198"/>
-        <source>La relación topológica entre el punto lindero y el nodo de un lindero no está registra en la tabla puntoccl</source>
-        <translation>La relación topológica entre el punto lindero y el nodo de un lindero no está registra en la tabla puntoccl</translation>
+        <source>La relación topológica entre el punto lindero y el nodo de un lindero no está registrada en la tabla puntoccl</source>
+        <translation>La relación topológica entre el punto lindero y el nodo de un lindero no está registrada en la tabla puntoccl</translation>
     </message>
     <message>
         <location filename="../config/translation_strings.py" line="186"/>
@@ -11249,7 +11249,7 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
     </message>
     <message>
         <source>Topological relationship between boundary point and boundary is not recorded in the puntoccl table</source>
-        <translation type="vanished">La relación topológica entre el punto lindero y el nodo de un lindero no está registra en la tabla puntoccl</translation>
+        <translation type="vanished">La relación topológica entre el punto lindero y el nodo de un lindero no está registrada en la tabla puntoccl</translation>
     </message>
     <message>
         <source>Topological relationship between boundary point and boundary is duplicated in the puntoccl table</source>
