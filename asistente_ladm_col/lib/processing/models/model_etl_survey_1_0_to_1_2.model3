@@ -1,0 +1,83 @@
+<!DOCTYPE model>
+<Option type="Map">
+  <Option name="children"/>
+  <Option name="designerParameterValues"/>
+  <Option name="groupBoxes"/>
+  <Option name="help"/>
+  <Option name="modelVariables"/>
+  <Option value="LADM-COL" name="model_group" type="QString"/>
+  <Option value="ETL_SURVEY_1_0_TO_1_2" name="model_name" type="QString"/>
+  <Option name="parameterDefinitions" type="Map">
+    <Option name="inlcpuntolindero" type="Map">
+      <Option name="data_types" type="List">
+        <Option value="0" type="int"/>
+      </Option>
+      <Option name="default" type="invalid"/>
+      <Option name="defaultGui" type="invalid"/>
+      <Option value="in_lc_puntolindero" name="description" type="QString"/>
+      <Option value="8" name="flags" type="int"/>
+      <Option value="" name="help" type="QString"/>
+      <Option name="metadata"/>
+      <Option value="inlcpuntolindero" name="name" type="QString"/>
+      <Option value="vector" name="parameter_type" type="QString"/>
+    </Option>
+    <Option name="outlcpuntolindero" type="Map">
+      <Option name="data_types" type="List">
+        <Option value="0" type="int"/>
+      </Option>
+      <Option name="default" type="invalid"/>
+      <Option name="defaultGui" type="invalid"/>
+      <Option value="out_lc_puntolindero" name="description" type="QString"/>
+      <Option value="8" name="flags" type="int"/>
+      <Option value="" name="help" type="QString"/>
+      <Option name="metadata"/>
+      <Option value="outlcpuntolindero" name="name" type="QString"/>
+      <Option value="vector" name="parameter_type" type="QString"/>
+    </Option>
+  </Option>
+  <Option name="parameterOrder"/>
+  <Option name="parameters" type="Map">
+    <Option name="inlcpuntolindero" type="Map">
+      <Option value="" name="color" type="QString"/>
+      <Option name="comment" type="Map">
+        <Option value="" name="color" type="QString"/>
+        <Option value="" name="component_description" type="QString"/>
+        <Option value="60" name="component_height" type="double"/>
+        <Option value="320.8" name="component_pos_x" type="double"/>
+        <Option value="205.4" name="component_pos_y" type="double"/>
+        <Option value="100" name="component_width" type="double"/>
+        <Option value="true" name="outputs_collapsed" type="bool"/>
+        <Option value="true" name="parameters_collapsed" type="bool"/>
+      </Option>
+      <Option value="inlcpuntolindero" name="component_description" type="QString"/>
+      <Option value="30" name="component_height" type="double"/>
+      <Option value="120.80000000000001" name="component_pos_x" type="double"/>
+      <Option value="250.4" name="component_pos_y" type="double"/>
+      <Option value="200" name="component_width" type="double"/>
+      <Option value="inlcpuntolindero" name="name" type="QString"/>
+      <Option value="true" name="outputs_collapsed" type="bool"/>
+      <Option value="true" name="parameters_collapsed" type="bool"/>
+    </Option>
+    <Option name="outlcpuntolindero" type="Map">
+      <Option value="" name="color" type="QString"/>
+      <Option name="comment" type="Map">
+        <Option value="" name="color" type="QString"/>
+        <Option value="" name="component_description" type="QString"/>
+        <Option value="60" name="component_height" type="double"/>
+        <Option value="499.2" name="component_pos_x" type="double"/>
+        <Option value="372.6" name="component_pos_y" type="double"/>
+        <Option value="100" name="component_width" type="double"/>
+        <Option value="true" name="outputs_collapsed" type="bool"/>
+        <Option value="true" name="parameters_collapsed" type="bool"/>
+      </Option>
+      <Option value="outlcpuntolindero" name="component_description" type="QString"/>
+      <Option value="30" name="component_height" type="double"/>
+      <Option value="776.8" name="component_pos_x" type="double"/>
+      <Option value="256" name="component_pos_y" type="double"/>
+      <Option value="200" name="component_width" type="double"/>
+      <Option value="outlcpuntolindero" name="name" type="QString"/>
+      <Option value="true" name="outputs_collapsed" type="bool"/>
+      <Option value="true" name="parameters_collapsed" type="bool"/>
+    </Option>
+  </Option>
+</Option>

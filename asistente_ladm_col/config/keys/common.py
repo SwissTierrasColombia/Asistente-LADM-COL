@@ -46,6 +46,7 @@ ROLE_CHECKED_MODELS = "role_checked_models"
 COMMON_SUPPORTED_MODELS = [LADMNames.LADM_COL_MODEL_KEY,
                            LADMNames.ISO19107_MODEL_KEY,
                            LADMNames.SURVEY_MODEL_KEY,
+                           LADMNames.SURVEY_1_0_MODEL_KEY,
                            LADMNames.SUPPLIES_MODEL_KEY,
                            LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY,
                            LADMNames.SUPPLIES_INTEGRATION_MODEL_KEY,

@@ -54,6 +54,7 @@ class LADMNames(metaclass=Singleton):
     """
     LADM_COL_MODEL_KEY = "LADM_COL"
     SURVEY_MODEL_KEY = "Modelo_Aplicacion_LADMCOL_Lev_Cat"
+    SURVEY_1_0_MODEL_KEY = "Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0"
     SUPPLIES_MODEL_KEY = "Submodelo_Insumos_Gestor_Catastral"
     SNR_DATA_SUPPLIES_MODEL_KEY = "Submodelo_Insumos_SNR"
     SUPPLIES_INTEGRATION_MODEL_KEY = "Submodelo_Integracion_Insumos"

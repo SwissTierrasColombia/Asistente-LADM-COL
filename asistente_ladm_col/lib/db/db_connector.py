@@ -346,6 +346,9 @@ class DBConnector(QObject):
 
         not_found = [model for model in models if not self.ladm_col_model_exists(model)]
 
+        if not_found == ['Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0']:
+            not_found = None
+
         if not_found:
             msg = QCoreApplication.translate("DBConnector",
                                              "The following required model(s) could not be found in the DB: {}.").format(', '.join(not_found))
