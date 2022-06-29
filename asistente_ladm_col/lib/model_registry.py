@@ -208,7 +208,10 @@ class LADMColModel:
         return self.__id
 
     def full_name(self):
-        return "{}_V{}".format(self.__id, self.__supported_version.replace(".", "_"))
+        if self.__id.find("_V1") != -1:
+            return self.__id
+        else:
+            return "{}_V{}".format(self.__id, self.__supported_version.replace(".", "_"))
 
     def alias(self):
         return self.__alias

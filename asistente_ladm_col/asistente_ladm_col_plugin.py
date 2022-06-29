@@ -93,6 +93,7 @@ from asistente_ladm_col.config.translation_strings import (TOOLBAR_FINALIZE_GEOM
 from asistente_ladm_col.config.wizard_config import WizardFactory
 from asistente_ladm_col.config.expression_functions import (get_domain_code_from_value,
                                                             get_domain_value_from_code,
+                                                            get_domain_value_from_code_db,
                                                             get_multi_domain_code_from_value,
                                                             get_domain_description_from_code)  # >> DON'T REMOVE << Registers it in QgsExpression
 from asistente_ladm_col.config.keys.common import *
@@ -276,6 +277,7 @@ class AsistenteLADMCOLPlugin(QObject):
     def uninstall_custom_expression_functions():
         QgsExpression.unregisterFunction('get_domain_code_from_value')
         QgsExpression.unregisterFunction('get_domain_value_from_code')
+        QgsExpression.unregisterFunction('get_domain_value_from_code_db')
         QgsExpression.unregisterFunction('get_multi_domain_code_from_value')
         QgsExpression.unregisterFunction('get_domain_description_from_code')
 
@@ -675,7 +677,7 @@ class AsistenteLADMCOLPlugin(QObject):
             ACTION_SCHEMA_IMPORT: self._import_schema_action,
             ACTION_IMPORT_DATA: self._import_data_action,
             ACTION_EXPORT_DATA: self._export_data_action,
-            # ACTION_XTF_MODEL_CONVERTER: self._xtf_model_converter_action,
+            ACTION_XTF_MODEL_CONVERTER: self._xtf_model_converter_action,
             ACTION_SETTINGS: self._settings_action,
             ACTION_HELP: self._help_action,
             ACTION_ABOUT: self._about_action
@@ -1081,8 +1083,8 @@ class AsistenteLADMCOLPlugin(QObject):
         context = args[0]
 
         self.logger.info(__name__, "XTF Model Converter dialog opened.")
-        controller = XTFModelConverterController()
-        dlg = XTFModelConverterDialog(controller, self.main_window)
+        #controller = XTFModelConverterController()
+        dlg = XTFModelConverterDialog(self.conn_manager, self.main_window)
         if isinstance(context, TaskContext):
             dlg.on_result.connect(context.get_slot_on_result())
 
