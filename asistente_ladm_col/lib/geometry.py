@@ -325,7 +325,8 @@ class GeometryUtils(QObject):
         gc.collect()
         return list_overlapping_polygons
 
-    def get_intersection_polygons(self, polygon_layer, polygon_id, overlapping_id):
+    @staticmethod
+    def get_intersection_polygons(polygon_layer, polygon_id, overlapping_id):
         feature_polygon = polygon_layer.getFeature(polygon_id)
         feature_overlap = polygon_layer.getFeature(overlapping_id)
 
