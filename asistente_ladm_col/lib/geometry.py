@@ -454,7 +454,8 @@ class GeometryUtils(QObject):
 
         return GeometryUtils.extract_geoms_by_type(clean_errors, [QgsWkbTypes.PolygonGeometry])
 
-    def add_topological_vertices(self, layer1, layer2, tolerance=0):
+    @staticmethod
+    def add_topological_vertices(layer1, layer2, tolerance=0):
         """
         Bring all vertices from layer2 to a copylayer1 if they are within a default tolerance.
         Note: This generates a new layer based on layer1 and does not modify neither layer1 nor layer2.
@@ -465,7 +466,7 @@ class GeometryUtils(QObject):
         :return: QgsVectorLayer copied from layer1 with the modified geometries
         """
         if tolerance == 0:
-            return self.add_topological_vertices2(layer1, layer2)  # Use old method
+            return GeometryUtils.add_topological_vertices2(layer1, layer2)  # Use old method
 
         adjusted = processing.run("native:snapgeometries",
                                   {'INPUT': layer1,
@@ -479,7 +480,8 @@ class GeometryUtils(QObject):
                               {'INPUT': adjusted,
                                'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
 
-    def add_topological_vertices2(self, layer1, layer2):
+    @staticmethod
+    def add_topological_vertices2(layer1, layer2):
         """
         Modify a copy of layer1 adding vertices that are in layer2 and not in layer1.
         It returns a modified copy of layer1 that has its geometries fixed.
@@ -536,12 +538,13 @@ class GeometryUtils(QObject):
 
         return fixed_layer1
 
-    def difference_plot_boundary(self, plots_as_lines_layer, boundary_layer, id_field):
+    @staticmethod
+    def difference_plot_boundary(plots_as_lines_layer, boundary_layer, id_field):
         """
         Advanced difference function that, unlike the traditional function,
         takes into account not shared vertices to build difference geometries.
         """
-        adjusted_plots_as_lines = self.add_topological_vertices(plots_as_lines_layer, boundary_layer)
+        adjusted_plots_as_lines = GeometryUtils.add_topological_vertices(plots_as_lines_layer, boundary_layer)
 
         diff_layer = processing.run("native:difference",
                                     {'INPUT': adjusted_plots_as_lines,
@@ -560,7 +563,7 @@ class GeometryUtils(QObject):
         Advanced difference function that, unlike the traditional function,
         takes into account not shared vertices to build difference geometries.
         """
-        adjusted_plots_as_lines = self.add_topological_vertices(plots_as_lines_layer, boundary_layer)
+        adjusted_plots_as_lines = GeometryUtils.add_topological_vertices(plots_as_lines_layer, boundary_layer)
 
         diff_layer = processing.run("native:difference",
                                     {'INPUT': boundary_layer,
@@ -674,7 +677,8 @@ class GeometryUtils(QObject):
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
         return spatial_join_layer.getFeatures(request)
 
-    def get_inner_rings_layer(self, names, plot_layer, id_field, use_selection=False):
+    @staticmethod
+    def get_inner_rings_layer(names, plot_layer, id_field, use_selection=False):
         id_field_idx = plot_layer.fields().indexFromName(id_field)
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
         polygons = plot_layer.getSelectedFeatures(request) if use_selection else plot_layer.getFeatures(request)
