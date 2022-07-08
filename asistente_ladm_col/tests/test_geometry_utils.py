@@ -253,7 +253,7 @@ class TestGeometryUtils(unittest.TestCase):
             init_vertex_geom = [vertex for vertex in geom_polygon.vertices()]
 
             # We don't overwrite the original layer, changes are made on a copy
-            mod_polygon_layer = self.geometry.add_topological_vertices(polygon_layer, lines_layer)
+            mod_polygon_layer = GeometryUtils.add_topological_vertices(polygon_layer, lines_layer)
 
             geom_polygon = mod_polygon_layer.getFeature(1).geometry()
             adjusted_vertex_geom = [vertex for vertex in geom_polygon.vertices()]
@@ -286,7 +286,7 @@ class TestGeometryUtils(unittest.TestCase):
             lines_layer = QgsVectorLayer(uri_lines, 'lines_layer_{}'.format(i+1), 'ogr')
 
             polygon_as_lines_layer = processing.run("ladm_col:polygonstolines", {'INPUT': polygon_layer, 'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
-            diff_plot_boundary = self.geometry.difference_plot_boundary(polygon_as_lines_layer, lines_layer, 'fid')
+            diff_plot_boundary = GeometryUtils.difference_plot_boundary(polygon_as_lines_layer, lines_layer, 'fid')
 
             if diff_plot_boundary is not None:
                 if len(diff_plot_boundary) > 0:
