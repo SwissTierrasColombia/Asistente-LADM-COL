@@ -304,7 +304,7 @@ class TestQualityValidations(unittest.TestCase):
 
         self.assertEqual(right_of_way.featureCount(), 6)
 
-        single_parts, single_ids = self.geometry.get_multipart_geoms(right_of_way)
+        single_parts, single_ids = GeometryUtils.get_multipart_geoms(right_of_way)
         unique_single_ids = set(single_ids)
         self.assertEqual(len(single_parts), 8)
         self.assertEqual(len(unique_single_ids), 3)
