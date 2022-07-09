@@ -586,7 +586,8 @@ class GeometryUtils(QObject):
 
         return [geom for geom in geom_list if geom.type() in geometry_types]
 
-    def get_multipart_geoms(self, layer):
+    @staticmethod
+    def get_multipart_geoms(layer):
         """
         Get a list of geometries and ids with geometry type multipart and multiple
         geometries
