@@ -251,17 +251,16 @@ class GPKGLADMQuery(QGISLADMQuery):
     @staticmethod
     def get_group_party_fractions_that_do_not_make_one(db):
         query = """
-                    SELECT {members_t_group_party_f} as agrupacion, group_concat({t_id}) as miembros, SUM(parte) suma_fracciones  FROM (
-                    SELECT CAST({fraction_s_numerator_f} AS FLOAT)/{fraction_s_denominator_f} AS parte, {fraction_s_member_f} FROM {fraction_s}
-                    ) AS fraccion_parte join {members_t} on fraccion_parte.{fraction_s_member_f} = {members_t}.{t_id}
-                    GROUP BY {members_t_group_party_f}
-                    HAVING SUM(parte) != 1
-                """.format(t_id=db.names.T_ID_F,
-                           members_t=db.names.MEMBERS_T,
-                           fraction_s_member_f=db.names.FRACTION_S_MEMBER_F,
-                           fraction_s=db.names.FRACTION_S,
-                           fraction_s_numerator_f=db.names.FRACTION_S_NUMERATOR_F,
-                           fraction_s_denominator_f=db.names.FRACTION_S_DENOMINATOR_F,
+                    select
+                        {members_t_group_party_f} as agrupacion,
+                        group_concat({members_t_party_f}) as interesados,
+                        round(sum({members_t_participation_f}),2) suma_participacion
+                    from {members_t}
+                    group by {members_t_group_party_f}
+                    having round(sum({members_t_participation_f}),2) != 1
+                """.format(members_t=db.names.MEMBERS_T,
+                           members_t_party_f=db.names.MEMBERS_T_PARTY_F,
+                           members_t_participation_f=db.names.MEMBERS_T_PARTICIPATION_F,
                            members_t_group_party_f=db.names.MEMBERS_T_GROUP_PARTY_F)
         return db.execute_sql_query(query)
 
