@@ -254,21 +254,17 @@ class MSSQLLADMQuery(QGISLADMQuery):
     @staticmethod
     def get_group_party_fractions_that_do_not_make_one(db):
         query = """
-                    SELECT {members_t_group_party_f} as agrupacion, string_agg(cast({t_id} as varchar(MAX)), ',') as miembros, SUM(parte) suma_fracciones
-                    FROM (
-                        SELECT CAST({fraction_s_numerator_f} as float)/{fraction_s_denominator_f} AS parte, {fraction_s_member_f} FROM {schema}.{fraction_s}
-                        ) AS fraccion_parte
-                    JOIN {schema}.{members_t}
-                        ON fraccion_parte.{fraction_s_member_f} = {members_t}.{t_id}
-                    GROUP BY {members_t_group_party_f}
-                    HAVING SUM(parte) != 1
-                """.format(t_id=db.names.T_ID_F,
-                           schema=db.schema,
+                    select
+                        {members_t_group_party_f} as agrupacion,
+                        string_agg(cast({members_t_party_f} as varchar(MAX)), ',') as interesados,
+                        round(SUM({members_t_participation_f}),2) as suma_participacion
+                    from {schema}.{members_t}
+                    group by {members_t_group_party_f}
+                    having round(SUM({members_t_participation_f}),2) != 1
+                """.format(schema=db.schema,
                            members_t=db.names.MEMBERS_T,
-                           fraction_s_member_f=db.names.FRACTION_S_MEMBER_F,
-                           fraction_s=db.names.FRACTION_S,
-                           fraction_s_numerator_f=db.names.FRACTION_S_NUMERATOR_F,
-                           fraction_s_denominator_f=db.names.FRACTION_S_DENOMINATOR_F,
+                           members_t_party_f=db.names.MEMBERS_T_PARTY_F,
+                           members_t_participation_f=db.names.MEMBERS_T_PARTICIPATION_F,
                            members_t_group_party_f=db.names.MEMBERS_T_GROUP_PARTY_F)
         return db.execute_sql_query(query)
 

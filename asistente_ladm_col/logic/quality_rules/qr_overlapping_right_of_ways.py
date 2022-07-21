@@ -73,7 +73,7 @@ class QROverlappingRightOfWays(AbstractPolygonQualityRule):
         if not pre_res:
             return res_obj
 
-        overlapping = GeometryUtils.get_overlapping_polygons(self, right_of_way_layer)
+        overlapping = GeometryUtils.get_overlapping_polygons(right_of_way_layer)
         flat_overlapping = [fid for items in overlapping for fid in items]  # Build a flat list of ids
         count = len(flat_overlapping)
 
