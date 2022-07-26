@@ -4,8 +4,10 @@
                              --------------------
         begin           : 2022-06-20
         git sha         : :%H$
-        copyright       : (C) 2022 by Sergio Ramírez (SwissTierras Colombia)
-        email           : sramirez@colsolutions.com
+        copyright       : (C) 2021 by Germán Carrillo (SwissTierras Colombia)
+                          (C) 2022 by Sergio Ramírez (SwissTierras Colombia)
+        email           : gcarrillo@linuxmail.org
+                          sramirez@colsolutions.com
  ***************************************************************************/
 /***************************************************************************
  *                                                                         *
