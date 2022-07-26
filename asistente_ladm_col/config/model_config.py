@@ -49,7 +49,7 @@ class ModelConfig:
                 MODEL_IS_SUPPORTED: True,
                 MODEL_SUPPORTED_VERSION: "1.0",
                 MODEL_HIDDEN_BY_DEFAULT: True,
-                MODEL_CHECKED_BY_DEFAULT: True,
+                MODEL_CHECKED_BY_DEFAULT: False,
                 MODEL_MAPPING: db_mapping_config.get_model_mapping(LADMNames.SURVEY_1_0_MODEL_KEY)
             },
             LADMNames.SUPPLIES_MODEL_KEY: {
