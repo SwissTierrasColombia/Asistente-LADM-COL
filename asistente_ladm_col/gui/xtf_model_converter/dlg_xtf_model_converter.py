@@ -29,8 +29,8 @@ from qgis.PyQt.QtGui import QValidator
 from qgis.core import Qgis
 from qgis.gui import QgsMessageBar
 
-from asistente_ladm_col.config.general_config import (COLLECTED_DB_SOURCE,
-                                                      SUPPLIES_DB_SOURCE,
+from asistente_ladm_col.config.general_config import (SUPPLIES_DB_SOURCE,
+                                                      COLLECTED_DB_SOURCE,
                                                       SETTINGS_CONNECTION_TAB_INDEX)
 from asistente_ladm_col.config.keys.common import REQUIRED_MODELS
 from asistente_ladm_col.config.ladm_names import LADMNames
