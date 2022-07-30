@@ -1,12 +1,13 @@
 """
 /***************************************************************************
-                              Asistente LADM_COL
+                              Asistente LADM-COL
                              --------------------
-        begin                : 2022-06-15
-        git sha              : :%H$
-        copyright            : (C) 2022 by Leo Cardona (BSF Swissphoto)
-        email                : contacto@ceicol.com
-
+        begin           : 2022-06-15
+        git sha         : :%H$
+        copyright       : (C) 2021 by Germán Carrillo (SwissTierras Colombia)
+                          (C) 2022 by Leo Cardona (SwissTierras Colombia)
+        email           : gcarrillo@linuxmail.org
+                          contacto@ceicol.com
  ***************************************************************************/
 /***************************************************************************
  *                                                                         *

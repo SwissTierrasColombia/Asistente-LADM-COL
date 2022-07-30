@@ -4,10 +4,10 @@
                              --------------------
         begin           : 2022-06-22
         git sha         : :%H$
-        copyright       : (C) 2022 by Leo Cardona (SwissTierras Colombia)
-                          (C) 2021 by Germán Carrillo (SwissTierras Colombia)
-        email           : contacto@ceicol.com
-                          gcarrillo@linuxmail.org
+        copyright       : (C) 2021 by Germán Carrillo (SwissTierras Colombia)
+                          (C) 2022 by Leo Cardona (SwissTierras Colombia)
+        email           : gcarrillo@linuxmail.org
+                          contacto@ceicol.com
  ***************************************************************************/
 /***************************************************************************
  *                                                                         *

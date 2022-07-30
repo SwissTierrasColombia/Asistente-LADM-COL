@@ -1,14 +1,13 @@
 """
 /***************************************************************************
-                              Asistente LADM_COL
+                              Asistente LADM-COL
                              --------------------
-        begin                : 2022-05-04
-        git sha              : :%H$
-        copyright            : (C) 2022 by Leo Cardona (BSF Swissphoto)
-                               (C) 2022 by Sergio Ramírez (BSF Swissphoto)
-        email                : leo.cardona.p@gmail.com
-                               seralra96@gmail.com
-
+        begin           : 2022-05-04
+        git sha         : :%H$
+        copyright       : (C) 2021 by Germán Carrillo (SwissTierras Colombia)
+                          (C) 2022 by Sergio Ramírez (SwissTierras Colombia)
+        email           : gcarrillo@linuxmail.org
+                          sramirez@colsolutions.com
  ***************************************************************************/
 /***************************************************************************
  *                                                                         *
