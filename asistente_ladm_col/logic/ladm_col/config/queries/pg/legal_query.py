@@ -101,13 +101,12 @@ def get_igac_legal_query(names, schema, plot_t_ids, parcel_fmi, parcel_number, p
                                                                       'Nombre', {LC_PARTY_T}.{COL_BAUNIT_T_NAME_F},
                                                                       'Género', (SELECT {DISPLAY_NAME_F} FROM {schema}.{LC_GENRE_D} WHERE {T_ID_F} = {LC_PARTY_T}.{LC_PARTY_T_GENRE_F}),
                                                                       '{LC_PARTY_CONTACT_T}', COALESCE(_info_contacto_interesado_agrupacion_interesados_derecho._interesado_contacto_, '[]'),
-                                                                      '{FRACTION_S}', ROUND(({FRACTION_S}.{FRACTION_S_NUMERATOR_F}::numeric/{FRACTION_S}.{FRACTION_S_DENOMINATOR_F}::numeric)*100,2) ))
+                                                                      'Participacion', ROUND({MEMBERS_T_PARTICIPATION_F},2)))
                  ORDER BY {LC_PARTY_T}.{T_ID_F}) FILTER (WHERE {LC_PARTY_T}.{T_ID_F} IS NOT NULL) AS _interesado_
                  FROM _derecho_agrupacion_interesados LEFT JOIN {schema}.{LC_PARTY_T} ON {LC_PARTY_T}.{T_ID_F} = _derecho_agrupacion_interesados.{MEMBERS_T_PARTY_F}
                LEFT JOIN {schema}.{LC_PARTY_DOCUMENT_TYPE_D} ON {LC_PARTY_DOCUMENT_TYPE_D}.{T_ID_F} = {LC_PARTY_T}.{LC_PARTY_T_DOCUMENT_TYPE_F}
                  LEFT JOIN _info_contacto_interesado_agrupacion_interesados_derecho ON _info_contacto_interesado_agrupacion_interesados_derecho.{LC_PARTY_CONTACT_T_LC_PARTY_F} = {LC_PARTY_T}.{T_ID_F}
                  LEFT JOIN {schema}.{MEMBERS_T} ON ({MEMBERS_T}.{MEMBERS_T_GROUP_PARTY_F}::text || {MEMBERS_T}.{MEMBERS_T_PARTY_F}::text) = (_derecho_agrupacion_interesados.{COL_RRR_PARTY_T_LC_GROUP_PARTY_F}::text|| {LC_PARTY_T}.{T_ID_F}::text)
-                 LEFT JOIN {schema}.{FRACTION_S} ON {MEMBERS_T}.{T_ID_F} = {FRACTION_S}.{FRACTION_S_MEMBER_F}
                  GROUP BY _derecho_agrupacion_interesados.{COL_RRR_PARTY_T_LC_GROUP_PARTY_F}
              ),
              _info_agrupacion_interesados AS (
@@ -207,13 +206,12 @@ def get_igac_legal_query(names, schema, plot_t_ids, parcel_fmi, parcel_number, p
                                                                       'Nombre', {LC_PARTY_T}.{COL_BAUNIT_T_NAME_F},
                                                                       'Género', (SELECT {DISPLAY_NAME_F} FROM {schema}.{LC_GENRE_D} WHERE {T_ID_F} = {LC_PARTY_T}.{LC_PARTY_T_GENRE_F}),
                                                                       '{LC_PARTY_CONTACT_T}', COALESCE(_info_contacto_interesado_agrupacion_interesados_restriccion._interesado_contacto_, '[]'),
-                                                                      '{FRACTION_S}', ROUND(({FRACTION_S}.{FRACTION_S_NUMERATOR_F}::numeric/{FRACTION_S}.{FRACTION_S_DENOMINATOR_F}::numeric)*100,2) ))
+                                                                      'Participacion', ROUND({MEMBERS_T_PARTICIPATION_F},2) ))
                  ORDER BY {LC_PARTY_T}.{T_ID_F}) FILTER (WHERE {LC_PARTY_T}.{T_ID_F} IS NOT NULL) AS _interesado_
                  FROM _restriccion_agrupacion_interesados LEFT JOIN {schema}.{LC_PARTY_T} ON {LC_PARTY_T}.{T_ID_F} = _restriccion_agrupacion_interesados.{MEMBERS_T_PARTY_F}
                LEFT JOIN {schema}.{LC_PARTY_DOCUMENT_TYPE_D} ON {LC_PARTY_DOCUMENT_TYPE_D}.{T_ID_F} = {LC_PARTY_T}.{LC_PARTY_T_DOCUMENT_TYPE_F}
                  LEFT JOIN _info_contacto_interesado_agrupacion_interesados_restriccion ON _info_contacto_interesado_agrupacion_interesados_restriccion.{LC_PARTY_CONTACT_T_LC_PARTY_F} = {LC_PARTY_T}.{T_ID_F}
                  LEFT JOIN {schema}.{MEMBERS_T} ON ({MEMBERS_T}.{MEMBERS_T_GROUP_PARTY_F}::text || {MEMBERS_T}.{MEMBERS_T_PARTY_F}::text) = (_restriccion_agrupacion_interesados.{COL_RRR_PARTY_T_LC_GROUP_PARTY_F}::text|| {LC_PARTY_T}.{T_ID_F}::text)
-                 LEFT JOIN {schema}.{FRACTION_S} ON {MEMBERS_T}.{T_ID_F} = {FRACTION_S}.{FRACTION_S_MEMBER_F}
                  GROUP BY _restriccion_agrupacion_interesados.{COL_RRR_PARTY_T_LC_GROUP_PARTY_F}
              ),
              _info_agrupacion_interesados_restriccion AS (
