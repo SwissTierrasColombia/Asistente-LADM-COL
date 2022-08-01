@@ -60,8 +60,6 @@ class QRDuplicateRestrictionRecords(AbstractLogicQualityRule):
         if not pre_res:
             return pre_obj
 
-        error_state = None
-        
         # Check restriction with duplicate records
         table = db.names.LC_RESTRICTION_T
         fields = [db.names.LC_RESTRICTION_T_TYPE_F,
@@ -94,8 +92,7 @@ class QRDuplicateRestrictionRecords(AbstractLogicQualityRule):
 
         if count > 0:
             res_type = EnumQualityRuleResult.ERRORS
-            msg = QCoreApplication.translate("QualityRules", "{} restriction with repeated records.").format(
-                count)
+            msg = QCoreApplication.translate("QualityRules", "{} restriction with repeated records.").format(count)
         else:
             res_type = EnumQualityRuleResult.SUCCESS
             msg = QCoreApplication.translate("QualityRules", "No duplicate restrictions were found.")

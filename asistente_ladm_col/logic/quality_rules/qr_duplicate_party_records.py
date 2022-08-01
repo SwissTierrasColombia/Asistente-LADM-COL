@@ -60,8 +60,6 @@ class QRDuplicatePartyRecords(AbstractLogicQualityRule):
         if not pre_res:
             return pre_obj
 
-        error_state = None
-        
         # Check party with duplicate records
         table = db.names.LC_PARTY_T
         fields = [db.names.LC_PARTY_T_DOCUMENT_ID_F,
@@ -91,8 +89,7 @@ class QRDuplicatePartyRecords(AbstractLogicQualityRule):
 
         if count > 0:
             res_type = EnumQualityRuleResult.ERRORS
-            msg = QCoreApplication.translate("QualityRules", "{} parties with repeated records.").format(
-                count)
+            msg = QCoreApplication.translate("QualityRules", "{} parties with repeated records.").format(count)
         else:
             res_type = EnumQualityRuleResult.SUCCESS
             msg = QCoreApplication.translate("QualityRules", "No duplicate parties were found.")

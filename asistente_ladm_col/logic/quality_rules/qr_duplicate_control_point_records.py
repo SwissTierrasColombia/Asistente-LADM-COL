@@ -60,8 +60,6 @@ class QRDuplicateControlPointRecords(AbstractLogicQualityRule):
         if not pre_res:
             return pre_obj
 
-        error_state = None
-
         # Check control point with duplicate records       
         table = db.names.LC_CONTROL_POINT_T
         fields = [db.names.LC_CONTROL_POINT_T_VERTICAL_ACCURACY_F,
@@ -95,8 +93,7 @@ class QRDuplicateControlPointRecords(AbstractLogicQualityRule):
 
         if count > 0:
             res_type = EnumQualityRuleResult.ERRORS
-            msg = QCoreApplication.translate("QualityRules", "{} control points with repeated records.").format(
-                count)
+            msg = QCoreApplication.translate("QualityRules", "{} control points with repeated records.").format(count)
         else:
             res_type = EnumQualityRuleResult.SUCCESS
             msg = QCoreApplication.translate("QualityRules", "No duplicate control points were found.")

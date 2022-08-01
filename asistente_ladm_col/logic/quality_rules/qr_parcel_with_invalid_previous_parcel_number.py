@@ -59,8 +59,6 @@ class QRParcelWithInvalidPreviousParcelNumber(AbstractLogicQualityRule):
         if not pre_res:
             return pre_obj
 
-        error_state = None
-
         res, records = ladm_queries.get_parcels_with_invalid_previous_parcel_number(db)
         count = len(records)
 
@@ -85,8 +83,8 @@ class QRParcelWithInvalidPreviousParcelNumber(AbstractLogicQualityRule):
 
         if count > 0:
             res_type = EnumQualityRuleResult.ERRORS
-            msg = QCoreApplication.translate("QualityRules", "{} parcels with invalid previous parcel number were found.").format(
-                count)
+            msg = QCoreApplication.translate("QualityRules", "{} parcels with invalid "
+                                                             "previous parcel number were found.").format(count)
         else:
             res_type = EnumQualityRuleResult.SUCCESS
             msg = QCoreApplication.translate("QualityRules", "All parcels have valid previous parcel number.")

@@ -98,15 +98,15 @@ class QROverlappingBoundaryPoints(AbstractPointQualityRule):
 
         self._save_errors(db_qr, self._ERROR_01, errors)
 
+        count = len(flat_overlapping) > 0
+
+        if count > 0:
+            res_type = EnumQualityRuleResult.ERRORS
+            msg = QCoreApplication.translate("QualityRules","{} overlapping boundary points were found!").format(count)
+        else:
+            res_type = EnumQualityRuleResult.SUCCESS
+            msg = QCoreApplication.translate("QualityRules", "There are no overlapping boundary points.")
+
         self.progress_changed.emit(100)
 
-        if len(flat_overlapping) > 0:
-            return QualityRuleExecutionResult(EnumQualityRuleResult.ERRORS,
-                                              QCoreApplication.translate("QualityRules",
-                                                                         "{} overlapping boundary points were found!").format(
-                                                  len(flat_overlapping)),
-                                              len(errors['data']))
-        else:
-            return QualityRuleExecutionResult(EnumQualityRuleResult.SUCCESS,
-                                              QCoreApplication.translate("QualityRules",
-                                                                         "There are no overlapping boundary points."))
+        return QualityRuleExecutionResult(res_type, msg, count)

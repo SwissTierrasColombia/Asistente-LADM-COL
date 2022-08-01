@@ -59,7 +59,6 @@ class QRParcelWithInvalidMunicipalityCode(AbstractLogicQualityRule):
         if not pre_res:
             return pre_obj
 
-        error_state = None
         res, records = ladm_queries.get_parcels_with_invalid_municipality_code(db)
         count = len(records)
 

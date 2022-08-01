@@ -75,7 +75,7 @@ class QROverlappingBuildings(AbstractPolygonQualityRule):
         if not pre_res:
             return res_obj
 
-        overlapping = GeometryUtils.get_overlapping_polygons(self, building_layer)
+        overlapping = GeometryUtils.get_overlapping_polygons(building_layer)
         flat_overlapping = [fid for items in overlapping for fid in items]  # Build a flat list of ids
         flat_overlapping = list(set(flat_overlapping))  # unique values
 
@@ -104,13 +104,14 @@ class QROverlappingBuildings(AbstractPolygonQualityRule):
 
         self._save_errors(db_qr, self._ERROR_01, errors)
 
-        if len(flat_overlapping) > 0:
+        count = len(flat_overlapping)
+        if count > 0:
             res_type = EnumQualityRuleResult.ERRORS
-            msg = QCoreApplication.translate("QualityRules", "{} overlapping buildings were found!").format(len(flat_overlapping))
+            msg = QCoreApplication.translate("QualityRules", "{} overlapping buildings were found!").format(count)
         else:
             res_type = EnumQualityRuleResult.SUCCESS
             msg = QCoreApplication.translate("QualityRules", "There are no overlapping buildings!")
 
         self.progress_changed.emit(100)
 
-        return QualityRuleExecutionResult(res_type, msg, len(flat_overlapping))
+        return QualityRuleExecutionResult(res_type, msg, count)

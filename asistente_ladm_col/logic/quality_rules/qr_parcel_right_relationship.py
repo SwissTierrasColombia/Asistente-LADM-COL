@@ -65,8 +65,6 @@ class QRParcelRightRelationship(AbstractLogicQualityRule):
         if not pre_res:
             return pre_obj
 
-        error_state = None
-
         # First error type: parcel with no rights
         res, records = ladm_queries.get_parcels_with_no_right(db)
         count_e01_records = len(records)
@@ -82,7 +80,7 @@ class QRParcelRightRelationship(AbstractLogicQualityRule):
                     [record[db.names.T_ILI_TID_F]],
                     None,
                     None,
-                    None,
+                    self._errors[self._ERROR_01],
                     error_state]
                 errors['data'].append(error_data)
 
@@ -107,8 +105,8 @@ class QRParcelRightRelationship(AbstractLogicQualityRule):
                 error_data = [  # [obj_uuids, rel_obj_uuids, values, details, state]
                     [record[db.names.T_ILI_TID_F]],
                     related_objects,
-                    len(related_objects),
                     None,
+                    '{} (asociado a: {})'.format(self._errors[self._ERROR_02], len(related_objects)),
                     error_state]
                 errors['data'].append(error_data)
 

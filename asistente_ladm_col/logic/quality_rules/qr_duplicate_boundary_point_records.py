@@ -60,8 +60,6 @@ class QRDuplicateBoundaryPointRecords(AbstractLogicQualityRule):
         if not pre_res:
             return pre_obj
 
-        error_state = None
-        
         # Check boundary point with duplicate records
         table = db.names.LC_BOUNDARY_POINT_T
         fields = [db.names.LC_BOUNDARY_POINT_T_AGREEMENT_F,
@@ -97,8 +95,7 @@ class QRDuplicateBoundaryPointRecords(AbstractLogicQualityRule):
 
         if count > 0:
             res_type = EnumQualityRuleResult.ERRORS
-            msg = QCoreApplication.translate("QualityRules", "{} boundary points with repeated records.").format(
-                count)
+            msg = QCoreApplication.translate("QualityRules", "{} boundary points with repeated records.").format(count)
         else:
             res_type = EnumQualityRuleResult.SUCCESS
             msg = QCoreApplication.translate("QualityRules", "No duplicate boundary points were found.")

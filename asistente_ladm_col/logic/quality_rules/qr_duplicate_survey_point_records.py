@@ -60,8 +60,6 @@ class QRDuplicateSurveyPointRecords(AbstractLogicQualityRule):
         if not pre_res:
             return pre_obj
 
-        error_state = None
-
         table = db.names.LC_SURVEY_POINT_T
         fields = [db.names.LC_SURVEY_POINT_T_SURVEY_POINT_TYPE_F,
                   db.names.LC_SURVEY_POINT_T_PHOTO_IDENTIFICATION_F,

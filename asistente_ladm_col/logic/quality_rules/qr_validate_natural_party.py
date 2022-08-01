@@ -101,10 +101,9 @@ class QRValidateNaturalParty(AbstractLogicQualityRule):
         if not pre_res:
             return pre_obj
 
-        error_state = None
-
         res, records = ladm_queries.get_invalid_col_party_type_natural(db)
         self.progress_changed.emit(40)
+        count = 0
 
         if res:
             error_state = LADMData().get_domain_code_from_value(db_qr, db_qr.names.ERR_ERROR_STATE_D,
@@ -251,7 +250,6 @@ class QRValidateNaturalParty(AbstractLogicQualityRule):
                 delta_progress = record_count * 50 /  len(records)
                 self.progress_changed.emit(progress + delta_progress)
 
-            count = 0
             for error_key, errors_rule in errors_rules.items():
                 if errors_rule:
                     self._save_errors(db_qr, error_key, errors_rule)
@@ -261,8 +259,8 @@ class QRValidateNaturalParty(AbstractLogicQualityRule):
 
         if count > 0:
             res_type = EnumQualityRuleResult.ERRORS
-            msg = QCoreApplication.translate("QualityRules", "{} natural parties with inconsistent were found.").format(
-                count)
+            msg = QCoreApplication.translate("QualityRules", "{} natural parties with "
+                                                             "inconsistent were found.").format(count)
         else:
             res_type = EnumQualityRuleResult.SUCCESS
             msg = QCoreApplication.translate("QualityRules", "All natural parties have valid data.")

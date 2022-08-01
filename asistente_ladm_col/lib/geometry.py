@@ -284,7 +284,8 @@ class GeometryUtils(QObject):
 
         return res, dict_res, msg
 
-    def get_overlapping_polygons(self, polygon_layer):
+    @staticmethod
+    def get_overlapping_polygons(polygon_layer):
         """
         Obtains overlapping polygons from a single layer
         :param polygon_layer: vector layer with geometry type polygon

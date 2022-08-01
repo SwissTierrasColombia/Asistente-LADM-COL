@@ -61,8 +61,6 @@ class QRDuplicateBuildingUnitRecords(AbstractLogicQualityRule):
         if not pre_res:
             return pre_obj
 
-        error_state = None
-
         table = db.names.LC_BUILDING_UNIT_T
         fields = [db.names.LC_BUILDING_UNIT_T_FLOOR_F,
                   db.names.LC_BUILDING_UNIT_T_BUILT_AREA_F,
@@ -100,7 +98,7 @@ class QRDuplicateBuildingUnitRecords(AbstractLogicQualityRule):
                                                              "with duplicate records were found.").format(count)
         else:
             res_type = EnumQualityRuleResult.SUCCESS
-            msg = QCoreApplication.translate("QualityRules", "No duplicate right were found.")
+            msg = QCoreApplication.translate("QualityRules", "No duplicate building units were found.")
 
         self.progress_changed.emit(100)
 

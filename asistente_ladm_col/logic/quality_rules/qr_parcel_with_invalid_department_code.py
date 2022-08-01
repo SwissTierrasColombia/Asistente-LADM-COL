@@ -58,8 +58,6 @@ class QRParcelWithInvalidDepartmentCode(AbstractLogicQualityRule):
         if not pre_res:
             return pre_obj
 
-        error_state = None
-
         # Check parcel with incorrect department code
         res, records = ladm_queries.get_parcels_with_invalid_department_code(db)
         count = len(records)
@@ -85,8 +83,8 @@ class QRParcelWithInvalidDepartmentCode(AbstractLogicQualityRule):
 
         if count > 0:
             res_type = EnumQualityRuleResult.ERRORS
-            msg = QCoreApplication.translate("QualityRules", "{} parcels with invalid department code were found.").format(
-                count)
+            msg = QCoreApplication.translate("QualityRules", "{} parcels with invalid "
+                                                             "department code were found.").format(count)
         else:
             res_type = EnumQualityRuleResult.SUCCESS
             msg = QCoreApplication.translate("QualityRules", "All parcels have valid department code.")

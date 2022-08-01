@@ -61,8 +61,6 @@ class QRDuplicateAdministrativeSourceRecords(AbstractLogicQualityRule):
         if not pre_res:
             return pre_obj
 
-        error_state = None
-
         # Check administrative source with duplicate records
         table = db.names.LC_ADMINISTRATIVE_SOURCE_T
         fields = [db.names.LC_ADMINISTRATIVE_SOURCE_T_EMITTING_ENTITY_F,

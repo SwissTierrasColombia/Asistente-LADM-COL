@@ -60,8 +60,6 @@ class QRDuplicateBoundaryRecords(AbstractLogicQualityRule):
         if not pre_res:
             return pre_obj
 
-        error_state = None
-
         table = db.names.LC_BOUNDARY_T
         fields = [db.names.LC_BOUNDARY_T_LENGTH_F,
                   db.names.COL_BFS_T_TEXTUAL_LOCATION_F,

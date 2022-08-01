@@ -80,10 +80,9 @@ class QRValidateLegalParty(AbstractLogicQualityRule):
         if not pre_res:
             return pre_obj
 
-        error_state = None
-
         res, records = ladm_queries.get_invalid_col_party_type_no_natural(db)
         self.progress_changed.emit(40)
+        count = 0
 
         if res:
             error_state = LADMData().get_domain_code_from_value(db_qr, db_qr.names.ERR_ERROR_STATE_D,
@@ -180,7 +179,6 @@ class QRValidateLegalParty(AbstractLogicQualityRule):
                 delta_progress = record_count * 50 /  len(records)
                 self.progress_changed.emit(progress + delta_progress)
 
-            count = 0
             for error_key, errors_rule in errors_rules.items():
                 if errors_rule:
                     self._save_errors(db_qr, error_key, errors_rule)
@@ -190,8 +188,8 @@ class QRValidateLegalParty(AbstractLogicQualityRule):
 
         if count > 0:
             res_type = EnumQualityRuleResult.ERRORS
-            msg = QCoreApplication.translate("QualityRules", "{} legal parties with inconsistent were found.").format(
-                count)
+            msg = QCoreApplication.translate("QualityRules", "{} legal parties with "
+                                                             "inconsistent were found.").format(count)
         else:
             res_type = EnumQualityRuleResult.SUCCESS
             msg = QCoreApplication.translate("QualityRules", "All legal parties have valid data.")

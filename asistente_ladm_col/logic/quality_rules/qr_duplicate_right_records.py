@@ -61,8 +61,6 @@ class QRDuplicateRightRecords(AbstractLogicQualityRule):
         if not pre_res:
             return pre_obj
 
-        error_state = None
-
         table = db.names.LC_RIGHT_T
         fields = [db.names.LC_RIGHT_T_TYPE_F,
                   db.names.COL_RRR_T_DESCRIPTION_F,
