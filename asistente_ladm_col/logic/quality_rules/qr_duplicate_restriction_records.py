@@ -92,7 +92,7 @@ class QRDuplicateRestrictionRecords(AbstractLogicQualityRule):
 
         if count > 0:
             res_type = EnumQualityRuleResult.ERRORS
-            msg = QCoreApplication.translate("QualityRules", "{} restriction with repeated records.").format(count)
+            msg = QCoreApplication.translate("QualityRules", "{} restriction with repeated records were found.").format(count)
         else:
             res_type = EnumQualityRuleResult.SUCCESS
             msg = QCoreApplication.translate("QualityRules", "No duplicate restrictions were found.")

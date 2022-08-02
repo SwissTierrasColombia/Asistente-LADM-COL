@@ -93,7 +93,7 @@ class QRDuplicateControlPointRecords(AbstractLogicQualityRule):
 
         if count > 0:
             res_type = EnumQualityRuleResult.ERRORS
-            msg = QCoreApplication.translate("QualityRules", "{} control points with repeated records.").format(count)
+            msg = QCoreApplication.translate("QualityRules", "{} control points with repeated records were found.").format(count)
         else:
             res_type = EnumQualityRuleResult.SUCCESS
             msg = QCoreApplication.translate("QualityRules", "No duplicate control points were found.")

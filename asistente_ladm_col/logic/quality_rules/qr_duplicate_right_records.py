@@ -92,7 +92,7 @@ class QRDuplicateRightRecords(AbstractLogicQualityRule):
 
         if count > 0:
             res_type = EnumQualityRuleResult.ERRORS
-            msg = QCoreApplication.translate("QualityRules", "{} right "
+            msg = QCoreApplication.translate("QualityRules", "{} rights "
                                                              "with duplicate records were found.").format(count)
         else:
             res_type = EnumQualityRuleResult.SUCCESS

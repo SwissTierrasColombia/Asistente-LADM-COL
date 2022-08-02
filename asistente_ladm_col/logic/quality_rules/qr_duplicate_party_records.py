@@ -89,7 +89,7 @@ class QRDuplicatePartyRecords(AbstractLogicQualityRule):
 
         if count > 0:
             res_type = EnumQualityRuleResult.ERRORS
-            msg = QCoreApplication.translate("QualityRules", "{} parties with repeated records.").format(count)
+            msg = QCoreApplication.translate("QualityRules", "{} parties with repeated records were found.").format(count)
         else:
             res_type = EnumQualityRuleResult.SUCCESS
             msg = QCoreApplication.translate("QualityRules", "No duplicate parties were found.")

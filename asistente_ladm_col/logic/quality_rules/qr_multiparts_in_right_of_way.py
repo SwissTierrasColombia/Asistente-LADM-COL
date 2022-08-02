@@ -97,7 +97,7 @@ class QRMultiPartsInRightOfWay(AbstractPolygonQualityRule):
                                                              "multipart geometry were found.").format(count)
         else:
             res_type = EnumQualityRuleResult.SUCCESS
-            msg = QCoreApplication.translate("QualityRules", "All rights of way have simple geometry!!")
+            msg = QCoreApplication.translate("QualityRules", "All rights of way have simple geometry!")
 
         self.progress_changed.emit(100)
 
