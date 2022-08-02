@@ -25,7 +25,7 @@ Un proyecto de: <a href="https://swisstierrascolombia.com" target="_blank">Swiss
 
 ### Soporte de funcionalidades por motor de base de datos
 
-La versión actual (<a href="https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/4.0.0-beta" target="_blank">4.0.0-beta</a>) del Asistente LADM-COL soporta los motores de Base de Datos PostgreSQL/PostGIS, GeoPackage y SQL Server.
+La versión actual (<a href="https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/4.0.1-beta" target="_blank">4.0.1-beta</a>) del Asistente LADM-COL soporta los motores de Base de Datos PostgreSQL/PostGIS, GeoPackage y SQL Server.
 
 Este es el soporte funcional para cada motor:
 
