@@ -4,30 +4,65 @@
     <meta charset="UTF-8">
 </head>
 <body>
-<p>Cambios en la version <b>4.0.0-beta</b></p>
+<p>Cambios en la version <b>4.0.1-beta</b></p>
 <ul>
-    <li>Soporta el modelo de aplicación de Levantamiento Catastral v1.2.</li>
-    <li>Informalidad:
-        <ul>
-            <li>Se introduce simbología para identificar la informalidad en terrenos, construcciones y unidades de construcción.</li>
-            <li>Los predios informales se pueden recorrer uno a uno en el módulo de consultas, obteniendo la información de los mismos por componente.</li>
-        </ul>
-    </li>
-    <li>Refactor, mejoras y optimización del módulo de reglas de calidad:
-        <ul>
-            <li>El núcleo (core) del módulo ha sido reescrito para darle más flexibilidad y compatibilidad con Add-ons.</li>
-            <li>Se utiliza un modelo de INTERLIS de errores de calidad para almacenar los errores de calidad encontrados.</li>
-            <li>Se utilizan catálogos de INTERLIS (listados de reglas de calidad en .XTF) para no tener que modificar el modelo si se agregan o eliminan reglas de calidad.</li>
-            <li>La validación de iliValidator es ahora una regla de calidad, y se comporta como las demás: los resultados se guardan en la misma base de datos y aparecen en el reporte en PDF de la validación de reglas de calidad.</li>
-            <li>La interfaz gráfica fue rediseñada. Ahora se usa un panel (dockwidget) que permite buscar reglas y analizar individualmente los errores encontrados.</li>
-            <li>La regla de calidad "Los terrenos no deben superponerse" soporta informalidad. Esto es, si dos terrenos se superponen pero uno es formal y el otro informal, no se considera como error topológico.</li>
-        </ul>
-    </li>
-    <li>Se introduce el soporte de Add-ons para extender la funcionalidad del Asistente LADM-COL. Los Add-ons son plugins de QGIS que dependen del Asistente LADM-COL. Por ejemplo, el Add-on de Ambiente agrega varios modelos, un rol y nuevas funcionalidades relativas al sector Ambiente.</li>
-    <li>En importación masiva de datos, los mapeos de campos muestran los campos obligatorios resaltados en color naranja para facilitar el llenado.</li>
-    <li>El orden de los atributos de cada formulario es configurable en el archivo LADM_COL_configuration.toml. (Colaboración de Jonny Sánchez)</li>
-    <li>Refactor del módulo de wizards para mejorar su mantenimiento. Es un refactor a nivel de núcleo (core) y no de interfaz.</li>
-    <li>Se elimina la dependencia con el plugin QGIS Model Baker. El usuario no necesitará instalar dicho plugin pues se ha incluido como librería dentro del Asistente LADM-COL.</li>
+   <li>Se actualiza la versión del modelo de <a href='https://gitlab-ladm-col.igac.gov.co/root/LADM_COL/-/tree/lev_cat_v2/Catastro_Multiproposito/2_Aplicacion/1_Levantamiento_Catastral'>Levantamiento Catastral v1.2</a>.</li>
+</ul>
+<ul>
+   <li>
+      <p>Se migran las siguientes reglas de calidad:</p>
+      <ul>
+         <li>
+            <p>Reglas de calidad de puntos:</p>
+            <ul>
+               <li>Los puntos de control no deben superponerse</li>
+               <li>Los Puntos de Lindero deben estar cubiertos por nodos de Lindero</li>
+               <li>Los puntos de lindero deben estar cubiertos por nodos de terreno</li>
+               <li>Los nodos de terreno deben estar cubiertos por puntos de lindero</li>
+            </ul>
+         </li>
+         <li>
+            <p>Reglas de calidad de líneas</p>
+            <ul>
+               <li>Los límites de Terreno deben estar cubiertos por Linderos</li>
+            </ul>
+         </li>
+         <li>
+            <p>Reglas de calidad de polígonos:</p>
+            <ul>
+               <li>Las construcciones no deben superponerse</li>
+               <li>Los servidumbres de tránsito no deben superponerse</li>
+               <li>Los servidumbres de tránsito no deben superponerse con construcciones</li>
+               <li>Las servidumbres de tránsito no deben tener geometrías multiparte</li>
+            </ul>
+         </li>
+         <li>
+            <p>Reglas de calidad de consistencia lógica:</p>
+            <ul>
+               <li>Los porcentajes de participación de la agrupación de interesados deben sumar uno</li>
+               <li>El código de departamento de la tabla predio debe tener dos caracteres numéricos</li>
+               <li>El código de municipio asociado al predio debe ser valido</li>
+               <li>Revisar que el número predial tiene 30 caracteres numéricos</li>
+               <li>El número predial anterior debe tener 20 caracteres numéricos</li>
+               <li>Interesado natural no puede incluir datos de interesado jurídico</li>
+               <li>Interesado jurídico no puede incluir datos de interesado natural</li>
+               <li>Punto Lindero no debe tener registros repetidos</li>
+               <li>Punto de Levantamiento no debe tener registros duplicados</li>
+               <li>Punto control no debe tener registros repetidos</li>
+               <li>Lindero no debe tener registros duplicados</li>
+               <li>Construcción no debe tener registros repetidos</li>
+               <li>Unidad de construcción no debe tener registros duplicados</li>
+               <li>Interesado no debe tener registros repetidos</li>
+               <li>Derecho no debe tener registros duplicados</li>
+               <li>Restricción no debe tener registros repetidos</li>
+               <li>Fuente administrativa no debe tener registros duplicados</li>
+            </ul>
+         </li>
+      </ul>
+   </li>
+   <li>
+      <p>El <strong>orden de los atributos</strong> de cada formulario se actualizo para una mejor su visualización.</p>
+   </li>
 </ul>
 </body>
 </html>

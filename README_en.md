@@ -70,7 +70,7 @@ To use the LADM-COL Assistant you need:
 
 ## Functionalities
 
-The current version ([4.0.0-beta](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/4.0.0-beta)) of the LADM-COL Assistant allows users to:
+The current version ([4.0.1-beta](https://github.com/SwissTierrasColombia/Asistente-LADM-COL/releases/tag/4.0.1-beta)) of the LADM-COL Assistant allows users to:
 
  - Integrate with the Transitional System:
    - Authentication
