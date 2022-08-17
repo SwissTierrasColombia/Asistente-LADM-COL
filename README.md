@@ -257,7 +257,7 @@ Antes de ejecutar las pruebas unitarias, necesitas definir estas dos variables d
 
 ```sh
 export GITHUB_WORKSPACE=/home/Asistente-LADM-COL
-export QGIS_TEST_VERSION="final-3_22_1"
+export QGIS_TEST_VERSION="final-3_22_9"
 ```
 
 El comando para ejecutar las pruebas es (ejecutar desde la raíz del repositorio):
