@@ -202,7 +202,7 @@ Before running unit tests, you need to set these 2 environment variables (make s
 
 ```sh
 export GITHUB_WORKSPACE=/home/Asistente-LADM-COL
-export QGIS_TEST_VERSION="final-3_22_1"
+export QGIS_TEST_VERSION="final-3_22_9"
 ```
 
 The command to execute unit tests is (execute from the repository's root folder):
