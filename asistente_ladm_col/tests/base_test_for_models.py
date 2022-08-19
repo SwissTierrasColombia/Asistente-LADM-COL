@@ -1,5 +1,9 @@
 from abc import ABC
 
+from qgis.testing import start_app
+
+start_app() # need to start before asistente_ladm_col.tests.utils
+
 from asistente_ladm_col.config.enums import EnumTestLevel
 from asistente_ladm_col.lib.db.db_connector import DBConnector
 

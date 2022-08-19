@@ -10,9 +10,14 @@ start_app() # need to start before asistente_ladm_col.tests.utils
 from asistente_ladm_col.config.enums import (EnumTestConnectionMsg,
                                              EnumTestLevel)
 from asistente_ladm_col.config.keys.common import REQUIRED_MODELS
+from asistente_ladm_col.core.ili2db import Ili2DB
+from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
 from asistente_ladm_col.tests.utils import (get_gpkg_conn,
                                             get_pg_conn,
                                             restore_schema,
+                                            restore_gpkg_db,
+                                            restore_mssql_db,
+                                            restore_pg_db,
                                             get_gpkg_conn_from_path,
                                             reset_db_mssql,
                                             restore_schema_mssql,
@@ -20,16 +25,22 @@ from asistente_ladm_col.tests.utils import (get_gpkg_conn,
 
 
 class TestDBTestConnection(unittest.TestCase):
+    ladm_all_models = [LADMColModelRegistry().model(LADMNames.VALUATION_MODEL_KEY).full_name(),
+                       LADMColModelRegistry().model(LADMNames.CADASTRAL_CARTOGRAPHY_MODEL_KEY).full_name(),
+                       LADMColModelRegistry().model(LADMNames.SUPPLIES_MODEL_KEY).full_name(),
+                       LADMColModelRegistry().model(LADMNames.SUPPLIES_INTEGRATION_MODEL_KEY).full_name(),
+                       LADMColModelRegistry().model(LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY).full_name(),
+                       LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).full_name(),
+                       LADMColModelRegistry().model(LADMNames.ISO19107_MODEL_KEY).full_name(),
+                       LADMColModelRegistry().model(LADMNames.LADM_COL_MODEL_KEY).full_name()]
 
     @classmethod
     def setUpClass(cls):
-        pass
+        cls.ili2db = Ili2DB()
 
     def test_pg_test_connection_interlis_ladm_col_models(self):
         print("\nINFO: Validate test_connection() for PostgreSQL (Interlis, no LADM-COL models)...")
-
-        restore_schema('test_ladm_all_models')
-        db_pg = get_pg_conn('test_ladm_all_models')
+        db_pg = restore_pg_db('test_ladm_all_models', self.ladm_all_models)
         res, code, msg = db_pg.test_connection()
         self.assertTrue(res, msg)
         self.assertEqual(code, EnumTestConnectionMsg.SCHEMA_WITH_VALID_LADM_COL_STRUCTURE)
@@ -77,7 +88,7 @@ class TestDBTestConnection(unittest.TestCase):
 
     def test_gpkg_test_connection(self):
         print("\nINFO: Validate test_connection() for GeoPackage (survey model: OK!)...")
-        db = get_gpkg_conn('test_ladm_survey_model_gpkg')
+        db = restore_gpkg_db('test_gpkg_test_connection', [LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).full_name()])
         res, code, msg = db.test_connection()
         self.assertTrue(res, msg)
         self.assertEqual(code, EnumTestConnectionMsg.DB_WITH_VALID_LADM_COL_STRUCTURE)
@@ -130,10 +141,9 @@ class TestDBTestConnection(unittest.TestCase):
         self.assertFalse(res, msg)
         self.assertEqual(code, EnumTestConnectionMsg.NO_LADM_MODELS_FOUND_IN_SUPPORTED_VERSION)
 
-    def _test_gpkg_test_connection_required_models_success(self):
-        # TODO: Migrate to Lev Cat 1.2
+    def test_gpkg_test_connection_required_models_success(self):
         print("\nINFO: Validate test_connection() for GeoPackage (required models (success): survey and snr)...")
-        db = get_gpkg_conn('test_ladm_survey_model_gpkg')
+        db = restore_gpkg_db('test_gpkg_test_connection_required_models_success', [LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).full_name()])
         res, code, msg = db.test_connection(models={REQUIRED_MODELS: [LADMNames.SURVEY_MODEL_KEY,
                                                                       LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY]})
         self.assertTrue(res, msg)
@@ -141,7 +151,7 @@ class TestDBTestConnection(unittest.TestCase):
 
     def test_gpkg_test_connection_required_models_error(self):
         print("\nINFO: Validate test_connection() for GeoPackage (required models (error): ant)...")
-        db = get_gpkg_conn('test_ladm_survey_model_gpkg')
+        db = restore_gpkg_db('test_gpkg_test_connection_required_models_error', [LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).full_name()])
         res, code, msg = db.test_connection(models={REQUIRED_MODELS: [LADMNames.VALUATION_MODEL_KEY]})
         self.assertFalse(res, msg)
         self.assertEqual(code, EnumTestConnectionMsg.REQUIRED_LADM_MODELS_NOT_FOUND)
@@ -183,9 +193,7 @@ class TestDBTestConnection(unittest.TestCase):
     def test_mssql_test_connection_interlis_ladm_col_models(self):
         print("\nINFO: Validate test_connection() for SQL Server (Interlis, no LADM-COL models)...")
         schema = 'test_ladm_all_models'
-        reset_db_mssql(schema)
-        restore_schema_mssql(schema)
-        db_conn = get_mssql_conn(schema)
+        db_conn = restore_mssql_db(schema, self.ladm_all_models)
         res, code, msg = db_conn.test_connection()
         self.assertTrue(res, msg)
         self.assertEqual(code, EnumTestConnectionMsg.SCHEMA_WITH_VALID_LADM_COL_STRUCTURE)
