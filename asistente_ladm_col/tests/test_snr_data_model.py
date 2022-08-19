@@ -10,15 +10,20 @@ start_app()  # need to start before asistente_ladm_col.tests.utils
 from asistente_ladm_col.lib.db.db_connector import DBConnector
 from asistente_ladm_col.tests.base_test_for_models import BaseTestForModels
 from asistente_ladm_col.tests.utils import (get_pg_conn,
-                                            get_gpkg_conn,
+                                            get_test_path,
                                             get_mssql_conn,
-                                            restore_schema_mssql,
-                                            reset_db_mssql,
-                                            restore_schema)
+                                            restore_pg_db,
+                                            restore_mssql_db,
+                                            restore_gpkg_db)
 
+from asistente_ladm_col.config.ladm_names import LADMNames
+from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
 
-@unittest.skip("Until we've migrated to Lev Cat 1.2 completely...")
 class BaseTestSNRDataModel(BaseTestForModels, ABC):
+    schema = 'test_ladm_snr_data'
+    xtf_path = get_test_path("db/ladm/test_ladm_snr_model_v2_0.xtf")
+    models = [LADMColModelRegistry().model(LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY).full_name()]
+
     def get_name_of_models(self):
         return 'SNR data model'
 
@@ -32,11 +37,10 @@ class BaseTestSNRDataModel(BaseTestForModels, ABC):
 
 
 class TestSNRDataModelPG(BaseTestSNRDataModel, unittest.TestCase):
-    schema = 'test_ladm_snr_data'
 
     @classmethod
     def restore_db(cls):
-        restore_schema(cls.schema)
+        restore_pg_db(cls.schema, cls.models, cls.xtf_path)
 
     @classmethod
     def get_connector(cls) -> DBConnector:
@@ -57,19 +61,17 @@ class TestSNRDataModelGPKG(BaseTestSNRDataModel, unittest.TestCase):
 
     @classmethod
     def get_connector(cls) -> DBConnector:
-        return get_gpkg_conn('test_ladm_snr_gpkg')
+        return restore_gpkg_db(cls.schema, cls.models, cls.xtf_path)
 
 
 class TestSNRDataModelMSSQL(BaseTestSNRDataModel, unittest.TestCase):
-    schema = 'test_ladm_snr_data'
 
     def get_db_name(self):
         return 'SQL Server'
 
     @classmethod
     def restore_db(cls):
-        reset_db_mssql(cls.schema)
-        restore_schema_mssql(cls.schema)
+        restore_mssql_db(cls.schema, cls.models, cls.xtf_path)
 
     @classmethod
     def get_connector(cls) -> DBConnector:

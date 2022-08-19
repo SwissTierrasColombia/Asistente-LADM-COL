@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?><TRANSFER xmlns="http://www.interlis.ch/INTERLIS2.3">
+<HEADERSECTION SENDER="ili2pg-4.6.1-63db90def1260a503f0f2d4cb846686cd4851184" VERSION="2.3"><MODELS><MODEL NAME="Submodelo_Avaluos_V1_2" VERSION="V2.2.1" URI="http://www.proadmintierra.info/"></MODEL></MODELS></HEADERSECTION>
+<DATASECTION>
+<Submodelo_Avaluos_V1_2.Avaluos BID="Submodelo_Avaluos_V1_2.Avaluos">
+</Submodelo_Avaluos_V1_2.Avaluos>
+</DATASECTION>
+</TRANSFER>

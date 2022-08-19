@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?><TRANSFER xmlns="http://www.interlis.ch/INTERLIS2.3">
+<HEADERSECTION SENDER="ili2pg-4.6.1-63db90def1260a503f0f2d4cb846686cd4851184" VERSION="2.3"><MODELS><MODEL NAME="Submodelo_Insumos_SNR_V2_0" VERSION="V2.3" URI="http://www.proadmintierra.info/"></MODEL></MODELS></HEADERSECTION>
+<DATASECTION>
+<Submodelo_Insumos_SNR_V2_0.Datos_SNR BID="Submodelo_Insumos_SNR_V2_0.Datos_SNR">
+</Submodelo_Insumos_SNR_V2_0.Datos_SNR>
+</DATASECTION>
+</TRANSFER>
