@@ -36,6 +36,7 @@ from asistente_ladm_col.config.refactor_fields_mappings import RefactorFieldsMap
 from asistente_ladm_col.asistente_ladm_col_plugin import AsistenteLADMCOLPlugin
 from asistente_ladm_col.config.general_config import FIELD_MAPPING_PARAMETER
 from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
+from asistente_ladm_col.core.ili2db import Ili2DB
 
 QgsApplication.setPrefixPath('/usr', True)
 qgs = QgsApplication([], False)
@@ -47,6 +48,7 @@ import processing
 from qgis.testing.mocked import get_iface
 
 from .config.test_config import TEST_SCHEMAS_MAPPING
+ili2db = Ili2DB()
 
 # PostgreSQL connection to schema with a LADM-COL model from ./etl_script_uaecd.py
 DB_HOSTNAME = "postgres"
@@ -137,12 +139,12 @@ def restore_schema(schema, force=False):
     process.wait()
     print("Done restoring {} database.".format(schema))
 
-def drop_schema(schema):
+def drop_pg_schema(schema):
     print("\nDropping schema {}...".format(schema))
     db_connection = get_pg_conn(schema)
     print("Testing Connection...", db_connection.test_connection())
     cur = db_connection.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    query = cur.execute("""DROP SCHEMA "{}" CASCADE;""".format(schema))
+    query = cur.execute("""DROP SCHEMA IF EXISTS "{}" CASCADE;""".format(schema))
     db_connection.conn.commit()
     cur.close()
     print("Schema {} removed...".format(schema))
@@ -350,3 +352,41 @@ def get_field_values_by_key_values(layer, field, field_values, expected_field):
     features = LADMData.get_features_from_t_ids(layer, field, field_values, only_attributes=[expected_field])
 
     return [f[expected_field] for f in features]
+
+def restore_pg_db(schema_name, models_name, xtf_path=None, disable_validation=False):
+    drop_pg_schema(schema_name)
+    db = get_pg_conn(schema_name)
+    _restore_db(db, models_name, xtf_path, disable_validation)
+    return db
+
+
+def restore_mssql_db(schema_name, models_name, xtf_path=None, disable_validation=False):
+    reset_db_mssql(schema_name)
+    db = get_mssql_conn(schema_name)
+    _restore_db(db, models_name, xtf_path, disable_validation)
+    return db
+
+
+def restore_gpkg_db(file_name, models_name, xtf_path=None, disable_validation=False):
+    gpkg_path = get_test_gpkg_template_path(file_name)
+    db = get_gpkg_conn_from_path(gpkg_path)
+    _restore_db(db, models_name, xtf_path, disable_validation)
+    return db
+
+
+def get_test_gpkg_template_path(file_name):
+    src_path = get_test_path('db/static/gpkg/ili2db.gpkg')
+    dst_path = os.path.split(src_path)
+    dst_path = os.path.join(dst_path[0], "_{}.gpkg".format(file_name))
+    copyfile(src_path, dst_path)
+    return dst_path
+
+
+def _restore_db(db, models_name, xtf_path, disable_validation):
+    configuration = ili2db.get_import_schema_configuration(db, models_name)
+    ili2db.import_schema(db, configuration)
+
+    if xtf_path:
+        # Run import data
+        configuration = ili2db.get_import_data_configuration(db, xtf_path, disable_validation=disable_validation)
+        ili2db.import_data(db, configuration)
