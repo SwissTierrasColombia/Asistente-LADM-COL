@@ -1,6 +1,5 @@
 TEST_SCHEMAS_MAPPING = {
     # TEST DB POSTGRES
-    'test_ladm_col': 'ladm/pg/ladm_col_v1_1.sql',
     'test_ladm_col_empty': 'ladm/pg/test_ladm_col_empty_v1_1.sql',
     'test_ladm_validations_topology_tables': 'ladm/pg/test_ladm_validations_topology_tables_v1_1.sql',
     'test_ladm_col_queries': 'ladm/pg/ladm_col_queries_v1_1.sql',
@@ -20,7 +19,6 @@ TEST_SCHEMAS_MAPPING = {
     'ladm_col_211_mssql': 'static/mssql/ladm_col_211_mssql.sql',
     'test_export_data_mssql': 'ladm/mssql/test_export_data_v1_1.sql',
     'test_ladm_col_queries_mssql': 'ladm/mssql/test_ladm_col_queries_v1_1.sql',
-    'test_ladm_col_mssql': 'ladm/mssql/test_ladm_col_v1_1.sql',
     # TEST DB GEOPACKAGE
     'test_export_data_qpkg': 'ladm/gpkg/test_export_data_ladm_v1_1.gpkg',
     'test_empty_ladm_gpkg': 'ladm/gpkg/test_empty_ladm_v1_1.gpkg',

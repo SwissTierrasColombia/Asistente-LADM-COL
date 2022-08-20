@@ -7,30 +7,30 @@ from asistente_ladm_col.app_interface import AppInterface
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
-from asistente_ladm_col.tests.utils import (get_pg_conn,
-                                            get_copy_gpkg_conn,
-                                            restore_schema,
-                                            get_mssql_conn,
-                                            restore_schema_mssql,
-                                            reset_db_mssql)
+from asistente_ladm_col.tests.utils import (restore_pg_db,
+                                            restore_mssql_db,
+                                            restore_gpkg_db)
 
+from asistente_ladm_col.config.ladm_names import LADMNames
+from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
 
-@unittest.skip("Until we've migrated to Lev Cat 1.2 completely...")
 class TestGetLayers(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
         cls.app = AppInterface()
-        cls.db_gpkg = get_copy_gpkg_conn('test_ladm_survey_model_gpkg')
 
         print("INFO: Restoring databases to be used")
-        restore_schema('test_ladm_col')
-        cls.db_pg = get_pg_conn('test_ladm_col')
-
         schema = 'test_ladm_col'
-        reset_db_mssql(schema)
-        restore_schema_mssql(schema)
-        cls.db_mssql = get_mssql_conn(schema)
+        models = [LADMColModelRegistry().model(LADMNames.LADM_COL_MODEL_KEY).full_name(),
+                  LADMColModelRegistry().model(LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY).full_name(),
+                  LADMColModelRegistry().model(LADMNames.SUPPLIES_MODEL_KEY).full_name(),
+                  LADMColModelRegistry().model(LADMNames.SUPPLIES_INTEGRATION_MODEL_KEY).full_name(),
+                  LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).full_name()]
+
+        cls.db_gpkg = restore_gpkg_db(schema, models)
+        cls.db_pg = restore_pg_db(schema, models)
+        cls.db_mssql = restore_mssql_db(schema, models)
 
     def test_get_layer_in_pg(self):
         print("\nINFO: Validating get_layer() method in PG...")
