@@ -26,8 +26,11 @@ from qgis.PyQt.QtCore import (Qt,
                               QCoreApplication,
                               pyqtSignal)
 from qgis.PyQt.QtGui import QValidator
-from qgis.core import Qgis
+from qgis.core import (Qgis,
+                       QgsProcessingException)
 from qgis.gui import QgsMessageBar
+
+import processing
 
 from asistente_ladm_col.config.general_config import (SUPPLIES_DB_SOURCE,
                                                       COLLECTED_DB_SOURCE,
@@ -36,6 +39,7 @@ from asistente_ladm_col.config.keys.common import REQUIRED_MODELS
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.lib.context import Context
 from asistente_ladm_col.gui.dialogs.dlg_settings import SettingsDialog
 from asistente_ladm_col.utils.qt_utils import (FileValidator,
                                                Validators,
@@ -140,7 +144,7 @@ class XTFModelConverterDialog(QDialog, DIALOG_XTF_MODEL_CONVERTER_UI):
         self.progress.setValue(value)
 
     def accepted(self):
-        # self.save_settings()
+        self.save_settings()
 
         # self.bar.clearWidgets()  # Remove previous messages
         # self.set_gui_controls_enabled(False)
@@ -157,7 +161,197 @@ class XTFModelConverterDialog(QDialog, DIALOG_XTF_MODEL_CONVERTER_UI):
         #     self.logger.success_warning(__name__, res, msg)
 
         # self.set_gui_controls_enabled(True)
+        self.run_etl(Context())
         pass
+
+    def run_etl(self, *args):
+        self.logger.info(__name__, "Running ETL model...")
+
+        db_pre = self._db_pre_converted
+        db_conv = self._db_converted
+        pre_layers = {db_pre.names.LC_SURVEY_POINT_T: None, #OK
+                  db_pre.names.LC_CONTROL_POINT_T: None, #OK
+                  db_pre.names.LC_BOUNDARY_POINT_T: None, #OK
+                  db_pre.names.LC_BOUNDARY_T: None, #OK
+                  db_pre.names.COL_CCL_POINT_T: None, #OK
+                  db_pre.names.LC_PLOT_T: None, #OK
+                  db_pre.names.LC_BUILDING_T: None, #OK
+                  db_pre.names.LC_BUILDING_UNIT_T: None, #OK
+                  db_pre.names.LC_RIGHT_OF_WAY_T: None, #OK
+                  db_pre.names.COL_VALUE_AREA_T: None, #OK
+                  db_pre.names.MORE_BFS_T: None, #OK
+                  db_pre.names.LESS_BFS_T: None, #OK
+                  db_pre.names.LC_TIPOLOGY_BUILDING_T: None, #OK
+                  db_pre.names.LC_NON_CONVENTIONAL_QUALIFICATION_T: None, #OK
+                  db_pre.names.LC_CONVENTIONAL_QUALIFICATION_T: None, #OK
+                  db_pre.names.LC_GROUP_QUALIFICATION_T: None, #OK
+                  db_pre.names.LC_BUILDING_OBJECT_T: None, #OK
+                  db_pre.names.LC_PARCEL_T: None, #OK
+                  db_pre.names.LC_SURVEY_CADASTRAL_ADITIONAL_DATA_T: None, #OK
+                  db_pre.names.LC_PARCEL_NUMBER_NEW_STRUCTURE_T: None, #OK
+                  db_pre.names.LC_FMI_NEW_STRUCTURE_T: None, #OK
+                  db_pre.names.LC_CONTACT_VISIT_T: None, #OK
+                  db_pre.names.LC_CONDOMINIUM_PH_DATA_T: None, #OK
+                  db_pre.names.LC_REAL_ESTATE_MARKET_OFFERS_T: None, #OK
+                  db_pre.names.EXT_ADDRESS_S: None, #OK
+                  db_pre.names.LC_COPROPERTY_T: None, #OK
+                  db_pre.names.FRACTION_T: None, #OK
+                  db_pre.names.COL_UE_BAUNIT_T: None, #OK
+                  db_pre.names.LC_PARTY_T: None, #OK
+                  db_pre.names.LC_PARTY_CONTACT_T: None, #OK
+                  db_pre.names.LC_GROUP_PARTY_T: None, #OK
+                  db_pre.names.MEMBERS_T: None, #OK
+                  db_pre.names.LC_RIGHT_T: None, #OK
+                  db_pre.names.LC_RESTRICTION_T: None, #OK
+                  db_pre.names.LC_ADMINISTRATIVE_SOURCE_T: None, #OK
+                  db_pre.names.LC_SPATIAL_SOURCE_T: None, #OK
+                  db_pre.names.EXT_ARCHIVE_S: None, #OK
+                  db_pre.names.COL_RRR_SOURCE_T: None, #OK
+                  db_pre.names.COL_UNIT_SOURCE_T: None, #OK
+                  db_pre.names.COL_UE_SOURCE_T: None, #OK
+                  db_pre.names.COL_BAUNIT_SOURCE_T: None} #OK
+        conv_layers = {db_conv.names.LC_SURVEY_POINT_T: None, #OK
+                  db_conv.names.LC_CONTROL_POINT_T: None, #OK
+                  db_conv.names.LC_BOUNDARY_POINT_T: None, #OK
+                  db_conv.names.LC_BOUNDARY_T: None, #OK
+                  db_conv.names.COL_CCL_POINT_T: None, #OK
+                  db_conv.names.LC_PLOT_T: None, #OK
+                  db_conv.names.LC_BUILDING_T: None, #OK
+                  db_conv.names.LC_BUILDING_UNIT_T: None, #OK
+                  db_conv.names.LC_RIGHT_OF_WAY_T: None, #OK
+                  db_conv.names.COL_VALUE_AREA_T: None, #OK
+                  db_conv.names.MORE_BFS_T: None, #OK
+                  db_conv.names.LESS_BFS_T: None, #OK
+                  db_conv.names.LC_TIPOLOGY_BUILDING_T: None, #OK
+                  db_conv.names.LC_NON_CONVENTIONAL_QUALIFICATION_T: None, #OK
+                  db_conv.names.LC_CONVENTIONAL_QUALIFICATION_T: None, #OK
+                  db_conv.names.LC_GROUP_QUALIFICATION_T: None, #OK
+                  db_conv.names.LC_BUILDING_OBJECT_T: None, #OK
+                  db_conv.names.LC_PARCEL_T: None, #OK
+                  db_conv.names.LC_SURVEY_CADASTRAL_ADITIONAL_DATA_T: None, #OK
+                  db_conv.names.LC_PARCEL_NUMBER_NEW_STRUCTURE_T: None, #OK
+                  db_conv.names.LC_FMI_NEW_STRUCTURE_T: None, #OK
+                  db_conv.names.LC_CONTACT_VISIT_T: None, #OK
+                  db_conv.names.LC_CONDOMINIUM_PH_DATA_T: None, #OK
+                  db_conv.names.LC_REAL_ESTATE_MARKET_OFFERS_T: None, #OK
+                  db_conv.names.EXT_ADDRESS_S: None, #OK
+                  db_conv.names.LC_COPROPERTY_T: None, #OK
+                  db_conv.names.BUILDING_UNIT_CHARACTERISTICS_T: None, #OK
+                  db_conv.names.COL_UE_BAUNIT_T: None, #OK
+                  db_conv.names.LC_PARTY_T: None, #OK
+                  db_conv.names.LC_PARTY_CONTACT_T: None, #OK
+                  db_conv.names.LC_GROUP_PARTY_T: None, #OK
+                  db_conv.names.MEMBERS_T: None, #OK
+                  db_conv.names.LC_RIGHT_T: None, #OK
+                  db_conv.names.LC_RESTRICTION_T: None, #OK
+                  db_conv.names.LC_ADMINISTRATIVE_SOURCE_T: None, #OK
+                  db_conv.names.LC_SPATIAL_SOURCE_T: None, #OK
+                  db_conv.names.EXT_ARCHIVE_S: None, #OK
+                  db_conv.names.COL_RRR_SOURCE_T: None, #OK
+                  db_conv.names.COL_UNIT_SOURCE_T: None, #OK
+                  db_conv.names.COL_UE_SOURCE_T: None, #OK
+                  db_conv.names.COL_BAUNIT_SOURCE_T: None}
+
+        self.app.core.get_layers(db_pre, pre_layers, load=True)
+        self.app.core.get_layers(db_conv, conv_layers, load=True)
+
+        if not pre_layers or not conv_layers:
+            return
+
+        params = {'inlcpuntolevantamiento': pre_layers[db_pre.names.LC_SURVEY_POINT_T],
+                  'inlcpuntocontrol': pre_layers[db_pre.names.LC_CONTROL_POINT_T],
+                  'inlcpuntolindero': pre_layers[db_pre.names.LC_BOUNDARY_POINT_T],
+                  'inlclindero': pre_layers[db_pre.names.LC_BOUNDARY_T],
+                  'inpuntoccl': pre_layers[db_pre.names.COL_CCL_POINT_T],
+                  'inlcterreno': pre_layers[db_pre.names.LC_PLOT_T],
+                  'inlcconstruccion': pre_layers[db_pre.names.LC_BUILDING_T],
+                  'inlcunidadconstruccion': pre_layers[db_pre.names.LC_BUILDING_UNIT_T],
+                  'inlcservidumbretransito': pre_layers[db_pre.names.LC_RIGHT_OF_WAY_T],
+                  'incolareavalor': pre_layers[db_pre.names.COL_VALUE_AREA_T],
+                  'incolmasccl': pre_layers[db_pre.names.MORE_BFS_T],
+                  'incolmenosccl': pre_layers[db_pre.names.LESS_BFS_T],
+                  'inlctipologia': pre_layers[db_pre.names.LC_TIPOLOGY_BUILDING_T],
+                  'inlccalificacionnoconvencional': pre_layers[db_pre.names.LC_NON_CONVENTIONAL_QUALIFICATION_T],
+                  'inlccalificacionconvencional': pre_layers[db_pre.names.LC_CONVENTIONAL_QUALIFICATION_T],
+                  'inlcgrupocalificacion': pre_layers[db_pre.names.LC_GROUP_QUALIFICATION_T],
+                  'inlcobjetoconstruccion': pre_layers[db_pre.names.LC_BUILDING_OBJECT_T],
+                  'inlcpredio': pre_layers[db_pre.names.LC_PARCEL_T],
+                  'inlcdatosadicionaleslevantamientocatastral': pre_layers[db_pre.names.LC_SURVEY_CADASTRAL_ADITIONAL_DATA_T],
+                  'inlcestructuranovedadnumeropredial': pre_layers[db_pre.names.LC_PARCEL_NUMBER_NEW_STRUCTURE_T],
+                  'inlcestructuranovedadfmi': pre_layers[db_pre.names.LC_FMI_NEW_STRUCTURE_T],
+                  'inlccontactovisita': pre_layers[db_pre.names.LC_CONTACT_VISIT_T],
+                  'inlcdatosphcondominio': pre_layers[db_pre.names.LC_CONDOMINIUM_PH_DATA_T],
+                  'inlcofertasmercadoinmobiliario': pre_layers[db_pre.names.LC_REAL_ESTATE_MARKET_OFFERS_T],
+                  'inextdireccion': pre_layers[db_pre.names.EXT_ADDRESS_S],
+                  'inlcprediocopropiedad': pre_layers[db_pre.names.LC_COPROPERTY_T],
+                  'infraccion': pre_layers[db_pre.names.FRACTION_T],
+                  'incoluebaunit': pre_layers[db_pre.names.COL_UE_BAUNIT_T],
+                  'inlcinteresado': pre_layers[db_pre.names.LC_PARTY_T],
+                  'inlcinteresadocontacto': pre_layers[db_pre.names.LC_PARTY_CONTACT_T],
+                  'inlcagrupacioninteresados': pre_layers[db_pre.names.LC_GROUP_PARTY_T],
+                  'incolmiembros': pre_layers[db_pre.names.MEMBERS_T],
+                  'inlcderecho': pre_layers[db_pre.names.LC_RIGHT_T],
+                  'inlcrestriccion': pre_layers[db_pre.names.LC_RESTRICTION_T],
+                  'inlcfuenteadministrativa': pre_layers[db_pre.names.LC_ADMINISTRATIVE_SOURCE_T],
+                  'inlcfuenteespacial': pre_layers[db_pre.names.LC_SPATIAL_SOURCE_T],
+                  'inextarchivo': pre_layers[db_pre.names.EXT_ARCHIVE_S],
+                  'incolrrrfuente': pre_layers[db_pre.names.COL_RRR_SOURCE_T],
+                  'incolunidadfuente': pre_layers[db_pre.names.COL_UNIT_SOURCE_T],
+                  'incoluefuente': pre_layers[db_pre.names.COL_UE_SOURCE_T],
+                  'incolbaunitfuente': pre_layers[db_pre.names.COL_BAUNIT_SOURCE_T],
+                  'outlcpuntolevantamiento': conv_layers[db_conv.names.LC_SURVEY_POINT_T],
+                  'outlcpuntocontrol': conv_layers[db_conv.names.LC_CONTROL_POINT_T],
+                  'outlcpuntolindero': conv_layers[db_conv.names.LC_BOUNDARY_POINT_T],
+                  'outlclindero': conv_layers[db_conv.names.LC_BOUNDARY_T],
+                  'outpuntoccl': conv_layers[db_conv.names.COL_CCL_POINT_T],
+                  'outlcterreno': conv_layers[db_conv.names.LC_PLOT_T],
+                  'outlcconstruccion': conv_layers[db_conv.names.LC_BUILDING_T],
+                  'outlcunidadconstruccion': conv_layers[db_conv.names.LC_BUILDING_UNIT_T],
+                  'outlcservidumbretransito': conv_layers[db_conv.names.LC_RIGHT_OF_WAY_T],
+                  'outcolareavalor': conv_layers[db_conv.names.COL_VALUE_AREA_T],
+                  'outcolmasccl': conv_layers[db_conv.names.MORE_BFS_T],
+                  'outcolmenosccl': conv_layers[db_conv.names.LESS_BFS_T],
+                  'outlctipologia': conv_layers[db_conv.names.LC_TIPOLOGY_BUILDING_T],
+                  'outlccalificacionnoconvencional': conv_layers[db_conv.names.LC_NON_CONVENTIONAL_QUALIFICATION_T],
+                  'outlccalificacionconvencional': conv_layers[db_conv.names.LC_CONVENTIONAL_QUALIFICATION_T],
+                  'outlcgrupocalificacion': conv_layers[db_conv.names.LC_GROUP_QUALIFICATION_T],
+                  'outlcobjetoconstruccion': conv_layers[db_conv.names.LC_BUILDING_OBJECT_T],
+                  'outlcpredio': conv_layers[db_conv.names.LC_PARCEL_T],
+                  'outlcdatosadicionaleslevantamientocatastral': conv_layers[db_conv.names.LC_SURVEY_CADASTRAL_ADITIONAL_DATA_T],
+                  'outlcestructuranovedadnumeropredial': conv_layers[db_conv.names.LC_PARCEL_NUMBER_NEW_STRUCTURE_T],
+                  'outlcestructuranovedadfmi': conv_layers[db_conv.names.LC_FMI_NEW_STRUCTURE_T],
+                  'outlccontactovisita': conv_layers[db_conv.names.LC_CONTACT_VISIT_T],
+                  'outlcdatosphcondominio': conv_layers[db_conv.names.LC_CONDOMINIUM_PH_DATA_T],
+                  'outlcofertasmercadoinmobiliario': conv_layers[db_conv.names.LC_REAL_ESTATE_MARKET_OFFERS_T],
+                  'outextdireccion': conv_layers[db_conv.names.EXT_ADDRESS_S],
+                  'outlcprediocopropiedad': conv_layers[db_conv.names.LC_COPROPERTY_T],
+                  'outlccaracteristicasunidadconstruccion': conv_layers[db_conv.names.BUILDING_UNIT_CHARACTERISTICS_T],
+                  'outcoluebaunit': conv_layers[db_conv.names.COL_UE_BAUNIT_T],
+                  'outlcinteresado': conv_layers[db_conv.names.LC_PARTY_T],
+                  'outlcinteresadocontacto': conv_layers[db_conv.names.LC_PARTY_CONTACT_T],
+                  'outlcagrupacioninteresados': conv_layers[db_conv.names.LC_GROUP_PARTY_T],
+                  'outcolmiembros': conv_layers[db_conv.names.MEMBERS_T],
+                  'outlcderecho': conv_layers[db_conv.names.LC_RIGHT_T],
+                  'outlcrestriccion': conv_layers[db_conv.names.LC_RESTRICTION_T],
+                  'outlcfuenteadministrativa': conv_layers[db_conv.names.LC_ADMINISTRATIVE_SOURCE_T],
+                  'outlcfuenteespacial': conv_layers[db_conv.names.LC_SPATIAL_SOURCE_T],
+                  'outextarchivo': conv_layers[db_conv.names.EXT_ARCHIVE_S],
+                  'outcolrrrfuente': conv_layers[db_conv.names.COL_RRR_SOURCE_T],
+                  'outcolunidadfuente': conv_layers[db_conv.names.COL_UNIT_SOURCE_T],
+                  'outcoluefuente': conv_layers[db_conv.names.COL_UE_SOURCE_T],
+                  'outcolbaunitfuente': conv_layers[db_conv.names.COL_BAUNIT_SOURCE_T]}
+
+        try:
+            processing.execAlgorithmDialog("model:ETL_SURVEY_1_0_TO_1_2", params)
+        except QgsProcessingException as e:
+            self.logger.warning_msg(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                                                 "There was an error running the ETL model. See the QGIS log for details."))
+            self.logger.critical(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                                              "Error running the ETL model. Details: {}").format(
+                str(e)))
+            return
+
+        self.logger.info(__name__, "ETL model finished!")
 
     def reject(self):
         if self._running_tool:
@@ -314,8 +508,8 @@ class XTFModelConverterDialog(QDialog, DIALOG_XTF_MODEL_CONVERTER_UI):
 
     def save_settings(self):
         settings = QSettings()
-        settings.setValue('Asistente-LADM-COL/xtf_model_converter/xtf_in_path', self.txt_source_xtf.text())
-        settings.setValue('Asistente-LADM-COL/xtf_model_converter/xtf_out_path', self.txt_target_xtf.text())
+        #settings.setValue('Asistente-LADM-COL/xtf_model_converter/xtf_in_path', self.txt_source_xtf.text())
+        #settings.setValue('Asistente-LADM-COL/xtf_model_converter/xtf_out_path', self.txt_target_xtf.text())
 
         # In the main page (source-target configuration), save if splitter is closed
         self.app.settings.xtf_converter_splitter_collapsed = self.splitter.sizes()[1] == 0
