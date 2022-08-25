@@ -27,7 +27,8 @@ from qgis.PyQt.QtCore import (Qt,
                               pyqtSignal)
 from qgis.PyQt.QtGui import QValidator
 from qgis.core import (Qgis,
-                       QgsProcessingException)
+                       QgsProcessingException,
+                       QgsProcessingFeedback)
 from qgis.gui import QgsMessageBar
 
 import processing
@@ -58,7 +59,7 @@ class XTFModelConverterDialog(QDialog, DIALOG_XTF_MODEL_CONVERTER_UI):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         #self._controller = controller
-        #self.parent = parent
+        self.parent = parent
         self.conn_manager = conn_manager
 
         self.logger = Logger()
@@ -89,14 +90,14 @@ class XTFModelConverterDialog(QDialog, DIALOG_XTF_MODEL_CONVERTER_UI):
         self.btn_converted_db.clicked.connect(self.show_settings_converted_db)
 
         # Initialize
-        #self.initialize_progress()
+        self.initialize_progress()
 
 
 
         # Set MessageBar for QDialog
-        self.bar = QgsMessageBar()
-        self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
-        self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
+        #self.bar = QgsMessageBar()
+        #self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        #self.layout().addWidget(self.bar, 0, 0, Qt.AlignTop)
 
         # Set connections
         self.buttonBox.accepted.disconnect()
@@ -146,9 +147,9 @@ class XTFModelConverterDialog(QDialog, DIALOG_XTF_MODEL_CONVERTER_UI):
     def accepted(self):
         self.save_settings()
 
-        # self.bar.clearWidgets()  # Remove previous messages
-        # self.set_gui_controls_enabled(False)
-        # self.progress.setVisible(True)
+        #self.bar.clearWidgets()  # Remove previous messages
+        self.set_gui_controls_enabled(False)
+        self.progress.setVisible(True)
 
         # msg = QCoreApplication.translate("XTFModelConverterDialog", "Converting XTF data (this might take a while)...")
         # with ProcessWithStatus(msg):
@@ -341,8 +342,11 @@ class XTFModelConverterDialog(QDialog, DIALOG_XTF_MODEL_CONVERTER_UI):
                   'outcoluefuente': conv_layers[db_conv.names.COL_UE_SOURCE_T],
                   'outcolbaunitfuente': conv_layers[db_conv.names.COL_BAUNIT_SOURCE_T]}
 
+        f = QgsProcessingFeedback()
+        f.progressChanged.connect(self.progress_changed)
+
         try:
-            processing.execAlgorithmDialog("model:ETL_SURVEY_1_0_TO_1_2", params)
+            processing.run("model:ETL_SURVEY_1_0_TO_1_2", params, feedback=f)
         except QgsProcessingException as e:
             self.logger.warning_msg(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
                                                                                  "There was an error running the ETL model. See the QGIS log for details."))
@@ -371,7 +375,8 @@ class XTFModelConverterDialog(QDialog, DIALOG_XTF_MODEL_CONVERTER_UI):
             self.done(1)
 
     def finished_slot(self, result):
-        self.bar.clearWidgets()
+        #self.bar.clearWidgets()
+        pass
 
     def set_init_db_config(self):
         """
@@ -383,7 +388,7 @@ class XTFModelConverterDialog(QDialog, DIALOG_XTF_MODEL_CONVERTER_UI):
         self.init_db_pre_converted = self.conn_manager.get_db_connector_from_source(SUPPLIES_DB_SOURCE)
 
     def show_settings_converted_db(self):
-        self.settings_dialog.setWindowTitle(QCoreApplication.translate("ChangeDetectionSettingsDialog", "CONVERTED DB Connection Settings"))
+        self.settings_dialog.setWindowTitle(QCoreApplication.translate("XTFModelConverterDialog", "CONVERTED DB Connection Settings"))
         self.settings_dialog.set_db_source(COLLECTED_DB_SOURCE)
         self.settings_dialog.set_tab_pages_list([SETTINGS_CONNECTION_TAB_INDEX])
         self.settings_dialog.set_required_models([LADMNames.SURVEY_MODEL_KEY])
@@ -395,7 +400,7 @@ class XTFModelConverterDialog(QDialog, DIALOG_XTF_MODEL_CONVERTER_UI):
         self.settings_dialog.db_connection_changed.disconnect(self.db_connection_changed)
 
     def show_settings_pre_converted_db(self):
-        self.settings_dialog.setWindowTitle(QCoreApplication.translate("ChangeDetectionSettingsDialog", "PRE CONVERTED DB Connection Settings"))
+        self.settings_dialog.setWindowTitle(QCoreApplication.translate("XTFModelConverterDialog", "PRE CONVERTED DB Connection Settings"))
         self.settings_dialog.set_db_source(SUPPLIES_DB_SOURCE)
         self.settings_dialog.set_tab_pages_list([SETTINGS_CONNECTION_TAB_INDEX])
         self.settings_dialog.set_required_models([LADMNames.SURVEY_1_0_MODEL_KEY])
@@ -422,15 +427,15 @@ class XTFModelConverterDialog(QDialog, DIALOG_XTF_MODEL_CONVERTER_UI):
         #self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
 
         # First, update status of same_db button according to collected db connection
-        #res_collected, code_collected, msg_collected = self._db_collected.test_connection(models={REQUIRED_MODELS: [LADMNames.SURVEY_MODEL_KEY]})
-        #res_supplies, code_supplies, msg_supplies = self._db_collected.test_connection(models={REQUIRED_MODELS: [LADMNames.SUPPLIES_MODEL_KEY]})
+        res_converted, code_collected, msg_collected = self._db_converted.test_connection(models={REQUIRED_MODELS: [LADMNames.SURVEY_MODEL_KEY]})
+        res_pre_converted, code_supplies, msg_supplies = self._db_pre_converted.test_connection(models={REQUIRED_MODELS: [LADMNames.SURVEY_1_0_MODEL_KEY]})
 
         db_description = self._db_pre_converted.get_description_conn_string()
         if db_description:
             self.db_pre_converted_connect_label.setText(db_description)
             self.db_pre_converted_connect_label.setToolTip(self._db_pre_converted.get_display_conn_string())
         else:
-            self.db_pre_converted_connect_label.setText(QCoreApplication.translate("ChangeDetectionSettingsDialog", "The database is not defined!"))
+            self.db_pre_converted_connect_label.setText(QCoreApplication.translate("XTFModelConverterDialog", "The database is not defined!"))
             self.db_pre_converted_connect_label.setToolTip('')
 
         # Update collected db connection label
@@ -439,7 +444,7 @@ class XTFModelConverterDialog(QDialog, DIALOG_XTF_MODEL_CONVERTER_UI):
             self.db_converted_connect_label.setText(db_description)
             self.db_converted_connect_label.setToolTip(self._db_converted.get_display_conn_string())
         else:
-            self.db_converted_connect_label.setText(QCoreApplication.translate("ChangeDetectionSettingsDialog", "The database is not defined!"))
+            self.db_converted_connect_label.setText(QCoreApplication.translate("XTFModelConverterDialog", "The database is not defined!"))
             self.db_converted_connect_label.setToolTip('')
 
         # Update supplies db connection label
@@ -450,16 +455,16 @@ class XTFModelConverterDialog(QDialog, DIALOG_XTF_MODEL_CONVERTER_UI):
 
 
         # Update error message labels
-        # if not res_collected:
-        #     self.lbl_msg_collected.setText(QCoreApplication.translate("ChangeDetectionSettingsDialog", "Warning: DB connection is not valid"))
-        #     self.lbl_msg_collected.setToolTip(msg_collected)
+        if not res_converted:
+            self.lbl_msg_collected.setText(QCoreApplication.translate("XTFModelConverterDialog", "Warning: DB connection is not valid"))
+            self.lbl_msg_collected.setToolTip(msg_collected)
 
-        # if not res_supplies:
-        #     self.lbl_msg_supplies.setText(QCoreApplication.translate("ChangeDetectionSettingsDialog", "Warning: DB connection is not valid"))
-        #     self.lbl_msg_supplies.setToolTip(msg_supplies)
+        if not res_pre_converted:
+            self.lbl_msg_supplies.setText(QCoreApplication.translate("XTFModelConverterDialog", "Warning: DB connection is not valid"))
+            self.lbl_msg_supplies.setToolTip(msg_supplies)
 
-        # if res_collected and res_supplies:
-        #     self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
+        if res_converted and res_pre_converted:
+            self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
 
     # def xtf_paths_changed(self):
     #     # Enable/disable 'Convert' button
@@ -504,7 +509,7 @@ class XTFModelConverterDialog(QDialog, DIALOG_XTF_MODEL_CONVERTER_UI):
 
     def set_gui_controls_enabled(self, enable):
         self.set_convert_button_enabled(enable)
-        self.gbx_parameters.setEnabled(enable)
+        #self.gbx_parameters.setEnabled(enable)
 
     def save_settings(self):
         settings = QSettings()
