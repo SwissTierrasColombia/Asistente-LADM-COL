@@ -46,7 +46,7 @@ class DBEngineGUIConfig(QObject, metaclass=SingletonQObject):
                         ACTION_SCHEMA_IMPORT,
                         ACTION_IMPORT_DATA,
                         ACTION_EXPORT_DATA,
-                        ACTION_XTF_MODEL_CONVERTER,
+                        ACTION_DATA_MODEL_CONVERTER,
                         ACTION_LOAD_LAYERS,
                         ACTION_FIX_LADM_COL_RELATIONS,
                         ACTION_CHANGE_DETECTION_PER_PARCEL,

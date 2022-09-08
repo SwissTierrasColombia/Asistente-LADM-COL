@@ -367,7 +367,7 @@ def get_role_config():
             ROLE_ENABLED: False,
             ROLE_MODELS: get_field_admin_role_models(),
             ROLE_ACTIONS: [
-                ACTION_XTF_MODEL_CONVERTER,
+                ACTION_DATA_MODEL_CONVERTER,
                 ACTION_ALLOCATE_PARCELS_FIELD_DATA_CAPTURE,
                 #  ACTION_SYNCHRONIZE_FIELD_DATA,
                 ACTION_INTEGRATE_SUPPLIES,
@@ -383,7 +383,7 @@ def get_role_config():
             ROLE_ENABLED: False,
             ROLE_MODELS: field_coordinator_role_models,
             ROLE_ACTIONS: [
-                ACTION_XTF_MODEL_CONVERTER,
+                ACTION_DATA_MODEL_CONVERTER,
                 ACTION_ALLOCATE_PARCELS_FIELD_DATA_CAPTURE
                 #  ACTION_SYNCHRONIZE_FIELD_DATA],
             ],
@@ -397,7 +397,7 @@ def get_role_config():
             ROLE_ENABLED: True,
             ROLE_MODELS: COMMON_ROLE_MODELS,
             ROLE_ACTIONS: [
-                ACTION_XTF_MODEL_CONVERTER,
+                ACTION_DATA_MODEL_CONVERTER,
                 ACTION_CREATE_POINT,
                 ACTION_CREATE_BOUNDARY,
                 ACTION_CREATE_PLOT,
@@ -438,7 +438,7 @@ def get_role_config():
             ROLE_ENABLED: True,
             ROLE_MODELS: COMMON_ROLE_MODELS,
             ROLE_ACTIONS: [
-                ACTION_XTF_MODEL_CONVERTER,
+                ACTION_DATA_MODEL_CONVERTER,
                 ACTION_CHANGE_DETECTION_SETTINGS,
                 ACTION_CHANGE_DETECTION_ALL_PARCELS,
                 ACTION_CHANGE_DETECTION_PER_PARCEL,

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>XTFModelConverterDialog</class>
- <widget class="QDialog" name="XTFModelConverterDialog">
+ <class>DataModelConverterDialog</class>
+ <widget class="QDialog" name="DataModelConverterDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -323,7 +323,7 @@ p, li { white-space: pre-wrap; }
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>XTFModelConverterDialog</receiver>
+   <receiver>DataModelConverterDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -339,7 +339,7 @@ p, li { white-space: pre-wrap; }
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>XTFModelConverterDialog</receiver>
+   <receiver>DataModelConverterDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
