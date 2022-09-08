@@ -35,7 +35,6 @@ from asistente_ladm_col.core.ili2db import Ili2DB
 from asistente_ladm_col.core.quality_rules.abstract_quality_rule import AbstractQualityRule
 from asistente_ladm_col.core.quality_rules.quality_rule_execution_result import QualityRuleExecutionResult
 from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
-from asistente_ladm_col.logic.xtf_model_converter.iliverrors_to_errores_calidad_0_1_converter import IliVErrorsToErroresCalidad01Converter
 
 
 class QRValidateDataAgainstModel(AbstractQualityRule):
