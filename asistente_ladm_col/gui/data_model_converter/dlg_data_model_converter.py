@@ -28,8 +28,10 @@ from qgis.PyQt.QtCore import (Qt,
 from qgis.PyQt.QtGui import QColor
 from qgis.core import (Qgis,
                        QgsProcessingException,
-                       QgsProcessingFeedback)
-from qgis.gui import QgsMessageBar
+                       QgsProcessingFeedback,
+                       QgsProject)
+from qgis.gui import (QgsMessageBar,
+                      QgsMapCanvas)
 
 import processing
 
@@ -313,8 +315,14 @@ class DataModelConverterDialog(QDialog, DIALOG_DATA_MODEL_CONVERTER_UI):
             self.print_success_text(etl_log)
             self.print_info("""\n\nINFORMACIÓN ADICIONAL:\nPRECAUCIÓN:\nSi los predios no tienen datos adicionales de levantamiento catastral de origen se toman los siguientes valores por defecto:\n\nDestinacion_Economica: Habitacional\nClase_Suelo: Urbano\nAsí mismo, se asumen los siguientes valores por defecto por inexistencia en la tabla LC_Predio:\nCodigo_Homologado: NULL\nInterrelacionado: False\nCodigo_Homologado_FMI: NULL\nValor_Referencia: NULL\n\nEn LC_DatosAdicionalesLevantamientoCatastral:\nOtro_Cual_Resultado: NULL\nDespojo_Abandono: NULL\nEstrato: NULL\nOtro_Cual_Estrato: NULL\n\nEn LC_Interesado:\nEstado_Civil: NULL\n\nEn LC_Construccion:\nValor de referencia: NULL\n\nEn LC_TipologiaConstruccion:\nCual: NULL""",
             '#0000FF')
+            self.print_info(QCoreApplication.translate("DataModelConverterDialog",'\nCleaning Layertree...\n'))
+            QgsProject.instance().removeAllMapLayers()
+            root = QgsProject.instance().layerTreeRoot()
+            group = root.findGroup('tables')
+            root.removeChildNode(group)
             time_execution = time.time() - start_execution
             self.print_info(QCoreApplication.translate("DataModelConverterDialog", '\n\nMigration successfully completed in {} seconds!'.format(round(time_execution, 1))), '#008000')
+            self.app.gui.redraw_all_layers()
             return True, QCoreApplication.translate("DataModelConverterDialog", "Migration successfully completed!")
         except QgsProcessingException as e:
             self.logger.warning_msg(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
