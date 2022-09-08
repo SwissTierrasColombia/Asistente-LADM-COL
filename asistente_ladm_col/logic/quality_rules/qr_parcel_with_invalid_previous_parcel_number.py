@@ -2,12 +2,12 @@
 /***************************************************************************
                               Asistente LADM-COL
                              --------------------
-        begin           : 2022-06-15
+        begin           : 2022-06-22
         git sha         : :%H$
         copyright       : (C) 2021 by Germán Carrillo (SwissTierras Colombia)
-                          (C) 2022 by Sergio Ramírez (SwissTierras Colombia)
+                          (C) 2022 by Leo Cardona (SwissTierras Colombia)
         email           : gcarrillo@linuxmail.org
-                          sramirez@colsolutions.com
+                          contacto@ceicol.com
  ***************************************************************************/
 /***************************************************************************
  *                                                                         *
@@ -17,40 +17,39 @@
  *                                                                         *
  ***************************************************************************/
 """
-from qgis.PyQt.QtCore import (QCoreApplication,
-                              QSettings)
+from qgis.PyQt.QtCore import QCoreApplication
 
 from asistente_ladm_col.config.enums import EnumQualityRuleResult
 from asistente_ladm_col.config.keys.common import QUALITY_RULE_LADM_COL_LAYERS
 from asistente_ladm_col.config.layer_config import LADMNames
-from asistente_ladm_col.config.quality_rule_config import (QR_IGACR4016,
-                                                           QRE_IGACR4016E01)
+from asistente_ladm_col.config.quality_rule_config import (QR_IGACR4006,
+                                                           QRE_IGACR4006E01)
 from asistente_ladm_col.core.quality_rules.abstract_logic_quality_rule import AbstractLogicQualityRule
 from asistente_ladm_col.core.quality_rules.quality_rule_execution_result import QualityRuleExecutionResult
 from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 
 
-class QRDuplicateBuildingRecords(AbstractLogicQualityRule):
+class QRParcelWithInvalidPreviousParcelNumber(AbstractLogicQualityRule):
     """
-    Check that building don't have duplicate records
+    Check that parcel has a valid previous parcel number.
     """
-    _ERROR_01 = QRE_IGACR4016E01  # Building with duplicate records
+    _ERROR_01 = QRE_IGACR4006E01  # Parcel with incorrect previous parcel number
 
     def __init__(self):
         AbstractLogicQualityRule.__init__(self)
 
-        self._id = QR_IGACR4016
-        self._name = "Construcción no debe tener registros repetidos"
-        self._tags = ["igac", "instituto geográfico agustín codazzi", "lógica", "negocio", "construccion", "registros repetidos"]
+        self._id = QR_IGACR4006
+        self._name = "El número predial anterior debe tener 20 caracteres numéricos"
+        self._tags = ["igac", "instituto geográfico agustín codazzi", "lógica", "negocio", "predio", "número predial anterior"]
         self._models = [LADMNames.SURVEY_MODEL_KEY]
 
-        self._errors = {self._ERROR_01: "Construcción no debe tener registros repetidos"}
+        self._errors = {self._ERROR_01: "El número predial anterior debe tener 20 caracteres numéricos"}
 
         # Optional. Only useful for display purposes.
         self._field_mapping = dict()  # E.g., {'id_objetos': 'ids_punto_lindero', 'valores': 'conteo'}
 
     def layers_config(self, names):
-        return {QUALITY_RULE_LADM_COL_LAYERS: [names.LC_BUILDING_T]}
+        return {QUALITY_RULE_LADM_COL_LAYERS: [names.LC_PARCEL_T]}
 
     def _validate(self, db, db_qr, layer_dict, tolerance, **kwargs):
         self.progress_changed.emit(5)
@@ -60,16 +59,7 @@ class QRDuplicateBuildingRecords(AbstractLogicQualityRule):
         if not pre_res:
             return pre_obj
 
-        # Check building with duplicate records
-        table = db.names.LC_BUILDING_T
-        fields = [db.names.LC_BUILDING_T_BUILDING_VALUATION_F,
-                  db.names.LC_BUILDING_T_BUILDING_AREA_F,
-                  db.names.COL_SPATIAL_UNIT_T_DIMENSION_F,
-                  db.names.COL_SPATIAL_UNIT_T_LABEL_F,
-                  db.names.COL_SPATIAL_UNIT_T_SURFACE_RELATION_F,
-                  db.names.COL_SPATIAL_UNIT_T_GEOMETRY_F]
-
-        res, records = ladm_queries.get_duplicate_records_in_table(db,table,fields)
+        res, records = ladm_queries.get_parcels_with_invalid_previous_parcel_number(db)
         count = len(records)
 
         self.progress_changed.emit(50)
@@ -80,10 +70,10 @@ class QRDuplicateBuildingRecords(AbstractLogicQualityRule):
             errors = {'geometries': list(), 'data': list()}
             for record in records:
                 error_data = [  # [obj_uuids, rel_obj_uuids, values, details, state]
-                    record['duplicate_uuids'].split(','),
+                    [record[db.names.T_ILI_TID_F]],
                     None,
                     None,
-                    'Construcción repetida {} veces'.format(record['duplicate_total']),
+                    self._errors[self._ERROR_01],
                     error_state]
                 errors['data'].append(error_data)
 
@@ -93,10 +83,11 @@ class QRDuplicateBuildingRecords(AbstractLogicQualityRule):
 
         if count > 0:
             res_type = EnumQualityRuleResult.ERRORS
-            msg = QCoreApplication.translate("QualityRules", "{} buildings with repeated records were found.").format(count)
+            msg = QCoreApplication.translate("QualityRules", "{} parcels with invalid "
+                                                             "previous parcel number were found.").format(count)
         else:
             res_type = EnumQualityRuleResult.SUCCESS
-            msg = QCoreApplication.translate("QualityRules", "No duplicate buildings were found.")
+            msg = QCoreApplication.translate("QualityRules", "All parcels have valid previous parcel number.")
 
         self.progress_changed.emit(100)
 

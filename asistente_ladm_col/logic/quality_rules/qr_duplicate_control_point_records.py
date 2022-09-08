@@ -1,11 +1,13 @@
 """
 /***************************************************************************
-                              Asistente LADM_COL
+                              Asistente LADM-COL
                              --------------------
-        begin                : 2022-06-15
-        git sha              : :%H$
-        copyright            : (C) 2022 by Sergio Ramírez (BSF Swissphoto)
-        email                : seralra96@gmail.com
+        begin           : 2022-06-15
+        git sha         : :%H$
+        copyright       : (C) 2021 by Germán Carrillo (SwissTierras Colombia)
+                          (C) 2022 by Sergio Ramírez (SwissTierras Colombia)
+        email           : gcarrillo@linuxmail.org
+                          sramirez@colsolutions.com
  ***************************************************************************/
 /***************************************************************************
  *                                                                         *
@@ -58,8 +60,6 @@ class QRDuplicateControlPointRecords(AbstractLogicQualityRule):
         if not pre_res:
             return pre_obj
 
-        error_state = None
-
         # Check control point with duplicate records       
         table = db.names.LC_CONTROL_POINT_T
         fields = [db.names.LC_CONTROL_POINT_T_VERTICAL_ACCURACY_F,
@@ -93,8 +93,7 @@ class QRDuplicateControlPointRecords(AbstractLogicQualityRule):
 
         if count > 0:
             res_type = EnumQualityRuleResult.ERRORS
-            msg = QCoreApplication.translate("QualityRules", "{} control points with repeated records.").format(
-                count)
+            msg = QCoreApplication.translate("QualityRules", "{} control points with repeated records were found.").format(count)
         else:
             res_type = EnumQualityRuleResult.SUCCESS
             msg = QCoreApplication.translate("QualityRules", "No duplicate control points were found.")

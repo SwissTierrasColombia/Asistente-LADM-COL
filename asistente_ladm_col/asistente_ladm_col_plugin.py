@@ -235,14 +235,14 @@ class AsistenteLADMCOLPlugin(QObject):
         self.app.processing.initialize_processing_resources()
 
     def create_actions(self):
-        self.create_supplies_actions()
-        self.create_field_data_capture_actions()
+        #self.create_supplies_actions()
+        #self.create_field_data_capture_actions()
         self.create_survey_actions()
         self.create_cadastre_form_actions()
         self.create_valuation_actions()
-        self.create_change_detection_actions()
+        #self.create_change_detection_actions()
         self.create_toolbar_actions()
-        self.create_transitional_system_actions()
+        #self.create_transitional_system_actions()
         self.create_generic_actions()
 
     def register_dock_widgets(self):

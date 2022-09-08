@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 /***************************************************************************
                               Asistente LADM_COL
@@ -39,6 +38,7 @@ from qgis.core import (QgsField,
                        QgsVectorLayerUtils,
                        QgsWkbTypes,
                        edit,
+                       NULL,
                        QgsFeatureSource)
 
 import processing
@@ -284,7 +284,8 @@ class GeometryUtils(QObject):
 
         return res, dict_res, msg
 
-    def get_overlapping_polygons(self, polygon_layer):
+    @staticmethod
+    def get_overlapping_polygons(polygon_layer):
         """
         Obtains overlapping polygons from a single layer
         :param polygon_layer: vector layer with geometry type polygon
@@ -325,7 +326,8 @@ class GeometryUtils(QObject):
         gc.collect()
         return list_overlapping_polygons
 
-    def get_intersection_polygons(self, polygon_layer, polygon_id, overlapping_id):
+    @staticmethod
+    def get_intersection_polygons(polygon_layer, polygon_id, overlapping_id):
         feature_polygon = polygon_layer.getFeature(polygon_id)
         feature_overlap = polygon_layer.getFeature(overlapping_id)
 
@@ -344,7 +346,8 @@ class GeometryUtils(QObject):
 
         return QgsGeometry.collectGeometry(listGeoms) if len(listGeoms) > 0 else None
 
-    def get_inner_intersections_between_polygons(self, polygon_layer_1, polygon_layer_2):
+    @staticmethod
+    def get_inner_intersections_between_polygons(polygon_layer_1, polygon_layer_2):
         """
         Discard intersections other than inner intersections (i.e., only returns
         polygon intersections)
@@ -451,7 +454,8 @@ class GeometryUtils(QObject):
 
         return GeometryUtils.extract_geoms_by_type(clean_errors, [QgsWkbTypes.PolygonGeometry])
 
-    def add_topological_vertices(self, layer1, layer2, tolerance=0):
+    @staticmethod
+    def add_topological_vertices(layer1, layer2, tolerance=0):
         """
         Bring all vertices from layer2 to a copylayer1 if they are within a default tolerance.
         Note: This generates a new layer based on layer1 and does not modify neither layer1 nor layer2.
@@ -462,7 +466,7 @@ class GeometryUtils(QObject):
         :return: QgsVectorLayer copied from layer1 with the modified geometries
         """
         if tolerance == 0:
-            return self.add_topological_vertices2(layer1, layer2)  # Use old method
+            return GeometryUtils.add_topological_vertices2(layer1, layer2)  # Use old method
 
         adjusted = processing.run("native:snapgeometries",
                                   {'INPUT': layer1,
@@ -476,7 +480,8 @@ class GeometryUtils(QObject):
                               {'INPUT': adjusted,
                                'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
 
-    def add_topological_vertices2(self, layer1, layer2):
+    @staticmethod
+    def add_topological_vertices2(layer1, layer2):
         """
         Modify a copy of layer1 adding vertices that are in layer2 and not in layer1.
         It returns a modified copy of layer1 that has its geometries fixed.
@@ -533,12 +538,13 @@ class GeometryUtils(QObject):
 
         return fixed_layer1
 
-    def difference_plot_boundary(self, plots_as_lines_layer, boundary_layer, id_field):
+    @staticmethod
+    def difference_plot_boundary(plots_as_lines_layer, boundary_layer, id_field):
         """
         Advanced difference function that, unlike the traditional function,
         takes into account not shared vertices to build difference geometries.
         """
-        adjusted_plots_as_lines = self.add_topological_vertices(plots_as_lines_layer, boundary_layer)
+        adjusted_plots_as_lines = GeometryUtils.add_topological_vertices(plots_as_lines_layer, boundary_layer)
 
         diff_layer = processing.run("native:difference",
                                     {'INPUT': adjusted_plots_as_lines,
@@ -557,7 +563,7 @@ class GeometryUtils(QObject):
         Advanced difference function that, unlike the traditional function,
         takes into account not shared vertices to build difference geometries.
         """
-        adjusted_plots_as_lines = self.add_topological_vertices(plots_as_lines_layer, boundary_layer)
+        adjusted_plots_as_lines = GeometryUtils.add_topological_vertices(plots_as_lines_layer, boundary_layer)
 
         diff_layer = processing.run("native:difference",
                                     {'INPUT': boundary_layer,
@@ -586,7 +592,8 @@ class GeometryUtils(QObject):
 
         return [geom for geom in geom_list if geom.type() in geometry_types]
 
-    def get_multipart_geoms(self, layer):
+    @staticmethod
+    def get_multipart_geoms(layer):
         """
         Get a list of geometries and ids with geometry type multipart and multiple
         geometries
@@ -670,7 +677,8 @@ class GeometryUtils(QObject):
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
         return spatial_join_layer.getFeatures(request)
 
-    def get_inner_rings_layer(self, names, plot_layer, id_field, use_selection=False):
+    @staticmethod
+    def get_inner_rings_layer(names, plot_layer, id_field, use_selection=False):
         id_field_idx = plot_layer.fields().indexFromName(id_field)
         request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
         polygons = plot_layer.getSelectedFeatures(request) if use_selection else plot_layer.getFeatures(request)
@@ -1140,3 +1148,79 @@ class GeometryUtils(QObject):
     def create_spatial_index(layer):
         if layer.hasSpatialIndex() != QgsFeatureSource.SpatialIndexPresent:
             processing.run("native:createspatialindex", {'INPUT': layer})
+
+    @staticmethod
+    def get_unique_nodes_layer(layer, id_field):
+        """
+        Return layer with unique nodes
+        It is necessary because 'remove duplicate vertices' processing algorithm does not filter the data as we need them
+        """
+
+        tmp_nodes_layer = processing.run("native:extractvertices", {'INPUT': layer, 'OUTPUT': 'memory:'})['OUTPUT']
+
+        # layer is created with unique vertices
+        # It is necessary because 'remove duplicate vertices' processing algorithm does not filter the data as we need them
+        unique_nodes_layer = QgsVectorLayer("Point?crs={}".format(layer.sourceCrs().authid()), 'unique nodes', "memory")
+        data_provider = unique_nodes_layer.dataProvider()
+        data_provider.addAttributes([QgsField(id_field, QVariant.Int)])
+        unique_nodes_layer.updateFields()
+
+        id_field_idx = tmp_nodes_layer.fields().indexFromName(id_field)
+        request = QgsFeatureRequest().setSubsetOfAttributes([id_field_idx])
+
+        filter_fs = []
+        fs = []
+        for f in tmp_nodes_layer.getFeatures(request):
+            item = [f[id_field], f.geometry().asWkt()]
+            if item not in filter_fs:
+                filter_fs.append(item)
+                fs.append(f)
+        del filter_fs
+        unique_nodes_layer.dataProvider().addFeatures(fs)
+        GeometryUtils.create_spatial_index(unique_nodes_layer)
+        return unique_nodes_layer
+
+    @staticmethod
+    def get_boundary_points_not_covered_by_boundary_nodes(db, boundary_point_layer, boundary_layer, point_bfs_layer, id_field):
+        boundary_nodes_layer = GeometryUtils.get_unique_nodes_layer(boundary_layer, id_field)
+
+        # Spatial Join between boundary_points and boundary_nodes
+        spatial_join_layer = processing.run("qgis:joinattributesbylocation",
+                                            {'INPUT': boundary_point_layer,
+                                             'JOIN': boundary_nodes_layer,
+                                             'PREDICATE': [0],  # Intersects
+                                             'JOIN_FIELDS': [db.names.T_ID_F],
+                                             'METHOD': 0,
+                                             'DISCARD_NONMATCHING': False,
+                                             'PREFIX': '',
+                                             'OUTPUT': 'memory:'})['OUTPUT']
+
+        exp_point_bfs = '"{}" is not null and "{}" is not null'.format(db.names.POINT_BFS_T_LC_BOUNDARY_POINT_F,
+                                                                       db.names.POINT_BFS_T_LC_BOUNDARY_F)
+
+        list_point_bfs = [{'boundary_point_id': feature[db.names.POINT_BFS_T_LC_BOUNDARY_POINT_F],
+                           'boundary_id': feature[db.names.POINT_BFS_T_LC_BOUNDARY_F]}
+                          for feature in point_bfs_layer.getFeatures(exp_point_bfs)]
+
+        spatial_join_boundary_point_boundary_node = [{'boundary_point_id': feature[id_field],
+                                                     'boundary_id': feature[id_field + '_2']}
+                                                     for feature in spatial_join_layer.getFeatures()]
+
+        boundary_point_without_boundary_node = list()
+        no_register_point_bfs = list()
+        duplicate_in_point_bfs = list()
+
+        # point_bfs topology check
+        for item_sj in spatial_join_boundary_point_boundary_node:
+            boundary_point_id = item_sj['boundary_point_id']
+            boundary_id = item_sj['boundary_id']
+
+            if boundary_id != NULL:
+                if item_sj not in list_point_bfs:
+                    no_register_point_bfs.append((boundary_point_id, boundary_id))  # no registered in point bfs
+                elif list_point_bfs.count(item_sj) > 1:
+                    duplicate_in_point_bfs.append((boundary_point_id, boundary_id))  # duplicate in point bfs
+            else:
+                boundary_point_without_boundary_node.append(boundary_point_id)  # boundary point without boundary node
+
+        return boundary_point_without_boundary_node, no_register_point_bfs, duplicate_in_point_bfs

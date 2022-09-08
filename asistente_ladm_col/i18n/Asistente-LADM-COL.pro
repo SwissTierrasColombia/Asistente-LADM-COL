@@ -168,6 +168,37 @@ SOURCES = ../__init__.py \
           ../logic/quality/quality_rule_engine.py \
           ../logic/quality/quality_rule_layer_manager.py \
           ../logic/quality/quality_rules.py \
+          ../logic/quality_rules/qr_boundary_points_covered_plot_nodes.py \
+          ../logic/quality_rules/qr_boundary_points_not_covered_by_boundary_nodes.py \
+          ../logic/quality_rules/qr_duplicate_administrative_source_records.py \
+          ../logic/quality_rules/qr_duplicate_boundary_point_records.py \
+          ../logic/quality_rules/qr_duplicate_boundary_records.py \
+          ../logic/quality_rules/qr_duplicate_building_records.py \
+          ../logic/quality_rules/qr_duplicate_building_unit_records.py \
+          ../logic/quality_rules/qr_duplicate_control_point_records.py \
+          ../logic/quality_rules/qr_duplicate_party_records.py \
+          ../logic/quality_rules/qr_duplicate_restriction_records.py \
+          ../logic/quality_rules/qr_duplicate_right_records.py \
+          ../logic/quality_rules/qr_duplicate_survey_point_records.py \
+          ../logic/quality_rules/qr_gaps_in_plots.py \
+          ../logic/quality_rules/qr_group_party_percentage_that_do_not_make_one.py \
+          ../logic/quality_rules/qr_multiparts_in_right_of_way.py \
+          ../logic/quality_rules/qr_overlapping_boundaries.py \
+          ../logic/quality_rules/qr_overlapping_boundary_points.py \
+          ../logic/quality_rules/qr_overlapping_buildings.py \
+          ../logic/quality_rules/qr_overlapping_control_points.py \
+          ../logic/quality_rules/qr_overlapping_right_of_ways_buildings.py \
+          ../logic/quality_rules/qr_overlapping_right_of_ways.py \
+          ../logic/quality_rules/qr_parcel_right_relationship.py \
+          ../logic/quality_rules/qr_parcel_with_invalid_department_code.py \
+          ../logic/quality_rules/qr_parcel_with_invalid_municipality_code.py \
+          ../logic/quality_rules/qr_parcel_with_invalid_parcel_number.py \
+          ../logic/quality_rules/qr_parcel_with_invalid_previous_parcel_number.py \
+          ../logic/quality_rules/qr_plot_nodes_covered_boundary_points.py \
+          ../logic/quality_rules/qr_plots_covered_by_boundaries.py \
+          ../logic/quality_rules/qr_validate_data_against_model.py \
+          ../logic/quality_rules/qr_validate_legal_party.py \
+          ../logic/quality_rules/qr_validate_natural_party.py \
           ../utils/decorators.py \
           ../utils/qgis_model_baker_utils.py \
           ../utils/qt_utils.py \

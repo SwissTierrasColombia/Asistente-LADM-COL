@@ -1,4 +1,6 @@
-from asistente_ladm_col.config.ladm_names import LADMNames
+from asistente_ladm_col.config.ladm_names import (LADMNames,
+                                                  SPECIAL_CHARACTERS,
+                                                  DIGITS)
 from asistente_ladm_col.logic.ladm_col.qgis_ladm_query import QGISLADMQuery
 
 
@@ -61,12 +63,27 @@ class GPKGLADMQuery(QGISLADMQuery):
         query = """SELECT {t_id}, {t_ili_tid},
                           CASE WHEN {lc_party_t_business_name_f} IS NOT NULL THEN 1 ELSE 0 END AS {lc_party_t_business_name_f},
                           CASE WHEN {lc_party_t_surname_1_f} IS NULL OR length(trim({lc_party_t_surname_1_f})) > 0 = 0 THEN 1 ELSE 0 END AS {lc_party_t_surname_1_f},
+                          CASE WHEN {lc_party_t_surname_1_f} GLOB '*[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9 ]*' THEN 1 ELSE 0 END AS {lc_party_t_surname_1_f_special_characters},
+                          CASE WHEN {lc_party_t_surname_1_f} GLOB '*[0-9]*' THEN 1 ELSE 0 END AS {lc_party_t_surname_1_f_digits},
                           CASE WHEN {lc_party_t_first_name_1_f} IS NULL OR length(trim({lc_party_t_first_name_1_f})) > 0 = 0 THEN 1 ELSE 0 END AS {lc_party_t_first_name_1_f},
-                          CASE WHEN {lc_party_t_document_type_f} = (select {t_id} from {lc_party_document_type_d} where {ilicode} = '{lc_party_document_type_d_ilicode_f_nit_v}') THEN 1 ELSE 0 END AS {lc_party_t_document_type_f}
+                          CASE WHEN {lc_party_t_first_name_1_f} GLOB '*[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9 ]*' THEN 1 ELSE 0 END AS {lc_party_t_first_name_1_f_special_characters},
+                          CASE WHEN {lc_party_t_first_name_1_f} GLOB '*[0-9]*' THEN 1 ELSE 0 END AS {lc_party_t_first_name_1_f_digits},
+                          CASE WHEN {lc_party_t_surname_2_f} GLOB '*[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9 ]*' THEN 1 ELSE 0 END AS {lc_party_t_surname_2_f_special_characters},
+                          CASE WHEN {lc_party_t_surname_2_f} GLOB '*[0-9]*' THEN 1 ELSE 0 END AS {lc_party_t_surname_2_f_digits},
+                          CASE WHEN {lc_party_t_first_name_2_f} GLOB '*[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9 ]*' THEN 1 ELSE 0 END AS {lc_party_t_first_name_2_f_special_characters},
+                          CASE WHEN {lc_party_t_first_name_2_f} GLOB '*[0-9]*' THEN 1 ELSE 0 END AS {lc_party_t_first_name_2_f_digits},
+                          CASE WHEN {lc_party_t_document_type_f} = (select {t_id} from {lc_party_document_type_d} where {ilicode} = '{lc_party_document_type_d_ilicode_f_nit_v}') THEN 1 ELSE 0 END AS {lc_party_t_document_type_f},
+                          CASE WHEN {lc_party_t_genre_f} IS NULL THEN 1 ELSE 0 END AS {lc_party_t_genre_f}
                    FROM {lc_party_t}
                    WHERE {lc_party_t_type_f} = (select {t_id} from {lc_party_type_d} where {ilicode} = '{lc_party_type_d_ilicode_f_natural_party_v}')
-                         AND ({lc_party_t_business_name_f} IS NOT NULL OR {lc_party_t_surname_1_f} IS NULL OR length(trim({lc_party_t_surname_1_f})) > 0 = 0
+                         AND ({lc_party_t_business_name_f} IS NOT NULL
+                         OR {lc_party_t_surname_1_f} IS NULL OR length(trim({lc_party_t_surname_1_f})) > 0 = 0
+                         OR {lc_party_t_surname_1_f} GLOB '*[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ ]*'
                          OR {lc_party_t_first_name_1_f} IS NULL OR length(trim({lc_party_t_first_name_1_f})) > 0 = 0
+                         OR {lc_party_t_first_name_1_f} GLOB '*[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ ]*'
+                         OR {lc_party_t_surname_2_f} GLOB '*[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ ]*'
+                         OR {lc_party_t_first_name_2_f} GLOB '*[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ ]*'
+                         OR {lc_party_t_genre_f} IS NULL
                          OR {lc_party_t_document_type_f} = (select {t_id} from {lc_party_document_type_d} where {ilicode} = '{lc_party_document_type_d_ilicode_f_nit_v}'))
                """.format(t_id=db.names.T_ID_F,
                           t_ili_tid=db.names.T_ILI_TID_F,
@@ -74,13 +91,24 @@ class GPKGLADMQuery(QGISLADMQuery):
                           lc_party_t=db.names.LC_PARTY_T,
                           lc_party_t_business_name_f=db.names.LC_PARTY_T_BUSINESS_NAME_F,
                           lc_party_t_surname_1_f=db.names.LC_PARTY_T_SURNAME_1_F,
+                          lc_party_t_surname_1_f_special_characters=db.names.LC_PARTY_T_SURNAME_1_F + '_' + SPECIAL_CHARACTERS,
+                          lc_party_t_surname_1_f_digits=db.names.LC_PARTY_T_SURNAME_1_F + '_' + DIGITS,
+                          lc_party_t_surname_2_f=db.names.LC_PARTY_T_SURNAME_2_F,
+                          lc_party_t_surname_2_f_special_characters=db.names.LC_PARTY_T_SURNAME_2_F + '_' + SPECIAL_CHARACTERS,
+                          lc_party_t_surname_2_f_digits=db.names.LC_PARTY_T_SURNAME_2_F + '_' + DIGITS,
                           lc_party_t_first_name_1_f=db.names.LC_PARTY_T_FIRST_NAME_1_F,
+                          lc_party_t_first_name_1_f_special_characters=db.names.LC_PARTY_T_FIRST_NAME_1_F + '_' + SPECIAL_CHARACTERS,
+                          lc_party_t_first_name_1_f_digits=db.names.LC_PARTY_T_FIRST_NAME_1_F + '_' + DIGITS,
+                          lc_party_t_first_name_2_f=db.names.LC_PARTY_T_FIRST_NAME_2_F,
+                          lc_party_t_first_name_2_f_special_characters=db.names.LC_PARTY_T_FIRST_NAME_2_F + '_' + SPECIAL_CHARACTERS,
+                          lc_party_t_first_name_2_f_digits=db.names.LC_PARTY_T_FIRST_NAME_2_F + '_' + DIGITS,
                           lc_party_t_document_type_f=db.names.LC_PARTY_T_DOCUMENT_TYPE_F,
                           lc_party_t_type_f=db.names.LC_PARTY_T_TYPE_F,
                           lc_party_type_d=db.names.LC_PARTY_TYPE_D,
                           lc_party_document_type_d=db.names.LC_PARTY_DOCUMENT_TYPE_D,
                           lc_party_document_type_d_ilicode_f_nit_v=LADMNames.LC_PARTY_DOCUMENT_TYPE_D_ILICODE_F_NIT_V,
-                          lc_party_type_d_ilicode_f_natural_party_v=LADMNames.LC_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V)
+                          lc_party_type_d_ilicode_f_natural_party_v=LADMNames.LC_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V,
+                          lc_party_t_genre_f=db.names.LC_PARTY_T_GENRE_F)
         return db.execute_sql_query(query)
 
     @staticmethod
@@ -89,12 +117,20 @@ class GPKGLADMQuery(QGISLADMQuery):
                           CASE WHEN {lc_party_t_business_name_f} IS NULL OR length(trim({lc_party_t_business_name_f})) > 0 = 0 THEN 1 ELSE 0 END AS {lc_party_t_business_name_f},
                           CASE WHEN {lc_party_t_surname_1_f} IS NOT NULL THEN 1 ELSE 0 END AS {lc_party_t_surname_1_f},
                           CASE WHEN {lc_party_t_first_name_1_f} IS NOT NULL THEN 1 ELSE 0 END AS {lc_party_t_first_name_1_f},
-                          CASE WHEN {lc_party_t_document_type_f} NOT IN ((select {t_id} from {lc_party_document_type_d} where {ilicode} = '{lc_party_document_type_d_ilicode_f_nit_v}')) THEN 1 ELSE 0 END AS {lc_party_t_document_type_f}
+                          CASE WHEN {lc_party_t_document_type_f} NOT IN
+                            (select {t_id} from {lc_party_document_type_d} where {ilicode} in ('{lc_party_document_type_d_ilicode_f_nit_v}', '{lc_party_document_type_d_ilicode_f_sequential_v}'))
+                            THEN 1 ELSE 0 END AS {lc_party_t_document_type_f},
+                          CASE WHEN {lc_party_t_surname_2_f} IS NOT NULL THEN 1 ELSE 0 END AS {lc_party_t_surname_2_f},
+                          CASE WHEN {lc_party_t_first_name_2_f} IS NOT NULL THEN 1 ELSE 0 END AS {lc_party_t_first_name_2_f},
+                          CASE WHEN {lc_party_t_marital_status_f} IS NOT NULL THEN 1 ELSE 0 END AS {lc_party_t_marital_status_f},
+                          CASE WHEN {lc_party_t_genre_f} IS NOT NULL THEN 1 ELSE 0 END AS {lc_party_t_genre_f}
                    FROM {lc_party_t}
                    WHERE {lc_party_t_type_f} = (select {t_id} from {lc_party_type_d} where {ilicode} = '{lc_party_type_d_ilicode_f_not_natural_party_v}')
-                   AND ({lc_party_t_business_name_f} IS NULL OR length(trim({lc_party_t_business_name_f})) > 0 = 0 OR {lc_party_t_surname_1_f} IS NOT NULL OR
-                   {lc_party_t_first_name_1_f} IS NOT NULL OR
-                   {lc_party_t_document_type_f} NOT IN ((select {t_id} from {lc_party_document_type_d} where {ilicode} = '{lc_party_document_type_d_ilicode_f_nit_v}')))
+                   AND ({lc_party_t_business_name_f} IS NULL OR length(trim({lc_party_t_business_name_f})) > 0 = 0
+                   OR {lc_party_t_surname_1_f} IS NOT NULL OR {lc_party_t_first_name_1_f} IS NOT NULL
+                   OR {lc_party_t_surname_2_f} IS NOT NULL OR {lc_party_t_first_name_2_f} IS NOT NULL
+                   OR {lc_party_t_genre_f} IS NOT NULL
+                   OR {lc_party_t_document_type_f} NOT IN (select {t_id} from {lc_party_document_type_d} where {ilicode} in ('{lc_party_document_type_d_ilicode_f_nit_v}', '{lc_party_document_type_d_ilicode_f_sequential_v}')))
                 """.format(t_id=db.names.T_ID_F,
                            t_ili_tid=db.names.T_ILI_TID_F,
                            ilicode=db.names.ILICODE_F,
@@ -107,7 +143,12 @@ class GPKGLADMQuery(QGISLADMQuery):
                            lc_party_type_d=db.names.LC_PARTY_TYPE_D,
                            lc_party_document_type_d=db.names.LC_PARTY_DOCUMENT_TYPE_D,
                            lc_party_document_type_d_ilicode_f_nit_v=LADMNames.LC_PARTY_DOCUMENT_TYPE_D_ILICODE_F_NIT_V,
-                           lc_party_type_d_ilicode_f_not_natural_party_v=LADMNames.LC_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V)
+                           lc_party_document_type_d_ilicode_f_sequential_v=LADMNames.LC_PARTY_DOCUMENT_TYPE_D_ILICODE_F_SEQUENTIAL_V,
+                           lc_party_type_d_ilicode_f_not_natural_party_v=LADMNames.LC_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V,
+                           lc_party_t_first_name_2_f=db.names.LC_PARTY_T_FIRST_NAME_2_F,
+                           lc_party_t_surname_2_f=db.names.LC_PARTY_T_SURNAME_2_F,
+                           lc_party_t_marital_status_f=db.names.LC_PARTY_T_MARITAL_STATUS_F,
+                           lc_party_t_genre_f=db.names.LC_PARTY_T_GENRE_F)
         return db.execute_sql_query(query)
 
     @staticmethod
@@ -210,17 +251,16 @@ class GPKGLADMQuery(QGISLADMQuery):
     @staticmethod
     def get_group_party_fractions_that_do_not_make_one(db):
         query = """
-                    SELECT {members_t_group_party_f} as agrupacion, group_concat({t_id}) as miembros, SUM(parte) suma_fracciones  FROM (
-                    SELECT CAST({fraction_s_numerator_f} AS FLOAT)/{fraction_s_denominator_f} AS parte, {fraction_s_member_f} FROM {fraction_s}
-                    ) AS fraccion_parte join {members_t} on fraccion_parte.{fraction_s_member_f} = {members_t}.{t_id}
-                    GROUP BY {members_t_group_party_f}
-                    HAVING SUM(parte) != 1
-                """.format(t_id=db.names.T_ID_F,
-                           members_t=db.names.MEMBERS_T,
-                           fraction_s_member_f=db.names.FRACTION_S_MEMBER_F,
-                           fraction_s=db.names.FRACTION_S,
-                           fraction_s_numerator_f=db.names.FRACTION_S_NUMERATOR_F,
-                           fraction_s_denominator_f=db.names.FRACTION_S_DENOMINATOR_F,
+                    select
+                        {members_t_group_party_f} as agrupacion,
+                        group_concat({members_t_party_f}) as interesados,
+                        round(sum({members_t_participation_f}),2) suma_participacion
+                    from {members_t}
+                    group by {members_t_group_party_f}
+                    having round(sum({members_t_participation_f}),2) != 1
+                """.format(members_t=db.names.MEMBERS_T,
+                           members_t_party_f=db.names.MEMBERS_T_PARTY_F,
+                           members_t_participation_f=db.names.MEMBERS_T_PARTICIPATION_F,
                            members_t_group_party_f=db.names.MEMBERS_T_GROUP_PARTY_F)
         return db.execute_sql_query(query)
 

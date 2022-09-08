@@ -1,5 +1,7 @@
 from asistente_ladm_col.utils.singleton import Singleton
 
+SPECIAL_CHARACTERS = "special_characters"
+DIGITS = "digits"
 
 class LADMNames(metaclass=Singleton):
     """
@@ -12,6 +14,7 @@ class LADMNames(metaclass=Singleton):
     LC_PARTY_TYPE_D_ILICODE_F_NATURAL_PARTY_V = "Persona_Natural"
     LC_PARTY_TYPE_D_ILICODE_F_NOT_NATURAL_PARTY_V = "Persona_Juridica"
     LC_PARTY_DOCUMENT_TYPE_D_ILICODE_F_NIT_V = "NIT"
+    LC_PARTY_DOCUMENT_TYPE_D_ILICODE_F_SEQUENTIAL_V = "Secuencial"
     LC_RIGHT_TYPE_D_ILICODE_F_OWNERSHIP_V = "Dominio"
     LC_RIGHT_TYPE_D_ILICODE_F_OCCUPATION_V = "Ocupacion"
     LC_RIGHT_TYPE_D_ILICODE_F_POSSESSION_V = "Posesion"

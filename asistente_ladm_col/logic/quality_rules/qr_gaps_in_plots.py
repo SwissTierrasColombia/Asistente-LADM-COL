@@ -118,7 +118,7 @@ class QRGapsInPlots(AbstractPolygonQualityRule):
                     uuids_list[serial],
                     None,
                     None,
-                    None,
+                    self._errors[self._ERROR_01],
                     error_state]
                 errors['data'].append(error_data)
 

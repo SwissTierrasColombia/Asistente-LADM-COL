@@ -22,12 +22,26 @@ from asistente_ladm_col.config.keys.common import ALL_QUALITY_RULES
 from asistente_ladm_col.core.quality_rules.abstract_quality_rule import AbstractQualityRule
 from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
 from asistente_ladm_col.logic.quality_rules.qr_overlapping_boundary_points import QROverlappingBoundaryPoints
+from asistente_ladm_col.logic.quality_rules.qr_overlapping_control_points import QROverlappingControlPoints
+from asistente_ladm_col.logic.quality_rules.qr_boundary_points_not_covered_by_boundary_nodes import QRBoundaryPointsNotCoveredByBoundaryNodes
+from asistente_ladm_col.logic.quality_rules.qr_boundary_points_covered_plot_nodes import QRBoundaryPointsCoveredPlotNodes
 from asistente_ladm_col.logic.quality_rules.qr_overlapping_boundaries import QROverlappingBoundaries
+from asistente_ladm_col.logic.quality_rules.qr_overlapping_buildings import QROverlappingBuildings
+from asistente_ladm_col.logic.quality_rules.qr_plots_covered_by_boundaries import QRPlotsCoveredByBoundaries
+from asistente_ladm_col.logic.quality_rules.qr_overlapping_right_of_ways import QROverlappingRightOfWays
+from asistente_ladm_col.logic.quality_rules.qr_overlapping_right_of_ways_buildings import QROverlappingRightOfWaysBuildings
 from asistente_ladm_col.logic.quality_rules.qr_validate_data_against_model import QRValidateDataAgainstModel
 from asistente_ladm_col.logic.quality_rules.qr_gaps_in_plots import QRGapsInPlots
+from asistente_ladm_col.logic.quality_rules.qr_multiparts_in_right_of_way import QRMultiPartsInRightOfWay
+from asistente_ladm_col.logic.quality_rules.qr_plot_nodes_covered_boundary_points import QRPlotNodesCoveredBoundaryPoints
 from asistente_ladm_col.logic.quality_rules.qr_parcel_right_relationship import QRParcelRightRelationship
 from asistente_ladm_col.logic.quality_rules.qr_parcel_with_invalid_parcel_number import QRParcelWithInvalidParcelNumber
-from asistente_ladm_col.logic.quality_rules.qr_parcel_department_field_valid_code import QRParcelWithInvalidDepartmentCode
+from asistente_ladm_col.logic.quality_rules.qr_group_party_percentage_that_do_not_make_one import QRGroupPartyPercentageThatDoNotMakeOne
+from asistente_ladm_col.logic.quality_rules.qr_parcel_with_invalid_previous_parcel_number import QRParcelWithInvalidPreviousParcelNumber
+from asistente_ladm_col.logic.quality_rules.qr_validate_natural_party import QRValidateNaturalParty
+from asistente_ladm_col.logic.quality_rules.qr_parcel_with_invalid_department_code import QRParcelWithInvalidDepartmentCode
+from asistente_ladm_col.logic.quality_rules.qr_parcel_with_invalid_municipality_code import QRParcelWithInvalidMunicipalityCode
+from asistente_ladm_col.logic.quality_rules.qr_validate_legal_party import QRValidateLegalParty
 from asistente_ladm_col.logic.quality_rules.qr_duplicate_boundary_point_records import QRDuplicateBoundaryPointRecords
 from asistente_ladm_col.logic.quality_rules.qr_duplicate_survey_point_records import QRDuplicateSurveyPointRecords
 from asistente_ladm_col.logic.quality_rules.qr_duplicate_control_point_records import QRDuplicateControlPointRecords
@@ -53,11 +67,25 @@ class QualityRuleRegistry(metaclass=Singleton):
         # Register default quality rules
         self.register_quality_rule(QRValidateDataAgainstModel())  # QR_ILIVALIDATORR0001
         self.register_quality_rule(QROverlappingBoundaryPoints())  # QR_IGACR1001
+        self.register_quality_rule(QROverlappingControlPoints())  # QR_IGACR1002
+        self.register_quality_rule(QRBoundaryPointsNotCoveredByBoundaryNodes())  # QR_IGACR1003
+        self.register_quality_rule(QRBoundaryPointsCoveredPlotNodes())  # QR_IGACR1004
         self.register_quality_rule(QROverlappingBoundaries())  # QR_IGACR2001
+        self.register_quality_rule(QROverlappingBuildings())  # QR_IGACR3002
+        self.register_quality_rule(QROverlappingRightOfWays())  # QR_IGACR3003
+        self.register_quality_rule(QRPlotsCoveredByBoundaries())  # QR_IGACR3004
+        self.register_quality_rule(QROverlappingRightOfWaysBuildings())  # QR_IGACR3005
         self.register_quality_rule(QRGapsInPlots())  # QR_IGACR3006
+        self.register_quality_rule(QRMultiPartsInRightOfWay())  # QR_IGACR3007
+        self.register_quality_rule(QRPlotNodesCoveredBoundaryPoints())  # QR_IGACR3008
         self.register_quality_rule(QRParcelRightRelationship())  # QR_IGACR4001
+        self.register_quality_rule(QRGroupPartyPercentageThatDoNotMakeOne())  # QR_IGACR4002
         self.register_quality_rule(QRParcelWithInvalidDepartmentCode())  # QR_IGACR4003
+        self.register_quality_rule(QRParcelWithInvalidMunicipalityCode())  # QR_IGACR4004
         self.register_quality_rule(QRParcelWithInvalidParcelNumber())  # QR_IGACR4005
+        self.register_quality_rule(QRParcelWithInvalidPreviousParcelNumber())  # QR_IGACR4006
+        self.register_quality_rule(QRValidateNaturalParty())  # QR_IGACR4007
+        self.register_quality_rule(QRValidateLegalParty())  # QR_IGACR4008
         self.register_quality_rule(QRDuplicateBoundaryPointRecords())  # QR_IGACR4011
         self.register_quality_rule(QRDuplicateSurveyPointRecords())  # QR_IGACR4012
         self.register_quality_rule(QRDuplicateControlPointRecords())  # QR_IGACR4013

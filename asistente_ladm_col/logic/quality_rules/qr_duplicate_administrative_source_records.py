@@ -1,12 +1,13 @@
 """
 /***************************************************************************
-                              Asistente LADM_COL
+                              Asistente LADM-COL
                              --------------------
-        begin                : 2022-06-04
-        git sha              : :%H$
-        copyright            : (C) 2022 by Leo Cardona (BSF Swissphoto)
-        email                : contacto@ceicol.com
-
+        begin           : 2022-06-04
+        git sha         : :%H$
+        copyright       : (C) 2021 by Germán Carrillo (SwissTierras Colombia)
+                          (C) 2022 by Leo Cardona (SwissTierras Colombia)
+        email           : gcarrillo@linuxmail.org
+                          contacto@ceicol.com
  ***************************************************************************/
 /***************************************************************************
  *                                                                         *
@@ -59,8 +60,6 @@ class QRDuplicateAdministrativeSourceRecords(AbstractLogicQualityRule):
         pre_res, pre_obj = self._check_prerrequisite_layers(layer_dict)
         if not pre_res:
             return pre_obj
-
-        error_state = None
 
         # Check administrative source with duplicate records
         table = db.names.LC_ADMINISTRATIVE_SOURCE_T

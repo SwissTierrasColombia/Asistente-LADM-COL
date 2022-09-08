@@ -1,14 +1,13 @@
 """
 /***************************************************************************
-                              Asistente LADM_COL
+                              Asistente LADM-COL
                              --------------------
-        begin                : 2022-05-04
-        git sha              : :%H$
-        copyright            : (C) 2022 by Leo Cardona (BSF Swissphoto)
-                               (C) 2022 by Sergio Ramírez (BSF Swissphoto)
-        email                : leo.cardona.p@gmail.com
-                               seralra96@gmail.com
-
+        begin           : 2022-05-04
+        git sha         : :%H$
+        copyright       : (C) 2021 by Germán Carrillo (SwissTierras Colombia)
+                          (C) 2022 by Sergio Ramírez (SwissTierras Colombia)
+        email           : gcarrillo@linuxmail.org
+                          sramirez@colsolutions.com
  ***************************************************************************/
 /***************************************************************************
  *                                                                         *
@@ -61,8 +60,6 @@ class QRParcelWithInvalidParcelNumber(AbstractLogicQualityRule):
         if not pre_res:
             return pre_obj
 
-        error_state = None
-
         # Check parcel with invalid parcel number
         res, records = ladm_queries.get_parcels_with_invalid_parcel_number(db)
         count = len(records)
@@ -88,8 +85,8 @@ class QRParcelWithInvalidParcelNumber(AbstractLogicQualityRule):
 
         if count > 0:
             res_type = EnumQualityRuleResult.ERRORS
-            msg = QCoreApplication.translate("QualityRules", "{} parcels with invalid parcel number were found.").format(
-                count)
+            msg = QCoreApplication.translate("QualityRules", "{} parcels with invalid "
+                                                             "parcel number were found.").format(count)
         else:
             res_type = EnumQualityRuleResult.SUCCESS
             msg = QCoreApplication.translate("QualityRules", "All parcels have valid parcel number.")

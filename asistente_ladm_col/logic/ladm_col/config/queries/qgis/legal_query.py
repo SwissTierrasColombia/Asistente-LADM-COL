@@ -45,16 +45,17 @@ def get_igac_legal_query(names, ladm_units):
         OwnField(names.LC_PARTY_T_GENRE_F, 'Género'),
         RelatedOwnFieldObject(names.LC_PARTY_CONTACT_T, names.LC_PARTY_CONTACT_T, lc_party_contact_fields,
                               names.LC_PARTY_CONTACT_T_LC_PARTY_F),
-        RelatedRemoteFieldValue(names.FRACTION_S,
-                                names.FRACTION_S,
-                                EvalExpressionOwnField("fracción",
-                                                       QgsExpression(
-                                                    "round({numerador}/{denominador} * 100, 2)".format(
-                                                        denominador=names.FRACTION_S_DENOMINATOR_F,
-                                                        numerador=names.FRACTION_S_NUMERATOR_F
-                                                    ))),
-                                names.FRACTION_S_MEMBER_F,
-                                FilterSubLevel(names.T_ID_F, names.MEMBERS_T, names.MEMBERS_T_PARTY_F))
+        # TODO: Is disabled during migration to support the Lev Cat 1.2
+        # RelatedRemoteFieldValue(names.FRACTION_S,
+        #                         names.FRACTION_S,
+        #                         EvalExpressionOwnField("fracción",
+        #                                                QgsExpression(
+        #                                             "round({numerador}/{denominador} * 100, 2)".format(
+        #                                                 denominador=names.FRACTION_S_DENOMINATOR_F,
+        #                                                 numerador=names.FRACTION_S_NUMERATOR_F
+        #                                             ))),
+        #                         names.FRACTION_S_MEMBER_F,
+        #                         FilterSubLevel(names.T_ID_F, names.MEMBERS_T, names.MEMBERS_T_PARTY_F))
     ]
 
     lc_group_party_fields = [

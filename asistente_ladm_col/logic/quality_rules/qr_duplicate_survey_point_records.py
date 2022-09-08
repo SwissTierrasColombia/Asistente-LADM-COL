@@ -1,12 +1,13 @@
 """
 /***************************************************************************
-                              Asistente LADM_COL
+                              Asistente LADM-COL
                              --------------------
-        begin                : 2022-06-15
-        git sha              : :%H$
-        copyright            : (C) 2022 by Leo Cardona (BSF Swissphoto)
-        email                : contacto@ceicol.com
-
+        begin           : 2022-06-15
+        git sha         : :%H$
+        copyright       : (C) 2022 by Germán Carrillo (SwissTierras Colombia)
+                          (C) 2022 by Leo Cardona (SwissTierras Colombia)
+        email           : gcarrillo@linuxmail.org
+                          contacto@ceicol.com
  ***************************************************************************/
 /***************************************************************************
  *                                                                         *
@@ -58,8 +59,6 @@ class QRDuplicateSurveyPointRecords(AbstractLogicQualityRule):
         pre_res, pre_obj = self._check_prerrequisite_layers(layer_dict)
         if not pre_res:
             return pre_obj
-
-        error_state = None
 
         table = db.names.LC_SURVEY_POINT_T
         fields = [db.names.LC_SURVEY_POINT_T_SURVEY_POINT_TYPE_F,

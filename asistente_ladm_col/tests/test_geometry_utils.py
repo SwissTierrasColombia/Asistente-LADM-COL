@@ -217,7 +217,7 @@ class TestGeometryUtils(unittest.TestCase):
         expected_overlaps = [[11, 44], [11, 47], [12, 44], [12, 45], [12, 57], [48, 49], [53, 55], [61, 62], [63, 64], [63, 65], [64, 65], [66, 68], [67, 68]]
         flat_expected_overlaps = list(set([id for items in expected_overlaps for id in items]))  # Build a flat list of uniques ids
 
-        overlapping = self.geometry.get_overlapping_polygons(polygons_overlap_layer)
+        overlapping = GeometryUtils.get_overlapping_polygons(polygons_overlap_layer)
         flat_overlapping = list(set([id for items in overlapping for id in items]))
 
         # checks
@@ -253,7 +253,7 @@ class TestGeometryUtils(unittest.TestCase):
             init_vertex_geom = [vertex for vertex in geom_polygon.vertices()]
 
             # We don't overwrite the original layer, changes are made on a copy
-            mod_polygon_layer = self.geometry.add_topological_vertices(polygon_layer, lines_layer)
+            mod_polygon_layer = GeometryUtils.add_topological_vertices(polygon_layer, lines_layer)
 
             geom_polygon = mod_polygon_layer.getFeature(1).geometry()
             adjusted_vertex_geom = [vertex for vertex in geom_polygon.vertices()]
@@ -286,7 +286,7 @@ class TestGeometryUtils(unittest.TestCase):
             lines_layer = QgsVectorLayer(uri_lines, 'lines_layer_{}'.format(i+1), 'ogr')
 
             polygon_as_lines_layer = processing.run("ladm_col:polygonstolines", {'INPUT': polygon_layer, 'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
-            diff_plot_boundary = self.geometry.difference_plot_boundary(polygon_as_lines_layer, lines_layer, 'fid')
+            diff_plot_boundary = GeometryUtils.difference_plot_boundary(polygon_as_lines_layer, lines_layer, 'fid')
 
             if diff_plot_boundary is not None:
                 if len(diff_plot_boundary) > 0:
@@ -336,7 +336,7 @@ class TestGeometryUtils(unittest.TestCase):
         polygon_id = 61
         overlapping_id = 62
         test_overlapping_polygon = 'MultiPolygon (((779846.53495819831732661 1225249.26543459924869239, 779783.95215819834265858 1225214.60283459979109466, 779755.42265819816384465 1225312.01313459943048656, 779751.20725819806102663 1225339.76893460075370967, 779753.92445819883141667 1225441.12693459982983768, 779750.35635819809976965 1225530.46543460036627948, 779822.77425819879863411 1225579.77523459936492145, 779989.38215819804463536 1225693.37413460086099803, 780035.07055819837842137 1225719.08503460022620857, 780048.81795819813851267 1225694.37763460050337017, 780107.8898581980029121 1225665.00753459963016212, 780145.38955819851253182 1225642.4988345995079726, 780156.81765819864813238 1225634.07963460008613765, 780178.43775819859001786 1225625.24393460038118064, 780098.00075819867197424 1225413.46203460055403411, 779976.68275819870177656 1225330.46993460017256439, 779918.56405819824431092 1225292.73203460010699928, 779846.53495819831732661 1225249.26543459924869239)))'
-        polygon_intersection = self.geometry.get_intersection_polygons(polygons_intersection_layer, polygon_id, overlapping_id)
+        polygon_intersection = GeometryUtils.get_intersection_polygons(polygons_intersection_layer, polygon_id, overlapping_id)
         self.assertEqual(polygon_intersection.asWkt(), test_overlapping_polygon)
 
     def test_pair_boundary_plot(self):
