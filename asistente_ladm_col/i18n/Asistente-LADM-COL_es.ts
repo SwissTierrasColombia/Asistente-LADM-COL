@@ -324,12 +324,12 @@
         <translation>Interesado</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="490"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="491"/>
         <source>Create Party</source>
         <translation>Crear Interesado</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="494"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="495"/>
         <source>Create Group Party</source>
         <translation>Crear Agrupación de Interesados</translation>
     </message>
@@ -406,7 +406,7 @@
         <translation type="vanished">Crear objetos de Operación</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="464"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="465"/>
         <source>Create Plot</source>
         <translation>Crear Terreno</translation>
     </message>
@@ -415,7 +415,7 @@
         <translation type="vanished">Pre-procesamiento</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="628"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="629"/>
         <source>Queries</source>
         <translation>Consultar datos</translation>
     </message>
@@ -433,59 +433,59 @@
         <translation>Topografía y Representación</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="311"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="312"/>
         <source>&apos;Origen Nacional&apos; projection could not be configured. Therefore you cannot use this version of the LADM-COL Assistant.</source>
         <translation>No se pudo configurar la proyeccion &apos;Origen Nacional&apos;. Por lo tanto no puedes utilizar esta versión del Asistente LADM-COL.</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="413"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="414"/>
         <source>Run supplies ETL</source>
         <translation>Ejecutar ETL de insumos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="418"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="419"/>
         <source>Omissions and Commissions Report - COBOL</source>
         <translation>Reporte Omisiones y Comisiones - COBOL</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="423"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="424"/>
         <source>Omissions and Commissions Report - SNC</source>
         <translation>Reporte Omisiones y Comisiones - SNC</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="438"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="439"/>
         <source>Allocate parcels</source>
         <translation>Asignar predios</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="443"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="444"/>
         <source>Synchronize field data</source>
         <translation>Sincronizar datos de campo</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="456"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="457"/>
         <source>Create Point</source>
         <translation>Crear Punto</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="460"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="461"/>
         <source>Create Boundary</source>
         <translation>Crear Lindero</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="468"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="469"/>
         <source>Create Building</source>
         <translation>Crear Construcción</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="472"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="583"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="473"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="584"/>
         <source>Create Building Unit</source>
         <translation>Crear Unidad de Construcción</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="485"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="579"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="486"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="580"/>
         <source>Create Parcel</source>
         <translation>Crear Predio</translation>
     </message>
@@ -498,17 +498,17 @@
         <translation type="vanished">Crear Interesado Jurídico</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="506"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="507"/>
         <source>Upload Pending Source Files</source>
         <translation>Subir Archivos Fuente Pendientes</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="512"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="513"/>
         <source>Create Right</source>
         <translation>Crear Derecho</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="516"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="517"/>
         <source>Create Restriction</source>
         <translation>Crear Restricción</translation>
     </message>
@@ -521,17 +521,17 @@
         <translation type="vanished">Revisar Reglas de Calidad</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="499"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="500"/>
         <source>Create Administrative Source</source>
         <translation>Crear Fuente Administrativa</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="503"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="504"/>
         <source>Create Spatial Source</source>
         <translation>Crear Fuente Espacial</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="521"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="522"/>
         <source>Quality</source>
         <translation>Calidad</translation>
     </message>
@@ -568,17 +568,12 @@
         <translation type="vanished">Revisar todo</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="626"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="627"/>
         <source>Load layers</source>
         <translation>Cargar capas</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="648"/>
-        <source>XTF model converter</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="651"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="652"/>
         <location filename="../utils/decorators.py" line="95"/>
         <location filename="../utils/decorators.py" line="239"/>
         <location filename="../utils/decorators.py" line="276"/>
@@ -589,12 +584,12 @@
         <translation>Configuración</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="654"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="655"/>
         <source>Help</source>
         <translation>Ayuda</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="656"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="657"/>
         <source>About</source>
         <translation>Acerca de</translation>
     </message>
@@ -647,17 +642,17 @@
         <translation type="vanished">Administración de datos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="639"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="640"/>
         <source>Create LADM-COL structure</source>
         <translation>Crear estructura LADM-COL</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="642"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="643"/>
         <source>Import data</source>
         <translation>Importar datos</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="645"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="646"/>
         <source>Export data</source>
         <translation>Exportar datos</translation>
     </message>
@@ -669,22 +664,22 @@
         <translation>Reportes</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="631"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="632"/>
         <source>Annex 17</source>
         <translation>Anexo 17</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="635"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="636"/>
         <source>ANT Map</source>
         <translation>Plano ANT</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="476"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="477"/>
         <source>Create Right of Way</source>
         <translation>Crear Servidumbre de Paso</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="294"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="295"/>
         <source>LADM-COL Assistant - Warning</source>
         <translation>Asistente LADM-COL - Advertencia</translation>
     </message>
@@ -693,17 +688,17 @@
         <translation type="vanished">No se pudo configurar la proyección CTM12. Por tanto, no se puede usar esta versión del Asistente LADM-COL.</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="342"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="343"/>
         <source>Refreshing GUI for the LADM-COL Assistant...</source>
         <translation>Refrescando la interfaz del Asistente LADM-COL...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="395"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="396"/>
         <source>Login...</source>
         <translation>Autenticarse...</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="399"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="400"/>
         <source>Logout</source>
         <translation>Salir</translation>
     </message>
@@ -716,19 +711,24 @@
         <translation type="vanished">Omisiones y Comisiones</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="480"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="481"/>
         <source>Associate Address</source>
         <translation>Relacionar Dirección</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="526"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="527"/>
         <source>Fix LADM-COL relations</source>
         <translation>Arreglar relaciones LADM-COL</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="612"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="613"/>
         <source>Change detection settings</source>
         <translation>Configurar identificación de novedades</translation>
+    </message>
+    <message>
+        <location filename="../asistente_ladm_col_plugin.py" line="649"/>
+        <source>Data model converter</source>
+        <translation type="unfinished">Convertidor de modelo de datos</translation>
     </message>
     <message>
         <location filename="../asistente_ladm_col_plugin.py" line="1428"/>
@@ -776,7 +776,7 @@
         <translation type="vanished">Ficha predial</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="570"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="571"/>
         <source>Create Property Record Card</source>
         <translation>Crear Ficha Predial</translation>
     </message>
@@ -801,17 +801,17 @@
         <translation type="vanished">Crear Equipamiento Comunal</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="587"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="588"/>
         <source>Create Building Unit Qualification</source>
         <translation>Crear Calificación de Unidad de Construcción</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="591"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="592"/>
         <source>Create Geoeconomic Zone</source>
         <translation>Crear Zona Homogénea Geoeconómica</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="595"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="596"/>
         <source>Create Physical Zone</source>
         <translation>Crear Zona Homogénea Física</translation>
     </message>
@@ -821,14 +821,14 @@
         <translation>Identificación de novedades</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="608"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="723"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="609"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="724"/>
         <source>Query per parcel</source>
         <translation>Consulta por predio</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="610"/>
-        <location filename="../asistente_ladm_col_plugin.py" line="728"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="611"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="729"/>
         <source>Query all parcels</source>
         <translation>Consulta masiva</translation>
     </message>
@@ -837,7 +837,7 @@
         <translation type="vanished">Configuración de datos oficiales</translation>
     </message>
     <message>
-        <location filename="../asistente_ladm_col_plugin.py" line="712"/>
+        <location filename="../asistente_ladm_col_plugin.py" line="713"/>
         <source>Open About Dialog</source>
         <translation>Abrir diálogo Acerca de</translation>
     </message>
@@ -1181,6 +1181,17 @@
         <source>The QGIS Model Baker plugin is a prerequisite, install it before using LADM-COL Assistant.</source>
         <translation type="vanished">El complemento &apos;QGIS Model Baker&apos; es un prerrequisito pero no se encontró. Instálalo antes de continuar.</translation>
     </message>
+    <message>
+        <location filename="../gui/data_model_converter/dlg_data_model_converter.py" line="328"/>
+        <source>There was an error running the ETL model. See the QGIS log for details.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/data_model_converter/dlg_data_model_converter.py" line="330"/>
+        <location filename="../gui/data_model_converter/dlg_data_model_converter.py" line="333"/>
+        <source>Error running the ETL model. Details: {}</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>AsistenteLADMColPlugin</name>
@@ -1434,12 +1445,12 @@
 <context>
     <name>ClientServerDB</name>
     <message>
-        <location filename="../lib/db/db_connector.py" line="586"/>
+        <location filename="../lib/db/db_connector.py" line="589"/>
         <source>Connection successful!</source>
         <translation>¡Conexión exitosa!</translation>
     </message>
     <message>
-        <location filename="../lib/db/db_connector.py" line="596"/>
+        <location filename="../lib/db/db_connector.py" line="599"/>
         <source>There was a problem checking the connection. Most likely due to invalid or not supported test_level!</source>
         <translation>Hubo un problema revisando la conexión. ¡Probablemente por un nivel de validación no soportado!</translation>
     </message>
@@ -2933,24 +2944,124 @@
         <translation>¡Todos los modelos requeridos están en la base de datos!</translation>
     </message>
     <message>
-        <location filename="../lib/db/db_connector.py" line="350"/>
+        <location filename="../lib/db/db_connector.py" line="353"/>
         <source>The following required model(s) could not be found in the DB: {}.</source>
         <translation type="unfinished">El modelo &apos;{}&apos; es requerido pero no se pudo encontrar en la base de datos.</translation>
     </message>
     <message>
-        <location filename="../lib/db/db_connector.py" line="363"/>
+        <location filename="../lib/db/db_connector.py" line="366"/>
         <source>The following required model(s) could not be found in the DB: &apos;{}&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../lib/db/db_connector.py" line="370"/>
+        <location filename="../lib/db/db_connector.py" line="373"/>
         <source>At least one of the following required model(s) should exist in the DB: &apos;{}&apos;. Your DB has &apos;{}&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../lib/db/db_connector.py" line="380"/>
+        <location filename="../lib/db/db_connector.py" line="383"/>
         <source>At least one LADM-COL model should exist in the required version (besides the basic ones: &apos;{}&apos;)! Supported models are: &apos;{}&apos;, but your DB has &apos;{}&apos;</source>
         <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>DataModelConverterDialog</name>
+    <message>
+        <location filename="../ui/data_model_converter/dlg_data_model_converter.ui" line="14"/>
+        <location filename="../gui/data_model_converter/dlg_data_model_converter.py" line="64"/>
+        <source>Data Model Converter</source>
+        <translation>Convertidor de Modelo de Datos</translation>
+    </message>
+    <message>
+        <location filename="../ui/data_model_converter/dlg_data_model_converter.ui" line="48"/>
+        <source>Configure conversion between LADM-COL models</source>
+        <translation>Configure la conversión entre modelos LADM-COL</translation>
+    </message>
+    <message>
+        <location filename="../ui/data_model_converter/dlg_data_model_converter.ui" line="64"/>
+        <source>Pre-converted source</source>
+        <translation>Fuente Lev Cat 1.0</translation>
+    </message>
+    <message>
+        <location filename="../ui/data_model_converter/dlg_data_model_converter.ui" line="101"/>
+        <location filename="../ui/data_model_converter/dlg_data_model_converter.ui" line="171"/>
+        <source>DB:</source>
+        <translation>Base de datos:</translation>
+    </message>
+    <message>
+        <location filename="../ui/data_model_converter/dlg_data_model_converter.ui" line="144"/>
+        <source>Converted source</source>
+        <translation>Fuente Lev Cat 1.2</translation>
+    </message>
+    <message>
+        <location filename="../ui/data_model_converter/dlg_data_model_converter.ui" line="230"/>
+        <source>Show log</source>
+        <translation>Mostrar detalles</translation>
+    </message>
+    <message>
+        <location filename="../ui/data_model_converter/dlg_data_model_converter.ui" line="274"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:9.6pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;Este &lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; font-style:italic; color:#545454;&quot;&gt;wizard&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt; permite convertir un conjunto de datos fuente (Conexión a base de datos) a una estructura (modelo) de llegada que sea compatible.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;Se recomienda utilizar una base fuente que sea válido (esto es, que no haya sido exportado deshabilitando validaciones). Sin embargo, este requisito dependerá del conversor seleccionado.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Noto Sans&apos;; font-size:9pt; color:#545454;&quot;&gt;Las conversiones disponibles dependen del modelo en el cual están estructurados los datos fuente. Por lo anterior, es posible que para ciertos modelos no existan conversiones disponibles.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/data_model_converter/dlg_data_model_converter.py" line="96"/>
+        <source>Convert</source>
+        <translation>Convertir</translation>
+    </message>
+    <message>
+        <location filename="../gui/data_model_converter/dlg_data_model_converter.py" line="113"/>
+        <source>Converting data (this might take a while)...</source>
+        <translation>Convirtiendo información</translation>
+    </message>
+    <message>
+        <location filename="../gui/data_model_converter/dlg_data_model_converter.py" line="326"/>
+        <source>Migration successfully completed!</source>
+        <translation>La migración se completó correctamente!</translation>
+    </message>
+    <message>
+        <location filename="../gui/data_model_converter/dlg_data_model_converter.py" line="346"/>
+        <source>Warning</source>
+        <translation>Advertencia</translation>
+    </message>
+    <message>
+        <location filename="../gui/data_model_converter/dlg_data_model_converter.py" line="347"/>
+        <source>The &apos;{}&apos; tool is still running. Do you want to cancel it? If you cancel, the data might be incomplete in the target database.</source>
+        <translation>La herramienta &apos;{}&apos; todavía se está ejecutando. ¿Quieres cancelarla? Si cancelas, los datos en la base de datos de salida pueden estar incompletos.</translation>
+    </message>
+    <message>
+        <location filename="../gui/data_model_converter/dlg_data_model_converter.py" line="353"/>
+        <source>The &apos;{}&apos; tool was cancelled.</source>
+        <translation>La herramienta &apos;{}&apos; fue cancelada.</translation>
+    </message>
+    <message>
+        <location filename="../gui/data_model_converter/dlg_data_model_converter.py" line="374"/>
+        <source>CONVERTED DB Connection Settings</source>
+        <translation>Configuración de la base de datos a convertir</translation>
+    </message>
+    <message>
+        <location filename="../gui/data_model_converter/dlg_data_model_converter.py" line="386"/>
+        <source>PRE CONVERTED DB Connection Settings</source>
+        <translation>Configuración de la base de datos antes de convertir</translation>
+    </message>
+    <message>
+        <location filename="../gui/data_model_converter/dlg_data_model_converter.py" line="421"/>
+        <location filename="../gui/data_model_converter/dlg_data_model_converter.py" line="430"/>
+        <source>The database is not defined!</source>
+        <translation>¡La base de datos no está definida!</translation>
+    </message>
+    <message>
+        <location filename="../gui/data_model_converter/dlg_data_model_converter.py" line="435"/>
+        <location filename="../gui/data_model_converter/dlg_data_model_converter.py" line="439"/>
+        <source>Warning: DB connection is not valid</source>
+        <translation>La conexión a la base de datos no es válida</translation>
     </message>
 </context>
 <context>
@@ -4890,7 +5001,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>FileDB</name>
     <message>
-        <location filename="../lib/db/db_connector.py" line="546"/>
+        <location filename="../lib/db/db_connector.py" line="549"/>
         <source>There was a problem checking the connection. Most likely due to invalid or not supported test_level!</source>
         <translation>Hubo un problema revisando la conexión. ¡Probablemente por un nivel de validación no soportado!</translation>
     </message>
@@ -9066,18 +9177,18 @@ Si eliges &apos;No&apos;, se llenarán las tablas &apos;{more}&apos; y &apos;{le
         <translation>¡Todos los terrenos están cubiertos por linderos!</translation>
     </message>
     <message>
-        <location filename="../logic/quality_rules/qr_validate_data_against_model.py" line="75"/>
-        <location filename="../logic/quality_rules/qr_validate_data_against_model.py" line="91"/>
+        <location filename="../logic/quality_rules/qr_validate_data_against_model.py" line="74"/>
+        <location filename="../logic/quality_rules/qr_validate_data_against_model.py" line="90"/>
         <source>There was an error running the quality rule &apos;{}&apos;! Details: &apos;{}&apos;.</source>
         <translation>Se ha producido un error al ejecutar la regla de calidad &apos;{}&apos;! Detalles: &apos;{}&apos;.</translation>
     </message>
     <message>
-        <location filename="../logic/quality_rules/qr_validate_data_against_model.py" line="98"/>
+        <location filename="../logic/quality_rules/qr_validate_data_against_model.py" line="97"/>
         <source>There were {} errors validating the data against their model!</source>
         <translation>¡Hubo {} errores al validar los datos con su modelo!</translation>
     </message>
     <message>
-        <location filename="../logic/quality_rules/qr_validate_data_against_model.py" line="104"/>
+        <location filename="../logic/quality_rules/qr_validate_data_against_model.py" line="103"/>
         <source>The data comply with their model.</source>
         <translation>Los datos cumplen con su modelo.</translation>
     </message>
