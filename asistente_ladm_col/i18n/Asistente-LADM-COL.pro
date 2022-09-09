@@ -5,6 +5,7 @@ FORMS = ../ui/change_detection/changes_all_parcels_panel_widget.ui \
         ../ui/change_detection/dlg_select_duplicate_parcel_change_detection.ui \
         ../ui/change_detection/dockwidget_change_detection.ui \
         ../ui/change_detection/parcels_changes_summary_panel_widget.ui \
+        ../ui/data_model_converter/dlg_data_model_converter.ui \
         ../ui/dialogs/dlg_about.ui \
         ../ui/dialogs/dlg_custom_model_dir.ui \
         ../ui/dialogs/dlg_get_db_or_schema_name.ui \
@@ -85,6 +86,7 @@ SOURCES = ../__init__.py \
           ../gui/change_detection/dlg_select_duplicate_parcel_change_detection.py \
           ../gui/change_detection/dockwidget_change_detection.py \
           ../gui/change_detection/parcels_changes_summary_panel.py \
+          ../gui/data_model_converter/dlg_data_model_converter.py \
           ../gui/db_panel/db_schema_db_panel.py \
           ../gui/db_panel/gpkg_config_panel.py \
           ../gui/db_panel/mssql_config_panel.py \

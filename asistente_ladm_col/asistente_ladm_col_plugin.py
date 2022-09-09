@@ -646,7 +646,7 @@ class AsistenteLADMCOLPlugin(QObject):
                                            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Export data"),
                                            self.main_window)
         self._data_model_converter_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/schema.png"),
-                                                   QCoreApplication.translate("AsistenteLADMCOLPlugin", "XTF model converter"),
+                                                   QCoreApplication.translate("AsistenteLADMCOLPlugin", "Data model converter"),
                                                    self.main_window)
         self._settings_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/settings.svg"),
                                         QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"),
