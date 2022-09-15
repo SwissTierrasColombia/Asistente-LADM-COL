@@ -427,7 +427,6 @@ class DBMappingConfig:
                     'Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_InteresadoContacto.Telefono2': 'LC_PARTY_CONTACT_T_TELEPHONE_NUMBER_2_F',
                     'Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.lc_interesado_interesadocontacto.lc_interesado..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Interesado': 'LC_PARTY_CONTACT_T_LC_PARTY_F'
                 }},
-            "LADM_COL.LADM_Nucleo.col_puntoCcl": {QueryNames.VARIABLE_NAME: "COL_CCL_POINT_T", QueryNames.FIELDS_DICT: {}},
             "LADM_COL.LADM_Nucleo.COL_AreaValor": {QueryNames.VARIABLE_NAME: "COL_VALUE_AREA_T", QueryNames.FIELDS_DICT: {}},
             "Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_TipologiaConstruccion": {QueryNames.VARIABLE_NAME: "LC_TIPOLOGY_BUILDING_T", QueryNames.FIELDS_DICT: {}},
             "Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_CalificacionNoConvencional": {QueryNames.VARIABLE_NAME: "LC_NON_CONVENTIONAL_QUALIFICATION_T", QueryNames.FIELDS_DICT: {}},
@@ -699,7 +698,7 @@ class DBMappingConfig:
                 'Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_InteresadoContacto.Telefono2': 'LC_PARTY_CONTACT_T_TELEPHONE_NUMBER_2_F',
                 'Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.lc_interesado_interesadocontacto.lc_interesado..Modelo_Aplicacion_LADMCOL_Lev_Cat.Levantamiento_Catastral.LC_Interesado': 'LC_PARTY_CONTACT_T_LC_PARTY_F'
             }},
-            "LADM_COL.LADM_Nucleo.col_puntoCcl": {QueryNames.VARIABLE_NAME: "COL_CCL_POINT_T", QueryNames.FIELDS_DICT: {}},
+            "LADM_COL.LADM_Nucleo.col_puntoCcl": {QueryNames.VARIABLE_NAME: "POINT_BFS_T", QueryNames.FIELDS_DICT: {}},
             "LADM_COL.LADM_Nucleo.COL_AreaValor": {QueryNames.VARIABLE_NAME: "COL_VALUE_AREA_T", QueryNames.FIELDS_DICT: {}},
             "LADM_COL.LADM_Nucleo.col_masCcl": {QueryNames.VARIABLE_NAME: "MORE_BFS_T", QueryNames.FIELDS_DICT: {}},
             "LADM_COL.LADM_Nucleo.col_menosCcl": {QueryNames.VARIABLE_NAME: "LESS_BFS_T", QueryNames.FIELDS_DICT: {}},

@@ -101,7 +101,7 @@ class DataModelConverterDialog(QDialog, DIALOG_DATA_MODEL_CONVERTER_UI):
 
     def progress_changed(self, value):
         QCoreApplication.processEvents()  # Listen to cancel from the user
-        self.progress.setValue(value)
+        self.progress.setValue(int(value))
 
     def accepted(self):
         self.save_settings()
@@ -127,13 +127,18 @@ class DataModelConverterDialog(QDialog, DIALOG_DATA_MODEL_CONVERTER_UI):
         self.logger.info(__name__, "Running ETL model...")
         self.print_info(QCoreApplication.translate("DataModelConverterDialog",'Initiating ETL, this can take several minutes'))
 
+        settings = QSettings()
+        automatic_values = settings.value('Asistente-LADM-COL/automatic_values/automatic_values_in_batch_mode')
+        if automatic_values:
+            settings.setValue('Asistente-LADM-COL/automatic_values/automatic_values_in_batch_mode', False)
+
         db_pre = self._db_pre_converted
         db_conv = self._db_converted
         pre_layers = {db_pre.names.LC_SURVEY_POINT_T: None,
                   db_pre.names.LC_CONTROL_POINT_T: None,
                   db_pre.names.LC_BOUNDARY_POINT_T: None,
                   db_pre.names.LC_BOUNDARY_T: None,
-                  db_pre.names.COL_CCL_POINT_T: None,
+                  db_pre.names.POINT_BFS_T: None,
                   db_pre.names.LC_PLOT_T: None,
                   db_pre.names.LC_BUILDING_T: None,
                   db_pre.names.LC_BUILDING_UNIT_T: None,
@@ -174,7 +179,7 @@ class DataModelConverterDialog(QDialog, DIALOG_DATA_MODEL_CONVERTER_UI):
                   db_conv.names.LC_CONTROL_POINT_T: None,
                   db_conv.names.LC_BOUNDARY_POINT_T: None,
                   db_conv.names.LC_BOUNDARY_T: None,
-                  db_conv.names.COL_CCL_POINT_T: None,
+                  db_conv.names.POINT_BFS_T: None,
                   db_conv.names.LC_PLOT_T: None,
                   db_conv.names.LC_BUILDING_T: None,
                   db_conv.names.LC_BUILDING_UNIT_T: None,
@@ -223,7 +228,7 @@ class DataModelConverterDialog(QDialog, DIALOG_DATA_MODEL_CONVERTER_UI):
                   'inlcpuntocontrol': pre_layers[db_pre.names.LC_CONTROL_POINT_T],
                   'inlcpuntolindero': pre_layers[db_pre.names.LC_BOUNDARY_POINT_T],
                   'inlclindero': pre_layers[db_pre.names.LC_BOUNDARY_T],
-                  'inpuntoccl': pre_layers[db_pre.names.COL_CCL_POINT_T],
+                  'inpuntoccl': pre_layers[db_pre.names.POINT_BFS_T],
                   'inlcterreno': pre_layers[db_pre.names.LC_PLOT_T],
                   'inlcconstruccion': pre_layers[db_pre.names.LC_BUILDING_T],
                   'inlcunidadconstruccion': pre_layers[db_pre.names.LC_BUILDING_UNIT_T],
@@ -264,7 +269,7 @@ class DataModelConverterDialog(QDialog, DIALOG_DATA_MODEL_CONVERTER_UI):
                   'outlcpuntocontrol': conv_layers[db_conv.names.LC_CONTROL_POINT_T],
                   'outlcpuntolindero': conv_layers[db_conv.names.LC_BOUNDARY_POINT_T],
                   'outlclindero': conv_layers[db_conv.names.LC_BOUNDARY_T],
-                  'outpuntoccl': conv_layers[db_conv.names.COL_CCL_POINT_T],
+                  'outpuntoccl': conv_layers[db_conv.names.POINT_BFS_T],
                   'outlcterreno': conv_layers[db_conv.names.LC_PLOT_T],
                   'outlcconstruccion': conv_layers[db_conv.names.LC_BUILDING_T],
                   'outlcunidadconstruccion': conv_layers[db_conv.names.LC_BUILDING_UNIT_T],
@@ -315,14 +320,12 @@ class DataModelConverterDialog(QDialog, DIALOG_DATA_MODEL_CONVERTER_UI):
             self.print_success_text(etl_log)
             self.print_info("""\n\nINFORMACIÓN ADICIONAL:\nPRECAUCIÓN:\nSi los predios no tienen datos adicionales de levantamiento catastral de origen se toman los siguientes valores por defecto:\n\nDestinacion_Economica: Habitacional\nClase_Suelo: Urbano\nAsí mismo, se asumen los siguientes valores por defecto por inexistencia en la tabla LC_Predio:\nCodigo_Homologado: NULL\nInterrelacionado: False\nCodigo_Homologado_FMI: NULL\nValor_Referencia: NULL\n\nEn LC_DatosAdicionalesLevantamientoCatastral:\nOtro_Cual_Resultado: NULL\nDespojo_Abandono: NULL\nEstrato: NULL\nOtro_Cual_Estrato: NULL\n\nEn LC_Interesado:\nEstado_Civil: NULL\n\nEn LC_Construccion:\nValor de referencia: NULL\n\nEn LC_TipologiaConstruccion:\nCual: NULL""",
             '#0000FF')
-            self.print_info(QCoreApplication.translate("DataModelConverterDialog",'\nCleaning Layertree...\n'))
-            QgsProject.instance().removeAllMapLayers()
-            root = QgsProject.instance().layerTreeRoot()
-            group = root.findGroup('tables')
-            root.removeChildNode(group)
+            self.clean_layer_tree()
             time_execution = time.time() - start_execution
             self.print_info(QCoreApplication.translate("DataModelConverterDialog", '\n\nMigration successfully completed in {} seconds!'.format(round(time_execution, 1))), '#008000')
             self.app.gui.redraw_all_layers()
+            if automatic_values:
+                settings.setValue('Asistente-LADM-COL/automatic_values/automatic_values_in_batch_mode', True)
             return True, QCoreApplication.translate("DataModelConverterDialog", "Migration successfully completed!")
         except QgsProcessingException as e:
             self.logger.warning_msg(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin",
@@ -339,6 +342,15 @@ class DataModelConverterDialog(QDialog, DIALOG_DATA_MODEL_CONVERTER_UI):
         success_list = re.findall('[0-9]+ out of [0-9]+ features from input layer were successfully copied into \'.*', text)
         for success in success_list:
             self.print_info(success)
+
+    def clean_layer_tree(self):
+        self.print_info(QCoreApplication.translate("DataModelConverterDialog",'\nCleaning Layertree...\n'))
+        QgsProject.instance().removeAllMapLayers()
+        root = QgsProject.instance().layerTreeRoot()
+        group = root.findGroup('tables')
+        root.removeChildNode(group)
+        group = root.findGroup('Domains')
+        root.removeChildNode(group)
 
     def reject(self):
         if self._running_tool:
