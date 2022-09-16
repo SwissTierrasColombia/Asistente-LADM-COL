@@ -208,7 +208,7 @@ class LADMColModel:
         return self.__id
 
     def full_name(self):
-        if self.__id.find("_V1") != -1:
+        if self.__id.find("_V1") != -1: #TODO improve handle old version models
             return self.__id
         else:
             return "{}_V{}".format(self.__id, self.__supported_version.replace(".", "_"))

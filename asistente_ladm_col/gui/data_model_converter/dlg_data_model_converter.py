@@ -349,7 +349,7 @@ class DataModelConverterDialog(QDialog, DIALOG_DATA_MODEL_CONVERTER_UI):
         root = QgsProject.instance().layerTreeRoot()
         group = root.findGroup('tables')
         root.removeChildNode(group)
-        group = root.findGroup('Domains')
+        group = root.findGroup('domains')
         root.removeChildNode(group)
 
     def reject(self):
