@@ -10,17 +10,14 @@ TEST_SCHEMAS_MAPPING = {
     'interlis_ili2db3_ladm': 'static/pg/interlis_ili2db3_ladm_col_221.sql',
     'ladm_col_210': 'static/pg/ladm_col_operation_v_210.sql',
     'test_import_data': 'ladm/pg/test_import_data_ladm_v1_1.sql',
-    'test_export_data': 'ladm/pg/test_export_data_ladm_v1_1.sql',
     'test_logic_quality_rules': 'ladm/pg/test_ladm_logic_quality_rules_v1_1.sql',
     # TEST DB MSSQL
     'empty_no_interlis_no_ladm_mssql': 'static/mssql/empty_no_interlis_no_ladm_mssql.sql',
     'interlis_ili2db3_ladm_mssql': 'static/mssql/interlis_ili2db3_ladm_mssql.sql',
     'interlis_no_ladm_mssql': 'static/mssql/interlis_no_ladm_mssql.sql',
     'ladm_col_211_mssql': 'static/mssql/ladm_col_211_mssql.sql',
-    'test_export_data_mssql': 'ladm/mssql/test_export_data_v1_1.sql',
     'test_ladm_col_queries_mssql': 'ladm/mssql/test_ladm_col_queries_v1_1.sql',
     # TEST DB GEOPACKAGE
-    'test_export_data_qpkg': 'ladm/gpkg/test_export_data_ladm_v1_1.gpkg',
     'test_empty_ladm_gpkg': 'ladm/gpkg/test_empty_ladm_v1_1.gpkg',
     'test_ladm_col_queries_qpkg': 'ladm/gpkg/test_ladm_col_queries_v1_1.gpkg',
     'test_ladm_multiple_child_domains_gpkg': 'ladm/gpkg/test_multiple_models_ambiente_y_lc.gpkg',
