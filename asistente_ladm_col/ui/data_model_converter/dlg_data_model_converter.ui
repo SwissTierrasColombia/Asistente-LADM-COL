@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>682</width>
-    <height>477</height>
+    <height>509</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -80,7 +80,7 @@
                  <item>
                   <layout class="QGridLayout" name="gridLayout_5">
                    <item row="0" column="1">
-                    <widget class="QLabel" name="db_pre_converted_connect_label">
+                    <widget class="QLabel" name="db_source_connect_label">
                      <property name="text">
                       <string/>
                      </property>
@@ -105,7 +105,7 @@
                   </layout>
                  </item>
                  <item>
-                  <widget class="QPushButton" name="btn_pre_converted_db">
+                  <widget class="QPushButton" name="btn_source_db">
                    <property name="text">
                     <string/>
                    </property>
@@ -173,7 +173,7 @@
                     </widget>
                    </item>
                    <item row="0" column="1">
-                    <widget class="QLabel" name="db_converted_connect_label">
+                    <widget class="QLabel" name="db_target_connect_label">
                      <property name="text">
                       <string/>
                      </property>
@@ -185,7 +185,7 @@
                   </layout>
                  </item>
                  <item>
-                  <widget class="QPushButton" name="btn_converted_db">
+                  <widget class="QPushButton" name="btn_target_db">
                    <property name="text">
                     <string/>
                    </property>
@@ -274,7 +274,7 @@
        <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:9.6pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:7.8pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Noto Sans'; font-size:9pt; color:#545454;&quot;&gt;Este &lt;/span&gt;&lt;span style=&quot; font-family:'Noto Sans'; font-size:9pt; font-style:italic; color:#545454;&quot;&gt;wizard&lt;/span&gt;&lt;span style=&quot; font-family:'Noto Sans'; font-size:9pt; color:#545454;&quot;&gt; permite convertir un conjunto de datos fuente (Conexión a base de datos) a una estructura (modelo) de llegada que sea compatible.&lt;/span&gt;&lt;/p&gt;
 &lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Noto Sans'; font-size:9pt; color:#545454;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Noto Sans'; font-size:9pt; color:#545454;&quot;&gt;Se recomienda utilizar una base fuente que sea válido (esto es, que no haya sido exportado deshabilitando validaciones). Sin embargo, este requisito dependerá del conversor seleccionado.&lt;/span&gt;&lt;/p&gt;

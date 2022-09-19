@@ -69,11 +69,11 @@ def get_domain_value_from_code(domain_table, code, value_is_ilicode, validate_co
     return res
 
 @qgsfunction(args='auto', group='LADM-COL', referenced_columns=[])
-def get_domain_value_from_code_db(db_conn, domain_table, code, value_is_ilicode, validate_conn, feature, parent):
+def get_domain_value_from_code_db(db_source, domain_table, code, value_is_ilicode, validate_conn, feature, parent):
     """
     Gets a domain value from its t_id
 
-    : param db_conn: Define if db connection is 'COLLECTED', 'SUPPLIES'
+    : param db_source: Define if db connection is 'COLLECTED', 'SUPPLIES'
     : param domain_table: Either a string (class name in the DB) or a Vector Layer
     : param code: t_id to search in the domain
     : param value_is_ilicode: Whether 'value' is iliCode or not (if not, it's dispName)
@@ -89,7 +89,7 @@ def get_domain_value_from_code_db(db_conn, domain_table, code, value_is_ilicode,
         res = -1 if debug else None
     else:
         plugin = utils.plugins["asistente_ladm_col"]  # Dict of active plugins
-        db = plugin.get_db_connection(db_conn)
+        db = plugin.get_db_connection(db_source)
         db_ready = db.test_connection()[0] if validate_conn else True
         if db_ready:
             if db.names.T_ID_F is None:
