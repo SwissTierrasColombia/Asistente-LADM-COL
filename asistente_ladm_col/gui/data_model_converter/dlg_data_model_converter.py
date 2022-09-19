@@ -67,20 +67,20 @@ class DataModelConverterDialog(QDialog, DIALOG_DATA_MODEL_CONVERTER_UI):
         self.settings_dialog = SettingsDialog(self.conn_manager, parent=parent)
         # The database configuration is saved if it becomes necessary
         # to restore the configuration when the user rejects the dialog
-        self.init_db_converted = None
-        self.init_db_pre_converted = None
+        self.init_db_target = None
+        self.init_db_source = None
         self.set_init_db_config()  # Always call after the settings_dialog variable is set
 
-        self._db_converted = self.conn_manager.get_db_connector_from_source()
-        self._db_pre_converted = self.conn_manager.get_db_connector_from_source(SUPPLIES_DB_SOURCE)
+        self._db_target = self.conn_manager.get_db_connector_from_source()
+        self._db_source = self.conn_manager.get_db_connector_from_source(SUPPLIES_DB_SOURCE)
 
         # There may be 1 case where we need to emit a db_connection_changed from the change detection settings dialog:
         #   1) Connection Settings was opened and the DB conn was changed.
-        self._db_converted_was_changed = False  # To postpone calling refresh gui until we close this dialog instead of settings
-        self._db_pre_converted_was_changed = False
+        self._db_target_was_changed = False  # To postpone calling refresh gui until we close this dialog instead of settings
+        self._db_source_was_changed = False
 
-        self.btn_pre_converted_db.clicked.connect(self.show_settings_pre_converted_db)
-        self.btn_converted_db.clicked.connect(self.show_settings_converted_db)
+        self.btn_source_db.clicked.connect(self.show_settings_source_db)
+        self.btn_target_db.clicked.connect(self.show_settings_target_db)
 
         # Initialize
         self.initialize_progress()
@@ -132,180 +132,181 @@ class DataModelConverterDialog(QDialog, DIALOG_DATA_MODEL_CONVERTER_UI):
         if automatic_values:
             settings.setValue('Asistente-LADM-COL/automatic_values/automatic_values_in_batch_mode', False)
 
-        db_pre = self._db_pre_converted
-        db_conv = self._db_converted
-        pre_layers = {db_pre.names.LC_SURVEY_POINT_T: None,
-                  db_pre.names.LC_CONTROL_POINT_T: None,
-                  db_pre.names.LC_BOUNDARY_POINT_T: None,
-                  db_pre.names.LC_BOUNDARY_T: None,
-                  db_pre.names.POINT_BFS_T: None,
-                  db_pre.names.LC_PLOT_T: None,
-                  db_pre.names.LC_BUILDING_T: None,
-                  db_pre.names.LC_BUILDING_UNIT_T: None,
-                  db_pre.names.LC_RIGHT_OF_WAY_T: None,
-                  db_pre.names.COL_VALUE_AREA_T: None,
-                  db_pre.names.MORE_BFS_T: None,
-                  db_pre.names.LESS_BFS_T: None,
-                  db_pre.names.LC_TIPOLOGY_BUILDING_T: None,
-                  db_pre.names.LC_NON_CONVENTIONAL_QUALIFICATION_T: None,
-                  db_pre.names.LC_CONVENTIONAL_QUALIFICATION_T: None,
-                  db_pre.names.LC_GROUP_QUALIFICATION_T: None,
-                  db_pre.names.LC_BUILDING_OBJECT_T: None,
-                  db_pre.names.LC_PARCEL_T: None,
-                  db_pre.names.LC_SURVEY_CADASTRAL_ADITIONAL_DATA_T: None,
-                  db_pre.names.LC_PARCEL_NUMBER_NEW_STRUCTURE_T: None,
-                  db_pre.names.LC_FMI_NEW_STRUCTURE_T: None,
-                  db_pre.names.LC_CONTACT_VISIT_T: None,
-                  db_pre.names.LC_CONDOMINIUM_PH_DATA_T: None,
-                  db_pre.names.LC_REAL_ESTATE_MARKET_OFFERS_T: None,
-                  db_pre.names.EXT_ADDRESS_S: None,
-                  db_pre.names.LC_COPROPERTY_T: None,
-                  db_pre.names.FRACTION_T: None,
-                  db_pre.names.COL_UE_BAUNIT_T: None,
-                  db_pre.names.LC_PARTY_T: None,
-                  db_pre.names.LC_PARTY_CONTACT_T: None,
-                  db_pre.names.LC_GROUP_PARTY_T: None,
-                  db_pre.names.MEMBERS_T: None,
-                  db_pre.names.LC_RIGHT_T: None,
-                  db_pre.names.LC_RESTRICTION_T: None,
-                  db_pre.names.LC_ADMINISTRATIVE_SOURCE_T: None,
-                  db_pre.names.LC_SPATIAL_SOURCE_T: None,
-                  db_pre.names.EXT_ARCHIVE_S: None,
-                  db_pre.names.COL_RRR_SOURCE_T: None,
-                  db_pre.names.COL_UNIT_SOURCE_T: None,
-                  db_pre.names.COL_UE_SOURCE_T: None,
-                  db_pre.names.COL_BAUNIT_SOURCE_T: None}
-        conv_layers = {db_conv.names.LC_SURVEY_POINT_T: None,
-                  db_conv.names.LC_CONTROL_POINT_T: None,
-                  db_conv.names.LC_BOUNDARY_POINT_T: None,
-                  db_conv.names.LC_BOUNDARY_T: None,
-                  db_conv.names.POINT_BFS_T: None,
-                  db_conv.names.LC_PLOT_T: None,
-                  db_conv.names.LC_BUILDING_T: None,
-                  db_conv.names.LC_BUILDING_UNIT_T: None,
-                  db_conv.names.LC_RIGHT_OF_WAY_T: None,
-                  db_conv.names.COL_VALUE_AREA_T: None,
-                  db_conv.names.MORE_BFS_T: None,
-                  db_conv.names.LESS_BFS_T: None,
-                  db_conv.names.LC_TIPOLOGY_BUILDING_T: None,
-                  db_conv.names.LC_NON_CONVENTIONAL_QUALIFICATION_T: None,
-                  db_conv.names.LC_CONVENTIONAL_QUALIFICATION_T: None,
-                  db_conv.names.LC_GROUP_QUALIFICATION_T: None,
-                  db_conv.names.LC_BUILDING_OBJECT_T: None,
-                  db_conv.names.LC_PARCEL_T: None,
-                  db_conv.names.LC_SURVEY_CADASTRAL_ADITIONAL_DATA_T: None,
-                  db_conv.names.LC_PARCEL_NUMBER_NEW_STRUCTURE_T: None,
-                  db_conv.names.LC_FMI_NEW_STRUCTURE_T: None,
-                  db_conv.names.LC_CONTACT_VISIT_T: None,
-                  db_conv.names.LC_CONDOMINIUM_PH_DATA_T: None,
-                  db_conv.names.LC_REAL_ESTATE_MARKET_OFFERS_T: None,
-                  db_conv.names.EXT_ADDRESS_S: None,
-                  db_conv.names.LC_COPROPERTY_T: None,
-                  db_conv.names.BUILDING_UNIT_CHARACTERISTICS_T: None,
-                  db_conv.names.COL_UE_BAUNIT_T: None,
-                  db_conv.names.LC_PARTY_T: None,
-                  db_conv.names.LC_PARTY_CONTACT_T: None,
-                  db_conv.names.LC_GROUP_PARTY_T: None,
-                  db_conv.names.MEMBERS_T: None,
-                  db_conv.names.LC_RIGHT_T: None,
-                  db_conv.names.LC_RESTRICTION_T: None,
-                  db_conv.names.LC_ADMINISTRATIVE_SOURCE_T: None,
-                  db_conv.names.LC_SPATIAL_SOURCE_T: None,
-                  db_conv.names.EXT_ARCHIVE_S: None,
-                  db_conv.names.COL_RRR_SOURCE_T: None,
-                  db_conv.names.COL_UNIT_SOURCE_T: None,
-                  db_conv.names.COL_UE_SOURCE_T: None,
-                  db_conv.names.COL_BAUNIT_SOURCE_T: None}
+        db_source = self._db_source
+        db_target = self._db_target
+        source_layers = {db_source.names.LC_SURVEY_POINT_T: None,
+                  db_source.names.LC_CONTROL_POINT_T: None,
+                  db_source.names.LC_BOUNDARY_POINT_T: None,
+                  db_source.names.LC_BOUNDARY_T: None,
+                  db_source.names.POINT_BFS_T: None,
+                  db_source.names.LC_PLOT_T: None,
+                  db_source.names.LC_BUILDING_T: None,
+                  db_source.names.LC_BUILDING_UNIT_T: None,
+                  db_source.names.LC_RIGHT_OF_WAY_T: None,
+                  db_source.names.COL_VALUE_AREA_T: None,
+                  db_source.names.MORE_BFS_T: None,
+                  db_source.names.LESS_BFS_T: None,
+                  db_source.names.LC_TIPOLOGY_BUILDING_T: None,
+                  db_source.names.LC_NON_CONVENTIONAL_QUALIFICATION_T: None,
+                  db_source.names.LC_CONVENTIONAL_QUALIFICATION_T: None,
+                  db_source.names.LC_GROUP_QUALIFICATION_T: None,
+                  db_source.names.LC_BUILDING_OBJECT_T: None,
+                  db_source.names.LC_PARCEL_T: None,
+                  db_source.names.LC_SURVEY_CADASTRAL_ADDITIONAL_DATA_T: None,
+                  db_source.names.LC_PARCEL_NUMBER_NEW_STRUCTURE_T: None,
+                  db_source.names.LC_FMI_NEW_STRUCTURE_T: None,
+                  db_source.names.LC_CONTACT_VISIT_T: None,
+                  db_source.names.LC_CONDOMINIUM_PH_DATA_T: None,
+                  db_source.names.LC_REAL_ESTATE_MARKET_OFFERS_T: None,
+                  db_source.names.EXT_ADDRESS_S: None,
+                  db_source.names.LC_COPROPERTY_T: None,
+                  db_source.names.FRACTION_T: None,
+                  db_source.names.COL_UE_BAUNIT_T: None,
+                  db_source.names.LC_PARTY_T: None,
+                  db_source.names.LC_PARTY_CONTACT_T: None,
+                  db_source.names.LC_GROUP_PARTY_T: None,
+                  db_source.names.MEMBERS_T: None,
+                  db_source.names.LC_RIGHT_T: None,
+                  db_source.names.LC_RESTRICTION_T: None,
+                  db_source.names.LC_ADMINISTRATIVE_SOURCE_T: None,
+                  db_source.names.LC_SPATIAL_SOURCE_T: None,
+                  db_source.names.EXT_ARCHIVE_S: None,
+                  db_source.names.COL_RRR_SOURCE_T: None,
+                  db_source.names.COL_UNIT_SOURCE_T: None,
+                  db_source.names.COL_UE_SOURCE_T: None,
+                  db_source.names.COL_BAUNIT_SOURCE_T: None}
+        target_layers = {db_target.names.LC_SURVEY_POINT_T: None,
+                  db_target.names.LC_CONTROL_POINT_T: None,
+                  db_target.names.LC_BOUNDARY_POINT_T: None,
+                  db_target.names.LC_BOUNDARY_T: None,
+                  db_target.names.POINT_BFS_T: None,
+                  db_target.names.LC_PLOT_T: None,
+                  db_target.names.LC_BUILDING_T: None,
+                  db_target.names.LC_BUILDING_UNIT_T: None,
+                  db_target.names.LC_RIGHT_OF_WAY_T: None,
+                  db_target.names.COL_VALUE_AREA_T: None,
+                  db_target.names.MORE_BFS_T: None,
+                  db_target.names.LESS_BFS_T: None,
+                  db_target.names.LC_TIPOLOGY_BUILDING_T: None,
+                  db_target.names.LC_NON_CONVENTIONAL_QUALIFICATION_T: None,
+                  db_target.names.LC_CONVENTIONAL_QUALIFICATION_T: None,
+                  db_target.names.LC_GROUP_QUALIFICATION_T: None,
+                  db_target.names.LC_BUILDING_OBJECT_T: None,
+                  db_target.names.LC_PARCEL_T: None,
+                  db_target.names.LC_SURVEY_CADASTRAL_ADDITIONAL_DATA_T: None,
+                  db_target.names.LC_PARCEL_NUMBER_NEW_STRUCTURE_T: None,
+                  db_target.names.LC_FMI_NEW_STRUCTURE_T: None,
+                  db_target.names.LC_CONTACT_VISIT_T: None,
+                  db_target.names.LC_CONDOMINIUM_PH_DATA_T: None,
+                  db_target.names.LC_REAL_ESTATE_MARKET_OFFERS_T: None,
+                  db_target.names.EXT_ADDRESS_S: None,
+                  db_target.names.LC_COPROPERTY_T: None,
+                  db_target.names.BUILDING_UNIT_CHARACTERISTICS_T: None,
+                  db_target.names.COL_UE_BAUNIT_T: None,
+                  db_target.names.LC_PARTY_T: None,
+                  db_target.names.LC_PARTY_CONTACT_T: None,
+                  db_target.names.LC_GROUP_PARTY_T: None,
+                  db_target.names.MEMBERS_T: None,
+                  db_target.names.LC_RIGHT_T: None,
+                  db_target.names.LC_RESTRICTION_T: None,
+                  db_target.names.LC_ADMINISTRATIVE_SOURCE_T: None,
+                  db_target.names.LC_SPATIAL_SOURCE_T: None,
+                  db_target.names.EXT_ARCHIVE_S: None,
+                  db_target.names.COL_RRR_SOURCE_T: None,
+                  db_target.names.COL_UNIT_SOURCE_T: None,
+                  db_target.names.COL_UE_SOURCE_T: None,
+                  db_target.names.COL_BAUNIT_SOURCE_T: None}
 
         self.print_info(QCoreApplication.translate("DataModelConverterDialog",'Loading layers...'))
-        self.app.core.get_layers(db_pre, pre_layers, load=True)
-        self.app.core.get_layers(db_conv, conv_layers, load=True)
+        self.app.core.get_layers(db_source, source_layers, load=True)
+        self.app.core.get_layers(db_target, target_layers, load=True)
 
-        if not pre_layers or not conv_layers:
-            return
+        if not source_layers or not target_layers:
+            return False, QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                                              "Error running the ETL model. Details: Layers for ETL were not loaded")
 
-        params = {'inlcpuntolevantamiento': pre_layers[db_pre.names.LC_SURVEY_POINT_T],
-                  'inlcpuntocontrol': pre_layers[db_pre.names.LC_CONTROL_POINT_T],
-                  'inlcpuntolindero': pre_layers[db_pre.names.LC_BOUNDARY_POINT_T],
-                  'inlclindero': pre_layers[db_pre.names.LC_BOUNDARY_T],
-                  'inpuntoccl': pre_layers[db_pre.names.POINT_BFS_T],
-                  'inlcterreno': pre_layers[db_pre.names.LC_PLOT_T],
-                  'inlcconstruccion': pre_layers[db_pre.names.LC_BUILDING_T],
-                  'inlcunidadconstruccion': pre_layers[db_pre.names.LC_BUILDING_UNIT_T],
-                  'inlcservidumbretransito': pre_layers[db_pre.names.LC_RIGHT_OF_WAY_T],
-                  'incolareavalor': pre_layers[db_pre.names.COL_VALUE_AREA_T],
-                  'incolmasccl': pre_layers[db_pre.names.MORE_BFS_T],
-                  'incolmenosccl': pre_layers[db_pre.names.LESS_BFS_T],
-                  'inlctipologia': pre_layers[db_pre.names.LC_TIPOLOGY_BUILDING_T],
-                  'inlccalificacionnoconvencional': pre_layers[db_pre.names.LC_NON_CONVENTIONAL_QUALIFICATION_T],
-                  'inlccalificacionconvencional': pre_layers[db_pre.names.LC_CONVENTIONAL_QUALIFICATION_T],
-                  'inlcgrupocalificacion': pre_layers[db_pre.names.LC_GROUP_QUALIFICATION_T],
-                  'inlcobjetoconstruccion': pre_layers[db_pre.names.LC_BUILDING_OBJECT_T],
-                  'inlcpredio': pre_layers[db_pre.names.LC_PARCEL_T],
-                  'inlcdatosadicionaleslevantamientocatastral': pre_layers[db_pre.names.LC_SURVEY_CADASTRAL_ADITIONAL_DATA_T],
-                  'inlcestructuranovedadnumeropredial': pre_layers[db_pre.names.LC_PARCEL_NUMBER_NEW_STRUCTURE_T],
-                  'inlcestructuranovedadfmi': pre_layers[db_pre.names.LC_FMI_NEW_STRUCTURE_T],
-                  'inlccontactovisita': pre_layers[db_pre.names.LC_CONTACT_VISIT_T],
-                  'inlcdatosphcondominio': pre_layers[db_pre.names.LC_CONDOMINIUM_PH_DATA_T],
-                  'inlcofertasmercadoinmobiliario': pre_layers[db_pre.names.LC_REAL_ESTATE_MARKET_OFFERS_T],
-                  'inextdireccion': pre_layers[db_pre.names.EXT_ADDRESS_S],
-                  'inlcprediocopropiedad': pre_layers[db_pre.names.LC_COPROPERTY_T],
-                  'infraccion': pre_layers[db_pre.names.FRACTION_T],
-                  'incoluebaunit': pre_layers[db_pre.names.COL_UE_BAUNIT_T],
-                  'inlcinteresado': pre_layers[db_pre.names.LC_PARTY_T],
-                  'inlcinteresadocontacto': pre_layers[db_pre.names.LC_PARTY_CONTACT_T],
-                  'inlcagrupacioninteresados': pre_layers[db_pre.names.LC_GROUP_PARTY_T],
-                  'incolmiembros': pre_layers[db_pre.names.MEMBERS_T],
-                  'inlcderecho': pre_layers[db_pre.names.LC_RIGHT_T],
-                  'inlcrestriccion': pre_layers[db_pre.names.LC_RESTRICTION_T],
-                  'inlcfuenteadministrativa': pre_layers[db_pre.names.LC_ADMINISTRATIVE_SOURCE_T],
-                  'inlcfuenteespacial': pre_layers[db_pre.names.LC_SPATIAL_SOURCE_T],
-                  'inextarchivo': pre_layers[db_pre.names.EXT_ARCHIVE_S],
-                  'incolrrrfuente': pre_layers[db_pre.names.COL_RRR_SOURCE_T],
-                  'incolunidadfuente': pre_layers[db_pre.names.COL_UNIT_SOURCE_T],
-                  'incoluefuente': pre_layers[db_pre.names.COL_UE_SOURCE_T],
-                  'incolbaunitfuente': pre_layers[db_pre.names.COL_BAUNIT_SOURCE_T],
-                  'outlcpuntolevantamiento': conv_layers[db_conv.names.LC_SURVEY_POINT_T],
-                  'outlcpuntocontrol': conv_layers[db_conv.names.LC_CONTROL_POINT_T],
-                  'outlcpuntolindero': conv_layers[db_conv.names.LC_BOUNDARY_POINT_T],
-                  'outlclindero': conv_layers[db_conv.names.LC_BOUNDARY_T],
-                  'outpuntoccl': conv_layers[db_conv.names.POINT_BFS_T],
-                  'outlcterreno': conv_layers[db_conv.names.LC_PLOT_T],
-                  'outlcconstruccion': conv_layers[db_conv.names.LC_BUILDING_T],
-                  'outlcunidadconstruccion': conv_layers[db_conv.names.LC_BUILDING_UNIT_T],
-                  'outlcservidumbretransito': conv_layers[db_conv.names.LC_RIGHT_OF_WAY_T],
-                  'outcolareavalor': conv_layers[db_conv.names.COL_VALUE_AREA_T],
-                  'outcolmasccl': conv_layers[db_conv.names.MORE_BFS_T],
-                  'outcolmenosccl': conv_layers[db_conv.names.LESS_BFS_T],
-                  'outlctipologia': conv_layers[db_conv.names.LC_TIPOLOGY_BUILDING_T],
-                  'outlccalificacionnoconvencional': conv_layers[db_conv.names.LC_NON_CONVENTIONAL_QUALIFICATION_T],
-                  'outlccalificacionconvencional': conv_layers[db_conv.names.LC_CONVENTIONAL_QUALIFICATION_T],
-                  'outlcgrupocalificacion': conv_layers[db_conv.names.LC_GROUP_QUALIFICATION_T],
-                  'outlcobjetoconstruccion': conv_layers[db_conv.names.LC_BUILDING_OBJECT_T],
-                  'outlcpredio': conv_layers[db_conv.names.LC_PARCEL_T],
-                  'outlcdatosadicionaleslevantamientocatastral': conv_layers[db_conv.names.LC_SURVEY_CADASTRAL_ADITIONAL_DATA_T],
-                  'outlcestructuranovedadnumeropredial': conv_layers[db_conv.names.LC_PARCEL_NUMBER_NEW_STRUCTURE_T],
-                  'outlcestructuranovedadfmi': conv_layers[db_conv.names.LC_FMI_NEW_STRUCTURE_T],
-                  'outlccontactovisita': conv_layers[db_conv.names.LC_CONTACT_VISIT_T],
-                  'outlcdatosphcondominio': conv_layers[db_conv.names.LC_CONDOMINIUM_PH_DATA_T],
-                  'outlcofertasmercadoinmobiliario': conv_layers[db_conv.names.LC_REAL_ESTATE_MARKET_OFFERS_T],
-                  'outextdireccion': conv_layers[db_conv.names.EXT_ADDRESS_S],
-                  'outlcprediocopropiedad': conv_layers[db_conv.names.LC_COPROPERTY_T],
-                  'outlccaracteristicasunidadconstruccion': conv_layers[db_conv.names.BUILDING_UNIT_CHARACTERISTICS_T],
-                  'outcoluebaunit': conv_layers[db_conv.names.COL_UE_BAUNIT_T],
-                  'outlcinteresado': conv_layers[db_conv.names.LC_PARTY_T],
-                  'outlcinteresadocontacto': conv_layers[db_conv.names.LC_PARTY_CONTACT_T],
-                  'outlcagrupacioninteresados': conv_layers[db_conv.names.LC_GROUP_PARTY_T],
-                  'outcolmiembros': conv_layers[db_conv.names.MEMBERS_T],
-                  'outlcderecho': conv_layers[db_conv.names.LC_RIGHT_T],
-                  'outlcrestriccion': conv_layers[db_conv.names.LC_RESTRICTION_T],
-                  'outlcfuenteadministrativa': conv_layers[db_conv.names.LC_ADMINISTRATIVE_SOURCE_T],
-                  'outlcfuenteespacial': conv_layers[db_conv.names.LC_SPATIAL_SOURCE_T],
-                  'outextarchivo': conv_layers[db_conv.names.EXT_ARCHIVE_S],
-                  'outcolrrrfuente': conv_layers[db_conv.names.COL_RRR_SOURCE_T],
-                  'outcolunidadfuente': conv_layers[db_conv.names.COL_UNIT_SOURCE_T],
-                  'outcoluefuente': conv_layers[db_conv.names.COL_UE_SOURCE_T],
-                  'outcolbaunitfuente': conv_layers[db_conv.names.COL_BAUNIT_SOURCE_T]}
+        params = {'inlcpuntolevantamiento': source_layers[db_source.names.LC_SURVEY_POINT_T],
+                  'inlcpuntocontrol': source_layers[db_source.names.LC_CONTROL_POINT_T],
+                  'inlcpuntolindero': source_layers[db_source.names.LC_BOUNDARY_POINT_T],
+                  'inlclindero': source_layers[db_source.names.LC_BOUNDARY_T],
+                  'inpuntoccl': source_layers[db_source.names.POINT_BFS_T],
+                  'inlcterreno': source_layers[db_source.names.LC_PLOT_T],
+                  'inlcconstruccion': source_layers[db_source.names.LC_BUILDING_T],
+                  'inlcunidadconstruccion': source_layers[db_source.names.LC_BUILDING_UNIT_T],
+                  'inlcservidumbretransito': source_layers[db_source.names.LC_RIGHT_OF_WAY_T],
+                  'incolareavalor': source_layers[db_source.names.COL_VALUE_AREA_T],
+                  'incolmasccl': source_layers[db_source.names.MORE_BFS_T],
+                  'incolmenosccl': source_layers[db_source.names.LESS_BFS_T],
+                  'inlctipologia': source_layers[db_source.names.LC_TIPOLOGY_BUILDING_T],
+                  'inlccalificacionnoconvencional': source_layers[db_source.names.LC_NON_CONVENTIONAL_QUALIFICATION_T],
+                  'inlccalificacionconvencional': source_layers[db_source.names.LC_CONVENTIONAL_QUALIFICATION_T],
+                  'inlcgrupocalificacion': source_layers[db_source.names.LC_GROUP_QUALIFICATION_T],
+                  'inlcobjetoconstruccion': source_layers[db_source.names.LC_BUILDING_OBJECT_T],
+                  'inlcpredio': source_layers[db_source.names.LC_PARCEL_T],
+                  'inlcdatosadicionaleslevantamientocatastral': source_layers[db_source.names.LC_SURVEY_CADASTRAL_ADDITIONAL_DATA_T],
+                  'inlcestructuranovedadnumeropredial': source_layers[db_source.names.LC_PARCEL_NUMBER_NEW_STRUCTURE_T],
+                  'inlcestructuranovedadfmi': source_layers[db_source.names.LC_FMI_NEW_STRUCTURE_T],
+                  'inlccontactovisita': source_layers[db_source.names.LC_CONTACT_VISIT_T],
+                  'inlcdatosphcondominio': source_layers[db_source.names.LC_CONDOMINIUM_PH_DATA_T],
+                  'inlcofertasmercadoinmobiliario': source_layers[db_source.names.LC_REAL_ESTATE_MARKET_OFFERS_T],
+                  'inextdireccion': source_layers[db_source.names.EXT_ADDRESS_S],
+                  'inlcprediocopropiedad': source_layers[db_source.names.LC_COPROPERTY_T],
+                  'infraccion': source_layers[db_source.names.FRACTION_T],
+                  'incoluebaunit': source_layers[db_source.names.COL_UE_BAUNIT_T],
+                  'inlcinteresado': source_layers[db_source.names.LC_PARTY_T],
+                  'inlcinteresadocontacto': source_layers[db_source.names.LC_PARTY_CONTACT_T],
+                  'inlcagrupacioninteresados': source_layers[db_source.names.LC_GROUP_PARTY_T],
+                  'incolmiembros': source_layers[db_source.names.MEMBERS_T],
+                  'inlcderecho': source_layers[db_source.names.LC_RIGHT_T],
+                  'inlcrestriccion': source_layers[db_source.names.LC_RESTRICTION_T],
+                  'inlcfuenteadministrativa': source_layers[db_source.names.LC_ADMINISTRATIVE_SOURCE_T],
+                  'inlcfuenteespacial': source_layers[db_source.names.LC_SPATIAL_SOURCE_T],
+                  'inextarchivo': source_layers[db_source.names.EXT_ARCHIVE_S],
+                  'incolrrrfuente': source_layers[db_source.names.COL_RRR_SOURCE_T],
+                  'incolunidadfuente': source_layers[db_source.names.COL_UNIT_SOURCE_T],
+                  'incoluefuente': source_layers[db_source.names.COL_UE_SOURCE_T],
+                  'incolbaunitfuente': source_layers[db_source.names.COL_BAUNIT_SOURCE_T],
+                  'outlcpuntolevantamiento': target_layers[db_target.names.LC_SURVEY_POINT_T],
+                  'outlcpuntocontrol': target_layers[db_target.names.LC_CONTROL_POINT_T],
+                  'outlcpuntolindero': target_layers[db_target.names.LC_BOUNDARY_POINT_T],
+                  'outlclindero': target_layers[db_target.names.LC_BOUNDARY_T],
+                  'outpuntoccl': target_layers[db_target.names.POINT_BFS_T],
+                  'outlcterreno': target_layers[db_target.names.LC_PLOT_T],
+                  'outlcconstruccion': target_layers[db_target.names.LC_BUILDING_T],
+                  'outlcunidadconstruccion': target_layers[db_target.names.LC_BUILDING_UNIT_T],
+                  'outlcservidumbretransito': target_layers[db_target.names.LC_RIGHT_OF_WAY_T],
+                  'outcolareavalor': target_layers[db_target.names.COL_VALUE_AREA_T],
+                  'outcolmasccl': target_layers[db_target.names.MORE_BFS_T],
+                  'outcolmenosccl': target_layers[db_target.names.LESS_BFS_T],
+                  'outlctipologia': target_layers[db_target.names.LC_TIPOLOGY_BUILDING_T],
+                  'outlccalificacionnoconvencional': target_layers[db_target.names.LC_NON_CONVENTIONAL_QUALIFICATION_T],
+                  'outlccalificacionconvencional': target_layers[db_target.names.LC_CONVENTIONAL_QUALIFICATION_T],
+                  'outlcgrupocalificacion': target_layers[db_target.names.LC_GROUP_QUALIFICATION_T],
+                  'outlcobjetoconstruccion': target_layers[db_target.names.LC_BUILDING_OBJECT_T],
+                  'outlcpredio': target_layers[db_target.names.LC_PARCEL_T],
+                  'outlcdatosadicionaleslevantamientocatastral': target_layers[db_target.names.LC_SURVEY_CADASTRAL_ADDITIONAL_DATA_T],
+                  'outlcestructuranovedadnumeropredial': target_layers[db_target.names.LC_PARCEL_NUMBER_NEW_STRUCTURE_T],
+                  'outlcestructuranovedadfmi': target_layers[db_target.names.LC_FMI_NEW_STRUCTURE_T],
+                  'outlccontactovisita': target_layers[db_target.names.LC_CONTACT_VISIT_T],
+                  'outlcdatosphcondominio': target_layers[db_target.names.LC_CONDOMINIUM_PH_DATA_T],
+                  'outlcofertasmercadoinmobiliario': target_layers[db_target.names.LC_REAL_ESTATE_MARKET_OFFERS_T],
+                  'outextdireccion': target_layers[db_target.names.EXT_ADDRESS_S],
+                  'outlcprediocopropiedad': target_layers[db_target.names.LC_COPROPERTY_T],
+                  'outlccaracteristicasunidadconstruccion': target_layers[db_target.names.BUILDING_UNIT_CHARACTERISTICS_T],
+                  'outcoluebaunit': target_layers[db_target.names.COL_UE_BAUNIT_T],
+                  'outlcinteresado': target_layers[db_target.names.LC_PARTY_T],
+                  'outlcinteresadocontacto': target_layers[db_target.names.LC_PARTY_CONTACT_T],
+                  'outlcagrupacioninteresados': target_layers[db_target.names.LC_GROUP_PARTY_T],
+                  'outcolmiembros': target_layers[db_target.names.MEMBERS_T],
+                  'outlcderecho': target_layers[db_target.names.LC_RIGHT_T],
+                  'outlcrestriccion': target_layers[db_target.names.LC_RESTRICTION_T],
+                  'outlcfuenteadministrativa': target_layers[db_target.names.LC_ADMINISTRATIVE_SOURCE_T],
+                  'outlcfuenteespacial': target_layers[db_target.names.LC_SPATIAL_SOURCE_T],
+                  'outextarchivo': target_layers[db_target.names.EXT_ARCHIVE_S],
+                  'outcolrrrfuente': target_layers[db_target.names.COL_RRR_SOURCE_T],
+                  'outcolunidadfuente': target_layers[db_target.names.COL_UNIT_SOURCE_T],
+                  'outcoluefuente': target_layers[db_target.names.COL_UE_SOURCE_T],
+                  'outcolbaunitfuente': target_layers[db_target.names.COL_BAUNIT_SOURCE_T]}
 
         f = QgsProcessingFeedback()
         f.progressChanged.connect(self.progress_changed)
@@ -379,30 +380,30 @@ class DataModelConverterDialog(QDialog, DIALOG_DATA_MODEL_CONVERTER_UI):
          User can change the initial connections and then cancel the changes.
          Initial connections need to be re-established
         """
-        self.init_db_converted = self.conn_manager.get_db_connector_from_source(COLLECTED_DB_SOURCE)
-        self.init_db_pre_converted = self.conn_manager.get_db_connector_from_source(SUPPLIES_DB_SOURCE)
+        self.init_db_target = self.conn_manager.get_db_connector_from_source(COLLECTED_DB_SOURCE)
+        self.init_db_source = self.conn_manager.get_db_connector_from_source(SUPPLIES_DB_SOURCE)
 
-    def show_settings_converted_db(self):
-        self.settings_dialog.setWindowTitle(QCoreApplication.translate("DataModelConverterDialog", "CONVERTED DB Connection Settings"))
+    def show_settings_target_db(self):
+        self.settings_dialog.setWindowTitle(QCoreApplication.translate("DataModelConverterDialog", "TARGET DB Connection Settings"))
         self.settings_dialog.set_db_source(COLLECTED_DB_SOURCE)
         self.settings_dialog.set_tab_pages_list([SETTINGS_CONNECTION_TAB_INDEX])
         self.settings_dialog.set_required_models([LADMNames.SURVEY_MODEL_KEY])
         self.settings_dialog.db_connection_changed.connect(self.db_connection_changed)
 
         if self.settings_dialog.exec_():
-            self._db_converted = self.settings_dialog.get_db_connection()
+            self._db_target = self.settings_dialog.get_db_connection()
             self.update_connection_info()
         self.settings_dialog.db_connection_changed.disconnect(self.db_connection_changed)
 
-    def show_settings_pre_converted_db(self):
-        self.settings_dialog.setWindowTitle(QCoreApplication.translate("DataModelConverterDialog", "PRE CONVERTED DB Connection Settings"))
+    def show_settings_source_db(self):
+        self.settings_dialog.setWindowTitle(QCoreApplication.translate("DataModelConverterDialog", "SOURCE DB Connection Settings"))
         self.settings_dialog.set_db_source(SUPPLIES_DB_SOURCE)
         self.settings_dialog.set_tab_pages_list([SETTINGS_CONNECTION_TAB_INDEX])
         self.settings_dialog.set_required_models([LADMNames.SURVEY_1_0_MODEL_KEY])
         self.settings_dialog.db_connection_changed.connect(self.db_connection_changed)
 
         if self.settings_dialog.exec_():
-            self._db_pre_converted = self.settings_dialog.get_db_connection()
+            self._db_source = self.settings_dialog.get_db_connection()
             self.update_connection_info()
         self.settings_dialog.db_connection_changed.disconnect(self.db_connection_changed)
 
@@ -410,10 +411,10 @@ class DataModelConverterDialog(QDialog, DIALOG_DATA_MODEL_CONVERTER_UI):
         # We dismiss parameters here, after all, we already have the db, and the ladm_col_db
         # may change from this moment until we close the import schema dialog
         if db_source == COLLECTED_DB_SOURCE:
-            self._db_converted_was_changed = True
+            self._db_target_was_changed = True
             self._schedule_layers_and_relations_refresh = True
         else:
-            self._db_pre_converted_was_changed = True
+            self._db_source_was_changed = True
 
     def update_connection_info(self):
         # Validate db connections
@@ -422,36 +423,36 @@ class DataModelConverterDialog(QDialog, DIALOG_DATA_MODEL_CONVERTER_UI):
         self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
 
         # First, update status of same_db button according to collected db connection
-        res_converted, code_collected, msg_collected = self._db_converted.test_connection(models={REQUIRED_MODELS: [LADMNames.SURVEY_MODEL_KEY]})
-        res_pre_converted, code_supplies, msg_supplies = self._db_pre_converted.test_connection(models={REQUIRED_MODELS: [LADMNames.SURVEY_1_0_MODEL_KEY]})
+        res_target, code_collected, msg_collected = self._db_target.test_connection(models={REQUIRED_MODELS: [LADMNames.SURVEY_MODEL_KEY]})
+        res_source, code_supplies, msg_supplies = self._db_source.test_connection(models={REQUIRED_MODELS: [LADMNames.SURVEY_1_0_MODEL_KEY]})
 
-        db_description = self._db_pre_converted.get_description_conn_string()
+        db_description = self._db_source.get_description_conn_string()
         if db_description:
-            self.db_pre_converted_connect_label.setText(db_description)
-            self.db_pre_converted_connect_label.setToolTip(self._db_pre_converted.get_display_conn_string())
+            self.db_source_connect_label.setText(db_description)
+            self.db_source_connect_label.setToolTip(self._db_source.get_display_conn_string())
         else:
-            self.db_pre_converted_connect_label.setText(QCoreApplication.translate("DataModelConverterDialog", "The database is not defined!"))
-            self.db_pre_converted_connect_label.setToolTip('')
+            self.db_source_connect_label.setText(QCoreApplication.translate("DataModelConverterDialog", "The database is not defined!"))
+            self.db_source_connect_label.setToolTip('')
 
         # Update collected db connection label
-        db_description = self._db_converted.get_description_conn_string()
+        db_description = self._db_target.get_description_conn_string()
         if db_description:
-            self.db_converted_connect_label.setText(db_description)
-            self.db_converted_connect_label.setToolTip(self._db_converted.get_display_conn_string())
+            self.db_target_connect_label.setText(db_description)
+            self.db_target_connect_label.setToolTip(self._db_target.get_display_conn_string())
         else:
-            self.db_converted_connect_label.setText(QCoreApplication.translate("DataModelConverterDialog", "The database is not defined!"))
-            self.db_converted_connect_label.setToolTip('')
+            self.db_target_connect_label.setText(QCoreApplication.translate("DataModelConverterDialog", "The database is not defined!"))
+            self.db_target_connect_label.setToolTip('')
 
         # Update error message labels
-        if not res_converted:
+        if not res_target:
             self.lbl_msg_collected.setText(QCoreApplication.translate("DataModelConverterDialog", "Warning: DB connection is not valid"))
             self.lbl_msg_collected.setToolTip(msg_collected)
 
-        if not res_pre_converted:
+        if not res_source:
             self.lbl_msg_supplies.setText(QCoreApplication.translate("DataModelConverterDialog", "Warning: DB connection is not valid"))
             self.lbl_msg_supplies.setToolTip(msg_supplies)
 
-        if res_converted and res_pre_converted:
+        if res_target and res_source:
             self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
 
     def selected_converter_changed(self, index):
