@@ -346,7 +346,7 @@ class DBConnector(QObject):
 
         not_found = [model for model in models if not self.ladm_col_model_exists(model)]
 
-        if not_found == ['Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0']:
+        if not_found == ['Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_0']: #TODO This should be removed in future releases with a better handle of model versions
             not_found = None
 
         if not_found:
