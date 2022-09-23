@@ -107,9 +107,15 @@ class DataModelConverterDialog(QDialog, DIALOG_DATA_MODEL_CONVERTER_UI):
         self.save_settings()
 
         self.bar.clearWidgets()  # Remove previous messages
+
+        if LADMNames.SURVEY_1_0_MODEL_KEY not in self._db_source.get_models():
+            res = False
+            msg = QCoreApplication.translate("DataModelConverterDialog", "Source DB should be based on the Survey V1.0 Model")
+            self.show_message(msg, Qgis.Critical)
+            return
+
         self.set_gui_controls_enabled(False)
         self.progress.setVisible(True)
-
         msg = QCoreApplication.translate("DataModelConverterDialog", "Converting data (this might take a while)...")
         res, msg = self.run_etl(Context())
         if res:
