@@ -11,22 +11,24 @@ from qgis.testing import (unittest,
 start_app()  # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.tests.utils import (get_field_values_by_key_values,
-                                            get_copy_gpkg_conn)
+                                            get_copy_gpkg_conn,
+                                            get_gpkg_conn_from_path,
+                                            restore_gpkg_db)
 from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
+from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
 
 
-@unittest.skip("Until we've migrated to Lev Cat 1.2 completely...")
 class TestLADMData(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
         # DB with single child model
-        cls.db_gpkg = get_copy_gpkg_conn('test_ladm_survey_model_gpkg')
+        cls.db_gpkg = restore_gpkg_db('test_ladm_data', [LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).full_name()])
         res, code, msg = cls.db_gpkg.test_connection()
         cls.assertTrue(res, msg)
 
         # DB with multiple child models and domains
-        cls.db_multi_gpkg = get_copy_gpkg_conn('test_ladm_multiple_child_domains_gpkg')
+        cls.db_multi_gpkg = restore_gpkg_db('test_ladm_data', [LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).full_name()])
         res, code, msg = cls.db_multi_gpkg.test_connection()
         cls.assertTrue(res, msg)
 
@@ -43,7 +45,7 @@ class TestLADMData(unittest.TestCase):
         self.assertEqual(layer.featureCount(), 14)
 
         field_name = self.db_gpkg.names.THIS_CLASS_F
-        field_values = ["LADM_COL_V3_0.LADM_Nucleo.COL_PuntoTipo"]
+        field_values = ["LADM_COL_V3_1.LADM_Nucleo.COL_PuntoTipo"]
 
         # We have 3 cases to test:
         # a) Single field (if no_attributes is True and only_attributes is an empty list)
@@ -212,9 +214,9 @@ class TestLADMData(unittest.TestCase):
     def test_get_multi_domain_code_from_value(self):
         print('\nINFO: Validating get multi domain code from value...')
 
-        duplicated_ilicode = 'Documento_Publico.Acto_Administrativo'
-        this_class_environment = 'Ambiente_V0_1.MA_FuenteAdministrativaTipo'
-        this_class_survey = 'Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.LC_FuenteAdministrativaTipo'
+        duplicated_ilicode = 'Documento_Privado'
+        this_class_ladm_core = 'LADM_COL_V3_1.LADM_Nucleo.COL_FuenteAdministrativaTipo'
+        this_class_survey = 'Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.LC_FuenteAdministrativaTipo'
         t_id_environment_model = -1
         t_id_survey_model = -1
 
@@ -228,7 +230,7 @@ class TestLADMData(unittest.TestCase):
         self.assertEqual(len(test_features), 2)
 
         for f in test_features:
-            if f[self.db_gpkg.names.THIS_CLASS_F] == this_class_environment:
+            if f[self.db_gpkg.names.THIS_CLASS_F] == this_class_ladm_core:
                 t_id_environment_model = f[self.db_gpkg.names.T_ID_F]
             elif f[self.db_gpkg.names.THIS_CLASS_F] == this_class_survey:
                 t_id_survey_model = f[self.db_gpkg.names.T_ID_F]
@@ -241,7 +243,7 @@ class TestLADMData(unittest.TestCase):
                                                           self.db_multi_gpkg.names.COL_ADMINISTRATIVE_SOURCE_TYPE_D,
                                                           duplicated_ilicode,
                                                           True,
-                                                          this_class_environment)
+                                                          this_class_ladm_core)
         self.assertEqual(value, t_id_environment_model)
 
         # Good parameters, survey model
