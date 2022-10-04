@@ -7,12 +7,13 @@ from qgis.testing import (start_app,
 
 start_app() # need to start before asistente_ladm_col.tests.utils
 
-from asistente_ladm_col.app_interface import AppInterface
-
-from asistente_ladm_col.tests.utils import (get_pg_conn,
-                                            get_field_values_by_key_values,
+from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
+from asistente_ladm_col.config.ladm_names import LADMNames
+from asistente_ladm_col.tests.utils import (get_field_values_by_key_values,
                                             standardize_query_results,
                                             import_asistente_ladm_col,
+                                            get_test_path,
+                                            restore_pg_db,
                                             import_processing,
                                             restore_schema)
 from asistente_ladm_col.tests.resources.expected_results.queries.ladm_basic_query_test_results import expected_result_ladm_basic_query
@@ -25,7 +26,6 @@ from asistente_ladm_col.config.expression_functions import (get_domain_code_from
                                                             get_domain_value_from_code)
 
 
-@unittest.skip("Until we've migrated to Lev Cat 1.2 completely...")
 class TestPGLADMQueries(unittest.TestCase):
 
     @classmethod
@@ -34,8 +34,13 @@ class TestPGLADMQueries(unittest.TestCase):
         import_asistente_ladm_col()  # Import plugin
 
         print("INFO: Restoring databases to be used")
-        restore_schema('test_ladm_col_queries')
-        cls.db_pg = get_pg_conn('test_ladm_col_queries')
+        schema = 'test_ladm_col_queries'
+        models = [LADMColModelRegistry().model(LADMNames.LADM_COL_MODEL_KEY).full_name(),
+                  LADMColModelRegistry().model(LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY).full_name(),
+                  LADMColModelRegistry().model(LADMNames.SUPPLIES_MODEL_KEY).full_name(),
+                  LADMColModelRegistry().model(LADMNames.SUPPLIES_INTEGRATION_MODEL_KEY).full_name(),
+                  LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).full_name()]
+        cls.db_pg = restore_pg_db(schema, models, get_test_path("db/ladm/test_ladm_col_queries_v1_2.xtf"), True)
 
         # We can't use the restored database connection because the expression functions use the one in the plugin;
         # that's why we have to get the database connection and assign it to the plugin

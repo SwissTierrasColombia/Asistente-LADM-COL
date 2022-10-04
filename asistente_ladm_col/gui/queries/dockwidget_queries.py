@@ -70,10 +70,14 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
 
         self.btn_identify_plot.setIcon(QIcon(":/Asistente-LADM-COL/resources/images/spatial_unit.png"))
 
-        self.tab_results.setTabEnabled(TAB_BASIC_INFO_INDEX, False)  # TODO: Remove when queries support LevCat 1.2
-        self.tab_results.setTabEnabled(TAB_PHYSICAL_INFO_INDEX, False)  # TODO: Remove when queries support LevCat 1.2
-        self.tab_results.setTabEnabled(TAB_ECONOMIC_INFO_INDEX, False)  # TODO: Remove when queries support LevCat 1.2
-        self.tab_results.setCurrentIndex(TAB_LEGAL_INFO_INDEX)  # TODO: Remove when queries support LevCat 1.2
+        # TODO: Remove if when queries support GPKG in LevCat 1.2
+        if self._controller._db.engine == 'pg':
+            self.tab_results.setCurrentIndex(TAB_BASIC_INFO_INDEX)
+        else:
+            self.tab_results.setTabEnabled(TAB_BASIC_INFO_INDEX, False)
+            self.tab_results.setTabEnabled(TAB_PHYSICAL_INFO_INDEX, False)
+            self.tab_results.setTabEnabled(TAB_ECONOMIC_INFO_INDEX, False)
+            self.tab_results.setCurrentIndex(TAB_LEGAL_INFO_INDEX)
 
         # Set connections
         self._controller.close_view_requested.connect(self._close_dock_widget)
@@ -199,20 +203,24 @@ class DockWidgetQueries(QgsDockWidget, DOCKWIDGET_UI):
             self.logger.warning(__name__, QCoreApplication.translate("DockWidgetQueries",
                                                                      "The parcel number is NULL! We cannot retrieve data for parcels with NULL parcel numbers."))
 
-        # records = self._controller.search_data_basic_info(**kwargs)
-        # if bZoom:
-        #     self._controller.zoom_to_resulting_plots(records)
+        # TODO: Remove if when queries support GPKG in LevCat 1.2
+        if self._controller._db.engine == 'pg':
+            records = self._controller.search_data_basic_info(**kwargs)
+            if bZoom:
+                self._controller.zoom_to_resulting_plots(records)
 
-        # self._setup_tree_view(self.tree_view_basic, records)
+            self._setup_tree_view(self.tree_view_basic, records)
 
         records = self._controller.search_data_legal_info(**kwargs)
         self._setup_tree_view(self.tree_view_legal, records)
 
-        # records = self._controller.search_data_physical_info(**kwargs)
-        # self._setup_tree_view(self.tree_view_physical, records)
+        # TODO: Remove if when queries support GPKG in LevCat 1.2
+        if self._controller._db.engine == 'pg':
+            records = self._controller.search_data_physical_info(**kwargs)
+            self._setup_tree_view(self.tree_view_physical, records)
 
-        # records = self._controller.search_data_economic_info(**kwargs)
-        # self._setup_tree_view(self.tree_view_economic, records)
+            records = self._controller.search_data_economic_info(**kwargs)
+            self._setup_tree_view(self.tree_view_economic, records)
 
     def _setup_tree_view(self, tree_view, records):
         """
