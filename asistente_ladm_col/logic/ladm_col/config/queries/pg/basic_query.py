@@ -59,20 +59,21 @@ def get_igac_basic_query(names, schema, plot_t_ids, parcel_fmi, parcel_number, p
      _info_uc AS (
          SELECT {LC_BUILDING_UNIT_T}.{LC_BUILDING_UNIT_T_BUILDING_F},
                 JSON_AGG(JSON_BUILD_OBJECT('id', {LC_BUILDING_UNIT_T}.{T_ID_F},
-                                  'attributes', JSON_BUILD_OBJECT('Número de pisos', {LC_BUILDING_UNIT_T}.{LC_BUILDING_UNIT_T_TOTAL_FLOORS_F},
-                                                                  'Número de habitaciones', {LC_BUILDING_UNIT_T}.{LC_BUILDING_UNIT_T_TOTAL_ROOMS_F},
-                                                                  'Número de baños', {LC_BUILDING_UNIT_T}.{LC_BUILDING_UNIT_T_TOTAL_BATHROOMS_F},
-                                                                  'Número de locales', {LC_BUILDING_UNIT_T}.{LC_BUILDING_UNIT_T_TOTAL_LOCALS_F},
-                                                                  'Tipo construcción', (SELECT {DISPLAY_NAME_F} FROM {schema}.{LC_BUILDING_TYPE_D} WHERE {T_ID_F} = {LC_BUILDING_UNIT_T}.{LC_BUILDING_UNIT_T_BUILDING_TYPE_F}),
-                                                                  'Tipo unidad de construcción', (SELECT {DISPLAY_NAME_F} FROM {schema}.{LC_BUILDING_UNIT_TYPE_D} WHERE {T_ID_F} = {LC_BUILDING_UNIT_T}.{LC_BUILDING_UNIT_T_BUILDING_UNIT_TYPE_F}),
-                                                                  'Tipo de planta', (SELECT {DISPLAY_NAME_F} FROM {schema}.{LC_BUILDING_FLOOR_TYPE_D} WHERE {T_ID_F} = {LC_BUILDING_UNIT_T}.{LC_BUILDING_UNIT_T_FLOOR_TYPE_F}),
-                                                                  'Tipo dominio', (SELECT {DISPLAY_NAME_F} FROM {schema}.{LC_DOMAIN_BUILDING_TYPE_D} WHERE {T_ID_F} = {LC_BUILDING_UNIT_T}.{LC_BUILDING_UNIT_T_DOMAIN_TYPE_F}),
+                                  'attributes', JSON_BUILD_OBJECT('Número de pisos', {LC_CHARACTERISTICS_BUILDING_UNIT_T}.{LC_CHARACTERISTICS_BUILDING_UNIT_T_TOTAL_FLOORS_F},
+                                                                  'Número de habitaciones', {LC_CHARACTERISTICS_BUILDING_UNIT_T}.{LC_CHARACTERISTICS_BUILDING_UNIT_T_TOTAL_ROOMS_F},
+                                                                  'Número de baños', {LC_CHARACTERISTICS_BUILDING_UNIT_T}.{LC_CHARACTERISTICS_BUILDING_UNIT_T_TOTAL_BATHROOMS_F},
+                                                                  'Número de locales', {LC_CHARACTERISTICS_BUILDING_UNIT_T}.{LC_CHARACTERISTICS_BUILDING_UNIT_T_TOTAL_LOCALS_F},
+                                                                  'Tipo construcción', (SELECT {DISPLAY_NAME_F} FROM {schema}.{LC_BUILDING_TYPE_D} WHERE {T_ID_F} = {LC_CHARACTERISTICS_BUILDING_UNIT_T}.{LC_CHARACTERISTICS_BUILDING_UNIT_T_BUILDING_TYPE_F}),
+                                                                  'Tipo unidad de construcción', (SELECT {DISPLAY_NAME_F} FROM {schema}.{LC_BUILDING_UNIT_TYPE_D} WHERE {T_ID_F} = {LC_CHARACTERISTICS_BUILDING_UNIT_T}.{LC_CHARACTERISTICS_BUILDING_UNIT_T_BUILDING_UNIT_TYPE_F}),
+                                                                  'Tipo de planta', (SELECT {DISPLAY_NAME_F} FROM {schema}.{LC_BUILDING_FLOOR_TYPE_D} WHERE {T_ID_F} = {LC_CHARACTERISTICS_BUILDING_UNIT_T}.{LC_CHARACTERISTICS_BUILDING_UNIT_T_FLOOR_TYPE_F}),
+                                                                  'Tipo dominio', (SELECT {DISPLAY_NAME_F} FROM {schema}.{LC_DOMAIN_BUILDING_TYPE_D} WHERE {T_ID_F} = {LC_CHARACTERISTICS_BUILDING_UNIT_T}.{LC_CHARACTERISTICS_BUILDING_UNIT_T_DOMAIN_TYPE_F}),
                                                                   'Ubicación en el piso', {LC_BUILDING_UNIT_T}.{LC_BUILDING_UNIT_T_FLOOR_F},
                                                                   CONCAT('Área construida' , (SELECT * FROM _unidad_area_construida_uc)), {LC_BUILDING_UNIT_T}.{LC_BUILDING_UNIT_T_BUILT_AREA_F},
-                                                                  'Uso', (SELECT {DISPLAY_NAME_F} FROM {schema}.{LC_BUILDING_UNIT_USE_D} WHERE {T_ID_F} = {LC_BUILDING_UNIT_T}.{LC_BUILDING_UNIT_T_USE_F}),
+                                                                  'Uso', (SELECT {DISPLAY_NAME_F} FROM {schema}.{LC_BUILDING_UNIT_USE_D} WHERE {T_ID_F} = {LC_CHARACTERISTICS_BUILDING_UNIT_T}.{LC_CHARACTERISTICS_BUILDING_UNIT_T_USE_F}),
                                                                   '{EXT_ADDRESS_S}', COALESCE(_uc_extdireccion.{EXT_ADDRESS_S}, '[]')
                                                                  )) ORDER BY {LC_BUILDING_UNIT_T}.{T_ID_F}) FILTER(WHERE {LC_BUILDING_UNIT_T}.{T_ID_F} IS NOT NULL)  AS _unidadconstruccion_
          FROM {schema}.{LC_BUILDING_UNIT_T}
+         LEFT JOIN {schema}.{LC_CHARACTERISTICS_BUILDING_UNIT_T} ON {LC_BUILDING_UNIT_T}.{LC_BUILDING_UNIT_T_CHARACTERISTICS_F} = {LC_CHARACTERISTICS_BUILDING_UNIT_T}.{T_ID_F}
          LEFT JOIN _uc_extdireccion ON {LC_BUILDING_UNIT_T}.{T_ID_F} = _uc_extdireccion.{EXT_ADDRESS_S_LC_BUILDING_UNIT_F}
          WHERE {LC_BUILDING_UNIT_T}.{T_ID_F} IN (SELECT * FROM _unidadesconstruccion_seleccionadas)
          GROUP BY {LC_BUILDING_UNIT_T}.{LC_BUILDING_UNIT_T_BUILDING_F}

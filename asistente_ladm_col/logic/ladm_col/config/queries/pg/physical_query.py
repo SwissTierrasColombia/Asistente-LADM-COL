@@ -15,7 +15,7 @@ def get_igac_physical_query(names, schema, plot_t_ids, parcel_fmi, parcel_number
                  SELECT ' [' || setting || ']' FROM {schema}.t_ili2db_column_prop WHERE tablename = '{LC_BUILDING_UNIT_T}' AND columnname = '{LC_BUILDING_UNIT_T_BUILT_AREA_F}' LIMIT 1
              ),
              _unidad_area_privada_construida_uc AS (
-                 SELECT ' [' || setting || ']' FROM {schema}.t_ili2db_column_prop WHERE tablename = '{LC_BUILDING_UNIT_T}' AND columnname = '{LC_BUILDING_UNIT_T_BUILT_PRIVATE_AREA_F}' LIMIT 1
+                 SELECT ' [' || setting || ']' FROM {schema}.t_ili2db_column_prop WHERE tablename = '{LC_CHARACTERISTICS_BUILDING_UNIT_T}' AND columnname = '{LC_CHARACTERISTICS_BUILDING_UNIT_T_BUILT_PRIVATE_AREA_F}' LIMIT 1
              ),
              _unidad_longitud_lindero AS (
                  SELECT ' [' || setting || ']' FROM {schema}.t_ili2db_column_prop WHERE tablename = '{LC_BOUNDARY_T}' AND columnname = '{LC_BOUNDARY_T_LENGTH_F}' LIMIT 1
@@ -76,15 +76,16 @@ def get_igac_physical_query(names, schema, plot_t_ids, parcel_fmi, parcel_number
             _info_uc AS (
                  SELECT {LC_BUILDING_UNIT_T}.{LC_BUILDING_UNIT_T_BUILDING_F},
                         JSON_AGG(JSON_BUILD_OBJECT('id', {LC_BUILDING_UNIT_T}.{T_ID_F},
-                                          'attributes', JSON_BUILD_OBJECT('Número de pisos', {LC_BUILDING_UNIT_T}.{LC_BUILDING_UNIT_T_TOTAL_FLOORS_F},
-                                                                          'Uso', (SELECT {DISPLAY_NAME_F} FROM {schema}.{LC_BUILDING_UNIT_USE_D} WHERE {T_ID_F} = {LC_BUILDING_UNIT_T}.{LC_BUILDING_UNIT_T_USE_F}),
-                                                                          'Tipo construcción', (SELECT {DISPLAY_NAME_F} FROM {schema}.{LC_BUILDING_TYPE_D} WHERE {T_ID_F} = {LC_BUILDING_UNIT_T}.{LC_BUILDING_UNIT_T_BUILDING_TYPE_F}),
-                                                                          'Tipo unidad de construcción', (SELECT {DISPLAY_NAME_F} FROM {schema}.{LC_BUILDING_UNIT_TYPE_D} WHERE {T_ID_F} = {LC_BUILDING_UNIT_T}.{LC_BUILDING_UNIT_T_BUILDING_UNIT_TYPE_F}),
-                                                                          CONCAT('Área privada construida' , (SELECT * FROM _unidad_area_privada_construida_uc)), {LC_BUILDING_UNIT_T}.{LC_BUILDING_UNIT_T_BUILT_PRIVATE_AREA_F},
+                                          'attributes', JSON_BUILD_OBJECT('Número de pisos', {LC_CHARACTERISTICS_BUILDING_UNIT_T}.{LC_CHARACTERISTICS_BUILDING_UNIT_T_TOTAL_FLOORS_F},
+                                                                          'Uso', (SELECT {DISPLAY_NAME_F} FROM {schema}.{LC_BUILDING_UNIT_USE_D} WHERE {T_ID_F} = {LC_CHARACTERISTICS_BUILDING_UNIT_T}.{LC_CHARACTERISTICS_BUILDING_UNIT_T_USE_F}),
+                                                                          'Tipo construcción', (SELECT {DISPLAY_NAME_F} FROM {schema}.{LC_BUILDING_TYPE_D} WHERE {T_ID_F} = {LC_CHARACTERISTICS_BUILDING_UNIT_T}.{LC_CHARACTERISTICS_BUILDING_UNIT_T_BUILDING_TYPE_F}),
+                                                                          'Tipo unidad de construcción', (SELECT {DISPLAY_NAME_F} FROM {schema}.{LC_BUILDING_UNIT_TYPE_D} WHERE {T_ID_F} = {LC_CHARACTERISTICS_BUILDING_UNIT_T}.{LC_CHARACTERISTICS_BUILDING_UNIT_T_BUILDING_UNIT_TYPE_F}),
+                                                                          CONCAT('Área privada construida' , (SELECT * FROM _unidad_area_privada_construida_uc)), {LC_CHARACTERISTICS_BUILDING_UNIT_T}.{LC_CHARACTERISTICS_BUILDING_UNIT_T_BUILT_PRIVATE_AREA_F},
                                                                           CONCAT('Área construida' , (SELECT * FROM _unidad_area_construida_uc)), {LC_BUILDING_UNIT_T}.{LC_BUILDING_UNIT_T_BUILT_AREA_F},
                                                                           '{LC_SPATIAL_SOURCE_T}', COALESCE(_uc_fuente_espacial._fuenteespacial_, '[]')
                                                                          )) ORDER BY {LC_BUILDING_UNIT_T}.{T_ID_F}) FILTER(WHERE {LC_BUILDING_UNIT_T}.{T_ID_F} IS NOT NULL) AS _unidadconstruccion_
                  FROM {schema}.{LC_BUILDING_UNIT_T} LEFT JOIN _uc_fuente_espacial ON {LC_BUILDING_UNIT_T}.{T_ID_F} = _uc_fuente_espacial.{COL_UE_SOURCE_T_LC_BUILDING_UNIT_F}
+                 LEFT JOIN {schema}.{LC_CHARACTERISTICS_BUILDING_UNIT_T} ON {LC_BUILDING_UNIT_T}.{LC_BUILDING_UNIT_T_CHARACTERISTICS_F} = {LC_CHARACTERISTICS_BUILDING_UNIT_T}.{T_ID_F}
                  WHERE {LC_BUILDING_UNIT_T}.{T_ID_F} IN (SELECT * FROM _unidadesconstruccion_seleccionadas)
                  GROUP BY {LC_BUILDING_UNIT_T}.{LC_BUILDING_UNIT_T_BUILDING_F}
              ),

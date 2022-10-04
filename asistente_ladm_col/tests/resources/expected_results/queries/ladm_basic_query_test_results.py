@@ -30,7 +30,7 @@ expected_result_ladm_basic_query = {
                             "FMI": None,
                             "Número predial": "253940000000000230073000000000",
                             "Número predial anterior": "25394000000230073000",
-                            "Tipo": "(Predio) (Privado)",
+                            "Tipo": "(Predio) Privado",
                             "lc_construccion": [
                                 {
                                     "attributes": {
@@ -51,7 +51,7 @@ expected_result_ladm_basic_query = {
                                                     "Tipo dominio": "Común",
                                                     "Ubicación en el piso": 0,
                                                     "Área construida [m2]": 19.0,
-                                                    "Uso": "(Comercial) Comercio",
+                                                    "Uso": None,
                                                     "extdireccion": [
                                                         {
                                                             "attributes": {
@@ -75,7 +75,7 @@ expected_result_ladm_basic_query = {
                                                     "Tipo dominio": "Privado",
                                                     "Ubicación en el piso": 5,
                                                     "Área construida [m2]": 108.0,
-                                                    "Uso": "(Residencial) Casa Elbas",
+                                                    "Uso": "(Residencial) Casa elbas",
                                                     "extdireccion": [
 
                                                     ]
@@ -116,7 +116,7 @@ expected_result_ladm_basic_query = {
                                                     "Tipo dominio": "Privado",
                                                     "Ubicación en el piso": 4,
                                                     "Área construida [m2]": 25.8,
-                                                    "Uso": "(Comercial) Oficinas - Consultorios Coloniales",
+                                                    "Uso": "(Comercial) Oficinas - Consultorios coloniales",
                                                     "extdireccion": [
                                                         {
                                                             "attributes": {

@@ -24,7 +24,7 @@ def get_igac_economic_query(names, schema, plot_t_ids, parcel_fmi, parcel_number
              SELECT ' [' || setting || ']' FROM {schema}.t_ili2db_column_prop WHERE tablename = '{LC_BUILDING_UNIT_T}' AND columnname = '{LC_BUILDING_UNIT_T_BUILT_AREA_F}' LIMIT 1
          ),
          _unidad_avaluo_uc AS (
-             SELECT ' [' || setting || ']' FROM {schema}.t_ili2db_column_prop WHERE tablename = '{LC_BUILDING_UNIT_T}' AND columnname = '{LC_BUILDING_UNIT_T_BUILDING_UNIT_VALUATION_F}' LIMIT 1
+             SELECT ' [' || setting || ']' FROM {schema}.t_ili2db_column_prop WHERE tablename = '{LC_CHARACTERISTICS_BUILDING_UNIT_T}' AND columnname = '{LC_CHARACTERISTICS_BUILDING_UNIT_T_BUILDING_UNIT_VALUATION_F}' LIMIT 1
          ),
          _terrenos_seleccionados AS (
             {custom_filter_plots}
@@ -51,15 +51,16 @@ def get_igac_economic_query(names, schema, plot_t_ids, parcel_fmi, parcel_number
          _info_uc AS (
              SELECT {LC_BUILDING_UNIT_T}.{LC_BUILDING_T},
                     JSON_AGG(JSON_BUILD_OBJECT('id', {LC_BUILDING_UNIT_T}.{T_ID_F},
-                                      'attributes', JSON_BUILD_OBJECT(CONCAT('Avalúo' , (SELECT * FROM _unidad_avaluo_uc)), {LC_BUILDING_UNIT_T}.{LC_BUILDING_UNIT_T_BUILDING_UNIT_VALUATION_F}
+                                      'attributes', JSON_BUILD_OBJECT(CONCAT('Avalúo' , (SELECT * FROM _unidad_avaluo_uc)), {LC_CHARACTERISTICS_BUILDING_UNIT_T}.{LC_CHARACTERISTICS_BUILDING_UNIT_T_BUILDING_UNIT_VALUATION_F}
                                                                       , CONCAT('Área construida' , (SELECT * FROM _unidad_area_construida_uc)), {LC_BUILDING_UNIT_T}.{LC_BUILDING_UNIT_T_BUILT_AREA_F}
-                                                                      , CONCAT('Área privada construida' , (SELECT * FROM _unidad_area_construida_uc)), {LC_BUILDING_UNIT_T}.{LC_BUILDING_UNIT_T_BUILT_PRIVATE_AREA_F}
-                                                                      , 'Número de pisos', {LC_BUILDING_UNIT_T}.{LC_BUILDING_UNIT_T_TOTAL_FLOORS_F}
+                                                                      , CONCAT('Área privada construida' , (SELECT * FROM _unidad_area_construida_uc)), {LC_CHARACTERISTICS_BUILDING_UNIT_T}.{LC_CHARACTERISTICS_BUILDING_UNIT_T_BUILT_PRIVATE_AREA_F}
+                                                                      , 'Número de pisos', {LC_CHARACTERISTICS_BUILDING_UNIT_T}.{LC_CHARACTERISTICS_BUILDING_UNIT_T_TOTAL_FLOORS_F}
                                                                       , 'Ubicación en el piso', {LC_BUILDING_UNIT_T}.{LC_BUILDING_UNIT_T_FLOOR_F}
-                                                                      , 'Uso',  (SELECT {DISPLAY_NAME_F} FROM {schema}.{LC_BUILDING_UNIT_USE_D} WHERE {T_ID_F} = {LC_BUILDING_UNIT_T}.{LC_BUILDING_UNIT_T_USE_F})
-                                                                      , 'Año construcción',  {LC_BUILDING_UNIT_T}.{LC_BUILDING_UNIT_T_YEAR_OF_BUILDING_F}
+                                                                      , 'Uso',  (SELECT {DISPLAY_NAME_F} FROM {schema}.{LC_BUILDING_UNIT_USE_D} WHERE {T_ID_F} = {LC_CHARACTERISTICS_BUILDING_UNIT_T}.{LC_CHARACTERISTICS_BUILDING_UNIT_T_USE_F})
+                                                                      , 'Año construcción',  {LC_CHARACTERISTICS_BUILDING_UNIT_T}.{LC_CHARACTERISTICS_BUILDING_UNIT_T_YEAR_OF_BUILDING_F}
                                                                      )) ORDER BY {LC_BUILDING_UNIT_T}.{T_ID_F}) FILTER(WHERE {LC_BUILDING_UNIT_T}.{T_ID_F} IS NOT NULL)  AS _unidadconstruccion_
              FROM {schema}.{LC_BUILDING_UNIT_T}
+             LEFT JOIN {schema}.{LC_CHARACTERISTICS_BUILDING_UNIT_T} ON {LC_BUILDING_UNIT_T}.{LC_BUILDING_UNIT_T_CHARACTERISTICS_F} = {LC_CHARACTERISTICS_BUILDING_UNIT_T}.{T_ID_F}
              WHERE {LC_BUILDING_UNIT_T}.{T_ID_F} IN (SELECT * FROM _unidadesconstruccion_seleccionadas)
              GROUP BY {LC_BUILDING_UNIT_T}.{LC_BUILDING_T}
          ),

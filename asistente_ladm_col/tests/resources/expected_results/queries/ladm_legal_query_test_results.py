@@ -156,7 +156,7 @@ expected_result_ladm_legal_query = {
                                                                         }
                                                                     }
                                                                 ],
-                                                                "fraccion": 33.33
+                                                                "Participacion":0.3
                                                             }
                                                         },
                                                         {
@@ -168,7 +168,7 @@ expected_result_ladm_legal_query = {
                                                                 "lc_interesadocontacto": [
 
                                                                 ],
-                                                                "fraccion": 33.33
+                                                                "Participacion":0.3
                                                             }
                                                         },
                                                         {
@@ -180,7 +180,7 @@ expected_result_ladm_legal_query = {
                                                                 "lc_interesadocontacto": [
 
                                                                 ],
-                                                                "fraccion": 33.33
+                                                                "Participacion":0.3
                                                             }
                                                         }
                                                     ]

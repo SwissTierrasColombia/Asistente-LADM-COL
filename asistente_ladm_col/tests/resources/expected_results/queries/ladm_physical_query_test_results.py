@@ -21,7 +21,7 @@ expected_result_ladm_physical_query = {
                                             {
                                                 "attributes": {
                                                     "Número de pisos": 12,
-                                                    "Uso": "(Comercial) Comercio",
+                                                    "Uso": None,
                                                     "Tipo construcción": "Convencional",
                                                     "Tipo unidad de construcción": "Comercial",
                                                     "Área privada construida [m2]": 18.0,
@@ -34,7 +34,7 @@ expected_result_ladm_physical_query = {
                                             {
                                                 "attributes": {
                                                     "Número de pisos": 7,
-                                                    "Uso": "(Residencial) Casa Elbas",
+                                                    "Uso": "(Residencial) Casa elbas",
                                                     "Tipo construcción": "No convencional",
                                                     "Tipo unidad de construcción": "Anexo",
                                                     "Área privada construida [m2]": 107.0,
@@ -58,7 +58,7 @@ expected_result_ladm_physical_query = {
                                             {
                                                 "attributes": {
                                                     "Número de pisos": 2,
-                                                    "Uso": "(Comercial) Oficinas - Consultorios Coloniales",
+                                                    "Uso": "(Comercial) Oficinas - Consultorios coloniales",
                                                     "Tipo construcción": "Convencional",
                                                     "Tipo unidad de construcción": "Comercial",
                                                     "Área privada construida [m2]": 24.8,
@@ -79,6 +79,11 @@ expected_result_ladm_physical_query = {
                     }
                 ],
                 "lc_lindero externos": [
+                    {
+                        "attributes": {
+                            "Longitud [m]": 75.9
+                        }
+                    },
                     {
                         "attributes": {
                             "Longitud [m]": 163.6

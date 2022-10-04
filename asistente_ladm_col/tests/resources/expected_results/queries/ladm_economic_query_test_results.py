@@ -16,7 +16,7 @@ expected_result_ladm_economic_query = {
                             "Número predial": "253940000000000230073000000000",
                             "Número predial anterior": "25394000000230073000",
                             "Avalúo predio [COP]": None,
-                            "Tipo": "(Predio) (Privado)",
+                            "Tipo": "(Predio) Privado",
                             "lc_construccion": [
                                 {
                                     "attributes": {
@@ -30,7 +30,7 @@ expected_result_ladm_economic_query = {
                                                     "Área privada construida [m2]": 18.0,
                                                     "Número de pisos": 12,
                                                     "Ubicación en el piso": 0,
-                                                    "Uso": "(Comercial) Comercio",
+                                                    "Uso": None,
                                                     "Año construcción": 1997
                                                 }
                                             },
@@ -41,7 +41,7 @@ expected_result_ladm_economic_query = {
                                                     "Área privada construida [m2]": 107.0,
                                                     "Número de pisos": 7,
                                                     "Ubicación en el piso": 5,
-                                                    "Uso": "(Residencial) Casa Elbas",
+                                                    "Uso": "(Residencial) Casa elbas",
                                                     "Año construcción": 2012
                                                 }
                                             }
@@ -60,7 +60,7 @@ expected_result_ladm_economic_query = {
                                                     "Área privada construida [m2]": 24.8,
                                                     "Número de pisos": 2,
                                                     "Ubicación en el piso": 4,
-                                                    "Uso": "(Comercial) Oficinas - Consultorios Coloniales",
+                                                    "Uso": "(Comercial) Oficinas - Consultorios coloniales",
                                                     "Año construcción": 2015
                                                 }
                                             }
