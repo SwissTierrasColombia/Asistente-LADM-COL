@@ -13,14 +13,14 @@ parcel_data_to_compare_changes_parcel_number_253940000000000230241000000000 = {
             'Interesados': [
                 {
                     'tipo_documento': 'Cedula_Ciudadania',
-                    'documento_identidad': '14',
-                    'nombre': '14 14primer apellido 14segundo apellido 14primer nombre 14segundo nombre',
+                    'documento_identidad': '2',
+                    'nombre': '2 2primer apellido 2segundo apellido 2primer nombre 2segundo nombre',
                     'derecho': 'Dominio'
                 },
                 {
                     'tipo_documento': 'Cedula_Ciudadania',
-                    'documento_identidad': '2',
-                    'nombre': '2 2primer apellido 2segundo apellido 2primer nombre 2segundo nombre',
+                    'documento_identidad': '14',
+                    'nombre': '14 14primer apellido 14segundo apellido 14primer nombre 14segundo nombre',
                     'derecho': 'Dominio'
                 }
             ]
