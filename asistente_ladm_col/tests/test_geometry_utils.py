@@ -13,9 +13,7 @@ start_app()  # need to start before asistente_ladm_col.tests.utils
 
 from asistente_ladm_col.tests.utils import (import_processing,
                                             get_test_copy_path,
-                                            get_pg_conn,
-                                            get_gpkg_conn,
-                                            restore_schema)
+                                            get_gpkg_conn)
 
 import_processing()
 import processing
