@@ -314,7 +314,7 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.accepted()
 
     def download_java_progress_change(self, progress):
-        self.progress_bar.setValue(progress/2)
+        self.progress_bar.setValue(int(progress/2))
         if (progress % 20) == 0:
             self.txtStdout.append('...')
 

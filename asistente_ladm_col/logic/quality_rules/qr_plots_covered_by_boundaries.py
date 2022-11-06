@@ -107,7 +107,7 @@ class QRPlotsCoveredByBoundaries(AbstractLineQualityRule):
 
         self.progress_changed.emit(10)
 
-        result = self.get_plot_features_not_covered_by_boundaries(
+        result = QRPlotsCoveredByBoundaries.get_plot_features_not_covered_by_boundaries(
             db, plot_layer, boundary_layer, more_bfs_layer, less_bfs_layer, db.names.T_ID_F
         )
 
@@ -221,7 +221,8 @@ class QRPlotsCoveredByBoundaries(AbstractLineQualityRule):
 
         return QualityRuleExecutionResult(res_type, msg, count)
 
-    def get_plot_features_not_covered_by_boundaries(self, db, plot_layer, boundary_layer, more_bfs_layer, less_layer, id_field):
+    @staticmethod
+    def get_plot_features_not_covered_by_boundaries(db, plot_layer, boundary_layer, more_bfs_layer, less_layer, id_field):
         """
         Returns all plot features that have errors when checking if they are covered by boundaries.
         That is both geometric and alphanumeric (topology table) errors.
@@ -419,7 +420,7 @@ class QRPlotsCoveredByBoundaries(AbstractLineQualityRule):
 
         # The result for each type of error is a list of list with the plot uuid, boundary uuid and geometry.
         # [[uuid_plot, uuid_boundary, geometry], [uuid_plot, uuid_boundary, geometry], ...]
-        result_plot_no_covered_by_plot = list()  # plot not covered by boundary
+        result_plot_no_covered_by_boundary = list()  # plot not covered by boundary
         result_duplicate_in_more_bfs = list()  # Duplicate in more bfs
         result_duplicate_in_less_bfs = list()  # Duplicate in less bfs
         result_not_registered_in_more_bfs = list()  # Not registered in more bfs
@@ -432,7 +433,7 @@ class QRPlotsCoveredByBoundaries(AbstractLineQualityRule):
                 plot_geom = plot_boundary_diff['geometry']
 
                 error_data = [dict_uuid_plots.get(plot_id), None, plot_geom]
-                result_plot_no_covered_by_plot.append(error_data)
+                result_plot_no_covered_by_boundary.append(error_data)
 
         # Duplicate in more bfs
         if errors_duplicate_in_more_bfs:
@@ -476,7 +477,7 @@ class QRPlotsCoveredByBoundaries(AbstractLineQualityRule):
                 error_data = [dict_uuid_plots.get(plot_id), dict_uuid_boundary.get(boundary_id), geom_ring]
                 result_not_registered_in_less_bfs.append(error_data)
 
-        return (result_plot_no_covered_by_plot,
+        return (result_plot_no_covered_by_boundary,
                 result_duplicate_in_more_bfs,
                 result_duplicate_in_less_bfs,
                 result_not_registered_in_more_bfs,

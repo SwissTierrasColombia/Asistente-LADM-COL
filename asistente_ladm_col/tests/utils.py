@@ -21,6 +21,7 @@ import sys
 from shutil import copyfile
 from sys import platform
 import subprocess
+from tempfile import mkstemp
 
 import psycopg2
 import pyodbc
@@ -376,8 +377,7 @@ def restore_gpkg_db(file_name, models_name, xtf_path=None, disable_validation=Fa
 
 def get_test_gpkg_template_path(file_name):
     src_path = get_test_path('db/static/gpkg/ili2db.gpkg')
-    dst_path = os.path.split(src_path)
-    dst_path = os.path.join(dst_path[0], "_{}.gpkg".format(file_name))
+    dst_path = mkstemp('.gpkg', '_{}'.format(file_name), '/tmp')[1]
     copyfile(src_path, dst_path)
     return dst_path
 
@@ -390,3 +390,17 @@ def _restore_db(db, models_name, xtf_path, disable_validation):
         # Run import data
         configuration = ili2db.get_import_data_configuration(db, xtf_path, disable_validation=disable_validation)
         ili2db.import_data(db, configuration)
+
+def import_invisible_layers_and_groups():
+    global iface
+    plugin_found = "InvisibleLayersAndGroups" in qgis.utils.plugins
+    if not plugin_found:
+        import InvisibleLayersAndGroups
+        ilg = InvisibleLayersAndGroups.classFactory(iface)
+        qgis.utils.plugins["InvisibleLayersAndGroups"] = ilg
+
+def unload_invisible_layers_and_groups():
+    global iface
+    plugin_found = "InvisibleLayersAndGroups" in qgis.utils.plugins
+    if plugin_found:
+        del(qgis.utils.plugins["InvisibleLayersAndGroups"])
