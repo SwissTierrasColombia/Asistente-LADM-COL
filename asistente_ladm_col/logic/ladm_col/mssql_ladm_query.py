@@ -252,7 +252,7 @@ class MSSQLLADMQuery(QGISLADMQuery):
         return db.execute_sql_query(query)
 
     @staticmethod
-    def get_group_party_fractions_that_do_not_make_one(db):
+    def get_group_party_participation_that_do_not_make_one(db):
         query = """
                     select
                         {members_t_group_party_f} as agrupacion,

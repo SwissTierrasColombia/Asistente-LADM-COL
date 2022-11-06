@@ -1206,7 +1206,7 @@ class GeometryUtils(QObject):
                                                      'boundary_id': feature[id_field + '_2']}
                                                      for feature in spatial_join_layer.getFeatures()]
 
-        boundary_point_without_boundary_node = list()
+        boundary_point_no_intersect_boundary_node = list()
         no_register_point_bfs = list()
         duplicate_in_point_bfs = list()
 
@@ -1221,6 +1221,6 @@ class GeometryUtils(QObject):
                 elif list_point_bfs.count(item_sj) > 1:
                     duplicate_in_point_bfs.append((boundary_point_id, boundary_id))  # duplicate in point bfs
             else:
-                boundary_point_without_boundary_node.append(boundary_point_id)  # boundary point without boundary node
+                boundary_point_no_intersect_boundary_node.append(boundary_point_id)  # boundary point without boundary node
 
-        return boundary_point_without_boundary_node, no_register_point_bfs, duplicate_in_point_bfs
+        return boundary_point_no_intersect_boundary_node, no_register_point_bfs, duplicate_in_point_bfs

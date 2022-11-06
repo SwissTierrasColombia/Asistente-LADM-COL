@@ -76,11 +76,9 @@ class QRBoundaryPointsCoveredPlotNodes(AbstractPointQualityRule):
         if not pre_res:
             return res_obj
 
-        point_layer = self._get_layer(layer_dict, db.names.LC_BOUNDARY_POINT_T)
+        boundary_point_layer = self._get_layer(layer_dict, db.names.LC_BOUNDARY_POINT_T)
         plot_layer = self._get_layer(layer_dict, db.names.LC_PLOT_T)
-        
-        plot_nodes = GeometryUtils.get_polygon_nodes_layer(plot_layer, db.names.T_ILI_TID_F)
-        not_covered_points = GeometryUtils.get_non_intersecting_geometries(point_layer, plot_nodes, db.names.T_ILI_TID_F)
+        not_covered_points = self.get_boundary_points_features_not_covered_by_plot_nodes(boundary_point_layer, plot_layer, db.names.T_ILI_TID_F)
         flat_result = [fid for items in not_covered_points for fid in items]  # Build a flat list of ids
         count = len(flat_result)
 
@@ -116,3 +114,9 @@ class QRBoundaryPointsCoveredPlotNodes(AbstractPointQualityRule):
             return QualityRuleExecutionResult(EnumQualityRuleResult.SUCCESS,
                                               QCoreApplication.translate("QualityRules",
                                                                          "All boundary points are covered by plot nodes!"))
+
+    @staticmethod
+    def get_boundary_points_features_not_covered_by_plot_nodes(boundary_point_layer, plot_layer, id_field):
+        plot_nodes = GeometryUtils.get_polygon_nodes_layer(plot_layer, id_field)
+        not_covered_points = GeometryUtils.get_non_intersecting_geometries(boundary_point_layer, plot_nodes, id_field)
+        return not_covered_points

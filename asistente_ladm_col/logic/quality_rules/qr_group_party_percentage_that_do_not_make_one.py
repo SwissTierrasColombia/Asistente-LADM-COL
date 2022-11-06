@@ -73,7 +73,7 @@ class QRGroupPartyPercentageThatDoNotMakeOne(AbstractLogicQualityRule):
 
         error_state = None
 
-        res, records = ladm_queries.get_group_party_fractions_that_do_not_make_one(db)
+        res, records = ladm_queries.get_group_party_participation_that_do_not_make_one(db)
         count = len(records)
 
         self.progress_changed.emit(50)

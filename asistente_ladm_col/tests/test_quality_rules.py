@@ -1,7 +1,5 @@
 import nose2
-import re
 
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsVectorLayer,
                        Qgis)
 from qgis.testing import (unittest,
@@ -12,40 +10,80 @@ from asistente_ladm_col.utils.crs_utils import get_crs_authid
 
 start_app()  # need to start before asistente_ladm_col.tests.utils
 
+from asistente_ladm_col.config.enums import EnumQualityRuleResult
+from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
+from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.config.general_config import DEFAULT_TOLERANCE_VALUE
+
+from asistente_ladm_col.logic.quality_rules.qr_boundary_points_covered_plot_nodes import QRBoundaryPointsCoveredPlotNodes
+from asistente_ladm_col.logic.quality_rules.qr_plot_nodes_covered_boundary_points import QRPlotNodesCoveredBoundaryPoints
+from asistente_ladm_col.logic.quality_rules.qr_plots_covered_by_boundaries import QRPlotsCoveredByBoundaries
 from asistente_ladm_col.core.quality_rules.quality_rule_engine import QualityRuleEngine
+from asistente_ladm_col.config.quality_rule_config import (QR_IGACR1001,
+                                                           QR_IGACR1002,
+                                                           QR_IGACR1003,
+                                                           QR_IGACR1004,
+                                                           QR_IGACR2001,
+                                                           QR_IGACR3002,
+                                                           QR_IGACR3003,
+                                                           QR_IGACR3004,
+                                                           QR_IGACR3005,
+                                                           QR_IGACR3007,
+                                                           QR_IGACR3008,
+                                                           QR_IGACR4001,
+                                                           QR_IGACR4002,
+                                                           QR_IGACR4003,
+                                                           QR_IGACR4004,
+                                                           QR_IGACR4005,
+                                                           QR_IGACR4006,
+                                                           QR_IGACR4007,
+                                                           QR_IGACR4008)
+
 from asistente_ladm_col.config.config_db_supported import ConfigDBsSupported
 from asistente_ladm_col.tests.utils import (import_processing,
                                             get_test_copy_path,
-                                            get_pg_conn,
-                                            get_gpkg_conn,
-                                            get_gpkg_conn_from_path,
-                                            restore_schema)
+                                            import_invisible_layers_and_groups,
+                                            unload_invisible_layers_and_groups,
+                                            restore_gpkg_db,
+                                            restore_pg_db,
+                                            get_test_path,
+                                            get_gpkg_conn)
 from asistente_ladm_col.lib.geometry import GeometryUtils
 
 import_processing()
 import processing
 
 
-@unittest.skip("Until we've migrated to Lev Cat 1.2 completely...")
 class TestQualityRules(unittest.TestCase):
+
+    SURVEY_MODELS = [LADMColModelRegistry().model(LADMNames.LADM_COL_MODEL_KEY).full_name(),
+                     LADMColModelRegistry().model(LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY).full_name(),
+                     LADMColModelRegistry().model(LADMNames.SUPPLIES_MODEL_KEY).full_name(),
+                     LADMColModelRegistry().model(LADMNames.SUPPLIES_INTEGRATION_MODEL_KEY).full_name(),
+                     LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).full_name()]
 
     @classmethod
     def setUpClass(cls):
+        import_invisible_layers_and_groups()
         cls.app = AppInterface()
-        cls.quality_rules = QualityRules()
         cls.geometry = GeometryUtils()
-        cls.quality_rules_manager = QualityRuleManager()
 
         print("INFO: Restoring databases to be used")
-        restore_schema('test_ladm_validations_topology_tables')
+        schema = 'test_ladm_validations_topology_tables'
+        models = [LADMColModelRegistry().model(LADMNames.LADM_COL_MODEL_KEY).full_name(),
+                  LADMColModelRegistry().model(LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY).full_name(),
+                  LADMColModelRegistry().model(LADMNames.SUPPLIES_MODEL_KEY).full_name(),
+                  LADMColModelRegistry().model(LADMNames.SUPPLIES_INTEGRATION_MODEL_KEY).full_name(),
+                  LADMColModelRegistry().model(LADMNames.SURVEY_MODEL_KEY).full_name()]
+        cls.db_pg = restore_pg_db(schema, models, get_test_path("db/ladm/test_ladm_validations_topology_tables_v1_2.xtf"), True)
+        cls.db_quality_rules_tolerance = restore_gpkg_db('tests_quality_rules_tolerance', models, get_test_path("db/ladm/test_quality_rules_tolerance_v1_2.xtf"))
 
     def test_check_boundary_points_covered_by_plot_nodes(self):
         print('\nINFO: Validating boundary points are covered by plot nodes...')
 
         gpkg_path = get_test_copy_path('db/static/gpkg/quality_validations.gpkg')
-        self.db_gpkg = get_gpkg_conn('tests_quality_validations_gpkg')
-        names = self.db_gpkg.names
+        db_gpkg = get_gpkg_conn('tests_quality_validations_gpkg')
+        names = db_gpkg.names
         names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 
         uri = gpkg_path + '|layername={layername}'.format(layername='puntolindero')
@@ -56,9 +94,8 @@ class TestQualityRules(unittest.TestCase):
         plot_layer = QgsVectorLayer(uri, 'terreno', 'ogr')
         self.assertEqual(plot_layer.featureCount(), 12)
 
-        features = PointQualityRules.get_boundary_points_features_not_covered_by_plot_nodes(boundary_point_layer,
-                                                                                            plot_layer,
-                                                                                            names.T_ID_F)
+        features = QRBoundaryPointsCoveredPlotNodes().get_boundary_points_features_not_covered_by_plot_nodes(boundary_point_layer, plot_layer, names.T_ID_F)
+
         self.assertEqual(len(features), 14)
         result = [{'geom': f[1].asWkt(), 'id': f[0]} for f in features]
 
@@ -80,11 +117,9 @@ class TestQualityRules(unittest.TestCase):
         for item in test_result:
             self.assertIn(item, result, 'Error in: Boundary point {} is not covered by plot node'.format(item['id']))
 
+    @unittest.skip("Until we've migrated to Lev Cat 1.2 completely...")
     def test_topology_boundary_nodes_must_be_covered_by_boundary_points(self):
         print('\nINFO: Validating boundary nodes must be covered by boundary points...')
-        rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Line.BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS)
-        schema_name = 'test_ladm_validations_topology_tables'
-        self.db_pg = get_pg_conn(schema_name)
         names = self.db_pg.names
 
         res, code, msg = self.db_pg.test_connection()
@@ -166,27 +201,8 @@ class TestQualityRules(unittest.TestCase):
         self.assertEqual(error_layer.selectedFeatureCount(), 12)
         result = [{'id_punto_lindero': f['id_punto_lindero'], 'id_lindero': f['id_lindero']} for f in error_layer.selectedFeatures()]
 
-        test_result = [{'id_punto_lindero': 'c5d06a58-447f-4ade-851a-b2a6cb718a61', 'id_lindero': '85f35cf2-8c77-4203-800b-23bdfc97288e'},
-                       {'id_punto_lindero': '4dec05b5-5111-4efc-ab72-88699cc29562', 'id_lindero': '08dbd5df-ce3f-4451-9dc9-66f373d2a6fd'},
-                       {'id_punto_lindero': '24da07a0-ee53-4055-9e7f-5c0d8f32e8cc', 'id_lindero': '08dbd5df-ce3f-4451-9dc9-66f373d2a6fd'},
-                       {'id_punto_lindero': '70e7d6cb-7188-40dd-8c7f-37f7c5928507', 'id_lindero': '85f35cf2-8c77-4203-800b-23bdfc97288e'},
-                       {'id_punto_lindero': '9685d46a-c7e1-4775-9695-016847c5b017', 'id_lindero': 'a49ef87f-1fa1-4528-96ff-0332e7e0d0ea'},
-                       {'id_punto_lindero': 'b66a3fbb-1f29-407c-ab3c-76b79b9efb3b', 'id_lindero': 'a49ef87f-1fa1-4528-96ff-0332e7e0d0ea'},
-                       {'id_punto_lindero': 'a10dc88a-f44e-4ae3-aa59-117a629d7c0e', 'id_lindero': 'a49ef87f-1fa1-4528-96ff-0332e7e0d0ea'},
-                       {'id_punto_lindero': '0699195e-29d9-41e6-99d3-be204527266f', 'id_lindero': 'a49ef87f-1fa1-4528-96ff-0332e7e0d0ea'},
-                       {'id_punto_lindero': '2daa6ffe-cd14-4303-bfb9-baa30c45ab23', 'id_lindero': '08dbd5df-ce3f-4451-9dc9-66f373d2a6fd'},
-                       {'id_punto_lindero': 'ff7bc6db-a02c-47ac-9e8f-f7e9d8c751ff', 'id_lindero': '08dbd5df-ce3f-4451-9dc9-66f373d2a6fd'},
-                       {'id_punto_lindero': '804b9ba5-667f-45a9-ac1f-4cddc3eacac9', 'id_lindero': '85f35cf2-8c77-4203-800b-23bdfc97288e'},
-                       {'id_punto_lindero': '063c3cf1-bee8-45cf-afdf-7b66e56eb018', 'id_lindero': '85f35cf2-8c77-4203-800b-23bdfc97288e'}]
-
-        for item in test_result:
-            self.assertIn(item, result, 'Error in {}: {}'.format(item, self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E200402)))
-
     def test_topology_boundary_points_must_be_covered_by_boundary_nodes(self):
         print('\nINFO: Validating boundary points must be covered by boundary nodes...')
-        rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES)
-        schema_name = 'test_ladm_validations_topology_tables'
-        self.db_pg = get_pg_conn(schema_name)
         names = self.db_pg.names
 
         res, code, msg = self.db_pg.test_connection()
@@ -196,9 +212,7 @@ class TestQualityRules(unittest.TestCase):
         layers = {names.LC_BOUNDARY_POINT_T: None,
                   names.LC_BOUNDARY_T: None,
                   names.LC_PLOT_T: None,
-                  names.POINT_BFS_T: None,
-                  names.MORE_BFS_T: None,
-                  names.LESS_BFS_T: None}
+                  names.POINT_BFS_T: None}
         self.app.core.get_layers(self.db_pg, layers, load=True)
 
         boundary_point_layer = layers[names.LC_BOUNDARY_POINT_T]
@@ -213,30 +227,21 @@ class TestQualityRules(unittest.TestCase):
         point_bfs_layer = layers[names.POINT_BFS_T]
         self.assertEqual(point_bfs_layer.featureCount(), 81)
 
-        more_bfs_layer = layers[names.MORE_BFS_T]
-        self.assertEqual(more_bfs_layer.featureCount(), 18)
+        result = GeometryUtils.get_boundary_points_not_covered_by_boundary_nodes(
+            self.db_pg, boundary_point_layer, boundary_layer, point_bfs_layer, names.T_ID_F
+        )
 
-        less_layer = layers[names.LESS_BFS_T]
-        self.assertEqual(less_layer.featureCount(), 6)
+        boundary_point_no_intersect_boundary_node = result[0]
+        no_register_point_bfs = result[1]
+        duplicate_in_point_bfs = result[2]
 
-        error_layer = QgsVectorLayer("Point?crs={}".format(get_crs_authid(boundary_layer.sourceCrs())), rule.error_table_name, "memory")
+        dict_boundary_point = {feature['t_id']: feature['t_ili_tid'] for feature in boundary_point_layer.getFeatures()}
+        dict_boundary = {feature['t_id']: feature['t_ili_tid'] for feature in boundary_layer.getFeatures()}
 
-        data_provider = error_layer.dataProvider()
-        data_provider.addAttributes(rule.error_table_fields)
-        error_layer.updateFields()
-
-        features = self.quality_rules.point_quality_rules.get_boundary_points_not_covered_by_boundary_nodes(self.db_pg, boundary_point_layer, boundary_layer, point_bfs_layer, error_layer, names.T_ID_F)
-
-        # the algorithm was successfully executed
-        self.assertEqual(len(features), 54)
-
-        error_layer.dataProvider().addFeatures(features)
-
-        exp = "\"codigo_error\" = '{}'".format(QUALITY_RULE_ERROR_CODE_E100301)
-        error_layer.selectByExpression(exp)
-        self.assertEqual(error_layer.selectedFeatureCount(), 34)
-
-        result = [{'id': f['id_punto_lindero'], 'geom': f.geometry().asWkt()} for f in error_layer.selectedFeatures()]
+        # Check boundary point without boundary node
+        self.assertEqual(len(boundary_point_no_intersect_boundary_node), 34)
+        expr = 't_id in ({})'.format(','.join([str(boundary_point_t_id) for boundary_point_t_id in boundary_point_no_intersect_boundary_node]))
+        result = [{'id': f['t_ili_tid'], 'geom': f.geometry().asWkt()} for f in boundary_point_layer.getFeatures(expr)]
 
         test_result = [{'id': '75390c35-8e23-42a4-85d2-3a1b76ac1f6b', 'geom': 'PointZ (894639.00399999995715916 1544574.38599999994039536 0)'},
                        {'id': 'f6aa74ad-8b86-4f81-a35e-f197e650b7ad', 'geom': 'PointZ (894648.56400000001303852 1544485.16100000008009374 0)'},
@@ -274,12 +279,15 @@ class TestQualityRules(unittest.TestCase):
                        {'id': '0f1968dc-2b0f-4b1d-b7f5-fd755e4785e1', 'geom': 'PointZ (894905.93799999996554106 1544314.50699999998323619 0)'}]
 
         for item in test_result:
-            self.assertIn(item, result, 'Error in {}: {}'.format(item, self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E100301)))
+            self.assertIn(item, result, 'Error: Boundary Point no covered by Boundary Node')
 
-        exp = "\"codigo_error\" = '{}'".format(QUALITY_RULE_ERROR_CODE_E100303)
-        error_layer.selectByExpression(exp)
-        self.assertEqual(error_layer.selectedFeatureCount(), 8)
-        result = [{'id_punto_lindero': f['id_punto_lindero'], 'id_lindero': f['id_lindero']} for f in error_layer.selectedFeatures()]
+        # Check: Relation between boundary point and boundary duplicate in point_bfs
+        self.assertEqual(len(duplicate_in_point_bfs), 8)
+        result = list()
+        for boundary_point_id, boundary_id in duplicate_in_point_bfs:
+            result.append({'id_punto_lindero': dict_boundary_point[boundary_point_id],
+                           'id_lindero': dict_boundary[boundary_id]})
+
         test_result = [{'id_punto_lindero': 'fc623190-8aa3-49fa-9f15-5aeb7ed05761', 'id_lindero': '899c1542-51dd-481c-956b-a3668fb9d958'},
                        {'id_punto_lindero': '54adb42d-da97-4cc7-99a9-53ec8160b987', 'id_lindero': '02b06ecb-3048-4d34-814f-ae7578279f5a'},
                        {'id_punto_lindero': '19c02ab1-d5ad-4251-aa18-4b894bb7a673', 'id_lindero': 'a9fa0542-687d-43fa-a512-e0368bd7b31a'},
@@ -290,12 +298,14 @@ class TestQualityRules(unittest.TestCase):
                        {'id_punto_lindero': '5f0a8b5f-c1cc-4c0a-833b-9be1c4d32f9e', 'id_lindero': '3541b8d7-f834-4689-a477-9d5dbd2587ee'}]
 
         for item in test_result:
-            self.assertIn(item, result, 'Error in {}: {}'.format(item, self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E100303)))
+            self.assertIn(item, result, 'Error: Relation between point and boundary no register point_bfs')
 
-        exp = "\"codigo_error\" = '{}'".format(QUALITY_RULE_ERROR_CODE_E100302)
-        error_layer.selectByExpression(exp)
-        self.assertEqual(error_layer.selectedFeatureCount(), 12)
-        result = [{'id_punto_lindero': f['id_punto_lindero'], 'id_lindero': f['id_lindero']} for f in error_layer.selectedFeatures()]
+        # Check: Relation between boundary point and boundary no register in point_bfs
+        self.assertEqual(len(no_register_point_bfs), 12)
+        result = list()
+        for boundary_point_id, boundary_id in no_register_point_bfs:
+            result.append({'id_punto_lindero': dict_boundary_point[boundary_point_id],
+                           'id_lindero': dict_boundary[boundary_id]})
 
         test_result = [{'id_punto_lindero': '70e7d6cb-7188-40dd-8c7f-37f7c5928507', 'id_lindero': '85f35cf2-8c77-4203-800b-23bdfc97288e'},
                        {'id_punto_lindero': '2daa6ffe-cd14-4303-bfb9-baa30c45ab23', 'id_lindero': '08dbd5df-ce3f-4451-9dc9-66f373d2a6fd'},
@@ -311,13 +321,11 @@ class TestQualityRules(unittest.TestCase):
                        {'id_punto_lindero': 'c5d06a58-447f-4ade-851a-b2a6cb718a61', 'id_lindero': '85f35cf2-8c77-4203-800b-23bdfc97288e'}]
 
         for item in test_result:
-            self.assertIn(item, result, 'Error in {}: {}'.format(item, self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E100302)))
+            self.assertIn(item, result, 'Error: Relation between boundary point and boundary duplicate in point_bfs')
 
+    @unittest.skip("Until we've migrated to Lev Cat 1.2 completely...")
     def test_topology_plot_must_be_covered_by_boundary(self):
         print('\nINFO: Validating plots must be covered by boundaries...')
-        rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Polygon.PLOTS_COVERED_BY_BOUNDARIES)
-        schema_name = 'test_ladm_validations_topology_tables'
-        self.db_pg = get_pg_conn(schema_name)
         names = self.db_pg.names
 
         res, code, msg = self.db_pg.test_connection()
@@ -347,27 +355,22 @@ class TestQualityRules(unittest.TestCase):
         more_bfs_layer = layers[names.MORE_BFS_T]
         self.assertEqual(more_bfs_layer.featureCount(), 18)
 
-        less_layer = layers[names.LESS_BFS_T]
-        self.assertEqual(less_layer.featureCount(), 6)
+        less_bfs_layer = layers[names.LESS_BFS_T]
+        self.assertEqual(less_bfs_layer.featureCount(), 6)
 
-        error_layer = QgsVectorLayer("MultiLineString?crs={}".format(get_crs_authid(plot_layer.sourceCrs())), rule.error_table_name, "memory")
+        result = QRPlotsCoveredByBoundaries.get_plot_features_not_covered_by_boundaries(
+            self.db_pg, plot_layer, boundary_layer, more_bfs_layer, less_bfs_layer, self.db_pg.names.T_ID_F
+        )
 
-        data_provider = error_layer.dataProvider()
-        data_provider.addAttributes(rule.error_table_fields)
-        error_layer.updateFields()
+        results_plot_no_covered_by_boundary = result[0]  # [[plot_id, boundary_id, geom], ...]
+        results_duplicate_in_more_bfs = result[1]
+        results_duplicate_in_less_bfs = result[2]
+        results_not_registered_in_more_bfs = result[3]
+        results_not_registered_in_less_bfs = result[4]
 
-        features = self.quality_rules.polygon_quality_rules.get_plot_features_not_covered_by_boundaries(self.db_pg, plot_layer, boundary_layer, more_bfs_layer, less_layer, error_layer, names.T_ID_F)
+        self.assertEqual(len(results_plot_no_covered_by_boundary), 12)
 
-        # the algorithm was successfully executed
-        self.assertEqual(len(features), 16)
-
-        error_layer.dataProvider().addFeatures(features)
-
-        exp = "\"codigo_error\" = '{}'".format(QUALITY_RULE_ERROR_CODE_E300401)
-        error_layer.selectByExpression(exp)
-        self.assertEqual(error_layer.selectedFeatureCount(), 12)
-
-        result = [{'id': f['id_terreno'], 'geom': f.geometry().asWkt()} for f in error_layer.selectedFeatures()]
+        result = [{'id': item[0], 'geom': item[2].asWkt()} for item in results_plot_no_covered_by_boundary]
 
         test_result = [{'id': '1a972c2b-c4b1-4e7d-8b4a-5d88398e774a',
                         'geom': 'MultiLineStringZ ((894639.00399999995715916 1544574.38599999994039536 0, 894648.56400000001303852 1544485.16100000008009374 0, 894723.67700000002514571 1544488.34799999999813735 0, 894715.02700000000186265 1544590.31899999990127981 0, 894639.00399999995715916 1544574.38599999994039536 0))'},
@@ -395,41 +398,32 @@ class TestQualityRules(unittest.TestCase):
                         'geom': 'MultiLineStringZ ((871581.97699999995529652 1554559.162999999942258 0, 871583.06900000001769513 1554559.11199999996460974 0, 871586.15099999995436519 1554558.96699999994598329 0))'}]
 
         for item in test_result:
-            self.assertIn(item, result, 'Geometric error in the polygon with id {}'.format(item['id']))
+            self.assertIn(item, result, 'Error in: {}'.format(QRPlotsCoveredByBoundaries._ERROR_01))
 
-        exp = "\"codigo_error\" = '{}'".format(QUALITY_RULE_ERROR_CODE_E300402)
-        error_layer.selectByExpression(exp)
-        self.assertEqual(error_layer.selectedFeatureCount(), 1)
-        result = [{'id_terreno': f['id_terreno'], 'id_lindero': f['id_lindero']} for f in error_layer.selectedFeatures()]
+        self.assertEqual(len(results_duplicate_in_more_bfs), 1)
+        result = [{'id_terreno': item[0], 'id_lindero': item[1]} for item in results_duplicate_in_more_bfs]
         test_result = [{'id_lindero': '02b06ecb-3048-4d34-814f-ae7578279f5a', 'id_terreno': '6a26574f-8c18-42f6-87b9-d50c928afe46'}]
-        self.assertEqual(result, test_result, 'Error in: {}'.format(self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E300402)))
+        self.assertEqual(result, test_result, 'Error in: {}'.format(QRPlotsCoveredByBoundaries._ERROR_02))
 
-        exp = "\"codigo_error\" = '{}'".format(QUALITY_RULE_ERROR_CODE_E300403)
-        error_layer.selectByExpression(exp)
-        self.assertEqual(error_layer.selectedFeatureCount(), 1)
-        result = [{'id_terreno': f['id_terreno'], 'id_lindero': f['id_lindero']} for f in error_layer.selectedFeatures()]
+        self.assertEqual(len(results_duplicate_in_less_bfs), 1)
+        result = [{'id_terreno': item[0], 'id_lindero': item[1]} for item in results_duplicate_in_less_bfs]
         test_result = [{'id_lindero': '899c1542-51dd-481c-956b-a3668fb9d958', 'id_terreno': '6a26574f-8c18-42f6-87b9-d50c928afe46'}]
-        self.assertEqual(result, test_result, 'Error in: {}'.format(self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E300403)))
+        self.assertEqual(result, test_result, 'Error in: {}'.format(QRPlotsCoveredByBoundaries._ERROR_03))
 
-        exp = "\"codigo_error\" = '{}'".format(QUALITY_RULE_ERROR_CODE_E300404)
-        error_layer.selectByExpression(exp)
-        self.assertEqual(error_layer.selectedFeatureCount(), 1)
-        result = [{'id_terreno': f['id_terreno'], 'id_lindero': f['id_lindero']} for f in error_layer.selectedFeatures()]
+        self.assertEqual(len(results_not_registered_in_more_bfs), 1)
+        result = [{'id_terreno': item[0], 'id_lindero': item[1]} for item in results_not_registered_in_more_bfs]
         test_result = [{'id_lindero': '02512c9f-8d07-4661-b5a0-10775b16a77d', 'id_terreno': 'a10c90ef-58df-479f-9b9c-2cd4bf212378'}]
-        self.assertEqual(result, test_result, 'Error in: {}'.format(self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E300404)))
+        self.assertEqual(result, test_result, 'Error in: {}'.format(QRPlotsCoveredByBoundaries._ERROR_04))
 
-        exp = "\"codigo_error\" = '{}'".format(QUALITY_RULE_ERROR_CODE_E300405)
-        error_layer.selectByExpression(exp)
-        self.assertEqual(error_layer.selectedFeatureCount(), 1)
-        result = [{'id_terreno': f['id_terreno'], 'id_lindero': f['id_lindero']} for f in error_layer.selectedFeatures()]
+        self.assertEqual(len(results_not_registered_in_less_bfs), 1)
+        result = [{'id_terreno': item[0], 'id_lindero': item[1]} for item in results_not_registered_in_less_bfs]
         test_result = [{'id_lindero': 'a49ef87f-1fa1-4528-96ff-0332e7e0d0ea', 'id_terreno': 'bbd2469c-ba49-4e7e-b294-68aaafe3c6f0'}]
-        self.assertEqual(result, test_result, 'Error in: {}'.format(self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E300405)))
+        self.assertEqual(result, test_result, 'Error in: {}'.format(QRPlotsCoveredByBoundaries._ERROR_05))
 
+    @unittest.skip("Until we've migrated to Lev Cat 1.2 completely...")
     def test_topology_boundary_must_be_covered_by_plot(self):
         print('\nINFO: Validating boundaries must be covered by plots...')
         rule = self.quality_rules_manager.get_quality_rule(EnumQualityRule.Line.BOUNDARIES_COVERED_BY_PLOTS)
-        schema_name = 'test_ladm_validations_topology_tables'
-        self.db_pg = get_pg_conn(schema_name)
         names = self.db_pg.names
 
         res, code, msg = self.db_pg.test_connection()
@@ -533,12 +527,13 @@ class TestQualityRules(unittest.TestCase):
         for item in test_result:
            self.assertIn(item, result, 'Error in: {}'.format(self.quality_rules_manager.get_error_message(QUALITY_RULE_ERROR_CODE_E200305)))
 
+    @unittest.skip("Until we've migrated to Lev Cat 1.2 completely...")
     def test_get_missing_boundary_points_in_boundaries(self):
         print('\nINFO: Validating missing boundary points in boundaries...')
 
         gpkg_path = get_test_copy_path('db/static/gpkg/quality_validations.gpkg')
-        self.db_gpkg = get_gpkg_conn('tests_quality_validations_gpkg')
-        self.db_gpkg.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
+        db_gpkg = get_gpkg_conn('tests_quality_validations_gpkg')
+        db_gpkg.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 
         uri = gpkg_path + '|layername={layername}'.format(layername='boundary')
         boundary_layer = QgsVectorLayer(uri, 'boundary', 'ogr')
@@ -551,7 +546,7 @@ class TestQualityRules(unittest.TestCase):
         point_features = [feature for feature in point_layer.getFeatures()]
         self.assertEqual(len(point_features), 9)
 
-        missing_points = self.quality_rules.point_quality_rules.get_missing_boundary_points_in_boundaries(self.db_gpkg, point_layer, boundary_layer)
+        missing_points = self.quality_rules.point_quality_rules.get_missing_boundary_points_in_boundaries(db_gpkg, point_layer, boundary_layer)
 
         geometries = [geom.asWkt() for k, v in missing_points.items() for geom in v]
 
@@ -564,12 +559,13 @@ class TestQualityRules(unittest.TestCase):
         self.assertIn('Point (963353.46584448451176286 1078440.2922483051661402)', geometries)
         self.assertIn('Point (963447.88093882286921144 1078482.77904075756669044)', geometries)
 
+    @unittest.skip("Until we've migrated to Lev Cat 1.2 completely...")
     def test_get_missing_boundary_points_in_boundaries_without_points(self):
         print('\nINFO: Validating missing boundary points in boundaries without points...')
 
         gpkg_path = get_test_copy_path('db/static/gpkg/quality_validations.gpkg')
-        self.db_gpkg = get_gpkg_conn('tests_quality_validations_gpkg')
-        self.db_gpkg.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
+        db_gpkg = get_gpkg_conn('tests_quality_validations_gpkg')
+        db_gpkg.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 
         uri = gpkg_path + '|layername={layername}'.format(layername='boundary')
         boundary_layer = QgsVectorLayer(uri, 'boundary', 'ogr')
@@ -581,7 +577,7 @@ class TestQualityRules(unittest.TestCase):
         point_features = [feature for feature in point_layer.getFeatures()]
         self.assertEqual(len(point_features), 0)
 
-        missing_points = self.quality_rules.point_quality_rules.get_missing_boundary_points_in_boundaries(self.db_gpkg, point_layer, boundary_layer)
+        missing_points = self.quality_rules.point_quality_rules.get_missing_boundary_points_in_boundaries(db_gpkg, point_layer, boundary_layer)
 
         geometries = [geom.asWkt() for k, v in missing_points.items() for geom in v]
 
@@ -603,12 +599,13 @@ class TestQualityRules(unittest.TestCase):
         self.assertIn('Point (963447.88093882286921144 1078482.77904075756669044)', geometries)
         self.assertIn('Point (963521.05263693502638489 1078508.74319170042872429)', geometries)
 
+    @unittest.skip("Until we've migrated to Lev Cat 1.2 completely...")
     def test_check_missing_survey_points_in_buildings(self):
         print('\nINFO: Validating missing survey points in buildings...')
 
         gpkg_path = get_test_copy_path('db/static/gpkg/quality_validations.gpkg')
-        self.db_gpkg = get_gpkg_conn('tests_quality_validations_gpkg')
-        self.db_gpkg.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
+        db_gpkg = get_gpkg_conn('tests_quality_validations_gpkg')
+        db_gpkg.names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
 
         uri = gpkg_path + '|layername={layername}'.format(layername='construccion')
         building_layer = QgsVectorLayer(uri, 'construccion', 'ogr')
@@ -621,7 +618,7 @@ class TestQualityRules(unittest.TestCase):
         survey_features = [feature for feature in survey_layer.getFeatures()]
         self.assertEqual(len(survey_features), 11)
 
-        missing_points = self.quality_rules.point_quality_rules.get_missing_boundary_points_in_boundaries(self.db_gpkg, survey_layer, building_layer)
+        missing_points = self.quality_rules.point_quality_rules.get_missing_boundary_points_in_boundaries(db_gpkg, survey_layer, building_layer)
 
         geometries = [geom.asWkt() for k, v in missing_points.items() for geom in v]
 
@@ -640,9 +637,10 @@ class TestQualityRules(unittest.TestCase):
         print('\nINFO: Validating plot nodes are covered by boundary points...')
 
         gpkg_path = get_test_copy_path('db/static/gpkg/quality_validations.gpkg')
-        self.db_gpkg = get_gpkg_conn('tests_quality_validations_gpkg')
-        names = self.db_gpkg.names
+        db_gpkg = get_gpkg_conn('tests_quality_validations_gpkg')
+        names = db_gpkg.names
         names.T_ID_F = 't_id'  # Static label is set because the database does not have the ladm structure
+        # names.T_ILI_TID_F = 't_ili_tid'
 
         uri = gpkg_path + '|layername={layername}'.format(layername='puntolindero')
         boundary_point_layer = QgsVectorLayer(uri, 'puntolindero', 'ogr')
@@ -652,9 +650,7 @@ class TestQualityRules(unittest.TestCase):
         plot_layer = QgsVectorLayer(uri, 'terreno', 'ogr')
         self.assertEqual(plot_layer.featureCount(), 12)
 
-        features = PolygonQualityRules.get_plot_nodes_features_not_covered_by_boundary_points(boundary_point_layer,
-                                                                                              plot_layer,
-                                                                                              names.T_ID_F)
+        features = QRPlotNodesCoveredBoundaryPoints.get_plot_nodes_not_covered_by_boundary_points(plot_layer, boundary_point_layer, names.T_ID_F)
         self.assertEqual(len(features), 10)
         result = [{'geom': f[1].asWkt(), 'id': f[0]} for f in features]
 
@@ -675,105 +671,69 @@ class TestQualityRules(unittest.TestCase):
 
     def test_no_error_quality_rule(self):
         print('\nINFO: Validating no errors in quality rules...')
-        gpkg_path = get_test_copy_path('db/ladm/gpkg/test_valid_quality_rules_v1_1.gpkg')
-        self.db_gpkg = get_gpkg_conn_from_path(gpkg_path)
-        res, code, msg = self.db_gpkg.test_connection()
+        db_gpkg = restore_gpkg_db('test_no_error_quality_rule', self.SURVEY_MODELS, get_test_path("db/ladm/test_valid_quality_rules_v1_2.xtf"))
+        res, code, msg = db_gpkg.test_connection()
         self.assertTrue(res, msg)
 
-        query_manager = ConfigDBsSupported().get_db_factory(self.db_gpkg.engine).get_ladm_queries()
+        qr_engine = QualityRuleEngine(db_gpkg, [
+            QR_IGACR1001,  # QROverlappingBoundaryPoints
+            QR_IGACR1002,  # QROverlappingControlPoints
+            QR_IGACR1003,  # QRBoundaryPointsNotCoveredByBoundaryNodes
+            QR_IGACR1004,  # QRBoundaryPointsCoveredPlotNodes
+            QR_IGACR2001,  # QROverlappingBoundaries
+            QR_IGACR3002,  # QROverlappingBuildings
+            QR_IGACR3003,  # QROverlappingRightOfWays
+            QR_IGACR3004,  # QRPlotsCoveredByBoundaries
+            QR_IGACR3005,  # QROverlappingRightOfWaysBuildings
+            QR_IGACR3007,  # QRMultiPartsInRightOfWay
+            QR_IGACR3008,  # QRPlotNodesCoveredBoundaryPoints
+            QR_IGACR4001,  # QRParcelRightRelationship
+            QR_IGACR4002,  # QRGroupPartyPercentageThatDoNotMakeOne
+            QR_IGACR4003,  # QRParcelWithInvalidDepartmentCode
+            QR_IGACR4004,  # QRParcelWithInvalidMunicipalityCode
+            QR_IGACR4005,  # QRParcelWithInvalidParcelNumber
+            QR_IGACR4006,  # QRParcelWithInvalidPreviousParcelNumber
+            QR_IGACR4007,  # QRValidateNaturalParty
+            QR_IGACR4008,  # QRValidateLegalParty
+        ], 0)
+        res, msg, qr_res = qr_engine.validate_quality_rules()
 
-        rules = [EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS,
-                 EnumQualityRule.Point.OVERLAPS_IN_CONTROL_POINTS,
-                 EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES,
-                 EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_PLOT_NODES,
-                 EnumQualityRule.Line.BOUNDARIES_ARE_NOT_SPLIT,
-                 EnumQualityRule.Line.BOUNDARIES_COVERED_BY_PLOTS,
-                 EnumQualityRule.Line.BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS,
-                 EnumQualityRule.Line.DANGLES_IN_BOUNDARIES,
-                 EnumQualityRule.Polygon.OVERLAPS_IN_PLOTS,
-                 EnumQualityRule.Polygon.OVERLAPS_IN_BUILDINGS,
-                 EnumQualityRule.Polygon.OVERLAPS_IN_RIGHTS_OF_WAY,
-                 EnumQualityRule.Polygon.PLOTS_COVERED_BY_BOUNDARIES,
-                 EnumQualityRule.Polygon.RIGHT_OF_WAY_OVERLAPS_BUILDINGS,
-                 EnumQualityRule.Polygon.GAPS_IN_PLOTS,
-                 EnumQualityRule.Polygon.MULTIPART_IN_RIGHT_OF_WAY,
-                 EnumQualityRule.Polygon.PLOT_NODES_COVERED_BY_BOUNDARY_POINTS,
-                 EnumQualityRule.Polygon.BUILDINGS_SHOULD_BE_WITHIN_PLOTS,
-                 EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_PLOTS]
+        # Point rules
+        point_rules = [QR_IGACR1001, QR_IGACR1003, QR_IGACR1004]
 
-        layer_manager = QualityRuleLayerManager(self.db_gpkg, rules, 0)
+        for point_rule in point_rules:
+            self.assertEqual(qr_res.result(point_rule).level, EnumQualityRuleResult.SUCCESS)
+            self.assertEqual(qr_res.result(point_rule).record_count, 0)
 
-        # Points rules
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS, layer_manager.get_layers(EnumQualityRule.Point.OVERLAPS_IN_BOUNDARY_POINTS)).level, Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Point.OVERLAPS_IN_CONTROL_POINTS, layer_manager.get_layers(EnumQualityRule.Point.OVERLAPS_IN_CONTROL_POINTS)).level, Qgis.Warning)  # "There are no points in layer 'lc_puntocontrol' to check for overlaps!"
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES, layer_manager.get_layers(EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_BOUNDARY_NODES)).level, Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_PLOT_NODES, layer_manager.get_layers(EnumQualityRule.Point.BOUNDARY_POINTS_COVERED_BY_PLOT_NODES)).level, Qgis.Success)
+        # "There are no points in layer 'lc_puntocontrol' to check for overlaps!"
+        self.assertEqual(qr_res.result(QR_IGACR1002).level, EnumQualityRuleResult.UNDEFINED)
+        self.assertEqual(qr_res.result(QR_IGACR1002).record_count, 0)
 
-        # Lines rules
-        # TODO: Fix the OVERLAPS_IN_BOUNDARIES test!
-        # self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Line.OVERLAPS_IN_BOUNDARIES)[1], Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Line.BOUNDARIES_ARE_NOT_SPLIT, layer_manager.get_layers(EnumQualityRule.Line.BOUNDARIES_ARE_NOT_SPLIT)).level, Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Line.BOUNDARIES_COVERED_BY_PLOTS, layer_manager.get_layers(EnumQualityRule.Line.BOUNDARIES_COVERED_BY_PLOTS)).level, Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Line.BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS, layer_manager.get_layers(EnumQualityRule.Line.BOUNDARY_NODES_COVERED_BY_BOUNDARY_POINTS)).level, Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Line.DANGLES_IN_BOUNDARIES, layer_manager.get_layers(EnumQualityRule.Line.DANGLES_IN_BOUNDARIES)).level, Qgis.Success)
+        # Line rules
+        line_rules = [QR_IGACR2001]
 
-        # Polygons rules
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.OVERLAPS_IN_PLOTS, layer_manager.get_layers(EnumQualityRule.Polygon.OVERLAPS_IN_PLOTS)).level, Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.OVERLAPS_IN_BUILDINGS, layer_manager.get_layers(EnumQualityRule.Polygon.OVERLAPS_IN_BUILDINGS)).level, Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.OVERLAPS_IN_RIGHTS_OF_WAY, layer_manager.get_layers(EnumQualityRule.Polygon.OVERLAPS_IN_RIGHTS_OF_WAY)).level, Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.PLOTS_COVERED_BY_BOUNDARIES, layer_manager.get_layers(EnumQualityRule.Polygon.PLOTS_COVERED_BY_BOUNDARIES)).level, Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.RIGHT_OF_WAY_OVERLAPS_BUILDINGS, layer_manager.get_layers(EnumQualityRule.Polygon.RIGHT_OF_WAY_OVERLAPS_BUILDINGS)).level, Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.GAPS_IN_PLOTS, layer_manager.get_layers(EnumQualityRule.Polygon.GAPS_IN_PLOTS)).level, Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.MULTIPART_IN_RIGHT_OF_WAY, layer_manager.get_layers(EnumQualityRule.Polygon.MULTIPART_IN_RIGHT_OF_WAY)).level, Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.PLOT_NODES_COVERED_BY_BOUNDARY_POINTS, layer_manager.get_layers(EnumQualityRule.Polygon.PLOT_NODES_COVERED_BY_BOUNDARY_POINTS)).level, Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.BUILDINGS_SHOULD_BE_WITHIN_PLOTS, layer_manager.get_layers(EnumQualityRule.Polygon.BUILDINGS_SHOULD_BE_WITHIN_PLOTS)).level, Qgis.Success)
-        self.assertEqual(self.quality_rules.validate_quality_rule(self.db_gpkg, EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_PLOTS, layer_manager.get_layers(EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_PLOTS)).level, Qgis.Success)
+        for line_rule in line_rules:
+            self.assertEqual(qr_res.result(line_rule).level, EnumQualityRuleResult.SUCCESS)
+            self.assertEqual(qr_res.result(line_rule).record_count, 0)
+
+        # Polygon rules
+        polygon_rules = [QR_IGACR3002, QR_IGACR3003, QR_IGACR3004, QR_IGACR3005, QR_IGACR3007, QR_IGACR3008]
+
+        for polygon_rule in polygon_rules:
+            self.assertEqual(qr_res.result(polygon_rule).level, EnumQualityRuleResult.SUCCESS, 'Error in QR: {}'.format(polygon_rule))
+            self.assertEqual(qr_res.result(polygon_rule).record_count, 0, 'Error in QR: {}'.format(polygon_rule))
 
         # Logic rules
-        res, records = query_manager.get_parcels_with_no_right(self.db_gpkg)
-        self.assertTrue(res)
-        self.assertEqual(len(records), 0)
+        logic_rules = [QR_IGACR4001, QR_IGACR4002, QR_IGACR4003, QR_IGACR4004, QR_IGACR4005, QR_IGACR4006, QR_IGACR4007, QR_IGACR4008]
 
-        res, records = query_manager.get_group_party_fractions_that_do_not_make_one(self.db_gpkg)
-        self.assertTrue(res)
-        self.assertEqual(len(records), 0)
-
-        res, records = query_manager.get_parcels_with_invalid_department_code(self.db_gpkg)
-        self.assertTrue(res)
-        self.assertEqual(len(records), 0)
-
-        res, records = query_manager.get_parcels_with_invalid_municipality_code(self.db_gpkg)
-        self.assertTrue(res)
-        self.assertEqual(len(records), 0)
-
-        res, records = query_manager.get_parcels_with_invalid_parcel_number(self.db_gpkg)
-        self.assertTrue(res)
-        self.assertEqual(len(records), 0)
-
-        res, records = query_manager.get_parcels_with_invalid_previous_parcel_number(self.db_gpkg)
-        self.assertTrue(res)
-        self.assertEqual(len(records), 0)
-
-        res, records = query_manager.get_invalid_col_party_type_natural(self.db_gpkg)
-        self.assertTrue(res)
-        self.assertEqual(len(records), 0)
-
-        res, records = query_manager.get_invalid_col_party_type_no_natural(self.db_gpkg)
-        self.assertTrue(res)
-        self.assertEqual(len(records), 0)
-
-        res, records = query_manager.get_parcels_with_invalid_parcel_type_and_22_position_number(self.db_gpkg)
-        self.assertTrue(res)
-        self.assertEqual(len(records), 0)
-
-        res, records = query_manager.get_uebaunit_parcel(self.db_gpkg)
-        self.assertTrue(res)
-        self.assertEqual(len(records), 0)
+        for logic_rule in logic_rules:
+            self.assertEqual(qr_res.result(logic_rule).level, EnumQualityRuleResult.SUCCESS)
+            self.assertEqual(qr_res.result(logic_rule).record_count, 0)
 
     def test_logic_quality_rules_pg(self):
         print('\nINFO: Validating logic quality rules PG...')
-        restore_schema('test_logic_quality_rules')
-        db_pg = get_pg_conn('test_logic_quality_rules')
+        schema = 'test_logic_quality_rules'
+        db_pg = restore_pg_db(schema, self.SURVEY_MODELS, get_test_path("db/ladm/test_logic_quality_rules_v1_2.xtf"), True)
         names = db_pg.names
         res, code, msg = db_pg.test_connection()
 
@@ -784,7 +744,7 @@ class TestQualityRules(unittest.TestCase):
 
     def test_logic_quality_rules_gpkg(self):
         print('\nINFO: Validating logic quality rules GPKG...')
-        db_gpkg = get_gpkg_conn('test_logic_quality_rules_gpkg')
+        db_gpkg = restore_gpkg_db('test_logic_quality_rules_gpkg', self.SURVEY_MODELS, get_test_path("db/ladm/test_logic_quality_rules_v1_2.xtf"), True)
         res, code, msg = db_gpkg.test_connection()
         self.assertTrue(res, msg)
 
@@ -798,7 +758,7 @@ class TestQualityRules(unittest.TestCase):
         self.assertTrue(res)
         self.assertEqual(len(records), 2)
 
-        res, records = query_manager.get_group_party_fractions_that_do_not_make_one(db)
+        res, records = query_manager.get_group_party_participation_that_do_not_make_one(db)
         self.assertTrue(res)
         self.assertEqual(len(records), 1)
 
@@ -820,7 +780,7 @@ class TestQualityRules(unittest.TestCase):
 
         res, records = query_manager.get_invalid_col_party_type_natural(db)
         self.assertTrue(res)
-        self.assertEqual(len(records), 5)
+        self.assertEqual(len(records), 33)
 
         res, records = query_manager.get_invalid_col_party_type_no_natural(db)
         self.assertTrue(res)
@@ -828,25 +788,23 @@ class TestQualityRules(unittest.TestCase):
 
         res, records = query_manager.get_parcels_with_invalid_parcel_type_and_22_position_number(db)
         self.assertTrue(res)
-        self.assertEqual(len(records), 10)
+        self.assertEqual(len(records), 8)
 
         res, records = query_manager.get_uebaunit_parcel(db)
         self.assertTrue(res)
-        self.assertEqual(len(records), 10)
+        self.assertEqual(len(records), 8)
 
+    @unittest.skip("Until we've migrated to Lev Cat 1.2 completely...")
     def test_tolerance_for_building_should_be_within_plot_rule(self):
         print('\nINFO: Validating tolerance in building should be within plot...')
-
-        db_gpkg = get_gpkg_conn('tests_quality_rules_tolerance_gpkg')
-        db_gpkg.test_connection()  # To generate DBMappingRegistry object
-        names = db_gpkg.names
+        self.db_quality_rules_tolerance.test_connection()  # To generate DBMappingRegistry object
 
         # Tolerance: 0mm
         print("INFO: Testing with 0mm of tolerance...")
         rule_key = EnumQualityRule.Polygon.BUILDINGS_SHOULD_BE_WITHIN_PLOTS
         rule_name = "Buildings should be within Plots"
         list_rules = [rule_key]  # We'll test that we can use a list of rule keys as parameter for the QREngine
-        quality_rule_engine = QualityRuleEngine(db_gpkg, list_rules, 0)
+        quality_rule_engine = QualityRuleEngine(self.db_quality_rules_tolerance, list_rules, 0)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res.result(rule_key).level, Qgis.Critical)
@@ -865,7 +823,7 @@ class TestQualityRules(unittest.TestCase):
 
         # Tolerance: 1mm
         print("INFO: Testing with 1mm of tolerance...")
-        quality_rule_engine.initialize(db_gpkg, list_rules, 1, clear_informality_cache=False)
+        quality_rule_engine.initialize(self.db_quality_rules_tolerance, list_rules, 1, clear_informality_cache=False)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res.result(rule_key).level, Qgis.Critical)
@@ -880,7 +838,7 @@ class TestQualityRules(unittest.TestCase):
 
         # Tolerance: 2mm
         print("INFO: Testing with 2mm of tolerance...")
-        quality_rule_engine.initialize(db_gpkg, list_rules, 2, clear_informality_cache=False)
+        uality_rule_engine.initialize(self.db_quality_rules_tolerance, list_rules, 2, clear_informality_cache=False)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res.result(rule_key).level, Qgis.Critical)
@@ -891,19 +849,17 @@ class TestQualityRules(unittest.TestCase):
         self.assertEqual(len(features), len(expected_t_ili_tids))
         self.assertEqual(expected_t_ili_tids, [f['id_construccion'] for f in features])
 
+    @unittest.skip("Until we've migrated to Lev Cat 1.2 completely...")
     def test_tolerance_for_building_unit_should_be_within_plot_rule(self):
         print('\nINFO: Validating tolerance in building unit should be within plot...')
-
-        db_gpkg = get_gpkg_conn('tests_quality_rules_tolerance_gpkg')
-        db_gpkg.test_connection()  # To generate DBMappingRegistry object
-        names = db_gpkg.names
+        self.db_quality_rules_tolerance.test_connection()  # To generate DBMappingRegistry object
 
         # Tolerance: 0mm
         print("INFO: Testing with 0mm of tolerance...")
         rule_key = EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_PLOTS
         rule_name = "Buildings units should be within Plots"
         dict_rules = {rule_key: rule_name}  # QualityRuleManager().get_quality_rule()
-        quality_rule_engine = QualityRuleEngine(db_gpkg, dict_rules, 0)
+        quality_rule_engine = QualityRuleEngine(self.db_quality_rules_tolerance, dict_rules, 0)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res.result(rule_key).level, Qgis.Critical)
@@ -925,7 +881,7 @@ class TestQualityRules(unittest.TestCase):
 
         # Tolerance: 1mm
         print("INFO: Testing with 1mm of tolerance...")
-        quality_rule_engine.initialize(db_gpkg, dict_rules, 1, clear_informality_cache=False)
+        quality_rule_engine.initialize(self.db_quality_rules_tolerance, dict_rules, 1, clear_informality_cache=False)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res.result(rule_key).level, Qgis.Critical)
@@ -940,7 +896,7 @@ class TestQualityRules(unittest.TestCase):
 
         # Tolerance: 2mm
         print("INFO: Testing with 2mm of tolerance...")
-        quality_rule_engine.initialize(db_gpkg, dict_rules, 2, clear_informality_cache=False)
+        quality_rule_engine.initialize(self.db_quality_rules_tolerance, dict_rules, 2, clear_informality_cache=False)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res.result(rule_key).level, Qgis.Critical)
@@ -951,19 +907,17 @@ class TestQualityRules(unittest.TestCase):
         self.assertEqual(len(features), len(expected_t_ili_tids))
         self.assertEqual(expected_t_ili_tids, [f['id_unidad_construccion'] for f in features])
 
+    @unittest.skip("Until we've migrated to Lev Cat 1.2 completely...")
     def test_tolerance_for_building_unit_should_be_within_building_rule(self):
         print('\nINFO: Validating tolerance in building unit should be within building...')
-
-        db_gpkg = get_gpkg_conn('tests_quality_rules_tolerance_gpkg')
-        db_gpkg.test_connection()  # To generate DBMappingRegistry object
-        names = db_gpkg.names
+        self.db_quality_rules_tolerance.test_connection()  # To generate DBMappingRegistry object
 
         # Tolerance: 0mm
         print("INFO: Testing with 0mm of tolerance...")
         rule_key = EnumQualityRule.Polygon.BUILDING_UNITS_SHOULD_BE_WITHIN_BUILDINGS
         rule_name = "Buildings units should be within Buildings"
         dict_rules = {rule_key: rule_name}  # QualityRuleManager().get_quality_rule()
-        quality_rule_engine = QualityRuleEngine(db_gpkg, dict_rules, 0)
+        quality_rule_engine = QualityRuleEngine(self.db_quality_rules_tolerance, dict_rules, 0)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res.result(rule_key).level, Qgis.Critical)
@@ -978,7 +932,7 @@ class TestQualityRules(unittest.TestCase):
 
         # Tolerance: 1mm
         print("INFO: Testing with 1mm of tolerance...")
-        quality_rule_engine.initialize(db_gpkg, dict_rules, 1, clear_informality_cache=False)
+        quality_rule_engine.initialize(self.db_quality_rules_tolerance, dict_rules, 1, clear_informality_cache=False)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res.result(rule_key).level, Qgis.Critical)
@@ -992,7 +946,7 @@ class TestQualityRules(unittest.TestCase):
 
         # Tolerance: 2mm
         print("INFO: Testing with 2mm of tolerance...")
-        quality_rule_engine.initialize(db_gpkg, dict_rules, 2, clear_informality_cache=False)
+        quality_rule_engine.initialize(self.db_quality_rules_tolerance, dict_rules, 2, clear_informality_cache=False)
         res = quality_rule_engine.validate_quality_rules()
 
         self.assertEqual(res.result(rule_key).level, Qgis.Critical)
@@ -1005,21 +959,18 @@ class TestQualityRules(unittest.TestCase):
 
     def test_validate_nonexistent_rule_key(self):
         print('\nINFO: Validating nonexistent rule key...')
-
-        db_gpkg = get_gpkg_conn('tests_quality_rules_tolerance_gpkg')
-        db_gpkg.test_connection()  # To generate DBMappingRegistry object
+        self.db_quality_rules_tolerance.test_connection()  # To generate DBMappingRegistry object
 
         rule_key = 9999
-        quality_rule_engine = QualityRuleEngine(db_gpkg, [rule_key], 0)
-        res = quality_rule_engine.validate_quality_rules()
-        self.assertIsNone(res.result(rule_key).level)
+        quality_rule_engine = QualityRuleEngine(self.db_quality_rules_tolerance, [rule_key], 0)
+        res, msg, qr_res = quality_rule_engine.validate_quality_rules()
+        self.assertEqual(qr_res.result(rule_key).level, EnumQualityRuleResult.CRITICAL)
 
     @classmethod
     def tearDownClass(cls):
         print("\nINFO: Resetting tolerance value to {}...".format(DEFAULT_TOLERANCE_VALUE))
+        unload_invisible_layers_and_groups()
         cls.app.settings.tolerance = DEFAULT_TOLERANCE_VALUE
-
-        print("INFO: Unloading Model Baker...")
 
 
 if __name__ == '__main__':
