@@ -15,9 +15,9 @@ from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.config.general_config import DEFAULT_TOLERANCE_VALUE
 
-from asistente_ladm_col.logic.quality_rules.qr_boundary_points_covered_plot_nodes import QRBoundaryPointsCoveredPlotNodes
-from asistente_ladm_col.logic.quality_rules.qr_plot_nodes_covered_boundary_points import QRPlotNodesCoveredBoundaryPoints
-from asistente_ladm_col.logic.quality_rules.qr_plots_covered_by_boundaries import QRPlotsCoveredByBoundaries
+from asistente_ladm_col.logic.quality_rules.point_qrs.qr_boundary_points_covered_plot_nodes import QRBoundaryPointsCoveredPlotNodes
+from asistente_ladm_col.logic.quality_rules.point_qrs.qr_plot_nodes_covered_boundary_points import QRPlotNodesCoveredBoundaryPoints
+from asistente_ladm_col.logic.quality_rules.line_qrs.qr_plots_covered_by_boundaries import QRPlotsCoveredByBoundaries
 from asistente_ladm_col.core.quality_rules.quality_rule_engine import QualityRuleEngine
 from asistente_ladm_col.config.quality_rule_config import (QR_IGACR1001,
                                                            QR_IGACR1002,
