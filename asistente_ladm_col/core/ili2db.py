@@ -110,9 +110,8 @@ class Ili2DB(QObject):
             self._base_configuration.java_path = self.get_full_java_exe_path()  # It is well configured at this point!
 
             # Check custom model directories
-            if QSettings().value('Asistente-LADM-COL/models/custom_model_directories_is_checked', DEFAULT_USE_CUSTOM_MODELS,
-                                 type=bool):
-                custom_model_directories = QSettings().value('Asistente-LADM-COL/models/custom_models', DEFAULT_MODELS_DIR)
+            if QSettings().value('Asistente-LADM-COL/models/use_custom_models', DEFAULT_USE_CUSTOM_MODELS, type=bool):
+                custom_model_directories = QSettings().value('Asistente-LADM-COL/models/custom_model_dirs', DEFAULT_MODELS_DIR)
                 if not custom_model_directories:
                     self._base_configuration.custom_model_directories_enabled = False
                 else:
