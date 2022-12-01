@@ -1,5 +1,6 @@
 from qgis.utils import qgsfunction
 
+from asistente_ladm_col.config.general_config import SUPPLIES_DB_SOURCE
 from asistente_ladm_col.config.translation_strings import TranslatableConfigStrings
 
 
@@ -35,6 +36,37 @@ def get_domain_code_from_value(domain_table, value, value_is_ilicode, validate_c
 
     return res
 
+@qgsfunction(args='auto', group='LADM-COL', helpText=TranslatableConfigStrings.help_get_domain_code_from_value)
+def get_domain_code_from_value_supplies(domain_table, value, value_is_ilicode, validate_conn, feature, parent):
+    """
+    Gets a t_id from a domain value
+
+    : param domain_table: Either a string (class name in the DB) or a Vector Layer
+    : param value: Domain value to look for
+    : param value_is_ilicode: Whether 'value' is iliCode or not (if not, it's dispName)
+    : param validate_conn: Whether to call test_connection (might be costly in batch) or not
+    : param feature: Not used, but mandatory for QGIS
+    : param parent: Not used, but mandatory for QGIS
+    """
+    debug = False
+    res = None
+
+    from qgis import utils
+    if not "asistente_ladm_col" in utils.plugins:
+        res = -1 if debug else None
+    else:
+        plugin = utils.plugins["asistente_ladm_col"]  # Dict of active plugins
+        db = plugin.get_db_connection(SUPPLIES_DB_SOURCE)
+        db_ready = db.test_connection()[0] if validate_conn else True
+        if db_ready:
+            if db.names.T_ID_F is None:
+                res = -2 if debug else None
+            else:
+                res = plugin.ladm_data.get_domain_code_from_value(db, domain_table, value, value_is_ilicode)
+        else:
+            res = -3 if debug else None
+
+    return res
 
 @qgsfunction(args='auto', group='LADM-COL', referenced_columns=[])
 def get_domain_value_from_code(domain_table, code, value_is_ilicode, validate_conn, feature, parent):
@@ -68,12 +100,11 @@ def get_domain_value_from_code(domain_table, code, value_is_ilicode, validate_co
 
     return res
 
-@qgsfunction(args='auto', group='LADM-COL', referenced_columns=[])
-def get_domain_value_from_code_db(db_source, domain_table, code, value_is_ilicode, validate_conn, feature, parent):
+@qgsfunction(args='auto', group='LADM-COL')
+def get_domain_value_from_code_supplies(domain_table, code, value_is_ilicode, validate_conn, feature, parent):
     """
-    Gets a domain value from its t_id
+    Gets a t_id from a domain value
 
-    : param db_source: Define if db connection is 'COLLECTED', 'SUPPLIES'
     : param domain_table: Either a string (class name in the DB) or a Vector Layer
     : param code: t_id to search in the domain
     : param value_is_ilicode: Whether 'value' is iliCode or not (if not, it's dispName)
@@ -89,7 +120,7 @@ def get_domain_value_from_code_db(db_source, domain_table, code, value_is_ilicod
         res = -1 if debug else None
     else:
         plugin = utils.plugins["asistente_ladm_col"]  # Dict of active plugins
-        db = plugin.get_db_connection(db_source)
+        db = plugin.get_db_connection(SUPPLIES_DB_SOURCE)
         db_ready = db.test_connection()[0] if validate_conn else True
         if db_ready:
             if db.names.T_ID_F is None:
@@ -228,6 +259,42 @@ def get_default_basket(feature, parent):
 
     return res
 
+@qgsfunction(args='auto', group='LADM-COL', helpText=TranslatableConfigStrings.help_get_paired_domain_value)
+def get_paired_domain_value(source_domain_table, target_domain_table, source_value, feature, parent):
+    """
+
+    :param source_domain_table: Name of the source domain table (in the main DB connection)
+    :param target_domain_table: Name of the target domain table (in the secondary DB connection)
+    :param source_value: t_id of the domain value in the source domain table
+    :param feature: Not used, but mandatory for QGIS
+    :param parent: Not used, but mandatory for QGIS
+    :return:
+    """
+    debug = False
+    res = None
+
+    from qgis import utils
+    if not "asistente_ladm_col" in utils.plugins:
+        res = -1 if debug else None
+    else:
+        plugin = utils.plugins["asistente_ladm_col"]  # Dict of active plugins
+        source_db = plugin.get_db_connection(SUPPLIES_DB_SOURCE)
+        target_db = plugin.get_db_connection()  # Because we expect it to be the db on which we'll continue to work
+
+        if not getattr(source_db.names, "T_ID_F", None):
+            source_db.test_connection()  # To generate db names
+        if not getattr(target_db.names, "T_ID_F", None):
+            target_db.test_connection()  # To generate db names
+
+        if source_db.names.T_ID_F is None or target_db.names.T_ID_F is None:
+            res = -2 if debug else None
+        else:
+            res = plugin.ladm_data.get_paired_domain_value(source_db,
+                                                           target_db,
+                                                           source_domain_table,
+                                                           target_domain_table,
+                                                           source_value)
+    return res
 
 @qgsfunction(args='auto', group='LADM-COL')
 def get_domain_description_from_code(value, table, feature, parent):

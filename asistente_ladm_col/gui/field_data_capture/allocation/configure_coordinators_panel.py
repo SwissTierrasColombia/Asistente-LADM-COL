@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """
 /***************************************************************************
-                              Asistente LADM-COL
+                              Asistente LADM_COL
                              --------------------
-        begin                : 2020-08-24
+        begin                : 2020-08-25
         git sha              : :%H$
         copyright            : (C) 2020 by Germán Carrillo (SwissTierras Colombia)
         email                : gcarrillo@linuxmail.org
@@ -18,12 +18,13 @@
 """
 from qgis.PyQt.QtCore import QCoreApplication
 
-from asistente_ladm_col.gui.field_data_capture.base_allocate_parcels_initial_panel import BaseAllocateParcelsInitialPanelWidget
+from asistente_ladm_col.gui.field_data_capture.base_configure_receivers_panel import BaseConfigureReceiversPanelWidget
 
 
-class AllocateParcelsCoordinatorInitialPanelWidget(BaseAllocateParcelsInitialPanelWidget):
+class ConfigureCoordinatorsPanelWidget(BaseConfigureReceiversPanelWidget):
     def __init__(self, parent, controller):
-        BaseAllocateParcelsInitialPanelWidget.__init__(self, parent, controller)
+        BaseConfigureReceiversPanelWidget.__init__(self, parent, controller)
 
-        self.btn_configure_receivers.setToolTip(QCoreApplication.translate("AllocateParcelsAdminInitialPanelWidget",
-                                                                           "Configure surveyors"))
+        self.setPanelTitle(QCoreApplication.translate("ConfigureSurveyorsPanelWidget", "Configure coordinators"))
+        self.btn_save.setText(QCoreApplication.translate("ConfigureSurveyorsPanelWidget", "Add coordinator"))
+

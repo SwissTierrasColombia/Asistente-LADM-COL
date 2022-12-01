@@ -20,11 +20,6 @@ from qgis.PyQt.QtCore import (Qt,
                               QCoreApplication)
 from qgis.gui import QgsDockWidget
 
-from asistente_ladm_col.gui.field_data_capture.base_allocate_parcels_initial_panel import BaseAllocateParcelsInitialPanelWidget
-from asistente_ladm_col.gui.field_data_capture.base_allocate_parcels_to_receiver_panel import BaseAllocateParcelsToReceiverPanelWidget
-from asistente_ladm_col.gui.field_data_capture.base_configure_receivers_panel import BaseConfigureReceiversPanelWidget
-from asistente_ladm_col.gui.field_data_capture.base_split_data_for_receivers_panel import BaseSplitDataForReceiversPanelWidget
-from asistente_ladm_col.gui.field_data_capture.base_field_data_capture_controller import BaseFieldDataCaptureController
 from asistente_ladm_col.utils import get_ui_class
 
 from asistente_ladm_col.lib.logger import Logger
@@ -33,17 +28,16 @@ from asistente_ladm_col.utils.qt_utils import OverrideCursor
 DOCKWIDGET_UI = get_ui_class('field_data_capture/base_dockwidget_field_data_capture.ui')
 
 
-class BaseDockWidgetFieldDataCapture(QgsDockWidget, DOCKWIDGET_UI):
+class BaseDockWidgetFDC(QgsDockWidget, DOCKWIDGET_UI):
     def __init__(self, iface, db, ladm_data, allocate_mode=True):
-        super(BaseDockWidgetFieldDataCapture, self).__init__(None)
+        super(BaseDockWidgetFDC, self).__init__(None)
         self.setupUi(self)
         self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
 
+        self._db = db
+
         self.logger = Logger()
         self.logger.clear_message_bar()  # Clear QGIS message bar
-
-        self._controller = self._get_controller(iface, db, ladm_data)
-        self._controller.field_data_capture_layer_removed.connect(self.layer_removed)
 
         # Configure panels
         self.configure_receivers_panel = None
@@ -56,16 +50,24 @@ class BaseDockWidgetFieldDataCapture(QgsDockWidget, DOCKWIDGET_UI):
         self.lst_split_data_for_receivers_panel = list()
 
         self.allocate_panel = None
+        self.synchronize_panel = None
 
         if allocate_mode:
-            self._initialize_allocate_initial_panel()
+            self._allocation_controller = self._get_allocation_controller(iface, ladm_data)
+            self._allocation_controller.field_data_capture_layer_removed.connect(self.layer_removed)
+            self.prerequisites_met, msg = self._initialize_allocate_initial_panel()
         else:  # Synchronize mode
-            # self.synchronize_panel = ChangesPerParcelPanelWidget(self, self.utils)
-            # self.widget.setMainPanel(self.synchronize_panel)
-            # self.lst_parcel_panels.append(self.synchronize_panel)
-            self._initialize_synchronize_initial_panel()
+            self._synchronization_controller = self._get_synchronization_controller(iface, ladm_data)
+            self._synchronization_controller.field_data_capture_layer_removed.connect(self.layer_removed)
+            self.prerequisites_met, msg = self._initialize_synchronize_initial_panel()
 
-    def _get_controller(self, iface, db, ladm_data):
+        if not self.prerequisites_met:
+            self.logger.warning_msg(__name__, msg)
+
+    def _get_allocation_controller(self, iface, ladm_data):
+        raise NotImplementedError
+
+    def _get_synchronization_controller(self, iface, ladm_data):
         raise NotImplementedError
 
     def _initialize_allocate_initial_panel(self):
@@ -151,13 +153,19 @@ class BaseDockWidgetFieldDataCapture(QgsDockWidget, DOCKWIDGET_UI):
         if self.allocate_panel:
             self.allocate_panel.close_panel()
 
+        if self.synchronize_panel:
+            self.synchronize_panel.close_panel()
+
         self.close_dock_widget()
 
-    def add_layers(self):
-        self._controller.add_layers()
+    def add_allocation_layers(self):
+        return self._allocation_controller.add_layers()
+
+    def add_synchronization_layers(self):
+        return self._synchronization_controller.add_layers()
 
     def layer_removed(self):
-        self.logger.info_msg(__name__, QCoreApplication.translate("DockWidgetFieldDataCapture",
+        self.logger.info_msg(__name__, QCoreApplication.translate("DockWidgetFDC",
                                                                   "'Field data capture' has been closed because you just removed a required layer."))
         self.close_dock_widget()
 
@@ -166,11 +174,11 @@ class BaseDockWidgetFieldDataCapture(QgsDockWidget, DOCKWIDGET_UI):
 
     def close_dock_widget(self):
         try:
-            self._controller.field_data_capture_layer_removed.disconnect()  # disconnect layer signals
+            self._allocation_controller.field_data_capture_layer_removed.disconnect()  # disconnect layer signals
         except:
             pass
 
         self.close()  # The user needs to use the menus again, which will start everything from scratch
 
     def initialize_layers(self):
-        self._controller.initialize_layers()
+        self._allocation_controller.initialize_layers()

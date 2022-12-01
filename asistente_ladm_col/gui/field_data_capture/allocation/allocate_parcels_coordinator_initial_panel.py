@@ -3,7 +3,7 @@
 /***************************************************************************
                               Asistente LADM-COL
                              --------------------
-        begin                : 2020-08-26
+        begin                : 2020-08-24
         git sha              : :%H$
         copyright            : (C) 2020 by Germán Carrillo (SwissTierras Colombia)
         email                : gcarrillo@linuxmail.org
@@ -16,18 +16,18 @@
  *                                                                         *
  ***************************************************************************/
 """
-import os
-
 from qgis.PyQt.QtCore import QCoreApplication
-from asistente_ladm_col.gui.field_data_capture.base_split_data_for_receivers_panel import BaseSplitDataForReceiversPanelWidget
+
+from asistente_ladm_col.gui.field_data_capture.base_allocate_parcels_initial_panel import BaseAllocateParcelsInitialPanelWidget
 
 
-class SplitDataForSurveyorsPanelWidget(BaseSplitDataForReceiversPanelWidget):
+class AllocateParcelsCoordinatorInitialPanelWidget(BaseAllocateParcelsInitialPanelWidget):
     def __init__(self, parent, controller):
-        BaseSplitDataForReceiversPanelWidget.__init__(self, parent, controller)
+        BaseAllocateParcelsInitialPanelWidget.__init__(self, parent, controller)
 
-        self.setPanelTitle(QCoreApplication.translate("SplitDataForSurveyorsPanelWidget", "Convert to offline"))
-        self.lbl_receiver.setText(QCoreApplication.translate("SplitDataForSurveyorsPanelWidget", "<b>Surveyor</b>"))
-        self.btn_split_data.setToolTip(QCoreApplication.translate("SplitDataForSurveyorsPanelWidget", "Generate offline projects"))
-        self.mQgsFileWidget.setDialogTitle(QCoreApplication.translate("SplitDataForSurveyorsPanelWidget",
-                                                                      "Select the folder to store offline projects"))
+        self.btn_configure_receivers.setToolTip(QCoreApplication.translate("AllocateParcelsAdminInitialPanelWidget",
+                                                                           "Open a new panel to configure surveyors in charge of the coordinator"))
+        self.btn_configure_receivers.setText(QCoreApplication.translate("AllocateParcelsAdminInitialPanelWidget",
+                                                                        "Configure surveyors"))
+
+        self._receiver_name = QCoreApplication.translate("AllocateParcelsCoordinatorInitialPanelWidget", "Surveyor")

@@ -89,10 +89,12 @@ class AppInterface(QObject, metaclass=SingletonQObject):
         # Enable Topological Editing
         QgsProject.instance().setTopologicalEditing(True)
 
-        dlg = LayersForTopologicalEditionDialog(db.names, self.gui.iface.mainWindow())
+        models = self.core.get_active_models_per_db(db)
+
+        dlg = LayersForTopologicalEditionDialog(db.names, models, self.gui.iface.mainWindow())
         if dlg.exec_() == QDialog.Accepted:
             # Load layers selected in the dialog
-            layers = dlg.selected_layers_info
+            layers = {k:None for k in dlg.selected_layers_info}
             self.core.get_layers(db, layers, load=True)
             if not layers:
                 return None

@@ -21,10 +21,9 @@ from qgis.PyQt.QtCore import QCoreApplication
 from asistente_ladm_col.gui.field_data_capture.base_configure_receivers_panel import BaseConfigureReceiversPanelWidget
 
 
-class ConfigureCoordinatorsPanelWidget(BaseConfigureReceiversPanelWidget):
+class ConfigureSurveyorsPanelWidget(BaseConfigureReceiversPanelWidget):
     def __init__(self, parent, controller):
         BaseConfigureReceiversPanelWidget.__init__(self, parent, controller)
 
-        self.setPanelTitle(QCoreApplication.translate("ConfigureSurveyorsPanelWidget", "Configure coordinators"))
-
-
+        self.setPanelTitle(QCoreApplication.translate("ConfigureSurveyorsPanelWidget", "Configure surveyors"))
+        self.btn_save.setText(QCoreApplication.translate("ConfigureSurveyorsPanelWidget", "Add surveyor"))

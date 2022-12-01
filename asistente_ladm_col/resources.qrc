@@ -1,10 +1,12 @@
 <RCC>
   <qresource prefix="/Asistente-LADM-COL">
+    <file>resources/images/select_by_area.png</file>
     <file>resources/images/dir.png</file>
     <file>resources/images/qr_validation.svg</file>
     <file>resources/images/mActionDeleteSelected.svg</file>
     <file>resources/images/add_on.png</file>
     <file>resources/images/warning.svg</file>
+    <file>resources/images/synchronize_to_db.png</file>
     <file>resources/images/powered_by.png</file>
     <file>resources/images/icon_about_transparency.png</file>
     <file>resources/images/st_black.png</file>
@@ -28,6 +30,7 @@
     <file>resources/images/with_roads.png</file>
     <file>resources/images/without_roads.png</file>
     <file>resources/images/select.png</file>
+    <file>resources/images/select_green.png</file>
     <file>resources/images/select_all.png</file>
     <file>resources/images/deselect_all.png</file>
     <file>resources/images/deselect.png</file>
@@ -74,6 +77,9 @@
     <file>resources/images/save.svg</file>
     <file>resources/images/pdf.svg</file>
     <file>resources/images/synchronize.svg</file>
+    <file>resources/images/qgs.svg</file>
+    <file>resources/images/mobile.svg</file>
+    <file>resources/images/network.png</file>
     <file>resources/csv/template_boundary_points.csv</file>
     <file>resources/csv/template_survey_points.csv</file>
     <file>resources/csv/template_control_points.csv</file>

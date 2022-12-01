@@ -195,7 +195,7 @@ class AppCoreInterface(QObject):
         :param group: QgsLayerTreeGroup that should be taken as parent for all loaded layers and subgroups
         """
         if not layers:
-            return
+            return False
 
         if emit_map_freeze:
             self.map_freeze_requested.emit(True)
@@ -260,9 +260,13 @@ class AppCoreInterface(QObject):
                     "{layer_name} layer couldn't be found... {description}").format(
                         layer_name=layer_name,
                         description=db.get_display_conn_string()))
+                break
 
         if layer_not_loaded:  # If it is not possible to obtain the requested layers we make the variable layers None
             layers = None
+            return False
+
+        return True
 
     def fix_ladm_col_relations(self, db):
         """
@@ -423,9 +427,9 @@ class AppCoreInterface(QObject):
         self.set_form_groups(db, layer, layer_name)
         self.set_custom_layer_name(db, layer, layer_modifiers=layer_modifiers)
 
-        if layer.isSpatial():
-            self.set_layer_style(db, layer, layer_modifiers, models)
+        self.set_layer_style(db, layer, layer_modifiers, models)
 
+        if layer.isSpatial():
             visible = False
             if LayerConfig.VISIBLE_LAYER_MODIFIERS in layer_modifiers:
                 visible = layer_modifiers[LayerConfig.VISIBLE_LAYER_MODIFIERS]
@@ -734,7 +738,8 @@ class AppCoreInterface(QObject):
         if res and names:
             # Additionally, begin_lifespan, t_ili_tid, local_id, namespace and t_basket should not be applied on update
             # (Using getattr because some models do not have all these names)
-            res = field_name not in [getattr(names, "T_ILI_TID_F", None),
+            res = field_name not in [getattr(names, "T_BASKET_F", None),
+                                     getattr(names, "T_ILI_TID_F", None),
                                      getattr(names, "OID_T_LOCAL_ID_F", None),
                                      getattr(names, "OID_T_NAMESPACE_F", None),
                                      getattr(names, "VERSIONED_OBJECT_T_BEGIN_LIFESPAN_VERSION_F", None),
@@ -762,6 +767,9 @@ class AppCoreInterface(QObject):
             basket_f = getattr(db.names, "T_BASKET_F", None)
             if basket_f and layer.fields().indexFromName(basket_f) != -1:
                 dict_field_expression[db.names.T_BASKET_F] = "get_default_basket()"
+
+        if layer.fields().indexOf(db.names.T_BASKET_F) > 0:  # Does our table support baskets?
+            dict_field_expression[db.names.T_BASKET_F] = "get_default_basket()"
 
         dict_automatic_values = LayerConfig.get_dict_automatic_values(db, layer_name, models)
         if dict_automatic_values:

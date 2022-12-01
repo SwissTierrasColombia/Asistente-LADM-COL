@@ -39,12 +39,14 @@ from qgis.core import (QgsField,
                        QgsWkbTypes,
                        edit,
                        NULL,
+                       QgsExpression,
                        QgsFeatureSource)
 
 import processing
 
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.lib.logger import Logger
+from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 from asistente_ladm_col.lib.processing.custom_processing_feedback import CustomFeedbackWithErrors
 from asistente_ladm_col.utils.crs_utils import get_crs_authid
 
@@ -1224,3 +1226,26 @@ class GeometryUtils(QObject):
                 boundary_point_no_intersect_boundary_node.append(boundary_point_id)  # boundary point without boundary node
 
         return boundary_point_no_intersect_boundary_node, no_register_point_bfs, duplicate_in_point_bfs
+
+    def set_valid_z_value(self, point_layers, z=0):
+        if not point_layers:
+            return False
+        expression = QgsExpression('z( $geometry ) = \'nan\' or z( $geometry ) is NULL')
+
+        for point_layer in point_layers:
+            # Let's find those points with invalid Z value
+            features = LADMData().get_features_by_expression(point_layer, '', expression, False, True)
+
+            # Now set Z values to 0 for matching features
+            self.logger.info_warning(__name__, len(features), "We'll set Z={} for {} features in layer {}".format(
+                z, len(features), point_layer.name()))
+            with edit(point_layer):
+                for feature in features:
+                    geom = feature.geometry()
+                    const_abstract_geom = geom.constGet()
+                    abstract_geom = const_abstract_geom.clone()
+                    if abstract_geom.is3D():
+                        abstract_geom.setZ(z)
+                    else:
+                        abstract_geom.addZValue(z)
+                    point_layer.changeGeometry(feature.id(), QgsGeometry(abstract_geom))

@@ -44,6 +44,7 @@ IGAC_ERRORS_CATALOG_PATH = os.path.join(PLUGIN_DIR, 'resources', 'models', 'cata
 PROCESSING_MODELS_DIR = os.path.join(PLUGIN_DIR, 'lib', 'processing', 'models')
 PROCESSING_SCRIPTS_DIR = os.path.join(PLUGIN_DIR, 'lib', 'processing', 'scripts')
 STYLES_DIR = os.path.join(PLUGIN_DIR, 'resources', 'styles')
+QGSs_DIR = os.path.join(PLUGIN_DIR, 'resources', 'qgs')
 CTM12_PG_SCRIPT_PATH = os.path.join(PLUGIN_DIR, 'resources', 'sql', 'insert_ctm12_pg.sql')
 CTM12_GPKG_SCRIPT_PATH = os.path.join(PLUGIN_DIR, 'resources', 'sql', 'insert_ctm12_gpkg.sql')
 TOML_FILE_DIR = os.path.join(PLUGIN_DIR, 'resources', 'toml', 'LADM_COL_configuration.toml')
@@ -199,9 +200,9 @@ HELP_DOWNLOAD = 'https://github.com/SwissTierrasColombia/Asistente-LADM-COL-docs
 HELP_ASSET_NAME = "Asistente-LADM-COL-docs.zip"
 
 DEFAULT_DATASET_NAME = "Default_dataset"
-FDC_DATASET_NAME = "Captura_en_campo"
-# Basket t_id to be used for all new features capured in the field, where we have no function expression
-FDC_WILD_CARD_BASKET_ID = 9999
+FDC_ADMIN_DATASET_NAME = "Captura_en_campo_(Coordinador_General)"
+FDC_COORDINATOR_DATASET_NAME = "Captura_en_campo_(Coordinador_de_Campo)"
+FDC_WILD_CARD_BASKET_ID = 9999  # A basket t_id to be used for all new features created in the field
 
 TOLERANCE_MAX_VALUE = 5000  # In millimeters
 DEFAULT_TOLERANCE_VALUE = 0  # In millimeters

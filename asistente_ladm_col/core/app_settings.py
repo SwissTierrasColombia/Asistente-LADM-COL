@@ -23,6 +23,7 @@ from asistente_ladm_col.config.general_config import (TOLERANCE_MAX_VALUE,
                                                       PLUGIN_VERSION,
                                                       DEFAULT_TOLERANCE_VALUE,
                                                       DEFAULT_USE_CUSTOM_MODELS,
+                                                      QGSs_DIR,
                                                       DEFAULT_MODELS_DIR)
 
 
@@ -41,6 +42,9 @@ class AppSettings:
     EXPORT_DIR_FIELD_DATA_KEY = "Asistente-LADM-COL/field_data_capture/export_dir"
     QR_DB_FILE_KEY = "Asistente-LADM-COL/quality/qr_db_path"
     QR_RESULTS_DIR_KEY = "Asistente-LADM-COL/quality/results_dir_path"
+    FDC_COORDINATOR_XTF_PATH_KEY = "Asistente-LADM-COL/field_data_capture/coordinator_xtf_path"
+    FDC_PROJECT_TEMPLATE_PATH_KEY = "Asistente-LADM-COL/field_data_capture/project_template_path"
+    FDC_SURVEYOR_GPKG_PATH_KEY = "Asistente-LADM-COL/field_data_capture/surveyor_gpkg_path"
     SNC_FILES_DIR_KEY = "Asistente-LADM-COL/etl_snc/files_path"
     TOLERANCE_KEY = "Asistente-LADM-COL/quality/tolerance"
     XTF_CONVERTER_SPLITTER_COLLAPSED = "Asistente-LADM-COL/xtf_model_converter/xtf_converter_splitter_collapsed"
@@ -149,6 +153,30 @@ class AppSettings:
     @qr_results_dir_path.setter
     def qr_results_dir_path(self, value):
         self.__settings.setValue(self.QR_RESULTS_DIR_KEY, value)
+
+    @property
+    def fdc_coordinator_xtf_path(self):
+        return self.settings.value(self.FDC_COORDINATOR_XTF_PATH_KEY, os.path.expanduser('~'))
+
+    @fdc_coordinator_xtf_path.setter
+    def fdc_coordinator_xtf_path(self, value):
+        self.settings.setValue(self.FDC_COORDINATOR_XTF_PATH_KEY, value)
+
+    @property
+    def fdc_project_template_path(self):
+        return self.settings.value(self.FDC_PROJECT_TEMPLATE_PATH_KEY, QGSs_DIR)
+
+    @fdc_project_template_path.setter
+    def fdc_project_template_path(self, value):
+        self.settings.setValue(self.FDC_PROJECT_TEMPLATE_PATH_KEY, value)
+
+    @property
+    def fdc_surveyor_gpkg_path(self):
+        return self.settings.value(self.FDC_SURVEYOR_GPKG_PATH_KEY, os.path.expanduser('~'))
+
+    @fdc_surveyor_gpkg_path.setter
+    def fdc_surveyor_gpkg_path(self, value):
+        self.settings.setValue(self.FDC_SURVEYOR_GPKG_PATH_KEY, value)
 
     @property
     def snc_files_path(self):

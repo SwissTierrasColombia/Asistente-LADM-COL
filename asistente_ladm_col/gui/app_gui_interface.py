@@ -39,6 +39,7 @@ from asistente_ladm_col.config.layer_tree_indicator_config import (INDICATOR_TOO
                                                                    LayerTreeIndicatorConfig)
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.lib.processing.custom_processing_feedback import CustomFeedbackWithErrors
+from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 from asistente_ladm_col.utils.qgis_model_baker_utils import QgisModelBakerUtils
 from asistente_ladm_col.utils.qt_utils import ProcessWithStatus
 from asistente_ladm_col.utils.symbology import SymbologyUtils
@@ -157,6 +158,26 @@ class AppGUIInterface(QObject):
 
     def zoom_to_selected(self):
         self.iface.actionZoomToSelected().trigger()
+
+    def zoom_to_features(self, layer, ids=list(), t_ids=dict(), duration=500):
+        if t_ids:
+            ids = list()  # Otherwise we might end up mixing ids and t_ids params
+            t_id_name = list(t_ids.keys())[0]
+            t_ids_list = t_ids[t_id_name]
+
+            features = LADMData.get_features_from_t_ids(layer, t_id_name, t_ids_list, True, True)
+            for feature in features:
+                ids.append(feature.id())
+
+        if ids:
+            self.iface.mapCanvas().zoomToFeatureIds(layer, ids)
+            self.iface.mapCanvas().flashFeatureIds(layer,
+                                                   ids,
+                                                   QColor(255, 0, 0, 255),
+                                                   QColor(255, 0, 0, 0),
+                                                   flashes=1,
+                                                   duration=duration)
+
 
     def zoom_to_feature_ids(self, layer, fids):
         self.iface.mapCanvas().zoomToFeatureIds(layer, fids)

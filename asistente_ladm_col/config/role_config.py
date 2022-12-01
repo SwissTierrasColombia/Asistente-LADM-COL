@@ -2,7 +2,7 @@ from copy import deepcopy
 
 from qgis.PyQt.QtCore import *
 
-from asistente_ladm_col.config.general_config import (FDC_DATASET_NAME,
+from asistente_ladm_col.config.general_config import (FDC_ADMIN_DATASET_NAME,
                                                       SUPPLIES_DB_SOURCE)
 from asistente_ladm_col.config.keys.common import *
 from asistente_ladm_col.config.gui.gui_config import GUI_Config
@@ -104,8 +104,9 @@ field_admin_role_gui[TOOLBAR] = [{  # Overwrite list of toolbars
         ACTION_LOAD_LAYERS,
         ACTION_INTEGRATE_SUPPLIES,
         SEPARATOR,
-        ACTION_CHECK_QUALITY_RULES,
-        ACTION_PARCEL_QUERY,
+        ACTION_MOVE_NODES,
+        SEPARATOR,
+        ACTION_CHECK_QUALITY_FDC_RULES,
         SEPARATOR,
         {  # List of toolbars
             WIDGET_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Reports"),
@@ -116,6 +117,9 @@ field_admin_role_gui[TOOLBAR] = [{  # Overwrite list of toolbars
                 ACTION_REPORT_ANT
             ]
         },
+        ACTION_ALLOCATE_PARCELS_FIELD_DATA_CAPTURE,
+        ACTION_SYNCHRONIZE_FIELD_DATA,
+        ACTION_LOAD_TEMPLATE_FIELD_DATA,
         SEPARATOR,
         ACTION_SETTINGS
     ]
@@ -128,6 +132,14 @@ field_coordinator_role_gui[TOOLBAR] = [{  # Overwrite list of toolbars
     ACTIONS: [
         ACTION_LOAD_LAYERS,
         ACTION_INTEGRATE_SUPPLIES,
+        SEPARATOR,
+        ACTION_MOVE_NODES,
+        SEPARATOR,
+        ACTION_CHECK_QUALITY_FDC_RULES,
+        SEPARATOR,
+        ACTION_ALLOCATE_PARCELS_FIELD_DATA_CAPTURE,
+        ACTION_SYNCHRONIZE_FIELD_DATA,
+        ACTION_LOAD_TEMPLATE_FIELD_DATA,
         SEPARATOR,
         ACTION_SETTINGS
     ]
@@ -249,9 +261,9 @@ def get_field_admin_role_models():
     fdc_model = LADMColModelRegistry().model(LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY)
     params = fdc_model.get_ili2db_params()
     if ILI2DB_UPDATE in params:
-        params[ILI2DB_UPDATE].append((ILI2DB_DATASET_KEY, FDC_DATASET_NAME))
+        params[ILI2DB_UPDATE].append((ILI2DB_DATASET_KEY, FDC_ADMIN_DATASET_NAME))
     else:
-        params[ILI2DB_UPDATE] = [(ILI2DB_DATASET_KEY, FDC_DATASET_NAME)]
+        params[ILI2DB_UPDATE] = [(ILI2DB_DATASET_KEY, FDC_ADMIN_DATASET_NAME)]
     field_admin_role_models[ROLE_MODEL_ILI2DB_PARAMETERS] = {LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY: params}
     return field_admin_role_models
 
@@ -274,6 +286,7 @@ def get_role_config():
             ROLE_MODELS: COMMON_ROLE_MODELS,
             ROLE_ACTIONS: [
                 ACTION_DOWNLOAD_GUIDE,
+                ACTION_EXPORT_DATA,
                 ACTION_CREATE_POINT,
                 ACTION_CREATE_BOUNDARY,
                 ACTION_CREATE_PLOT,
@@ -351,6 +364,7 @@ def get_role_config():
                                       LADMNames.SUPPLIES_INTEGRATION_MODEL_KEY]
             },
             ROLE_ACTIONS: [
+                ACTION_EXPORT_DATA,
                 ACTION_RUN_ETL_SUPPLIES,
                 ACTION_FIND_MISSING_COBOL_SUPPLIES,
                 ACTION_FIND_MISSING_SNC_SUPPLIES,
@@ -364,15 +378,16 @@ def get_role_config():
             ROLE_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Field administrator"),
             ROLE_DESCRIPTION: QCoreApplication.translate("AsistenteLADMCOLPlugin",
                                                          "The <b>field administrator</b> assigns parcel sets to field coordinators and synchronizes back the data they have structured from field surveys."),
-            ROLE_ENABLED: False,
+            ROLE_ENABLED: True,
             ROLE_MODELS: get_field_admin_role_models(),
             ROLE_ACTIONS: [
-                ACTION_DATA_MODEL_CONVERTER,
+                ACTION_EXPORT_DATA,
                 ACTION_ALLOCATE_PARCELS_FIELD_DATA_CAPTURE,
-                #  ACTION_SYNCHRONIZE_FIELD_DATA,
+                ACTION_SYNCHRONIZE_FIELD_DATA,
+                ACTION_LOAD_TEMPLATE_FIELD_DATA,
                 ACTION_INTEGRATE_SUPPLIES,
-                ACTION_PARCEL_QUERY,
-                ACTION_CHECK_QUALITY_RULES],
+                ACTION_CHECK_QUALITY_FDC_RULES,
+                ACTION_MOVE_NODES],
             ROLE_QUALITY_RULES: ALL_QUALITY_RULES,
             ROLE_GUI_CONFIG: {TEMPLATE_GUI: field_admin_role_gui}
         },
@@ -380,12 +395,15 @@ def get_role_config():
             ROLE_NAME: QCoreApplication.translate("AsistenteLADMCOLPlugin", "Field coordinator"),
             ROLE_DESCRIPTION: QCoreApplication.translate("AsistenteLADMCOLPlugin",
                                                          "The <b>field coordinator</b> assigns parcel sets to surveyors and synchronizes back the data they collected in the field."),
-            ROLE_ENABLED: False,
+            ROLE_ENABLED: True,
             ROLE_MODELS: field_coordinator_role_models,
             ROLE_ACTIONS: [
-                ACTION_DATA_MODEL_CONVERTER,
-                ACTION_ALLOCATE_PARCELS_FIELD_DATA_CAPTURE
-                #  ACTION_SYNCHRONIZE_FIELD_DATA],
+                ACTION_EXPORT_DATA_FDC_COORDINATOR,
+                ACTION_ALLOCATE_PARCELS_FIELD_DATA_CAPTURE,
+                ACTION_SYNCHRONIZE_FIELD_DATA,
+                ACTION_LOAD_TEMPLATE_FIELD_DATA,
+                ACTION_CHECK_QUALITY_FDC_RULES,
+                ACTION_MOVE_NODES],
             ],
             ROLE_QUALITY_RULES: list(),
             ROLE_GUI_CONFIG: {TEMPLATE_GUI: field_coordinator_role_gui}
@@ -397,6 +415,7 @@ def get_role_config():
             ROLE_ENABLED: True,
             ROLE_MODELS: COMMON_ROLE_MODELS,
             ROLE_ACTIONS: [
+                ACTION_EXPORT_DATA,
                 ACTION_DATA_MODEL_CONVERTER,
                 ACTION_CREATE_POINT,
                 ACTION_CREATE_BOUNDARY,
@@ -438,6 +457,7 @@ def get_role_config():
             ROLE_ENABLED: True,
             ROLE_MODELS: COMMON_ROLE_MODELS,
             ROLE_ACTIONS: [
+                ACTION_EXPORT_DATA,
                 ACTION_DATA_MODEL_CONVERTER,
                 ACTION_CHANGE_DETECTION_SETTINGS,
                 ACTION_CHANGE_DETECTION_ALL_PARCELS,

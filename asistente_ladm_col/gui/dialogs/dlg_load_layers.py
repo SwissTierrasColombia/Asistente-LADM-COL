@@ -147,7 +147,7 @@ class LoadLayersDialog(QDialog, DIALOG_UI):
                                                " [already loaded]"))
                     table_item.setData(0, Qt.ForegroundRole, QBrush(Qt.lightGray))
                     table_item.setFlags(Qt.ItemIsEnabled) # Not selectable
-                else: # Laye not in QGIS Layer Tree
+                else: # Layer not in QGIS Layer Tree
                     if not current_table_info[QueryNames.KIND_SETTINGS_MODEL_BAKER]: # This is a class
                         font = QFont()
                         font.setBold(True)

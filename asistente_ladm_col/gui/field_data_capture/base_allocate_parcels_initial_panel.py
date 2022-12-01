@@ -23,10 +23,10 @@ from qgis.PyQt.QtGui import QBrush
 from qgis.PyQt.QtWidgets import (QTableWidgetItem,
                                  QMessageBox,
                                  QFileDialog)
+from qgis.core import NULL
 from qgis.gui import QgsPanelWidget
 
 from asistente_ladm_col.app_interface import AppInterface
-from asistente_ladm_col.config.enums import EnumLogHandler
 from asistente_ladm_col.config.general_config import NOT_ALLOCATED_PARCEL_COLOR
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils import get_ui_class
@@ -53,6 +53,13 @@ class BaseAllocateParcelsInitialPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.setPanelTitle(QCoreApplication.translate("AllocateParcelsFieldDataCapturePanelWidget", "Allocate parcels"))
         self.parent.setWindowTitle(QCoreApplication.translate("AllocateParcelsFieldDataCapturePanelWidget", "Allocate parcels"))
 
+        self.cbo_areas.setSourceLayer(self._controller.area_layer())
+        self.set_area_display_expression()
+        self.cbo_areas.setAllowNull(True)
+        self.cbo_areas.setIdentifierFields(self._controller.area_layer_identifier_fields())
+        self.cbo_areas.setIdentifierValuesToNull()
+        self.selected_area_changed()
+
         self.tbl_parcels.resizeColumnsToContents()
 
         self.txt_search.valueChanged.connect(self.search_value_changed)
@@ -62,6 +69,9 @@ class BaseAllocateParcelsInitialPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.btn_show_summary.clicked.connect(self.split_data_for_receivers_panel_requested)
         self.chk_show_only_not_allocated.stateChanged.connect(self.chk_check_state_changed)
         self.btn_reallocate.clicked.connect(self.reallocate_clicked)
+        self.btn_select_by_area.clicked.connect(self.select_by_area)
+        self._controller.area_layer().afterCommitChanges.connect(self.refresh_area_features)  # Refresh features
+        self.cbo_areas.identifierValueChanged.connect(self.selected_area_changed)
 
         self.connect_to_plot_selection(True)
 
@@ -170,10 +180,10 @@ class BaseAllocateParcelsInitialPanelWidget(QgsPanelWidget, WIDGET_UI):
 
     def connect_to_plot_selection(self, connect):
         if connect:
-            self._controller.plot_layer().selectionChanged.connect(self.update_parcel_selection)
+            self._controller.legacy_plot_layer().selectionChanged.connect(self.update_parcel_selection)
         else:
             try:
-                self._controller.plot_layer().selectionChanged.disconnect(self.update_parcel_selection)
+                self._controller.legacy_plot_layer().selectionChanged.disconnect(self.update_parcel_selection)
             except (TypeError, RuntimeError):  # Layer in C++ could be already deleted...
                 pass
 
@@ -194,6 +204,14 @@ class BaseAllocateParcelsInitialPanelWidget(QgsPanelWidget, WIDGET_UI):
         self.tbl_parcels.clearSelection()  # Selection might be remembered from the status before converting to offline
 
     def call_allocate_parcels_to_receiver_panel(self):
+        # First, check if we have receivers, otherwise it makes no sense to continue
+        receivers = self._controller.get_receivers_data(False)
+        if not receivers:
+            self.logger.warning_msg(__name__, QCoreApplication.translate("AllocateParcelsFieldDataCapturePanelWidget",
+                                                                         "First you need to configure at least one {}.").format(
+                self._receiver_name.lower()), 10)
+            return
+
         # Make sure that all selected items are not yet allocated, otherwise, allow users to deallocate selected
         already_allocated = list()  # [parcel_fid1, ...]
         for parcel_fid, parcel_number in self.__selected_items.items():
@@ -280,3 +298,21 @@ class BaseAllocateParcelsInitialPanelWidget(QgsPanelWidget, WIDGET_UI):
                 self.discard_parcel_allocation(already_allocated)
         else:
             self.logger.info_msg(__name__, QCoreApplication.translate("AllocateParcelsFieldDataCapturePanelWidget", "Selected parcels are not yet allocated, so we cannot reallocate them."))
+
+    def refresh_area_features(self):
+        # Workaround to reload data after the area layer has been edited
+        self.cbo_areas.setDisplayExpression("")
+        self.set_area_display_expression()
+
+    def set_area_display_expression(self):
+        self.cbo_areas.setDisplayExpression(self._controller.area_layer_display_expression())
+
+    def selected_area_changed(self):
+        values = self.cbo_areas.identifierValues()
+        valid = values and values[0] != NULL
+        self.btn_select_by_area.setEnabled(valid)
+        if valid:
+            self._controller.zoom_to_area(values)
+
+    def select_by_area(self):
+        self._controller.select_by_area(self.cbo_areas.identifierValues()[0])

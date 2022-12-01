@@ -30,6 +30,7 @@ from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.enums import EnumLogHandler
 from asistente_ladm_col.lib.logger import Logger
 from asistente_ladm_col.utils import get_ui_class
+from asistente_ladm_col.utils.qt_utils import OverrideCursor
 
 WIDGET_UI = get_ui_class('field_data_capture/base_split_data_for_receivers_panel_widget.ui')
 
@@ -59,6 +60,9 @@ class BaseSplitDataForReceiversPanelWidget(QgsPanelWidget, WIDGET_UI):
 
         self.fill_data()
 
+        self.grb_template_project.setVisible(False)
+        self.grb_raster_layer.setVisible(False)
+
     def panel_accepted(self):
         self.refresh_parcel_data_clear_selection_requested.emit()
 
@@ -74,12 +78,19 @@ class BaseSplitDataForReceiversPanelWidget(QgsPanelWidget, WIDGET_UI):
         v_spacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
         self.grb_summary.layout().addItem(v_spacer, row, 0)
 
-        # Show/hide warning depending on if there are not allocated parcels
+        # Show/hide warnings depending on if there are not allocated parcels/areas
         not_allocated_parcels = self._controller.get_count_of_not_allocated_parcels()
         self.lbl_warning.setVisible(not_allocated_parcels)
         self.lbl_not_allocated_parcels.setVisible(not_allocated_parcels)
         self.lbl_not_allocated_parcels.setText(QCoreApplication.translate("BaseSplitDataForReceiversPanelWidget",
                                                "{} parcels have not been yet allocated!").format(not_allocated_parcels))
+
+        not_allocated_areas = self._controller.get_count_of_not_allocated_areas()
+        self.lbl_warning_2.setVisible(not_allocated_areas)
+        self.lbl_not_allocated_areas.setVisible(not_allocated_areas)
+        self.lbl_not_allocated_areas.setText(QCoreApplication.translate("BaseSplitDataForReceiversPanelWidget",
+                                                                        "{} areas have not been yet allocated!").format(
+            not_allocated_areas))
 
     def fill_row(self, receiver_name, parcel_count, row):
         # First add a spacer between previoud data row (could be the title) and the next row data
@@ -102,7 +113,8 @@ class BaseSplitDataForReceiversPanelWidget(QgsPanelWidget, WIDGET_UI):
             self.prb_export_field_data.setRange(0, 100)
             self.prb_export_field_data.setValue(0)
 
-            res, msg = self._controller.export_field_data(export_dir)
+            with OverrideCursor(Qt.WaitCursor):
+                res, msg = self._controller.export_field_data(export_dir)
 
             self.logger.success_warning(__name__, res, msg, EnumLogHandler.MESSAGE_BAR)
         else:

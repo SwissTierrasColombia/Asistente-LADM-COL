@@ -37,7 +37,7 @@ class TranslatableConfigStrings(QObject):
   False) → {}</pre>""".format(QCoreApplication.translate("TranslatableConfigStrings", "Gets the t_id of NPH in\n  domain lc_condicionprediotipo"))
 
     help_get_default_basket = QCoreApplication.translate("TranslatableConfigStrings",
-                                                       "Gets the t_id of the default basket in the current DB. This function creates the basket if it does not exist yet. If the DB does not support baskets, it returns None.") + \
+                                                       "Gets the t_id of the default basket in the current DB (used for field data capture). This function creates the basket if it does not exist yet. If the DB does not support baskets, it returns None.") + \
                                       QCoreApplication.translate("TranslatableConfigStrings", "<h4>Syntax</h4>") + \
                                       "<span class=\"functionname\">get_default_basket()</span>" + \
                                       QCoreApplication.translate("TranslatableConfigStrings", "<h4>Examples</h4>") + \

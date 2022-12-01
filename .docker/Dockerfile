@@ -51,7 +51,6 @@ ENV PATH="/usr/local/bin:${PATH}"
 RUN pip3 install --upgrade pip==9.0.3 && \
     pip3 install --upgrade psycopg2
 
-
 # install required plugins
 RUN wget https://github.com/gacarrillor/InvisibleLayersAndGroups/releases/download/2.2/InvisibleLayersAndGroups.zip -O /tmp/InvisibleLayersAndGroups.zip
 RUN unzip /tmp/InvisibleLayersAndGroups.zip -d /usr/share/qgis/python/plugins

@@ -146,16 +146,16 @@ class PGConnector(ClientServerDB):
             except (psycopg2.OperationalError, psycopg2.ProgrammingError) as e:
                 return False, QCoreApplication.translate("PGConnector", "Could not open connection! Details: {}".format(e))
 
-            self.logger.info(__name__, "Connection was open! {}".format(self.conn))
+            self.logger.info(__name__, "Connection was open! ({})".format(self.get_description_conn_string()))
         else:
-            self.logger.info(__name__, "Connection is already open! {}".format(self.conn))
+            self.logger.info(__name__, "Connection is already open! ({})".format(self.get_description_conn_string()))
 
         return True, QCoreApplication.translate("PGConnector", "Connection is open!")
 
     def close_connection(self):
         if self.conn:
             self.conn.close()
-            self.logger.info(__name__, "Connection was closed ({}) !".format(self.conn.closed))
+            self.logger.info(__name__, "Connection was closed ({}) !".format(self.get_description_conn_string()))
             self.conn = None
 
     def _get_table_and_field_names(self):
@@ -588,8 +588,7 @@ class PGConnector(ClientServerDB):
                       layer_uri.database() == db_uri.database() and
                       layer_uri.host() == db_uri.host() and
                       layer_uri.port() == db_uri.port() and
-                      layer_uri.username() == db_uri.username() and
-                      layer_uri.password() == db_uri.password())
+                      layer_uri.username() == db_uri.username())
 
         return result
 
@@ -618,6 +617,27 @@ class PGConnector(ClientServerDB):
             uri += ["dbname={}".format(self._PROVIDER_NAME)]
 
         return ' '.join(uri)
+
+    def get_qgis_layer_source(self, layer_name, layer_info):
+        dict_conn = self._dict_conn_params
+        source = []
+        source += ['host={}'.format(dict_conn['host'])]
+        source += ['port={}'.format(dict_conn['port'])]
+        source += ['user=\'{}\''.format(dict_conn['username'])]
+        #source += ['password=\'{}\''.format(dict_conn['password'])]
+        source += ['dbname=\'{}\''.format(dict_conn['database'])]
+        source += ['key=\'{}\''.format(layer_info[QueryNames.PRIMARY_KEY].lower())]
+        source += ['checkPrimaryKeyUnicity=\'1\'']
+
+        if layer_info[QueryNames.GEOMETRY_COLUMN]:
+            source += ['srid={}'.format(layer_info[QueryNames.SRID])]
+            source += ['type={}'.format(layer_info[QueryNames.GEOMETRY_TYPE_MODEL_BAKER])]
+            source += ['table="{}"."{}"'.format(self.schema, layer_name.lower())]
+            source += ['({})'.format(layer_info[QueryNames.GEOMETRY_COLUMN])]
+        else:
+            source += ['table="{}"."{}"'.format(self.schema, layer_name.lower())]
+
+        return ' '.join(source)
 
     def get_ili2db_version(self):
         res, msg = self.check_and_fix_connection()

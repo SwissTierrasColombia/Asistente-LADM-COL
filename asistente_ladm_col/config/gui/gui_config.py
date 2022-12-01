@@ -73,6 +73,7 @@ class GUI_Config(QObject):
                         ACTION_SCHEMA_IMPORT,
                         ACTION_IMPORT_DATA,
                         ACTION_EXPORT_DATA,
+                        ACTION_EXPORT_DATA_FDC_COORDINATOR,
                         SEPARATOR,
                         ACTION_DATA_MODEL_CONVERTER
                     ]
@@ -180,11 +181,14 @@ class GUI_Config(QObject):
                     ICON: FIELD_DATA_CAPTURE_ICON,
                     ACTIONS: [
                         ACTION_ALLOCATE_PARCELS_FIELD_DATA_CAPTURE,
-                        ACTION_SYNCHRONIZE_FIELD_DATA
+                        ACTION_SYNCHRONIZE_FIELD_DATA,
+                        SEPARATOR,
+                        ACTION_LOAD_TEMPLATE_FIELD_DATA
                     ]
                 },
                 SEPARATOR,
                 ACTION_CHECK_QUALITY_RULES,
+                ACTION_CHECK_QUALITY_FDC_RULES,
                 ACTION_PARCEL_QUERY,
                 {
                     WIDGET_TYPE: MENU,

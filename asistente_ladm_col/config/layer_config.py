@@ -1,7 +1,8 @@
+from qgis.PyQt.QtGui import QIcon
 from enum import Enum
-
 from qgis.core import NULL
 
+from asistente_ladm_col.config.general_config import PLUGINS_DIR
 from asistente_ladm_col.config.enums import EnumRelationshipType
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
@@ -475,6 +476,22 @@ class LayerConfig:
         return layer_sets
 
     @staticmethod
+    def get_tables_to_ignore(names, models):
+        tables_to_ignore = list()
+        for model_key in models:
+            if model_key == LADMNames.SURVEY_MODEL_KEY:
+                tables_to_ignore = [names.LC_NU_GROUP_SPATIAL_UNIT_T,
+                                    names.LC_NU_BOUNDARY_FACE_T,
+                                    names.LC_NU_LEGAL_SPACE_SERVICE_NETWORK_T,
+                                    names.LC_NU_LEGAL_SPACE_BUILDING_UNIT_T,
+                                    names.LC_NU_LEVEL_T,
+                                    names.LC_NU_REQUIRED_RELATION_BAUNITS_T,
+                                    names.LC_NU_REQUIRED_RELATION_SPATIAL_UNITS_T]
+
+        return tables_to_ignore
+
+
+    @staticmethod
     def get_dict_plural(names):
         """
         PLURAL WORDS, FOR DISPLAY PURPOSES
@@ -620,6 +637,83 @@ class LayerConfig:
             #names.LC_PARCEL_T: [names.LC_PARCEL_T_DEPARTMENT_F,
             #                    names.LC_PARCEL_T_MUNICIPALITY_F]  # list of fields of the layer to block its edition
         }
+
+    @staticmethod
+    def get_field_data_capture_layer_config(names):
+        import sys
+        sys.path.append(PLUGINS_DIR)
+
+        layer_config = dict()
+
+        from qfieldsync.core.layer import SyncAction
+        if getattr(names, "FDC_PARCEL_T", None):
+            layer_config[names.FDC_PARCEL_T] = SyncAction.OFFLINE
+        if getattr(names, "FDC_PLOT_T", None):
+            layer_config[names.FDC_PLOT_T] = SyncAction.OFFLINE
+        if getattr(names, "FDC_USER_T", None):
+            layer_config[names.FDC_USER_T] = SyncAction.NO_ACTION
+        if getattr(names, "COL_DIMENSION_TYPE_D", None):
+            layer_config[names.COL_DIMENSION_TYPE_D] = SyncAction.NO_ACTION
+        if getattr(names, "COL_SURFACE_RELATION_TYPE_D", None):
+            layer_config[names.COL_SURFACE_RELATION_TYPE_D] = SyncAction.NO_ACTION
+        if getattr(names, "FDC_VOLUME_TYPE_D", None):
+            layer_config[names.FDC_VOLUME_TYPE_D] = SyncAction.NO_ACTION
+        if getattr(names, "FDC_CONDITION_PARCEL_TYPE_D", None):
+            layer_config[names.FDC_CONDITION_PARCEL_TYPE_D] = SyncAction.NO_ACTION
+        if getattr(names, "FDC_PARCEL_TYPE_D", None):
+            layer_config[names.FDC_PARCEL_TYPE_D] = SyncAction.NO_ACTION
+        if getattr(names, "FDC_LANDCLASS_TYPE_D", None):
+            layer_config[names.FDC_LANDCLASS_TYPE_D] = SyncAction.NO_ACTION
+        if getattr(names, "FDC_PARTY_DOCUMENT_TYPE_D", None):
+            layer_config[names.FDC_PARTY_DOCUMENT_TYPE_D] = SyncAction.NO_ACTION
+
+        return layer_config
+
+    @staticmethod
+    def get_topological_edition_configuration(names, models):
+        plots = list()
+        buildings = list()
+        fdc_plots = list()
+        fdc_buildings = list()
+        icons = dict()
+
+        for model_key in models:
+            if model_key == LADMNames.SURVEY_MODEL_KEY:
+                plots = [
+                    names.LC_BOUNDARY_POINT_T,
+                    names.LC_BOUNDARY_T,
+                    names.LC_PLOT_T
+                ]
+                buildings = [
+                    names.LC_SURVEY_POINT_T,
+                    names.LC_BUILDING_T,
+                    names.LC_BUILDING_UNIT_T
+                ]
+                icons.update({
+                    names.LC_BOUNDARY_POINT_T: QIcon(":/Asistente-LADM-COL/resources/images/points.png"),
+                    names.LC_BOUNDARY_T: QIcon(":/Asistente-LADM-COL/resources/images/lines.png"),
+                    names.LC_PLOT_T: QIcon(":/Asistente-LADM-COL/resources/images/polygons.png"),
+                    names.LC_SURVEY_POINT_T: QIcon(":/Asistente-LADM-COL/resources/images/points.png"),
+                    names.LC_BUILDING_T: QIcon(":/Asistente-LADM-COL/resources/images/polygons.png"),
+                    names.LC_BUILDING_UNIT_T: QIcon(":/Asistente-LADM-COL/resources/images/polygons.png")
+                })
+            elif model_key == LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY:
+                fdc_plots = [
+                    names.FDC_BOUNDARY_POINT_T,
+                    names.FDC_PLOT_T
+                ]
+                fdc_buildings = [
+                    names.FDC_SURVEY_POINT_T,
+                    names.FDC_BUILDING_UNIT_T
+                ]
+                icons.update({
+                    names.FDC_BOUNDARY_POINT_T: QIcon(":/Asistente-LADM-COL/resources/images/points.png"),
+                    names.FDC_PLOT_T: QIcon(":/Asistente-LADM-COL/resources/images/polygons.png"),
+                    names.FDC_SURVEY_POINT_T: QIcon(":/Asistente-LADM-COL/resources/images/points.png"),
+                    names.FDC_BUILDING_UNIT_T: QIcon(":/Asistente-LADM-COL/resources/images/polygons.png")
+                })
+
+        return plots, buildings, fdc_plots, fdc_buildings, icons
 
     @staticmethod
     def get_spatial_unit_informal_layers(names, models):

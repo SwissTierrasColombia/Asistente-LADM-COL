@@ -141,6 +141,20 @@ class DBConnector(QObject):
         """
         raise NotImplementedError
 
+    def get_qgis_layer_source(self, layer_name, layer_info):
+        """
+        :param layer_name: Name of the layer for which the QGIS source needs to be built
+        :param layer_info: Cached dict with layer info. We get this dict from Model Baker.
+                           This dict needs at least the following keys:
+                            + 'primary_key'
+                            + 'geometry_column'
+                            + 'srid'
+                            + 'type'
+                           See app.core.get_cached_layers().
+        :return: QGIS source string
+        """
+        raise NotImplementedError
+
     def reset_db_model_parser(self):
         """
         Call it to let the connector know it has to update the DB model parser (e.g.,
@@ -604,3 +618,6 @@ class ClientServerDB(DBConnector):
     def get_qgis_layer_uri(self, table_name):
         # Beware, this should be used only for geometryless layers. It was created to access ili2db metadata tables.
         raise NotImplementedError
+
+    def vacuum(self):
+        pass  # Up to now, only needed for GPKG

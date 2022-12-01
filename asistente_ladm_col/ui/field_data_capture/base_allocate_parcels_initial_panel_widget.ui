@@ -14,7 +14,7 @@
    <string>Initial Panel Widget Allocate Parcels</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="3" column="0">
+   <item row="5" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_4">
      <item>
       <widget class="QPushButton" name="btn_show_summary">
@@ -22,7 +22,7 @@
         <string>Show summary</string>
        </property>
        <property name="text">
-        <string/>
+        <string>Export</string>
        </property>
        <property name="icon">
         <iconset>
@@ -55,7 +55,7 @@
         <string>Reallocate selected parcels</string>
        </property>
        <property name="text">
-        <string/>
+        <string>Reallocate</string>
        </property>
        <property name="icon">
         <iconset>
@@ -75,11 +75,58 @@
         <string>Allocate selected parcels</string>
        </property>
        <property name="text">
+        <string>Allocate</string>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>:/Asistente-LADM-COL/resources/images/select_green.png</normaloff>:/Asistente-LADM-COL/resources/images/select_green.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>24</width>
+         <height>24</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="3" column="0">
+    <widget class="QCheckBox" name="chk_show_only_not_allocated">
+     <property name="text">
+      <string>Show only not allocated parcels</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Operational area</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsFeatureListComboBox" name="cbo_areas"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_select_by_area">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="toolTip">
+        <string>Select parcels by area</string>
+       </property>
+       <property name="text">
         <string/>
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>:/Asistente-LADM-COL/resources/images/select.png</normaloff>:/Asistente-LADM-COL/resources/images/select.png</iconset>
+         <normaloff>:/Asistente-LADM-COL/resources/images/select_by_area.png</normaloff>:/Asistente-LADM-COL/resources/images/select_by_area.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -92,15 +139,21 @@
     </layout>
    </item>
    <item row="2" column="0">
-    <widget class="QCheckBox" name="chk_show_only_not_allocated">
-     <property name="text">
-      <string>Show only not allocated parcels</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
     <layout class="QGridLayout" name="content_layout">
      <item row="1" column="0">
+      <widget class="QgsFilterLineEdit" name="txt_search">
+       <property name="placeholderText">
+        <string>Search by parcel code...</string>
+       </property>
+       <property name="showSearchIcon" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="qgisRelation" stdset="0">
+        <string notr="true"/>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
       <widget class="QTableWidget" name="tbl_parcels">
        <property name="sizeAdjustPolicy">
         <enum>QAbstractScrollArea::AdjustIgnored</enum>
@@ -145,17 +198,20 @@
       </widget>
      </item>
      <item row="0" column="0">
-      <widget class="QgsFilterLineEdit" name="txt_search">
-       <property name="placeholderText">
-        <string>Search by parcel code...</string>
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
        </property>
-       <property name="showSearchIcon">
-        <bool>true</bool>
+       <property name="sizeType">
+        <enum>QSizePolicy::Fixed</enum>
        </property>
-       <property name="qgisRelation" stdset="0">
-        <string notr="true"/>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>20</height>
+        </size>
        </property>
-      </widget>
+      </spacer>
      </item>
     </layout>
    </item>
@@ -180,11 +236,11 @@
         <string>Configure receivers</string>
        </property>
        <property name="text">
-        <string/>
+        <string>Create receiver</string>
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>:/Asistente-LADM-COL/resources/images/process.svg</normaloff>:/Asistente-LADM-COL/resources/images/process.svg</iconset>
+         <normaloff>:/Asistente-LADM-COL/resources/images/network.png</normaloff>:/Asistente-LADM-COL/resources/images/network.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -200,9 +256,14 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsFeatureListComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsfeaturelistcombobox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsFilterLineEdit</class>
    <extends>QLineEdit</extends>
-   <header>qgis.gui</header>
+   <header>qgsfilterlineedit.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

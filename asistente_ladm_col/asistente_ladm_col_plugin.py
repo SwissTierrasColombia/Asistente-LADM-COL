@@ -29,15 +29,18 @@ from qgis.PyQt.QtGui import (QIcon,
 from qgis.PyQt.QtWidgets import (QAction,
                                  QPushButton,
                                  QProgressBar,
-                                 QMessageBox)
+                                 QMessageBox,
+                                 QFileDialog)
 from qgis.core import (Qgis,
                        QgsApplication,
                        QgsExpression)
 
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.gui.db_engine_gui_config import DBEngineGUIConfig
-from asistente_ladm_col.gui.field_data_capture.dockwidget_field_data_capture_admin_coordinator import DockWidgetFieldDataCaptureAdminCoordinator
-from asistente_ladm_col.gui.field_data_capture.dockwidget_field_data_capture_coordinator_surveyor import DockWidgetFieldDataCaptureCoordinatorSurveyor
+from asistente_ladm_col.gui.field_data_capture.dockwidget_fdc_admin_coordinator import DockWidgetFDCAdminCoordinator
+from asistente_ladm_col.gui.field_data_capture.dockwidget_fdc_coordinator_surveyor import DockWidgetFDCCoordinatorSurveyor
+from asistente_ladm_col.gui.field_data_capture.fdc_template_converter import TemplateConverterFieldDataCapture
+from asistente_ladm_col.gui.field_data_capture.synchronization.fdc_admin_synchronization_controller import FDCAdminSynchronizationController
 from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
 from asistente_ladm_col.gui.queries.ladm_query_controller import LADMQueryController
 from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
@@ -49,6 +52,7 @@ from asistente_ladm_col.config.enums import (EnumDbActionType,
 from asistente_ladm_col.config.general_config import (ANNEX_17_REPORT,
                                                       ANT_MAP_REPORT,
                                                       DEFAULT_LOG_MODE,
+                                                      FDC_WILD_CARD_BASKET_ID,
                                                       SUPPLIES_DB_SOURCE,
                                                       PLUGIN_VERSION,
                                                       RELEASE_URL,
@@ -95,7 +99,9 @@ from asistente_ladm_col.config.expression_functions import (get_domain_code_from
                                                             get_domain_value_from_code,
                                                             get_domain_value_from_code_db,
                                                             get_multi_domain_code_from_value,
-                                                            get_domain_description_from_code)  # >> DON'T REMOVE << Registers it in QgsExpression
+                                                            get_domain_description_from_code,
+                                                            get_default_basket,
+                                                            get_paired_domain_value)  # >> DON'T REMOVE << Registers it in QgsExpression
 from asistente_ladm_col.config.keys.common import *
 from asistente_ladm_col.core.app_core_interface import AppCoreInterface
 from asistente_ladm_col.core.app_processing_interface import AppProcessingInterface
@@ -278,7 +284,9 @@ class AsistenteLADMCOLPlugin(QObject):
         QgsExpression.unregisterFunction('get_domain_value_from_code')
         QgsExpression.unregisterFunction('get_domain_value_from_code_db')
         QgsExpression.unregisterFunction('get_multi_domain_code_from_value')
+        QgsExpression.unregisterFunction('get_default_basket')
         QgsExpression.unregisterFunction('get_domain_description_from_code')
+        QgsExpression.unregisterFunction('get_paired_domain_value')
 
     def initialize_requirements(self):
         """
@@ -434,22 +442,39 @@ class AsistenteLADMCOLPlugin(QObject):
                                     ACTION_FIND_MISSING_SNC_SUPPLIES: self._missing_snc_supplies_action})
 
     def create_field_data_capture_actions(self):
-        self._allocate_parcels_field_data_capture_action = QAction(
-            QIcon(":/Asistente-LADM-COL/resources/images/tasks.png"),
-            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Allocate parcels"),
-            self.main_window)
-
-        self._synchronize_field_data_action = QAction(
-            QIcon(":/Asistente-LADM-COL/resources/images/synchronize.svg"),
-            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Synchronize field data"),
-            self.main_window)
+        self._export_data_fdc_coord_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/export_to_xtf.svg"),
+                                                     QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                                                "Export data for field data administrator"),
+                                                     self.main_window)
+        self._allocate_parcels_field_data_capture_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/tasks.png"),
+                                                                   QCoreApplication.translate("AsistenteLADMCOLPlugin", "Allocate parcels"),
+                                                                   self.main_window)
+        self._synchronize_field_data_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/synchronize.svg"),
+                                                      QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                                                 "Synchronize field data"),
+                                                      self.main_window)
+        self._load_template_project_fdc_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/qgs.svg"),
+                                                         QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                                                    "View/edit field data using template project"),
+                                                         self.main_window)
+        self._quality_fdc_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/validation.svg"),
+                                           QCoreApplication.translate("AsistenteLADMCOLPlugin", "Quality"),
+                                           self.main_window)
 
         # Connections
+        self._export_data_fdc_coord_action.triggered.connect(partial(self.show_dlg_export_data_fdc_coordinator, self._context_collected))
         self._allocate_parcels_field_data_capture_action.triggered.connect(partial(self.show_allocate_parcels_field_data_capture, self._context_collected))
         self._synchronize_field_data_action.triggered.connect(partial(self.show_synchronize_field_data, self._context_collected))
+        self._load_template_project_fdc_action.triggered.connect(partial(self.load_template_project_field_data_capture, self._context_collected))
+        self._quality_fdc_action.triggered.connect(partial(self.show_dlg_quality_fdc, self._context_collected))
 
-        #self.gui_builder.register_actions({ACTION_ALLOCATE_PARCELS_FIELD_DATA_CAPTURE: self._allocate_parcels_field_data_capture_action,
-        #                                   ACTION_SYNCHRONIZE_FIELD_DATA: self._synchronize_field_data_action})
+        self.gui_builder.register_actions({
+            ACTION_EXPORT_DATA_FDC_COORDINATOR: self._export_data_fdc_coord_action,
+            ACTION_ALLOCATE_PARCELS_FIELD_DATA_CAPTURE: self._allocate_parcels_field_data_capture_action,
+            ACTION_SYNCHRONIZE_FIELD_DATA: self._synchronize_field_data_action,
+            ACTION_LOAD_TEMPLATE_FIELD_DATA: self._load_template_project_fdc_action,
+            ACTION_CHECK_QUALITY_FDC_RULES: self._quality_fdc_action
+        })
 
     def create_survey_actions(self):
         self._point_surveying_and_representation_survey_action = QAction(
@@ -672,7 +697,6 @@ class AsistenteLADMCOLPlugin(QObject):
             # ACTION_REPORT_ANT: self._ant_map_action,
             ACTION_LOAD_LAYERS: self._load_layers_action,
             ACTION_PARCEL_QUERY: self._queries_action,
-            ACTION_CHECK_QUALITY_RULES: self._quality_survey_action,
             ACTION_SCHEMA_IMPORT: self._import_schema_action,
             ACTION_IMPORT_DATA: self._import_data_action,
             ACTION_EXPORT_DATA: self._export_data_action,
@@ -758,6 +782,8 @@ class AsistenteLADMCOLPlugin(QObject):
         self.app.core.get_layers(self.get_db_connection(), layers, True)
 
     def zoom_to_features(self, layer, ids=list(), t_ids=dict(), duration=500):
+        # Deprecate: You should use app.gui.zoom_to_features instead
+        # TODO: Move current calls to this method to app.gui.zoom_to_features_instead
         if t_ids:
             t_id_name = list(t_ids.keys())[0]
             t_ids_list = t_ids[t_id_name]
@@ -824,26 +850,58 @@ class AsistenteLADMCOLPlugin(QObject):
     @validate_if_wizard_is_open
     @db_connection_required
     @field_data_capture_model_required
-    def show_synchronize_field_data(self):
+    def show_synchronize_field_data(self, *args):
         self.show_field_data_capture_dockwidget(False)
 
     def show_field_data_capture_dockwidget(self, allocate=True):
         self.gui_builder.close_dock_widgets([DOCK_WIDGET_FIELD_DATA_CAPTURE])
 
         if self.role_registry.get_active_role() == FIELD_COORDINATOR_ROLE:
-            dock_widget_field_data_capture = DockWidgetFieldDataCaptureCoordinatorSurveyor(self.iface,
-                                                                                           self.get_db_connection(),
-                                                                                           self.ladm_data,
-                                                                                           allocate_mode=allocate)
+            dock_widget_field_data_capture = DockWidgetFDCCoordinatorSurveyor(self.iface,
+                                                                              self.get_db_connection(),
+                                                                              self.ladm_data,
+                                                                              allocate_mode=allocate)
         else:  # FIELD_ADMIN_ROLE OR ADVANCED_ROLE!
-            dock_widget_field_data_capture = DockWidgetFieldDataCaptureAdminCoordinator(self.iface,
-                                                                                           self.get_db_connection(),
-                                                                                           self.ladm_data,
-                                                                                           allocate_mode=allocate)
+            dock_widget_field_data_capture = DockWidgetFDCAdminCoordinator(self.iface,
+                                                                           self.get_db_connection(),
+                                                                           self.ladm_data,
+                                                                           allocate_mode=allocate)
 
-        self.gui_builder.register_dock_widget(DOCK_WIDGET_FIELD_DATA_CAPTURE, dock_widget_field_data_capture)
-        self.conn_manager.db_connection_changed.connect(dock_widget_field_data_capture.update_db_connection)
-        self.app.gui.add_tabified_dock_widget(Qt.RightDockWidgetArea, dock_widget_field_data_capture)
+        if dock_widget_field_data_capture.prerequisites_met:
+            self.gui_builder.register_dock_widget(DOCK_WIDGET_FIELD_DATA_CAPTURE, dock_widget_field_data_capture)
+            self.conn_manager.db_connection_changed.connect(dock_widget_field_data_capture.update_db_connection)
+            self.app.gui.add_tabified_dock_widget(Qt.RightDockWidgetArea, dock_widget_field_data_capture)
+        else:
+            dock_widget_field_data_capture = None
+
+    @_validate_if_wizard_is_open
+    @_qgis_model_baker_required
+    @_db_connection_required
+    @_field_data_capture_model_required
+    def load_template_project_field_data_capture(self, *args):
+        reply = QMessageBox.question(self.main_window,
+                                     QCoreApplication.translate("AsistenteLADMCOLPlugin", "Warning"),
+                                     QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                                "Depending on the data in your database and on the complexity of forms configured in the (.qgs) template, editing or visualizing your data using a template project for the field could take long or even temporarily block your QGIS.\n\nAre you sure you want to proceed?"),
+                                     QMessageBox.Yes, QMessageBox.No)
+
+        if reply == QMessageBox.Yes:
+            filename, matched_filter = QFileDialog.getOpenFileName(self.main_window,
+                                                                   QCoreApplication.translate("AsistenteLADMCOLPlugin", "Select a template (.qgs) project to view/edit field data"),
+                                                                   self.app.settings.fdc_project_template_path,
+                                                                   QCoreApplication.translate("AsistenteLADMCOLPlugin", "QGIS template project (*.qgs)"))
+            if filename:
+                self.app.settings.fdc_project_template_path = filename
+
+                db = self.get_db_connection()
+                template_converter = TemplateConverterFieldDataCapture(db)
+                template_converter.convert_template_project(filename)
+
+                # Now we need to make sure we have the 9999 basket in the DB, since field forms
+                # will use it and should already have default values for t_basket as 9999
+                self.ladm_data.get_or_create_default_ili2db_basket(db, FDC_WILD_CARD_BASKET_ID)
+            else:
+                self.logger.warning_msg(__name__, QCoreApplication.translate("AsistenteLADMCOLPlugin", "You haven't selected a template (.qgs) project."), 5)
 
     @validate_if_wizard_is_open
     @db_connection_required
@@ -1088,6 +1146,45 @@ class AsistenteLADMCOLPlugin(QObject):
 
         dlg.exec_()
 
+    @update_context_to_current_role
+    @validate_if_wizard_is_open
+    @field_data_capture_model_required
+    def show_dlg_export_data_fdc_coordinator(self, *args):
+        from .gui.qgis_model_baker.dlg_export_data import DialogExportData
+
+        if not args or not isinstance(args[0], Context):
+            return
+
+        context = args[0]
+
+        reply = QMessageBox.question(self.main_window,
+                                     QCoreApplication.translate("AsistenteLADMCOLPlugin", "Warning"),
+                                     QCoreApplication.translate("AsistenteLADMCOLPlugin",
+                                                                "You are about to alter the coordinator's database losing the allocation information. This is nonetheless required for exporting the XTF and sending it to the Administrator.\n\nAre you sure you want to proceed? If so, we recommend creating a backup before."),
+                                     QMessageBox.Yes, QMessageBox.No)
+
+        if reply == QMessageBox.Yes:
+            # Get coordinator's basket (this call also updates all DB objects to use coordinator's t_basket)
+            db = self.get_db_connection()
+            controller = FDCAdminSynchronizationController(self.app.gui.iface, db, self.ladm_data)
+            msg_status = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Preparing coordinator's database to be exported...")
+            with ProcessWithStatus(msg_status):
+                res, basket_uuid, msg = controller.get_coordinator_basket(db)
+
+            if not res:
+                self.logger.warning_msg(__name__, msg)
+                return
+
+            dlg = DialogExportData(self.iface, self.conn_manager, context, parent=self.main_window)
+            if isinstance(context, TaskContext):
+                dlg.on_result.connect(context.get_slot_on_result())
+
+            dlg.set_baskets([basket_uuid])
+            self.logger.debug(__name__, "Basket ({}) set for exporting XTF data.".format(basket_uuid))
+            self.logger.info(__name__, "Export data dialog ({}) opened.".format(context.get_db_sources()[0]))
+            dlg.exec_()
+
+
     @validate_if_wizard_is_open
     @db_connection_required
     @survey_model_required
@@ -1220,6 +1317,23 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_log_quality_dialog(self, log_result):
         dlg = LogQualityDialog(self.conn_manager.get_db_connector_from_source(), log_result, self.main_window)
         dlg.exec_()
+
+    @validate_if_wizard_is_open
+    @db_connection_required
+    @field_data_capture_model_required
+    @activate_processing_plugin
+    def show_dlg_quality_fdc(self, *args):
+        # quality_dialog = QualityDialog(self.main_window)
+        # quality_dialog.exec_()
+
+        # self.quality_rule_engine = QualityRuleEngine(self.get_db_connection(), quality_dialog.selected_rules)
+        # self.quality_rule_engine.quality_rule_logger.show_message_emitted.connect(self.show_log_quality_message)
+        # self.quality_rule_engine.quality_rule_logger.show_button_emitted.connect(self.show_log_quality_button)
+        # self.quality_rule_engine.quality_rule_logger.set_initial_progress_emitted.connect(self.set_log_quality_initial_progress)
+        # self.quality_rule_engine.quality_rule_logger.set_final_progress_emitted.connect(self.set_log_quality_final_progress)
+        # self.quality_rule_engine.validate_quality_rules()
+	# TODO: Implement QR Generation
+	pass
 
     def show_wiz_property_record_card(self):
         # TODO: Remove
