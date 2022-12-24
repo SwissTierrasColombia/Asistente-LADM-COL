@@ -81,6 +81,8 @@ class DialogExportData(QDialog, DIALOG_UI):
         self.java_dependency.download_dependency_completed.connect(self.download_java_complete)
         self.java_dependency.download_dependency_progress_changed.connect(self.download_java_progress_change)
 
+        self._baskets = list()
+
         self._dbs_supported = ConfigDBsSupported()
         self._running_tool = False
 

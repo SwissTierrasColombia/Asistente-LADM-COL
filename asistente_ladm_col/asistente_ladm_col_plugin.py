@@ -242,7 +242,7 @@ class AsistenteLADMCOLPlugin(QObject):
 
     def create_actions(self):
         #self.create_supplies_actions()
-        #self.create_field_data_capture_actions()
+        self.create_field_data_capture_actions()
         self.create_survey_actions()
         self.create_cadastre_form_actions()
         self.create_valuation_actions()
@@ -350,6 +350,7 @@ class AsistenteLADMCOLPlugin(QObject):
         if db_source == COLLECTED_DB_SOURCE:  # Only refresh GUI for changes in COLLECTED DB SOURCE
             msg = QCoreApplication.translate("AsistenteLADMCOLPlugin", "Refreshing GUI for the LADM-COL Assistant...")
             with ProcessWithStatus(msg):
+
                 self.gui_builder.set_db_connection(db, res)
                 self.gui_builder.build_gui()
 
@@ -874,10 +875,9 @@ class AsistenteLADMCOLPlugin(QObject):
         else:
             dock_widget_field_data_capture = None
 
-    @_validate_if_wizard_is_open
-    @_qgis_model_baker_required
-    @_db_connection_required
-    @_field_data_capture_model_required
+    @validate_if_wizard_is_open
+    @db_connection_required
+    @field_data_capture_model_required
     def load_template_project_field_data_capture(self, *args):
         reply = QMessageBox.question(self.main_window,
                                      QCoreApplication.translate("AsistenteLADMCOLPlugin", "Warning"),
@@ -1323,6 +1323,8 @@ class AsistenteLADMCOLPlugin(QObject):
     @field_data_capture_model_required
     @activate_processing_plugin
     def show_dlg_quality_fdc(self, *args):
+        # TODO: Implement QR Generation
+        pass
         # quality_dialog = QualityDialog(self.main_window)
         # quality_dialog.exec_()
 
@@ -1332,8 +1334,6 @@ class AsistenteLADMCOLPlugin(QObject):
         # self.quality_rule_engine.quality_rule_logger.set_initial_progress_emitted.connect(self.set_log_quality_initial_progress)
         # self.quality_rule_engine.quality_rule_logger.set_final_progress_emitted.connect(self.set_log_quality_final_progress)
         # self.quality_rule_engine.validate_quality_rules()
-	# TODO: Implement QR Generation
-	pass
 
     def show_wiz_property_record_card(self):
         # TODO: Remove

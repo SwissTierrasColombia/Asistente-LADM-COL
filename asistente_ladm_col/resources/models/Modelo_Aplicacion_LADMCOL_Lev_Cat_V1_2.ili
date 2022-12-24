@@ -52,11 +52,7 @@ INTERLIS 2.3;
  * 
  * -----------------------------------------------------------
  */
-<<<<<<<< HEAD:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.ili
 CONTRACTED MODEL Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2 (es)
-========
-CONTRACTED MODEL Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1 (es)
->>>>>>>> qfield_integration_basket_basket_update_fdc_09:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.ili
 AT "http://www.proadmintierra.info/"
 VERSION "V2.2.1"  // 2018-02-19 // =
   IMPORTS ISO19107_PLANAS_V3_0,LADM_COL_V3_1,Submodelo_Integracion_Insumos_V1_0;
@@ -911,11 +907,7 @@ VERSION "V2.2.1"  // 2018-02-19 // =
     );
 
     LC_FuenteAdministrativaTipo
-<<<<<<<< HEAD:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.ili
     EXTENDS LADM_COL_V3_1.LADM_Nucleo.COL_FuenteAdministrativaTipo = (
-========
-    EXTENDS LADM_COL_V3_0.LADM_Nucleo.COL_FuenteAdministrativaTipo = (
->>>>>>>> qfield_integration_basket_basket_update_fdc_09:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.ili
       Documento_Publico(
         /** Una escritura pública es un documento público en el que se realiza ante un notario público un determinado hecho o un derecho autorizado por dicho fedatario público, que firma con el otorgante u otorgantes,mostrando sobre la capacidad jurídica del contenido y de la fecha en que se realizó
          */
@@ -930,23 +922,10 @@ VERSION "V2.2.1"  // 2018-02-19 // =
         !!@ ili2db.dispName = "(Documento público) Acto administrativo"
         Acto_Administrativo
       ),
-<<<<<<<< HEAD:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.ili
       /** Cuando no se halla documento soporte pero puede ser una declaración verbal.
        */
       !!@ ili2db.dispName = "(Sin documento)"
       Sin_Documento
-========
-      Documento_Privado(
-        /** Documento que contiene un compromiso entre dos o más personas que lo firman.
-         */
-        !!@ ili2db.dispName = "(Documento privado) Documento privado"
-        Documento_Privado,
-        /** Cuando no se haya documento soporte pero puede ser una declaración verbal.
-         */
-        !!@ ili2db.dispName = "(Documento privado) Sin documento"
-        Sin_Documento
-      )
->>>>>>>> qfield_integration_basket_basket_update_fdc_09:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.ili
     );
 
     LC_GrupoEtnicoTipo = (
@@ -1426,7 +1405,6 @@ VERSION "V2.2.1"  // 2018-02-19 // =
     );
 
     LC_PredioTipo
-<<<<<<<< HEAD:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.ili
     EXTENDS LADM_COL_V3_1.LADM_Nucleo.COL_UnidadAdministrativaBasicaTipo = (
       Predio(
         /** Es el predio que pertenece al estado y/o cuyo propietario es una entidad de derecho público.
@@ -1438,19 +1416,6 @@ VERSION "V2.2.1"  // 2018-02-19 // =
           !!@ ili2db.dispName = "(Predio) (Público) Baldío"
           Baldio,
           /** Los bienes de la Unión cuyo uso no pertenece generalmente a los habitantes, se llaman bienes de la Unión o bienes fiscales.
-========
-    EXTENDS LADM_COL_V3_0.LADM_Nucleo.COL_UnidadAdministrativaBasicaTipo = (
-      Predio(
-        /** Es el predio que pertenece al estado y/o cuyo propietario es una entidad de derecho público
-         */
-        !!@ ili2db.dispName = "(Predio) Público"
-        Publico(
-          /** Es un bien inmueble de propiedad de la Nación y ubicado en zonas rurales
-           */
-          !!@ ili2db.dispName = "(Predio) (Público) Baldío"
-          Baldio,
-          /** Los bienes de la Unión cuyo uso no pertenece generalmente a los habitantes, se llaman bienes de la Unión o bienes fiscales
->>>>>>>> qfield_integration_basket_basket_update_fdc_09:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.ili
            */
           !!@ ili2db.dispName = "(Predio) (Público) Fiscal"
           Fiscal,
@@ -1461,7 +1426,6 @@ VERSION "V2.2.1"  // 2018-02-19 // =
           /** Son aquellos inmuebles de dominio público cuyo uso pertenece a todos los habitantes del territorio nacional, destinados al uso o disfrute colectivo.
            */
           !!@ ili2db.dispName = "(Predio) (Público) Uso público"
-<<<<<<<< HEAD:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.ili
           Uso_Publico,
           /** Son aquellos terrenos urbanos que hacen parte del patrimonio de una entidad territorial, que se caracterizan por ser imprescriptibles, y pueden enajenarse y explotarse en favor del mismo ente municipal o de la comunidad.
            */
@@ -1479,21 +1443,6 @@ VERSION "V2.2.1"  // 2018-02-19 // =
         /** Son bienes inmuebles que se encuentran dentro de territorio respectivo a cargo de la Nación, sin dueño aparente o conocido.
          */
         !!@ ili2db.dispName = "(Predio) Vacante"
-========
-          Uso_Publico
-        ),
-        /** Es aquel que ha salido del patrimonio del estado, cuenta con un propietario inscrito en el folio de matrícula y se considera propiedad privada en los términos del artículo 48 de la Ley 160 de 1993.
-         */
-        !!@ ili2db.dispName = "(Predio) (Privado)"
-        Privado,
-        /** Son los predios adjudicados a comunidades pertenecientes a grupos étnicos en el marco del reconocimiento de los resguardos legalmente constituidos según el Decreto 2164 de 1995 o de las propiedades colectivas de comunidades negras conforme Ley 70 de 1993.
-         */
-        !!@ ili2db.dispName = "(Predio) (Territorio colectivo)"
-        Territorio_Colectivo,
-        /** Son bienes inmuebles que se encuentran dentro de territorio respectivo a cargo de la Nación, sin dueño aparente o conocido
-         */
-        !!@ ili2db.dispName = "(Predio) (Vacante)"
->>>>>>>> qfield_integration_basket_basket_update_fdc_09:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.ili
         Vacante
       )
     );
@@ -1564,7 +1513,6 @@ VERSION "V2.2.1"  // 2018-02-19 // =
     );
 
     LC_PuntoTipo
-<<<<<<<< HEAD:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.ili
     EXTENDS LADM_COL_V3_1.LADM_Nucleo.COL_PuntoTipo = (
       Catastro(
         /** Punto referido a los soportes verticales que sirven de apoyo, utilizados en la construcción de alambradas, tendidos eléctricos y telefónicos, televisión por cable, para iluminar calles, plazas o estadios y en las actividades agrícolas.
@@ -1572,15 +1520,6 @@ VERSION "V2.2.1"  // 2018-02-19 // =
         !!@ ili2db.dispName = "(Catastro) Poste"
         Poste,
         /** Punto referido a las esquinas o sección de los paramentos de las construcciones y unidades de construcción.
-========
-    EXTENDS LADM_COL_V3_0.LADM_Nucleo.COL_PuntoTipo = (
-      Catastro(
-        /** Punto referido a los soportes verticales que sirven de apoyo,utilizados en la construcción de alambradas, tendidos eléctricos y telefónicos, televisión por cable, para iluminar calles, plazas o estadios y en las actividades agrícolas.
-         */
-        !!@ ili2db.dispName = "(Catastro) Poste"
-        Poste,
-        /** Punto referido a las esquina o sección de los paramentos de las construcción y unidades de construcción.
->>>>>>>> qfield_integration_basket_basket_update_fdc_09:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.ili
          */
         !!@ ili2db.dispName = "(Catastro) Construcción"
         Construccion,
@@ -1588,11 +1527,7 @@ VERSION "V2.2.1"  // 2018-02-19 // =
          */
         !!@ ili2db.dispName = "(Catastro) Punto dinámico"
         Punto_Dinamico,
-<<<<<<<< HEAD:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.ili
         /** Punto referido a los elementos naturales de la vegetación como los árboles, arbustos o cualquier otra especie de la fauna.
-========
-        /** Punto referido a los elementos naturales de la vegetación  como los árboles, arbustos o cualquier otra especie de la fauna.
->>>>>>>> qfield_integration_basket_basket_update_fdc_09:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.ili
          */
         !!@ ili2db.dispName = "(Catastro) Elemento natural"
         Elemento_Natural,
@@ -1600,19 +1535,11 @@ VERSION "V2.2.1"  // 2018-02-19 // =
          */
         !!@ ili2db.dispName = "(Catastro) Piedra"
         Piedra,
-<<<<<<<< HEAD:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.ili
         /** Punto referido a las áreas de campos abiertos, zonas boscosas, desérticas o cualquier otro tipo de espacio donde no se aprecia una clara delimitación.
          */
         !!@ ili2db.dispName = "(Catastro) Sin materialización"
         Sin_Materializacion,
         /** Punto referido a los mojones utilizados en topografía que tienen datos de coordenadas espaciales.
-========
-        /** Puntos referido a las áreas de campos abiertos, zonas boscosas, desérticas o cualquier otro tipo de espacio donde no se aprecia una clara delimitación.
-         */
-        !!@ ili2db.dispName = "(Catastro) Sin materialización"
-        Sin_Materializacion,
-        /** Puntos referidos a los mojones utilizados en topografía que tienen datos de coordenadas espaciales.
->>>>>>>> qfield_integration_basket_basket_update_fdc_09:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.ili
          */
         !!@ ili2db.dispName = "(Catastro) Mojón"
         Mojon,
@@ -1625,32 +1552,6 @@ VERSION "V2.2.1"  // 2018-02-19 // =
         !!@ ili2db.dispName = "(Catastro) Pilastra"
         Pilastra
       )
-<<<<<<<< HEAD:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.ili
-========
-    );
-
-    LC_RelacionPredioTipo = (
-      /** Parte interesada (Propietario, Poseedor, Ocupante)
-       */
-      !!@ ili2db.dispName = "Parte interesada (Propietario, Poseedor, Ocupante)"
-      Parte_Interesada,
-      /** Indica si un vecino de la parte interesada (propietario, poseedor u ocupante) fue el encargado de atender la visita predial.
-       */
-      !!@ ili2db.dispName = "Vecino"
-      Vecino,
-      /** Indica si un familiar de la parte interesada (propietario, poseedor u ocupante) fue el encargado de atender la visita predial.
-       */
-      !!@ ili2db.dispName = "Familiar"
-      Familiar,
-      /** Indica si el arrendatario o alguna persona de su núcleo familiar fue el encargado de atender la visita predial.
-       */
-      !!@ ili2db.dispName = "Arrendatario"
-      Arrendatario,
-      /** Indica si el administrador o alguna persona de su núcleo familiar fue el encargado de atender la visita predial.
-       */
-      !!@ ili2db.dispName = "Administrador"
-      Administrador
->>>>>>>> qfield_integration_basket_basket_update_fdc_09:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.ili
     );
 
     LC_RestriccionTipo = (
@@ -2553,19 +2454,11 @@ VERSION "V2.2.1"  // 2018-02-19 // =
       /** Es el conjunto de elementos constructivos que conforman una edificación y que de acuerdo a sus características pueden ser consideradas convencionales cuando son de uso residencial, comercial e industrial o no convencionales cuando son anexos de la construcción.
        */
       !!@ ili2db.dispName = "Tipo de construcción"
-<<<<<<<< HEAD:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.ili
       Tipo_Construccion : Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.LC_ConstruccionTipo;
       /** Es la caracterización del conjunto de valores que describe a un atributo de la unidad de construcción para darle condición de dominio común o dominio privado.
        */
       !!@ ili2db.dispName = "Tipo de dominio"
       Tipo_Dominio : Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.LC_DominioConstruccionTipo;
-========
-      Tipo_Construccion : Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.LC_ConstruccionTipo;
-      /** Indica el tipo de dominio de la unidad de construcción: común y privado.
-       */
-      !!@ ili2db.dispName = "Tipo de dominio"
-      Tipo_Dominio : Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.LC_DominioConstruccionTipo;
->>>>>>>> qfield_integration_basket_basket_update_fdc_09:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.ili
       /** Número total de pisos de la construcción.
        */
       !!@ ili2db.dispName = "Número de pisos"
@@ -2617,11 +2510,7 @@ VERSION "V2.2.1"  // 2018-02-19 // =
       /** Indica el tipo de documento de la persona que atendió la visita predial.
        */
       !!@ ili2db.dispName = "Tipo de documento de quien atendió la visita predial"
-<<<<<<<< HEAD:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.ili
       Tipo_Documento_Quien_Atendio : MANDATORY Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.LC_InteresadoDocumentoTipo;
-========
-      Tipo_Documento_Quien_Atendio : MANDATORY Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.LC_InteresadoDocumentoTipo;
->>>>>>>> qfield_integration_basket_basket_update_fdc_09:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.ili
       /** Indica el número de documento de la persona que atendió la visita predial.
        */
       !!@ ili2db.dispName = "Numero de documento de quien atendió la visita predial"
@@ -2642,13 +2531,6 @@ VERSION "V2.2.1"  // 2018-02-19 // =
        */
       !!@ ili2db.dispName = "Segundo apellido de quien atendió"
       Segundo_Apellido_Quien_Atendio : TEXT*100;
-<<<<<<<< HEAD:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.ili
-========
-      /** Relación con el predio de la persona encargada de atender la visita, por ejemplo propietario, encargado, administrador, poseedor, etc.
-       */
-      !!@ ili2db.dispName = "Relación con el predio"
-      Relacion_Con_Predio : MANDATORY Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.LC_RelacionPredioTipo;
->>>>>>>> qfield_integration_basket_basket_update_fdc_09:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.ili
       /** Dirección de domicilio para notificaciones.
        */
       !!@ ili2db.dispName = "Domicilio notificaciones"
@@ -2713,15 +2595,10 @@ VERSION "V2.2.1"  // 2018-02-19 // =
       /** Forma de relación del interesado con respecto al predio según su forma de tenencia (posesión, ocupación o dominio).
        */
       !!@ ili2db.dispName = "Tipo"
-<<<<<<<< HEAD:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.ili
       Tipo : MANDATORY Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.LC_DerechoTipo;
       /** Indica la fracción del derecho en relación a la forma de tenencia y el área que esta ocupa dentro de la extensión del predio.
        * 
        * Expresado en tanto por uno (0.0000000000 a 1.0000000000).
-========
-      Tipo : MANDATORY Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.LC_DerechoTipo;
-      /** Indica la fracción del derecho en relación a la forma de tenencia y el área que esta ocupa dentro de la extensión del predio. Ejemplo: un predio informal que se encuentra sobre un predio baldío y un predio privado tendrá un porcentaje de derecho de ocupación y posesión expresado en tanto por uno (0.0000000000 a 1.0000000000).
->>>>>>>> qfield_integration_basket_basket_update_fdc_09:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.ili
        */
       !!@ ili2db.dispName = "Fracción de derecho"
       Fraccion_Derecho : MANDATORY 0.0000000000 .. 1.0000000000;
@@ -2780,13 +2657,8 @@ VERSION "V2.2.1"  // 2018-02-19 // =
       /** Documentos como escritura pública, sentencia judicial, acto administrativo, documento privado o sin documento (puede ser una declaración verbal), que acredita la adquisición de derechos de dominio sobre un bien inmueble y la relación que existe entre el interesado y el predio.
        */
       !!@ ili2db.dispName = "Tipo"
-<<<<<<<< HEAD:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.ili
       Tipo (EXTENDED) : MANDATORY Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.LC_FuenteAdministrativaTipo;
       /** Entidades encargadas de emitir el título de dominio, posesión u ocupación.
-========
-      Tipo (EXTENDED) : MANDATORY Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.LC_FuenteAdministrativaTipo;
-      /** Es tipo de oficina que emite el documento (notaria, juzgado)
->>>>>>>> qfield_integration_basket_basket_update_fdc_09:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.ili
        */
       !!@ ili2db.dispName = "Ente emisor"
       Ente_Emisor : TEXT*255;
@@ -2814,19 +2686,11 @@ VERSION "V2.2.1"  // 2018-02-19 // =
       /** Indica los elementos generales de la calificación de la construcción de acuerdo al método vigente.
        */
       !!@ ili2db.dispName = "Clase de calificación"
-<<<<<<<< HEAD:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.ili
       Clase_Calificacion : MANDATORY Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.LC_ClaseCalificacionTipo;
       /** Estado de conservación del grupo calificado.
        */
       !!@ ili2db.dispName = "Conservación"
       Conservacion : MANDATORY Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.LC_EstadoConservacionTipo;
-========
-      Clase_Calificacion : MANDATORY Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.LC_ClaseCalificacionTipo;
-      /** Estado de conservación del grupo calificado.
-       */
-      !!@ ili2db.dispName = "Conservación"
-      Conservacion : MANDATORY Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.LC_EstadoConservacionTipo;
->>>>>>>> qfield_integration_basket_basket_update_fdc_09:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.ili
       /** Subtotal del grupo calificado.
        */
       !!@ ili2db.dispName = "Subtotal"
@@ -2841,21 +2705,12 @@ VERSION "V2.2.1"  // 2018-02-19 // =
       /** Son considerados dos tipos de interesados, persona natural que actúa a nombre propio y se ocupa de algunas actividades que la ley considera mercantiles y persona jurídica que actúa como institución creada por una o más personas para cumplir un objetivo social que puede ser con o sin fines de lucro.
        */
       !!@ ili2db.dispName = "Tipo"
-<<<<<<<< HEAD:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.ili
       Tipo : MANDATORY Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.LC_InteresadoTipo;
       /** Clase de documentos públicos que permite la identificación del interesado.
        */
       !!@ ili2db.dispName = "Tipo de documento"
       Tipo_Documento : MANDATORY Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.LC_InteresadoDocumentoTipo;
       /** Documento público que contiene datos de identificación personal y que caracteriza al interesado como ciudadano, relacionado mediante un número de identificación.
-========
-      Tipo : MANDATORY Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.LC_InteresadoTipo;
-      /** Tipo de documento del que se trata.
-       */
-      !!@ ili2db.dispName = "Tipo de documento"
-      Tipo_Documento : MANDATORY Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.LC_InteresadoDocumentoTipo;
-      /** Documento de identidad del interesado.
->>>>>>>> qfield_integration_basket_basket_update_fdc_09:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.ili
        */
       !!@ ili2db.dispName = "Documento de identidad"
       Documento_Identidad : MANDATORY TEXT*50;
@@ -2878,19 +2733,12 @@ VERSION "V2.2.1"  // 2018-02-19 // =
       /** Corresponde a “Masculino” y “Femenino” según como aparezca en el tipo de documento de identidad.
        */
       !!@ ili2db.dispName = "Sexo"
-<<<<<<<< HEAD:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.ili
       Sexo : Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.LC_SexoTipo;
       /** Grupo de personas a la cual pertenece el interesado, quienes comparten una misma ideología cultural.
        */
       !!@ ili2db.dispName = "Grupo étnico"
       Grupo_Etnico : Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.LC_GrupoEtnicoTipo;
       /** Nombre jurídico que recibe un sociedad colectiva o empresa constituida legalmente, con el cual se encuentra inscrito.
-========
-      Sexo : Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.LC_SexoTipo;
-      !!@ ili2db.dispName = "Grupo étnico"
-      Grupo_Etnico : Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.LC_GrupoEtnicoTipo;
-      /** Nombre con el que está inscrito.
->>>>>>>> qfield_integration_basket_basket_update_fdc_09:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.ili
        */
       !!@ ili2db.dispName = "Razón social"
       Razon_Social : TEXT*255;
@@ -2958,7 +2806,6 @@ VERSION "V2.2.1"  // 2018-02-19 // =
     END LC_Lindero;
 
     CLASS LC_NU_AgrupacionUnidadesEspaciales
-<<<<<<<< HEAD:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.ili
     EXTENDS LADM_COL_V3_1.LADM_Nucleo.COL_AgrupacionUnidadesEspaciales =
     END LC_NU_AgrupacionUnidadesEspaciales;
 
@@ -2984,33 +2831,6 @@ VERSION "V2.2.1"  // 2018-02-19 // =
 
     CLASS LC_NU_RelacionNecesariaUnidadesEspaciales
     EXTENDS LADM_COL_V3_1.LADM_Nucleo.COL_RelacionNecesariaUnidadesEspaciales =
-========
-    EXTENDS LADM_COL_V3_0.LADM_Nucleo.COL_AgrupacionUnidadesEspaciales =
-    END LC_NU_AgrupacionUnidadesEspaciales;
-
-    CLASS LC_NU_CarasLindero
-    EXTENDS LADM_COL_V3_0.LADM_Nucleo.COL_CarasLindero =
-    END LC_NU_CarasLindero;
-
-    CLASS LC_NU_EspacioJuridicoRedServicios
-    EXTENDS LADM_COL_V3_0.LADM_Nucleo.COL_EspacioJuridicoRedServicios =
-    END LC_NU_EspacioJuridicoRedServicios;
-
-    CLASS LC_NU_EspacioJuridicoUnidadEdificacion
-    EXTENDS LADM_COL_V3_0.LADM_Nucleo.COL_EspacioJuridicoUnidadEdificacion =
-    END LC_NU_EspacioJuridicoUnidadEdificacion;
-
-    CLASS LC_NU_Nivel
-    EXTENDS LADM_COL_V3_0.LADM_Nucleo.COL_Nivel =
-    END LC_NU_Nivel;
-
-    CLASS LC_NU_RelacionNecesariaBAUnits
-    EXTENDS LADM_COL_V3_0.LADM_Nucleo.COL_RelacionNecesariaBAUnits =
-    END LC_NU_RelacionNecesariaBAUnits;
-
-    CLASS LC_NU_RelacionNecesariaUnidadesEspaciales
-    EXTENDS LADM_COL_V3_0.LADM_Nucleo.COL_RelacionNecesariaUnidadesEspaciales =
->>>>>>>> qfield_integration_basket_basket_update_fdc_09:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.ili
     END LC_NU_RelacionNecesariaUnidadesEspaciales;
 
     /** Puntaje de cada item de la calificación de construcción.
@@ -3020,11 +2840,7 @@ VERSION "V2.2.1"  // 2018-02-19 // =
       /** Ítem de la calificación de construcción según la método de calificación vigente.
        */
       !!@ ili2db.dispName = "Tipo de objeto de construcción"
-<<<<<<<< HEAD:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.ili
       Tipo_Objeto_Construccion : MANDATORY Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.LC_ObjetoConstruccionTipo;
-========
-      Tipo_Objeto_Construccion : MANDATORY Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.LC_ObjetoConstruccionTipo;
->>>>>>>> qfield_integration_basket_basket_update_fdc_09:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.ili
       /** Puntaje del ítem calificado.
        */
       !!@ ili2db.dispName = "Puntos"
@@ -3036,13 +2852,8 @@ VERSION "V2.2.1"  // 2018-02-19 // =
       /** La clase de oferta corresponde a una oferta de venta o a una oferta de arriendo del predio.
        */
       !!@ ili2db.dispName = "Tipo de oferta"
-<<<<<<<< HEAD:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.ili
       Tipo_Oferta : MANDATORY Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.LC_OfertaTipo;
       /** Dato del valor en pesos de la oferta.
-========
-      Tipo_Oferta : MANDATORY Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.LC_OfertaTipo;
-      /** Dato del valor en pesos de la oferta
->>>>>>>> qfield_integration_basket_basket_update_fdc_09:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.ili
        */
       !!@ ili2db.dispName = "Valor pedido"
       Valor_Pedido : MANDATORY LADM_COL_V3_1.LADM_Nucleo.Peso;
@@ -3371,7 +3182,6 @@ VERSION "V2.2.1"  // 2018-02-19 // =
       /** Indica el tipo predio para efectos catastrales.
        */
       !!@ ili2db.dispName = "Tipo de predio"
-<<<<<<<< HEAD:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.ili
       Tipo (EXTENDED) : MANDATORY Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.LC_PredioTipo;
       /** Corresponde a una caracterización temática de las condiciones de predio que se está censando relacionada a aspectos físicos y jurídicos.
        */
@@ -3398,230 +3208,6 @@ VERSION "V2.2.1"  // 2018-02-19 // =
       MANDATORY CONSTRAINT Tipo <> #Superficies_Agua ;
       MANDATORY CONSTRAINT Tipo <> #Transporte ;
     END LC_Predio;
-========
-      Tipo (EXTENDED) : MANDATORY Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.LC_PredioTipo;
-      /** Caracterización temática del predio.
-       */
-      !!@ ili2db.dispName = "Condición del predio"
-      Condicion_Predio : MANDATORY Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.LC_CondicionPredioTipo;
-      /** Dirección del predio.
-       */
-      !!@ ili2db.dispName = "Dirección"
-      Direccion : BAG {1..*} OF LADM_COL_V3_0.LADM_Nucleo.ExtDireccion;
-      UNIQUE Id_Operacion; 
-      !!@ name = "ValidacionValoresPredioTipo"
-      MANDATORY CONSTRAINT Tipo <> #Ordenamiento_Territorial ;
-      MANDATORY CONSTRAINT Tipo <> #Servicios_Publicos ;
-      MANDATORY CONSTRAINT Tipo <> #Reservas_Naturales ;
-      MANDATORY CONSTRAINT Tipo <> #Parques_Naturales ;
-      MANDATORY CONSTRAINT Tipo <> #Amenazas_Riesgos ;
-      MANDATORY CONSTRAINT Tipo <> #Servidumbre ;
-      MANDATORY CONSTRAINT Tipo <> #Superficies_Agua ;
-      MANDATORY CONSTRAINT Tipo <> #Transporte ;
-    END LC_Predio;
-
-    /** Puntos topograficos o geodesicos utilizados como amarre para la ejecución del levantamiento catastral.
-     */
-    !!@ ili2db.dispName = "Punto Control"
-    CLASS LC_PuntoControl
-    EXTENDS LADM_COL_V3_0.LADM_Nucleo.COL_Punto =
-      /** Nombre o código del punto de control.
-       */
-      !!@ ili2db.dispName = "ID del punto de control"
-      ID_Punto_Control : MANDATORY TEXT*255;
-      /** Indica la clasificación del tipo de punto de acuerdo a sus características.
-       */
-      !!@ ili2db.dispName = "Tipo de punto"
-      PuntoTipo (EXTENDED) : MANDATORY Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.LC_PuntoTipo;
-      /** Si se trata de un punto de control o de apoyo.
-       */
-      !!@ ili2db.dispName = "Tipo de punto de control"
-      Tipo_Punto_Control : Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.LC_PuntoControlTipo;
-      /** Exactitud horizontal de la medición del punto.
-       */
-      !!@ ili2db.dispName = "Exactitud horizontal"
-      Exactitud_Horizontal : MANDATORY 0.000 .. 10.000 [INTERLIS.m];
-      /** Exactitud vertical de la medición del punto.
-       */
-      !!@ ili2db.dispName = "Exactitud vertical"
-      Exactitud_Vertical : MANDATORY 0.000 .. 10.000 [INTERLIS.m];
-      !!@ name = "ValidacionValoresPuntoTipo"
-      MANDATORY CONSTRAINT PuntoTipo <> #Control ;
-      MANDATORY CONSTRAINT PuntoTipo <> #Otro ;
-    END LC_PuntoControl;
-
-    /** Puntos que definen los lindero de un terreno. La sucesión de estos puntos forman una línea que representa el límite entre dos terrenos.
-     */
-    !!@ ili2db.dispName = "Punto Lindero"
-    CLASS LC_PuntoLindero
-    EXTENDS LADM_COL_V3_0.LADM_Nucleo.COL_Punto =
-      /** Nombre o código del punto lindero
-       */
-      !!@ ili2db.dispName = "ID del punto de lindero"
-      ID_Punto_Lindero : MANDATORY TEXT*255;
-      /** Indica la clasificación del tipo de punto de acuerdo a sus características.
-       */
-      !!@ ili2db.dispName = "Tipo de punto"
-      PuntoTipo (EXTENDED) : MANDATORY Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.LC_PuntoTipo;
-      /** Indica si existe acuerdo o no entre los colindantes en relación al punto lindero que se está midiendo.
-       */
-      !!@ ili2db.dispName = "Acuerdo"
-      Acuerdo : MANDATORY Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.LC_AcuerdoTipo;
-      /** Indica si el punto es fotoidentificable.
-       */
-      !!@ ili2db.dispName = "Fotoidentificación"
-      Fotoidentificacion : Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.LC_FotoidentificacionTipo;
-      /** Corresponde a la exactitud horizontal del punto lindero
-       */
-      !!@ ili2db.dispName = "Exactitud horizontal"
-      Exactitud_Horizontal : MANDATORY 0.000 .. 10.000 [INTERLIS.m];
-      /** Corresponde a la exactitud vertical del punto lindero
-       */
-      !!@ ili2db.dispName = "Exactitud vertical"
-      Exactitud_Vertical : 0.000 .. 10.000 [INTERLIS.m];
-      !!@ name = "ValidacionValoresPuntoTipo"
-      MANDATORY CONSTRAINT PuntoTipo <> #Control ;
-      MANDATORY CONSTRAINT PuntoTipo <> #Otro ;
-    END LC_PuntoLindero;
-
-    /** Restricción legalmente constituida y registrada que afecta el derecho de un persona en relación con el predio.
-     */
-    !!@ ili2db.dispName = "Restricción"
-    CLASS LC_Restriccion
-    EXTENDS LADM_COL_V3_0.LADM_Nucleo.COL_DRR =
-      /** Tipo de Restricción que afecta el derecho.
-       */
-      !!@ ili2db.dispName = "Tipo"
-      Tipo : MANDATORY Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.LC_RestriccionTipo;
-    END LC_Restriccion;
-
-    /** Porción de tierra con una extensión geográfica definida.
-     */
-    !!@ ili2db.dispName = "Terreno"
-    CLASS LC_Terreno
-    EXTENDS LADM_COL_V3_0.LADM_Nucleo.COL_UnidadEspacial =
-      /** Área total del terreno  resultante del levantamiento catastral..
-       */
-      !!@ ili2db.dispName = "Área de terreno"
-      Area_Terreno : MANDATORY 0.0 .. 99999999999999.9 [LADM_COL_V3_0.m2];
-      /** Valor catastral asignado en el proceso de valoración económica masiva al terreno del predio.
-       */
-      !!@ ili2db.dispName = "Avalúo de terreno"
-      Avaluo_Terreno : LADM_COL_V3_0.LADM_Nucleo.Peso;
-      /** Corresponde la identificación del número predial hasta la posición 21, permite identificar la relación espacial en sus componentes: departamento, municipio, zona, sector, comuna, barrio, manzana o vereda y terreno de acuerdo a su codificación en el número predial.
-       */
-      !!@ ili2db.dispName = "Numero predial hasta la posición 21"
-      Manzana_Vereda_Codigo : TEXT*21;
-      /** Corresponde a la figura geométrica vectorial poligonal, generada a partir de los linderos del predio.
-       */
-      !!@ ili2db.dispName = "Geometría"
-      Geometria (EXTENDED) : MANDATORY ISO19107_PLANAS_V3_0.GM_MultiSurface3D;
-    END LC_Terreno;
-
-    /** Proceso mediante el cual se le asigna un puntaje a las edificaciones de acuerdo a sus características constructivas
-     */
-    !!@ ili2db.dispName = "Calificación Convencional"
-    CLASS LC_CalificacionConvencional
-    EXTENDS LC_CalificacionUnidadConstruccion =
-      /** Indica si la calificación de construcción corresponde a residencial, comercial o industrial.
-       */
-      !!@ ili2db.dispName = "Tipo a calificar"
-      Tipo_Calificar : MANDATORY Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.LC_CalificarTipo;
-      /** Puntaje total de la calificación de la unidad de construcción.
-       */
-      !!@ ili2db.dispName = "Total calificación"
-      Total_Calificacion : MANDATORY LADM_COL_V3_0.LADM_Nucleo.Integer;
-    END LC_CalificacionConvencional;
-
-    /** Relaciona el tipo de construcción consideradas como anexo para el catastro.
-     */
-    !!@ ili2db.dispName = "Calificación No Convencional"
-    CLASS LC_CalificacionNoConvencional
-    EXTENDS LC_CalificacionUnidadConstruccion =
-      /** Relaciona el tipo de construcción consideradas como anexo para el catastro.
-       */
-      !!@ ili2db.dispName = "Tipo de anexo"
-      Tipo_Anexo : MANDATORY Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.LC_AnexoTipo;
-    END LC_CalificacionNoConvencional;
-
-    /** Datos de adicionales del predio para catastro multipropósito
-     */
-    !!@ ili2db.dispName = "Datos adicionales levantamiento catastral"
-    CLASS LC_DatosAdicionalesLevantamientoCatastral =
-      /** Indica si el predio según la información registral cuenta con el valor de área en la cabida y linderos.
-       */
-      !!@ ili2db.dispName = "¿El predio tiene área registral?"
-      Tiene_Area_Registral : MANDATORY BOOLEAN;
-      /** Indica el valor del área registral del predio en metros cuadrados.
-       */
-      !!@ ili2db.dispName = "Área registral en metros cuadrados"
-      Area_Registral_M2 : 0.00 .. 10000000000000000000000.00 [LADM_COL_V3_0.m2];
-      /** Se considerará como procedimientos catastrales con efectos registrales los siguientes: actualización de linderos, rectificación de área por imprecisa determinación, actualización masiva y puntual de linderos y áreas, rectificación de linderos por acuerdo entre las partes, e inclusión de área y/o linderos.
-       */
-      !!@ ili2db.dispName = "Procedimientos catastrales con efectos registrales"
-      Procedimiento_Catastral_Registral : MANDATORY Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.LC_ProcedimientoCatastralRegistralTipo;
-      /** Es la clasificación para fines estadísticos que se da a cada inmueble en su conjunto–terreno, construcciones o edificaciones-, en el momento de la identificación predial de conformidad con la actividad predominante que en él se desarrolle.
-       */
-      !!@ ili2db.dispName = "Destinación económica"
-      Destinacion_Economica : MANDATORY Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.LC_DestinacionEconomicaTipo;
-      /** Clasificación del suelo según el instrumento de planeación vigente.
-       */
-      !!@ ili2db.dispName = "Clase de suelo"
-      Clase_Suelo : MANDATORY Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.LC_ClaseSueloTipo;
-      /** Categoría del suelo según el instrumento de planeación vigente.
-       */
-      !!@ ili2db.dispName = "Categoría de suelo"
-      Categoria_Suelo : Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.LC_CategoriaSueloTipo;
-      /** Relaciona los cambios del predio respecto de la información catastral vigente.
-       */
-      !!@ ili2db.dispName = "Novedad números prediales"
-      Novedad_Numeros_Prediales : BAG {0..*} OF Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.Levantamiento_Catastral.LC_EstructuraNovedadNumeroPredial;
-      /** Relaciona los cambios del predio respecto de la información registral vigente.
-       */
-      !!@ ili2db.dispName = "Novedad folio de matrícula de inmobiliaria"
-      Novedad_FMI : BAG {0..*} OF Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.Levantamiento_Catastral.LC_EstructuraNovedadFMI;
-      /** Observaciones generales respecto del predio.
-       */
-      !!@ ili2db.dispName = "Observaciones"
-      Observaciones : MTEXT*500;
-      /** Fecha de la visita en campo al predio.
-       */
-      !!@ ili2db.dispName = "Fecha de visita predial"
-      Fecha_Visita_predial : MANDATORY INTERLIS.XMLDate;
-      /** Indica el tipo de documento del reconocedor predial encargado de efectuar el levantamiento catastral.
-       */
-      !!@ ili2db.dispName = "Tipo de documento del reconocedor predial"
-      Tipo_Documento_Reconocedor : MANDATORY Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.LC_InteresadoDocumentoTipo;
-      /** Indica el número de documento del reconocedor predial encargado de efectuar el levantamiento catastral.
-       */
-      !!@ ili2db.dispName = "Numero de documento del reconocedor predial"
-      Numero_Documento_Reconocedor : MANDATORY TEXT*50;
-      /** Primer nombre del delegado de ejecutar las actividades catastrales en campo en el predio.
-       */
-      !!@ ili2db.dispName = "Primer nombre del reconocedor"
-      Primer_Nombre_Reconocedor : MANDATORY TEXT*100;
-      /** Segundo nombre del delegado de ejecutar las actividades catastrales en campo en el predio.
-       */
-      !!@ ili2db.dispName = "Segundo nombre del reconocedor"
-      Segundo_Nombre_Reconocedor : TEXT*100;
-      /** Primer apellido del delegado de ejecutar las actividades catastrales en campo en el predio.
-       */
-      !!@ ili2db.dispName = "Primer apellido del reconocedor"
-      Primer_Apellido_Reconocedor : MANDATORY TEXT*100;
-      /** Segundo apellido del delegado de ejecutar las actividades catastrales en campo en el predio.
-       */
-      !!@ ili2db.dispName = "Segundo apellido del reconocedor"
-      Segundo_Apellido_Reconocedor : TEXT*100;
-      /** Posibles situaciones que se presentan y afectan el resultado del levantamiento de la información en campo.
-       */
-      !!@ ili2db.dispName = "Resultado de la visita predial"
-      Resultado_Visita : MANDATORY Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.LC_ResultadoVisitaTipo;
-      /** Indica si dentro del proceso de formación o actualización catastral se suscribe acta de colindancia para el predio objeto de levantamiento catastral.
-       */
-      !!@ ili2db.dispName = "¿Se suscribe acta de colindancia?"
-      Suscribe_Acta_Colindancia : BOOLEAN;
-    END LC_DatosAdicionalesLevantamientoCatastral;
->>>>>>>> qfield_integration_basket_basket_update_fdc_09:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.ili
 
     /** Puntos que definen los limites de las construcciones, unidad de construcción y servidumbres de transito.
      */
@@ -3635,7 +3221,6 @@ VERSION "V2.2.1"  // 2018-02-19 // =
       /** Indica la clasificación del tipo de punto de acuerdo a sus características.
        */
       !!@ ili2db.dispName = "Tipo de punto"
-<<<<<<<< HEAD:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.ili
       PuntoTipo (EXTENDED) : MANDATORY Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.LC_PuntoTipo;
       /** Indica si el tipo de punto corresponde a una construcción o servidumbre de tránsito.
        */
@@ -3646,18 +3231,6 @@ VERSION "V2.2.1"  // 2018-02-19 // =
       !!@ ili2db.dispName = "Fotoidentificación"
       Fotoidentificacion : Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.LC_FotoidentificacionTipo;
       /** Es la precisión con referencia a la posición horizontal de un punto o conjunto de puntos en términos de sus coordenadas de latitud y longitud o de sus coordenadas rectangulares expresada en metros.
-========
-      PuntoTipo (EXTENDED) : MANDATORY Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.LC_PuntoTipo;
-      /** Indica si el tipo de punto corresponde a una construcción o servidumbre de tránsito.
-       */
-      !!@ ili2db.dispName = "Tipo de punto de levantamiento"
-      Tipo_Punto_Levantamiento : MANDATORY Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.LC_PuntoLevTipo;
-      /** Indica si el punto es fotoidentificable.
-       */
-      !!@ ili2db.dispName = "Fotoidentificación"
-      Fotoidentificacion : Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.LC_FotoidentificacionTipo;
-      /** Corresponde a la exactitud horizontal del punto levantamiento.
->>>>>>>> qfield_integration_basket_basket_update_fdc_09:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.ili
        */
       !!@ ili2db.dispName = "Exactitud horizontal"
       Exactitud_Horizontal : MANDATORY 0.000 .. 10.000 [INTERLIS.m];
@@ -3678,15 +3251,11 @@ VERSION "V2.2.1"  // 2018-02-19 // =
       /** Características especificas constructivas que relacionan materiales, técnicas y métodos de construcción y de diseño de la unidad constructiva que determinan su puntaje.
        */
       !!@ ili2db.dispName = "Tipo de tipología"
-<<<<<<<< HEAD:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.ili
       Tipo_Tipologia : MANDATORY Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.LC_TipologiaTipo;
       /** Si el tipo de tipología deseado no se encuentra en el dominio LC_CalificarTipo se puede usar este atributo para indicarlo.
        */
       !!@ ili2db.dispName = "¿Cuál?"
       Cual : TEXT*255;
-========
-      Tipo_Tipologia : MANDATORY Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.LC_TipologiaTipo;
->>>>>>>> qfield_integration_basket_basket_update_fdc_09:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.ili
     END LC_TipologiaConstruccion;
 
     ASSOCIATION lc_construccion_unidadconstruccion =
@@ -3775,7 +3344,6 @@ VERSION "V2.2.1"  // 2018-02-19 // =
       /** Identificador de la unidad de construcción, su codificación puede ser por letras del abecedario.
        */
       !!@ ili2db.dispName = "Identificador"
-<<<<<<<< HEAD:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.ili
       Identificador : MANDATORY TEXT*20;
       /** Es el conjunto de elementos constructivos que conforman una edificación y que de acuerdo a sus características pueden ser consideradas convencionales cuando son de uso residencial, comercial e industrial o no convencionales cuando son anexos de la construcción.
        */
@@ -3793,29 +3361,6 @@ VERSION "V2.2.1"  // 2018-02-19 // =
        */
       !!@ ili2db.dispName = "Tipo de planta"
       Tipo_Planta : MANDATORY Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.LC_ConstruccionPlantaTipo;
-========
-      Identificador : MANDATORY TEXT*3;
-      /** Indica el tipo de dominio de la unidad de construcción: común y privado.
-       */
-      !!@ ili2db.dispName = "Tipo de dominio"
-      Tipo_Dominio : Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.LC_DominioConstruccionTipo;
-      /** Indica si la construcción es de tipo convencional o no convencional.
-       */
-      !!@ ili2db.dispName = "Tipo de construcción"
-      Tipo_Construccion : Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.LC_ConstruccionTipo;
-      /** Indica si la unidad de construcción es residencial, comercial, industrial o anexo.
-       */
-      !!@ ili2db.dispName = "Tipo de unidad de construcción"
-      Tipo_Unidad_Construccion : MANDATORY Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.LC_UnidadConstruccionTipo;
-      /** Indica el tipo de planta donde se ubica la unidad de construcción.
-       */
-      !!@ ili2db.dispName = "Tipo de planta"
-      Tipo_Planta : MANDATORY Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.LC_ConstruccionPlantaTipo;
-      /** Indica numéricamente la ubicación del predio de acuerdo al tipo de planta.
-       */
-      !!@ ili2db.dispName = "Planta ubicación"
-      Planta_Ubicacion : MANDATORY 0 .. 500;
->>>>>>>> qfield_integration_basket_basket_update_fdc_09:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.ili
       /** Número total de  habitaciones en la unidad de construcción.
        */
       !!@ ili2db.dispName = "Total de habitaciones"
@@ -3835,11 +3380,7 @@ VERSION "V2.2.1"  // 2018-02-19 // =
       /** Destinación de los materiales de una unidad constructiva con respecto a la actividad económica desarrollada en la edificación del predio.
        */
       !!@ ili2db.dispName = "Uso"
-<<<<<<<< HEAD:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.ili
       Uso : Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.LC_UsoUConsTipo;
-========
-      Uso : Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.LC_UsoUConsTipo;
->>>>>>>> qfield_integration_basket_basket_update_fdc_09:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.ili
       /** Año de construcción de la unidad de construcción.
        */
       !!@ ili2db.dispName = "Año de construcción"
@@ -3878,8 +3419,4 @@ VERSION "V2.2.1"  // 2018-02-19 // =
 
   END Levantamiento_Catastral;
 
-<<<<<<<< HEAD:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.ili
 END Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_2.
-========
-END Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.
->>>>>>>> qfield_integration_basket_basket_update_fdc_09:asistente_ladm_col/resources/models/Modelo_Aplicacion_LADMCOL_Lev_Cat_V1_1.ili

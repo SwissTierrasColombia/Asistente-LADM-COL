@@ -29,17 +29,17 @@ from qgis.core import (QgsMessageLog,
                        QgsVectorLayer)
 import processing
 
-from QgisModelBaker.libili2db.ili2dbutils import JavaNotFoundError
-from QgisModelBaker.libili2db import iliexporter
+from asistente_ladm_col.lib.ili.ili2dbutils import JavaNotFoundError
+from asistente_ladm_col.lib.ili import iliexporter
 
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.general_config import (JAVA_REQUIRED_VERSION,
                                                       FDC_WILD_CARD_BASKET_ID)
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.lib.db.gpkg_connector import GPKGConnector
-from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
+from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
 from asistente_ladm_col.lib.logger import Logger
-from asistente_ladm_col.lib.qgis_model_baker.ili2db import Ili2DB
+from asistente_ladm_col.core.ili2db import Ili2DB
 from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 from asistente_ladm_col.utils.utils import get_extent_for_processing
 
@@ -76,7 +76,7 @@ class FieldDataCaptureDataExporter(QObject):
 
     def __set_db_info(self, db):
         db_factory = self._ili2db.dbs_supported.get_db_factory(db.engine)
-        self.configuration = self._ili2db.get_export_configuration(db_factory, db, '')
+        self.configuration = self._ili2db.get_export_configuration(db, '')
         self.exporter.tool = db_factory.get_model_baker_db_ili_mode()
 
     def replace_main_db(self, db):
@@ -167,15 +167,16 @@ class FieldDataCaptureDataExporter(QObject):
         gpkg_path = os.path.join(offline_dir, 'data.gpkg')
         db = GPKGConnector(gpkg_path)
         model = LADMColModelRegistry().model(LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY)
-        res_schema_import, msg_schema_import = self._ili2db.import_schema(db,
-                                                                          [model.full_name()],
-                                                                          create_basket_col=True)
+
+        configuration = self._ili2db.get_import_schema_configuration(db, [model.full_name()], create_basket_col=True)
+        res_schema_import, msg_schema_import = self._ili2db.import_schema(db, configuration)
         if not res_schema_import:
             return res_schema_import, msg_schema_import
         update_progress(3)
 
         # Run import data
-        res_import_data, msg_import_data = self._ili2db.import_data(db, xtf_path)
+        configuration = self._ili2db.get_import_data_configuration(db, xtf_path)
+        res_import_data, msg_import_data = self._ili2db.import_data(db, configuration)
         if not res_import_data:
             return res_import_data, msg_import_data
         update_progress(4)

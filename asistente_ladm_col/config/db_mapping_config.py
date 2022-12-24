@@ -1080,8 +1080,7 @@ class DBMappingConfig:
             "Captura_Geo.CCA_PuntoLevTipo": {QueryNames.VARIABLE_NAME: "FDC_SURVEY_POINT_TYPE_D", QueryNames.FIELDS_DICT: {}},
             #"Captura_Geo.CCA_PuntoReferenciaTipo": {QueryNames.VARIABLE_NAME: "", QueryNames.FIELDS_DICT: {}},
             "Captura_Geo.CCA_ResultadoVisitaTipo": {QueryNames.VARIABLE_NAME: "FDC_VISIT_RESULT_TYPE_D", QueryNames.FIELDS_DICT: {}},
-            "Captura_Geo.CCA_TipologiaTipo": {QueryNames.VARIABLE_NAME: "FDC_TYPOLOGY_TYPE_D", QueryNames.FIELDS_DICT: {}},
-            "Captura_Geo.SNR_CalidadDerechoTipo": {QueryNames.VARIABLE_NAME: "FDC_RIGHT_QUALITY_TYPE_D", QueryNames.FIELDS_DICT: {}},
+            "Captura_Geo.CCA_TipologiaTipo": {QueryNames.VARIABLE_NAME: "FDC_TYPOLOGY_TYPE_D", QueryNames.FIELDS_DICT: {}}
         }
     }
 

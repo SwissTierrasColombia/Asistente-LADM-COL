@@ -403,7 +403,7 @@ def get_role_config():
                 ACTION_SYNCHRONIZE_FIELD_DATA,
                 ACTION_LOAD_TEMPLATE_FIELD_DATA,
                 ACTION_CHECK_QUALITY_FDC_RULES,
-                ACTION_MOVE_NODES],
+                ACTION_MOVE_NODES
             ],
             ROLE_QUALITY_RULES: list(),
             ROLE_GUI_CONFIG: {TEMPLATE_GUI: field_coordinator_role_gui}

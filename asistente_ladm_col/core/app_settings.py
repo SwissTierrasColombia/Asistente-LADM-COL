@@ -156,27 +156,27 @@ class AppSettings:
 
     @property
     def fdc_coordinator_xtf_path(self):
-        return self.settings.value(self.FDC_COORDINATOR_XTF_PATH_KEY, os.path.expanduser('~'))
+        return self.__settings.value(self.FDC_COORDINATOR_XTF_PATH_KEY, os.path.expanduser('~'))
 
     @fdc_coordinator_xtf_path.setter
     def fdc_coordinator_xtf_path(self, value):
-        self.settings.setValue(self.FDC_COORDINATOR_XTF_PATH_KEY, value)
+        self.__settings.setValue(self.FDC_COORDINATOR_XTF_PATH_KEY, value)
 
     @property
     def fdc_project_template_path(self):
-        return self.settings.value(self.FDC_PROJECT_TEMPLATE_PATH_KEY, QGSs_DIR)
+        return self.__settings.value(self.FDC_PROJECT_TEMPLATE_PATH_KEY, QGSs_DIR)
 
     @fdc_project_template_path.setter
     def fdc_project_template_path(self, value):
-        self.settings.setValue(self.FDC_PROJECT_TEMPLATE_PATH_KEY, value)
+        self.__settings.setValue(self.FDC_PROJECT_TEMPLATE_PATH_KEY, value)
 
     @property
     def fdc_surveyor_gpkg_path(self):
-        return self.settings.value(self.FDC_SURVEYOR_GPKG_PATH_KEY, os.path.expanduser('~'))
+        return self.__settings.value(self.FDC_SURVEYOR_GPKG_PATH_KEY, os.path.expanduser('~'))
 
     @fdc_surveyor_gpkg_path.setter
     def fdc_surveyor_gpkg_path(self, value):
-        self.settings.setValue(self.FDC_SURVEYOR_GPKG_PATH_KEY, value)
+        self.__settings.setValue(self.FDC_SURVEYOR_GPKG_PATH_KEY, value)
 
     @property
     def snc_files_path(self):

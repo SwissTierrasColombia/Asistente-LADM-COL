@@ -25,8 +25,8 @@ from asistente_ladm_col.config.general_config import FDC_ADMIN_DATASET_NAME
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.gui.field_data_capture.base_fdc_synchronization_controller import BaseFDCSynchronizationController
 from asistente_ladm_col.lib.db.gpkg_connector import GPKGConnector
-from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
-from asistente_ladm_col.lib.qgis_model_baker.ili2db import Ili2DB
+from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
+from asistente_ladm_col.core.ili2db import Ili2DB
 
 
 class FDCAdminSynchronizationController(BaseFDCSynchronizationController):
@@ -118,14 +118,16 @@ class FDCAdminSynchronizationController(BaseFDCSynchronizationController):
         gpkg_path = tempfile.mktemp() + '.gpkg'
         source_db = GPKGConnector(gpkg_path)
         model = LADMColModelRegistry().model(LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY)
-        res_schema_import, msg_schema_import = ili2db.import_schema(source_db, [model.full_name()], create_basket_col=True)
+        configuration = ili2db.get_import_schema_configuration(source_db, [model.full_name()], create_basket_col=True)
+        res_schema_import, msg_schema_import = ili2db.import_schema(source_db, configuration)
         if not res_schema_import:
             return False, msg_schema_import
         self.synchronize_field_data_progress.emit(10)
 
         # Import data
         source_db.test_connection()  # To build names object
-        res_import_data, msg_import_data = ili2db.import_data(source_db, file_path)
+        configuration = ili2db.get_import_data_configuration(source_db, file_path)
+        res_import_data, msg_import_data = ili2db.import_data(source_db, configuration)
         if not res_import_data:
             return False, msg_import_data
         self.synchronize_field_data_progress.emit(30)

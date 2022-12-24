@@ -51,12 +51,12 @@ Decorators to ensure requirements before calling a plugin method.
 ****************************************  WARNING  *************************************************
 
 If you're adding a decorator to a method, make sure the call to the method complies with the
-required parameters of the decorator. For instance, if I add a decorator @_db_connection_required
+required parameters of the decorator. For instance, if I add a decorator @db_connection_required
 to my_method(), I need to be sure that ALL calls to my_method() are like this:
 
    my_action.connect(partial(my_method, context_collected))
 
-If you don't do that, Python errors are likely to appear when the decorator @_db_connection_required
+If you don't do that, Python errors are likely to appear when the decorator @db_connection_required
 for my_method() is called.
 
 Note that add-ons don't pass an AsistenteLADMCOLPlugin object as first argument. However, the LADM-

@@ -27,7 +27,7 @@ import processing
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.gui.field_data_capture.allocation.fdc_data_exporter import FieldDataCaptureDataExporter
-from asistente_ladm_col.lib.ladm_col_models import LADMColModelRegistry
+from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
 from asistente_ladm_col.utils.utils import get_copy_gpkg_connector
 
 

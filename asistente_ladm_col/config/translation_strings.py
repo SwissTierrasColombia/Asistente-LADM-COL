@@ -44,6 +44,22 @@ class TranslatableConfigStrings(QObject):
                                       """<pre>get_default_basket() → {}</pre>""".format(QCoreApplication.translate("TranslatableConfigStrings",
                                                        "\nGets the t_id of\nthe default basket"))
 
+    help_get_paired_domain_value = QCoreApplication.translate("TranslatableConfigStrings", "Gets the t_id in the target domain that corresponds to a given t_id in the source domain. Note that target DB should be in the main connection and source DB should be in the secondary connection.") + \
+                                         QCoreApplication.translate("TranslatableConfigStrings", "<h4>Syntax</h4>") + \
+                                         "<span class=\"functionname\">get_paired_domain_value</span>(" \
+                                         "<span class=\"argument\">source_domain_table</span>," \
+                                         "<span class=\"argument\">target_domain_table</span>," \
+                                         "<span class=\"argument\">source_value</span>)" + \
+                                         QCoreApplication.translate("TranslatableConfigStrings", "<h4>Arguments</h4>") + \
+                                         "<span class=\"argument\">source_domain_table</span> " + QCoreApplication.translate("TranslatableConfigStrings", "Source domain table name") + \
+                                         "<br><span class=\"argument\">target_domain_table</span> " + QCoreApplication.translate("TranslatableConfigStrings", "Target domain table name") + \
+                                         "<br><span class=\"argument\">source_value</span> " + QCoreApplication.translate("TranslatableConfigStrings", "Domain value (t_id) in the source domain") + \
+                                         QCoreApplication.translate("TranslatableConfigStrings", "<h4>Examples</h4>") + \
+                                         """<pre>get_paired_domain_value(
+  'gc_condicionprediotipo',
+  'd_condicionprediotipo',
+  423) → {}</pre>""".format(QCoreApplication.translate("TranslatableConfigStrings", "Gets the t_id of\nd_condicionprediotipo that\ncorresponds to the t_id 423\nin gc_condicionprediotipo."))
+
     help_get_multi_domain_code_from_value = QCoreApplication.translate("TranslatableConfigStrings", "Gets the t_id that corresponds to a (child) domain value") + \
                                       QCoreApplication.translate("TranslatableConfigStrings", "<h4>Syntax</h4>") + \
                                       "<span class=\"functionname\">get_multi_domain_code_from_value</span>(" \

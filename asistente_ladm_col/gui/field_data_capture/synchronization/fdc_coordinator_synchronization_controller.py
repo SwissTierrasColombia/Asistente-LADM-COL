@@ -25,7 +25,7 @@ from asistente_ladm_col.config.ladm_names import LADMNames
 from asistente_ladm_col.gui.field_data_capture.base_fdc_synchronization_controller import BaseFDCSynchronizationController
 from asistente_ladm_col.lib.db.gpkg_connector import GPKGConnector
 from asistente_ladm_col.lib.geometry import GeometryUtils
-from asistente_ladm_col.lib.qgis_model_baker.ili2db import Ili2DB
+from asistente_ladm_col.core.ili2db import Ili2DB
 
 
 class FDCCoordinatorSynchronizationController(BaseFDCSynchronizationController):
@@ -119,7 +119,8 @@ class FDCCoordinatorSynchronizationController(BaseFDCSynchronizationController):
         # Generate XTF
         ili2db = Ili2DB()
         xtf_path = tempfile.mktemp() + '.xtf'
-        res, msg = ili2db.export(db_tmp, xtf_path, baskets=[basket_uuid])
+        configuration = ili2db.get_export_configuration(db_tmp, xtf_path, baskets=[basket_uuid])
+        res, msg = ili2db.export(db_tmp, configuration)
         if not res:
             return False, QCoreApplication.translate("SynchronizeDataCoordinatorInitialPanelWidget",
                                                      "Error synchronizing surveyor's database. Details: {}").format(msg)
