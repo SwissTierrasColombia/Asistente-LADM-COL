@@ -74,8 +74,8 @@ class GUI_Config(QObject):
                         ACTION_IMPORT_DATA,
                         ACTION_EXPORT_DATA,
                         ACTION_EXPORT_DATA_FDC_COORDINATOR,
-                        SEPARATOR,
-                        ACTION_DATA_MODEL_CONVERTER
+                        # SEPARATOR,
+                        # ACTION_DATA_MODEL_CONVERTER
                     ]
                 }, {
                     WIDGET_TYPE: MENU,

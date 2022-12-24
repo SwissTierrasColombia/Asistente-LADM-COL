@@ -416,7 +416,7 @@ def get_role_config():
             ROLE_MODELS: COMMON_ROLE_MODELS,
             ROLE_ACTIONS: [
                 ACTION_EXPORT_DATA,
-                ACTION_DATA_MODEL_CONVERTER,
+                # ACTION_DATA_MODEL_CONVERTER,
                 ACTION_CREATE_POINT,
                 ACTION_CREATE_BOUNDARY,
                 ACTION_CREATE_PLOT,
@@ -458,7 +458,7 @@ def get_role_config():
             ROLE_MODELS: COMMON_ROLE_MODELS,
             ROLE_ACTIONS: [
                 ACTION_EXPORT_DATA,
-                ACTION_DATA_MODEL_CONVERTER,
+                # ACTION_DATA_MODEL_CONVERTER,
                 ACTION_CHANGE_DETECTION_SETTINGS,
                 ACTION_CHANGE_DETECTION_ALL_PARCELS,
                 ACTION_CHANGE_DETECTION_PER_PARCEL,

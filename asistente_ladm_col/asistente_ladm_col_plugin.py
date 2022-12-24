@@ -671,9 +671,9 @@ class AsistenteLADMCOLPlugin(QObject):
         self._export_data_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/export_to_xtf.svg"),
                                            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Export data"),
                                            self.main_window)
-        self._data_model_converter_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/schema.png"),
-                                                   QCoreApplication.translate("AsistenteLADMCOLPlugin", "Data model converter"),
-                                                   self.main_window)
+        # self._data_model_converter_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/schema.png"),
+        #                                            QCoreApplication.translate("AsistenteLADMCOLPlugin", "Data model converter"),
+        #                                            self.main_window)
         self._settings_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/settings.svg"),
                                         QCoreApplication.translate("AsistenteLADMCOLPlugin", "Settings"),
                                         self.main_window)
@@ -686,7 +686,7 @@ class AsistenteLADMCOLPlugin(QObject):
         self._import_schema_action.triggered.connect(partial(self.show_dlg_import_schema, self._context_collected, **{'selected_models':list()}))
         self._import_data_action.triggered.connect(partial(self.show_dlg_import_data, self._context_collected))
         self._export_data_action.triggered.connect(partial(self.show_dlg_export_data, self._context_collected))
-        self._data_model_converter_action.triggered.connect(partial(self.show_dlg_data_model_converter, self._context_collected))
+        # self._data_model_converter_action.triggered.connect(partial(self.show_dlg_data_model_converter, self._context_collected))
         self._queries_action.triggered.connect(partial(self.show_queries, self._context_collected))
         self._load_layers_action.triggered.connect(partial(self.load_layers_from_qgis_model_baker, self._context_collected))
         self._settings_action.triggered.connect(partial(self.show_settings, self._context_settings))
@@ -701,7 +701,7 @@ class AsistenteLADMCOLPlugin(QObject):
             ACTION_SCHEMA_IMPORT: self._import_schema_action,
             ACTION_IMPORT_DATA: self._import_data_action,
             ACTION_EXPORT_DATA: self._export_data_action,
-            ACTION_DATA_MODEL_CONVERTER: self._data_model_converter_action,
+            # ACTION_DATA_MODEL_CONVERTER: self._data_model_converter_action,
             ACTION_SETTINGS: self._settings_action,
             ACTION_HELP: self._help_action,
             ACTION_ABOUT: self._about_action
