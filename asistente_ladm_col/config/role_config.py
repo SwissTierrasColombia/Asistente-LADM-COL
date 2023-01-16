@@ -477,8 +477,8 @@ def get_role_config():
             ROLE_DESCRIPTION: QCoreApplication.translate("AsistenteLADMCOLPlugin",
                                                          "The <b>Advanced</b> role has access to all the functionality."),
             ROLE_ENABLED: True,
-            ROLE_MODELS: COMMON_ROLE_MODELS,  # advanced_role_models,
-            ROLE_ACTIONS: [ALL_ACTIONS],
+            ROLE_MODELS: advanced_role_models,
+            ROLE_ACTIONS: ADVANCED_ROLE_ACTIONS,
             ROLE_QUALITY_RULES: ALL_QUALITY_RULES,
             ROLE_GUI_CONFIG: {TEMPLATE_GUI: advanced_role_gui}
         }

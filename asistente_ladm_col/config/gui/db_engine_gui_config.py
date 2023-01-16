@@ -46,7 +46,7 @@ class DBEngineGUIConfig(QObject, metaclass=SingletonQObject):
                         ACTION_SCHEMA_IMPORT,
                         ACTION_IMPORT_DATA,
                         ACTION_EXPORT_DATA,
-                      ACTION_EXPORT_DATA_FDC_COORDINATOR,
+                        ACTION_EXPORT_DATA_FDC_COORDINATOR,
                         # ACTION_DATA_MODEL_CONVERTER,
                         ACTION_LOAD_LAYERS,
                         ACTION_FIX_LADM_COL_RELATIONS,
@@ -57,7 +57,7 @@ class DBEngineGUIConfig(QObject, metaclass=SingletonQObject):
                         # ACTION_REPORT_ANT,
                         ACTION_CHANGE_DETECTION_SETTINGS,
                         ACTION_CHECK_QUALITY_RULES,
-                      ACTION_CHECK_QUALITY_FDC_RULES,
+                        ACTION_CHECK_QUALITY_FDC_RULES,
                         ACTION_ALLOCATE_PARCELS_FIELD_DATA_CAPTURE,
                         ACTION_SYNCHRONIZE_FIELD_DATA]
 
