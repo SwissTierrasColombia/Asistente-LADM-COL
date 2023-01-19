@@ -436,3 +436,7 @@ class QGISLADMQuery:
     @staticmethod
     def get_uebaunit_parcel(db):
         raise NotImplementedError
+
+    @staticmethod
+    def get_invalid_null_values(db, table, field):
+        raise NotImplementedError

@@ -1323,17 +1323,15 @@ class AsistenteLADMCOLPlugin(QObject):
     @field_data_capture_model_required
     @activate_processing_plugin
     def show_dlg_quality_fdc(self, *args):
-        # TODO: Implement QR Generation
-        pass
-        # quality_dialog = QualityDialog(self.main_window)
-        # quality_dialog.exec_()
+        self.gui_builder.close_dock_widgets([DOCK_WIDGET_QUALITY_RULES])
 
-        # self.quality_rule_engine = QualityRuleEngine(self.get_db_connection(), quality_dialog.selected_rules)
-        # self.quality_rule_engine.quality_rule_logger.show_message_emitted.connect(self.show_log_quality_message)
-        # self.quality_rule_engine.quality_rule_logger.show_button_emitted.connect(self.show_log_quality_button)
-        # self.quality_rule_engine.quality_rule_logger.set_initial_progress_emitted.connect(self.set_log_quality_initial_progress)
-        # self.quality_rule_engine.quality_rule_logger.set_final_progress_emitted.connect(self.set_log_quality_final_progress)
-        # self.quality_rule_engine.validate_quality_rules()
+        qr_controller = QualityRuleController(self.get_db_connection())
+        dock_widget_qrs = DockWidgetQualityRules(qr_controller, self.main_window)
+        self.gui_builder.register_dock_widget(DOCK_WIDGET_QUALITY_RULES, dock_widget_qrs)
+        qr_controller.open_report_called.connect(self.show_log_quality_dialog)
+        qr_controller.refresh_error_layer_symbology.connect(self.app.gui.trigger_repaint_on_layer)
+        self.conn_manager.db_connection_changed.connect(dock_widget_qrs.update_db_connection)
+        self.app.gui.add_tabified_dock_widget(Qt.RightDockWidgetArea, dock_widget_qrs)
 
     def show_wiz_property_record_card(self):
         # TODO: Remove

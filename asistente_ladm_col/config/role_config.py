@@ -388,7 +388,7 @@ def get_role_config():
                 ACTION_INTEGRATE_SUPPLIES,
                 ACTION_CHECK_QUALITY_FDC_RULES,
                 ACTION_MOVE_NODES],
-            ROLE_QUALITY_RULES: ALL_QUALITY_RULES,
+            ROLE_QUALITY_RULES: [QR_FDCR4002],
             ROLE_GUI_CONFIG: {TEMPLATE_GUI: field_admin_role_gui}
         },
         FIELD_COORDINATOR_ROLE: {
@@ -405,7 +405,7 @@ def get_role_config():
                 ACTION_CHECK_QUALITY_FDC_RULES,
                 ACTION_MOVE_NODES
             ],
-            ROLE_QUALITY_RULES: list(),
+            ROLE_QUALITY_RULES: [QR_FDCR4002],
             ROLE_GUI_CONFIG: {TEMPLATE_GUI: field_coordinator_role_gui}
         },
         OPERATOR_ROLE: {

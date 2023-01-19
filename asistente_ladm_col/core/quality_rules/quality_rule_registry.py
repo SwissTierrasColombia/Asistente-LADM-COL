@@ -52,6 +52,9 @@ from asistente_ladm_col.logic.quality_rules.logic_qrs.qr_duplicate_building_unit
 from asistente_ladm_col.logic.quality_rules.logic_qrs.qr_duplicate_party_records import QRDuplicatePartyRecords
 from asistente_ladm_col.logic.quality_rules.logic_qrs.qr_duplicate_right_records import QRDuplicateRightRecords
 from asistente_ladm_col.logic.quality_rules.logic_qrs.qr_duplicate_restriction_records import QRDuplicateRestrictionRecords
+
+from asistente_ladm_col.logic.quality_rules.fdc.logic_qrs.qr_fdc_parcel_condition_should_not_be_null import QRFDCParcelConditionInvalid
+
 from asistente_ladm_col.utils.singleton import Singleton
 
 
@@ -64,6 +67,10 @@ class QualityRuleRegistry(metaclass=Singleton):
         self.app = AppInterface()
         self.__quality_rules = dict()  # {quality_rule_key1: QualityRule1, ...}
 
+        self.register_survey_qrs()
+        self.registry_fdc_qrs()
+
+    def register_survey_qrs(self):
         # Register default quality rules
         self.register_quality_rule(QRValidateDataAgainstModel())  # QR_ILIVALIDATORR0001
         self.register_quality_rule(QROverlappingBoundaryPoints())  # QR_IGACR1001
@@ -96,6 +103,10 @@ class QualityRuleRegistry(metaclass=Singleton):
         self.register_quality_rule(QRDuplicateRightRecords())  # QR_IGACR4020
         self.register_quality_rule(QRDuplicateRestrictionRecords())  # QR_IGACR4021
         self.register_quality_rule(QRDuplicateAdministrativeSourceRecords())  # QR_IGACR4022
+
+    def registry_fdc_qrs(self):
+        self.register_quality_rule(QRFDCParcelConditionInvalid())  # QR_FDCR4002
+
 
     def register_quality_rule(self, quality_rule):
         """

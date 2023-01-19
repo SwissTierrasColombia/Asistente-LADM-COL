@@ -408,3 +408,15 @@ class PGLADMQuery(QGISLADMQuery):
                            lc_right_t_type_f=db.names.LC_RIGHT_T_TYPE_F,
                            lc_right_type_d_ilicode_f_ownership_v=LADMNames.LC_RIGHT_TYPE_D_ILICODE_F_OWNERSHIP_V)
         return db.execute_sql_query(query)
+
+    @staticmethod
+    def get_invalid_null_values(db, table, field):
+        query = """SELECT {t_id}, {t_ili_tid}
+                   FROM {schema}.{table}
+                   WHERE {field} IS NULL
+                 """.format(t_id=db.names.T_ID_F,
+                            t_ili_tid=db.names.T_ILI_TID_F,
+                            schema=db.schema,
+                            table=table,
+                            field=field)
+        return db.execute_sql_query(query)

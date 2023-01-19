@@ -1002,7 +1002,8 @@ class DBMappingConfig:
             "Captura_Geo.Captura_Geo.CCA_Predio": {QueryNames.VARIABLE_NAME: "FDC_PARCEL_T", QueryNames.FIELDS_DICT: {
                 "Captura_Geo.Captura_Geo.CCA_Predio.Numero_Predial": "FDC_PARCEL_T_PARCEL_NUMBER_F",
                 "Captura_Geo.Captura_Geo.cca_predio_usuario.Usuario..Captura_Geo.Captura_Geo.CCA_Usuario": "FDC_PARCEL_T_SURVEYOR_F",
-                "Captura_Geo.Captura_Geo.CCA_Predio.Predio_Matriz": "FDC_PARCEL_T_PARENT_F"
+                "Captura_Geo.Captura_Geo.CCA_Predio.Predio_Matriz": "FDC_PARCEL_T_PARENT_F",
+                "Captura_Geo.Captura_Geo.CCA_Predio.Condicion_Predio": "FDC_PARCEL_T_CONDITION_F"
             }},
             # "Captura_Geo.Captura_Geo.predio_terreno": {QueryNames.VARIABLE_NAME: "FDC_PARCEL_PLOT_T", QueryNames.FIELDS_DICT: {}},
             "Captura_Geo.Captura_Geo.CCA_PuntoControl": {QueryNames.VARIABLE_NAME: "FDC_CONTROL_POINT_T",QueryNames.FIELDS_DICT: {}},

@@ -1,3 +1,7 @@
+##########################################
+# SURVEY MODEL
+##########################################
+
 QR_IGACR1001 = "IGAC-R1001"
 QR_IGACR1002 = "IGAC-R1002"
 QR_IGACR1003 = "IGAC-R1003"
@@ -85,6 +89,18 @@ QRE_IGACR4019E01 = "IGAC-R4019-E01"
 QRE_IGACR4020E01 = "IGAC-R4020-E01"
 QRE_IGACR4021E01 = "IGAC-R4021-E01"
 QRE_IGACR4022E01 = "IGAC-R4022-E01"
+
+##########################################
+# FIELD DATA CAPTURA MODEL
+##########################################
+
+QR_FDCR4002 = "FDC-R4002"
+
+QRE_FDCR4002E01 = "FDC-R4002-E01"
+
+##########################################
+# ILIVALIDATOR
+##########################################
 
 QR_ILIVALIDATORR0001 = "ILIVALIDATOR-R0001"
 QRE_ILIVALIDATORR0001E01 = "ILIVALIDATOR-R0001-E01"
