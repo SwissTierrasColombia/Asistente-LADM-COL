@@ -188,7 +188,7 @@ class GUI_Config(QObject):
                 },
                 SEPARATOR,
                 ACTION_CHECK_QUALITY_RULES,
-                ACTION_CHECK_QUALITY_FDC_RULES,
+                ACTION_CHECK_QUALITY_RULES,
                 ACTION_PARCEL_QUERY,
                 {
                     WIDGET_TYPE: MENU,

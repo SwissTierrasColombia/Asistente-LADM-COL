@@ -93,7 +93,6 @@ ACTION_ST_LOGOUT = 'action_st_logout'
 ACTION_ST_UPLOAD_XTF = 'action_st_upload_xtf'
 
 ACTION_CHECK_QUALITY_RULES = 'action_check_quality_rules'
-ACTION_CHECK_QUALITY_FDC_RULES = 'action_check_quality_fdc_rules'
 ACTION_PARCEL_QUERY = 'action_parcel_query'
 ACTION_CREATE_BOUNDARY = 'action_create_boundary'
 ACTION_CREATE_POINT = 'action_create_point'
@@ -148,7 +147,6 @@ ADVANCED_ROLE_ACTIONS = [
     ACTION_ST_LOGOUT,
     ACTION_ST_UPLOAD_XTF,
     ACTION_CHECK_QUALITY_RULES,
-    # ACTION_CHECK_QUALITY_FDC_RULES,
     ACTION_PARCEL_QUERY,
     ACTION_CREATE_BOUNDARY,
     ACTION_CREATE_POINT,

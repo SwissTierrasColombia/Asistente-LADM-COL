@@ -458,23 +458,18 @@ class AsistenteLADMCOLPlugin(QObject):
                                                          QCoreApplication.translate("AsistenteLADMCOLPlugin",
                                                                                     "View/edit field data using template project"),
                                                          self.main_window)
-        self._quality_fdc_action = QAction(QIcon(":/Asistente-LADM-COL/resources/images/validation.svg"),
-                                           QCoreApplication.translate("AsistenteLADMCOLPlugin", "Quality"),
-                                           self.main_window)
 
         # Connections
         self._export_data_fdc_coord_action.triggered.connect(partial(self.show_dlg_export_data_fdc_coordinator, self._context_collected))
         self._allocate_parcels_field_data_capture_action.triggered.connect(partial(self.show_allocate_parcels_field_data_capture, self._context_collected))
         self._synchronize_field_data_action.triggered.connect(partial(self.show_synchronize_field_data, self._context_collected))
         self._load_template_project_fdc_action.triggered.connect(partial(self.load_template_project_field_data_capture, self._context_collected))
-        self._quality_fdc_action.triggered.connect(partial(self.show_dlg_quality_fdc, self._context_collected))
 
         self.gui_builder.register_actions({
             ACTION_EXPORT_DATA_FDC_COORDINATOR: self._export_data_fdc_coord_action,
             ACTION_ALLOCATE_PARCELS_FIELD_DATA_CAPTURE: self._allocate_parcels_field_data_capture_action,
             ACTION_SYNCHRONIZE_FIELD_DATA: self._synchronize_field_data_action,
-            ACTION_LOAD_TEMPLATE_FIELD_DATA: self._load_template_project_fdc_action,
-            ACTION_CHECK_QUALITY_FDC_RULES: self._quality_fdc_action
+            ACTION_LOAD_TEMPLATE_FIELD_DATA: self._load_template_project_fdc_action
         })
 
     def create_survey_actions(self):
@@ -1317,21 +1312,6 @@ class AsistenteLADMCOLPlugin(QObject):
     def show_log_quality_dialog(self, log_result):
         dlg = LogQualityDialog(self.conn_manager.get_db_connector_from_source(), log_result, self.main_window)
         dlg.exec_()
-
-    @validate_if_wizard_is_open
-    @db_connection_required
-    @field_data_capture_model_required
-    @activate_processing_plugin
-    def show_dlg_quality_fdc(self, *args):
-        self.gui_builder.close_dock_widgets([DOCK_WIDGET_QUALITY_RULES])
-
-        qr_controller = QualityRuleController(self.get_db_connection())
-        dock_widget_qrs = DockWidgetQualityRules(qr_controller, self.main_window)
-        self.gui_builder.register_dock_widget(DOCK_WIDGET_QUALITY_RULES, dock_widget_qrs)
-        qr_controller.open_report_called.connect(self.show_log_quality_dialog)
-        qr_controller.refresh_error_layer_symbology.connect(self.app.gui.trigger_repaint_on_layer)
-        self.conn_manager.db_connection_changed.connect(dock_widget_qrs.update_db_connection)
-        self.app.gui.add_tabified_dock_widget(Qt.RightDockWidgetArea, dock_widget_qrs)
 
     def show_wiz_property_record_card(self):
         # TODO: Remove
