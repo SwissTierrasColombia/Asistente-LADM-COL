@@ -53,6 +53,7 @@ from asistente_ladm_col.logic.quality_rules.logic_qrs.qr_duplicate_party_records
 from asistente_ladm_col.logic.quality_rules.logic_qrs.qr_duplicate_right_records import QRDuplicateRightRecords
 from asistente_ladm_col.logic.quality_rules.logic_qrs.qr_duplicate_restriction_records import QRDuplicateRestrictionRecords
 
+from asistente_ladm_col.logic.quality_rules.fdc.qr_fdc_validate_data_against_model import QRFDCValidateDataAgainstModel
 from asistente_ladm_col.logic.quality_rules.fdc.logic_qrs.qr_fdc_parcel_condition_should_not_be_null import QRFDCParcelConditionInvalid
 
 from asistente_ladm_col.utils.singleton import Singleton
@@ -105,6 +106,7 @@ class QualityRuleRegistry(metaclass=Singleton):
         self.register_quality_rule(QRDuplicateAdministrativeSourceRecords())  # QR_IGACR4022
 
     def registry_fdc_qrs(self):
+        self.register_quality_rule(QRFDCValidateDataAgainstModel())  # QR_ILIVALIDATORR0001
         self.register_quality_rule(QRFDCParcelConditionInvalid())  # QR_FDCR4002
 
 
