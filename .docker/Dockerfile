@@ -47,8 +47,7 @@ RUN locale-gen
 ENV PATH="/usr/local/bin:${PATH}"
 
 # Python pip installs
-# temporally pip==9.0.3 version
-RUN pip3 install --upgrade pip==9.0.3 && \
+RUN pip3 install --upgrade pip && \
     pip3 install --upgrade psycopg2
 
 # install required plugins

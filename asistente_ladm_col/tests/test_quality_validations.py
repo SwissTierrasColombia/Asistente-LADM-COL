@@ -99,6 +99,7 @@ class TestQualityValidations(unittest.TestCase):
         self.assertEqual(missing_topology, [[1, 1]])
         self.assertEqual(duplicates_topology, [[20, 1]])
 
+    @unittest.skip("Until we've migrated to Lev Cat 1.2 completely...")
     def test_check_right_of_way_overlaps_buildings(self):
         print('\nINFO: Validating Right of Way-Building overlaps...')
 
@@ -188,6 +189,7 @@ class TestQualityValidations(unittest.TestCase):
         good_boundary_errors_list = [item for item in good_boundary_errors]
         self.assertEqual(len(good_boundary_errors_list), 0)
 
+    @unittest.skip("Until we've migrated to Lev Cat 1.2 completely...")
     def test_check_gaps_in_plots(self):
         gpkg_path = get_test_copy_path('db/static/gpkg/quality_validations.gpkg')
         uri = gpkg_path + '|layername={layername}'.format(layername='check_gaps_in_plots')
