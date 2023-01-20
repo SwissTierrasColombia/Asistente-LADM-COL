@@ -20,11 +20,6 @@ import time
 import tempfile
 
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (QgsVectorLayer,
-                       QgsProject,
-                       QgsProcessingException,
-                       QgsExpressionContextUtils)
-import processing
 
 from asistente_ladm_col.config.enums import (EnumQualityRuleType,
                                              EnumQualityRuleResult)

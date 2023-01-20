@@ -255,25 +255,17 @@ def get_field_admin_role_models():
     """
     from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
 
-    field_admin_role_models = COMMON_ROLE_MODELS.copy()
-    field_admin_role_models[ROLE_SUPPORTED_MODELS] = COMMON_SUPPORTED_MODELS + [LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY]
-    field_admin_role_models[ROLE_CHECKED_MODELS] = [LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY]
+    field_admin_role_models = FDC_ROLE_MODELS.copy()
     fdc_model = LADMColModelRegistry().model(LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY)
     params = fdc_model.get_ili2db_params()
+
     if ILI2DB_UPDATE in params:
         params[ILI2DB_UPDATE].append((ILI2DB_DATASET_KEY, FDC_ADMIN_DATASET_NAME))
     else:
         params[ILI2DB_UPDATE] = [(ILI2DB_DATASET_KEY, FDC_ADMIN_DATASET_NAME)]
+
     field_admin_role_models[ROLE_MODEL_ILI2DB_PARAMETERS] = {LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY: params}
     return field_admin_role_models
-
-field_coordinator_role_models = COMMON_ROLE_MODELS.copy()
-field_coordinator_role_models[ROLE_SUPPORTED_MODELS] = COMMON_SUPPORTED_MODELS + [LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY]
-field_coordinator_role_models[ROLE_CHECKED_MODELS] = [LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY]
-
-advanced_role_models = COMMON_ROLE_MODELS.copy()
-advanced_role_models[ROLE_SUPPORTED_MODELS] = COMMON_SUPPORTED_MODELS + [LADMNames.FIELD_DATA_CAPTURE_MODEL_KEY]
-advanced_role_models[ROLE_CHECKED_MODELS] = COMMON_CHECKED_MODELS
 
 
 def get_role_config():
@@ -283,7 +275,7 @@ def get_role_config():
             ROLE_DESCRIPTION: QCoreApplication.translate("AsistenteLADMCOLPlugin",
                                                          "The <b>Basic</b> role helps you to explore the LADM-COL assistant main functionalities.<br><br>This is the <b>recommended role</b> if you are just getting started with the LADM-COL assistant."),
             ROLE_ENABLED: True,
-            ROLE_MODELS: COMMON_ROLE_MODELS,
+            ROLE_MODELS: SURVEY_ROLE_MODELS,
             ROLE_ACTIONS: [
                 ACTION_DOWNLOAD_GUIDE,
                 ACTION_EXPORT_DATA,
@@ -353,16 +345,7 @@ def get_role_config():
                                                          "The <b>Supplies Provider</b> role generates a XTF file with supplies data for the operators."),
             ROLE_ENABLED: True,
             ROLE_DB_SOURCE: SUPPLIES_DB_SOURCE,
-            ROLE_MODELS: {
-                ROLE_SUPPORTED_MODELS: [LADMNames.LADM_COL_MODEL_KEY,
-                                        LADMNames.SUPPLIES_MODEL_KEY,
-                                        LADMNames.SNR_DATA_SUPPLIES_MODEL_KEY,
-                                        LADMNames.SUPPLIES_INTEGRATION_MODEL_KEY,
-                                        LADMNames.ISO19107_MODEL_KEY],
-                ROLE_HIDDEN_MODELS: COMMON_HIDDEN_MODELS,
-                ROLE_CHECKED_MODELS: [LADMNames.SUPPLIES_MODEL_KEY,
-                                      LADMNames.SUPPLIES_INTEGRATION_MODEL_KEY]
-            },
+            ROLE_MODELS: SUPPLIES_PROVIDER_ROLE_MODELS,
             ROLE_ACTIONS: [
                 ACTION_EXPORT_DATA,
                 ACTION_RUN_ETL_SUPPLIES,
@@ -388,7 +371,10 @@ def get_role_config():
                 ACTION_INTEGRATE_SUPPLIES,
                 ACTION_CHECK_QUALITY_RULES,
                 ACTION_MOVE_NODES],
-            ROLE_QUALITY_RULES: [QR_FDCR4002],
+            ROLE_QUALITY_RULES: [
+                QR_ILIVALIDATORR0001,
+                QR_FDCR4002
+            ],
             ROLE_GUI_CONFIG: {TEMPLATE_GUI: field_admin_role_gui}
         },
         FIELD_COORDINATOR_ROLE: {
@@ -396,7 +382,7 @@ def get_role_config():
             ROLE_DESCRIPTION: QCoreApplication.translate("AsistenteLADMCOLPlugin",
                                                          "The <b>field coordinator</b> assigns parcel sets to surveyors and synchronizes back the data they collected in the field."),
             ROLE_ENABLED: True,
-            ROLE_MODELS: field_coordinator_role_models,
+            ROLE_MODELS: FDC_ROLE_MODELS,
             ROLE_ACTIONS: [
                 ACTION_EXPORT_DATA_FDC_COORDINATOR,
                 ACTION_ALLOCATE_PARCELS_FIELD_DATA_CAPTURE,
@@ -405,7 +391,10 @@ def get_role_config():
                 ACTION_CHECK_QUALITY_RULES,
                 ACTION_MOVE_NODES
             ],
-            ROLE_QUALITY_RULES: [QR_FDCR4002],
+            ROLE_QUALITY_RULES: [
+                QR_ILIVALIDATORR0001,
+                QR_FDCR4002
+            ],
             ROLE_GUI_CONFIG: {TEMPLATE_GUI: field_coordinator_role_gui}
         },
         OPERATOR_ROLE: {
@@ -413,7 +402,7 @@ def get_role_config():
             ROLE_DESCRIPTION: QCoreApplication.translate("AsistenteLADMCOLPlugin",
                                                          "The <b>Operator</b> is in charge of capturing current cadastral data."),
             ROLE_ENABLED: True,
-            ROLE_MODELS: COMMON_ROLE_MODELS,
+            ROLE_MODELS: SURVEY_ROLE_MODELS,
             ROLE_ACTIONS: [
                 ACTION_EXPORT_DATA,
                 # ACTION_DATA_MODEL_CONVERTER,
@@ -455,7 +444,7 @@ def get_role_config():
             ROLE_DESCRIPTION: QCoreApplication.translate("AsistenteLADMCOLPlugin",
                                                          "The <b>Manager</b> is in charge of preparing supplies for operators as well as validating and managing the data provided by operators."),
             ROLE_ENABLED: True,
-            ROLE_MODELS: COMMON_ROLE_MODELS,
+            ROLE_MODELS: SURVEY_ROLE_MODELS,
             ROLE_ACTIONS: [
                 ACTION_EXPORT_DATA,
                 # ACTION_DATA_MODEL_CONVERTER,
@@ -477,7 +466,7 @@ def get_role_config():
             ROLE_DESCRIPTION: QCoreApplication.translate("AsistenteLADMCOLPlugin",
                                                          "The <b>Advanced</b> role has access to all the functionality."),
             ROLE_ENABLED: True,
-            ROLE_MODELS: advanced_role_models,
+            ROLE_MODELS: SURVEY_ROLE_MODELS,
             ROLE_ACTIONS: ADVANCED_ROLE_ACTIONS,
             ROLE_QUALITY_RULES: ALL_QUALITY_RULES,
             ROLE_GUI_CONFIG: {TEMPLATE_GUI: advanced_role_gui}
