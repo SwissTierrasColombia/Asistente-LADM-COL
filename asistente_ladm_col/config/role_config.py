@@ -384,6 +384,7 @@ def get_role_config():
             ROLE_ENABLED: True,
             ROLE_MODELS: FDC_ROLE_MODELS,
             ROLE_ACTIONS: [
+                ACTION_EXPORT_DATA,
                 ACTION_EXPORT_DATA_FDC_COORDINATOR,
                 ACTION_ALLOCATE_PARCELS_FIELD_DATA_CAPTURE,
                 ACTION_SYNCHRONIZE_FIELD_DATA,
