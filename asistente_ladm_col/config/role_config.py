@@ -372,7 +372,7 @@ def get_role_config():
                 ACTION_CHECK_QUALITY_RULES,
                 ACTION_MOVE_NODES],
             ROLE_QUALITY_RULES: [
-                QR_ILIVALIDATORR0001,
+                QR_FDCILIVALIDATORR0001,
                 QR_FDCR4001,
                 QR_FDCR4002
             ],
@@ -394,7 +394,7 @@ def get_role_config():
                 ACTION_MOVE_NODES
             ],
             ROLE_QUALITY_RULES: [
-                QR_ILIVALIDATORR0001,
+                QR_FDCILIVALIDATORR0001,
                 QR_FDCR4001,
                 QR_FDCR4002
             ],

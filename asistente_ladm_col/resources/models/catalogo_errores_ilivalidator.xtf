@@ -4,6 +4,8 @@
 <Errores_Calidad_V0_1.Catalogos_Errores BID="1">
 <Errores_Calidad_V0_1.Catalogos_Errores.TipoError TID="e7ee9744-5f79-4319-906b-f2e59dc1b2ec"><Codigo>ILIVALIDATOR-R0001-E01</Codigo><Descripcion>Errores de integridad de los datos respecto al modelo</Descripcion></Errores_Calidad_V0_1.Catalogos_Errores.TipoError>
 <Errores_Calidad_V0_1.Catalogos_Errores.TipoRegla TID="bb65762c-59c7-477c-ad01-78ebdc3d7bd4"><Codigo>ILIVALIDATOR-R0001</Codigo><Descripcion>Los datos deben corresponder a su modelo (iliValidator)</Descripcion></Errores_Calidad_V0_1.Catalogos_Errores.TipoRegla>
+<Errores_Calidad_V0_1.Catalogos_Errores.TipoError TID="64930a92-9a07-4f59-9ff9-c99f85e3b781"><Codigo>FDC_ILIVALIDATOR-R0001-E01</Codigo><Descripcion>Errores de integridad de los datos respecto al modelo de captura en campo</Descripcion></Errores_Calidad_V0_1.Catalogos_Errores.TipoError>
+<Errores_Calidad_V0_1.Catalogos_Errores.TipoRegla TID="46466152-ae2e-4e33-94eb-a06fe7989a94"><Codigo>FDC_ILIVALIDATOR-R0001</Codigo><Descripcion>Los datos deben corresponder a su modelo (iliValidator) de captura en campo</Descripcion></Errores_Calidad_V0_1.Catalogos_Errores.TipoRegla>
 </Errores_Calidad_V0_1.Catalogos_Errores>
 </DATASECTION>
 </TRANSFER>

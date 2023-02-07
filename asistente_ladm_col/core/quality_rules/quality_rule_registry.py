@@ -110,7 +110,7 @@ class QualityRuleRegistry(metaclass=Singleton):
         self.register_quality_rule(QRDuplicateAdministrativeSourceRecords())  # QR_IGACR4022
 
     def registry_fdc_qrs(self):
-        self.register_quality_rule(QRFDCValidateDataAgainstModel())  # QR_ILIVALIDATORR0001
+        self.register_quality_rule(QRFDCValidateDataAgainstModel())  # FDC_ILIVALIDATOR-R0001
         self.register_quality_rule(QRFDCParcelTypeInvalid())  # QR_FDCR4001
         self.register_quality_rule(QRFDCParcelConditionInvalid())  # QR_FDCR4002
 

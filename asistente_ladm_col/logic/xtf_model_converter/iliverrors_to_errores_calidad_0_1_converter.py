@@ -29,8 +29,7 @@ import processing
 
 from asistente_ladm_col.app_interface import AppInterface
 from asistente_ladm_col.config.ladm_names import LADMNames
-from asistente_ladm_col.config.quality_rule_config import (QR_ILIVALIDATORR0001,
-                                                           QRE_ILIVALIDATORR0001E01)
+from asistente_ladm_col.config.quality_rule_config import (QR_NAME, QR_ERROR)
 from asistente_ladm_col.core.xtf_model_converter.abstract_ladm_col_model_converter import AbstractLADMColModelConverter
 from asistente_ladm_col.logic.ladm_col.ladm_data import LADMData
 from asistente_ladm_col.utils.interlis_utils import get_layer_from_xtflog
@@ -51,6 +50,12 @@ class IliVErrorsToErroresCalidad01Converter(AbstractLADMColModelConverter):
         self.app = AppInterface()
 
     def convert(self, source_xtf, target_xtf, params):
+        """
+        params dict {
+            'qr_name': 'name of ili quality rule',
+            'qr_error': 'error associate to default quality rule to validate'
+        }
+        """
         # TODO: overload convert() with target_db
         db_qr = target_xtf
 
@@ -84,18 +89,17 @@ class IliVErrorsToErroresCalidad01Converter(AbstractLADMColModelConverter):
         self.progress_changed.emit(10)
 
         # Validate that we have the required rule and error domain values
-        qr_rule = LADMData().get_fids_from_key_values(layers[names.ERR_RULE_TYPE_T], names.ERR_RULE_TYPE_T_CODE_F,
-                                                      [QR_ILIVALIDATORR0001])
-        qr_error = LADMData().get_fids_from_key_values(layers[names.ERR_ERROR_TYPE_T], names.ERR_ERROR_TYPE_T_CODE_F,
-                                                       [QRE_ILIVALIDATORR0001E01])
+        qr_rule = LADMData().get_fids_from_key_values(layers[names.ERR_RULE_TYPE_T], names.ERR_RULE_TYPE_T_CODE_F, [params[QR_NAME]])
+        qr_error = LADMData().get_fids_from_key_values(layers[names.ERR_ERROR_TYPE_T], names.ERR_ERROR_TYPE_T_CODE_F, [params[QR_ERROR]])
+
         if not qr_rule:
             return False, QCoreApplication.translate("IliVErrorsToErroresCalidad01Converter",
                                                      "The quality rule '{}' was not found in the quality error DB!").format(
-                QR_ILIVALIDATORR0001)
+                params[QR_NAME])
         if not qr_error:
             return False, QCoreApplication.translate("IliVErrorsToErroresCalidad01Converter",
                                                      "The quality error '{}' was not found in the quality error DB!").format(
-                QRE_ILIVALIDATORR0001E01)
+                params[QR_ERROR])
 
         qr_rule = qr_rule[0]
         qr_error = qr_error[0]

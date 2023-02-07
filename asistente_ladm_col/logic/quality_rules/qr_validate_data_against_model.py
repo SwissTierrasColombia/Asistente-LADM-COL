@@ -25,7 +25,9 @@ from asistente_ladm_col.config.enums import (EnumQualityRuleType,
                                              EnumQualityRuleResult)
 from asistente_ladm_col.config.layer_config import LADMNames
 from asistente_ladm_col.config.quality_rule_config import (QR_ILIVALIDATORR0001,
-                                                           QRE_ILIVALIDATORR0001E01)
+                                                           QRE_ILIVALIDATORR0001E01,
+                                                           QR_NAME,
+                                                           QR_ERROR)
 from asistente_ladm_col.core.ili2db import Ili2DB
 from asistente_ladm_col.core.quality_rules.abstract_quality_rule import AbstractQualityRule
 from asistente_ladm_col.core.quality_rules.quality_rule_execution_result import QualityRuleExecutionResult
@@ -77,7 +79,12 @@ class QRValidateDataAgainstModel(AbstractQualityRule):
         count_before = error_layer.featureCount()
 
         # Write errors to QR DB
-        res, msg = IliVErrorsToErroresCalidad01Converter().convert(self._xtf_log, db_qr, params=dict())
+        params = {
+            QR_NAME: QR_ILIVALIDATORR0001,
+            QR_ERROR: QRE_ILIVALIDATORR0001E01
+        }
+
+        res, msg = IliVErrorsToErroresCalidad01Converter().convert(self._xtf_log, db_qr, params)
 
         self.progress_changed.emit(100)
 

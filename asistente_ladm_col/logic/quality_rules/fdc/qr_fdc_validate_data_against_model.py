@@ -24,8 +24,10 @@ from qgis.PyQt.QtCore import QCoreApplication
 from asistente_ladm_col.config.enums import (EnumQualityRuleType,
                                              EnumQualityRuleResult)
 from asistente_ladm_col.config.layer_config import LADMNames
-from asistente_ladm_col.config.quality_rule_config import (QR_ILIVALIDATORR0001,
-                                                           QRE_ILIVALIDATORR0001E01)
+from asistente_ladm_col.config.quality_rule_config import (QR_FDCILIVALIDATORR0001,
+                                                           QRE_FDCILIVALIDATORR0001E01,
+                                                           QR_NAME,
+                                                           QR_ERROR)
 from asistente_ladm_col.core.ili2db import Ili2DB
 from asistente_ladm_col.core.quality_rules.abstract_quality_rule import AbstractQualityRule
 from asistente_ladm_col.core.quality_rules.quality_rule_execution_result import QualityRuleExecutionResult
@@ -38,12 +40,12 @@ class QRFDCValidateDataAgainstModel(AbstractQualityRule):
     Check that the DB data is valid against their model.
     Note: This uses ili2db --validate rather than iliValidator.
     """
-    _ERROR_01 = QRE_ILIVALIDATORR0001E01
+    _ERROR_01 = QRE_FDCILIVALIDATORR0001E01
 
     def __init__(self):
         AbstractQualityRule.__init__(self)
 
-        self._id = QR_ILIVALIDATORR0001
+        self._id = QR_FDCILIVALIDATORR0001
         self._name = "Los datos deben corresponder a su modelo (iliValidator)"
         self._type = EnumQualityRuleType.GENERIC
         self._tags = ["ilivalidator", "modelo", "datos", "integridad"]
@@ -54,7 +56,7 @@ class QRFDCValidateDataAgainstModel(AbstractQualityRule):
         # Optional. Only useful for display purposes.
         self._field_mapping = dict()  # E.g., {'id_objetos': 'ids_punto_lindero', 'valores': 'conteo'}
 
-        self._xtf_log = os.path.join(tempfile.gettempdir(), "validation_{}.xtf".format(time.strftime('%Y%m%d_%H%M%S')))
+        self._xtf_log = os.path.join(tempfile.gettempdir(), "validation_fdc_{}.xtf".format(time.strftime('%Y%m%d_%H%M%S')))
 
     def layers_config(self, names):
         return dict()
@@ -77,7 +79,12 @@ class QRFDCValidateDataAgainstModel(AbstractQualityRule):
         count_before = error_layer.featureCount()
 
         # Write errors to QR DB
-        res, msg = IliVErrorsToErroresCalidad01Converter().convert(self._xtf_log, db_qr, params=dict())
+        params = {
+            QR_NAME: QR_FDCILIVALIDATORR0001,
+            QR_ERROR: QRE_FDCILIVALIDATORR0001E01
+        }
+
+        res, msg = IliVErrorsToErroresCalidad01Converter().convert(self._xtf_log, db_qr, params)
 
         self.progress_changed.emit(100)
 
