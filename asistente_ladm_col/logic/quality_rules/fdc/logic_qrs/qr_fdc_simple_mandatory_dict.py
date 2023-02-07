@@ -3,9 +3,11 @@ from qgis.PyQt.QtCore import QCoreApplication
 from asistente_ladm_col.config.quality_rule_config import (QR_FDCR4003,
                                                            QR_FDCR4004,
                                                            QR_FDCR4005,
+                                                           QR_FDCR4006,
                                                            QRE_FDCR4003E01,
                                                            QRE_FDCR4004E01,
-                                                           QRE_FDCR4005E01)
+                                                           QRE_FDCR4005E01,
+                                                           QRE_FDCR4006E01)
 
 qr_simple_mandatory_dict = {
     QR_FDCR4003: {
@@ -42,6 +44,18 @@ qr_simple_mandatory_dict = {
         'notification_messages': {
             'error': QCoreApplication.translate('QualityRules', '{} parcels with invalid parcel visit date were found.'),
             'ok': QCoreApplication.translate('QualityRules', 'All parcels have valid parcel visit date.')
+        }
+    },
+    QR_FDCR4006: {
+        'id': QR_FDCR4006,
+        'name': 'El resultado de la visita al predio no debe ser nulo',
+        'tags': ['fdc', 'captura', 'campo', 'lógica', 'negocio', 'predio', 'resultado visita predial'],
+        'error': {'code': QRE_FDCR4006E01, 'message': 'El resultado de la visita al predio no debe ser nulo'},
+        'layer': 'FDC_PARCEL_T',
+        'field': 'FDC_PARCEL_T_VISIT_RESULT_F',
+        'notification_messages': {
+            'error': QCoreApplication.translate('QualityRules', '{} parcels with invalid visit result were found.'),
+            'ok': QCoreApplication.translate('QualityRules', 'All parcels have valid visit result.')
         }
     }
 }
