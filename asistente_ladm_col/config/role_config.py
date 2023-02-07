@@ -376,7 +376,8 @@ def get_role_config():
                 QR_FDCR4001,
                 QR_FDCR4002,
                 QR_FDCR4003,
-                QR_FDCR4004
+                QR_FDCR4004,
+                QR_FDCR4005
             ],
             ROLE_GUI_CONFIG: {TEMPLATE_GUI: field_admin_role_gui}
         },
@@ -400,7 +401,8 @@ def get_role_config():
                 QR_FDCR4001,
                 QR_FDCR4002,
                 QR_FDCR4003,
-                QR_FDCR4004
+                QR_FDCR4004,
+                QR_FDCR4005
             ],
             ROLE_GUI_CONFIG: {TEMPLATE_GUI: field_coordinator_role_gui}
         },

@@ -63,7 +63,8 @@ from asistente_ladm_col.logic.quality_rules.fdc.logic_qrs.qr_fdc_simple_mandator
 from asistente_ladm_col.logic.quality_rules.fdc.logic_qrs.qr_fdc_simple_mandatory_dict import qr_simple_mandatory_dict
 
 from asistente_ladm_col.config.quality_rule_config import (QR_FDCR4003,
-                                                           QR_FDCR4004)
+                                                           QR_FDCR4004,
+                                                           QR_FDCR4005)
 
 from asistente_ladm_col.utils.singleton import Singleton
 
@@ -121,6 +122,7 @@ class QualityRuleRegistry(metaclass=Singleton):
 
         self.register_quality_rule(QRFDCSimpleMandatory(qr_simple_mandatory_dict[QR_FDCR4003]))
         self.register_quality_rule(QRFDCSimpleMandatory(qr_simple_mandatory_dict[QR_FDCR4004]))
+        self.register_quality_rule(QRFDCSimpleMandatory(qr_simple_mandatory_dict[QR_FDCR4005]))
 
 
     def register_quality_rule(self, quality_rule):
