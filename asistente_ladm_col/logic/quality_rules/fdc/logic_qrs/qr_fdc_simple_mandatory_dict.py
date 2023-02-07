@@ -5,11 +5,13 @@ from asistente_ladm_col.config.quality_rule_config import (QR_FDCR4003,
                                                            QR_FDCR4005,
                                                            QR_FDCR4006,
                                                            QR_FDCR4007,
+                                                           QR_FDCR4008,
                                                            QRE_FDCR4003E01,
                                                            QRE_FDCR4004E01,
                                                            QRE_FDCR4005E01,
                                                            QRE_FDCR4006E01,
-                                                           QRE_FDCR4007E01)
+                                                           QRE_FDCR4007E01,
+                                                           QRE_FDCR4008E01)
 
 qr_simple_mandatory_dict = {
     QR_FDCR4003: {
@@ -70,6 +72,18 @@ qr_simple_mandatory_dict = {
         'notification_messages': {
             'error': QCoreApplication.translate('QualityRules', '{} parcels with invalid "has register area?" were found.'),
             'ok': QCoreApplication.translate('QualityRules', 'All parcels have valid "has register area?".')
+        }
+    },
+    QR_FDCR4008: {
+        'id': QR_FDCR4008,
+        'name': 'El atributo tiene FMI no debe ser nulo',
+        'tags': ['fdc', 'captura', 'campo', 'lógica', 'negocio', 'predio', 'tiene fmi'],
+        'error': {'code': QRE_FDCR4007E01, 'message': 'El atributo tiene FMI no debe ser nulo'},
+        'layer': 'FDC_PARCEL_T',
+        'field': 'FDC_PARCEL_T_HAS_FMI_F',
+        'notification_messages': {
+            'error': QCoreApplication.translate('QualityRules', '{} parcels with invalid "has FMI" were found.'),
+            'ok': QCoreApplication.translate('QualityRules', 'All parcels have valid "has FMI".')
         }
     }
 }
