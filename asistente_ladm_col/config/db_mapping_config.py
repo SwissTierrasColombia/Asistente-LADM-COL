@@ -943,7 +943,8 @@ class DBMappingConfig:
                 "Captura_Geo.Captura_Geo.CCA_Predio.Categoria_suelo": "FDC_PARCEL_T_LAND_CLASS_F",
                 "Captura_Geo.Captura_Geo.CCA_Predio.Destinacion_Economica": "FDC_ECONOMIC_DESTINATION_F",
                 "Captura_Geo.Captura_Geo.CCA_Predio.Fecha_Visita_Predial": "FDC_PARCEL_T_DATE_OF_PROPERTY_VISIT_F",
-                "Captura_Geo.Captura_Geo.CCA_Predio.Resultado_Visita": "FDC_PARCEL_T_VISIT_RESULT_F"
+                "Captura_Geo.Captura_Geo.CCA_Predio.Resultado_Visita": "FDC_PARCEL_T_VISIT_RESULT_F",
+                "Captura_Geo.Captura_Geo.CCA_Predio.Tiene_Area_Registral": "FDC_PARCEL_T_HAS_REGISTER_AREA_F"
             }},
             # "Captura_Geo.Captura_Geo.predio_terreno": {QueryNames.VARIABLE_NAME: "FDC_PARCEL_PLOT_T", QueryNames.FIELDS_DICT: {}},
             "Captura_Geo.Captura_Geo.CCA_PuntoControl": {QueryNames.VARIABLE_NAME: "FDC_CONTROL_POINT_T",QueryNames.FIELDS_DICT: {}},
