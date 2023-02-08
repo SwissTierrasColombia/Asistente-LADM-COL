@@ -995,6 +995,9 @@ class GeometryUtils(QObject):
         :param get_geometry: Whether the resulting dicts should contain geometry or not
         :return: 3 dicts with the given key. Example of 1 dict: {key: {'attrs':{attr1:v1,...}, 'geom':QgsGeometry}}
         """
+        # Fix: corrects some geometries with errors
+        intersect_layer = processing.run("native:fixgeometries", {'INPUT': intersect_layer, 'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
+
         # attrs = attributes or []
         def build_response_dict():
             res = dict()
