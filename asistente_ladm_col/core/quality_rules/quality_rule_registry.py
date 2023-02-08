@@ -67,7 +67,13 @@ from asistente_ladm_col.config.quality_rule_config import (QR_FDCR4003,
                                                            QR_FDCR4005,
                                                            QR_FDCR4006,
                                                            QR_FDCR4007,
-                                                           QR_FDCR4008)
+                                                           QR_FDCR4008,
+                                                           QR_FDCR4009,
+                                                           QR_FDCR4010,
+                                                           QR_FDCR4011,
+                                                           QR_FDCR4012,
+                                                           QR_FDCR4013,
+                                                           QR_FDCR4014)
 
 from asistente_ladm_col.utils.singleton import Singleton
 
@@ -130,6 +136,12 @@ class QualityRuleRegistry(metaclass=Singleton):
         self.register_quality_rule(QRFDCSimpleMandatory(qr_simple_mandatory_dict[QR_FDCR4007]))
         self.register_quality_rule(QRFDCSimpleMandatory(qr_simple_mandatory_dict[QR_FDCR4008]))
 
+        self.register_quality_rule(QRFDCSimpleMandatory(qr_simple_mandatory_dict[QR_FDCR4009]))
+        self.register_quality_rule(QRFDCSimpleMandatory(qr_simple_mandatory_dict[QR_FDCR4010]))
+        self.register_quality_rule(QRFDCSimpleMandatory(qr_simple_mandatory_dict[QR_FDCR4011]))
+        self.register_quality_rule(QRFDCSimpleMandatory(qr_simple_mandatory_dict[QR_FDCR4012]))
+        self.register_quality_rule(QRFDCSimpleMandatory(qr_simple_mandatory_dict[QR_FDCR4013]))
+        self.register_quality_rule(QRFDCSimpleMandatory(qr_simple_mandatory_dict[QR_FDCR4014]))
 
     def register_quality_rule(self, quality_rule):
         """

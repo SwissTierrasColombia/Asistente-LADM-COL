@@ -380,7 +380,13 @@ def get_role_config():
                 QR_FDCR4005,
                 QR_FDCR4006,
                 QR_FDCR4007,
-                QR_FDCR4008
+                QR_FDCR4008,
+                QR_FDCR4009,
+                QR_FDCR4010,
+                QR_FDCR4011,
+                QR_FDCR4012,
+                QR_FDCR4013,
+                QR_FDCR4014
             ],
             ROLE_GUI_CONFIG: {TEMPLATE_GUI: field_admin_role_gui}
         },
@@ -408,7 +414,13 @@ def get_role_config():
                 QR_FDCR4005,
                 QR_FDCR4006,
                 QR_FDCR4007,
-                QR_FDCR4008
+                QR_FDCR4008,
+                QR_FDCR4009,
+                QR_FDCR4010,
+                QR_FDCR4011,
+                QR_FDCR4012,
+                QR_FDCR4013,
+                QR_FDCR4014,
             ],
             ROLE_GUI_CONFIG: {TEMPLATE_GUI: field_coordinator_role_gui}
         },

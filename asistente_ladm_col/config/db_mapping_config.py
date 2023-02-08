@@ -913,7 +913,8 @@ class DBMappingConfig:
             "Captura_Geo.Captura_Geo.CCA_ConstruccionHistorica": {QueryNames.VARIABLE_NAME: "FDC_LEGACY_BUILDING_T", QueryNames.FIELDS_DICT: {}},
             "Captura_Geo.Captura_Geo.CCA_Derecho": {QueryNames.VARIABLE_NAME: "FDC_RIGHT_T", QueryNames.FIELDS_DICT: {
                 "Captura_Geo.Captura_Geo.cca_predio_derecho.predio..Captura_Geo.Captura_Geo.CCA_Predio": "FDC_RIGHT_T_PARCEL_F",
-                "Captura_Geo.Captura_Geo.cca_derecho_interesado.interesado..Captura_Geo.Captura_Geo.CCA_Interesado": "FDC_RIGHT_T_PARTY_F"
+                "Captura_Geo.Captura_Geo.cca_derecho_interesado.interesado..Captura_Geo.Captura_Geo.CCA_Interesado": "FDC_RIGHT_T_PARTY_F",
+                "Captura_Geo.Captura_Geo.CCA_Derecho.Fraccion_Derecho": "LC_RIGHT_T_RIGHT_FRACTION_F"
             }},
             "Captura_Geo.Captura_Geo.CCA_FuenteAdministrativa": {QueryNames.VARIABLE_NAME: "FDC_ADMINISTRATIVE_SOURCE_T", QueryNames.FIELDS_DICT: {}},
             "Captura_Geo.Captura_Geo.cca_fuenteadministrativa_derecho": {QueryNames.VARIABLE_NAME: "FDC_ADMINISTRATIVE_SOURCE_RIGHT_T", QueryNames.FIELDS_DICT: {
@@ -924,7 +925,10 @@ class DBMappingConfig:
             #"Captura_Geo.Captura_Geo.derecho_propietario": {QueryNames.VARIABLE_NAME: "", QueryNames.FIELDS_DICT: {}},
             #"Captura_Geo.Captura_Geo.predio_construccion": {QueryNames.VARIABLE_NAME: "", QueryNames.FIELDS_DICT: {}},
             #"Captura_Geo.Captura_Geo.predio_derecho": {QueryNames.VARIABLE_NAME: "", QueryNames.FIELDS_DICT: {}},
-            "Captura_Geo.Captura_Geo.CCA_Interesado": {QueryNames.VARIABLE_NAME: "FDC_PARTY_T", QueryNames.FIELDS_DICT: {}},
+            "Captura_Geo.Captura_Geo.CCA_Interesado": {QueryNames.VARIABLE_NAME: "FDC_PARTY_T", QueryNames.FIELDS_DICT: {
+                "Captura_Geo.Captura_Geo.CCA_Interesado.Departamento": "FDC_PARTY_T_RESIDENCE_DEPARTMENT_F",
+                "Captura_Geo.Captura_Geo.CCA_Interesado.Municipio": "FDC_PARTY_T_RESIDENCE_MUNICIPALITY_F"
+            }},
             # Not there "Captura_Geo.Captura_Geo.InteresadoContacto": {QueryNames.VARIABLE_NAME: "FDC_PARTY_CONTACT_T", QueryNames.FIELDS_DICT: {}},
             #"Captura_Geo.Captura_Geo.propietario_Contacto": {QueryNames.VARIABLE_NAME: "", QueryNames.FIELDS_DICT: {}},
             #"Captura_Geo.Captura_Geo.propietario_propietario_contacto": {QueryNames.VARIABLE_NAME: "", QueryNames.FIELDS_DICT: {}},
@@ -946,6 +950,9 @@ class DBMappingConfig:
                 "Captura_Geo.Captura_Geo.CCA_Predio.Resultado_Visita": "FDC_PARCEL_T_VISIT_RESULT_F",
                 "Captura_Geo.Captura_Geo.CCA_Predio.Tiene_Area_Registral": "FDC_PARCEL_T_HAS_REGISTER_AREA_F",
                 "Captura_Geo.Captura_Geo.CCA_Predio.Tiene_FMI": "FDC_PARCEL_T_HAS_FMI_F",
+                "Captura_Geo.Captura_Geo.CCA_Predio.Tipo_Documento_Quien_Atendio": "FDC_PARCEL_T_DOCUMENT_TYPE_OF_WHO_ATTENDED_THE_VISIT_F",
+                "Captura_Geo.Captura_Geo.CCA_Predio.Numero_Documento_Quien_Atendio": "FDC_PARCEL_T_DOCUMENT_NUMBER_OF_WHO_ATTENDED_THE_VISIT_F",
+                "Captura_Geo.Captura_Geo.CCA_Predio.Nombre_Quien_Atendio": "FDC_PARCEL_T_NAME_WHO_ATTENDED_THE_VISIT_F"
             }},
             # "Captura_Geo.Captura_Geo.predio_terreno": {QueryNames.VARIABLE_NAME: "FDC_PARCEL_PLOT_T", QueryNames.FIELDS_DICT: {}},
             "Captura_Geo.Captura_Geo.CCA_PuntoControl": {QueryNames.VARIABLE_NAME: "FDC_CONTROL_POINT_T",QueryNames.FIELDS_DICT: {}},
