@@ -507,6 +507,9 @@ class PolygonQualityRules:
 
         # Get spatial relation (within) between building and plots
         building_layer.selectByIds(building_within)
+
+        # Fix: corrects some geometries with errors
+        plot_layer = processing.run("native:fixgeometries", {'INPUT': plot_layer, 'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
         building_within_plots_layer = processing.run("qgis:joinattributesbylocation",
                                                      {'INPUT': QgsProcessingFeatureSourceDefinition(building_layer.id(), True),
                                                       'JOIN': plot_layer,
@@ -850,6 +853,9 @@ class PolygonQualityRules:
     def check_building_unit_not_associated_with_correct_plot(building_units_within_plots, building_unit_layer, plot_layer, parcel_layer, ue_baunit_layer, condition_parcel_layer, names):
         building_units_bad_relation = list()
         building_units_to_check = {f[names.T_ID_F]: f for f in building_unit_layer.getFeatures(building_units_within_plots)}
+
+        # Fix: corrects some geometries with errors
+        plot_layer = processing.run("native:fixgeometries", {'INPUT': plot_layer, 'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
 
         # Get spatial relation (within) between building units and plots
         building_unit_layer.selectByIds(building_units_within_plots)
