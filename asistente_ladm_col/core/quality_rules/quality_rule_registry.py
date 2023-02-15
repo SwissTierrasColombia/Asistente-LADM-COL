@@ -21,6 +21,7 @@ from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
 from asistente_ladm_col.config.keys.common import ALL_QUALITY_RULES
 from asistente_ladm_col.core.quality_rules.abstract_quality_rule import AbstractQualityRule
 from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
+from asistente_ladm_col.logic.quality_rules.fdc.logic_qrs.qr_fdc_parcel_without_address import QRFDCParcelWithoutAddress
 from asistente_ladm_col.logic.quality_rules.point_qrs.qr_overlapping_boundary_points import QROverlappingBoundaryPoints
 from asistente_ladm_col.logic.quality_rules.point_qrs.qr_overlapping_control_points import QROverlappingControlPoints
 from asistente_ladm_col.logic.quality_rules.point_qrs.qr_boundary_points_not_covered_by_boundary_nodes import QRBoundaryPointsNotCoveredByBoundaryNodes
@@ -142,6 +143,8 @@ class QualityRuleRegistry(metaclass=Singleton):
         self.register_quality_rule(QRFDCSimpleMandatory(qr_simple_mandatory_dict[QR_FDCR4012]))
         self.register_quality_rule(QRFDCSimpleMandatory(qr_simple_mandatory_dict[QR_FDCR4013]))
         self.register_quality_rule(QRFDCSimpleMandatory(qr_simple_mandatory_dict[QR_FDCR4014]))
+
+        self.register_quality_rule(QRFDCParcelWithoutAddress())
 
     def register_quality_rule(self, quality_rule):
         """

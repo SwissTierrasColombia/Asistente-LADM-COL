@@ -386,7 +386,8 @@ def get_role_config():
                 QR_FDCR4011,
                 QR_FDCR4012,
                 QR_FDCR4013,
-                QR_FDCR4014
+                QR_FDCR4014,
+                QR_FDCR4017
             ],
             ROLE_GUI_CONFIG: {TEMPLATE_GUI: field_admin_role_gui}
         },
@@ -421,6 +422,7 @@ def get_role_config():
                 QR_FDCR4012,
                 QR_FDCR4013,
                 QR_FDCR4014,
+                QR_FDCR4017
             ],
             ROLE_GUI_CONFIG: {TEMPLATE_GUI: field_coordinator_role_gui}
         },
