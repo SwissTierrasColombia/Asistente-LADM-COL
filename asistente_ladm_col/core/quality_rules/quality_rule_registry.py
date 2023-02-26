@@ -21,6 +21,7 @@ from asistente_ladm_col.lib.model_registry import LADMColModelRegistry
 from asistente_ladm_col.config.keys.common import ALL_QUALITY_RULES
 from asistente_ladm_col.core.quality_rules.abstract_quality_rule import AbstractQualityRule
 from asistente_ladm_col.gui.gui_builder.role_registry import RoleRegistry
+from asistente_ladm_col.logic.quality_rules.fdc.logic_qrs.qr_fdc_parcel_without_address import QRFDCParcelWithoutAddress
 from asistente_ladm_col.logic.quality_rules.point_qrs.qr_overlapping_boundary_points import QROverlappingBoundaryPoints
 from asistente_ladm_col.logic.quality_rules.point_qrs.qr_overlapping_control_points import QROverlappingControlPoints
 from asistente_ladm_col.logic.quality_rules.point_qrs.qr_boundary_points_not_covered_by_boundary_nodes import QRBoundaryPointsNotCoveredByBoundaryNodes
@@ -59,6 +60,21 @@ from asistente_ladm_col.logic.quality_rules.logic_qrs.qr_duplicate_restriction_r
 from asistente_ladm_col.logic.quality_rules.fdc.qr_fdc_validate_data_against_model import QRFDCValidateDataAgainstModel
 from asistente_ladm_col.logic.quality_rules.fdc.logic_qrs.qr_fdc_parcel_condition_should_not_be_null import QRFDCParcelConditionInvalid
 from asistente_ladm_col.logic.quality_rules.fdc.logic_qrs.qr_fdc_parcel_type_should_not_be_null import QRFDCParcelTypeInvalid
+from asistente_ladm_col.logic.quality_rules.fdc.logic_qrs.qr_fdc_simple_mandatory import QRFDCSimpleMandatory
+from asistente_ladm_col.logic.quality_rules.fdc.logic_qrs.qr_fdc_simple_mandatory_dict import qr_simple_mandatory_dict
+
+from asistente_ladm_col.config.quality_rule_config import (QR_FDCR4003,
+                                                           QR_FDCR4004,
+                                                           QR_FDCR4005,
+                                                           QR_FDCR4006,
+                                                           QR_FDCR4007,
+                                                           QR_FDCR4008,
+                                                           QR_FDCR4009,
+                                                           QR_FDCR4010,
+                                                           QR_FDCR4011,
+                                                           QR_FDCR4012,
+                                                           QR_FDCR4013,
+                                                           QR_FDCR4014)
 
 from asistente_ladm_col.utils.singleton import Singleton
 
@@ -114,6 +130,21 @@ class QualityRuleRegistry(metaclass=Singleton):
         self.register_quality_rule(QRFDCParcelTypeInvalid())  # QR_FDCR4001
         self.register_quality_rule(QRFDCParcelConditionInvalid())  # QR_FDCR4002
 
+        self.register_quality_rule(QRFDCSimpleMandatory(qr_simple_mandatory_dict[QR_FDCR4003]))
+        self.register_quality_rule(QRFDCSimpleMandatory(qr_simple_mandatory_dict[QR_FDCR4004]))
+        self.register_quality_rule(QRFDCSimpleMandatory(qr_simple_mandatory_dict[QR_FDCR4005]))
+        self.register_quality_rule(QRFDCSimpleMandatory(qr_simple_mandatory_dict[QR_FDCR4006]))
+        self.register_quality_rule(QRFDCSimpleMandatory(qr_simple_mandatory_dict[QR_FDCR4007]))
+        self.register_quality_rule(QRFDCSimpleMandatory(qr_simple_mandatory_dict[QR_FDCR4008]))
+
+        self.register_quality_rule(QRFDCSimpleMandatory(qr_simple_mandatory_dict[QR_FDCR4009]))
+        self.register_quality_rule(QRFDCSimpleMandatory(qr_simple_mandatory_dict[QR_FDCR4010]))
+        self.register_quality_rule(QRFDCSimpleMandatory(qr_simple_mandatory_dict[QR_FDCR4011]))
+        self.register_quality_rule(QRFDCSimpleMandatory(qr_simple_mandatory_dict[QR_FDCR4012]))
+        self.register_quality_rule(QRFDCSimpleMandatory(qr_simple_mandatory_dict[QR_FDCR4013]))
+        self.register_quality_rule(QRFDCSimpleMandatory(qr_simple_mandatory_dict[QR_FDCR4014]))
+
+        self.register_quality_rule(QRFDCParcelWithoutAddress())
 
     def register_quality_rule(self, quality_rule):
         """

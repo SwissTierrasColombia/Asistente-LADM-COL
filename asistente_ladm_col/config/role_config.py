@@ -374,7 +374,20 @@ def get_role_config():
             ROLE_QUALITY_RULES: [
                 QR_FDCILIVALIDATORR0001,
                 QR_FDCR4001,
-                QR_FDCR4002
+                QR_FDCR4002,
+                QR_FDCR4003,
+                QR_FDCR4004,
+                QR_FDCR4005,
+                QR_FDCR4006,
+                QR_FDCR4007,
+                QR_FDCR4008,
+                QR_FDCR4009,
+                QR_FDCR4010,
+                QR_FDCR4011,
+                QR_FDCR4012,
+                QR_FDCR4013,
+                QR_FDCR4014,
+                QR_FDCR4017
             ],
             ROLE_GUI_CONFIG: {TEMPLATE_GUI: field_admin_role_gui}
         },
@@ -396,7 +409,20 @@ def get_role_config():
             ROLE_QUALITY_RULES: [
                 QR_FDCILIVALIDATORR0001,
                 QR_FDCR4001,
-                QR_FDCR4002
+                QR_FDCR4002,
+                QR_FDCR4003,
+                QR_FDCR4004,
+                QR_FDCR4005,
+                QR_FDCR4006,
+                QR_FDCR4007,
+                QR_FDCR4008,
+                QR_FDCR4009,
+                QR_FDCR4010,
+                QR_FDCR4011,
+                QR_FDCR4012,
+                QR_FDCR4013,
+                QR_FDCR4014,
+                QR_FDCR4017
             ],
             ROLE_GUI_CONFIG: {TEMPLATE_GUI: field_coordinator_role_gui}
         },
